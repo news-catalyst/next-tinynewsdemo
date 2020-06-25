@@ -14,6 +14,15 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
 
+## Environment Variables
+
+Create a file called `.env.local` and place the following variables, based on your Webiny API, in the file:
+
+```
+CONTENT_DELIVERY_API_URL=<your CMS URL>
+CONTENT_DELIVERY_API_ACCESS_TOKEN=<your access token>
+```
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:
