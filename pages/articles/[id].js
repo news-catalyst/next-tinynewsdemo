@@ -3,7 +3,7 @@ import { Text } from 'slate'
 import Layout from '../../components/Layout.js';
 import { getArticle, listAllArticleIds } from '../../lib/articles.js';
 
-const serialize = node => {
+const serialize = (node, i) => {
   if (Text.isText(node)) {
     return escapeHtml(node.text);
   }
@@ -12,14 +12,14 @@ const serialize = node => {
 
   switch (node.type) {
     case 'paragraph':
-      return (<p>{children}</p>)
+      return (<p key={i}>{children}</p>)
     default:
       return children
   }
 }
 
 export default function Article({ article }) {
-  const serializedBody = article.body.map(node => serialize(node));
+  const serializedBody = article.body.map((node, i) => serialize(node, i));
   return (
     <Layout>
       <article>
