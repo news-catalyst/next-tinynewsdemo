@@ -23,8 +23,10 @@ export default function Article({ article }) {
   return (
     <Layout>
       <article>
-        <h1>{article.headline}</h1>
-        {serializedBody}
+        <h1 className="title is-size-1">{article.headline}</h1>
+        <div className="content">
+          {serializedBody}
+        </div>
       </article>
     </Layout>
   )
