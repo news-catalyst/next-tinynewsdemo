@@ -6,15 +6,15 @@ export default function Home({ articles }) {
   return (
     <Layout>
       <div className="container">
-        <h2 class="title is-size-2">Articles</h2>
+        <h2 className="title is-size-2">Articles</h2>
         {articles.map((article) => (
-          <div className="article">
+          <div className="article" key={article.id}>
             <h3 className="title is-size-3">
               <Link href="/articles/[id]/" as={`/articles/${article.id}`}>
                 <a>{article.headline}</a>
               </Link>
             </h3>
-            <p class="subtitle">by {article.byline}</p>
+            <p className="subtitle">by {article.byline}</p>
           </div>
         ))}
       </div>
