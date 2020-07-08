@@ -3,7 +3,19 @@ import { useEffect } from 'react';
 import Router from 'next/router';
 import * as gtag from '../lib/gtag';
 
-// This default export is required in a new `pages/_app.js` file.
+export function reportWebVitals({ id, name, label, value }) {
+  if (label === 'web-vital') {
+    const event = {
+      action: name,
+      category: 'Web Vitals',
+      value: Math.round(name === 'CLS' ? value * 1000 : value),
+      label: id,
+      non_interaction: true,
+    };
+    gtag.event(event);
+  }
+}
+
 const App = ({ Component, pageProps }) => {
   useEffect(() => {
     const handleRouteChange = (url) => {
