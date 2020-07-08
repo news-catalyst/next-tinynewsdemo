@@ -2,6 +2,7 @@ import escapeHtml from 'escape-html'
 import { Text } from 'slate'
 import Layout from '../../components/Layout.js';
 import { getArticle, listAllArticleIds } from '../../lib/articles.js';
+import Coral from "../../components/Coral.js";
 
 const serialize = (node, i) => {
   if (Text.isText(node)) {
@@ -26,6 +27,9 @@ export default function Article({ article }) {
         <h1 className="title is-size-1">{article.headline}</h1>
         <div className="content">
           {serializedBody}
+        </div>
+        <div className="comments">
+          <Coral />
         </div>
       </article>
     </Layout>
