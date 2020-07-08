@@ -29,7 +29,7 @@ export default function Article({ article }) {
           {serializedBody}
         </div>
         <div className="comments">
-          <Coral />
+          <Coral storyURL={`/articles/${article.id}`} />
         </div>
       </article>
     </Layout>
