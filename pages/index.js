@@ -1,8 +1,11 @@
 import Link from 'next/link';
+import { useRouter } from 'next/router'
 import { listAllArticles } from '../lib/articles.js';
 import Layout from '../components/Layout.js';
+import Pico from '../components/Pico.js';
 
 export default function Home({ articles }) {
+  const router = useRouter();
   return (
     <Layout>
       <div className="container">
@@ -17,6 +20,9 @@ export default function Home({ articles }) {
             <p className="subtitle">by {article.byline}</p>
           </div>
         ))}
+      </div>
+      <div class="pico">
+        <Pico post_type="home" article={false} router={router} />
       </div>
     </Layout>
   )
