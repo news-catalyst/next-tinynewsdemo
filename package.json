@@ -14,6 +14,7 @@
     "next": "9.4.4",
     "react": "16.13.1",
     "react-dom": "16.13.1",
+    "react-embed": "git+https://github.com/jacqui/react-embed.git",
     "react-mailchimp-subscribe": "^2.1.0",
     "sass": "^1.26.9",
     "slate": "^0.58.3"

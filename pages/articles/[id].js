@@ -1,22 +1,26 @@
-import escapeHtml from 'escape-html'
-import { Text } from 'slate'
 import Layout from '../../components/Layout.js';
 import { getArticle, listAllArticleIds } from '../../lib/articles.js';
 import Coral from "../../components/Coral.js";
 import MailchimpSubscribe from '../../components/MailchimpSubscribe.js';
+import EmbedNode from '../../components/EmbedNode.js';
+import ImageNode from '../../components/ImageNode.js';
+import ListNode from '../../components/ListNode.js';
+import TextNode from '../../components/TextNode.js';
+
 
 const serialize = (node, i) => {
-  if (Text.isText(node)) {
-    return escapeHtml(node.text);
-  }
-
-  const children = node.children.map(n => serialize(n)).join('');
-
+  console.log(node.type);
   switch (node.type) {
+    case 'list':
+      return (<ListNode node={node} />)
+    case 'text':
+      return (<TextNode node={node} />)
     case 'paragraph':
-      return (<p key={i}>{children}</p>)
+      return (<TextNode node={node} />)
+    case 'image':
+      return (<ImageNode node={node} />)
     default:
-      return children
+      return null
   }
 }
 
@@ -26,6 +30,7 @@ export default function Article({ article }) {
     description: "A Tiny News Collective production"
   }
   const serializedBody = article.body.map((node, i) => serialize(node, i));
+  console.log(serializedBody);
   return (
     <Layout meta={meta}>
       <article>
