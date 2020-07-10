@@ -21,9 +21,13 @@ const serialize = (node, i) => {
 }
 
 export default function Article({ article }) {
+  const meta = {
+    title: `${article.headline} | Tiny News Demo`,
+    description: "A Tiny News Collective production"
+  }
   const serializedBody = article.body.map((node, i) => serialize(node, i));
   return (
-    <Layout>
+    <Layout meta={meta}>
       <article>
         <h1 className="title is-size-1">{article.headline}</h1>
         <div className="content">
