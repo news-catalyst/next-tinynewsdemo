@@ -1,5 +1,4 @@
-import { Component } from 'react';
-import { withRouter } from 'next/router';
+import React, { Component } from 'react'
 
 class Pico extends Component {
   componentDidMount(){
@@ -12,7 +11,7 @@ class Pico extends Component {
     var pageInfo = {
         article: this.props.article,
         post_type: this.props.post_type,
-        url: this.props.router.pathname
+        url: window.location.href
     };
     if (this.props.post_id) {
       pageInfo.post_id = this.props.post_id;
@@ -24,7 +23,7 @@ class Pico extends Component {
     document.getElementById("loadPico").addEventListener('load', () => {
       console.log("Pico is loaded");
       console.log(pageInfo);
-      window.pico('visit', pageInfo);
+      window.pico('visit', pageInfo)
     });
   }
 
@@ -37,6 +36,6 @@ class Pico extends Component {
   }
 }
 
-export default withRouter(Pico);
+export default Pico;
 
 

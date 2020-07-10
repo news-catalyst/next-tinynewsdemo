@@ -2,7 +2,6 @@ import Link from 'next/link';
 import { useRouter } from 'next/router'
 import { listAllArticles } from '../lib/articles.js';
 import Layout from '../components/Layout.js';
-import Pico from '../components/Pico.js';
 
 export default function Home({ articles }) {
   const router = useRouter();
@@ -13,16 +12,13 @@ export default function Home({ articles }) {
         {articles.map((article) => (
           <div className="article" key={article.id}>
             <h3 className="title is-size-3">
-              <Link href="/articles/[id]/" as={`/articles/${article.id}`}>
+              <Link href="/articles/[id]" as={`/articles/${article.id}`}>
                 <a>{article.headline}</a>
               </Link>
             </h3>
             <p className="subtitle">by {article.byline}</p>
           </div>
         ))}
-      </div>
-      <div class="pico">
-        <Pico post_type="home" article={false} router={router} />
       </div>
     </Layout>
   )

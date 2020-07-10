@@ -10,8 +10,9 @@
   "dependencies": {
     "bulma": "^0.9.0",
     "escape-html": "^1.0.3",
-    "graphql-request": "^2.0.0",
-    "next": "9.4.4",
+    "graphql-request": "^2.1.0-next.1",
+    "isomorphic-fetch": "^2.2.1",
+    "next": "9.3",
     "react": "16.13.1",
     "react-dom": "16.13.1",
     "react-mailchimp-subscribe": "^2.1.0",

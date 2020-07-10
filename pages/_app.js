@@ -19,7 +19,7 @@ export function reportWebVitals({ id, name, label, value }) {
 const App = ({ Component, pageProps }) => {
   useEffect(() => {
     const handleRouteChange = (url) => {
-      gtag.pageview(url)
+      gtag.pageview(url);
     }
     Router.events.on('routeChangeComplete', handleRouteChange)
     return () => {

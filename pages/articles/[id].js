@@ -1,9 +1,19 @@
+import dynamic from 'next/dynamic';
 import escapeHtml from 'escape-html'
 import { Text } from 'slate'
 import Layout from '../../components/Layout.js';
 import { getArticle, listAllArticleIds } from '../../lib/articles.js';
-import Coral from "../../components/Coral.js";
 import MailchimpSubscribe from '../../components/MailchimpSubscribe.js';
+
+const DynamicCoral = dynamic(
+  () => import("../../components/Coral.js"),
+  { ssr: false }
+);
+
+const DynamicPico = dynamic(
+  () => import("../../components/Pico.js"),
+  { ssr: false }
+);
 
 const serialize = (node, i) => {
   if (Text.isText(node)) {
@@ -32,8 +42,9 @@ export default function Article({ article }) {
         <div className="subscribe">
           <MailchimpSubscribe />
         </div>
+        <DynamicPico article={true} post_type="post" />
         <div className="comments">
-          <Coral storyURL={`/articles/${article.id}`} />
+          <DynamicCoral storyURL={`/articles/${article.id}`} />
         </div>
       </article>
     </Layout>
