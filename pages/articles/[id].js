@@ -30,7 +30,6 @@ export default function Article({ article }) {
     description: "A Tiny News Collective production"
   }
   const serializedBody = article.body.map((node, i) => serialize(node, i));
-  console.log(serializedBody);
   return (
     <Layout meta={meta}>
       <article>
