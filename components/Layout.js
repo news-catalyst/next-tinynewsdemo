@@ -1,14 +1,15 @@
 import Head from 'next/head';
+import { siteMetadata } from "../lib/siteMetadata.js";
 
 export default function Layout({ children, meta }) {
   const metaValues = {
-    'title': meta.title || "Tiny News Demo",
-    'description': meta.description || "A default description of the site",
-    'ogTitle': meta.ogTitle || "Tiny News Demo",
-    'ogDescription': meta.ogDescrption || "A default description of the site",
+    'title': meta.title || siteMetadata.title,
+    'description': meta.description || siteMetadata.description,
+    'ogTitle': meta.ogTitle || siteMetadata.title,
+    'ogDescription': meta.ogDescrption || siteMetadata.description,
     'ogImage': meta.ogImage || "",
-    'canonical': meta.canonical || "",
-  }
+    'canonical': meta.canonical || siteMetadata.siteUrl,
+  };
 
   return (
     <>
