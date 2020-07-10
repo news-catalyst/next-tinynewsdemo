@@ -7,7 +7,7 @@ export default function Layout({ children }) {
         <title>Tiny News Demo</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main>
+      <main className="container">
         {children}
       </main>
     </>
