@@ -3,8 +3,13 @@ import { listAllArticles } from '../lib/articles.js';
 import Layout from '../components/Layout.js';
 
 export default function Home({ articles }) {
+  const meta = {
+    title: "Tiny News Demo",
+    description: "A Tiny News Collective production"
+  }
+
   return (
-    <Layout>
+    <Layout meta={meta}>
       <div className="container">
         <h2 className="title is-size-2">Articles</h2>
         {articles.map((article) => (
