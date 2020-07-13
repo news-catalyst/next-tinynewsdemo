@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import { Component } from 'react';
 
 class Coral extends Component {
   componentDidMount(){
@@ -14,7 +14,7 @@ class Coral extends Component {
       const storyURL = this.props.storyURL;
     });
   }
-  
+
   render() {
     return (
       <div ref={el => (this.instance = el)} id="coral_thread"></div>

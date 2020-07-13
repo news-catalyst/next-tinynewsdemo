@@ -18,13 +18,6 @@ export default function Home({ articles }) {
   let featuredArticles = articles.slice(0,1);
   let unfeaturedArticles = articles.slice(1);
 
-  /* const [query, setQuery] = useState('')
-  useEffect(() => {
-    getCLS(sendToGoogleAnalytics);
-    getFID(sendToGoogleAnalytics);
-    getLCP(sendToGoogleAnalytics);
-  }, []); */
-
   const tagLinks = tags.map(tag => (
     <Link key={tag} href={`/topics/${tag}`}>
       <a className="panel-block is-active">
@@ -36,7 +29,7 @@ export default function Home({ articles }) {
   return (
     <div>
       <ArticleNav metadata={siteMetadata} tags={tags} sections={sections} />
-      <Layout title={siteMetadata.title} description={siteMetadata.description}>
+      <Layout meta={siteMetadata}>
         <section className="hero is-dark is-bold">
           <div className="hero-body">
             <div className="container">
