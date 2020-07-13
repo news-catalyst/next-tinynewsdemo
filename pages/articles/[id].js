@@ -8,6 +8,8 @@ import ArticleFooter from "../../components/ArticleFooter.js";
 import ImageWithTextAd from "../../components/ImageWithTextAd.js";
 import SignUp from "../../components/SignUp.js";
 import { getArticle, listAllArticleIds } from '../../lib/articles.js';
+import Coral from "../../components/Coral.js";
+import MailchimpSubscribe from '../../components/MailchimpSubscribe.js';
 
 const serialize = (node, i) => {
   if (Text.isText(node)) {
@@ -29,6 +31,10 @@ let tags = ["Coronavirus", "Police Violence", "2020 Election"];
 let sections = [{"label": "News", "link": "/news"}, {"label": "Features", "link": "/features"}, {"label": "Pandemic", "link": "/pandemic"}];
 
 export default function Article({ article }) {
+  const meta = {
+    title: `${article.headline} | Tiny News Demo`,
+    description: "A Tiny News Collective production"
+  }
   const serializedBody = article.body.map((node, i) => serialize(node, i));
 
   let tagLinks;
@@ -43,64 +49,67 @@ export default function Article({ article }) {
   }
 
   return (
-    <div id="article-container">
-        <ArticleNav metadata={siteMetadata} sections={sections} />
-        <Layout>
-          <article>
-            <section className="hero is-bold">
-              <div className="hero-body">
-                <div className={article.cover ? "container head-margin" : "container"}>
-                  <h1 className="title is-size-1">
-                    {article.headline}
-                  </h1>
-                  <h2 className="subtitle">
-                    By {article.byline} 
-                    {/* | Published {formatRelative(parsedDate, new Date())} */}
-                  </h2>
-                </div>
+    <article id="article-container">
+      <ArticleNav metadata={siteMetadata} sections={sections} />
+      <Layout>
+        <article>
+          <section className="hero is-bold">
+            <div className="hero-body">
+              <div className={article.cover ? "container head-margin" : "container"}>
+                <h1 className="title is-size-1">
+                  {article.headline}
+                </h1>
+                <h2 className="subtitle">
+                  By {article.byline} 
+                  {/* | Published {formatRelative(parsedDate, new Date())} */}
+                </h2>
               </div>
-            </section>
-            {article.cover &&
-              <img src={article.cover.image} alt={article.cover.title} className="image" />
-            }
-            <section className="section">
-              <div id="articleText" className="content">
-                {serializedBody}
-                <ImageWithTextAd ad={{
-                  brand: "test",
-                  image: {
-                    url: "https://placehold.it/300x300",
-                    alt: "Alt text"
-                  },
-                  header: "test header",
-                  body: "This is the body text of an advertisement.",
-                  call: "Call to action",
-                  url: "https://www.w3schools.com/"
-                }} />
-              </div>
-            </section>
-          </article>
-          <aside>
-            <section className="section">
-              <div className="align-content">
-                {tagLinks &&
-                  <p className="subtitle">Tags</p>
-                }
-                <div className="tags">
-                  {tagLinks}
-                </div>
-              </div>
-            </section>
-          </aside>
-          <section className="section">
-            <div className="align-content medium-margin-top">
-              <h1 className="title media-left">{siteMetadata.subscribe.subtitle}</h1>
-              <SignUp/>
             </div>
           </section>
-        </Layout>
-        <ArticleFooter metadata={siteMetadata} />
-    </div>
+          {article.cover &&
+            <img src={article.cover.image} alt={article.cover.title} className="image" />
+          }
+          <section className="section">
+            <div id="articleText" className="content">
+              {serializedBody}
+              <ImageWithTextAd ad={{
+                brand: "test",
+                image: {
+                  url: "https://placehold.it/300x300",
+                  alt: "Alt text"
+                },
+                header: "test header",
+                body: "This is the body text of an advertisement.",
+                call: "Call to action",
+                url: "https://www.w3schools.com/"
+              }} />
+            </div>
+          </section>
+        </article>
+        <aside>
+          <section className="section">
+            <div className="align-content">
+              {tagLinks &&
+                <p className="subtitle">Tags</p>
+              }
+              <div className="tags">
+                {tagLinks}
+              </div>
+            </div>
+          </section>
+        </aside>
+        <section className="section">
+          <div className="align-content medium-margin-top">
+            <h1 className="title media-left">{siteMetadata.subscribe.subtitle}</h1>
+            <MailchimpSubscribe/>
+          </div>
+        </section>
+        <div className="comments">
+          <Coral storyURL={`/articles/${article.id}`} />
+        </div>
+      </Layout>
+      <ArticleFooter metadata={siteMetadata} />
+    </article>
   )
 }
 
