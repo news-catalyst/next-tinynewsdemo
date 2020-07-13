@@ -1,5 +1,3 @@
-import escapeHtml from 'escape-html'
-import { Text } from 'slate'
 import Layout from '../../components/Layout.js';
 import Link from "next/Link";
 import _ from 'lodash';
@@ -10,19 +8,23 @@ import SignUp from "../../components/SignUp.js";
 import { getArticle, listAllArticleIds } from '../../lib/articles.js';
 import Coral from "../../components/Coral.js";
 import MailchimpSubscribe from '../../components/MailchimpSubscribe.js';
+import EmbedNode from '../../components/EmbedNode.js';
+import ImageNode from '../../components/ImageNode.js';
+import ListNode from '../../components/ListNode.js';
+import TextNode from '../../components/TextNode.js';
 
 const serialize = (node, i) => {
-  if (Text.isText(node)) {
-    return escapeHtml(node.text);
-  }
-
-  const children = node.children.map(n => serialize(n)).join('');
-
   switch (node.type) {
+    case 'list':
+      return (<ListNode node={node} />)
+    case 'text':
+      return (<TextNode node={node} />)
     case 'paragraph':
-      return (<p key={i}>{children}</p>)
+      return (<TextNode node={node} />)
+    case 'image':
+      return (<ImageNode node={node} />)
     default:
-      return children
+      return null
   }
 }
 
