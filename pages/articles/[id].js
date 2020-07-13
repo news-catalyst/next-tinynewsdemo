@@ -13,9 +13,7 @@ import ImageNode from '../../components/ImageNode.js';
 import ListNode from '../../components/ListNode.js';
 import TextNode from '../../components/TextNode.js';
 
-
 const serialize = (node, i) => {
-  console.log(node.type);
   switch (node.type) {
     case 'list':
       return (<ListNode node={node} />)
