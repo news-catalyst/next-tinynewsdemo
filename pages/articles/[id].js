@@ -51,7 +51,7 @@ export default function Article({ article }) {
   return (
     <article id="article-container">
       <ArticleNav metadata={siteMetadata} sections={sections} />
-      <Layout>
+      <Layout meta={siteMetadata}>
         <article>
           <section className="hero is-bold">
             <div className="hero-body">
@@ -60,7 +60,7 @@ export default function Article({ article }) {
                   {article.headline}
                 </h1>
                 <h2 className="subtitle">
-                  By {article.byline} 
+                  By {article.byline}
                   {/* | Published {formatRelative(parsedDate, new Date())} */}
                 </h2>
               </div>
