@@ -22,7 +22,7 @@ export default function Layout({ children, meta }) {
         <meta name="og:image" value={metaValues.ogImage} />
         <meta name="canonical" value={metaValues.canonical} />
       </Head>
-      <main>
+      <main className="container">
         {children}
       </main>
     </>
