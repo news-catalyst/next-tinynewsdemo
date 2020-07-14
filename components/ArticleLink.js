@@ -16,7 +16,11 @@ export default function ArticleLink(props) {
       }
       <div className="media-content small-margin-left">
         <div className="content">
-          <h1 className="title"><Link href="/articles/[id]/" as={`/articles/${props.article.id}`}>{props.article.headline}</Link></h1>
+          <h1 className="title">
+            <Link href="/articles/[id]/" as={`/articles/${props.article.id}`}>
+              <a>{props.article.headline}</a>
+            </Link>
+          </h1>
           <p>{props.article.excerpt}</p>
           <p className="byline">{props.article.byline}</p> 
           {/* | {formatRelative(parsedDate, new Date())} */}
