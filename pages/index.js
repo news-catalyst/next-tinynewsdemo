@@ -4,11 +4,11 @@ import {getCLS, getFID, getLCP} from 'web-vitals';
 import Link from 'next/link';
 import { listAllArticles } from '../lib/articles.js';
 import Layout from '../components/Layout.js';
-import ArticleNav from '../components/ArticleNav.js';
-import FeaturedArticleLink from "../components/FeaturedArticleLink.js";
-import ArticleLink from "../components/ArticleLink.js";
-import ArticleFooter from "../components/ArticleFooter.js";
-import HomepageSearchPanel from "../components/HomepageSearchPanel.js";
+import ArticleNav from '../components/nav/ArticleNav.js';
+import FeaturedArticleLink from "../components/homepage/FeaturedArticleLink.js";
+import ArticleLink from "../components/homepage/ArticleLink.js";
+import ArticleFooter from "../components/nav/ArticleFooter.js";
+import HomepageSearchPanel from "../components/homepage/HomepageSearchPanel.js";
 import { useAmp } from 'next/amp';
 
 let siteMetadata = {"title": "Tiny News Collective", "shortName": "Tiny News", "description": "A local news site", "labels": {"topics": "Topics"}, "nav": {"topics": "All Topics", "cms": "tinycms"}, "search": "Search", "footerTitle": "tinynewsco.org", "footerBylineLink": "https://newscatalyst.org/", "footerBylineName": "News Catalyst"};
@@ -32,7 +32,7 @@ export default function Home({ articles }) {
   ));
 
   return (
-    <div>
+    <div className="homepage">
       <ArticleNav metadata={siteMetadata} tags={tags} sections={sections} />
       <Layout meta={siteMetadata}>
         <section className="hero is-dark is-bold">

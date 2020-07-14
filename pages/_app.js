@@ -1,4 +1,3 @@
-import '../styles.scss';
 import { useEffect } from 'react';
 import Router from 'next/router';
 import * as gtag from '../lib/gtag';
@@ -27,7 +26,11 @@ const App = ({ Component, pageProps }) => {
     }
   }, []);
 
-  return <Component {...pageProps} />
+  return (
+    <>
+      <Component {...pageProps} />
+    </>
+  )
 }
 
 export default App;
