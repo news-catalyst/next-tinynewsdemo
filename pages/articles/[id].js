@@ -1,17 +1,16 @@
 import Layout from '../../components/Layout.js';
 import Link from "next/Link";
-import _ from 'lodash';
-import ArticleNav from '../../components/ArticleNav.js';
-import ArticleFooter from "../../components/ArticleFooter.js";
-import ImageWithTextAd from "../../components/ImageWithTextAd.js";
-import SignUp from "../../components/SignUp.js";
+import kebabCase from 'lodash/kebabCase';
 import { getArticle, listAllArticleIds } from '../../lib/articles.js';
-import Coral from "../../components/Coral.js";
-import MailchimpSubscribe from '../../components/MailchimpSubscribe.js';
-import EmbedNode from '../../components/EmbedNode.js';
-import ImageNode from '../../components/ImageNode.js';
-import ListNode from '../../components/ListNode.js';
-import TextNode from '../../components/TextNode.js';
+import ArticleNav from '../../components/nav/ArticleNav.js';
+import ArticleFooter from "../../components/nav/ArticleFooter.js";
+import ImageWithTextAd from "../../components/ads/ImageWithTextAd.js";
+import Coral from "../../components/plugins/Coral.js";
+import MailchimpSubscribe from '../../components/plugins/MailchimpSubscribe.js';
+import EmbedNode from '../../components/nodes/EmbedNode.js';
+import ImageNode from '../../components/nodes/ImageNode.js';
+import ListNode from '../../components/nodes/ListNode.js';
+import TextNode from '../../components/nodes/TextNode.js';
 import { useAmp } from 'next/amp';
 
 let siteMetadata = {"title": "Tiny News Collective", "shortName": "Tiny News", "description": "A local news site", "labels": {"topics": "Topics"}, "nav": {"topics": "All Topics", "cms": "tinycms"}, "search": "Search", "footerTitle": "tinynewsco.org", "footerBylineLink": "https://newscatalyst.org/", "footerBylineName": "News Catalyst", "subscribe": {"subtitle": "Get the latest news about the tiny news collective in your inbox."}};
@@ -47,15 +46,13 @@ export default function Article({ article }) {
   let tagLinks;
   if (tags) {
     tagLinks = tags.map((tag, index) => (
-      <Link href={`/topics/${_.kebabCase(tag)}`} key={`${tag}-${index}`}>
+      <Link href={`/topics/${kebabCase(tag)}`} key={`${tag}-${index}`}>
         <a className="is-link tag">
           {tag}
         </a>
       </Link>
     ))
   }
-
-  console.log(isAmp);
 
   return (
     <article id="article-container">
