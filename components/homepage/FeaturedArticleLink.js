@@ -10,7 +10,18 @@ export default function ArticleLink(props) {
       {props.article.cover &&
         <div className="media">
           <p className="image featured-img">
-            <img src={props.article.cover.image} />
+            {props.amp ? (
+              <amp-img
+                width={props.article.cover.image.width}
+                height={props.article.cover.image.height}
+                src={props.article.cover.image.imageUrl}
+                alt={props.article.cover.image.imageAlt}
+                layout="responsive"
+              />
+            ) : (
+              <img src={props.article.cover.image} />
+            )
+            }
           </p>
         </div>
       }

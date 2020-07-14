@@ -10,19 +10,34 @@ export default function ArticleLink(props) {
       {props.article.cover &&
         <figure className="media-left">
           <p className="image article-link-img">
-            <img src={props.article.cover.image} />
+            {props.amp ? (
+              <amp-img
+                width={props.article.cover.image.width}
+                height={props.article.cover.image.height}
+                src={props.article.cover.image.imageUrl}
+                alt={props.article.cover.image.imageAlt}
+                layout="responsive"
+              />
+            ) : (
+              <img src={props.article.cover.image} />
+            )
+            }
           </p>
         </figure>
       }
       <div className="media-content small-margin-left">
         <div className="content">
+<<<<<<< HEAD:components/ArticleLink.js
           <h1 className="title">
             <Link href="/articles/[id]/" as={`/articles/${props.article.id}`}>
               <a>{props.article.headline}</a>
             </Link>
           </h1>
+=======
+          <h1 className="title"><Link href="/articles/[id]/" as={`/articles/${props.article.id}`}><a>{props.article.headline}</a></Link></h1>
+>>>>>>> master:components/homepage/ArticleLink.js
           <p>{props.article.excerpt}</p>
-          <p className="byline">{props.article.byline}</p> 
+          <p className="byline">{props.article.byline}</p>
           {/* | {formatRelative(parsedDate, new Date())} */}
         </div>
         <nav className="level is-mobile">
