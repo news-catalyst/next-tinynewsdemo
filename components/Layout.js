@@ -1,5 +1,6 @@
 import Head from 'next/head';
 import { siteMetadata } from "../lib/siteMetadata.js";
+import globalStyles from '../styles/global.js'
 
 export default function Layout({ children, meta }) {
   const metaValues = {
@@ -16,15 +17,18 @@ export default function Layout({ children, meta }) {
       <Head>
         <title>{metaValues.title}</title>
         <link rel="icon" href="/favicon.ico" />
-        <meta name="description" value={metaValues.description} />
-        <meta name="og:title" value={metaValues.ogTitle} />
-        <meta name="og:description" value={metaValues.ogDescription} />
-        <meta name="og:image" value={metaValues.ogImage} />
-        <meta name="canonical" value={metaValues.canonical} />
+        <meta property="description" content={metaValues.description} />
+        <meta property="og:title" content={metaValues.ogTitle} />
+        <meta property="og:description" content={metaValues.ogDescription} />
+        <meta property="og:image" content={metaValues.ogImage} />
+        <meta property="canonical" content={metaValues.canonical} />
       </Head>
       <main className="container">
         {children}
       </main>
+      <style jsx global>
+        {globalStyles}
+      </style>
     </>
   )
 }
