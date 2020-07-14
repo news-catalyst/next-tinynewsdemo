@@ -78,17 +78,6 @@ export default function Article({ article }) {
           <section className="section">
             <div id="articleText" className="content">
               {serializedBody}
-              <ImageWithTextAd ad={{
-                brand: "test",
-                image: {
-                  url: "https://placehold.it/300x300",
-                  alt: "Alt text"
-                },
-                header: "test header",
-                body: "This is the body text of an advertisement.",
-                call: "Call to action",
-                url: "https://www.w3schools.com/"
-              }} />
             </div>
           </section>
         </article>
