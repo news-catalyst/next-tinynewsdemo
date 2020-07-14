@@ -13,18 +13,47 @@ import ImageNode from '../../components/ImageNode.js';
 import ListNode from '../../components/ListNode.js';
 import TextNode from '../../components/TextNode.js';
 
+const ad_placement = 6;
+let ad = <ImageWithTextAd ad={{
+  brand: "test",
+  image: {
+    url: "https://placehold.it/300x300",
+    alt: "Alt text"
+  },
+  header: "test header",
+  body: "This is the body text of an advertisement.",
+  call: "Call to action",
+  url: "https://www.w3schools.com/"
+}} />;
+
 const serialize = (node, i) => {
-  switch (node.type) {
-    case 'list':
-      return (<ListNode node={node} />)
-    case 'text':
-      return (<TextNode node={node} />)
-    case 'paragraph':
-      return (<TextNode node={node} />)
-    case 'image':
-      return (<ImageNode node={node} />)
-    default:
-      return null
+  if (i != ad_placement){
+    switch (node.type) {
+      case 'list':
+        return (<ListNode node={node} />);
+      case 'text':
+        return (<TextNode node={node} />);
+      case 'paragraph':
+        return (<TextNode node={node} />);
+      case 'image':
+        return (<ImageNode node={node} />);
+      default:
+        return null;
+    }
+  }
+  else {
+    switch (node.type) {
+      case 'list':
+        return [<ListNode node={node} />, ad];
+      case 'text':
+        return [<TextNode node={node} />, ad];
+      case 'paragraph':
+        return [<TextNode node={node} />, ad];
+      case 'image':
+        return [<ImageNode node={node} />, ad];
+      default:
+        return null;
+    }
   }
 }
 
@@ -74,17 +103,6 @@ export default function Article({ article }) {
           <section className="section">
             <div id="articleText" className="content">
               {serializedBody}
-              <ImageWithTextAd ad={{
-                brand: "test",
-                image: {
-                  url: "https://placehold.it/300x300",
-                  alt: "Alt text"
-                },
-                header: "test header",
-                body: "This is the body text of an advertisement.",
-                call: "Call to action",
-                url: "https://www.w3schools.com/"
-              }} />
             </div>
           </section>
         </article>
