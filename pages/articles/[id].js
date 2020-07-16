@@ -32,6 +32,8 @@ export default function Article({ article }) {
         return (<TextNode node={node} />)
       case 'image':
         return (<ImageNode node={node} amp={isAmp} />)
+      case 'embed':
+        return (<EmbedNode node={node} />)
       default:
         return null
     }
