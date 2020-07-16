@@ -4,22 +4,29 @@ import Link from 'next/link'
 // import { parseISO, formatRelative } from 'date-fns'
 
 export default function ArticleLink(props) {
+  const mainImageNode = props.article.body.find(node => node.type === "mainImage");
+  let mainImage = null;
+
+  if (mainImageNode) {
+    mainImage = mainImageNode.children[0];
+  }
+
   // let parsedDate = parseISO(props.document.createdTime)
   return (
     <article>
-      {props.article.cover &&
+      {mainImage &&
         <div className="media">
           <p className="image featured-img">
             {props.amp ? (
               <amp-img
-                width={props.article.cover.image.width}
-                height={props.article.cover.image.height}
-                src={props.article.cover.image.imageUrl}
-                alt={props.article.cover.image.imageAlt}
+                width={mainImage.width}
+                height={mainImage.height}
+                src={mainImage.imageUrl}
+                alt={mainImage.imageAlt}
                 layout="responsive"
               />
             ) : (
-              <img src={props.article.cover.image} />
+              <img src={mainImage.imageUrl} />
             )
             }
           </p>

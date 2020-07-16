@@ -5,21 +5,27 @@ import Link from 'next/link'
 
 export default function ArticleLink(props) {
   // let parsedDate = parseISO(props.document.createdTime)
+  const mainImageNode = props.article.body.find(node => node.type === "mainImage");
+  let mainImage = null;
+
+  if (mainImageNode) {
+    mainImage = mainImageNode.children[0];
+  }
   return (
     <article className="media">
-      {props.article.cover &&
+      {mainImage &&
         <figure className="media-left">
           <p className="image article-link-img">
             {props.amp ? (
               <amp-img
-                width={props.article.cover.image.width}
-                height={props.article.cover.image.height}
-                src={props.article.cover.image.imageUrl}
-                alt={props.article.cover.image.imageAlt}
+                width={mainImage.width}
+                height={mainImage.height}
+                src={mainImage.imageUrl}
+                alt={mainImage.imageAlt}
                 layout="responsive"
               />
             ) : (
-              <img src={props.article.cover.image} />
+              <img src={mainImage.imageUrl} />
             )
             }
           </p>
