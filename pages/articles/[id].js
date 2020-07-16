@@ -97,16 +97,16 @@ export default function Article({ article }) {
           <div className="align-content medium-margin-top">
             <h1 className="title media-left">{siteMetadata.subscribe.subtitle}</h1>
             <MailchimpSubscribe />
+            <div className="comments">
+              {isAmp ? (
+                  <div>Coral AMP</div>
+                ) : (
+                  <Coral storyURL={`/articles/${article.id}`} />
+                )
+              }
+            </div>
           </div>
         </section>
-        <div className="comments">
-          {isAmp ? (
-              <div>Coral AMP</div>
-            ) : (
-              <Coral storyURL={`/articles/${article.id}`} />
-            )
-          }
-        </div>
       </Layout>
       <ArticleFooter metadata={siteMetadata} />
     </article>
