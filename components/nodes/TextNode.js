@@ -14,6 +14,25 @@ export default function TextNode({ node }) {
       text = (<a href={child.link}>{text}</a>);
     }
 
+    if (node.style == "TITLE") {
+      text = (<h1>{text}</h1>);
+    }
+     else if (node.style == "SUBTITLE") {
+      text = (<h2>{text}</h2>);
+    }
+    else if (node.style == "HEADING_1") {
+      text = (<h1>{text}</h1>);
+    }
+    else if (node.style == "HEADING_2") {
+      text = (<h2>{text}</h2>);
+    }
+    else if (node.style == "HEADING_3") {
+      text = (<h3>{text}</h3>);
+    }
+    else if (node.style == "NORMAL_TEXT"){
+      text = (<p>{text}</p>);
+    }
+
     return text;
   }
 
