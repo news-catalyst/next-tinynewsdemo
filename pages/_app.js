@@ -1,8 +1,10 @@
 import { useEffect } from 'react';
 import Router from 'next/router';
-import * as gtag from '../lib/gtag';
+import { useAnalytics } from '../lib/hooks/useAnalytics.js';
+import { useAmp } from 'next/amp';
 
 export function reportWebVitals({ id, name, label, value }) {
+  const { trackEvent } = useAnalytics();
   if (label === 'web-vital') {
     const event = {
       action: name,
@@ -11,14 +13,19 @@ export function reportWebVitals({ id, name, label, value }) {
       label: id,
       non_interaction: true,
     };
-    gtag.event(event);
+    trackEvent(event);
   }
 }
 
 const App = ({ Component, pageProps }) => {
+  const { init, trackPageViewed } = useAnalytics();
+  const isAmp = useAmp();
   useEffect(() => {
+    if (isAmp) { return true }
+    init(process.env.GA_TRACKING_ID);
+    trackPageViewed();
     const handleRouteChange = (url) => {
-      gtag.pageview(url)
+      trackPageViewed();
     }
     Router.events.on('routeChangeComplete', handleRouteChange)
     return () => {
