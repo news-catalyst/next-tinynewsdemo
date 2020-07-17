@@ -21,7 +21,7 @@ export default function Layout({ children, meta }) {
         <meta property="og:title" content={metaValues.ogTitle} />
         <meta property="og:description" content={metaValues.ogDescription} />
         <meta property="og:image" content={metaValues.ogImage} />
-        <meta property="canonical" content={metaValues.canonical} />
+        <link rel="canonical" href={metaValues.canonical} />
       </Head>
       <main className="container">
         {children}

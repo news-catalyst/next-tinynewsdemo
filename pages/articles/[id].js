@@ -13,7 +13,18 @@ import ListNode from '../../components/nodes/ListNode.js';
 import TextNode from '../../components/nodes/TextNode.js';
 import { useAmp } from 'next/amp';
 
-let siteMetadata = {"title": "Tiny News Collective", "shortName": "Tiny News", "description": "A local news site", "labels": {"topics": "Topics"}, "nav": {"topics": "All Topics", "cms": "tinycms"}, "search": "Search", "footerTitle": "tinynewsco.org", "footerBylineLink": "https://newscatalyst.org/", "footerBylineName": "News Catalyst", "subscribe": {"subtitle": "Get the latest news about the tiny news collective in your inbox."}};
+let siteMetadata = {
+  "title": "Tiny News Collective",
+  "description": "A local news site",
+  "labels": {"topics": "Topics"},
+  "nav": {"topics": "All Topics", "cms": "tinycms"},
+  "search": "Search",
+  "footerTitle": "tinynewsco.org",
+  "footerBylineLink": "https://newscatalyst.org/",
+  "footerBylineName": "News Catalyst",
+  "subscribe": {"subtitle": "Get the latest news about the tiny news collective in your inbox."}
+};
+
 let tags = ["Coronavirus", "Police Violence", "2020 Election"];
 let sections = [{"label": "News", "link": "/news"}, {"label": "Features", "link": "/features"}, {"label": "Pandemic", "link": "/pandemic"}];
 
@@ -33,7 +44,7 @@ export default function Article({ article }) {
       case 'image':
         return (<ImageNode node={node} amp={isAmp} />)
       case 'embed':
-        return (<EmbedNode node={node} />)
+        return (<EmbedNode node={node} amp={isAmp} />)
       default:
         return null
     }
@@ -57,61 +68,58 @@ export default function Article({ article }) {
   }
 
   return (
-    <article id="article-container">
+    <Layout meta={siteMetadata}>
       <ArticleNav metadata={siteMetadata} sections={sections} />
-      <Layout meta={siteMetadata}>
-        <article>
-          <section className="hero is-bold">
-            <div className="hero-body">
-              <div className={article.cover ? "container head-margin" : "container"}>
-                <h1 className="title is-size-1">
-                  {article.headline}
-                </h1>
-                <h2 className="subtitle">
-                  By {article.byline}
-                  {/* | Published {formatRelative(parsedDate, new Date())} */}
-                </h2>
-              </div>
-            </div>
-          </section>
-          {article.cover &&
-            <img src={article.cover.image} alt={article.cover.title} className="image" />
-          }
-          <section className="section">
-            <div id="articleText" className="content">
-              {serializedBody}
-            </div>
-          </section>
-        </article>
-        <aside>
-          <section className="section">
-            <div className="align-content">
-              {tagLinks &&
-                <p className="subtitle">Tags</p>
-              }
-              <div className="tags">
-                {tagLinks}
-              </div>
-            </div>
-          </section>
-        </aside>
-        <section className="section">
-          <div className="align-content medium-margin-top">
-            <h1 className="title media-left">{siteMetadata.subscribe.subtitle}</h1>
-            <MailchimpSubscribe />
-            <div className="comments">
-              {isAmp ? (
-                  <div>Coral AMP</div>
-                ) : (
-                  <Coral storyURL={`/articles/${article.id}`} />
-                )
-              }
+      <article>
+        <section className="hero is-bold">
+          <div className="hero-body">
+            <div className={article.cover ? "container head-margin" : "container"}>
+              <h1 className="title is-size-1">
+                {article.headline}
+              </h1>
+              <h2 className="subtitle">
+                By {article.byline}
+                {/* | Published {formatRelative(parsedDate, new Date())} */}
+              </h2>
             </div>
           </div>
         </section>
-      </Layout>
-      <ArticleFooter metadata={siteMetadata} />
-    </article>
+        {article.cover &&
+          <img src={article.cover.image} alt={article.cover.title} className="image" />
+        }
+        <section className="section">
+          <div id="articleText" className="content">
+            {serializedBody}
+          </div>
+        </section>
+      </article>
+      <aside>
+        <section className="section">
+          <div className="align-content">
+            {tagLinks &&
+              <p className="subtitle">Tags</p>
+            }
+            <div className="tags">
+              {tagLinks}
+            </div>
+          </div>
+        </section>
+      </aside>
+      <section className="section">
+        <div className="align-content medium-margin-top">
+          <h1 className="title media-left">{siteMetadata.subscribe.subtitle}</h1>
+          <MailchimpSubscribe />
+          <div className="comments">
+            {isAmp ? (
+                <div>Coral AMP</div>
+              ) : (
+                <Coral storyURL={`/articles/${article.id}`} />
+              )
+            }
+          </div>
+        </div>
+      </section>
+    </Layout>
   )
 }
 
