@@ -21,23 +21,25 @@ const App = ({ Component, pageProps }) => {
   const { init, trackPageViewed } = useAnalytics();
   const isAmp = useAmp();
   useEffect(() => {
-    if (isAmp) { return true }
+    if (isAmp) {
+      return true;
+    }
     init(process.env.GA_TRACKING_ID);
     trackPageViewed();
     const handleRouteChange = (url) => {
-      trackPageViewed();
-    }
-    Router.events.on('routeChangeComplete', handleRouteChange)
+      trackPageViewed(url);
+    };
+    Router.events.on('routeChangeComplete', handleRouteChange);
     return () => {
-      Router.events.off('routeChangeComplete', handleRouteChange)
-    }
+      Router.events.off('routeChangeComplete', handleRouteChange);
+    };
   }, []);
 
   return (
     <>
       <Component {...pageProps} />
     </>
-  )
-}
+  );
+};
 
 export default App;
