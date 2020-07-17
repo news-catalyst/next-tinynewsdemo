@@ -3,6 +3,7 @@ import css from 'styled-jsx/css';
 export default css.global`
 @import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Libre+Franklin:ital,wght@0,300;0,800;1,300;1,800&display=swap');
 @import url('https://cdn.jsdelivr.net/npm/bulma@0.9.0/css/bulma.css');
+
 h1,h2,h3,h4,h5,h6 {
   font-family: 'Libre Franklin', sans-serif;
 }
