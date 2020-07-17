@@ -1,7 +1,7 @@
-import css from "styled-jsx/css";
+import css from 'styled-jsx/css';
 
 export default css.global`
-  @import url("https://cdn.jsdelivr.net/npm/bulma@0.9.0/css/bulma.css");
+  @import url('https://cdn.jsdelivr.net/npm/bulma@0.9.0/css/bulma.css');
 
   h1,
   h2,
@@ -9,14 +9,14 @@ export default css.global`
   h4,
   h5,
   h6 {
-    font-family: "Libre Franklin", sans-serif;
+    font-family: 'Libre Franklin', sans-serif;
   }
   p,
   ul,
   ol,
   table,
   figure {
-    font-family: "Libre Baskerville", georgia, serif;
+    font-family: 'Libre Baskerville', georgia, serif;
   }
 
   #article-container .hero-body {
