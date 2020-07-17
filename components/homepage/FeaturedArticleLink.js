@@ -34,8 +34,8 @@ export default function ArticleLink(props) {
       }
         <div className="media-left">
           <h1 className="title">
-            <Link className="featured" href="/articles/[id]/" as={`/articles/${props.article.id}`}>
-              <a>{props.article.headline}</a>
+            <Link href="/articles/[id]/" as={`/articles/${props.article.id}`}>
+              <a className="featured">{props.article.headline}</a>
             </Link>
           </h1>
           <p className="featured">{props.article.excerpt}</p>

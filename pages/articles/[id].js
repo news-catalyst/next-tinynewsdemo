@@ -56,6 +56,13 @@ export default function Article({ article }) {
     ))
   }
 
+  const mainImageNode = article.body.find(node => node.type === "mainImage");
+  let mainImage = null;
+
+  if (mainImageNode) {
+    mainImage = mainImageNode.children[0];
+  }
+
   return (
     <article id="article-container">
       <ArticleNav metadata={siteMetadata} sections={sections} />
@@ -74,8 +81,8 @@ export default function Article({ article }) {
               </div>
             </div>
           </section>
-          {article.cover &&
-            <img src={article.cover.image} alt={article.cover.title} className="image" />
+          {mainImage &&
+            <img src={mainImage.imageUrl} alt={mainImage.imageAlt} className="image" />
           }
           <section className="section">
             <div id="articleText" className="content">
