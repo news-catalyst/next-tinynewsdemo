@@ -58,16 +58,6 @@ export default function ArticleNav(props) {
             {props.metadata.nav.topics}
           </a>
         </div>
-
-        <div className="navbar-end">
-          <div className="navbar-item">
-            <div className="buttons">
-              <a className="button logout" href="/tinycms">
-                {props.metadata.nav.cms}
-              </a>
-            </div>
-          </div>
-        </div>
       </div>
     </nav>
   );
