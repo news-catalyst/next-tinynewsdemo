@@ -16,7 +16,8 @@
     "./lib/**": "npm run lint",
     "./components/**": "npm run format",
     "./pages/**": "npm run format",
-    "./lib/**": "npm run format"
+    "./lib/**": "npm run format",
+    "./styles/**": "npm run format",
   },
   "husky": {
      "hooks": {
