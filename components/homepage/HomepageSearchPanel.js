@@ -1,12 +1,10 @@
-import React from "react"
-import { Formik, Form, Field } from 'formik'
+import React from 'react';
+import { Formik, Form, Field } from 'formik';
 
 export default function HomepageSearchPanel(props) {
   return (
     <nav className="panel">
-      <p className="panel-heading">
-        {props.metadata.labels.search}
-      </p>
+      <p className="panel-heading">{props.metadata.labels.search}</p>
       <div className="panel-block">
         <div className="control">
           <Formik
@@ -23,5 +21,5 @@ export default function HomepageSearchPanel(props) {
         </div>
       </div>
     </nav>
-  )
+  );
 }
