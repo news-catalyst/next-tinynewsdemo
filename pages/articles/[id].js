@@ -67,15 +67,20 @@ export default function Article({ article }) {
     ));
   }
 
+  const mainImageNode = article.body.find(node => node.type === "mainImage");
+  let mainImage = null;
+
+  if (mainImageNode) {
+    mainImage = mainImageNode.children[0];
+  }
+
   return (
     <Layout meta={siteMetadata}>
       <ArticleNav metadata={siteMetadata} sections={sections} />
       <article>
         <section className="hero is-bold">
           <div className="hero-body">
-            <div
-              className={article.cover ? 'container head-margin' : 'container'}
-            >
+            <div className={article.cover ? 'container head-margin' : 'container'}>
               <h1 className="title is-size-1">{article.headline}</h1>
               <h2 className="subtitle">
                 By {article.byline}
@@ -84,12 +89,8 @@ export default function Article({ article }) {
             </div>
           </div>
         </section>
-        {article.cover && (
-          <img
-            src={article.cover.image}
-            alt={article.cover.title}
-            className="image"
-          />
+        {mainImage && (
+          <img src={mainImage.imageUrl} alt={mainImage.imageAlt} className="image" />
         )}
         <section className="section">
           <div id="articleText" className="content">
