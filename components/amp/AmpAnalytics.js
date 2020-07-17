@@ -10,5 +10,5 @@ export default function AmpAnalytics(props) {
         />
       )}
     </amp-analytics>
-  )
+  );
 }
