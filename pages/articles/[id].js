@@ -67,7 +67,7 @@ export default function Article({ article }) {
     ));
   }
 
-  const mainImageNode = article.body.find(node => node.type === "mainImage");
+  const mainImageNode = article.body.find((node) => node.type === 'mainImage');
   let mainImage = null;
 
   if (mainImageNode) {
@@ -80,7 +80,9 @@ export default function Article({ article }) {
       <article>
         <section className="hero is-bold">
           <div className="hero-body">
-            <div className={article.cover ? 'container head-margin' : 'container'}>
+            <div
+              className={article.cover ? 'container head-margin' : 'container'}
+            >
               <h1 className="title is-size-1">{article.headline}</h1>
               <h2 className="subtitle">
                 By {article.byline}
@@ -90,7 +92,11 @@ export default function Article({ article }) {
           </div>
         </section>
         {mainImage && (
-          <img src={mainImage.imageUrl} alt={mainImage.imageAlt} className="image" />
+          <img
+            src={mainImage.imageUrl}
+            alt={mainImage.imageAlt}
+            className="image"
+          />
         )}
         <section className="section">
           <div id="articleText" className="content">
