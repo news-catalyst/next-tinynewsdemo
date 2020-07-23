@@ -18,22 +18,27 @@ export default function TextNode({ node }) {
       text = <a href={child.link}>{text}</a>;
     }
 
-    if (node.style == 'TITLE') {
-      text = <h1>{text}</h1>;
-    } else if (node.style == 'SUBTITLE') {
-      text = <h2>{text}</h2>;
-    } else if (node.style == 'HEADING_1') {
-      text = <h1>{text}</h1>;
-    } else if (node.style == 'HEADING_2') {
-      text = <h2>{text}</h2>;
-    } else if (node.style == 'HEADING_3') {
-      text = <h3>{text}</h3>;
-    } else if (node.style == 'NORMAL_TEXT') {
-      text = <p>{text}</p>;
-    }
-
     return text;
   };
 
-  return <p>{node.children.map((child) => processChild(child))}</p>;
+  const children = node.children.map((child) => processChild(child));
+  let wrapper = null;
+
+  if (node.style == 'TITLE') {
+    wrapper = <h1>{children}</h1>;
+  } else if (node.style == 'SUBTITLE') {
+    wrapper = <h2>{children}</h2>;
+  } else if (node.style == 'HEADING_1') {
+    wrapper = <h1>{children}</h1>;
+  } else if (node.style == 'HEADING_2') {
+    wrapper = <h2>{children}</h2>;
+  } else if (node.style == 'HEADING_3') {
+    wrapper = <h3>{children}</h3>;
+  } else if (node.style == 'NORMAL_TEXT') {
+    wrapper = <p>{children}</p>;
+  } else {
+    wrapper = <>{children}</>;
+  }
+
+  return wrapper;
 }
