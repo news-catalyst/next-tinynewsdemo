@@ -1,9 +1,15 @@
 import React from 'react';
 import Link from 'next/link';
-//import { parseISO, formatRelative } from 'date-fns'
+import { parseISO } from 'date-fns';
 
 export default function ArticleLink(props) {
-  // let parsedDate = parseISO(props.document.createdTime)
+  var Dateline = require('dateline');
+  let parsedDate = parseISO(props.article.firstPublishedOn);
+  let firstPublishedOn =
+    Dateline(parsedDate).getAPDate() +
+    ' at ' +
+    Dateline(parsedDate).getAPTime();
+
   const mainImageNode = props.article.body.find(
     (node) => node.type === 'mainImage'
   );
@@ -39,8 +45,8 @@ export default function ArticleLink(props) {
             </Link>
           </h1>
           <p>{props.article.excerpt}</p>
-          <p className="byline">{props.article.byline}</p>
-          {/* | {formatRelative(parsedDate, new Date())} */}
+          <p>{props.article.byline}</p>
+          {props.article.firstPublishedOn && <p>{firstPublishedOn}</p>}
         </div>
         <nav className="level is-mobile">
           <div className="level-left">

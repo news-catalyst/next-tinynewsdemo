@@ -11,23 +11,9 @@ import ImageNode from '../../components/nodes/ImageNode.js';
 import ListNode from '../../components/nodes/ListNode.js';
 import TextNode from '../../components/nodes/TextNode.js';
 import { useAmp } from 'next/amp';
+import { parseISO, formatRelative } from 'date-fns';
+import { siteMetadata } from '../../lib/siteMetadata.js';
 
-let siteMetadata = {
-  title: 'Tiny News Collective',
-  description: 'A local news site',
-  labels: { topics: 'Topics' },
-  nav: { topics: 'All Topics', cms: 'tinycms' },
-  search: 'Search',
-  footerTitle: 'tinynewsco.org',
-  footerBylineLink: 'https://newscatalyst.org/',
-  footerBylineName: 'News Catalyst',
-  subscribe: {
-    subtitle:
-      'Get the latest news about the tiny news collective in your inbox.',
-  },
-};
-
-let tags = ['Coronavirus', 'Police Violence', '2020 Election'];
 let sections = [
   { label: 'News', link: '/news' },
   { label: 'Features', link: '/features' },
@@ -37,6 +23,13 @@ let sections = [
 export const config = { amp: 'hybrid' };
 
 export default function Article({ article }) {
+  siteMetadata.searchTitle = article.searchTitle;
+  siteMetadata.searchDescription = article.searchDescription;
+  siteMetadata.facebookTitle = article.facebookTitle;
+  siteMetadata.facebookDescription = article.facebookDescription;
+  siteMetadata.twitterTitle = article.twitterTitle;
+  siteMetadata.twitterDescription = article.twitterDescription;
+
   const isAmp = useAmp();
 
   const serialize = (node) => {
@@ -59,15 +52,30 @@ export default function Article({ article }) {
   const serializedBody = article.body.map((node, i) => serialize(node, i));
 
   let tagLinks;
-  if (tags) {
-    tagLinks = tags.map((tag, index) => (
-      <Link href={`/topics/${kebabCase(tag)}`} key={`${tag}-${index}`}>
-        <a className="is-link tag">{tag}</a>
+  if (article.tags) {
+    tagLinks = article.tags.map((tag, index) => (
+      <Link
+        href={`/topics/${kebabCase(tag.title)}`}
+        key={`${tag.title}-${index}`}
+      >
+        <a className="is-link tag">{tag.title}</a>
       </Link>
     ));
   }
 
-  const mainImageNode = article.body.find(node => node.type === "mainImage");
+  var Dateline = require('dateline');
+  let parsedDate = parseISO(article.firstPublishedOn);
+  let firstPublishedOn =
+    Dateline(parsedDate).getAPDate() +
+    ' at ' +
+    Dateline(parsedDate).getAPTime();
+  parsedDate = parseISO(article.lastPublishedOn);
+  let lastPublishedOn =
+    Dateline(parsedDate).getAPDate() +
+    ' at ' +
+    Dateline(parsedDate).getAPTime();
+
+  const mainImageNode = article.body.find((node) => node.type === 'mainImage');
   let mainImage = null;
 
   if (mainImageNode) {
@@ -80,17 +88,23 @@ export default function Article({ article }) {
       <article>
         <section className="hero is-bold">
           <div className="hero-body">
-            <div className={article.cover ? 'container head-margin' : 'container'}>
+            <div
+              className={article.cover ? 'container head-margin' : 'container'}
+            >
               <h1 className="title is-size-1">{article.headline}</h1>
               <h2 className="subtitle">
-                By {article.byline}
-                {/* | Published {formatRelative(parsedDate, new Date())} */}
+                By {article.byline} | Published {firstPublishedOn}
               </h2>
+              <h2 className="subtitle">Last updated: {lastPublishedOn}</h2>
             </div>
           </div>
         </section>
         {mainImage && (
-          <img src={mainImage.imageUrl} alt={mainImage.imageAlt} className="image" />
+          <img
+            src={mainImage.imageUrl}
+            alt={mainImage.imageAlt}
+            className="image"
+          />
         )}
         <section className="section">
           <div id="articleText" className="content">
