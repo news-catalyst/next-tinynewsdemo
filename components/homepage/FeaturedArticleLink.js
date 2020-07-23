@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-// import { parseISO, formatRelative } from 'date-fns'
+import { parseISO } from 'date-fns';
 
 export default function ArticleLink(props) {
   const mainImageNode = props.article.body.find(
@@ -11,8 +11,12 @@ export default function ArticleLink(props) {
   if (mainImageNode) {
     mainImage = mainImageNode.children[0];
   }
-
-  // let parsedDate = parseISO(props.document.createdTime)
+  var Dateline = require('dateline');
+  let parsedDate = parseISO(props.article.firstPublishedOn);
+  let firstPublishedOn =
+    Dateline(parsedDate).getAPDate() +
+    ' at ' +
+    Dateline(parsedDate).getAPTime();
   return (
     <article>
       {mainImage && (
@@ -39,8 +43,8 @@ export default function ArticleLink(props) {
           </Link>
         </h1>
         <p className="featured">{props.article.excerpt}</p>
-        <p className="byline featured">{props.article.byline}</p>
-        {/* | {formatRelative(parsedDate, new Date())} */}
+        <p className="featured">{props.article.byline}</p>
+        {props.article.firstPublishedOn && <p>{firstPublishedOn}</p>}
       </div>
       <nav className="level is-mobile">
         <div className="level-left">
