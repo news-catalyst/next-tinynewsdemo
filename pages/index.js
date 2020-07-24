@@ -22,6 +22,8 @@ export const config = { amp: 'hybrid' };
 export default function Home({ articles, tags }) {
   const isAmp = useAmp();
 
+  siteMetadata.tags = tags;
+
   let featuredArticles = articles.slice(0, 1);
   let unfeaturedArticles = articles.slice(1);
 

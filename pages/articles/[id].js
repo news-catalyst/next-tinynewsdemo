@@ -11,7 +11,7 @@ import ImageNode from '../../components/nodes/ImageNode.js';
 import ListNode from '../../components/nodes/ListNode.js';
 import TextNode from '../../components/nodes/TextNode.js';
 import { useAmp } from 'next/amp';
-import { parseISO, formatRelative } from 'date-fns';
+import { parseISO } from 'date-fns';
 import { siteMetadata } from '../../lib/siteMetadata.js';
 
 let sections = [
@@ -23,12 +23,23 @@ let sections = [
 export const config = { amp: 'hybrid' };
 
 export default function Article({ article }) {
+  const mainImageNode = article.body.find((node) => node.type === 'mainImage');
+  let mainImage = null;
+
+  if (mainImageNode) {
+    mainImage = mainImageNode.children[0];
+  }
+
   siteMetadata.searchTitle = article.searchTitle;
   siteMetadata.searchDescription = article.searchDescription;
   siteMetadata.facebookTitle = article.facebookTitle;
   siteMetadata.facebookDescription = article.facebookDescription;
   siteMetadata.twitterTitle = article.twitterTitle;
   siteMetadata.twitterDescription = article.twitterDescription;
+  siteMetadata.tags = article.tags;
+  siteMetadata.firstPublishedOn = article.firstPublishedOn;
+  siteMetadata.lastPublishedOn = article.lastPublishedOn;
+  siteMetadata.coverImage = mainImage.imageUrl;
 
   const isAmp = useAmp();
 
@@ -74,13 +85,6 @@ export default function Article({ article }) {
     Dateline(parsedDate).getAPDate() +
     ' at ' +
     Dateline(parsedDate).getAPTime();
-
-  const mainImageNode = article.body.find((node) => node.type === 'mainImage');
-  let mainImage = null;
-
-  if (mainImageNode) {
-    mainImage = mainImageNode.children[0];
-  }
 
   return (
     <Layout meta={siteMetadata}>
