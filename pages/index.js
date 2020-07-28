@@ -82,7 +82,6 @@ export default function Home({ articles, tags }) {
 
 export async function getStaticProps() {
   const articles = await listAllArticles();
-  console.log('articles: ', articles);
   const tags = await listAllTags();
 
   return {
