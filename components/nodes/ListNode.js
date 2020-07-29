@@ -28,6 +28,24 @@ export default function ListNode({ node }) {
           </ul>
         </li>
       );
+    } else if (item.nestingLevel === 3) {
+      items.push(
+        <li key={item.index} style={{ listStyle: 'none' }}>
+          <ul>
+            <li style={{ listStyle: 'none' }}>
+              <ul>
+                <li style={{ listStyle: 'none' }}>
+                  <ul>
+                    <li>
+                      <TextNode node={item} />
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      );
     } else {
       items.push(
         <li key={item.index}>
