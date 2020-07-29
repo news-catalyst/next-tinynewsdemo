@@ -1,18 +1,21 @@
-import Layout from '../../components/Layout.js';
+import Layout from '../../../components/Layout.js';
 import Link from 'next/Link';
 import kebabCase from 'lodash/kebabCase';
-import { getArticle, listAllArticleIds } from '../../lib/articles.js';
-import ArticleNav from '../../components/nav/ArticleNav.js';
-import ArticleFooter from '../../components/nav/ArticleFooter.js';
-import Coral from '../../components/plugins/Coral.js';
-import MailchimpSubscribe from '../../components/plugins/MailchimpSubscribe.js';
-import EmbedNode from '../../components/nodes/EmbedNode.js';
-import ImageNode from '../../components/nodes/ImageNode.js';
-import ListNode from '../../components/nodes/ListNode.js';
-import TextNode from '../../components/nodes/TextNode.js';
+import {
+  getArticleBySlug,
+  listAllArticleSlugs,
+} from '../../../lib/articles.js';
+import ArticleNav from '../../../components/nav/ArticleNav.js';
+import ArticleFooter from '../../../components/nav/ArticleFooter.js';
+import Coral from '../../../components/plugins/Coral.js';
+import MailchimpSubscribe from '../../../components/plugins/MailchimpSubscribe.js';
+import EmbedNode from '../../../components/nodes/EmbedNode.js';
+import ImageNode from '../../../components/nodes/ImageNode.js';
+import ListNode from '../../../components/nodes/ListNode.js';
+import TextNode from '../../../components/nodes/TextNode.js';
 import { useAmp } from 'next/amp';
 import { parseISO } from 'date-fns';
-import { siteMetadata } from '../../lib/siteMetadata.js';
+import { siteMetadata } from '../../../lib/siteMetadata.js';
 
 let sections = [
   { label: 'News', link: '/news' },
@@ -145,7 +148,7 @@ export default function Article({ article }) {
 }
 
 export async function getStaticPaths() {
-  const paths = await listAllArticleIds();
+  const paths = await listAllArticleSlugs();
   return {
     paths,
     fallback: false,
@@ -153,7 +156,7 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ params }) {
-  const article = await getArticle(params.id);
+  const article = await getArticleBySlug(params.slug);
 
   return {
     props: {
