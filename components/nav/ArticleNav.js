@@ -9,11 +9,11 @@ export default function ArticleNav(props) {
   if (props.sections) {
     sectionLinks = props.sections.slice(0, 4).map((section) => (
       <Link
-        key={`navbar-${_.kebabCase(section.label)}`}
-        href={section.link}
-        as={section.link}
+        key={`navbar-${_.kebabCase(section.title)}`}
+        href={section.slug}
+        as={section.slug}
       >
-        <a className="navbar-item">{_.startCase(section.label)}</a>
+        <a className="navbar-item">{_.startCase(section.title)}</a>
       </Link>
     ));
   }

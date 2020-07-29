@@ -2,6 +2,7 @@ import _ from 'lodash';
 import Link from 'next/link';
 import { listAllArticles } from '../lib/articles.js';
 import { listAllTags } from '../lib/articles.js';
+import { listAllSections } from '../lib/articles.js';
 import Layout from '../components/Layout.js';
 import ArticleNav from '../components/nav/ArticleNav.js';
 import FeaturedArticleLink from '../components/homepage/FeaturedArticleLink.js';
@@ -11,15 +12,9 @@ import ArticleFooter from '../components/nav/ArticleFooter.js';
 import { useAmp } from 'next/amp';
 import { siteMetadata } from '../lib/siteMetadata.js';
 
-let sections = [
-  { label: 'News', link: '/news' },
-  { label: 'Features', link: '/features' },
-  { label: 'Pandemic', link: '/pandemic' },
-];
-
 export const config = { amp: 'hybrid' };
 
-export default function Home({ articles, tags }) {
+export default function Home({ articles, tags, sections }) {
   const isAmp = useAmp();
 
   siteMetadata.tags = tags;
@@ -83,11 +78,13 @@ export default function Home({ articles, tags }) {
 export async function getStaticProps() {
   const articles = await listAllArticles();
   const tags = await listAllTags();
+  const sections = await listAllSections();
 
   return {
     props: {
       articles,
       tags,
+      sections,
     },
   };
 }
