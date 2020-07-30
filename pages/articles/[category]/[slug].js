@@ -37,7 +37,9 @@ export default function Article({ article, sections }) {
   siteMetadata.tags = article.tags;
   siteMetadata.firstPublishedOn = article.firstPublishedOn;
   siteMetadata.lastPublishedOn = article.lastPublishedOn;
-  siteMetadata.coverImage = mainImage.imageUrl;
+  if (mainImage !== null) {
+    siteMetadata.coverImage = mainImage.imageUrl;
+  }
 
   const isAmp = useAmp();
 
@@ -101,7 +103,17 @@ export default function Article({ article, sections }) {
             </div>
           </div>
         </section>
-        {mainImage && (
+        {mainImage && isAmp && (
+          <amp-img
+            width={mainImage.width}
+            height={mainImage.height}
+            src={mainImage.imageUrl}
+            alt={mainImage.imageAlt}
+            layout="responsive"
+          />
+        )}
+
+        {mainImage && !isAmp && (
           <img
             src={mainImage.imageUrl}
             alt={mainImage.imageAlt}
