@@ -4,6 +4,7 @@ import kebabCase from 'lodash/kebabCase';
 import {
   getArticleBySlug,
   listAllArticleSlugs,
+  listAllSections,
 } from '../../../lib/articles.js';
 import ArticleNav from '../../../components/nav/ArticleNav.js';
 import ArticleFooter from '../../../components/nav/ArticleFooter.js';
@@ -17,15 +18,9 @@ import { useAmp } from 'next/amp';
 import { parseISO } from 'date-fns';
 import { siteMetadata } from '../../../lib/siteMetadata.js';
 
-let sections = [
-  { label: 'News', link: '/news' },
-  { label: 'Features', link: '/features' },
-  { label: 'Pandemic', link: '/pandemic' },
-];
-
 export const config = { amp: 'hybrid' };
 
-export default function Article({ article }) {
+export default function Article({ article, sections }) {
   const mainImageNode = article.body.find((node) => node.type === 'mainImage');
   let mainImage = null;
 
@@ -42,7 +37,9 @@ export default function Article({ article }) {
   siteMetadata.tags = article.tags;
   siteMetadata.firstPublishedOn = article.firstPublishedOn;
   siteMetadata.lastPublishedOn = article.lastPublishedOn;
-  siteMetadata.coverImage = mainImage.imageUrl;
+  if (mainImage !== null) {
+    siteMetadata.coverImage = mainImage.imageUrl;
+  }
 
   const isAmp = useAmp();
 
@@ -106,7 +103,17 @@ export default function Article({ article }) {
             </div>
           </div>
         </section>
-        {mainImage && (
+        {mainImage && isAmp && (
+          <amp-img
+            width={mainImage.width}
+            height={mainImage.height}
+            src={mainImage.imageUrl}
+            alt={mainImage.imageAlt}
+            layout="responsive"
+          />
+        )}
+
+        {mainImage && !isAmp && (
           <img
             src={mainImage.imageUrl}
             alt={mainImage.imageAlt}
@@ -157,10 +164,12 @@ export async function getStaticPaths() {
 
 export async function getStaticProps({ params }) {
   const article = await getArticleBySlug(params.slug);
+  const sections = await listAllSections();
 
   return {
     props: {
       article,
+      sections,
     },
   };
 }
