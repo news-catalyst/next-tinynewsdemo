@@ -1,5 +1,5 @@
 import Layout from '../../../components/Layout.js';
-import Link from 'next/Link';
+import Link from 'next/link';
 import kebabCase from 'lodash/kebabCase';
 import {
   getArticleBySlug,
