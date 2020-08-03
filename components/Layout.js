@@ -20,7 +20,16 @@ export default function Layout({ children, meta }) {
     twitterTitle: meta.twitterTitle || siteMetadata.twitterTitle,
     twitterDescription:
       meta.twitterDescription || siteMetadata.twitterDescription,
+    firstPublishedOn: meta.firstPublishedOn || siteMetadata.firstPublishedOn,
+    lastPublishedOn: meta.lastPublishedOn || siteMetadata.lastPublishedOn,
+    tags: meta.tags || siteMetadata.tags,
+    coverImage: meta.coverImage || siteMetadata.coverImage,
   };
+
+  let tagList = [];
+  for (const [index, value] of metaValues.tags.entries()) {
+    tagList.push(<meta property="article:tag" content={value.title} />);
+  }
 
   const isAmp = useAmp();
 
@@ -35,6 +44,7 @@ export default function Layout({ children, meta }) {
         <meta property="og:title" content={metaValues.ogTitle} />
         <meta property="og:description" content={metaValues.ogDescription} />
         <meta property="og:image" content={metaValues.ogImage} />
+        {tagList}
         <link rel="canonical" href={metaValues.canonical} />
         <link
           href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Libre+Franklin:ital,wght@0,300;0,800;1,300;1,800&display=swap"
@@ -49,16 +59,13 @@ export default function Layout({ children, meta }) {
           content={metaValues.twitterDescription}
         />
         <meta name="twitter:creator" content="@author_handle" />
-        <meta
-          name="twitter:image:src"
-          content="http://www.example.com/image.jpg"
-        />
+        <meta name="twitter:image:src" content={metaValues.coverImage} />
 
         {/* Facebook data */}
         <meta property="og:title" content={metaValues.facebookTitle} />
         <meta property="og:type" content="article" />
-        <meta property="og:url" content="http://www.example.com/" />
-        <meta property="og:image" content="http://example.com/image.jpg" />
+        <meta property="og:url" content={metaValues.canonical} />
+        <meta property="og:image" content={metaValues.coverImage} />
         <meta
           property="og:description"
           content={metaValues.facebookDescription}
@@ -66,11 +73,11 @@ export default function Layout({ children, meta }) {
         <meta property="og:site_name" content="Site Name, i.e. Moz" />
         <meta
           property="article:published_time"
-          content="2013-09-17T05:59:00+01:00"
+          content={metaValues.firstPublishedOn}
         />
         <meta
           property="article:modified_time"
-          content="2013-09-16T19:08:47+01:00"
+          content={metaValues.lastPublishedOn}
         />
         <meta property="article:section" content="Article Section" />
         <meta property="article:tag" content="Article Tag" />
