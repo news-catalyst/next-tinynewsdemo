@@ -1,34 +1,45 @@
-import Layout from '../../components/Layout.js';
-import Link from 'next/Link';
+import Layout from '../../../components/Layout.js';
+import Link from 'next/link';
 import kebabCase from 'lodash/kebabCase';
-import { getArticle, listAllArticleIds } from '../../lib/articles.js';
-import ArticleNav from '../../components/nav/ArticleNav.js';
-import ArticleFooter from '../../components/nav/ArticleFooter.js';
-import Coral from '../../components/plugins/Coral.js';
-import MailchimpSubscribe from '../../components/plugins/MailchimpSubscribe.js';
-import EmbedNode from '../../components/nodes/EmbedNode.js';
-import ImageNode from '../../components/nodes/ImageNode.js';
-import ListNode from '../../components/nodes/ListNode.js';
-import TextNode from '../../components/nodes/TextNode.js';
+import {
+  getArticleBySlug,
+  listAllArticleSlugs,
+  listAllSections,
+} from '../../../lib/articles.js';
+import ArticleNav from '../../../components/nav/ArticleNav.js';
+import ArticleFooter from '../../../components/nav/ArticleFooter.js';
+import Coral from '../../../components/plugins/Coral.js';
+import MailchimpSubscribe from '../../../components/plugins/MailchimpSubscribe.js';
+import EmbedNode from '../../../components/nodes/EmbedNode.js';
+import ImageNode from '../../../components/nodes/ImageNode.js';
+import ListNode from '../../../components/nodes/ListNode.js';
+import TextNode from '../../../components/nodes/TextNode.js';
 import { useAmp } from 'next/amp';
-import { parseISO, formatRelative } from 'date-fns';
-import { siteMetadata } from '../../lib/siteMetadata.js';
-
-let sections = [
-  { label: 'News', link: '/news' },
-  { label: 'Features', link: '/features' },
-  { label: 'Pandemic', link: '/pandemic' },
-];
+import { parseISO } from 'date-fns';
+import { siteMetadata } from '../../../lib/siteMetadata.js';
 
 export const config = { amp: 'hybrid' };
 
-export default function Article({ article }) {
+export default function Article({ article, sections }) {
+  const mainImageNode = article.body.find((node) => node.type === 'mainImage');
+  let mainImage = null;
+
+  if (mainImageNode) {
+    mainImage = mainImageNode.children[0];
+  }
+
   siteMetadata.searchTitle = article.searchTitle;
   siteMetadata.searchDescription = article.searchDescription;
   siteMetadata.facebookTitle = article.facebookTitle;
   siteMetadata.facebookDescription = article.facebookDescription;
   siteMetadata.twitterTitle = article.twitterTitle;
   siteMetadata.twitterDescription = article.twitterDescription;
+  siteMetadata.tags = article.tags;
+  siteMetadata.firstPublishedOn = article.firstPublishedOn;
+  siteMetadata.lastPublishedOn = article.lastPublishedOn;
+  if (mainImage !== null) {
+    siteMetadata.coverImage = mainImage.imageUrl;
+  }
 
   const isAmp = useAmp();
 
@@ -75,13 +86,6 @@ export default function Article({ article }) {
     ' at ' +
     Dateline(parsedDate).getAPTime();
 
-  const mainImageNode = article.body.find((node) => node.type === 'mainImage');
-  let mainImage = null;
-
-  if (mainImageNode) {
-    mainImage = mainImageNode.children[0];
-  }
-
   return (
     <Layout meta={siteMetadata}>
       <ArticleNav metadata={siteMetadata} sections={sections} />
@@ -99,7 +103,17 @@ export default function Article({ article }) {
             </div>
           </div>
         </section>
-        {mainImage && (
+        {mainImage && isAmp && (
+          <amp-img
+            width={mainImage.width}
+            height={mainImage.height}
+            src={mainImage.imageUrl}
+            alt={mainImage.imageAlt}
+            layout="responsive"
+          />
+        )}
+
+        {mainImage && !isAmp && (
           <img
             src={mainImage.imageUrl}
             alt={mainImage.imageAlt}
@@ -141,7 +155,7 @@ export default function Article({ article }) {
 }
 
 export async function getStaticPaths() {
-  const paths = await listAllArticleIds();
+  const paths = await listAllArticleSlugs();
   return {
     paths,
     fallback: false,
@@ -149,11 +163,13 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ params }) {
-  const article = await getArticle(params.id);
+  const article = await getArticleBySlug(params.slug);
+  const sections = await listAllSections();
 
   return {
     props: {
       article,
+      sections,
     },
   };
 }
