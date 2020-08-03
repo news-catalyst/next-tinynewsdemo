@@ -26,7 +26,7 @@ export default function Home({ articles, tags }) {
   let unfeaturedArticles = articles.slice(1);
 
   const tagLinks = tags.map((tag) => (
-    <Link key={tag.title} href={`/topics/${tag.title}`}>
+    <Link key={tag.title} href={`/tags/${tag.title}`}>
       <a className="panel-block is-active">{_.startCase(tag.title)}</a>
     </Link>
   ));
