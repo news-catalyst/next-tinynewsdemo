@@ -21,7 +21,24 @@ import { siteMetadata } from '../../../lib/siteMetadata.js';
 export const config = { amp: 'hybrid' };
 
 export default function Article({ article, sections }) {
-  const mainImageNode = article.body.find((node) => node.type === 'mainImage');
+  let articleBody = null;
+  try {
+    articleBody = JSON.parse(article.content);
+  } catch (e) {
+    console.log(
+      'failed parsing article contents, (TODO: actually handle this - 500 page?)'
+    );
+    console.log(e);
+  }
+
+  if (articleBody === null) {
+    console.log(
+      'article body is null, give up (TODO: actually handle this - 500 page?)'
+    );
+    return null;
+  }
+
+  const mainImageNode = articleBody.find((node) => node.type === 'mainImage');
   let mainImage = null;
 
   if (mainImageNode) {
@@ -60,7 +77,7 @@ export default function Article({ article, sections }) {
     }
   };
 
-  const serializedBody = article.body.map((node, i) => serialize(node, i));
+  const serializedBody = articleBody.map((node, i) => serialize(node, i));
 
   let tagLinks;
   if (article.tags) {
