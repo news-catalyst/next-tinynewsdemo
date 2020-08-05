@@ -10,7 +10,7 @@ export default function ArticleLink(props) {
     ' at ' +
     Dateline(parsedDate).getAPTime();
 
-  const mainImageNode = props.article.body.find(
+  const mainImageNode = props.article.content.find(
     (node) => node.type === 'mainImage'
   );
   let mainImage = null;
