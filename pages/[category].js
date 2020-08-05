@@ -1,24 +1,28 @@
+import _ from 'lodash';
 import Layout from '../components/Layout.js';
 import ArticleLink from '../components/homepage/ArticleLink.js';
 import {
   listAllArticlesBySection,
   listAllSectionTitles,
+  listAllSections,
+  listAllTags,
 } from '../lib/articles.js';
 import { siteMetadata } from '../lib/siteMetadata.js';
 import ArticleNav from '../components/nav/ArticleNav.js';
 import ArticleFooter from '../components/nav/ArticleFooter.js';
 import { useAmp } from 'next/amp';
 
-export default function CategoryPage(props) {
+export default function CategoryPage({ articles, title, sections, tags }) {
   const isAmp = useAmp();
+  siteMetadata.tags = tags;
   return (
     <Layout meta={siteMetadata}>
       <ArticleNav metadata={siteMetadata} sections={sections} />
       <section className="section">
-        <h1 className="title">{props.title}</h1>
+        <h1 className="title">{_.startCase(title)}</h1>
         <div className="columns">
           <div className="column is-four-fifths">
-            {props.articles.map((article) => (
+            {articles.map((article) => (
               <ArticleLink key={article.id} article={article} amp={isAmp} />
             ))}
           </div>
@@ -40,10 +44,14 @@ export async function getStaticPaths() {
 export async function getStaticProps({ params }) {
   const articles = await listAllArticlesBySection(params.category);
   const title = params.category;
+  const sections = await listAllSections();
+  const tags = await listAllTags();
   return {
     props: {
       articles,
       title,
+      tags,
+      sections,
     },
   };
 }
