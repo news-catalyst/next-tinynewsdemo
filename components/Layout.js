@@ -23,7 +23,9 @@ export default function Layout({ children, meta }) {
 
   let tagList = [];
   for (const [index, value] of metaValues.tags.entries()) {
-    tagList.push(<meta property="article:tag" content={value.title} />);
+    tagList.push(
+      <meta property="article:tag" content={value.title} key={value.title} />
+    );
   }
 
   const isAmp = useAmp();

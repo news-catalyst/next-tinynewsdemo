@@ -1,21 +1,29 @@
 export default function TextNode({ node }) {
   const processChild = function (child) {
-    let text = <span>{child.content} </span>;
+    let text = (
+      <span key={child.index ? child.index : child.content}>
+        {child.content}{' '}
+      </span>
+    );
 
     if (child.style) {
       if (child.style.underline) {
-        text = <u>{text}</u>;
+        text = <u key={`${child.index}-u-${text}`}>{text}</u>;
       }
       if (child.style.italic) {
-        text = <em>{text}</em>;
+        text = <em key={`${child.index}-em-${text}`}>{text}</em>;
       }
       if (child.style.bold) {
-        text = <strong>{text}</strong>;
+        text = <strong key={`${child.index}-strong-${text}`}>{text}</strong>;
       }
     }
 
     if (child.link) {
-      text = <a href={child.link}>{text}</a>;
+      text = (
+        <a key={child.link} href={child.link}>
+          {text}
+        </a>
+      );
     }
 
     return text;
