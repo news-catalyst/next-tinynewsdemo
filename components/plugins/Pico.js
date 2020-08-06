@@ -2,12 +2,6 @@ import React, { Component } from 'react';
 
 class Pico extends Component {
   componentDidMount() {
-    const script = document.createElement('script');
-    script.id = 'loadPico';
-    script.src = '/pico.js';
-    script.async = true;
-    this.instance.appendChild(script);
-
     var pageInfo = {
       article: this.props.article,
       post_type: this.props.postType,
@@ -20,11 +14,11 @@ class Pico extends Component {
       pageInfo.taxonomies = { tags: this.props.tags };
     }
 
-    document.getElementById('loadPico').addEventListener('load', () => {
+    if (window.pico) {
       console.log('Pico is loaded');
       console.log(pageInfo);
       window.pico('visit', pageInfo);
-    });
+    }
   }
 
   render() {

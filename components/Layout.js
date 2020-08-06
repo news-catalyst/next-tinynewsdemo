@@ -91,6 +91,7 @@ export default function Layout({ children, meta }) {
             key="amp-analytics"
           />
         )}
+        <script async src="/pico.js" id="picoLoad" key="pico" />
       </Head>
       <main className="container">
         {isAmp && (
