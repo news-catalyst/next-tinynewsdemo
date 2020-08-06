@@ -11,7 +11,6 @@ import ArticleFooter from '../components/nav/ArticleFooter.js';
 // import HomepageSearchPanel from '../components/homepage/HomepageSearchPanel.js'
 import { useAmp } from 'next/amp';
 import { siteMetadata } from '../lib/siteMetadata.js';
-
 export const config = { amp: 'hybrid' };
 
 export default function Home({ articles, tags, sections }) {

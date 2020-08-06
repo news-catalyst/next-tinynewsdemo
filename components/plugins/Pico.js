@@ -10,7 +10,7 @@ class Pico extends Component {
 
     var pageInfo = {
       article: this.props.article,
-      post_type: this.props.post_type,
+      post_type: this.props.postType,
       url: window.location.href,
     };
     if (this.props.post_id) {

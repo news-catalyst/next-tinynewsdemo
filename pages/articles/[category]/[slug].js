@@ -14,6 +14,7 @@ import EmbedNode from '../../../components/nodes/EmbedNode.js';
 import ImageNode from '../../../components/nodes/ImageNode.js';
 import ListNode from '../../../components/nodes/ListNode.js';
 import TextNode from '../../../components/nodes/TextNode.js';
+import Pico from '../../../components/plugins/Pico';
 import { useAmp } from 'next/amp';
 import { parseISO } from 'date-fns';
 import { siteMetadata } from '../../../lib/siteMetadata.js';
@@ -142,6 +143,7 @@ export default function Article({ article, sections }) {
             {siteMetadata.subscribe.subtitle}
           </h1>
           <MailchimpSubscribe />
+          <Pico article={article.id} postType="article" />
           <div className="comments">
             {isAmp ? (
               <div>Coral AMP</div>
