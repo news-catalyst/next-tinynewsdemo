@@ -45,18 +45,18 @@ export default function Article({ article, sections }) {
 
   const isAmp = useAmp();
 
-  const serialize = (node) => {
+  const serialize = (node, i) => {
     switch (node.type) {
       case 'list':
-        return <ListNode node={node} />;
+        return <ListNode node={node} key={i} />;
       case 'text':
-        return <TextNode node={node} />;
+        return <TextNode node={node} key={i} />;
       case 'paragraph':
-        return <TextNode node={node} />;
+        return <TextNode node={node} key={i} />;
       case 'image':
-        return <ImageNode node={node} amp={isAmp} />;
+        return <ImageNode node={node} amp={isAmp} key={i} />;
       case 'embed':
-        return <EmbedNode node={node} amp={isAmp} />;
+        return <EmbedNode node={node} amp={isAmp} key={i} />;
       default:
         return null;
     }
@@ -92,16 +92,18 @@ export default function Article({ article, sections }) {
     <Layout meta={siteMetadata}>
       <ArticleNav metadata={siteMetadata} sections={sections} />
       <article>
-        <section className="hero is-bold">
+        <section className="hero is-bold" key="title">
           <div className="hero-body">
             <div
               className={article.cover ? 'container head-margin' : 'container'}
             >
               <h1 className="title is-size-1">{article.headline}</h1>
-              <h2 className="subtitle">
+              <h2 className="subtitle" key="byline">
                 By {article.byline} | Published {firstPublishedOn}
               </h2>
-              <h2 className="subtitle">Last updated: {lastPublishedOn}</h2>
+              <h2 className="subtitle" key="last-updated">
+                Last updated: {lastPublishedOn}
+              </h2>
             </div>
           </div>
         </section>
@@ -122,21 +124,21 @@ export default function Article({ article, sections }) {
             className="image"
           />
         )}
-        <section className="section">
+        <section className="section" key="body">
           <div id="articleText" className="content">
             {serializedBody}
           </div>
         </section>
       </article>
       <aside>
-        <section className="section">
+        <section className="section" key="sidebar">
           <div className="align-content">
             {tagLinks && <p className="subtitle">Tags</p>}
             <div className="tags">{tagLinks}</div>
           </div>
         </section>
       </aside>
-      <section className="section">
+      <section className="section" key="plugins">
         <div className="align-content medium-margin-top">
           <h1 className="title media-left">
             {siteMetadata.subscribe.subtitle}
