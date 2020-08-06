@@ -19,7 +19,7 @@ export default function CategoryPage({ articles, title, sections, tags }) {
     <Layout meta={siteMetadata}>
       <ArticleNav metadata={siteMetadata} sections={sections} />
       <section className="section">
-        <h1 className="title">{_.startCase(title)}</h1>
+        <h1 className="title">{title}</h1>
         <div className="columns">
           <div className="column is-four-fifths">
             {articles.map((article) => (
@@ -43,9 +43,16 @@ export async function getStaticPaths() {
 
 export async function getStaticProps({ params }) {
   const articles = await listAllArticlesBySection(params.category);
-  const title = params.category;
   const sections = await listAllSections();
   const tags = await listAllTags();
+  let title;
+
+  for (var i = 0; i < sections.length; i++) {
+    if (sections[i].slug == params.category) {
+      title = sections[i].title;
+      break;
+    }
+  }
   return {
     props: {
       articles,
