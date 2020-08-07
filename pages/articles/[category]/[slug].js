@@ -14,6 +14,7 @@ import EmbedNode from '../../../components/nodes/EmbedNode.js';
 import ImageNode from '../../../components/nodes/ImageNode.js';
 import ListNode from '../../../components/nodes/ListNode.js';
 import TextNode from '../../../components/nodes/TextNode.js';
+import ImageWithTextAd from '../../../components/ads/ImageWithTextAd.js';
 import { useAmp } from 'next/amp';
 import { parseISO } from 'date-fns';
 import { siteMetadata } from '../../../lib/siteMetadata.js';
@@ -45,20 +46,54 @@ export default function Article({ article, sections }) {
 
   const isAmp = useAmp();
 
+  const ad_placement = 5;
+  let adComponent = (
+    <ImageWithTextAd
+      ad={{
+        brand: 'test',
+        image: {
+          url: 'https://placehold.it/300x300',
+          alt: 'Alt text',
+        },
+        header: 'test header',
+        body: 'This is the body text of an advertisement.',
+        call: 'Call to action',
+        url: 'https://www.w3schools.com/',
+      }}
+    />
+  );
+
   const serialize = (node, i) => {
-    switch (node.type) {
-      case 'list':
-        return <ListNode node={node} key={i} />;
-      case 'text':
-        return <TextNode node={node} key={i} />;
-      case 'paragraph':
-        return <TextNode node={node} key={i} />;
-      case 'image':
-        return <ImageNode node={node} amp={isAmp} key={i} />;
-      case 'embed':
-        return <EmbedNode node={node} amp={isAmp} key={i} />;
-      default:
-        return null;
+    if (i != ad_placement) {
+      switch (node.type) {
+        case 'list':
+          return <ListNode node={node} key={i} />;
+        case 'text':
+          return <TextNode node={node} key={i} />;
+        case 'paragraph':
+          return <TextNode node={node} key={i} />;
+        case 'image':
+          return <ImageNode node={node} amp={isAmp} key={i} />;
+        case 'embed':
+          return <EmbedNode node={node} amp={isAmp} key={i} />;
+        default:
+          return null;
+      }
+    } else {
+      switch (node.type) {
+        case 'list':
+          return [<ListNode node={node} key={i} />, adComponent];
+        case 'text':
+          return [<TextNode node={node} key={i} />, adComponent];
+        case 'paragraph':
+          return [<TextNode node={node} key={i} />, adComponent];
+        case 'image':
+          return [<ImageNode node={node} amp={isAmp} key={i} />, adComponent];
+        case 'embed':
+          return [<EmbedNode node={node} amp={isAmp} key={i} />, adComponent];
+        default:
+          return null;
+      }
     }
   };
 
