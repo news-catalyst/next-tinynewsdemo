@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { parseISO } from 'date-fns';
 
 export default function ArticleLink(props) {
-  const mainImageNode = props.article.body.find(
+  const mainImageNode = props.article.content.find(
     (node) => node.type === 'mainImage'
   );
   let mainImage = null;

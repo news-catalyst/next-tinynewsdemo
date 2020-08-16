@@ -35,8 +35,8 @@ export default function Home({ articles, tags, sections }) {
         <section className="hero is-dark is-bold">
           <div className="hero-body">
             <div className="container">
-              <h1 className="title">{siteMetadata.title}</h1>
-              <h2 className="subtitle">{siteMetadata.description}</h2>
+              <h1 className="title">{siteMetadata.homepageTitle}</h1>
+              <h2 className="subtitle">{siteMetadata.homepageSubtitle}</h2>
             </div>
           </div>
         </section>
