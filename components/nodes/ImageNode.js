@@ -10,7 +10,7 @@ export default function ImageNode({ node, amp }) {
       layout="responsive"
     />
   ) : (
-    <figure className="image">
+    <figure className="image" key="image.imageUrl">
       <img src={image.imageUrl} alt={image.imageAlt} />
       <figcaption>{image.imageAlt}</figcaption>
     </figure>
