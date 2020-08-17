@@ -3,17 +3,16 @@ import Link from 'next/link';
 import { parseISO } from 'date-fns';
 
 export default function ArticleLink(props) {
+  let mainImage = null;
+  let parsedContent = JSON.parse(props.article.content);
+  const mainImageNode = parsedContent.find((node) => node.type === 'mainImage');
+
   var Dateline = require('dateline');
   let parsedDate = parseISO(props.article.firstPublishedOn);
   let firstPublishedOn =
     Dateline(parsedDate).getAPDate() +
     ' at ' +
     Dateline(parsedDate).getAPTime();
-
-  const mainImageNode = props.article.content.find(
-    (node) => node.type === 'mainImage'
-  );
-  let mainImage = null;
 
   if (mainImageNode) {
     mainImage = mainImageNode.children[0];

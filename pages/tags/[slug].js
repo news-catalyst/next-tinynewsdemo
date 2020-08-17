@@ -1,8 +1,8 @@
 import Layout from '../../components/Layout.js';
 import ArticleLink from '../../components/homepage/ArticleLink.js';
 import {
-  getArticle,
   listAllArticlesByTag,
+  listAllSections,
   listAllTags,
 } from '../../lib/articles.js';
 import { siteMetadata } from '../../lib/siteMetadata.js';
@@ -10,19 +10,13 @@ import ArticleNav from '../../components/nav/ArticleNav.js';
 import ArticleFooter from '../../components/nav/ArticleFooter.js';
 import { useAmp } from 'next/amp';
 
-let sections = [
-  { label: 'News', link: '/news' },
-  { label: 'Features', link: '/features' },
-  { label: 'Pandemic', link: '/pandemic' },
-];
-
 export default function TagPage(props) {
   const isAmp = useAmp();
   return (
     <Layout meta={siteMetadata}>
-      <ArticleNav metadata={siteMetadata} sections={sections} />
+      <ArticleNav metadata={siteMetadata} sections={props.sections} />
       <section className="section">
-        <h1 className="title">{props.title}</h1>
+        <h1 className="title">{props.slug}</h1>
         <div className="columns">
           <div className="column is-four-fifths">
             {props.articles.map((article) => (
@@ -45,12 +39,14 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ params }) {
-  const articles = await listAllArticlesByTag(params.title);
-  const title = params.title;
+  const articles = await listAllArticlesByTag(params.slug);
+  const sections = await listAllSections();
+  const slug = params.slug;
   return {
     props: {
       articles,
-      title,
+      slug,
+      sections,
     },
   };
 }
