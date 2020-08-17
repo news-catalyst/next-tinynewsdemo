@@ -5,6 +5,7 @@ import {
   getArticleBySlug,
   listAllArticleSlugs,
   listAllSections,
+  listAllTags,
 } from '../../../lib/articles.js';
 import ArticleNav from '../../../components/nav/ArticleNav.js';
 import ArticleFooter from '../../../components/nav/ArticleFooter.js';
@@ -21,7 +22,7 @@ import { siteMetadata } from '../../../lib/siteMetadata.js';
 
 export const config = { amp: 'hybrid' };
 
-export default function Article({ article, sections }) {
+export default function Article({ article, sections, tags }) {
   const mainImageNode = article.content.find(
     (node) => node.type === 'mainImage'
   );
@@ -37,7 +38,7 @@ export default function Article({ article, sections }) {
   siteMetadata.facebookDescription = article.facebookDescription;
   siteMetadata.twitterTitle = article.twitterTitle;
   siteMetadata.twitterDescription = article.twitterDescription;
-  siteMetadata.tags = article.tags;
+  siteMetadata.tags = tags;
   siteMetadata.firstPublishedOn = article.firstPublishedOn;
   siteMetadata.lastPublishedOn = article.lastPublishedOn;
   if (mainImage !== null) {
@@ -102,10 +103,7 @@ export default function Article({ article, sections }) {
   let tagLinks;
   if (article.tags) {
     tagLinks = article.tags.map((tag, index) => (
-      <Link
-        href={`/topics/${kebabCase(tag.title)}`}
-        key={`${tag.title}-${index}`}
-      >
+      <Link href={`/tags/${tag.slug}`} key={`${tag.slug}-${index}`}>
         <a className="is-link tag">{tag.title}</a>
       </Link>
     ));
@@ -204,11 +202,13 @@ export async function getStaticPaths() {
 export async function getStaticProps({ params }) {
   const article = await getArticleBySlug(params.slug);
   const sections = await listAllSections();
+  const tags = await listAllTags();
 
   return {
     props: {
       article,
       sections,
+      tags,
     },
   };
 }
