@@ -4,7 +4,18 @@ import { parseISO } from 'date-fns';
 
 export default function ArticleLink(props) {
   let mainImage = null;
-  let parsedContent = JSON.parse(props.article.content);
+  let parsedContent = [];
+  try {
+    if (typeof props.article.content === 'string') {
+      parsedContent = JSON.parse(props.article.content);
+    } else if (typeof props.article.content !== 'undefined') {
+      // assuming it was parsed elsewhere? confusing.
+      parsedContent = props.article.content;
+    }
+  } catch (e) {
+    console.log('error parsing JSON: ', e);
+  }
+
   const mainImageNode = parsedContent.find((node) => node.type === 'mainImage');
 
   var Dateline = require('dateline');
