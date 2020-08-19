@@ -25,7 +25,7 @@ export default async (req, res) => {
   // (https://nextjs.org/docs/advanced-features/preview-mode)
   // res.redirect(article.slug)
 
-  const articlePath = '/articles/' + article.category.slug + '/' + article.slug;
+  const articlePath = '/preview/' + article.category.slug + '/' + article.slug;
 
   // this approach to the redirect does work
   res.writeHead(301, {
