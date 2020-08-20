@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import Link from 'next/link';
+import { getHomepageData } from '../lib/homepage.js';
 import { listAllArticles } from '../lib/articles.js';
 import { listAllTags } from '../lib/articles.js';
 import { listAllSections } from '../lib/articles.js';
@@ -12,10 +13,34 @@ import ArticleFooter from '../components/nav/ArticleFooter.js';
 import { useAmp } from 'next/amp';
 import { siteMetadata } from '../lib/siteMetadata.js';
 
+import dynamic from 'next/dynamic';
+
+const BigFeaturedStory = dynamic(() =>
+  import(`../components/homepage/BigFeaturedStory`)
+);
+const LargePackageStoryLead = dynamic(() =>
+  import(`../components/homepage/LargePackageStoryLead`)
+);
+
 export const config = { amp: 'hybrid' };
 
-export default function Home({ articles, tags, sections }) {
+export default function Home({ hpData, articles, tags, sections }) {
   const isAmp = useAmp();
+
+  console.log('hpdata:', hpData);
+  return (
+    <>
+      {hpData.layoutComponent === 'BigFeaturedStory' && (
+        <BigFeaturedStory articles={hpData.articles} />
+      )}
+      {hpData.layoutComponent === 'LargePackageStoryLead' && (
+        <LargePackageStoryLead articles={hpData.articles} />
+      )}
+    </>
+  );
+
+  // let hpComponent = `<${hpData.layoutComponent} articles=${hpData.articles} />`;
+  // console.log("HP component: ", hpComponent);
 
   siteMetadata.tags = tags;
 
@@ -76,12 +101,19 @@ export default function Home({ articles, tags, sections }) {
 }
 
 export async function getStaticProps() {
+  // to-do:
+  //    get selected homepage layout / data
+  const hpData = await getHomepageData();
+  //    look up selected homepage articles
+  //    render correct layout components (above)
+
   const articles = await listAllArticles();
   const tags = await listAllTags();
   const sections = await listAllSections();
 
   return {
     props: {
+      hpData,
       articles,
       tags,
       sections,
