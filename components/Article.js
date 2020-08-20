@@ -12,7 +12,6 @@ import { parseISO } from 'date-fns';
 import { siteMetadata } from '../lib/siteMetadata.js';
 import Link from 'next/link';
 import Layout from './Layout.js';
-import kebabCase from 'lodash/kebabCase';
 
 export default function Article({ article, sections, tags }) {
   const mainImageNode = article.content.find(
