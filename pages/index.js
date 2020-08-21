@@ -1,9 +1,13 @@
 import _ from 'lodash';
 import Link from 'next/link';
 import { getHomepageData } from '../lib/homepage.js';
-import { listAllArticles } from '../lib/articles.js';
-import { listAllTags } from '../lib/articles.js';
-import { listAllSections } from '../lib/articles.js';
+import {
+  getArticleBySlug,
+  listAllArticles,
+  listAllTags,
+  listAllSections,
+  getHomepageArticles,
+} from '../lib/articles.js';
 import Layout from '../components/Layout.js';
 import ArticleNav from '../components/nav/ArticleNav.js';
 import FeaturedArticleLink from '../components/homepage/FeaturedArticleLink.js';
@@ -24,14 +28,18 @@ const LargePackageStoryLead = dynamic(() =>
 
 export const config = { amp: 'hybrid' };
 
-export default function Home({ hpData, articles, tags, sections }) {
+export default function Home({ hpData, hpArticles, articles, tags, sections }) {
   const isAmp = useAmp();
 
   console.log('hpdata:', hpData);
   return (
     <>
       {hpData.layoutComponent === 'BigFeaturedStory' && (
-        <BigFeaturedStory articles={hpData.articles} />
+        <BigFeaturedStory
+          articles={hpArticles}
+          tags={tags}
+          sections={sections}
+        />
       )}
       {hpData.layoutComponent === 'LargePackageStoryLead' && (
         <LargePackageStoryLead articles={hpData.articles} />
@@ -105,6 +113,8 @@ export async function getStaticProps() {
   //    get selected homepage layout / data
   const hpData = await getHomepageData();
   //    look up selected homepage articles
+  const hpArticles = await getHomepageArticles(hpData.articles);
+  console.log('hpArticles:', hpArticles);
   //    render correct layout components (above)
 
   const articles = await listAllArticles();
@@ -114,6 +124,7 @@ export async function getStaticProps() {
   return {
     props: {
       hpData,
+      hpArticles,
       articles,
       tags,
       sections,
