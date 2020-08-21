@@ -3,6 +3,8 @@ import Link from 'next/link';
 import { parseISO } from 'date-fns';
 
 export default function ArticleLink(props) {
+  console.log('props.article:', props.article);
+  console.log('props.article.category:', props.article.category);
   let mainImage = null;
   let parsedContent = [];
   try {
