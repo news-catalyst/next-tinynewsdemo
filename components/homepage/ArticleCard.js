@@ -2,7 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import { parseISO } from 'date-fns';
 
-export default function ArticleLink(props) {
+export default function ArticleCard(props) {
   let mainImage = null;
   let parsedContent = [];
   try {
@@ -29,10 +29,10 @@ export default function ArticleLink(props) {
     mainImage = mainImageNode.children[0];
   }
   return (
-    <article className="media">
+    <div className="card">
       {mainImage && (
-        <figure className="media-left">
-          <p className="image article-link-img">
+        <div className="card-image">
+          <figure className="image is-4by3">
             {props.amp ? (
               <amp-img
                 width={mainImage.width}
@@ -42,13 +42,18 @@ export default function ArticleLink(props) {
                 layout="responsive"
               />
             ) : (
-              <img src={mainImage.imageUrl} />
+              <img
+                src={mainImage.imageUrl}
+                alt={mainImage.imageAlt}
+                width={mainImage.width}
+                height={mainImage.height}
+              />
             )}
-          </p>
-        </figure>
+          </figure>
+        </div>
       )}
-      <div className="media-content small-margin-left">
-        <div className="content">
+      <div className="card-content">
+        <div className="content" style={{ padding: '5px' }}>
           <h1 className="title">
             <Link
               href="/articles/[category]/[slug]"
@@ -61,6 +66,8 @@ export default function ArticleLink(props) {
           <p>{props.article.byline}</p>
           {props.article.firstPublishedOn && <p>{firstPublishedOn}</p>}
         </div>
+      </div>
+      <footer className="card-footer">
         <nav className="level is-mobile">
           <div className="level-left">
             <a className="level-item">
@@ -80,7 +87,7 @@ export default function ArticleLink(props) {
             </a>
           </div>
         </nav>
-      </div>
-    </article>
+      </footer>
+    </div>
   );
 }
