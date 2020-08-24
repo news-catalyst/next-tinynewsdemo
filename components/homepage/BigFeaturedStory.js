@@ -29,6 +29,7 @@ export default function BigFeaturedStory(props) {
       <a className="panel-block is-active">{_.startCase(tag.title)}</a>
     </Link>
   ));
+  console.log('tagLinks: ', tagLinks);
   return (
     <div className="homepage">
       <ArticleNav

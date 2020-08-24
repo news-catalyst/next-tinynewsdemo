@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { parseISO } from 'date-fns';
 
 export default function FeaturedArticleLink(props) {
-  console.log('FeaturedArticleLink props.article:', props.article);
+  // console.log('FeaturedArticleLink props.article:', props.article);
 
   let mainImage = null;
   let mainImageNode = null;
