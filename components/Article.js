@@ -121,6 +121,14 @@ export default function Article({ article, sections, tags }) {
             <div
               className={article.cover ? 'container head-margin' : 'container'}
             >
+              <h2 className="subtitle">
+                <Link
+                  key={article.category.title}
+                  href={`/${article.category.slug}`}
+                >
+                  {article.category.title}
+                </Link>
+              </h2>
               <h1 className="title is-size-1">{article.headline}</h1>
               <h2 className="subtitle" key="byline">
                 By {article.byline} | Published {firstPublishedOn}
