@@ -1,5 +1,4 @@
 import React from 'react';
-import _ from 'lodash';
 import Link from 'next/link';
 
 export default function ArticleNav(props) {
