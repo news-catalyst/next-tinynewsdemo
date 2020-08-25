@@ -25,10 +25,11 @@ export default function BigFeaturedStory(props) {
   const isAmp = useAmp();
 
   const tagLinks = props.tags.map((tag) => (
-    <Link key={tag.title} href={`/tags/${tag.title}`}>
-      <a className="panel-block is-active">{_.startCase(tag.title)}</a>
+    <Link key={tag.title} href={`/tags/${tag.slug}`}>
+      <a className="panel-block is-active">{tag.title}</a>
     </Link>
   ));
+  console.log('tagLinks: ', tagLinks);
   return (
     <div className="homepage">
       <ArticleNav
