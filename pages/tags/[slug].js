@@ -9,6 +9,7 @@ import { siteMetadata } from '../../lib/siteMetadata.js';
 import ArticleNav from '../../components/nav/ArticleNav.js';
 import ArticleFooter from '../../components/nav/ArticleFooter.js';
 import { useAmp } from 'next/amp';
+import startCase from 'lodash/startCase';
 
 export default function TagPage(props) {
   const isAmp = useAmp();
@@ -16,9 +17,7 @@ export default function TagPage(props) {
     <Layout meta={siteMetadata}>
       <ArticleNav metadata={siteMetadata} sections={props.sections} />
       <section className="section">
-        <h1 className="title">
-          Articles tagged with {_.startCase(props.slug)}
-        </h1>
+        <h1 className="title">Articles tagged with {startCase(props.slug)}</h1>
         <div className="columns">
           <div className="column is-four-fifths">
             {props.articles.map((article) => (
