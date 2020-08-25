@@ -1,30 +1,21 @@
 import React from 'react';
-import _ from 'lodash';
 import Link from 'next/link';
 
 export default function ArticleNav(props) {
-  // let tagLinks
   let sectionLinks;
 
   if (props.sections) {
     sectionLinks = props.sections.slice(0, 4).map((section) => (
       <Link
-        key={`navbar-${_.kebabCase(section.title)}`}
+        key={`navbar-${section.slug}`}
         href={section.slug}
         as={section.slug}
       >
-        <a className="navbar-item">{_.startCase(section.title)}</a>
+        <a className="navbar-item">{section.title}</a>
       </Link>
     ));
   }
 
-  // if (props.tags) {
-  //   tagLinks = props.tags.slice(0, 4).map((tag) => (
-  //     <Link key={`navbar-${tag}`} href={`/topics/${tag}`} as={`/topics/${tag}`}>
-  //       <a className="navbar-item">{_.startCase(tag)}</a>
-  //     </Link>
-  //   ))
-  // }
   return (
     <nav
       className="navbar is-spaced nav-border"
