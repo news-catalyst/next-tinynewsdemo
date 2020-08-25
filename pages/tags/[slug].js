@@ -3,7 +3,7 @@ import ArticleLink from '../../components/homepage/ArticleLink.js';
 import {
   listAllArticlesByTag,
   listAllSections,
-  listAllTags,
+  listAllTagPaths,
 } from '../../lib/articles.js';
 import { siteMetadata } from '../../lib/siteMetadata.js';
 import ArticleNav from '../../components/nav/ArticleNav.js';
@@ -16,7 +16,9 @@ export default function TagPage(props) {
     <Layout meta={siteMetadata}>
       <ArticleNav metadata={siteMetadata} sections={props.sections} />
       <section className="section">
-        <h1 className="title">{props.slug}</h1>
+        <h1 className="title">
+          Articles tagged with {_.startCase(props.slug)}
+        </h1>
         <div className="columns">
           <div className="column is-four-fifths">
             {props.articles.map((article) => (
@@ -31,7 +33,7 @@ export default function TagPage(props) {
 }
 
 export async function getStaticPaths() {
-  const paths = await listAllTags();
+  const paths = await listAllTagPaths();
   return {
     paths,
     fallback: false,
