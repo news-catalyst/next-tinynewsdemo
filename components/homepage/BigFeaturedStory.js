@@ -1,9 +1,8 @@
 import _ from 'lodash';
 import Link from 'next/link';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useAmp } from 'next/amp';
 import { siteMetadata } from '../../lib/siteMetadata.js';
-import { getArticleBySlug } from '../../lib/articles.js';
 import Layout from '../Layout.js';
 import ArticleNav from '../nav/ArticleNav.js';
 import FeaturedArticleLink from './FeaturedArticleLink.js';
@@ -18,10 +17,6 @@ export default function BigFeaturedStory(props) {
     props.articles['stream']
   );
 
-  console.log('BigFeaturedStory', props);
-  streamArticles.map((streamArticle) => {
-    console.log('streamArticle:', streamArticle);
-  });
   const isAmp = useAmp();
 
   const tagLinks = props.tags.map((tag) => (
@@ -29,7 +24,7 @@ export default function BigFeaturedStory(props) {
       <a className="panel-block is-active">{tag.title}</a>
     </Link>
   ));
-  console.log('tagLinks: ', tagLinks);
+
   return (
     <div className="homepage">
       <ArticleNav
