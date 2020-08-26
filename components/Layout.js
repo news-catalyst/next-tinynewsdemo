@@ -6,11 +6,6 @@ import AmpAnalytics from './amp/AmpAnalytics.js';
 
 export default function Layout({ children, meta }) {
   const metaValues = {
-    title: meta.title || siteMetadata.title,
-    description: meta.description || siteMetadata.description,
-    ogTitle: meta.ogTitle || siteMetadata.title,
-    ogDescription: meta.ogDescrption || siteMetadata.description,
-    ogImage: meta.ogImage || '',
     canonical: meta.canonical || siteMetadata.siteUrl,
     searchTitle: meta.searchTitle || siteMetadata.searchTitle,
     searchDescription: meta.searchDescription || siteMetadata.searchDescription,
@@ -27,8 +22,12 @@ export default function Layout({ children, meta }) {
   };
 
   let tagList = [];
-  for (const [index, value] of metaValues.tags.entries()) {
-    tagList.push(<meta property="article:tag" content={value.title} />);
+  if (metaValues.tags) {
+    for (const [index, value] of metaValues.tags.entries()) {
+      tagList.push(
+        <meta property="article:tag" content={value.title} key={value.slug} />
+      );
+    }
   }
 
   const isAmp = useAmp();
@@ -41,9 +40,6 @@ export default function Layout({ children, meta }) {
         <title>{meta.searchTitle}</title>
         <link rel="icon" href="/favicon.ico" />
         <meta property="description" content={metaValues.searchDescription} />
-        <meta property="og:title" content={metaValues.ogTitle} />
-        <meta property="og:description" content={metaValues.ogDescription} />
-        <meta property="og:image" content={metaValues.ogImage} />
         {tagList}
         <link rel="canonical" href={metaValues.canonical} />
         <link

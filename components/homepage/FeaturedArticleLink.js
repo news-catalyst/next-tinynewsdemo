@@ -2,15 +2,22 @@ import React from 'react';
 import Link from 'next/link';
 import { parseISO } from 'date-fns';
 
-export default function ArticleLink(props) {
-  const mainImageNode = props.article.content.find(
-    (node) => node.type === 'mainImage'
-  );
-  let mainImage = null;
+export default function FeaturedArticleLink(props) {
+  // console.log('FeaturedArticleLink props.article:', props.article);
 
-  if (mainImageNode) {
-    mainImage = mainImageNode.children[0];
+  let mainImage = null;
+  let mainImageNode = null;
+
+  if (props.article && props.article.content) {
+    mainImageNode = props.article.content.find(
+      (node) => node.type === 'mainImage'
+    );
+
+    if (mainImageNode) {
+      mainImage = mainImageNode.children[0];
+    }
   }
+
   var Dateline = require('dateline');
   let parsedDate = parseISO(props.article.firstPublishedOn);
   let firstPublishedOn =
