@@ -13,6 +13,41 @@ import { siteMetadata } from '../lib/siteMetadata.js';
 import Link from 'next/link';
 import Layout from './Layout.js';
 
+const renderAuthor = (author, i) => {
+  if (author.slug !== null) {
+    return (
+      <Link href={`/authors/${author.slug}`} key={`${author.slug}-${index}`}>
+        <a className="is-link">{author.name}</a>
+      </Link>
+    );
+  } else {
+    return (
+      <span className="author" key={author.id}>
+        {author.name}
+      </span>
+    );
+  }
+};
+
+// solution from https://stackoverflow.com/questions/53879088/join-an-array-by-commas-and-and
+const renderAuthors = (authors) => {
+  authors = authors.map(renderAuthor);
+
+  var output = [];
+  authors.forEach(function (author, i) {
+    // if list is more than one item and this is the last item, prefix with 'and '
+    if (authors.length > 1 && i === authors.length - 1) output.push('and ');
+    // output the item
+    output.push(author);
+    // if list is more than 2 items, append a comma to all but the last item
+    if (authors.length > 2 && i < authors.length - 1) output.push(',');
+    // if list is more than 1 item, append a space to all but the last item
+    if (authors.length > 1 && i < authors.length - 1) output.push(' ');
+  });
+
+  return output;
+};
+
 export default function Article({ article, sections, tags }) {
   const mainImageNode = article.content.find(
     (node) => node.type === 'mainImage'
@@ -99,30 +134,9 @@ export default function Article({ article, sections, tags }) {
       </Link>
     ));
   }
-  let authorLinks = null;
+  let authorLinks;
   if (article.authors) {
-    authorLinks = article.authors
-      .map((author, index) => {
-        if (author.slug !== null) {
-          return (
-            <Link
-              href={`/authors/${author.slug}`}
-              key={`${author.slug}-${index}`}
-            >
-              <a className="is-link">{author.name}</a>
-            </Link>
-          );
-        } else {
-          return (
-            <span className="author" key={author.id}>
-              {author.name}
-            </span>
-          );
-        }
-      })
-      .reduce((accu, elem) => {
-        return accu === null ? [elem] : [...accu, ' & ', elem];
-      }, null);
+    authorLinks = renderAuthors(article.authors);
   } else if (article.byline !== undefined) {
     authorLinks = article.byline;
   }
