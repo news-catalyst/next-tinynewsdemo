@@ -28,6 +28,7 @@ export default function ArticleLink(props) {
   if (mainImageNode) {
     mainImage = mainImageNode.children[0];
   }
+
   return (
     <article className="media">
       {mainImage && (

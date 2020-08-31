@@ -99,18 +99,49 @@ export default function Article({ article, sections, tags }) {
       </Link>
     ));
   }
+  let authorLinks = null;
+  if (article.authors) {
+    authorLinks = article.authors
+      .map((author, index) => {
+        if (author.slug !== null) {
+          return (
+            <Link
+              href={`/authors/${author.slug}`}
+              key={`${author.slug}-${index}`}
+            >
+              <a className="is-link">{author.name}</a>
+            </Link>
+          );
+        } else {
+          return (
+            <span className="author" key={author.id}>
+              {author.name}
+            </span>
+          );
+        }
+      })
+      .reduce((accu, elem) => {
+        return accu === null ? [elem] : [...accu, ' & ', elem];
+      }, null);
+  } else if (article.byline !== undefined) {
+    authorLinks = article.byline;
+  }
 
-  var Dateline = require('dateline');
-  let parsedDate = parseISO(article.firstPublishedOn);
-  let firstPublishedOn =
-    Dateline(parsedDate).getAPDate() +
-    ' at ' +
-    Dateline(parsedDate).getAPTime();
-  parsedDate = parseISO(article.lastPublishedOn);
-  let lastPublishedOn =
-    Dateline(parsedDate).getAPDate() +
-    ' at ' +
-    Dateline(parsedDate).getAPTime();
+  let firstPublishedOn = null;
+  let lastPublishedOn = null;
+  if (article.firstPublishedOn !== null) {
+    var Dateline = require('dateline');
+    let parsedDate = parseISO(article.firstPublishedOn);
+    firstPublishedOn =
+      Dateline(parsedDate).getAPDate() +
+      ' at ' +
+      Dateline(parsedDate).getAPTime();
+    parsedDate = parseISO(article.lastPublishedOn);
+    lastPublishedOn =
+      Dateline(parsedDate).getAPDate() +
+      ' at ' +
+      Dateline(parsedDate).getAPTime();
+  }
 
   return (
     <Layout meta={siteMetadata}>
@@ -131,10 +162,11 @@ export default function Article({ article, sections, tags }) {
               </h2>
               <h1 className="title is-size-1">{article.headline}</h1>
               <h2 className="subtitle" key="byline">
-                By {article.byline} | Published {firstPublishedOn}
+                By {authorLinks} |
+                {firstPublishedOn !== null && ` Published ${firstPublishedOn}`}
               </h2>
               <h2 className="subtitle" key="last-updated">
-                Last updated: {lastPublishedOn}
+                {lastPublishedOn !== null && `Last updated: ${lastPublishedOn}`}
               </h2>
             </div>
           </div>
