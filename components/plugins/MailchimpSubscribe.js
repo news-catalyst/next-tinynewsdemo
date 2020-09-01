@@ -1,5 +1,7 @@
+import { useEffect } from 'react';
 import MailchimpSubscribe from 'react-mailchimp-subscribe';
 import { useAnalytics } from '../../lib/hooks/useAnalytics.js';
+import { useInView } from 'react-intersection-observer';
 
 // you can get this url from the embed code form action
 const url = process.env.NEXT_PUBLIC_MAILCHIMP_SUBSCRIBE_URL;
@@ -56,26 +58,39 @@ const CustomForm = ({ status, message, onValidated }) => {
 
 const Newsletter = () => {
   const { trackEvent } = useAnalytics();
+  const [ref, inView] = useInView({ triggerOnce: true });
+  useEffect(() => {
+    if (inView) {
+      trackEvent({
+        action: 'newsletter modal impression 1',
+        category: 'NTG newsletter',
+        label: 'article title',
+        non_interaction: true,
+      });
+    }
+  }, [inView]);
 
   return (
-    <MailchimpSubscribe
-      url={url}
-      render={({ subscribe, status, message }) => (
-        <CustomForm
-          status={status}
-          message={message}
-          onValidated={(formData) => {
-            subscribe(formData);
-            trackEvent({
-              action: 'newsletter signup',
-              category: 'NTG newsletter',
-              label: 'success',
-              non_interaction: false,
-            });
-          }}
-        />
-      )}
-    />
+    <div ref={ref}>
+      <MailchimpSubscribe
+        url={url}
+        render={({ subscribe, status, message }) => (
+          <CustomForm
+            status={status}
+            message={message}
+            onValidated={(formData) => {
+              subscribe(formData);
+              trackEvent({
+                action: 'newsletter signup',
+                category: 'NTG newsletter',
+                label: 'success',
+                non_interaction: false,
+              });
+            }}
+          />
+        )}
+      />
+    </div>
   );
 };
 
