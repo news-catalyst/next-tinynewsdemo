@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import ArticleNav from './nav/ArticleNav.js';
 import ArticleFooter from './nav/ArticleFooter.js';
 import Coral from './plugins/Coral.js';
@@ -12,6 +13,8 @@ import { parseISO } from 'date-fns';
 import { siteMetadata } from '../lib/siteMetadata.js';
 import Link from 'next/link';
 import Layout from './Layout.js';
+import { useAnalytics } from '../lib/hooks/useAnalytics.js';
+import { useScrollPercentage } from 'react-scroll-percentage';
 
 export default function Article({ article, sections, tags }) {
   const mainImageNode = article.content.find(
@@ -112,6 +115,60 @@ export default function Article({ article, sections, tags }) {
     ' at ' +
     Dateline(parsedDate).getAPTime();
 
+  const { trackEvent } = useAnalytics();
+
+  const [ref, percentage] = useScrollPercentage();
+  const [oneQuarterReached, setOneQuarterReached] = useState(false);
+  const [oneHalfReached, setOneHalfReached] = useState(false);
+  const [threeQuartersReached, setThreeQuarterSReached] = useState(false);
+  const [fullReached, setFullReached] = useState(false);
+
+  useEffect(() => {
+    if (!oneQuarterReached && percentage >= 0.25) {
+      trackEvent({
+        action: '25%',
+        category: 'NTG article milestone',
+        label: article.title,
+        value: 25,
+        non_interaction: true,
+      });
+      setOneQuarterReached(true);
+    }
+
+    if (!oneHalfReached && percentage >= 0.5) {
+      trackEvent({
+        action: '50%',
+        category: 'NTG article milestone',
+        label: article.title,
+        value: 50,
+        non_interaction: true,
+      });
+      setOneHalfReached(true);
+    }
+
+    if (!threeQuartersReached && percentage >= 0.75) {
+      trackEvent({
+        action: '75%',
+        category: 'NTG article milestone',
+        label: article.title,
+        value: 75,
+        non_interaction: true,
+      });
+      setThreeQuarterSReached(true);
+    }
+
+    if (!fullReached && percentage >= 1) {
+      trackEvent({
+        action: '100%',
+        category: 'NTG article milestone',
+        label: article.title,
+        value: 100,
+        non_interaction: true,
+      });
+      setFullReached(true);
+    }
+  }, [percentage]);
+
   return (
     <Layout meta={siteMetadata}>
       <ArticleNav metadata={siteMetadata} sections={sections} />
@@ -156,7 +213,7 @@ export default function Article({ article, sections, tags }) {
             className="image"
           />
         )}
-        <section className="section" key="body">
+        <section className="section" key="body" ref={ref}>
           <div id="articleText" className="content">
             {serializedBody}
           </div>
