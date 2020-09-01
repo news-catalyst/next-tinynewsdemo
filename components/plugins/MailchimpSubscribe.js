@@ -56,7 +56,7 @@ const CustomForm = ({ status, message, onValidated }) => {
   );
 };
 
-const Newsletter = () => {
+const Newsletter = ({ articleTitle }) => {
   const { trackEvent } = useAnalytics();
   const [ref, inView] = useInView({ triggerOnce: true });
   useEffect(() => {
@@ -64,7 +64,7 @@ const Newsletter = () => {
       trackEvent({
         action: 'newsletter modal impression 1',
         category: 'NTG newsletter',
-        label: 'article title',
+        label: articleTitle,
         non_interaction: true,
       });
     }

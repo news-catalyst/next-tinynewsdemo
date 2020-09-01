@@ -128,7 +128,7 @@ export default function Article({ article, sections, tags }) {
       trackEvent({
         action: '25%',
         category: 'NTG article milestone',
-        label: article.title,
+        label: article.headline,
         value: 25,
         non_interaction: true,
       });
@@ -139,7 +139,7 @@ export default function Article({ article, sections, tags }) {
       trackEvent({
         action: '50%',
         category: 'NTG article milestone',
-        label: article.title,
+        label: article.headline,
         value: 50,
         non_interaction: true,
       });
@@ -150,7 +150,7 @@ export default function Article({ article, sections, tags }) {
       trackEvent({
         action: '75%',
         category: 'NTG article milestone',
-        label: article.title,
+        label: article.headline,
         value: 75,
         non_interaction: true,
       });
@@ -161,7 +161,7 @@ export default function Article({ article, sections, tags }) {
       trackEvent({
         action: '100%',
         category: 'NTG article milestone',
-        label: article.title,
+        label: article.headline,
         value: 100,
         non_interaction: true,
       });
@@ -232,7 +232,7 @@ export default function Article({ article, sections, tags }) {
           <h1 className="title media-left">
             {siteMetadata.subscribe.subtitle}
           </h1>
-          <MailchimpSubscribe />
+          <MailchimpSubscribe articleTitle={article.headline} />
           <div className="comments">
             {isAmp ? (
               <div>Coral AMP</div>
