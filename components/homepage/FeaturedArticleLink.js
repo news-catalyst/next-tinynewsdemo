@@ -1,9 +1,13 @@
 import React from 'react';
 import Link from 'next/link';
 import { parseISO } from 'date-fns';
+import { renderAuthors } from '../../lib/utils.js';
 
 export default function FeaturedArticleLink(props) {
-  // console.log('FeaturedArticleLink props.article:', props.article);
+  console.log(
+    'FeaturedArticleLink props.article.authors:',
+    props.article.authors
+  );
 
   let mainImage = null;
   let mainImageNode = null;
@@ -24,6 +28,14 @@ export default function FeaturedArticleLink(props) {
     Dateline(parsedDate).getAPDate() +
     ' at ' +
     Dateline(parsedDate).getAPTime();
+
+  let authorLinks;
+  if (props.article.authors) {
+    authorLinks = renderAuthors(props.article.authors);
+  } else if (props.article.byline !== undefined) {
+    authorLinks = props.article.byline;
+  }
+
   return (
     <article>
       {mainImage && (
@@ -53,7 +65,7 @@ export default function FeaturedArticleLink(props) {
           </Link>
         </h1>
         <p className="featured">{props.article.excerpt}</p>
-        <p className="featured">{props.article.byline}</p>
+        <p className="featured">{authorLinks}</p>
         {props.article.firstPublishedOn && <p>{firstPublishedOn}</p>}
       </div>
       <nav className="level is-mobile">
