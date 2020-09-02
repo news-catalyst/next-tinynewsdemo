@@ -1,8 +1,10 @@
 import React from 'react';
 import Link from 'next/link';
 import { parseISO } from 'date-fns';
+import { renderAuthors } from '../../lib/utils.js';
 
 export default function ArticleLink(props) {
+  console.log('ArticleLink props.article.authors:', props.article.authors);
   let mainImage = null;
   let parsedContent = [];
   try {
@@ -28,6 +30,14 @@ export default function ArticleLink(props) {
   if (mainImageNode) {
     mainImage = mainImageNode.children[0];
   }
+
+  let authorLinks;
+  if (props.article.authors) {
+    authorLinks = renderAuthors(props.article.authors);
+  } else if (props.article.byline !== undefined) {
+    authorLinks = props.article.byline;
+  }
+
   return (
     <article className="media">
       {mainImage && (
@@ -58,7 +68,7 @@ export default function ArticleLink(props) {
             </Link>
           </h1>
           <p>{props.article.excerpt}</p>
-          <p>{props.article.byline}</p>
+          <p>{authorLinks}</p>
           {props.article.firstPublishedOn && <p>{firstPublishedOn}</p>}
         </div>
         <nav className="level is-mobile">

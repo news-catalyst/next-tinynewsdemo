@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import Link from 'next/link';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAmp } from 'next/amp';
 import { siteMetadata } from '../../lib/siteMetadata.js';
 import Layout from '../Layout.js';
@@ -18,6 +18,14 @@ export default function BigFeaturedStory(props) {
   );
 
   const isAmp = useAmp();
+
+  // I noticed that `streamArticles` were null or undefined on occasional page loads
+  // using this hook seems to fix the load order issue; the useState calls could probably
+  // default to `useState(null)` but I figured I'd leave them as-is.
+  useEffect(() => {
+    setFeaturedArticle(props.articles['featured']);
+    setStreamArticles(props.articles['stream']);
+  }, [props.articles]);
 
   const tagLinks = props.tags.map((tag) => (
     <Link key={tag.title} href={`/tags/${tag.slug}`}>
