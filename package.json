@@ -31,8 +31,10 @@
     "react": "16.13.1",
     "react-dom": "16.13.1",
     "react-ga": "^3.1.2",
+    "react-intersection-observer": "^8.27.1",
     "react-mailchimp-subscribe": "^2.1.0",
     "react-player": "^2.5.0",
+    "react-scroll-percentage": "^4.2.0",
     "react-twitter-embed": "^3.0.3",
     "sass": "^1.26.9",
     "web-vitals": "^0.2.3"
