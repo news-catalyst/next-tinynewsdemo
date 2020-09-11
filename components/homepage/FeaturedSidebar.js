@@ -1,6 +1,6 @@
 import MailchimpSubscribe from '../plugins/MailchimpSubscribe.js';
 
-export default function HomepageNewsletterSubscribe() {
+export default function FeaturedSidebar() {
   return (
     <div className="sidebar">
       <h3 className="title is-3">Get our newsletter</h3>
