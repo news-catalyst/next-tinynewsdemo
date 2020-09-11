@@ -7,7 +7,7 @@ import FeaturedArticleLink from './FeaturedArticleLink.js';
 import ArticleLink from './ArticleLink.js';
 import GlobalNav from '../nav/GlobalNav.js';
 import GlobalFooter from '../nav/GlobalFooter.js';
-import HomepageNewsletterSubscribe from './HomepageNewsletterSubscribe.js';
+import FeaturedSidebar from './FeaturedSidebar.js';
 
 export default function BigFeaturedStory(props) {
   const [featuredArticle, setFeaturedArticle] = useState(
@@ -53,7 +53,7 @@ export default function BigFeaturedStory(props) {
               )}
             </div>
             <div className="column is-one-third">
-              <HomepageNewsletterSubscribe />
+              <FeaturedSidebar />
             </div>
           </div>
         </div>
