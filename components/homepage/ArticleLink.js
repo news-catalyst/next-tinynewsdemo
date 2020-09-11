@@ -1,41 +1,18 @@
 import React from 'react';
 import Link from 'next/link';
-import { parseISO } from 'date-fns';
-import { renderAuthors } from '../../lib/utils.js';
+import { renderDate, renderAuthors } from '../../lib/utils.js';
 
-export default function ArticleLink(props) {
-  console.log('ArticleLink props.article.authors:', props.article.authors);
+export default function ArticleLink({ article, isAmp }) {
   let mainImage = null;
-  let parsedContent = [];
-  try {
-    if (typeof props.article.content === 'string') {
-      parsedContent = JSON.parse(props.article.content);
-    } else if (typeof props.article.content !== 'undefined') {
-      // assuming it was parsed elsewhere? confusing.
-      parsedContent = props.article.content;
-    }
-  } catch (e) {
-    console.log('error parsing JSON: ', e);
-  }
 
-  const mainImageNode = parsedContent.find((node) => node.type === 'mainImage');
+  console.log(article);
 
-  var Dateline = require('dateline');
-  let parsedDate = parseISO(props.article.firstPublishedOn);
-  let firstPublishedOn =
-    Dateline(parsedDate).getAPDate() +
-    ' at ' +
-    Dateline(parsedDate).getAPTime();
+  const mainImageNode = article.content.find(
+    (node) => node.type === 'mainImage'
+  );
 
   if (mainImageNode) {
     mainImage = mainImageNode.children[0];
-  }
-
-  let authorLinks;
-  if (props.article.authors) {
-    authorLinks = renderAuthors(props.article.authors);
-  } else if (props.article.byline !== undefined) {
-    authorLinks = props.article.byline;
   }
 
   return (
@@ -43,7 +20,7 @@ export default function ArticleLink(props) {
       {mainImage && (
         <figure className="media-left">
           <p className="image article-link-img">
-            {props.amp ? (
+            {isAmp ? (
               <amp-img
                 width={mainImage.width}
                 height={mainImage.height}
@@ -62,14 +39,14 @@ export default function ArticleLink(props) {
           <h1 className="title">
             <Link
               href="/articles/[category]/[slug]"
-              as={`/articles/${props.article.category.slug}/${props.article.slug}`}
+              as={`/articles/${article.category.slug}/${article.slug}`}
             >
-              <a>{props.article.headline}</a>
+              <a>{article.headline}</a>
             </Link>
           </h1>
-          <p>{props.article.excerpt}</p>
-          <p>{authorLinks}</p>
-          {props.article.firstPublishedOn && <p>{firstPublishedOn}</p>}
+          <p>{renderAuthors(article)}</p>
+          <p>{renderDate(article.firstPublishedOn, false)}</p>
+          <p>{article.searchDescription}</p>
         </div>
         <nav className="level is-mobile">
           <div className="level-left">

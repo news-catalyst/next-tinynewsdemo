@@ -1,30 +1,12 @@
 import React from 'react';
 import Link from 'next/link';
-import { parseISO } from 'date-fns';
+import { renderDate } from '../../lib/utils.js';
 
-export default function ArticleCard(props) {
+export default function ArticleCard({ article, isAmp }) {
   let mainImage = null;
-  let parsedContent = [];
-  try {
-    if (typeof props.article.content === 'string') {
-      parsedContent = JSON.parse(props.article.content);
-    } else if (typeof props.article.content !== 'undefined') {
-      // assuming it was parsed elsewhere? confusing.
-      parsedContent = props.article.content;
-    }
-  } catch (e) {
-    console.log('error parsing JSON: ', e);
-  }
-
-  const mainImageNode = parsedContent.find((node) => node.type === 'mainImage');
-
-  var Dateline = require('dateline');
-  let parsedDate = parseISO(props.article.firstPublishedOn);
-  let firstPublishedOn =
-    Dateline(parsedDate).getAPDate() +
-    ' at ' +
-    Dateline(parsedDate).getAPTime();
-
+  const mainImageNode = article.content.find(
+    (node) => node.type === 'mainImage'
+  );
   if (mainImageNode) {
     mainImage = mainImageNode.children[0];
   }
@@ -33,7 +15,7 @@ export default function ArticleCard(props) {
       {mainImage && (
         <div className="card-image">
           <figure className="image is-4by3">
-            {props.amp ? (
+            {isAmp ? (
               <amp-img
                 width={mainImage.width}
                 height={mainImage.height}
@@ -57,14 +39,13 @@ export default function ArticleCard(props) {
           <h1 className="title">
             <Link
               href="/articles/[category]/[slug]"
-              as={`/articles/${props.article.category.slug}/${props.article.slug}`}
+              as={`/articles/${article.category.slug}/${article.slug}`}
             >
-              <a>{props.article.headline}</a>
+              <a>{article.headline}</a>
             </Link>
           </h1>
-          <p>{props.article.excerpt}</p>
-          <p>{props.article.byline}</p>
-          {props.article.firstPublishedOn && <p>{firstPublishedOn}</p>}
+          <p>{renderAuthors(article)}</p>
+          <p>{renderDate(article.firstPublishedOn, false)}</p>
         </div>
       </div>
       <footer className="card-footer">

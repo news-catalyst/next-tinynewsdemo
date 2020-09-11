@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import Router from 'next/router';
 import { useAnalytics } from '../lib/hooks/useAnalytics.js';
 import { useAmp } from 'next/amp';
+import 'bulma/css/bulma.min.css';
 
 export function reportWebVitals({ id, name, label, value }) {
   const { trackEvent } = useAnalytics();
