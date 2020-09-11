@@ -8,8 +8,8 @@ import {
   listAllTags,
 } from '../lib/articles.js';
 import { siteMetadata } from '../lib/siteMetadata.js';
-import ArticleNav from '../components/nav/ArticleNav.js';
-import ArticleFooter from '../components/nav/ArticleFooter.js';
+import GlobalNav from '../components/nav/GlobalNav.js';
+import GlobalFooter from '../components/nav/GlobalFooter.js';
 import { useAmp } from 'next/amp';
 
 export default function CategoryPage({ articles, title, sections, tags }) {
@@ -17,7 +17,7 @@ export default function CategoryPage({ articles, title, sections, tags }) {
   siteMetadata.tags = tags;
   return (
     <Layout meta={siteMetadata}>
-      <ArticleNav metadata={siteMetadata} sections={sections} />
+      <GlobalNav sections={sections} />
       <section className="section">
         <h1 className="title">{title}</h1>
         <div className="columns">
@@ -28,7 +28,7 @@ export default function CategoryPage({ articles, title, sections, tags }) {
           </div>
         </div>
       </section>
-      <ArticleFooter metadata={siteMetadata} />
+      <GlobalFooter />
     </Layout>
   );
 }

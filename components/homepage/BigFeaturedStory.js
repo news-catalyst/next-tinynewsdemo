@@ -1,13 +1,13 @@
-import _ from 'lodash';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import { useAmp } from 'next/amp';
 import { siteMetadata } from '../../lib/siteMetadata.js';
 import Layout from '../Layout.js';
-import ArticleNav from '../nav/ArticleNav.js';
 import FeaturedArticleLink from './FeaturedArticleLink.js';
 import ArticleLink from './ArticleLink.js';
-import ArticleFooter from '../nav/ArticleFooter.js';
+import GlobalNav from '../nav/GlobalNav.js';
+import GlobalFooter from '../nav/GlobalFooter.js';
+import HomepageNewsletterSubscribe from './HomepageNewsletterSubscribe.js';
 
 export default function BigFeaturedStory(props) {
   const [featuredArticle, setFeaturedArticle] = useState(
@@ -35,39 +35,39 @@ export default function BigFeaturedStory(props) {
 
   return (
     <div className="homepage">
-      <ArticleNav
-        metadata={siteMetadata}
-        tags={props.tags}
-        sections={props.sections}
-      />
       <Layout meta={siteMetadata}>
-        <section className="hero is-dark is-bold">
-          <div className="hero-body">
-            <div className="container">
-              <h1 className="title">{siteMetadata.homepageTitle}</h1>
-              <h2 className="subtitle">{siteMetadata.homepageSubtitle}</h2>
+        <GlobalNav
+          metadata={siteMetadata}
+          tags={props.tags}
+          sections={props.sections}
+        />
+        <div className="featured-article">
+          <div className="columns">
+            <div className="column is-two-thirds">
+              {featuredArticle && (
+                <FeaturedArticleLink
+                  key={featuredArticle.id}
+                  article={featuredArticle}
+                  amp={isAmp}
+                />
+              )}
+            </div>
+            <div className="column is-one-third">
+              <HomepageNewsletterSubscribe />
             </div>
           </div>
-        </section>
-        <div className="featured-article">
-          {featuredArticle && (
-            <FeaturedArticleLink
-              key={featuredArticle.id}
-              article={featuredArticle}
-              amp={isAmp}
-            />
-          )}
         </div>
         <section className="section">
           <div className="columns">
-            <div className="column is-four-fifths">
-              {streamArticles.map((streamArticle) => (
-                <ArticleLink
-                  key={streamArticle.id}
-                  article={streamArticle}
-                  amp={isAmp}
-                />
-              ))}
+            <div className="column is-three-quarters">
+              {streamArticles &&
+                streamArticles.map((streamArticle) => (
+                  <ArticleLink
+                    key={streamArticle.id}
+                    article={streamArticle}
+                    amp={isAmp}
+                  />
+                ))}
             </div>
             <div className="column">
               <nav className="panel">
@@ -78,7 +78,7 @@ export default function BigFeaturedStory(props) {
           </div>
         </section>
       </Layout>
-      <ArticleFooter post_type="home" metadata={siteMetadata} />
+      <GlobalFooter post_type="home" />
     </div>
   );
 }
