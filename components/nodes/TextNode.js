@@ -7,7 +7,7 @@ export default function TextNode({ node }) {
     );
 
     if (child.style) {
-      if (child.style.underline) {
+      if (child.style.underline && !child.link) {
         text = <u key={`${child.index}-u-${text}`}>{text}</u>;
       }
       if (child.style.italic) {

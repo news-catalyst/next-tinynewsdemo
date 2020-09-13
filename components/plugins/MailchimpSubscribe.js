@@ -10,22 +10,13 @@ const CustomForm = ({ status, message, onValidated }) => {
   let email, name;
   const submit = () =>
     email &&
-    name &&
     email.value.indexOf('@') > -1 &&
     onValidated({
       EMAIL: email.value,
-      NAME: name.value,
     });
 
   return (
-    <div
-      style={{
-        background: '#efefef',
-        borderRadius: 2,
-        padding: 10,
-        display: 'inline-block',
-      }}
-    >
+    <div>
       {status === 'sending' && <div style={{ color: 'blue' }}>sending...</div>}
       {status === 'error' && (
         <div
@@ -39,19 +30,21 @@ const CustomForm = ({ status, message, onValidated }) => {
           dangerouslySetInnerHTML={{ __html: message }}
         />
       )}
-      <input
-        ref={(node) => (name = node)}
-        type="text"
-        placeholder="Your name"
-      />
-      <br />
-      <input
-        ref={(node) => (email = node)}
-        type="email"
-        placeholder="Your email"
-      />
-      <br />
-      <button onClick={submit}>Submit</button>
+      <div className="field has-addons">
+        <div className="control">
+          <input
+            ref={(node) => (email = node)}
+            type="email"
+            placeholder="Your email"
+            className="input"
+          />
+        </div>
+        <div className="control">
+          <button onClick={submit} className="button">
+            Submit
+          </button>
+        </div>
+      </div>
     </div>
   );
 };

@@ -4,10 +4,10 @@ import React, { useState } from 'react';
 import { useAmp } from 'next/amp';
 import { siteMetadata } from '../../lib/siteMetadata.js';
 import Layout from '../Layout.js';
-import ArticleNav from '../nav/ArticleNav.js';
+import GlobalNav from '../nav/GlobalNav.js';
 import FeaturedArticleLink from './FeaturedArticleLink.js';
 import ArticleCard from './ArticleCard.js';
-import ArticleFooter from '../nav/ArticleFooter.js';
+import GlobalFooter from '../nav/GlobalFooter.js';
 
 export const config = { amp: 'hybrid' };
 
@@ -35,11 +35,7 @@ export default function LargePackageStoryLead(props) {
   ));
   return (
     <div className="homepage">
-      <ArticleNav
-        metadata={siteMetadata}
-        tags={props.tags}
-        sections={props.sections}
-      />
+      <GlobalNav sections={props.sections} />
       <Layout meta={siteMetadata}>
         <section className="hero is-dark is-bold">
           <div className="hero-body">
@@ -90,7 +86,7 @@ export default function LargePackageStoryLead(props) {
           </div>
         </section>
       </Layout>
-      <ArticleFooter post_type="home" metadata={siteMetadata} />
+      <GlobalFooter post_type="home" />
     </div>
   );
 }
