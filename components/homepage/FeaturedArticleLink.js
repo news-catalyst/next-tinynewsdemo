@@ -1,39 +1,17 @@
 import React from 'react';
 import Link from 'next/link';
-import { parseISO } from 'date-fns';
-import { renderAuthors } from '../../lib/utils.js';
+import { renderDate, renderAuthors } from '../../lib/utils.js';
 
-export default function FeaturedArticleLink(props) {
-  console.log(
-    'FeaturedArticleLink props.article.authors:',
-    props.article.authors
-  );
-
+export default function FeaturedArticleLink({ article, isAmp }) {
   let mainImage = null;
   let mainImageNode = null;
 
-  if (props.article && props.article.content) {
-    mainImageNode = props.article.content.find(
-      (node) => node.type === 'mainImage'
-    );
+  if (article && article.content) {
+    mainImageNode = article.content.find((node) => node.type === 'mainImage');
 
     if (mainImageNode) {
       mainImage = mainImageNode.children[0];
     }
-  }
-
-  var Dateline = require('dateline');
-  let parsedDate = parseISO(props.article.firstPublishedOn);
-  let firstPublishedOn =
-    Dateline(parsedDate).getAPDate() +
-    ' at ' +
-    Dateline(parsedDate).getAPTime();
-
-  let authorLinks;
-  if (props.article.authors) {
-    authorLinks = renderAuthors(props.article.authors);
-  } else if (props.article.byline !== undefined) {
-    authorLinks = props.article.byline;
   }
 
   return (
@@ -41,7 +19,7 @@ export default function FeaturedArticleLink(props) {
       {mainImage && (
         <div className="media">
           <p className="image featured-img">
-            {props.amp ? (
+            {isAmp ? (
               <amp-img
                 width={mainImage.width}
                 height={mainImage.height}
@@ -59,14 +37,14 @@ export default function FeaturedArticleLink(props) {
         <h1 className="title">
           <Link
             href="/articles/[category]/[slug]"
-            as={`/articles/${props.article.category.slug}/${props.article.slug}`}
+            as={`/articles/${article.category.slug}/${article.slug}`}
           >
-            <a className="featured">{props.article.headline}</a>
+            <a className="featured">{article.headline}</a>
           </Link>
         </h1>
-        <p className="featured">{props.article.excerpt}</p>
-        <p className="featured">{authorLinks}</p>
-        {props.article.firstPublishedOn && <p>{firstPublishedOn}</p>}
+        <p>{renderAuthors(article)}</p>
+        <p>{renderDate(article.firstPublishedOn, false)}</p>
+        <p>{article.searchDescription}</p>
       </div>
       <nav className="level is-mobile">
         <div className="level-left">

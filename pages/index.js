@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import dynamic from 'next/dynamic';
 import { getHomepageData } from '../lib/homepage.js';
 import {

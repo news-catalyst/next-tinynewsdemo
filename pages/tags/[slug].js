@@ -7,15 +7,15 @@ import {
   getTagBySlug,
 } from '../../lib/articles.js';
 import { siteMetadata } from '../../lib/siteMetadata.js';
-import ArticleNav from '../../components/nav/ArticleNav.js';
-import ArticleFooter from '../../components/nav/ArticleFooter.js';
+import GlobalNav from '../../components/nav/GlobalNav.js';
+import GlobalFooter from '../../components/nav/GlobalFooter.js';
 import { useAmp } from 'next/amp';
 
 export default function TagPage(props) {
   const isAmp = useAmp();
   return (
     <Layout meta={siteMetadata}>
-      <ArticleNav metadata={siteMetadata} sections={props.sections} />
+      <GlobalNav sections={props.sections} />
       <section className="section">
         <h1 className="title">Articles tagged with {props.tag.title}</h1>
         <div className="columns">
@@ -26,7 +26,7 @@ export default function TagPage(props) {
           </div>
         </div>
       </section>
-      <ArticleFooter metadata={siteMetadata} />
+      <GlobalFooter />
     </Layout>
   );
 }
