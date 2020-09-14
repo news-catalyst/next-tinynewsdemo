@@ -1,4 +1,4 @@
-import { getArticleBySlug } from '../../lib/articles.js';
+import { getAboutPage } from '../../lib/articles.js';
 
 export default async (req, res) => {
   // Check the secret and next parameters
@@ -7,12 +7,15 @@ export default async (req, res) => {
     return res.status(401).json({ message: 'Invalid token' });
   }
 
-  // Fetch the headless CMS to check if the provided `slug` exists
-  const article = await getArticleBySlug(req.query.slug);
+  if (req.query.slug === 'about') {
+    // Fetch the headless CMS to check if the about page data exists
+    // TODO: generalise for all static pages?
+    const aboutData = await getAboutPage();
 
-  // If the slug doesn't exist prevent preview mode from being enabled
-  if (!article) {
-    return res.status(401).json({ message: 'Invalid slug' });
+    // If the above request fails prevent preview mode from being enabled
+    if (!aboutData) {
+      return res.status(401).json({ message: 'Invalid slug' });
+    }
   }
 
   // Enable Preview Mode by setting the cookies
@@ -25,11 +28,11 @@ export default async (req, res) => {
   // (https://nextjs.org/docs/advanced-features/preview-mode)
   // res.redirect(article.slug)
 
-  const articlePath = '/preview/' + article.category.slug + '/' + article.slug;
+  const nextPath = '/' + req.query.slug;
 
   // this approach to the redirect does work
   res.writeHead(301, {
-    Location: articlePath,
+    Location: nextPath,
   });
   res.end();
 };
