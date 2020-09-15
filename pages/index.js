@@ -35,7 +35,14 @@ export default function Home({
     </Link>
   ));
 
-  console.log('streamArticles:', streamArticles);
+  const featuredArticleIds = Object.values(hpArticles).map(
+    (article) => article.id
+  );
+  console.log(featuredArticleIds);
+  const mostRecentArticles = streamArticles.filter(
+    (streamArticle) => !featuredArticleIds.includes(streamArticle.id)
+  );
+  console.log('streamArticles:', mostRecentArticles);
 
   return (
     <div className="homepage">
@@ -60,8 +67,8 @@ export default function Home({
         <section className="section">
           <div className="columns">
             <div className="column is-three-quarters">
-              {streamArticles &&
-                streamArticles.map((streamArticle) => (
+              {mostRecentArticles &&
+                mostRecentArticles.map((streamArticle) => (
                   <ArticleLink
                     key={streamArticle.id}
                     article={streamArticle}
