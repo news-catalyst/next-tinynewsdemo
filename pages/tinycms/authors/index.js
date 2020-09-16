@@ -1,8 +1,8 @@
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { listAllAuthors } from '../../lib/authors.js';
-import AdminLayout from '../../components/AdminLayout.js';
+import { listAllAuthors } from '../../../lib/authors.js';
+import AdminLayout from '../../../components/AdminLayout.js';
 
 export default function Authors({ authors }) {
   const [message, setMessage] = useState(null);
@@ -22,7 +22,7 @@ export default function Authors({ authors }) {
   const listItems = authors.map((author) => {
     return (
       <li key={author.id}>
-        <Link key={`${author.id}-link`} href={`/authors/${author.id}`}>
+        <Link key={`${author.id}-link`} href={`/tinycms/authors/${author.id}`}>
           <a>
             {author.name.value}, {author.title.value}
           </a>
@@ -34,8 +34,8 @@ export default function Authors({ authors }) {
   return (
     <AdminLayout>
       <div id="page">
-        <h1>Authors</h1>
-        <Link href="/add-author">Add Author</Link>
+        <h1 className="title">Authors</h1>
+        <Link href="/tinycms/authors/add">Add Author</Link>
 
         {message && <div className="success">{message}</div>}
         <ul>{listItems}</ul>
