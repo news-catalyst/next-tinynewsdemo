@@ -13,13 +13,23 @@ const LargePackageStoryLead = dynamic(() =>
   import(`../../components/homepage/LargePackageStoryLead`)
 );
 
-export default function HomePageEditor({ hpData, hpArticles, tags, sections }) {
-  console.log('hp data:', hpData);
-  console.log('hp articles:', hpArticles);
+export default function HomePageEditor({
+  hpData,
+  hpArticles,
+  tags,
+  sections,
+  apiUrl,
+  apiToken,
+}) {
+  console.log('apiUrl:', apiUrl);
+
   return (
     <>
       {hpData.layoutComponent === 'BigFeaturedStory' && (
         <BigFeaturedStory
+          editable={true}
+          apiUrl={apiUrl}
+          apiToken={apiToken}
           articles={hpArticles}
           tags={tags}
           sections={sections}
@@ -27,6 +37,7 @@ export default function HomePageEditor({ hpData, hpArticles, tags, sections }) {
       )}
       {hpData.layoutComponent === 'LargePackageStoryLead' && (
         <LargePackageStoryLead
+          editable={true}
           articles={hpArticles}
           tags={tags}
           sections={sections}
@@ -37,6 +48,9 @@ export default function HomePageEditor({ hpData, hpArticles, tags, sections }) {
 }
 
 export async function getStaticProps() {
+  const apiUrl = process.env.ADMIN_CONTENT_DELIVERY_API_URL;
+  const apiToken = process.env.ADMIN_CONTENT_DELIVERY_API_ACCESS_TOKEN;
+
   //    get selected homepage layout / data
   const hpData = await getHomepageData();
   //    look up selected homepage articles
@@ -52,6 +66,8 @@ export async function getStaticProps() {
       hpArticles,
       tags,
       sections,
+      apiUrl,
+      apiToken,
     },
   };
 }
