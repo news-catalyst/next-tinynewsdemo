@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import Head from 'next/head';
 import AdminLayout from '../../../components/AdminLayout';
 import {
   getAuthor,
@@ -44,10 +43,14 @@ export default function EditAuthor({ apiUrl, apiToken, author }) {
     setStaffYesNo(ev.target.value);
   };
 
+  async function handleCancel(ev) {
+    ev.preventDefault();
+    router.push('/tinycms/authors');
+  }
+
   async function handleSubmit(ev) {
     ev.preventDefault();
-    console.log('/staffYesNo', staffYesNo);
-    console.log('/staff', staff);
+
     const response = await updateAuthor(
       apiUrl,
       apiToken,
@@ -161,10 +164,21 @@ export default function EditAuthor({ apiUrl, apiToken, author }) {
 
           <div className="field is-grouped">
             <div className="control">
-              <button className="button is-link">Submit</button>
+              <input
+                className="button is-link"
+                name="submit"
+                type="submit"
+                value="Submit"
+              />
             </div>
             <div className="control">
-              <button className="button is-link is-light">Cancel</button>
+              <button
+                className="button is-link is-light"
+                name="cancel"
+                onClick={handleCancel}
+              >
+                Cancel
+              </button>
             </div>
           </div>
         </form>
