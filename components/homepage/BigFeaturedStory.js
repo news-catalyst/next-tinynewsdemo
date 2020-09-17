@@ -17,6 +17,7 @@ import {
 
 export default function BigFeaturedStory(props) {
   const [isLoading, setLoading] = useState(false);
+  const [isSaving, setSaving] = useState(false);
   const [isEditing, setEditing] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
@@ -33,6 +34,7 @@ export default function BigFeaturedStory(props) {
   const isAmp = useAmp();
 
   async function featureArticle(articleSlug) {
+    setSaving(true);
     console.log('featuring article with slug:', articleSlug);
     let newLayoutData = props.hpData;
     newLayoutData.articles['featured'] = articleSlug;
@@ -50,6 +52,7 @@ export default function BigFeaturedStory(props) {
     );
     console.log('publishResults:', publishResults);
 
+    setSaving(false);
     // force the page to rerender to display the new homepage
     location.reload();
 
@@ -106,30 +109,48 @@ export default function BigFeaturedStory(props) {
                     ></button>
                   </div>
                   <div className="message-body">
-                    <form onSubmit={handleSearch}>
-                      <div
-                        className={`control ${isLoading ? 'is-loading' : ''}`}
-                      >
-                        <input
-                          className="input"
-                          type="text"
-                          placeholder="Search by headline"
-                          onChange={(ev) => setSearchTerm(ev.target.value)}
-                        />
-                      </div>
-                    </form>
-                    <ul>
-                      {searchResults.map((result) => (
-                        <li
-                          key={result.id}
-                          onClick={() =>
-                            featureArticle(result.slug.values[0].value)
-                          }
+                    {isSaving ? (
+                      <>
+                        <h2 className="subtitle">
+                          Saving and publishing new homepage data...
+                        </h2>
+                        <progress
+                          className="progress is-medium is-dark"
+                          max="100"
                         >
-                          {result.headline.value}
-                        </li>
-                      ))}
-                    </ul>
+                          45%
+                        </progress>
+                      </>
+                    ) : (
+                      <>
+                        <form onSubmit={handleSearch}>
+                          <div
+                            className={`control ${
+                              isLoading ? 'is-loading' : ''
+                            }`}
+                          >
+                            <input
+                              className="input"
+                              type="text"
+                              placeholder="Search by headline"
+                              onChange={(ev) => setSearchTerm(ev.target.value)}
+                            />
+                          </div>
+                        </form>
+                        <ul>
+                          {searchResults.map((result) => (
+                            <li
+                              key={result.id}
+                              onClick={() =>
+                                featureArticle(result.slug.values[0].value)
+                              }
+                            >
+                              {result.headline.value}
+                            </li>
+                          ))}
+                        </ul>
+                      </>
+                    )}
                   </div>
                 </article>
               ) : (
