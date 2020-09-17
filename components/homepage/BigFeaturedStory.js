@@ -16,6 +16,7 @@ import {
 } from '../../lib/articles.js';
 
 export default function BigFeaturedStory(props) {
+  const [isLoading, setLoading] = useState(false);
   const [isEditing, setEditing] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
@@ -57,6 +58,8 @@ export default function BigFeaturedStory(props) {
 
   async function handleSearch(event) {
     event.preventDefault();
+    setLoading(true);
+
     console.log('handling search...', event);
     const results = await searchArticles(
       props.apiUrl,
@@ -64,6 +67,7 @@ export default function BigFeaturedStory(props) {
       searchTerm
     );
     console.log('results: ', results);
+    setLoading(false);
     setSearchResults(results);
   }
 
@@ -103,12 +107,16 @@ export default function BigFeaturedStory(props) {
                   </div>
                   <div className="message-body">
                     <form onSubmit={handleSearch}>
-                      <input
-                        className="input"
-                        type="text"
-                        placeholder="Search by headline"
-                        onChange={(ev) => setSearchTerm(ev.target.value)}
-                      />
+                      <div
+                        className={`control ${isLoading ? 'is-loading' : ''}`}
+                      >
+                        <input
+                          className="input"
+                          type="text"
+                          placeholder="Search by headline"
+                          onChange={(ev) => setSearchTerm(ev.target.value)}
+                        />
+                      </div>
                     </form>
                     <ul>
                       {searchResults.map((result) => (
