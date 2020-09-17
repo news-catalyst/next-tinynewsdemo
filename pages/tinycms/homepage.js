@@ -26,7 +26,7 @@ export default function HomePageEditor({
 
   return (
     <>
-      <AdminNav />
+      <AdminNav homePageEditor={true} />
       {hpData.layoutComponent === 'BigFeaturedStory' && (
         <BigFeaturedStory
           editable={true}
