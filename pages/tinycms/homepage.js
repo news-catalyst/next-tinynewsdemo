@@ -5,6 +5,7 @@ import {
   listAllSections,
   getHomepageArticles,
 } from '../../lib/articles.js';
+import AdminNav from '../../components/nav/AdminNav';
 
 const BigFeaturedStory = dynamic(() =>
   import(`../../components/homepage/BigFeaturedStory`)
@@ -25,6 +26,7 @@ export default function HomePageEditor({
 
   return (
     <>
+      <AdminNav />
       {hpData.layoutComponent === 'BigFeaturedStory' && (
         <BigFeaturedStory
           editable={true}
