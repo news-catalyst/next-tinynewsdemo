@@ -1,8 +1,18 @@
-import React from 'react';
-import Link from 'next/link';
+import React, { useEffect, useState } from 'react';
 
 export default function AdminNav(props) {
   console.log(props);
+
+  const [currentLayoutName, setCurrentLayoutName] = useState(
+    props.hpData.layoutSchema.name
+  );
+
+  async function changeLayout(layoutData) {
+    console.log('changing layout:', layoutData);
+    props.changeLayout(layoutData);
+    setCurrentLayoutName(layoutData.name.value);
+  }
+
   return (
     <nav className="navbar">
       <div className="navbar-item">tinycms</div>
@@ -20,10 +30,18 @@ export default function AdminNav(props) {
             <div className="navbar-item has-dropdown is-active">
               <a className="navbar-link">Change layout</a>
               <div className="navbar-dropdown is-right">
-                <a className="navbar-item">Option 1</a>
-                <a className="navbar-item">Option 2</a>
-                <hr className="navbar-divider" />
-                <div className="navbar-item">Currently using Option 1</div>
+                {props.layoutSchemas.map((option) => (
+                  <a
+                    key={option.id}
+                    onClick={() => changeLayout(option)}
+                    className="navbar-item"
+                  >
+                    {option.name.value}
+                  </a>
+                ))}
+                <div className="navbar-item">
+                  Currently using {currentLayoutName}
+                </div>
               </div>
             </div>
           </div>
