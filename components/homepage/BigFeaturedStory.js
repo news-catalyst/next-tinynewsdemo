@@ -6,20 +6,14 @@ import Layout from '../Layout.js';
 import FeaturedArticleLink from './FeaturedArticleLink.js';
 import ArticleLink from './ArticleLink.js';
 import GlobalNav from '../nav/GlobalNav.js';
-import GlobalFooter from '../nav/GlobalFooter.js';
-import FeaturedSidebar from './FeaturedSidebar.js';
-import {
-  makeFeaturedArticle,
-  searchArticles,
-  publishLayout,
-} from '../../lib/articles.js';
+import GlobalFooter from '../nav/GlobalFooter';
+import FeaturedSidebar from './FeaturedSidebar';
+import ModalArticleSearch from '../tinycms/ModalArticleSearch';
+
+import { makeFeaturedArticle, publishLayout } from '../../lib/articles.js';
 
 export default function BigFeaturedStory(props) {
-  const [isLoading, setLoading] = useState(false);
-  const [isSaving, setSaving] = useState(false);
-  const [isEditing, setEditing] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [searchResults, setSearchResults] = useState([]);
+  const [isModalActive, setModal] = useState(false);
 
   const [featuredArticle, setFeaturedArticle] = useState(
     props.articles['featured']
@@ -30,6 +24,11 @@ export default function BigFeaturedStory(props) {
 
   const isAmp = useAmp();
 
+  // TODO: change this function to "saveAndPublishLayoutData"
+  // NOTE: this should be called after confirming
+  // 1. save a new layout data record in webiny
+  // 2. publish
+  // 3. display success or error message
   async function featureArticle(articleSlug) {
     setSaving(true);
     console.log('featuring article with slug:', articleSlug);
@@ -52,23 +51,6 @@ export default function BigFeaturedStory(props) {
     setSaving(false);
     // force the page to rerender to display the new homepage
     location.reload();
-
-    // history.go(0)
-  }
-
-  async function handleSearch(event) {
-    event.preventDefault();
-    setLoading(true);
-
-    console.log('handling search...', event);
-    const results = await searchArticles(
-      props.apiUrl,
-      props.apiToken,
-      searchTerm
-    );
-    console.log('results: ', results);
-    setLoading(false);
-    setSearchResults(results);
   }
 
   // I noticed that `streamArticles` were null or undefined on occasional page loads
@@ -96,68 +78,20 @@ export default function BigFeaturedStory(props) {
         <div className="featured-article">
           <div className="columns">
             <div className="column is-two-thirds">
-              {props.editable && isEditing ? (
-                <article className="message">
-                  <div className="message-header">
-                    <p>Feature an Article</p>
-                    <button
-                      className="delete"
-                      onClick={() => setEditing(false)}
-                    ></button>
-                  </div>
-                  <div className="message-body">
-                    {isSaving ? (
-                      <>
-                        <h2 className="subtitle">
-                          Saving and publishing new homepage data...
-                        </h2>
-                        <progress
-                          className="progress is-medium is-dark"
-                          max="100"
-                        >
-                          45%
-                        </progress>
-                      </>
-                    ) : (
-                      <>
-                        <form onSubmit={handleSearch}>
-                          <div
-                            className={`control ${
-                              isLoading ? 'is-loading' : ''
-                            }`}
-                          >
-                            <input
-                              className="input"
-                              type="text"
-                              placeholder="Search by headline"
-                              onChange={(ev) => setSearchTerm(ev.target.value)}
-                            />
-                          </div>
-                        </form>
-                        <ul>
-                          {searchResults.map((result) => (
-                            <li
-                              key={result.id}
-                              onClick={() =>
-                                featureArticle(result.slug.values[0].value)
-                              }
-                            >
-                              {result.headline.value}
-                            </li>
-                          ))}
-                        </ul>
-                      </>
-                    )}
-                  </div>
-                </article>
-              ) : (
-                <div onClick={() => setEditing(true)}>
-                  <div
-                    id="featuredArticle"
-                    className={
-                      props.editable ? 'has-background-primary pointer' : ''
-                    }
-                  >
+              {props.editable && featuredArticle && (
+                <>
+                  <ModalArticleSearch
+                    apiUrl={props.apiUrl}
+                    apiToken={props.apiToken}
+                    isActive={isModalActive}
+                    setModal={setModal}
+                    setFeaturedArticle={setFeaturedArticle}
+                  />
+
+                  <button onClick={() => setModal(true)}>
+                    Change Featured Article
+                  </button>
+                  <div id="featuredArticle">
                     {featuredArticle && (
                       <FeaturedArticleLink
                         key={featuredArticle.id}
@@ -166,7 +100,7 @@ export default function BigFeaturedStory(props) {
                       />
                     )}
                   </div>
-                </div>
+                </>
               )}
               {!props.editable && featuredArticle && (
                 <FeaturedArticleLink
