@@ -155,7 +155,12 @@ export default function BigFeaturedStory(props) {
                 </article>
               ) : (
                 <div onClick={() => setEditing(true)}>
-                  <div id="featuredArticle">
+                  <div
+                    id="featuredArticle"
+                    className={
+                      props.editable ? 'has-background-primary pointer' : ''
+                    }
+                  >
                     {featuredArticle && (
                       <FeaturedArticleLink
                         key={featuredArticle.id}
