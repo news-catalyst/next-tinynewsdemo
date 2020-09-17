@@ -1,5 +1,6 @@
 import dynamic from 'next/dynamic';
-import { getHomepageData } from '../../lib/homepage.js';
+import React, { useEffect, useState } from 'react';
+import { getHomepageData, listLayoutSchemas } from '../../lib/homepage.js';
 import {
   listAllTags,
   listAllSections,
@@ -15,6 +16,7 @@ const LargePackageStoryLead = dynamic(() =>
 );
 
 export default function HomePageEditor({
+  layoutSchemas,
   hpData,
   hpArticles,
   tags,
@@ -22,11 +24,24 @@ export default function HomePageEditor({
   apiUrl,
   apiToken,
 }) {
-  console.log('hpData:', hpData);
+  console.log('layoutSchemas:', layoutSchemas);
+
+  const [selectedLayout, setSelectedLayout] = useState(null);
+
+  useEffect(() => {
+    console.log(hpData);
+    setSelectedLayout(hpData.layoutSchema);
+  }, [hpData]);
 
   return (
     <>
-      <AdminNav homePageEditor={true} />
+      <AdminNav
+        homePageEditor={true}
+        layoutSchemas={layoutSchemas}
+        changeLayout={setSelectedLayout}
+        hpData={hpData}
+      />
+
       {hpData.layoutComponent === 'BigFeaturedStory' && (
         <BigFeaturedStory
           editable={true}
@@ -54,20 +69,22 @@ export async function getStaticProps() {
   const apiUrl = process.env.ADMIN_CONTENT_DELIVERY_API_URL;
   const apiToken = process.env.ADMIN_CONTENT_DELIVERY_API_ACCESS_TOKEN;
 
+  // get all available layout options
+  const layoutSchemas = await listLayoutSchemas();
+  console.log(layoutSchemas);
+
   //    get selected homepage layout / data
   const hpData = await getHomepageData();
-  console.log('HPDATA:', hpData);
-  console.log('HPDATA.articles:', hpData.articles);
-  console.log('HPDATA[articles]:', hpData['articles']);
+
   //    look up selected homepage articles
   const hpArticles = await getHomepageArticles(hpData.articles);
-  console.log('found hpArticles keys:', Object.keys(hpArticles));
 
   const tags = await listAllTags();
   const sections = await listAllSections();
 
   return {
     props: {
+      layoutSchemas,
       hpData,
       hpArticles,
       tags,
