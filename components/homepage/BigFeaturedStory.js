@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
+// import { useHistory } from 'react-router'
 import { useAmp } from 'next/amp';
 import { siteMetadata } from '../../lib/siteMetadata.js';
 import Layout from '../Layout.js';
@@ -8,7 +9,11 @@ import ArticleLink from './ArticleLink.js';
 import GlobalNav from '../nav/GlobalNav.js';
 import GlobalFooter from '../nav/GlobalFooter.js';
 import FeaturedSidebar from './FeaturedSidebar.js';
-import { searchArticles } from '../../lib/articles.js';
+import {
+  makeFeaturedArticle,
+  searchArticles,
+  publishLayout,
+} from '../../lib/articles.js';
 
 export default function BigFeaturedStory(props) {
   const [isEditing, setEditing] = useState(false);
@@ -22,7 +27,33 @@ export default function BigFeaturedStory(props) {
     props.articles['stream']
   );
 
+  // const history = useHistory()
+
   const isAmp = useAmp();
+
+  async function featureArticle(articleSlug) {
+    console.log('featuring article with slug:', articleSlug);
+    let newLayoutData = props.hpData;
+    newLayoutData.articles['featured'] = articleSlug;
+    console.log('newLayoutData:', newLayoutData);
+    const results = await makeFeaturedArticle(
+      props.apiUrl,
+      props.apiToken,
+      newLayoutData
+    );
+    console.log('results:', results);
+    const publishResults = await publishLayout(
+      props.apiUrl,
+      props.apiToken,
+      results.content.data.id
+    );
+    console.log('publishResults:', publishResults);
+
+    // force the page to rerender to display the new homepage
+    location.reload();
+
+    // history.go(0)
+  }
 
   async function handleSearch(event) {
     event.preventDefault();
@@ -61,7 +92,7 @@ export default function BigFeaturedStory(props) {
         <div className="featured-article">
           <div className="columns">
             <div className="column is-two-thirds">
-              {isEditing ? (
+              {props.editable && isEditing ? (
                 <article className="message">
                   <div className="message-header">
                     <p>Feature an Article</p>
@@ -81,7 +112,14 @@ export default function BigFeaturedStory(props) {
                     </form>
                     <ul>
                       {searchResults.map((result) => (
-                        <li key={result.id}>{result.headline.value}</li>
+                        <li
+                          key={result.id}
+                          onClick={() =>
+                            featureArticle(result.slug.values[0].value)
+                          }
+                        >
+                          {result.headline.value}
+                        </li>
                       ))}
                     </ul>
                   </div>
