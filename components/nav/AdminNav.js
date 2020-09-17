@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from 'react';
 
 export default function AdminNav(props) {
-  console.log(props);
-
   const [currentLayoutName, setCurrentLayoutName] = useState(
     props.hpData.layoutSchema.name
   );
 
-  async function changeLayout(layoutData) {
+  async function switchLayout(layoutData) {
     console.log('changing layout:', layoutData);
     props.changeLayout(layoutData);
     setCurrentLayoutName(layoutData.name.value);
@@ -33,7 +31,7 @@ export default function AdminNav(props) {
                 {props.layoutSchemas.map((option) => (
                   <a
                     key={option.id}
-                    onClick={() => changeLayout(option)}
+                    onClick={() => switchLayout(option)}
                     className="navbar-item"
                   >
                     {option.name.value}

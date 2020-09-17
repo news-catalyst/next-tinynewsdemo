@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
-// import { useHistory } from 'react-router'
 import { useAmp } from 'next/amp';
 import { siteMetadata } from '../../lib/siteMetadata.js';
 import Layout from '../Layout.js';
@@ -28,8 +27,6 @@ export default function BigFeaturedStory(props) {
   const [streamArticles, setStreamArticles] = useState(
     props.articles['stream']
   );
-
-  // const history = useHistory()
 
   const isAmp = useAmp();
 
@@ -90,6 +87,7 @@ export default function BigFeaturedStory(props) {
 
   return (
     <div className="homepage">
+      <h2>Within BigFeaturedStory</h2>
       <Layout meta={siteMetadata}>
         <GlobalNav
           metadata={siteMetadata}
