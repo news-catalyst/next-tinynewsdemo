@@ -87,7 +87,6 @@ export default function BigFeaturedStory(props) {
 
   return (
     <div className="homepage">
-      <h2>Within BigFeaturedStory</h2>
       <Layout meta={siteMetadata}>
         <GlobalNav
           metadata={siteMetadata}
