@@ -21,7 +21,7 @@ export default function HomePageEditor({
   apiUrl,
   apiToken,
 }) {
-  console.log('apiUrl:', apiUrl);
+  console.log('hpData:', hpData);
 
   return (
     <>
@@ -30,6 +30,7 @@ export default function HomePageEditor({
           editable={true}
           apiUrl={apiUrl}
           apiToken={apiToken}
+          hpData={hpData}
           articles={hpArticles}
           tags={tags}
           sections={sections}
@@ -53,6 +54,9 @@ export async function getStaticProps() {
 
   //    get selected homepage layout / data
   const hpData = await getHomepageData();
+  console.log('HPDATA:', hpData);
+  console.log('HPDATA.articles:', hpData.articles);
+  console.log('HPDATA[articles]:', hpData['articles']);
   //    look up selected homepage articles
   const hpArticles = await getHomepageArticles(hpData.articles);
   console.log('found hpArticles keys:', Object.keys(hpArticles));
