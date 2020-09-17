@@ -24,13 +24,17 @@ export default function HomePageEditor({
   apiUrl,
   apiToken,
 }) {
-  console.log('layoutSchemas:', layoutSchemas);
+  const [selectedLayout, setSelectedLayout] = useState(hpData.layoutSchema);
+  const [homepageKey, setHomepageKey] = useState(Math.random());
 
-  const [selectedLayout, setSelectedLayout] = useState(null);
-
+  function changeLayout(layout) {
+    console.log('changing layout...', layout);
+    setSelectedLayout(layout);
+    setHomepageKey(Math.random());
+  }
   useEffect(() => {
-    console.log(hpData);
     setSelectedLayout(hpData.layoutSchema);
+    console.log('selectedLayout:', selectedLayout);
   }, [hpData]);
 
   return (
@@ -38,29 +42,36 @@ export default function HomePageEditor({
       <AdminNav
         homePageEditor={true}
         layoutSchemas={layoutSchemas}
-        changeLayout={setSelectedLayout}
+        changeLayout={changeLayout}
         hpData={hpData}
       />
 
-      {hpData.layoutComponent === 'BigFeaturedStory' && (
-        <BigFeaturedStory
-          editable={true}
-          apiUrl={apiUrl}
-          apiToken={apiToken}
-          hpData={hpData}
-          articles={hpArticles}
-          tags={tags}
-          sections={sections}
-        />
-      )}
-      {hpData.layoutComponent === 'LargePackageStoryLead' && (
-        <LargePackageStoryLead
-          editable={true}
-          articles={hpArticles}
-          tags={tags}
-          sections={sections}
-        />
-      )}
+      <div key={homepageKey}>
+        {(selectedLayout.name.value === 'Big Featured Story' ||
+          selectedLayout.name === 'Big Featured Story') && (
+          <BigFeaturedStory
+            editable={true}
+            apiUrl={apiUrl}
+            apiToken={apiToken}
+            hpData={hpData}
+            articles={hpArticles}
+            tags={tags}
+            sections={sections}
+          />
+        )}
+        {(selectedLayout.name.value === 'Large Package Story lead' ||
+          selectedLayout.name === 'Large Package Story lead') && (
+          <LargePackageStoryLead
+            editable={true}
+            apiUrl={apiUrl}
+            apiToken={apiToken}
+            hpData={hpData}
+            articles={hpArticles}
+            tags={tags}
+            sections={sections}
+          />
+        )}
+      </div>
     </>
   );
 }
