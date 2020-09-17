@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { listAllAuthors } from '../../../lib/authors.js';
 import AdminLayout from '../../../components/AdminLayout.js';
+import AdminNav from '../../../components/nav/AdminNav';
 
 export default function Authors({ authors }) {
   const [message, setMessage] = useState(null);
@@ -33,6 +34,7 @@ export default function Authors({ authors }) {
 
   return (
     <AdminLayout>
+      <AdminNav />
       <div id="page">
         <h1 className="title">Authors</h1>
         <Link href="/tinycms/authors/add">Add Author</Link>
