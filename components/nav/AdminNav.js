@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from 'react';
 
 export default function AdminNav(props) {
-  const [currentLayoutName, setCurrentLayoutName] = useState(
-    props.hpData.layoutSchema.name
-  );
+  const [currentLayoutName, setCurrentLayoutName] = useState('');
+
+  useEffect(() => {
+    if (props.hpData && props.hpData.layoutSchema) {
+      setCurrentLayoutName(props.hpData.layoutSchema.name);
+    }
+  }, [props.hpData]);
 
   async function switchLayout(layoutData) {
     console.log('changing layout:', layoutData);
