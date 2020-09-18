@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { searchArticles } from '../../lib/articles.js';
 
-export default function ModalArticlerSearch(props) {
+export default function ModalArticleSearch(props) {
   const [isLoading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);

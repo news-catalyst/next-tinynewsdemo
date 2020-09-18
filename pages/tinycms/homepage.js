@@ -1,12 +1,18 @@
 import dynamic from 'next/dynamic';
 import React, { useEffect, useState } from 'react';
-import { getHomepageData, listLayoutSchemas } from '../../lib/homepage.js';
+import {
+  getHomepageData,
+  listLayoutSchemas,
+  createHomepageLayout,
+  publishLayout,
+} from '../../lib/homepage.js';
 import {
   listAllTags,
   listAllSections,
   getHomepageArticles,
 } from '../../lib/articles.js';
 import AdminNav from '../../components/nav/AdminNav';
+import Notification from '../../components/tinycms/Notification';
 
 const BigFeaturedStory = dynamic(() =>
   import(`../../components/homepage/BigFeaturedStory`)
@@ -24,7 +30,11 @@ export default function HomePageEditor({
   apiUrl,
   apiToken,
 }) {
+  const [notificationMessage, setNotificationMessage] = useState('');
+  const [notificationType, setNotificationType] = useState('');
+  const [showNotification, setShowNotification] = useState(false);
   const [selectedLayout, setSelectedLayout] = useState(hpData.layoutSchema);
+  const [featuredArticle, setFeaturedArticle] = useState(null);
   const [homepageKey, setHomepageKey] = useState(Math.random());
 
   function changeLayout(layout) {
@@ -32,6 +42,49 @@ export default function HomePageEditor({
     setSelectedLayout(layout);
     setHomepageKey(Math.random());
   }
+
+  // NOTE: this should be called after confirming
+  // 1. save a new layout data record in webiny
+  // 2. publish
+  // 3. display success or error message
+  async function saveAndPublishHomepage() {
+    console.log('saving homepage...', selectedLayout);
+
+    let articlesData = {
+      featured: featuredArticle.id,
+    };
+
+    console.log('articlesData:', articlesData);
+    const results = await createHomepageLayout(
+      apiUrl,
+      apiToken,
+      selectedLayout.id,
+      articlesData
+    );
+    console.log('results:', results);
+    if (results && results.content && results.content.data) {
+      const publishResults = await publishLayout(
+        apiUrl,
+        apiToken,
+        results.content.data.id
+      );
+      console.log('publishResults:', publishResults);
+      setNotificationMessage('Successfully published homepage!');
+      setNotificationType('success');
+      setShowNotification(true);
+    } else {
+      setNotificationMessage(
+        'An error occured while trying to create the new layout config:',
+        results
+      );
+      setNotificationType('error');
+      setShowNotification(true);
+    }
+
+    // force the page to rerender to display the new homepage
+    // location.reload();
+  }
+
   useEffect(() => {
     setSelectedLayout(hpData.layoutSchema);
     console.log('selectedLayout:', selectedLayout);
@@ -43,8 +96,17 @@ export default function HomePageEditor({
         homePageEditor={true}
         layoutSchemas={layoutSchemas}
         changeLayout={changeLayout}
+        saveAndPublishHomepage={saveAndPublishHomepage}
         hpData={hpData}
       />
+
+      {showNotification && (
+        <Notification
+          message={notificationMessage}
+          setShowNotification={setShowNotification}
+          notificationType={notificationType}
+        />
+      )}
 
       <div key={homepageKey}>
         {(selectedLayout.name.value === 'Big Featured Story' ||
@@ -53,6 +115,8 @@ export default function HomePageEditor({
             editable={true}
             apiUrl={apiUrl}
             apiToken={apiToken}
+            featuredArticle={featuredArticle}
+            setFeaturedArticle={setFeaturedArticle}
             hpData={hpData}
             articles={hpArticles}
             tags={tags}

@@ -42,6 +42,18 @@ export default function AdminNav(props) {
                 </div>
               </div>
             </div>
+            <div className="navbar-item">
+              <button
+                class="button is-primary"
+                onClick={() => {
+                  window.confirm(
+                    'Are you sure you want to publish the homepage?'
+                  ) && props.saveAndPublishHomepage();
+                }}
+              >
+                Save & Publish
+              </button>
+            </div>
           </div>
         )}
       </div>
