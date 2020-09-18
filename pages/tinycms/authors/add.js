@@ -1,17 +1,19 @@
 import React, { useState } from 'react';
-import { useRouter } from 'next/router';
 import AdminLayout from '../../../components/AdminLayout';
-import { createAuthor } from '../../../lib/authors';
+import AdminNav from '../../../components/nav/AdminNav';
+import Notification from '../../../components/tinycms/Notification';
+import { createAuthor, publishAuthor } from '../../../lib/authors';
 
 export default function AddAuthor({ apiUrl, apiToken }) {
+  const [notificationMessage, setNotificationMessage] = useState('');
+  const [notificationType, setNotificationType] = useState('');
+  const [showNotification, setShowNotification] = useState(false);
+
   const [name, setName] = useState('');
   const [title, setTitle] = useState('');
   const [twitter, setTwitter] = useState('');
   const [staff, setStaff] = useState('no');
   const [bio, setBio] = useState('');
-  const [error, setError] = useState(null);
-
-  const router = useRouter();
 
   const handleChange = (ev) => setStaff(ev.target.value);
 
@@ -28,18 +30,37 @@ export default function AddAuthor({ apiUrl, apiToken }) {
       staff
     );
     if (response.content.error !== null) {
-      setError(response.content.error);
+      setNotificationMessage(response.content.error);
+      setNotificationType('error');
+      setShowNotification(true);
     } else {
-      router.push('/authors/?action=create');
+      // publish author
+      const publishResponse = await publishAuthor(
+        apiUrl,
+        apiToken,
+        response.content.data.id
+      );
+
+      // display success message
+      setNotificationMessage('Successfully saved and published the author!');
+      setNotificationType('success');
+      setShowNotification(true);
     }
   }
 
   return (
     <AdminLayout>
+      <AdminNav homePageEditor={false} />
+
+      {showNotification && (
+        <Notification
+          message={notificationMessage}
+          setShowNotification={setShowNotification}
+          notificationType={notificationType}
+        />
+      )}
       <div id="page">
         <h1 className="title">Add an author</h1>
-
-        {error && <div className="error">{error}</div>}
 
         <form onSubmit={handleSubmit}>
           <div className="field">
