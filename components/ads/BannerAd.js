@@ -1,18 +1,24 @@
 import React from 'react';
 
-export default function TextAd(props) {
+export default function TextAd({ ad, isAmp }) {
   return (
     <section className="ad-container">
       <div className="ad-brand">
-        <p>Advertisement from {props.ad.brand}</p>
+        <p>Advertisement from {ad.brand}</p>
       </div>
       <div>
-        <a href={props.ad.url}>
-          <img
-            src={props.ad.image.url}
-            className="ad-banner"
-            alt={props.ad.image.alt}
-          />
+        <a href={ad.url}>
+          {isAmp ? (
+            <amp-img
+              width={300}
+              height={300}
+              src={ad.image.url}
+              alt={ad.image.alt}
+              layout="responsive"
+            />
+          ) : (
+            <img src={ad.image.url} className="ad-banner" alt={ad.image.alt} />
+          )}
         </a>
       </div>
     </section>

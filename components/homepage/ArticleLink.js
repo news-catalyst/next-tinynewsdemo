@@ -5,8 +5,6 @@ import { renderDate, renderAuthors } from '../../lib/utils.js';
 export default function ArticleLink({ article, isAmp }) {
   let mainImage = null;
 
-  console.log(article);
-
   const mainImageNode = article.content.find(
     (node) => node.type === 'mainImage'
   );
