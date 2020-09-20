@@ -37,6 +37,13 @@ export default function HomePageEditor({
   const [featuredArticle, setFeaturedArticle] = useState(null);
   const [homepageKey, setHomepageKey] = useState(Math.random());
 
+  useEffect(() => {
+    setSelectedLayout(hpData.layoutSchema);
+    console.log('selectedLayout:', selectedLayout);
+    console.log('hpData:', hpData);
+    console.log('hpArticles:', hpArticles);
+  }, [hpData]);
+
   function changeLayout(layout) {
     console.log('changing layout...', layout);
     setSelectedLayout(layout);
@@ -51,7 +58,7 @@ export default function HomePageEditor({
     console.log('saving homepage...', selectedLayout);
 
     let articlesData = {
-      featured: featuredArticle.id,
+      featured: featuredArticle.slug,
     };
 
     console.log('articlesData:', articlesData);
@@ -84,11 +91,6 @@ export default function HomePageEditor({
     // force the page to rerender to display the new homepage
     // location.reload();
   }
-
-  useEffect(() => {
-    setSelectedLayout(hpData.layoutSchema);
-    console.log('selectedLayout:', selectedLayout);
-  }, [hpData]);
 
   return (
     <>
@@ -146,7 +148,6 @@ export async function getStaticProps() {
 
   // get all available layout options
   const layoutSchemas = await listLayoutSchemas();
-  console.log(layoutSchemas);
 
   //    get selected homepage layout / data
   const hpData = await getHomepageData();
