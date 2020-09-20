@@ -44,7 +44,7 @@ export default function AdminNav(props) {
             </div>
             <div className="navbar-item">
               <button
-                class="button is-primary"
+                className="button is-primary"
                 onClick={() => {
                   window.confirm(
                     'Are you sure you want to publish the homepage?'
