@@ -1,23 +1,29 @@
 import React from 'react';
 
-export default function ExpandedTextWithImageAd(props) {
+export default function ExpandedTextWithImageAd({ ad, isAmp }) {
   return (
     <section className="text-ad-container">
       <div className="ad-container">
         <div className="ad-brand">
-          <p>Advertisement from {props.ad.brand}</p>
+          <p>Advertisement from {ad.brand}</p>
         </div>
         <div className="media">
           <div className="media-left ad-img-container">
-            <img
-              src={props.ad.image.url}
-              className="ad-img"
-              alt={props.ad.image.alt}
-            />
+            {isAmp ? (
+              <amp-img
+                width={300}
+                height={300}
+                src={ad.image.url}
+                alt={ad.image.alt}
+                layout="responsive"
+              />
+            ) : (
+              <img src={ad.image.url} className="ad-img" alt={ad.image.alt} />
+            )}
           </div>
           <div className="media-content ad-text-container">
-            <h3>{props.ad.header}</h3>
-            <div>{props.ad.body}</div>{' '}
+            <h3>{ad.header}</h3>
+            <div>{ad.body}</div>{' '}
             {/* According to the whereby.us docs, the expanded body text can include multiple links, paragraphs */}
           </div>
         </div>
