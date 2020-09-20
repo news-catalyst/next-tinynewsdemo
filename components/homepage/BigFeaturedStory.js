@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import FeaturedArticleLink from './FeaturedArticleLink.js';
-import GlobalNav from '../nav/GlobalNav.js';
 import FeaturedSidebar from './FeaturedSidebar';
 import ModalArticleSearch from '../tinycms/ModalArticleSearch';
 
@@ -47,7 +46,7 @@ export default function BigFeaturedStory(props) {
               <FeaturedArticleLink
                 key={props.featuredArticle.id}
                 article={props.featuredArticle}
-                amp={isAmp}
+                amp={props.isAmp}
               />
             )}
           </div>
