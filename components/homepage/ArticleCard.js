@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import { renderDate } from '../../lib/utils.js';
+import { renderDate, renderAuthors } from '../../lib/utils.js';
 
 export default function ArticleCard({ article, isAmp }) {
   let mainImage = null;
