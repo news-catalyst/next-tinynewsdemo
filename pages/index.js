@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { getHomepageData } from '../lib/homepage.js';
@@ -28,6 +29,7 @@ export default function Home({
   tags,
   sections,
 }) {
+  const [featuredArticle, setFeaturedArticle] = useState(null);
   const isAmp = useAmp();
   const tagLinks = tags.map((tag) => (
     <Link key={tag.title} href={`/tags/${tag.slug}`}>
@@ -53,6 +55,8 @@ export default function Home({
             articles={hpArticles}
             tags={tags}
             sections={sections}
+            featuredArticle={featuredArticle}
+            setFeaturedArticle={setFeaturedArticle}
             isAmp={isAmp}
           />
         )}

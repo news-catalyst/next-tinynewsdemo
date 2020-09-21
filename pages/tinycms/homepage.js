@@ -35,7 +35,19 @@ export default function HomePageEditor({
   const [showNotification, setShowNotification] = useState(false);
   const [selectedLayout, setSelectedLayout] = useState(hpData.layoutSchema);
   const [featuredArticle, setFeaturedArticle] = useState(null);
+  const [subFeaturedLeftArticle, setSubFeaturedLeftArticle] = useState(null);
+  const [subFeaturedRightArticle, setSubFeaturedRightArticle] = useState(null);
+  const [subFeaturedMiddleArticle, setSubFeaturedMiddleArticle] = useState(
+    null
+  );
   const [homepageKey, setHomepageKey] = useState(Math.random());
+
+  useEffect(() => {
+    setSelectedLayout(hpData.layoutSchema);
+    console.log('selectedLayout:', selectedLayout);
+    console.log('hpData:', hpData);
+    console.log('hpArticles:', hpArticles);
+  }, [hpData]);
 
   function changeLayout(layout) {
     console.log('changing layout...', layout);
@@ -48,11 +60,28 @@ export default function HomePageEditor({
   // 2. publish
   // 3. display success or error message
   async function saveAndPublishHomepage() {
-    console.log('saving homepage...', selectedLayout);
+    console.log(
+      'saving homepage...',
+      selectedLayout,
+      'featuredArticle:',
+      featuredArticle,
+      'subfeaturedLeft:',
+      subFeaturedLeftArticle
+    );
 
-    let articlesData = {
-      featured: featuredArticle.id,
-    };
+    let articlesData;
+    if (selectedLayout.name.value === 'Big Featured Story') {
+      articlesData = {
+        featured: featuredArticle.slug,
+      };
+    } else if (selectedLayout.name.value === 'Large Package Story lead') {
+      articlesData = {
+        featured: featuredArticle.slug,
+        'subfeatured-left': subFeaturedLeftArticle.slug,
+        'subfeatured-middle': subFeaturedMiddleArticle.slug,
+        'subfeatured-right': subFeaturedRightArticle.slug,
+      };
+    }
 
     console.log('articlesData:', articlesData);
     const results = await createHomepageLayout(
@@ -84,11 +113,6 @@ export default function HomePageEditor({
     // force the page to rerender to display the new homepage
     // location.reload();
   }
-
-  useEffect(() => {
-    setSelectedLayout(hpData.layoutSchema);
-    console.log('selectedLayout:', selectedLayout);
-  }, [hpData]);
 
   return (
     <>
@@ -129,6 +153,14 @@ export default function HomePageEditor({
             editable={true}
             apiUrl={apiUrl}
             apiToken={apiToken}
+            featuredArticle={featuredArticle}
+            setFeaturedArticle={setFeaturedArticle}
+            subFeaturedLeftArticle={subFeaturedLeftArticle}
+            setSubFeaturedLeftArticle={setSubFeaturedLeftArticle}
+            subFeaturedRightArticle={subFeaturedRightArticle}
+            setSubFeaturedRightArticle={setSubFeaturedRightArticle}
+            subFeaturedMiddleArticle={subFeaturedMiddleArticle}
+            setSubFeaturedMiddleArticle={setSubFeaturedMiddleArticle}
             hpData={hpData}
             articles={hpArticles}
             tags={tags}
@@ -146,7 +178,6 @@ export async function getStaticProps() {
 
   // get all available layout options
   const layoutSchemas = await listLayoutSchemas();
-  console.log(layoutSchemas);
 
   //    get selected homepage layout / data
   const hpData = await getHomepageData();
