@@ -1,8 +1,10 @@
 import React from 'react';
 import Link from 'next/link';
-import { renderDate } from '../../lib/utils.js';
+import { renderAuthors, renderDate } from '../../lib/utils.js';
 
 export default function ArticleCard({ article, isAmp }) {
+  console.log('ArticleCard article:', article);
+
   let mainImage = null;
   const mainImageNode = article.content.find(
     (node) => node.type === 'mainImage'

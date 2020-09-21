@@ -1,65 +1,141 @@
 import _ from 'lodash';
-import React, { useState } from 'react';
-import { useAmp } from 'next/amp';
-import FeaturedArticleLink from './FeaturedArticleLink.js';
+import React, { useEffect, useState } from 'react';
+import FeaturedArticleLink from './FeaturedArticleLink';
 import ArticleCard from './ArticleCard.js';
+import ModalArticleSearch from '../tinycms/ModalArticleSearch';
 
 export const config = { amp: 'hybrid' };
 
 export default function LargePackageStoryLead(props) {
-  const isAmp = useAmp();
+  const [isModalActive, setModal] = useState(false);
+  const [isLeftModalActive, setLeftModal] = useState(false);
+  const [isRightModalActive, setRightModal] = useState(false);
+  const [isMiddleModalActive, setMiddleModal] = useState(false);
 
-  const [featuredArticle, setFeaturedArticle] = useState(
-    props.articles['featured']
-  );
+  useEffect(() => {
+    props.setFeaturedArticle(props.articles['featured']);
+    props.setSubFeaturedLeftArticle(props.articles['subfeatured-left']);
+    props.setSubFeaturedRightArticle(props.articles['subfeatured-right']);
+    props.setSubFeaturedMiddleArticle(props.articles['subfeatured-middle']);
 
-  const [subfeaturedLeftArticle, setSubFeaturedLeftArticle] = useState(
-    props.articles['subfeatured-left']
-  );
-  const [subfeaturedMiddleArticle, setSubFeaturedMiddleArticle] = useState(
-    props.articles['subfeatured-middle']
-  );
-  const [subfeaturedRightArticle, setSubFeaturedRightArticle] = useState(
-    props.articles['subfeatured-right']
-  );
+    console.log('useEffect props:', props);
+  }, [props.articles]);
+
+  console.log('LPSL props:', props);
 
   return (
     <>
       <div className="featured-article">
-        {featuredArticle && (
+        {props.editable && (
+          <>
+            <ModalArticleSearch
+              apiUrl={props.apiUrl}
+              apiToken={props.apiToken}
+              isActive={isModalActive}
+              setModal={setModal}
+              featuredArticle={props.featuredArticle}
+              setFeaturedArticle={props.setFeaturedArticle}
+              key="featuredArticleModal"
+            />
+
+            <button className="button is-info" onClick={() => setModal(true)}>
+              Change Featured Article
+            </button>
+          </>
+        )}
+        {props.featuredArticle && (
           <FeaturedArticleLink
-            key={featuredArticle.id}
-            article={featuredArticle}
-            amp={isAmp}
+            key={props.featuredArticle.id}
+            article={props.featuredArticle}
+            amp={props.isAmp}
           />
         )}
       </div>
       <section className="section">
         <div className="columns">
           <div className="column is-one-third">
-            {subfeaturedLeftArticle && (
+            {props.editable && (
+              <>
+                <ModalArticleSearch
+                  apiUrl={props.apiUrl}
+                  apiToken={props.apiToken}
+                  isActive={isLeftModalActive}
+                  setModal={setLeftModal}
+                  featuredArticle={props.subFeaturedLeftArticle}
+                  setFeaturedArticle={props.setSubFeaturedLeftArticle}
+                  key="featuredLeftArticleModal"
+                />
+
+                <button
+                  className="button is-info"
+                  onClick={() => setLeftModal(true)}
+                >
+                  Change Left Featured Article
+                </button>
+              </>
+            )}
+            {props.subFeaturedLeftArticle && (
               <ArticleCard
-                key={subfeaturedLeftArticle.id}
-                article={subfeaturedLeftArticle}
-                amp={isAmp}
+                key={props.subFeaturedLeftArticle.id}
+                article={props.subFeaturedLeftArticle}
+                amp={props.isAmp}
               />
             )}
           </div>
           <div className="column is-one-third">
-            {subfeaturedMiddleArticle && (
+            {props.editable && (
+              <>
+                <ModalArticleSearch
+                  apiUrl={props.apiUrl}
+                  apiToken={props.apiToken}
+                  isActive={isMiddleModalActive}
+                  setModal={setMiddleModal}
+                  featuredArticle={props.subFeaturedMiddleArticle}
+                  setFeaturedArticle={props.setSubFeaturedMiddleArticle}
+                  key="featuredMiddleArticleModal"
+                />
+
+                <button
+                  className="button is-info"
+                  onClick={() => setMiddleModal(true)}
+                >
+                  Change Middle Featured Article
+                </button>
+              </>
+            )}
+            {props.subFeaturedMiddleArticle && (
               <ArticleCard
-                key={subfeaturedMiddleArticle.id}
-                article={subfeaturedMiddleArticle}
-                amp={isAmp}
+                key={props.subFeaturedMiddleArticle.id}
+                article={props.subFeaturedMiddleArticle}
+                amp={props.isAmp}
               />
             )}
           </div>
           <div className="column is-one-third">
-            {subfeaturedRightArticle && (
+            {props.editable && (
+              <>
+                <ModalArticleSearch
+                  apiUrl={props.apiUrl}
+                  apiToken={props.apiToken}
+                  isActive={isRightModalActive}
+                  setModal={setRightModal}
+                  setFeaturedArticle={props.setSubFeaturedRightArticle}
+                  key="featuredRightArticleModal"
+                />
+
+                <button
+                  className="button is-info"
+                  onClick={() => setRightModal(true)}
+                >
+                  Change Right Featured Article
+                </button>
+              </>
+            )}
+            {props.subFeaturedRightArticle && (
               <ArticleCard
-                key={subfeaturedRightArticle.id}
-                article={subfeaturedRightArticle}
-                amp={isAmp}
+                key={props.subFeaturedRightArticle.id}
+                article={props.subFeaturedRightArticle}
+                amp={props.isAmp}
               />
             )}
           </div>
