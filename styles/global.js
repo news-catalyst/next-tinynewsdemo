@@ -142,4 +142,7 @@ export default css.global`
     padding: 30px;
     margin-bottom: 30px;
   }
+  .pointer {
+    cursor: pointer;
+  }
 `;
