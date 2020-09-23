@@ -1,8 +1,20 @@
 export default function TextNode({ node }) {
-  const processChild = function (child) {
+  const processChild = function (child, nextChild) {
+    let supportedPunctuation = [',', '.', '?', '!', ';', ':'];
+    let delimiterSpaceChar = ' ';
+    // if this is a link and the next node/child starts with one of the punctuation marks above, don't add a space
+    if (
+      child.link &&
+      nextChild &&
+      supportedPunctuation.includes(nextChild.content[0])
+    ) {
+      delimiterSpaceChar = '';
+    }
+
     let text = (
       <span key={child.index ? child.index : child.content}>
-        {child.content}{' '}
+        {child.content}
+        {delimiterSpaceChar}
       </span>
     );
 
@@ -29,7 +41,9 @@ export default function TextNode({ node }) {
     return text;
   };
 
-  const children = node.children.map((child) => processChild(child));
+  const children = node.children.map((child, i) =>
+    processChild(child, node.children[i + 1])
+  );
   let wrapper = null;
 
   if (node.style == 'TITLE') {
