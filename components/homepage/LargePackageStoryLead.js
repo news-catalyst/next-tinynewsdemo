@@ -17,11 +17,7 @@ export default function LargePackageStoryLead(props) {
     props.setSubFeaturedLeftArticle(props.articles['subfeatured-left']);
     props.setSubFeaturedRightArticle(props.articles['subfeatured-right']);
     props.setSubFeaturedMiddleArticle(props.articles['subfeatured-middle']);
-
-    console.log('useEffect props:', props);
   }, [props.articles]);
-
-  console.log('LPSL props:', props);
 
   return (
     <>

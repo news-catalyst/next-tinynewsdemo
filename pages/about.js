@@ -1,5 +1,6 @@
 import { useAmp } from 'next/amp';
 import { getAboutPage, listAuthors, listAllSections } from '../lib/articles.js';
+import { cachedContents } from '../lib/cached';
 import Layout from '../components/Layout';
 import GlobalNav from '../components/nav/GlobalNav';
 import GlobalFooter from '../components/nav/GlobalFooter';
@@ -40,8 +41,7 @@ export async function getStaticProps() {
   //    get about page contents
   const data = await getAboutPage();
   const authors = await listAuthors();
-  const sections = await listAllSections();
-
+  const sections = await cachedContents('sections', listAllSections);
   return {
     props: {
       data,
