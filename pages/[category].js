@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import Layout from '../components/Layout.js';
 import ArticleLink from '../components/homepage/ArticleLink.js';
+import { cachedContents } from '../lib/cached';
 import {
   listAllArticlesBySection,
   listAllSectionTitles,
@@ -43,8 +44,8 @@ export async function getStaticPaths() {
 
 export async function getStaticProps({ params }) {
   const articles = await listAllArticlesBySection(params.category);
-  const sections = await listAllSections();
-  const tags = await listAllTags();
+  const sections = await cachedContents('sections', listAllSections);
+  const tags = await cachedContents('tags', listAllTags);
   let title;
 
   for (var i = 0; i < sections.length; i++) {

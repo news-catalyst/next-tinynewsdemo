@@ -6,8 +6,6 @@ export default function ModalArticleSearch(props) {
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
 
-  console.log('ModalArticleSearch props:', props);
-
   function selectArticle(article) {
     console.log(
       'changing featured article from:',
@@ -23,13 +21,11 @@ export default function ModalArticleSearch(props) {
     event.preventDefault();
     setLoading(true);
 
-    console.log('handling search...', event);
     const results = await searchArticles(
       props.apiUrl,
       props.apiToken,
       searchTerm
     );
-    console.log('results: ', results);
     setLoading(false);
     setSearchResults(results);
   }

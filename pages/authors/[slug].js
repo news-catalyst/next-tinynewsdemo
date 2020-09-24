@@ -6,6 +6,7 @@ import {
   listAllAuthorPaths,
   getAuthorBySlug,
 } from '../../lib/articles.js';
+import { cachedContents } from '../../lib/cached';
 import { siteMetadata } from '../../lib/siteMetadata.js';
 import GlobalNav from '../../components/nav/GlobalNav.js';
 import GlobalFooter from '../../components/nav/GlobalFooter.js';
@@ -41,7 +42,7 @@ export async function getStaticPaths() {
 
 export async function getStaticProps({ params }) {
   const articles = await listAllArticlesByAuthor(params.slug);
-  const sections = await listAllSections();
+  const sections = await cachedContents('sections', listAllSections);
   const author = await getAuthorBySlug(params.slug);
   return {
     props: {

@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { getHomepageData } from '../lib/homepage.js';
 import { useAmp } from 'next/amp';
+import { cachedContents } from '../lib/cached';
 import {
   listAllTags,
   listAllSections,
@@ -40,11 +41,9 @@ export default function Home({
   const featuredArticleIds = Object.values(hpArticles).map(
     (article) => article.id
   );
-  console.log(featuredArticleIds);
   const mostRecentArticles = streamArticles.filter(
     (streamArticle) => !featuredArticleIds.includes(streamArticle.id)
   );
-  console.log('streamArticles:', mostRecentArticles);
 
   return (
     <div className="homepage">
@@ -102,8 +101,8 @@ export async function getStaticProps() {
 
   const streamArticles = await listMostRecentArticles();
 
-  const tags = await listAllTags();
-  const sections = await listAllSections();
+  const tags = await cachedContents('tags', listAllTags);
+  const sections = await cachedContents('sections', listAllSections);
 
   return {
     props: {
