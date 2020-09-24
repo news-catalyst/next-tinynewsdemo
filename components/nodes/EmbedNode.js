@@ -21,7 +21,6 @@ export default function EmbedNode({ node, amp }) {
       break;
     case 'youtube.com':
       const videoId = url.searchParams.get('v');
-      console.log(url.searchParams.get('v'));
       el = amp ? (
         <amp-youtube
           layout="responsive"

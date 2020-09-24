@@ -4,6 +4,7 @@ import {
   listAllSections,
   listAllTags,
 } from '../../../lib/articles.js';
+import { cachedContents } from '../../../lib/cached';
 import Article from '../../../components/Article.js';
 
 export default function PreviewArticle(props) {
@@ -23,8 +24,8 @@ export async function getStaticProps({ params }) {
     params.slug,
     process.env.PREVIEW_API_URL
   );
-  const sections = await listAllSections();
-  const tags = await listAllTags();
+  const sections = await cachedContents('sections', listAllSections);
+  const tags = await cachedContents('tags', listAllTags);
   return {
     props: {
       article,
