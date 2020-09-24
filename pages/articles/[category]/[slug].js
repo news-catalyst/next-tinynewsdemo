@@ -4,6 +4,7 @@ import {
   listAllSections,
   listAllTags,
 } from '../../../lib/articles.js';
+import { cachedContents } from '../../../lib/cached';
 import { useRouter } from 'next/router';
 import Article from '../../../components/Article.js';
 
@@ -32,8 +33,8 @@ export async function getStaticPaths() {
 
 export async function getStaticProps({ params }) {
   const article = await getArticleBySlug(params.slug);
-  const sections = await listAllSections();
-  const tags = await listAllTags();
+  const tags = await cachedContents('tags', listAllTags);
+  const sections = await cachedContents('sections', listAllSections);
 
   return {
     props: {
