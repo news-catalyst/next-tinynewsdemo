@@ -14,13 +14,13 @@ export default function Article({ article, sections }) {
   return (
     <Layout meta={article}>
       <GlobalNav sections={sections} />
-      <article>
+      <article className="container">
         <ArticleHeader article={article} />
         <MainImage article={article} isAmp={isAmp} />
         <ArticleBody article={article} isAmp={isAmp} />
         <Tags article={article} />
+        <ArticleFooter article={article} isAmp={isAmp} />
       </article>
-      <ArticleFooter article={article} isAmp={isAmp} />
       <GlobalFooter />
     </Layout>
   );

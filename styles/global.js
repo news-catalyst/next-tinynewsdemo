@@ -32,7 +32,6 @@ export default css.global`
   article .content {
     max-width: 768px;
     margin: 0 auto;
-    font-size: 125%;
   }
 
   .head-margin {
@@ -134,8 +133,6 @@ export default css.global`
   }
   .navbar-start a {
     font-size: 20px;
-    font-weight: bold;
-    text-decoration: underline;
   }
   .newsletter-subscribe {
     background-color: papayawhip;
@@ -145,4 +142,52 @@ export default css.global`
   .pointer {
     cursor: pointer;
   }
+  section.hero.is-bold .hero-body {
+    background-color: #193441;
+  }
+  section.hero.is-bold .title {
+    color: #FCFFF5;
+  }
+  .navbar-start a {
+    color: #D1DBBD;
+  }
+  .sidebar {
+    background-color: #D1DBBD;
+  }
+  .newsletter-subscribe {
+    background-color: #D1DBBD;
+  }
+  a {
+    color: #367D9F;
+  }
+  .panel-heading {
+    color: #3E606F;
+  }
+  .panel-block .is-active {
+    color: #3E606F;
+  }
+  .media-content.small-margin-left .content {
+    margin-left: 0;
+  }
+  .stream-article {
+    padding: 3rem 0;
+  }
+  .stream-article + .stream-article {
+    border-top: 1px solid #ccc;
+  }
+  .article-tease h6 .category {
+    margin-right: 0.33rem;
+  }
+  .article-tease h6 .pub-date {
+    font-weight: normal;
+    color: #666;
+    font-size: 80%;
+  }
+  .article-tease h2.article-title {
+    margin-top: 0.5rem;
+  }
+  .article-tease .content {
+    max-width: 100%;
+  }
+}
 `;

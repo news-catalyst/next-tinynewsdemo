@@ -88,7 +88,7 @@ export default function Layout({ children, meta }) {
           />
         )}
       </Head>
-      <main className="container">
+      <main>
         {isAmp && (
           <AmpAnalytics
             type="googleanalytics"
