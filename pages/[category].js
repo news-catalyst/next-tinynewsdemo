@@ -19,16 +19,18 @@ export default function CategoryPage({ articles, title, sections, tags }) {
   return (
     <Layout meta={siteMetadata}>
       <GlobalNav sections={sections} />
-      <section className="section">
-        <h1 className="title">{title}</h1>
-        <div className="columns">
-          <div className="column is-four-fifths">
-            {articles.map((article) => (
-              <ArticleLink key={article.id} article={article} amp={isAmp} />
-            ))}
+      <div className="container">
+        <section className="section">
+          <h1 className="title">{title}</h1>
+          <div className="columns">
+            <div className="column is-four-fifths">
+              {articles.map((article) => (
+                <ArticleLink key={article.id} article={article} amp={isAmp} />
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </div>
       <GlobalFooter />
     </Layout>
   );

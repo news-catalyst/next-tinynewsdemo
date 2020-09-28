@@ -5,7 +5,6 @@ import { getHomepageData } from '../lib/homepage.js';
 import { useAmp } from 'next/amp';
 import { cachedContents } from '../lib/cached';
 import {
-  listAllTags,
   listAllSections,
   listMostRecentArticles,
   getHomepageArticles,
@@ -23,20 +22,9 @@ const LargePackageStoryLead = dynamic(() =>
   import(`../components/homepage/LargePackageStoryLead`)
 );
 
-export default function Home({
-  hpData,
-  hpArticles,
-  streamArticles,
-  tags,
-  sections,
-}) {
+export default function Home({ hpData, hpArticles, streamArticles, sections }) {
   const [featuredArticle, setFeaturedArticle] = useState(null);
   const isAmp = useAmp();
-  const tagLinks = tags.map((tag) => (
-    <Link key={tag.title} href={`/tags/${tag.slug}`}>
-      <a className="panel-block is-active">{tag.title}</a>
-    </Link>
-  ));
 
   const featuredArticleIds = Object.values(hpArticles).map(
     (article) => article.id
@@ -48,45 +36,39 @@ export default function Home({
   return (
     <div className="homepage">
       <Layout meta={siteMetadata}>
-        <GlobalNav metadata={siteMetadata} tags={tags} sections={sections} />
-        {hpData.layoutComponent === 'BigFeaturedStory' && (
-          <BigFeaturedStory
-            articles={hpArticles}
-            tags={tags}
-            sections={sections}
-            featuredArticle={featuredArticle}
-            setFeaturedArticle={setFeaturedArticle}
-            isAmp={isAmp}
-          />
-        )}
-        {hpData.layoutComponent === 'LargePackageStoryLead' && (
-          <LargePackageStoryLead
-            articles={hpArticles}
-            tags={tags}
-            sections={sections}
-            isAmp={isAmp}
-          />
-        )}
-        <section className="section">
-          <div className="columns">
-            <div className="column is-three-quarters">
-              {mostRecentArticles &&
-                mostRecentArticles.map((streamArticle) => (
-                  <ArticleLink
-                    key={streamArticle.id}
-                    article={streamArticle}
-                    amp={isAmp}
-                  />
-                ))}
+        <GlobalNav metadata={siteMetadata} sections={sections} />
+        <div className="container">
+          {hpData.layoutComponent === 'BigFeaturedStory' && (
+            <BigFeaturedStory
+              articles={hpArticles}
+              sections={sections}
+              featuredArticle={featuredArticle}
+              setFeaturedArticle={setFeaturedArticle}
+              isAmp={isAmp}
+            />
+          )}
+          {hpData.layoutComponent === 'LargePackageStoryLead' && (
+            <LargePackageStoryLead
+              articles={hpArticles}
+              sections={sections}
+              isAmp={isAmp}
+            />
+          )}
+          <section className="section">
+            <div className="columns">
+              <div className="column is-11 is-offset-1">
+                {mostRecentArticles &&
+                  mostRecentArticles.map((streamArticle) => (
+                    <ArticleLink
+                      key={streamArticle.id}
+                      article={streamArticle}
+                      amp={isAmp}
+                    />
+                  ))}
+              </div>
             </div>
-            <div className="column">
-              <nav className="panel">
-                <p className="panel-heading">{siteMetadata.labels.topics}</p>
-                {tagLinks}
-              </nav>
-            </div>
-          </div>
-        </section>
+          </section>
+        </div>
         <GlobalFooter post_type="home" />
       </Layout>
     </div>
@@ -101,7 +83,6 @@ export async function getStaticProps() {
 
   const streamArticles = await listMostRecentArticles();
 
-  const tags = await cachedContents('tags', listAllTags);
   const sections = await cachedContents('sections', listAllSections);
 
   return {
@@ -109,7 +90,6 @@ export async function getStaticProps() {
       hpData,
       hpArticles,
       streamArticles,
-      tags,
       sections,
     },
   };
