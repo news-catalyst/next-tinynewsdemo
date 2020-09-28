@@ -14,7 +14,7 @@ export default function GlobalNav({ sections }) {
   }
 
   return (
-    <section className="hero is-danger is-bold">
+    <section className="hero is-bold">
       <div className="hero-body">
         <div className="container">
           <Link key="navbar-home" href="/" as="/">
