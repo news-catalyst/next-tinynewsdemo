@@ -64,17 +64,15 @@ export default function HomePageEditor({
       'saving homepage...',
       selectedLayout,
       'featuredArticle:',
-      featuredArticle,
-      'subfeaturedLeft:',
-      subFeaturedLeftArticle
+      featuredArticle
     );
 
     let articlesData;
-    if (selectedLayout.name.value === 'Big Featured Story') {
+    if (selectedLayout.name === 'Big Featured Story') {
       articlesData = {
         featured: featuredArticle.slug,
       };
-    } else if (selectedLayout.name.value === 'Large Package Story lead') {
+    } else if (selectedLayout.name === 'Large Package Story lead') {
       articlesData = {
         featured: featuredArticle.slug,
         'subfeatured-left': subFeaturedLeftArticle.slug,
@@ -183,7 +181,7 @@ export async function getStaticProps() {
   const hpData = await getHomepageData();
 
   //    look up selected homepage articles
-  const hpArticles = await getHomepageArticles(hpData.articles);
+  const hpArticles = await getHomepageArticles(hpData);
 
   const tags = await listAllTags();
   const sections = await listAllSections();
