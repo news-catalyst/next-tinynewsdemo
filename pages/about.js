@@ -12,7 +12,7 @@ export default function About({ data, authors, sections }) {
   return (
     <Layout meta={data}>
       <GlobalNav sections={sections} />
-      <article>
+      <article className="container">
         <section className="section" key="body">
           <div id="articleText" className="content">
             {body}

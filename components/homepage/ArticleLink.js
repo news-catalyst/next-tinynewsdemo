@@ -14,58 +14,53 @@ export default function ArticleLink({ article, isAmp }) {
   }
 
   return (
-    <article className="media">
-      {mainImage && (
-        <figure className="media-left">
-          <p className="image article-link-img">
-            {isAmp ? (
-              <amp-img
-                width={mainImage.width}
-                height={mainImage.height}
-                src={mainImage.imageUrl}
-                alt={mainImage.imageAlt}
-                layout="responsive"
-              />
-            ) : (
-              <img src={mainImage.imageUrl} />
-            )}
-          </p>
-        </figure>
-      )}
-      <div className="media-content small-margin-left">
-        <div className="content">
-          <h1 className="title">
-            <Link
-              href="/articles/[category]/[slug]"
-              as={`/articles/${article.category.slug}/${article.slug}`}
-            >
-              <a>{article.headline}</a>
-            </Link>
-          </h1>
-          <p>{renderAuthors(article)}</p>
-          <p>{renderDate(article.firstPublishedOn, false)}</p>
-          <p>{article.searchDescription}</p>
-        </div>
-        <nav className="level is-mobile">
-          <div className="level-left">
-            <a className="level-item">
-              <span className="icon is-small">
-                <i className="fas fa-reply"></i>
+    <div className="stream-article">
+      <article className="media">
+        {mainImage && (
+          <figure className="media-left">
+            <p className="image article-link-img">
+              {isAmp ? (
+                <amp-img
+                  width={mainImage.width}
+                  height={mainImage.height}
+                  src={mainImage.imageUrl}
+                  alt={mainImage.imageAlt}
+                  layout="responsive"
+                />
+              ) : (
+                <img src={mainImage.imageUrl} />
+              )}
+            </p>
+          </figure>
+        )}
+        <div className="media-content small-margin-left article-tease">
+          <div className="content">
+            <h6 className="is-6">
+              <span className="category">
+                <Link href="/[slug]" as={article.category.slug}>
+                  <a>{article.category.title}</a>
+                </Link>
               </span>
-            </a>
-            <a className="level-item">
-              <span className="icon is-small">
-                <i className="fas fa-retweet"></i>
+              &nbsp;
+              <span className="pub-date">
+                {renderDate(article.firstPublishedOn, false)}
               </span>
-            </a>
-            <a className="level-item">
-              <span className="icon is-small">
-                <i className="fas fa-heart"></i>
-              </span>
-            </a>
+            </h6>
+            <h2 className="is-2 article-title">
+              <Link
+                href="/articles/[category]/[slug]"
+                as={`/articles/${article.category.slug}/${article.slug}`}
+              >
+                <a>{article.headline}</a>
+              </Link>
+            </h2>
+            <p>
+              <span>By</span>&nbsp;{renderAuthors(article)}
+            </p>
+            <p>{article.searchDescription}</p>
           </div>
-        </nav>
-      </div>
-    </article>
+        </div>
+      </article>
+    </div>
   );
 }
