@@ -15,7 +15,7 @@ export default function BigFeaturedStory(props) {
       <div className="featured-article">
         <div className="columns">
           <div className="column is-two-thirds">
-            {props.editable && props.featuredArticle && (
+            {props.editable && (
               <>
                 <ModalArticleSearch
                   apiUrl={props.apiUrl}
