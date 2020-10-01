@@ -92,5 +92,6 @@ export async function getStaticProps() {
       streamArticles,
       sections,
     },
+    revalidate: 1,
   };
 }
