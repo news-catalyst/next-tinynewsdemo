@@ -6,13 +6,15 @@ export default function AdminNav(props) {
   useEffect(() => {
     if (props.hpData && props.hpData.layoutSchema) {
       setCurrentLayoutName(props.hpData.layoutSchema.name);
+    } else {
+      setCurrentLayoutName(props.layoutSchemas[0].name);
     }
   }, [props.hpData]);
 
   async function switchLayout(layoutData) {
     console.log('changing layout:', layoutData);
     props.changeLayout(layoutData);
-    setCurrentLayoutName(layoutData.name.value);
+    setCurrentLayoutName(layoutData.name);
   }
 
   return (
