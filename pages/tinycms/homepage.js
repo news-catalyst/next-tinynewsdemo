@@ -33,7 +33,7 @@ export default function HomePageEditor({
   const [notificationMessage, setNotificationMessage] = useState('');
   const [notificationType, setNotificationType] = useState('');
   const [showNotification, setShowNotification] = useState(false);
-  const [selectedLayout, setSelectedLayout] = useState(hpData.layoutSchema);
+  const [selectedLayout, setSelectedLayout] = useState();
   const [featuredArticle, setFeaturedArticle] = useState(null);
   const [subFeaturedLeftArticle, setSubFeaturedLeftArticle] = useState(null);
   const [subFeaturedRightArticle, setSubFeaturedRightArticle] = useState(null);
@@ -43,7 +43,13 @@ export default function HomePageEditor({
   const [homepageKey, setHomepageKey] = useState(Math.random());
 
   useEffect(() => {
-    setSelectedLayout(hpData.layoutSchema);
+    if (hpData === null) {
+      console.log('setting layout to:', layoutSchemas[0]);
+      setSelectedLayout(layoutSchemas[0]);
+    } else {
+      console.log('setting layout to hpdata:', hpData);
+      setSelectedLayout(hpData.layoutSchema);
+    }
     console.log('selectedLayout:', selectedLayout);
     console.log('hpData:', hpData);
     console.log('hpArticles:', hpArticles);
@@ -131,8 +137,7 @@ export default function HomePageEditor({
       )}
 
       <div key={homepageKey}>
-        {(selectedLayout.name.value === 'Big Featured Story' ||
-          selectedLayout.name === 'Big Featured Story') && (
+        {selectedLayout && selectedLayout.name === 'Big Featured Story' && (
           <BigFeaturedStory
             editable={true}
             apiUrl={apiUrl}
@@ -145,26 +150,26 @@ export default function HomePageEditor({
             sections={sections}
           />
         )}
-        {(selectedLayout.name.value === 'Large Package Story lead' ||
-          selectedLayout.name === 'Large Package Story lead') && (
-          <LargePackageStoryLead
-            editable={true}
-            apiUrl={apiUrl}
-            apiToken={apiToken}
-            featuredArticle={featuredArticle}
-            setFeaturedArticle={setFeaturedArticle}
-            subFeaturedLeftArticle={subFeaturedLeftArticle}
-            setSubFeaturedLeftArticle={setSubFeaturedLeftArticle}
-            subFeaturedRightArticle={subFeaturedRightArticle}
-            setSubFeaturedRightArticle={setSubFeaturedRightArticle}
-            subFeaturedMiddleArticle={subFeaturedMiddleArticle}
-            setSubFeaturedMiddleArticle={setSubFeaturedMiddleArticle}
-            hpData={hpData}
-            articles={hpArticles}
-            tags={tags}
-            sections={sections}
-          />
-        )}
+        {selectedLayout &&
+          selectedLayout.name === 'Large Package Story lead' && (
+            <LargePackageStoryLead
+              editable={true}
+              apiUrl={apiUrl}
+              apiToken={apiToken}
+              featuredArticle={featuredArticle}
+              setFeaturedArticle={setFeaturedArticle}
+              subFeaturedLeftArticle={subFeaturedLeftArticle}
+              setSubFeaturedLeftArticle={setSubFeaturedLeftArticle}
+              subFeaturedRightArticle={subFeaturedRightArticle}
+              setSubFeaturedRightArticle={setSubFeaturedRightArticle}
+              subFeaturedMiddleArticle={subFeaturedMiddleArticle}
+              setSubFeaturedMiddleArticle={setSubFeaturedMiddleArticle}
+              hpData={hpData}
+              articles={hpArticles}
+              tags={tags}
+              sections={sections}
+            />
+          )}
       </div>
     </>
   );
