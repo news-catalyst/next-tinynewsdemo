@@ -25,7 +25,7 @@ export default function Authors({ authors }) {
       <li key={author.id}>
         <Link key={`${author.id}-link`} href={`/tinycms/authors/${author.id}`}>
           <a>
-            {author.name.value}, {author.title.value}
+            {author.name}, {author.title.values[0].value}
           </a>
         </Link>
       </li>

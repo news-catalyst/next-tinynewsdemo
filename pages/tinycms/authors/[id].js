@@ -5,7 +5,6 @@ import {
   getAuthor,
   listAllAuthorIds,
   updateAuthor,
-  publishAuthor,
 } from '../../../lib/authors';
 import AdminNav from '../../../components/nav/AdminNav';
 import Notification from '../../../components/tinycms/Notification';
@@ -25,17 +24,18 @@ export default function EditAuthor({ apiUrl, apiToken, author }) {
 
   useEffect(() => {
     if (author) {
-      setName(author.name.value);
-      setTitle(author.title.value);
-      setTwitter(author.twitter.value);
-      setBio(author.bio.value);
+      setName(author.name);
+      setTitle(author.title.values[0].value);
+      setTwitter(author.twitter);
+      setBio(author.bio.values[0].value);
       setAuthorId(author.id);
-      if (author.staff.value) {
+      if (author.staff) {
         setStaffYesNo('yes');
+        setStaff(true);
       } else {
         setStaffYesNo('no');
+        setStaff(false);
       }
-      setStaff(author.staff.value);
     }
   }, []);
   const router = useRouter();
@@ -68,19 +68,12 @@ export default function EditAuthor({ apiUrl, apiToken, author }) {
       staff
     );
 
-    if (response.content.error !== null) {
-      setNotificationMessage(response.content.error);
+    if (response.authors.updateAuthor.error !== null) {
+      setNotificationMessage(response.authors.updateAuthor.error);
       setNotificationType('error');
       setShowNotification(true);
     } else {
-      setAuthorId(response.content.data.id);
-      // publish author
-      const publishResponse = await publishAuthor(
-        apiUrl,
-        apiToken,
-        response.content.data.id
-      );
-
+      setAuthorId(response.authors.updateAuthor.data.id);
       // display success message
       setNotificationMessage('Successfully saved and published the author!');
       setNotificationType('success');
