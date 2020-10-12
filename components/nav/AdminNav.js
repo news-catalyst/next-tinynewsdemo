@@ -40,7 +40,7 @@ export default function AdminNav(props) {
                     onClick={() => switchLayout(option)}
                     className="navbar-item"
                   >
-                    {option.name.value}
+                    {option.name}
                   </a>
                 ))}
                 <div className="navbar-item">

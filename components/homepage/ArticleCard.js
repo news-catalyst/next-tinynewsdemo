@@ -41,7 +41,7 @@ export default function ArticleCard({ article, isAmp }) {
               href="/articles/[category]/[slug]"
               as={`/articles/${article.category.slug}/${article.slug}`}
             >
-              <a>{article.headline}</a>
+              <a>{article.headline.values[0].value}</a>
             </Link>
           </h1>
           <p>{renderAuthors(article)}</p>
