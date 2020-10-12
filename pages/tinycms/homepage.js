@@ -79,12 +79,19 @@ export default function HomePageEditor({
         featured: featuredArticle.slug,
       };
     } else if (selectedLayout.name === 'Large Package Story lead') {
-      articlesData = {
-        featured: featuredArticle.slug,
-        'subfeatured-left': subFeaturedLeftArticle.slug,
-        'subfeatured-middle': subFeaturedMiddleArticle.slug,
-        'subfeatured-right': subFeaturedRightArticle.slug,
-      };
+      articlesData = {};
+      if (featuredArticle) {
+        articlesData.featured = featuredArticle.slug;
+      }
+      if (subFeaturedLeftArticle) {
+        articlesData['subfeatured-left'] = subFeaturedLeftArticle.slug;
+      }
+      if (subFeaturedMiddleArticle) {
+        articlesData['subfeatured-middle'] = subFeaturedMiddleArticle.slug;
+      }
+      if (subFeaturedRightArticle) {
+        articlesData['subfeatured-right'] = subFeaturedRightArticle.slug;
+      }
     }
 
     console.log('articlesData:', articlesData);
