@@ -38,7 +38,7 @@ export default function FeaturedArticleLink({ article, isAmp }) {
           <h6 className="is-6">
             <span className="category">
               <Link href="/[slug]" as={article.category.slug}>
-                <a>{article.category.title}</a>
+                <a>{article.category.title.values[0].value}</a>
               </Link>
             </span>
             &nbsp;
@@ -51,7 +51,7 @@ export default function FeaturedArticleLink({ article, isAmp }) {
               href="/articles/[category]/[slug]"
               as={`/articles/${article.category.slug}/${article.slug}`}
             >
-              <a className="featured">{article.headline}</a>
+              <a className="featured">{article.headline.values[0].value}</a>
             </Link>
           </h2>
           <p>

@@ -95,17 +95,17 @@ export default function HomePageEditor({
       articlesData
     );
     console.log('results:', results);
-    if (results && results.content && results.content.data) {
-      const publishResults = await publishLayout(
-        apiUrl,
-        apiToken,
-        results.content.data.id
-      );
-      console.log('publishResults:', publishResults);
+    if (
+      results &&
+      results.homepageLayoutDatas &&
+      results.homepageLayoutDatas.createHomepageLayoutData &&
+      results.homepageLayoutDatas.createHomepageLayoutData.data
+    ) {
       setNotificationMessage('Successfully published homepage!');
       setNotificationType('success');
       setShowNotification(true);
     } else {
+      console.log(results);
       setNotificationMessage(
         'An error occured while trying to create the new layout config:',
         results
