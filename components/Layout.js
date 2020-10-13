@@ -34,10 +34,17 @@ export default function Layout({ children, meta }) {
 
   const trackingId = process.env.GA_TRACKING_ID;
 
+  let title;
+  if (meta && meta.searchTitle) {
+    title = meta.searchTitle;
+  } else if (metaValues.searchTitle) {
+    title = metaValues.searchTitle;
+  }
+
   return (
     <>
       <Head>
-        <title>{meta.searchTitle}</title>
+        <title>{title}</title>
         <link rel="icon" href="/favicon.ico" />
         <meta property="description" content={metaValues.searchDescription} />
         {tagList}
