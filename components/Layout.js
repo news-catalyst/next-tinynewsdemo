@@ -36,9 +36,9 @@ export default function Layout({ children, meta }) {
 
   let title;
   if (meta && meta.searchTitle) {
-    title = meta.searchTitle;
+    title = meta.searchTitle.values[0].value;
   } else if (metaValues.searchTitle) {
-    title = metaValues.searchTitle;
+    title = metaValues.searchTitle.values[0].value;
   }
 
   return (
