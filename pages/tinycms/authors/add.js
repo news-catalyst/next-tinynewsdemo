@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import AdminLayout from '../../../components/AdminLayout';
 import AdminNav from '../../../components/nav/AdminNav';
 import Notification from '../../../components/tinycms/Notification';
-import { createAuthor, publishAuthor } from '../../../lib/authors';
+import { createAuthor } from '../../../lib/authors';
 
 export default function AddAuthor({ apiUrl, apiToken }) {
   const [notificationMessage, setNotificationMessage] = useState('');
@@ -29,18 +29,12 @@ export default function AddAuthor({ apiUrl, apiToken }) {
       bio,
       staff
     );
-    if (response.content.error !== null) {
-      setNotificationMessage(response.content.error);
+
+    if (response.authors.createAuthor.error !== null) {
+      setNotificationMessage(response.authors.createAuthor.error);
       setNotificationType('error');
       setShowNotification(true);
     } else {
-      // publish author
-      const publishResponse = await publishAuthor(
-        apiUrl,
-        apiToken,
-        response.content.data.id
-      );
-
       // display success message
       setNotificationMessage('Successfully saved and published the author!');
       setNotificationType('success');
@@ -150,7 +144,7 @@ export default function AddAuthor({ apiUrl, apiToken }) {
 
           <div className="field is-grouped">
             <div className="control">
-              <button className="button is-link">Submit</button>
+              <input type="submit" className="button is-link" value="Submit" />
             </div>
             <div className="control">
               <button className="button is-link is-light">Cancel</button>
@@ -162,8 +156,8 @@ export default function AddAuthor({ apiUrl, apiToken }) {
   );
 }
 export async function getStaticProps() {
-  const apiUrl = process.env.ADMIN_CONTENT_DELIVERY_API_URL;
-  const apiToken = process.env.ADMIN_CONTENT_DELIVERY_API_ACCESS_TOKEN;
+  const apiUrl = process.env.CONTENT_DELIVERY_API_URL;
+  const apiToken = process.env.CONTENT_DELIVERY_API_ACCESS_TOKEN;
   return {
     props: {
       apiUrl: apiUrl,
