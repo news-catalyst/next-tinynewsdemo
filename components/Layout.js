@@ -7,14 +7,30 @@ import AmpAnalytics from './amp/AmpAnalytics.js';
 export default function Layout({ children, meta }) {
   const metaValues = {
     canonical: meta.canonical || siteMetadata.siteUrl,
-    searchTitle: meta.searchTitle || siteMetadata.searchTitle,
-    searchDescription: meta.searchDescription || siteMetadata.searchDescription,
-    facebookTitle: meta.facebookTitle || siteMetadata.facebookTitle,
+    searchTitle:
+      meta.searchTitle && meta.searchTitle.values
+        ? meta.searchTitle.values[0].value
+        : siteMetadata.searchTitle,
+    searchDescription:
+      meta.searchDescription && meta.searchDescription.values
+        ? meta.searchDescription.values[0].value
+        : siteMetadata.searchDescription,
+    facebookTitle:
+      meta.facebookTitle && meta.facebookTitle.values
+        ? meta.facebookTitle.values[0].value
+        : siteMetadata.facebookTitle,
     facebookDescription:
-      meta.facebookDescription || siteMetadata.facebookDescription,
-    twitterTitle: meta.twitterTitle || siteMetadata.twitterTitle,
+      meta.facebookDescription && meta.facebookDescription.values
+        ? meta.facebookDescription.values[0].value
+        : siteMetadata.facebookDescription,
+    twitterTitle:
+      meta.twitterTitle && meta.twitterTitle.values
+        ? meta.twitterTitle.values[0].value
+        : siteMetadata.twitterTitle,
     twitterDescription:
-      meta.twitterDescription || siteMetadata.twitterDescription,
+      meta.twitterDescription && meta.twitterDescription.values
+        ? meta.twitterDescription.values[0].value
+        : siteMetadata.twitterDescription,
     firstPublishedOn: meta.firstPublishedOn || siteMetadata.firstPublishedOn,
     lastPublishedOn: meta.lastPublishedOn || siteMetadata.lastPublishedOn,
     tags: meta.tags || siteMetadata.tags,
@@ -34,10 +50,25 @@ export default function Layout({ children, meta }) {
 
   const trackingId = process.env.GA_TRACKING_ID;
 
+  let title;
+  console.log('meta.searchTitle:', meta.searchTitle);
+  if (
+    meta &&
+    meta.searchTitle &&
+    meta.searchTitle.values &&
+    meta.searchTitle.values[0]
+  ) {
+    title = meta.searchTitle.values[0].value;
+  } else if (meta && meta.searchTitle) {
+    title = meta.searchTitle;
+  } else if (metaValues.searchTitle) {
+    title = metaValues.searchTitle.values[0].value;
+  }
+
   return (
     <>
       <Head>
-        <title>{meta.searchTitle}</title>
+        <title>{title}</title>
         <link rel="icon" href="/favicon.ico" />
         <meta property="description" content={metaValues.searchDescription} />
         {tagList}

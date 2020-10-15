@@ -8,6 +8,7 @@ import { renderBody } from '../lib/utils.js';
 
 export default function About({ data, authors, sections }) {
   const isAmp = useAmp();
+  console.log('data:', data);
   const body = renderBody(data, isAmp);
   return (
     <Layout meta={data}>
@@ -24,9 +25,22 @@ export default function About({ data, authors, sections }) {
             {authors.map((author) => (
               <div className="author mb-4">
                 <h4 className="subtitle is-4">
-                  {author.name}, {author.title}
+                  {author.name},{' '}
+                  {author.title &&
+                  author.title.values &&
+                  author.title.values[0] &&
+                  author.title.values[0].value
+                    ? author.title.values[0].value
+                    : ''}
                 </h4>
-                <p className="content is-medium">{author.bio}</p>
+                <p className="content is-medium">
+                  {author.bio &&
+                  author.bio.values &&
+                  author.bio.values[0] &&
+                  author.bio.values[0].value
+                    ? author.bio.values[0].value
+                    : ''}
+                </p>
               </div>
             ))}
           </div>

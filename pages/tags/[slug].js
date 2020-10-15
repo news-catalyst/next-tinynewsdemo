@@ -14,12 +14,13 @@ import { useAmp } from 'next/amp';
 
 export default function TagPage(props) {
   const isAmp = useAmp();
+  let tagTitle = props.tag.title.values[0].value;
   return (
     <Layout meta={siteMetadata}>
       <GlobalNav sections={props.sections} />
       <div className="container">
         <section className="section">
-          <h1 className="title">Articles tagged with {props.tag.title}</h1>
+          <h1 className="title">Articles tagged with {tagTitle}</h1>
           <div className="columns">
             <div className="column is-four-fifths">
               {props.articles.map((article) => (

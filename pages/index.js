@@ -23,6 +23,11 @@ const LargePackageStoryLead = dynamic(() =>
 
 export default function Home({ hpData, hpArticles, streamArticles, sections }) {
   const [featuredArticle, setFeaturedArticle] = useState(null);
+  const [subFeaturedLeftArticle, setSubFeaturedLeftArticle] = useState(null);
+  const [subFeaturedRightArticle, setSubFeaturedRightArticle] = useState(null);
+  const [subFeaturedMiddleArticle, setSubFeaturedMiddleArticle] = useState(
+    null
+  );
   const isAmp = useAmp();
 
   const featuredArticleIds = Object.values(hpArticles).map(
@@ -49,6 +54,14 @@ export default function Home({ hpData, hpArticles, streamArticles, sections }) {
           {hpData.layoutComponent === 'LargePackageStoryLead' && (
             <LargePackageStoryLead
               articles={hpArticles}
+              featuredArticle={featuredArticle}
+              setFeaturedArticle={setFeaturedArticle}
+              subFeaturedLeftArticle={subFeaturedLeftArticle}
+              setSubFeaturedLeftArticle={setSubFeaturedLeftArticle}
+              subFeaturedRightArticle={subFeaturedRightArticle}
+              setSubFeaturedRightArticle={setSubFeaturedRightArticle}
+              subFeaturedMiddleArticle={subFeaturedMiddleArticle}
+              setSubFeaturedMiddleArticle={setSubFeaturedMiddleArticle}
               sections={sections}
               isAmp={isAmp}
             />
@@ -79,6 +92,7 @@ export async function getStaticProps() {
   const hpData = await getHomepageData();
   //    look up selected homepage articles
   const hpArticles = await getHomepageArticles(hpData);
+  // const hpArticles = { "featured": ""}
 
   const streamArticles = await listMostRecentArticles();
 
