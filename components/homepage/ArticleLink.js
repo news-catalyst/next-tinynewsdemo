@@ -43,7 +43,10 @@ export default function ArticleLink({ article, isAmp }) {
             <h6 className="is-6">
               {article.category && (
                 <span className="category">
-                  <Link href="/[slug]" as={article.category.slug}>
+                  <Link
+                    key={article.category.title.values[0].value}
+                    href={`/${article.category.slug}`}
+                  >
                     <a>{article.category.title.values[0].value}</a>
                   </Link>
                 </span>
