@@ -30,12 +30,7 @@ export default function GlobalNav({ sections }) {
             aria-label="main navigation"
           >
             <div className="navbar-brand">
-              <div className="navbar-start">
-                {sectionLinks}
-                <a className="navbar-item" href="/topics">
-                  {siteMetadata.nav.topics}
-                </a>
-              </div>
+              <div className="navbar-start">{sectionLinks}</div>
             </div>
           </nav>
         </div>
