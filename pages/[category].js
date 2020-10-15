@@ -47,13 +47,22 @@ export async function getStaticPaths() {
 export async function getStaticProps({ params }) {
   const articles = await listAllArticlesBySection(params.category);
   const sections = await cachedContents('sections', listAllSections);
+
+  console.log('sections:', sections);
   const tags = await cachedContents('tags', listAllTags);
   let title;
 
   for (var i = 0; i < sections.length; i++) {
     if (sections[i].slug == params.category) {
-      title = sections[i].title;
-      break;
+      if (
+        sections[i].title &&
+        sections[i].title.values &&
+        sections[i].title.values[0] &&
+        sections[i].title.values[0].value
+      ) {
+        title = sections[i].title.values[0].value;
+        break;
+      }
     }
   }
   return {
