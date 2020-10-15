@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import dynamic from 'next/dynamic';
-import Link from 'next/link';
 import { getHomepageData } from '../lib/homepage.js';
 import { useAmp } from 'next/amp';
 import { cachedContents } from '../lib/cached';
