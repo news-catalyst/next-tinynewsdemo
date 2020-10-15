@@ -6,8 +6,14 @@ export default function FeaturedArticleLink({ article, isAmp }) {
   let mainImage = null;
   let mainImageNode = null;
 
-  let headline = article.headline.values[0].value;
-  let searchDescription = article.searchDescription.values[0].value;
+  let headline =
+    article.headline && article.headline.values
+      ? article.headline.values[0].value
+      : article.headline;
+  let searchDescription =
+    article.searchDescription && article.searchDescription.values
+      ? article.searchDescription.values[0].value
+      : article.searchDescription;
 
   if (article && article.content) {
     mainImageNode = article.content.find((node) => node.type === 'mainImage');

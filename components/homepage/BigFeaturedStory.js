@@ -32,20 +32,20 @@ export default function BigFeaturedStory(props) {
                   Change Featured Article
                 </button>
                 <div id="featuredArticle">
-                  {props.featuredArticle && (
+                  {props.articles['featured'] && (
                     <FeaturedArticleLink
-                      key={props.featuredArticle.id}
-                      article={props.featuredArticle}
+                      key={props.articles['featured'].id}
+                      article={props.articles['featured']}
                       amp={props.isAmp}
                     />
                   )}
                 </div>
               </>
             )}
-            {!props.editable && props.featuredArticle && (
+            {!props.editable && props.articles['featured'] && (
               <FeaturedArticleLink
-                key={props.featuredArticle.id}
-                article={props.featuredArticle}
+                key={props.articles['featured'].id}
+                article={props.articles['featured']}
                 amp={props.isAmp}
               />
             )}
