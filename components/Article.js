@@ -10,9 +10,6 @@ import Layout from './Layout.js';
 
 export default function Article({ article, sections, tags }) {
   const isAmp = useAmp();
-  console.log('all tags: ', tags);
-  console.log('article tags: ', article.tags);
-  console.log('article: ', article);
 
   return (
     <Layout meta={article}>
