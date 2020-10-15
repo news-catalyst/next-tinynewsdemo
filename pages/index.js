@@ -92,6 +92,7 @@ export async function getStaticProps() {
   const hpData = await getHomepageData();
   //    look up selected homepage articles
   const hpArticles = await getHomepageArticles(hpData);
+  // const hpArticles = { "featured": ""}
 
   const streamArticles = await listMostRecentArticles();
 
