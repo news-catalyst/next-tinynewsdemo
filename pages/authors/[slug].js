@@ -13,6 +13,7 @@ import GlobalFooter from '../../components/nav/GlobalFooter.js';
 import { useAmp } from 'next/amp';
 
 export default function AuthorPage(props) {
+  console.log(props);
   const isAmp = useAmp();
   return (
     <Layout meta={siteMetadata}>
