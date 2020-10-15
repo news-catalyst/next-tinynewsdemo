@@ -7,7 +7,11 @@ export default function ArticleLink({ article, isAmp }) {
   let mainImageNode;
 
   if (article.content !== null && article.content !== undefined) {
-    mainImageNode = article.content.find((node) => node.type === 'mainImage');
+    try {
+      mainImageNode = article.content.find((node) => node.type === 'mainImage');
+    } catch (e) {
+      console.log('error finding main image:', e, article.content);
+    }
   }
 
   if (mainImageNode) {
