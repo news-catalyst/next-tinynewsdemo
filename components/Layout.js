@@ -7,14 +7,30 @@ import AmpAnalytics from './amp/AmpAnalytics.js';
 export default function Layout({ children, meta }) {
   const metaValues = {
     canonical: meta.canonical || siteMetadata.siteUrl,
-    searchTitle: meta.searchTitle || siteMetadata.searchTitle,
-    searchDescription: meta.searchDescription || siteMetadata.searchDescription,
-    facebookTitle: meta.facebookTitle || siteMetadata.facebookTitle,
+    searchTitle:
+      meta.searchTitle && meta.searchTitle.values
+        ? meta.searchTitle.values[0].value
+        : siteMetadata.searchTitle,
+    searchDescription:
+      meta.searchDescription && meta.searchDescription.values
+        ? meta.searchDescription.values[0].value
+        : siteMetadata.searchDescription,
+    facebookTitle:
+      meta.facebookTitle && meta.facebookTitle.values
+        ? meta.facebookTitle.values[0].value
+        : siteMetadata.facebookTitle,
     facebookDescription:
-      meta.facebookDescription || siteMetadata.facebookDescription,
-    twitterTitle: meta.twitterTitle || siteMetadata.twitterTitle,
+      meta.facebookDescription && meta.facebookDescription.values
+        ? meta.facebookDescription.values[0].value
+        : siteMetadata.facebookDescription,
+    twitterTitle:
+      meta.twitterTitle && meta.twitterTitle.values
+        ? meta.twitterTitle.values[0].value
+        : siteMetadata.twitterTitle,
     twitterDescription:
-      meta.twitterDescription || siteMetadata.twitterDescription,
+      meta.twitterDescription && meta.twitterDescription.values
+        ? meta.twitterDescription.values[0].value
+        : siteMetadata.twitterDescription,
     firstPublishedOn: meta.firstPublishedOn || siteMetadata.firstPublishedOn,
     lastPublishedOn: meta.lastPublishedOn || siteMetadata.lastPublishedOn,
     tags: meta.tags || siteMetadata.tags,
