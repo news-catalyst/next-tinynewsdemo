@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "clear": "node script/clear.js",
     "build": "next build",
     "start": "next start",
     "purgecss": "purgecss --css styles/bulma.css --content pages/** components/** --output ./purge.css",
