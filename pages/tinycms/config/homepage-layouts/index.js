@@ -42,9 +42,11 @@ export default function HomepageLayouts({ homepageLayouts }) {
         {message && <div className="success">{message}</div>}
         <ul>{listItems}</ul>
 
-        <Link className="button" href="/tinycms/config/homepage-layouts/add">
-          Add Homepage Layout
-        </Link>
+        <section className="section">
+          <Link href="/tinycms/config/homepage-layouts/add">
+            <button className="button">Add Homepage Layout</button>
+          </Link>
+        </section>
       </div>
     </AdminLayout>
   );
