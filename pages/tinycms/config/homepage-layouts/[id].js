@@ -26,7 +26,7 @@ export default function EditHomepageLayout({
   useEffect(() => {
     if (homepageLayout) {
       setName(homepageLayout.name);
-      setData(homepageLayout.data);
+      setData(JSON.parse(homepageLayout.data));
       setHomepageLayoutId(homepageLayout.id);
     }
   }, []);
