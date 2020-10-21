@@ -52,7 +52,7 @@ export default function HomepageLayouts({ homepageLayouts }) {
   );
 }
 
-export async function getStaticProps() {
+export async function getServerSideProps() {
   let homepageLayouts = await listLayoutSchemas();
   return {
     props: {

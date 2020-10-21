@@ -56,7 +56,7 @@ export default function AddHomepageLayout({ apiUrl, apiToken }) {
 
         <form onSubmit={handleSubmit}>
           <div className="field">
-            <label className="label" for="name">
+            <label className="label" htmlFor="name">
               Name
             </label>
             <div className="control">
@@ -71,7 +71,7 @@ export default function AddHomepageLayout({ apiUrl, apiToken }) {
           </div>
 
           <div className="field">
-            <label className="label" for="data">
+            <label className="label" htmlFor="data">
               Data
             </label>
             <div className="control">
@@ -98,7 +98,8 @@ export default function AddHomepageLayout({ apiUrl, apiToken }) {
     </AdminLayout>
   );
 }
-export async function getStaticProps() {
+
+export async function getServerSideProps() {
   const apiUrl = process.env.CONTENT_DELIVERY_API_URL;
   const apiToken = process.env.CONTENT_DELIVERY_API_ACCESS_TOKEN;
   return {
