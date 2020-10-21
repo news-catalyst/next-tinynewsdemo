@@ -14,7 +14,6 @@ export default function EditHomepageLayout({
   apiToken,
   homepageLayout,
 }) {
-  console.log('homepageLayout:', homepageLayout);
   const [notificationMessage, setNotificationMessage] = useState('');
   const [notificationType, setNotificationType] = useState('');
   const [showNotification, setShowNotification] = useState(false);
@@ -139,18 +138,11 @@ export default function EditHomepageLayout({
     </AdminLayout>
   );
 }
-export async function getStaticPaths() {
-  const paths = await listLayoutSchemaIds();
-  return {
-    paths,
-    fallback: true,
-  };
-}
 
-export async function getStaticProps({ params }) {
+export async function getServerSideProps(context) {
   const apiUrl = process.env.ADMIN_CONTENT_DELIVERY_API_URL;
   const apiToken = process.env.ADMIN_CONTENT_DELIVERY_API_ACCESS_TOKEN;
-  let homepageLayout = await getHomepageLayout(params.id);
+  let homepageLayout = await getHomepageLayout(context.params.id);
   return {
     props: {
       apiUrl: apiUrl,
