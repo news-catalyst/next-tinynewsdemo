@@ -182,7 +182,7 @@ export default function HomePageEditor({
   );
 }
 
-export async function getStaticProps() {
+export async function getServerSideProps() {
   const apiUrl = process.env.ADMIN_CONTENT_DELIVERY_API_URL;
   const apiToken = process.env.ADMIN_CONTENT_DELIVERY_API_ACCESS_TOKEN;
 
