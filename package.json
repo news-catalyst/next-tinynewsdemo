@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "clear": "node script/clear.js",
+    "populate": "node script/populate.js",
     "build": "next build",
     "start": "next start",
     "purgecss": "purgecss --css styles/bulma.css --content pages/** components/** --output ./purge.css",
@@ -26,11 +27,12 @@
   "dependencies": {
     "bulma": "^0.9.0",
     "date-fns": "^2.14.0",
+    "fetch-cookie": "^0.10.1",
     "formik": "^2.1.4",
     "graphql-request": "^2.0.0",
     "journalize": "^2.4.0",
     "next": "9.5",
-    "node-fetch": ">=2.6.1",
+    "node-fetch": "^2.6.1",
     "purgecss": "^2.3.0",
     "react": "16.13.1",
     "react-dom": "16.13.1",
