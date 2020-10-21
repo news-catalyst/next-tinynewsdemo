@@ -51,7 +51,7 @@ export default function AddCategory({ apiUrl, apiToken, localeID }) {
 
         <form onSubmit={handleSubmit}>
           <div className="field">
-            <label className="label" for="title">
+            <label className="label" htmlFor="title">
               Title
             </label>
             <div className="control">
@@ -66,7 +66,7 @@ export default function AddCategory({ apiUrl, apiToken, localeID }) {
           </div>
 
           <div className="field">
-            <label className="label" for="data">
+            <label className="label" htmlFor="data">
               Slug
             </label>
             <div className="control">
@@ -93,7 +93,8 @@ export default function AddCategory({ apiUrl, apiToken, localeID }) {
     </AdminLayout>
   );
 }
-export async function getStaticProps() {
+
+export async function getServerSideProps() {
   const apiUrl = process.env.CONTENT_DELIVERY_API_URL;
   const apiToken = process.env.CONTENT_DELIVERY_API_ACCESS_TOKEN;
   const localeID = process.env.LOCALE_ID;
