@@ -127,20 +127,13 @@ export default function EditCategory({ apiUrl, apiToken, localeID, category }) {
     </AdminLayout>
   );
 }
-export async function getStaticPaths() {
-  const paths = await listCategoryIds();
-  return {
-    paths,
-    fallback: true,
-  };
-}
 
-export async function getStaticProps({ params }) {
+export async function getServerSideProps(context) {
   const apiUrl = process.env.ADMIN_CONTENT_DELIVERY_API_URL;
   const apiToken = process.env.ADMIN_CONTENT_DELIVERY_API_ACCESS_TOKEN;
   const localeID = process.env.LOCALE_ID;
 
-  let category = await getCategory(params.id);
+  let category = await getCategory(context.params.id);
 
   return {
     props: {
