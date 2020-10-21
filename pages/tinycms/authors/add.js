@@ -58,7 +58,7 @@ export default function AddAuthor({ apiUrl, apiToken }) {
 
         <form onSubmit={handleSubmit}>
           <div className="field">
-            <label className="label" for="name">
+            <label className="label" htmlFor="name">
               Name
             </label>
             <div className="control">
@@ -73,7 +73,7 @@ export default function AddAuthor({ apiUrl, apiToken }) {
           </div>
 
           <div className="field">
-            <label className="label" for="title">
+            <label className="label" htmlFor="title">
               Title
             </label>
             <div className="control">
@@ -88,7 +88,7 @@ export default function AddAuthor({ apiUrl, apiToken }) {
           </div>
 
           <div className="field">
-            <label className="label" for="twitter">
+            <label className="label" htmlFor="twitter">
               Twitter
             </label>
             <div className="control">
@@ -103,7 +103,7 @@ export default function AddAuthor({ apiUrl, apiToken }) {
           </div>
 
           <div className="field">
-            <label className="label" for="bio">
+            <label className="label" htmlFor="bio">
               Bio
             </label>
             <div className="control">
@@ -155,7 +155,7 @@ export default function AddAuthor({ apiUrl, apiToken }) {
     </AdminLayout>
   );
 }
-export async function getStaticProps() {
+export async function getServerSideProps() {
   const apiUrl = process.env.CONTENT_DELIVERY_API_URL;
   const apiToken = process.env.CONTENT_DELIVERY_API_ACCESS_TOKEN;
   return {

@@ -46,7 +46,7 @@ export default function Authors({ authors }) {
   );
 }
 
-export async function getStaticProps() {
+export async function getServerSideProps() {
   let authors = await listAllAuthors();
   return {
     props: {
