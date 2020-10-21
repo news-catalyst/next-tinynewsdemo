@@ -1,11 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import AdminLayout from '../../../components/AdminLayout';
-import {
-  getAuthor,
-  listAllAuthorIds,
-  updateAuthor,
-} from '../../../lib/authors';
+import { getAuthor, updateAuthor } from '../../../lib/authors';
 import AdminNav from '../../../components/nav/AdminNav';
 import Notification from '../../../components/tinycms/Notification';
 
@@ -25,9 +21,15 @@ export default function EditAuthor({ apiUrl, apiToken, author }) {
   useEffect(() => {
     if (author) {
       setName(author.name);
-      setTitle(author.title.values[0].value);
-      setTwitter(author.twitter);
-      setBio(author.bio.values[0].value);
+      if (author.title && author.title.values && author.title.values[0]) {
+        setTitle(author.title.values[0].value);
+      }
+      if (author.twitter) {
+        setTwitter(author.twitter);
+      }
+      if (author.bio && author.bio.values && author.bio.values[0]) {
+        setBio(author.bio.values[0].value);
+      }
       setAuthorId(author.id);
       if (author.staff) {
         setStaffYesNo('yes');
@@ -206,18 +208,11 @@ export default function EditAuthor({ apiUrl, apiToken, author }) {
     </AdminLayout>
   );
 }
-export async function getStaticPaths() {
-  const paths = await listAllAuthorIds();
-  return {
-    paths,
-    fallback: true,
-  };
-}
 
-export async function getStaticProps({ params }) {
+export async function getServerSideProps(context) {
   const apiUrl = process.env.ADMIN_CONTENT_DELIVERY_API_URL;
   const apiToken = process.env.ADMIN_CONTENT_DELIVERY_API_ACCESS_TOKEN;
-  let author = await getAuthor(params.id);
+  let author = await getAuthor(context.params.id);
   return {
     props: {
       apiUrl: apiUrl,
