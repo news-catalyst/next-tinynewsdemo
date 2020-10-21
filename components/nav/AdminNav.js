@@ -4,9 +4,9 @@ export default function AdminNav(props) {
   const [currentLayoutName, setCurrentLayoutName] = useState('');
 
   useEffect(() => {
-    if (props.hpData && props.hpData.layoutSchema) {
+    if (props.homePageEditor && props.hpData && props.hpData.layoutSchema) {
       setCurrentLayoutName(props.hpData.layoutSchema.name);
-    } else {
+    } else if (props.homePageEditor) {
       setCurrentLayoutName(props.layoutSchemas[0].name);
     }
   }, [props.hpData]);
