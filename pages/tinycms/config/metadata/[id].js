@@ -13,15 +13,12 @@ export default function EditMetadata({ apiUrl, apiToken, metadata }) {
   const [notificationType, setNotificationType] = useState('');
   const [showNotification, setShowNotification] = useState(false);
 
-  const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
-  const [logo, setLogo] = useState('');
+  const [data, setData] = useState('');
 
   useEffect(() => {
     if (metadata) {
-      setName(metadata.name);
-      setDescription(metadata.description);
-      setLogo(metadata.logo);
+      let formattedJSON = JSON.stringify(JSON.parse(metadata.data), null, 2);
+      setData(formattedJSON);
     }
   }, []);
 
@@ -35,11 +32,6 @@ export default function EditMetadata({ apiUrl, apiToken, metadata }) {
   async function handleSubmit(ev) {
     ev.preventDefault();
 
-    let data = {
-      name: name,
-      description: description,
-      logo: logo,
-    };
     const response = await updateSiteMetadata(
       apiUrl,
       apiToken,
@@ -77,45 +69,14 @@ export default function EditMetadata({ apiUrl, apiToken, metadata }) {
         <form onSubmit={handleSubmit}>
           <div className="field">
             <label className="label" htmlFor="name">
-              Name
+              Data: enter as JSON
             </label>
             <div className="control">
-              <input
-                className="input"
-                type="text"
-                value={name}
-                name="name"
-                onChange={(ev) => setName(ev.target.value)}
-              />
-            </div>
-          </div>
-
-          <div className="field">
-            <label className="label" htmlFor="description">
-              Description
-            </label>
-            <div className="control">
-              <input
-                className="input"
-                type="text"
-                value={description}
-                name="description"
-                onChange={(ev) => setDescription(ev.target.value)}
-              />
-            </div>
-          </div>
-
-          <div className="field">
-            <label className="label" htmlFor="logo">
-              Logo
-            </label>
-            <div className="control">
-              <input
-                className="input"
-                type="text"
-                value={logo}
-                name="logo"
-                onChange={(ev) => setLogo(ev.target.value)}
+              <textarea
+                className="textarea"
+                name="data"
+                value={data}
+                onChange={(ev) => setData(ev.target.value)}
               />
             </div>
           </div>
