@@ -4,8 +4,10 @@ import { useRouter } from 'next/router';
 import { getSiteMetadata } from '../../../../lib/site_metadata.js';
 import AdminLayout from '../../../../components/AdminLayout.js';
 import AdminNav from '../../../../components/nav/AdminNav';
+import CreateMetadata from '../../../../components/tinycms/CreateSiteMetadata.js';
+import UpdateMetadata from '../../../../components/tinycms/UpdateSiteMetadata.js';
 
-export default function Metadata({ metadata }) {
+export default function Metadata({ apiUrl, apiToken, metadata }) {
   console.log('metadata:', metadata);
   const [message, setMessage] = useState(null);
 
@@ -31,18 +33,15 @@ export default function Metadata({ metadata }) {
 
         <section className="section">
           {metadata !== undefined && metadata !== null && (
-            <Link
-              key={`${metadata.id}-link`}
-              href={`/tinycms/config/metadata/${metadata.id}`}
-            >
-              <button className="button">Edit Metadata</button>
-            </Link>
+            <UpdateMetadata
+              apiUrl={apiUrl}
+              apiToken={apiToken}
+              metadata={metadata}
+            />
           )}
 
           {(metadata === undefined || metadata === null) && (
-            <Link href="/tinycms/config/metadata/add">
-              <button className="button">Add Metadata</button>
-            </Link>
+            <CreateMetadata apiUrl={apiUrl} apiToken={apiToken} />
           )}
         </section>
       </div>
@@ -51,12 +50,17 @@ export default function Metadata({ metadata }) {
 }
 
 export async function getServerSideProps() {
+  const apiUrl = process.env.ADMIN_CONTENT_DELIVERY_API_URL;
+  const apiToken = process.env.ADMIN_CONTENT_DELIVERY_API_ACCESS_TOKEN;
+
   let metadata = await getSiteMetadata();
   if (metadata === undefined) {
     metadata = null;
   }
   return {
     props: {
+      apiUrl: apiUrl,
+      apiToken: apiToken,
       metadata: metadata,
     },
   };
