@@ -35,7 +35,7 @@ export default function HomepageLayouts({ homepageLayouts }) {
 
   return (
     <AdminLayout>
-      <AdminNav />
+      <AdminNav homePageEditor={false} showConfigOptions={true} />
       <div id="page">
         <h1 className="title">Homepage Layouts</h1>
 

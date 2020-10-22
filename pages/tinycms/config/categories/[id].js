@@ -59,7 +59,7 @@ export default function EditCategory({ apiUrl, apiToken, localeID, category }) {
 
   return (
     <AdminLayout>
-      <AdminNav homePageEditor={false} />
+      <AdminNav homePageEditor={false} showConfigOptions={true} />
 
       {showNotification && (
         <Notification

@@ -23,7 +23,7 @@ export default function Metadata({ metadata }) {
 
   return (
     <AdminLayout>
-      <AdminNav />
+      <AdminNav homePageEditor={false} showConfigOptions={true} />
       <div id="page">
         <h1 className="title">Site Metadata</h1>
 
