@@ -7,14 +7,18 @@ import AdminNav from '../../../../components/nav/AdminNav';
 import CreateMetadata from '../../../../components/tinycms/CreateSiteMetadata.js';
 import UpdateMetadata from '../../../../components/tinycms/UpdateSiteMetadata.js';
 
-export default function Metadata({ apiUrl, apiToken, metadata }) {
-  console.log('metadata:', metadata);
+export default function Metadata({ apiUrl, apiToken, siteMetadata }) {
+  console.log('metadata:', siteMetadata);
   const [message, setMessage] = useState(null);
+  const [metadata, setMetadata] = useState(null);
 
   const router = useRouter();
   const { action } = router.query;
 
   useEffect(() => {
+    if (siteMetadata) {
+      setMetadata(siteMetadata);
+    }
     if (action && action === 'edit') {
       setMessage('Successfully updated metadata.');
     }
@@ -37,11 +41,17 @@ export default function Metadata({ apiUrl, apiToken, metadata }) {
               apiUrl={apiUrl}
               apiToken={apiToken}
               metadata={metadata}
+              setMetadata={setMetadata}
             />
           )}
 
           {(metadata === undefined || metadata === null) && (
-            <CreateMetadata apiUrl={apiUrl} apiToken={apiToken} />
+            <CreateMetadata
+              apiUrl={apiUrl}
+              apiToken={apiToken}
+              metadata={metadata}
+              setMetadata={setMetadata}
+            />
           )}
         </section>
       </div>
@@ -53,15 +63,15 @@ export async function getServerSideProps() {
   const apiUrl = process.env.ADMIN_CONTENT_DELIVERY_API_URL;
   const apiToken = process.env.ADMIN_CONTENT_DELIVERY_API_ACCESS_TOKEN;
 
-  let metadata = await getSiteMetadata();
-  if (metadata === undefined) {
-    metadata = null;
+  let siteMetadata = await getSiteMetadata(apiUrl, apiToken);
+  if (siteMetadata === undefined) {
+    siteMetadata = null;
   }
   return {
     props: {
       apiUrl: apiUrl,
       apiToken: apiToken,
-      metadata: metadata,
+      siteMetadata: siteMetadata,
     },
   };
 }
