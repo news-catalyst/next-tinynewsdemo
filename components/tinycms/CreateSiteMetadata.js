@@ -1,17 +1,23 @@
 import React, { useState } from 'react';
 import Notification from './Notification';
-import { createSiteMetadata } from '../../lib/site_metadata';
+import { createSiteMetadata, getSiteMetadata } from '../../lib/site_metadata';
 
-export default function AddMetadata({ apiUrl, apiToken, localeID }) {
+export default function AddMetadata(props) {
+  console.log(props);
   const [notificationMessage, setNotificationMessage] = useState('');
   const [notificationType, setNotificationType] = useState('');
   const [showNotification, setShowNotification] = useState(false);
   const [data, setData] = useState('{}');
+  const [metadataID, setMetadataID] = useState(null);
 
   async function handleSubmit(ev) {
     ev.preventDefault();
 
-    const response = await createSiteMetadata(apiUrl, apiToken, data);
+    const response = await createSiteMetadata(
+      props.apiUrl,
+      props.apiToken,
+      data
+    );
 
     if (response.siteMetadatas.createSiteMetadata.error !== null) {
       setNotificationMessage(response.siteMetadatas.createSiteMetadata.error);
@@ -22,6 +28,10 @@ export default function AddMetadata({ apiUrl, apiToken, localeID }) {
       setNotificationMessage('Successfully saved and published the metadata!');
       setNotificationType('success');
       setShowNotification(true);
+      let id = response.siteMetadatas.createSiteMetadata.data.id;
+      setMetadataID(id);
+      let siteMetadata = await getSiteMetadata(props.apiUrl, props.apiToken);
+      props.setMetadata(siteMetadata);
     }
   }
 
