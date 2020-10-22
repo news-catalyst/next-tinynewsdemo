@@ -53,7 +53,7 @@ export default function EditMetadata({ apiUrl, apiToken, metadata }) {
 
   return (
     <AdminLayout>
-      <AdminNav homePageEditor={false} />
+      <AdminNav homePageEditor={false} showConfigOptions={true} />
 
       {showNotification && (
         <Notification

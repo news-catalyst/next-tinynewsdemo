@@ -30,7 +30,7 @@ export default function AddMetadata({ apiUrl, apiToken, localeID }) {
 
   return (
     <AdminLayout>
-      <AdminNav homePageEditor={false} />
+      <AdminNav homePageEditor={false} showConfigOptions={true} />
 
       {showNotification && (
         <Notification
