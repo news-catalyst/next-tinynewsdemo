@@ -29,26 +29,22 @@ export default function Metadata({ metadata }) {
 
         {message && <div className="success">{message}</div>}
 
-        {metadata !== undefined && metadata !== null && (
-          <ul>
-            <li key={metadata.id}>
-              <Link
-                key={`${metadata.id}-link`}
-                href={`/tinycms/config/metadata/${metadata.id}`}
-              >
-                <a>Edit</a>
-              </Link>
-            </li>
-          </ul>
-        )}
+        <section className="section">
+          {metadata !== undefined && metadata !== null && (
+            <Link
+              key={`${metadata.id}-link`}
+              href={`/tinycms/config/metadata/${metadata.id}`}
+            >
+              <button className="button">Edit Metadata</button>
+            </Link>
+          )}
 
-        {(metadata === undefined || metadata === null) && (
-          <section className="section">
+          {(metadata === undefined || metadata === null) && (
             <Link href="/tinycms/config/metadata/add">
               <button className="button">Add Metadata</button>
             </Link>
-          </section>
-        )}
+          )}
+        </section>
       </div>
     </AdminLayout>
   );
