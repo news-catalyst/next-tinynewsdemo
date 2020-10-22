@@ -9,18 +9,11 @@ export default function AddMetadata({ apiUrl, apiToken, localeID }) {
   const [notificationType, setNotificationType] = useState('');
   const [showNotification, setShowNotification] = useState(false);
 
-  const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
-  const [logo, setLogo] = useState('');
+  const [data, setData] = useState('{}');
 
   async function handleSubmit(ev) {
     ev.preventDefault();
 
-    let data = {
-      name: name,
-      description: description,
-      logo: logo,
-    };
     const response = await createSiteMetadata(apiUrl, apiToken, data);
 
     if (response.siteMetadatas.createSiteMetadata.error !== null) {
@@ -52,46 +45,16 @@ export default function AddMetadata({ apiUrl, apiToken, localeID }) {
         <form onSubmit={handleSubmit}>
           <div className="field">
             <label className="label" htmlFor="name">
-              Name
+              Data: enter as JSON
             </label>
             <div className="control">
-              <input
-                className="input"
-                type="text"
-                value={name}
-                name="name"
-                onChange={(ev) => setName(ev.target.value)}
-              />
-            </div>
-          </div>
-
-          <div className="field">
-            <label className="label" htmlFor="description">
-              Description
-            </label>
-            <div className="control">
-              <input
-                className="input"
-                type="text"
-                value={description}
-                name="description"
-                onChange={(ev) => setDescription(ev.target.value)}
-              />
-            </div>
-          </div>
-
-          <div className="field">
-            <label className="label" htmlFor="logo">
-              Logo
-            </label>
-            <div className="control">
-              <input
-                className="input"
-                type="text"
-                value={logo}
-                name="logo"
-                onChange={(ev) => setLogo(ev.target.value)}
-              />
+              <textarea
+                className="textarea"
+                name="data"
+                onChange={(ev) => setData(ev.target.value)}
+              >
+                {data}
+              </textarea>
             </div>
           </div>
 
