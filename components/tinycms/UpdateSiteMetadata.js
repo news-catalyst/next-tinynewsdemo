@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
 import { updateSiteMetadata } from '../../lib/site_metadata';
 import Notification from './Notification';
 
@@ -8,6 +9,8 @@ export default function UpdateMetadata(props) {
   const [showNotification, setShowNotification] = useState(false);
   const [data, setData] = useState('');
   const [parsedData, setParsedData] = useState({});
+
+  const router = useRouter();
 
   const handleChange = (e) => {
     const { name, value } = e.target;

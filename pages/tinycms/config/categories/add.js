@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useRouter } from 'next/router';
 import AdminLayout from '../../../../components/AdminLayout';
 import AdminNav from '../../../../components/nav/AdminNav';
 import Notification from '../../../../components/tinycms/Notification';
@@ -8,9 +9,15 @@ export default function AddCategory({ apiUrl, apiToken, localeID }) {
   const [notificationMessage, setNotificationMessage] = useState('');
   const [notificationType, setNotificationType] = useState('');
   const [showNotification, setShowNotification] = useState(false);
-
   const [title, setTitle] = useState('');
   const [slug, setSlug] = useState('');
+
+  const router = useRouter();
+
+  async function handleCancel(ev) {
+    ev.preventDefault();
+    router.push('/tinycms/config/categories');
+  }
 
   async function handleSubmit(ev) {
     ev.preventDefault();
@@ -85,7 +92,13 @@ export default function AddCategory({ apiUrl, apiToken, localeID }) {
               <input type="submit" className="button is-link" value="Submit" />
             </div>
             <div className="control">
-              <button className="button is-link is-light">Cancel</button>
+              <button
+                className="button is-link is-light"
+                name="cancel"
+                onClick={handleCancel}
+              >
+                Cancel
+              </button>
             </div>
           </div>
         </form>

@@ -1,14 +1,21 @@
 import React, { useState } from 'react';
+import { useRouter } from 'next/router';
 import Notification from './Notification';
 import { createSiteMetadata, getSiteMetadata } from '../../lib/site_metadata';
 
 export default function AddMetadata(props) {
-  console.log(props);
   const [notificationMessage, setNotificationMessage] = useState('');
   const [notificationType, setNotificationType] = useState('');
   const [showNotification, setShowNotification] = useState(false);
   const [data, setData] = useState('{}');
   const [metadataID, setMetadataID] = useState(null);
+
+  const router = useRouter();
+
+  async function handleCancel(ev) {
+    ev.preventDefault();
+    router.push('/tinycms/config');
+  }
 
   async function handleSubmit(ev) {
     ev.preventDefault();
@@ -63,7 +70,13 @@ export default function AddMetadata(props) {
           <input type="submit" className="button is-link" value="Submit" />
         </div>
         <div className="control">
-          <button className="button is-link is-light">Cancel</button>
+          <button
+            className="button is-link is-light"
+            name="cancel"
+            onClick={handleCancel}
+          >
+            Cancel
+          </button>
         </div>
       </div>
     </form>

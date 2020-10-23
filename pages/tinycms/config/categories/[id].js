@@ -29,7 +29,7 @@ export default function EditCategory({ apiUrl, apiToken, localeID, category }) {
 
   async function handleCancel(ev) {
     ev.preventDefault();
-    router.push('/tinycms/config');
+    router.push('/tinycms/config/categories');
   }
 
   async function handleDeleteCategory(cat) {
