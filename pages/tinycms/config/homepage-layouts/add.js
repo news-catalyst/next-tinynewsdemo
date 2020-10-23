@@ -42,7 +42,7 @@ export default function AddHomepageLayout({ apiUrl, apiToken }) {
 
   return (
     <AdminLayout>
-      <AdminNav homePageEditor={false} />
+      <AdminNav homePageEditor={false} showConfigOptions={true} />
 
       {showNotification && (
         <Notification

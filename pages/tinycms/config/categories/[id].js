@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import AdminLayout from '../../../../components/AdminLayout';
 import {
   getCategory,
-  listCategoryIds,
+  deleteCategory,
   updateCategory,
 } from '../../../../lib/category';
 import AdminNav from '../../../../components/nav/AdminNav';
@@ -29,7 +29,25 @@ export default function EditCategory({ apiUrl, apiToken, localeID, category }) {
 
   async function handleCancel(ev) {
     ev.preventDefault();
-    router.push('/tinycms/config');
+    router.push('/tinycms/config/categories');
+  }
+
+  async function handleDeleteCategory(cat) {
+    console.log('deleting category:', cat);
+    const response = await deleteCategory(apiUrl, apiToken, cat.id);
+
+    if (response.categories.deleteCategory.error !== null) {
+      setNotificationMessage(response.categories.deleteCategory.error);
+      setNotificationType('error');
+      setShowNotification(true);
+    } else {
+      // display success message
+
+      setNotificationMessage('Successfully deleted the category!');
+      setNotificationType('success');
+      setShowNotification(true);
+      // handleCancel();
+    }
   }
 
   async function handleSubmit(ev) {
@@ -59,7 +77,7 @@ export default function EditCategory({ apiUrl, apiToken, localeID, category }) {
 
   return (
     <AdminLayout>
-      <AdminNav homePageEditor={false} />
+      <AdminNav homePageEditor={false} showConfigOptions={true} />
 
       {showNotification && (
         <Notification
@@ -70,7 +88,30 @@ export default function EditCategory({ apiUrl, apiToken, localeID, category }) {
       )}
 
       <div id="page">
-        <h1 className="title">Edit Category</h1>
+        <nav className="level">
+          <div className="level-left">
+            <div className="level-item">
+              <h1 className="title">Edit Category</h1>
+            </div>
+          </div>
+          <div className="level-right">
+            <div className="level-item">
+              <a
+                onClick={() => {
+                  if (
+                    window.confirm(
+                      'Are you sure you want to delete this category?'
+                    )
+                  )
+                    handleDeleteCategory(category);
+                }}
+                className="button is-danger"
+              >
+                Delete
+              </a>
+            </div>
+          </div>
+        </nav>
 
         <form onSubmit={handleSubmit}>
           <div className="field">
