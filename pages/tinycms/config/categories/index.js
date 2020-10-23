@@ -35,7 +35,7 @@ export default function Categories({ categories }) {
 
   return (
     <AdminLayout>
-      <AdminNav />
+      <AdminNav homePageEditor={false} showConfigOptions={true} />
       <div id="page">
         <h1 className="title">Categories</h1>
 

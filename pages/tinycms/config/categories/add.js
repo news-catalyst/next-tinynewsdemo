@@ -1,19 +1,59 @@
 import React, { useState } from 'react';
+import { useRouter } from 'next/router';
 import AdminLayout from '../../../../components/AdminLayout';
 import AdminNav from '../../../../components/nav/AdminNav';
 import Notification from '../../../../components/tinycms/Notification';
 import { createCategory } from '../../../../lib/category';
 
 export default function AddCategory({ apiUrl, apiToken, localeID }) {
-  const [notificationMessage, setNotificationMessage] = useState('');
+  const [notificationMessage, setNotificationMessage] = useState([]);
   const [notificationType, setNotificationType] = useState('');
   const [showNotification, setShowNotification] = useState(false);
-
   const [title, setTitle] = useState('');
   const [slug, setSlug] = useState('');
+  const [errors, setErrors] = useState([]);
+
+  const router = useRouter();
+
+  async function handleCancel(ev) {
+    ev.preventDefault();
+    router.push('/tinycms/config/categories');
+  }
 
   async function handleSubmit(ev) {
     ev.preventDefault();
+
+    let formIsValid = true;
+
+    if (title === null || title === '') {
+      if (errors.indexOf('Title is required.') < 0) {
+        errors.push('Title is required.');
+        setErrors(errors);
+      }
+      console.log('errors:', errors);
+      formIsValid = false;
+    } else {
+      let removeAtIndex = errors.indexOf('Title is required.');
+      errors.splice(removeAtIndex, 1);
+      setErrors(errors);
+    }
+
+    if (slug === null || slug === '') {
+      if (errors.indexOf('Slug is required.') < 0) {
+        errors.push('Slug is required.');
+        setErrors(errors);
+      }
+      console.log('errors:', errors);
+      formIsValid = false;
+    }
+
+    if (!formIsValid) {
+      setNotificationMessage(errors);
+      console.log(notificationMessage);
+      setNotificationType('error');
+      setShowNotification(true);
+      return;
+    }
 
     const response = await createCategory(
       apiUrl,
@@ -29,7 +69,9 @@ export default function AddCategory({ apiUrl, apiToken, localeID }) {
       setShowNotification(true);
     } else {
       // display success message
-      setNotificationMessage('Successfully saved and published the category!');
+      setNotificationMessage([
+        'Successfully saved and published the category!',
+      ]);
       setNotificationType('success');
       setShowNotification(true);
     }
@@ -37,7 +79,7 @@ export default function AddCategory({ apiUrl, apiToken, localeID }) {
 
   return (
     <AdminLayout>
-      <AdminNav homePageEditor={false} />
+      <AdminNav homePageEditor={false} showConfigOptions={true} />
 
       {showNotification && (
         <Notification
@@ -85,7 +127,13 @@ export default function AddCategory({ apiUrl, apiToken, localeID }) {
               <input type="submit" className="button is-link" value="Submit" />
             </div>
             <div className="control">
-              <button className="button is-link is-light">Cancel</button>
+              <button
+                className="button is-link is-light"
+                name="cancel"
+                onClick={handleCancel}
+              >
+                Cancel
+              </button>
             </div>
           </div>
         </form>
