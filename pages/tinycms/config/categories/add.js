@@ -6,11 +6,12 @@ import Notification from '../../../../components/tinycms/Notification';
 import { createCategory } from '../../../../lib/category';
 
 export default function AddCategory({ apiUrl, apiToken, localeID }) {
-  const [notificationMessage, setNotificationMessage] = useState('');
+  const [notificationMessage, setNotificationMessage] = useState([]);
   const [notificationType, setNotificationType] = useState('');
   const [showNotification, setShowNotification] = useState(false);
   const [title, setTitle] = useState('');
   const [slug, setSlug] = useState('');
+  const [errors, setErrors] = useState([]);
 
   const router = useRouter();
 
@@ -21,6 +22,38 @@ export default function AddCategory({ apiUrl, apiToken, localeID }) {
 
   async function handleSubmit(ev) {
     ev.preventDefault();
+
+    let formIsValid = true;
+
+    if (title === null || title === '') {
+      if (errors.indexOf('Title is required.') < 0) {
+        errors.push('Title is required.');
+        setErrors(errors);
+      }
+      console.log('errors:', errors);
+      formIsValid = false;
+    } else {
+      let removeAtIndex = errors.indexOf('Title is required.');
+      errors.splice(removeAtIndex, 1);
+      setErrors(errors);
+    }
+
+    if (slug === null || slug === '') {
+      if (errors.indexOf('Slug is required.') < 0) {
+        errors.push('Slug is required.');
+        setErrors(errors);
+      }
+      console.log('errors:', errors);
+      formIsValid = false;
+    }
+
+    if (!formIsValid) {
+      setNotificationMessage(errors);
+      console.log(notificationMessage);
+      setNotificationType('error');
+      setShowNotification(true);
+      return;
+    }
 
     const response = await createCategory(
       apiUrl,
@@ -36,7 +69,9 @@ export default function AddCategory({ apiUrl, apiToken, localeID }) {
       setShowNotification(true);
     } else {
       // display success message
-      setNotificationMessage('Successfully saved and published the category!');
+      setNotificationMessage([
+        'Successfully saved and published the category!',
+      ]);
       setNotificationType('success');
       setShowNotification(true);
     }
