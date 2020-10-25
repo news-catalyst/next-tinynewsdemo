@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import { useRouter } from 'next/router';
 import Layout from '../components/Layout.js';
 import ArticleLink from '../components/homepage/ArticleLink.js';
 import { cachedContents } from '../lib/cached';
@@ -16,6 +17,14 @@ import { useAmp } from 'next/amp';
 export default function CategoryPage({ articles, title, sections, tags }) {
   const isAmp = useAmp();
   siteMetadata.tags = tags;
+
+  const router = useRouter();
+  // If the page is not yet generated, this will be displayed
+  // initially until getStaticProps() finishes running
+  if (router.isFallback) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <Layout meta={siteMetadata}>
       <GlobalNav sections={sections} />
@@ -38,17 +47,20 @@ export default function CategoryPage({ articles, title, sections, tags }) {
 
 export async function getStaticPaths() {
   const paths = await listAllSectionTitles();
+  console.log('getStaticPaths on category page:', paths);
   return {
     paths,
-    fallback: false,
+    fallback: true,
   };
 }
 
 export async function getStaticProps({ params }) {
+  console.log('getStaticProps on category page:', params.category);
   const articles = await listAllArticlesBySection(params.category);
-  const sections = await cachedContents('sections', listAllSections);
+  const sections = await listAllSections();
+  // const sections = await cachedContents('sections', listAllSections);
 
-  console.log('sections:', sections);
+  console.log(params.category, ' - sections:', sections);
   const tags = await cachedContents('tags', listAllTags);
   let title;
 
