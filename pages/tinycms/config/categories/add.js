@@ -64,10 +64,12 @@ export default function AddCategory({ apiUrl, apiToken, localeID }) {
     );
 
     if (response.categories.createCategory.error !== null) {
+      console.log('error creating category:', response.categories);
       setNotificationMessage(response.categories.createCategory.error);
       setNotificationType('error');
       setShowNotification(true);
     } else {
+      // console.log("success creating category:", response.categories);
       // display success message
       setNotificationMessage([
         'Successfully saved and published the category!',
