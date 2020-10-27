@@ -22,11 +22,17 @@ const LargePackageStoryLead = dynamic(() =>
 );
 
 export default function Home({ hpData, hpArticles, streamArticles, sections }) {
-  const [featuredArticle, setFeaturedArticle] = useState(null);
-  const [subFeaturedLeftArticle, setSubFeaturedLeftArticle] = useState(null);
-  const [subFeaturedRightArticle, setSubFeaturedRightArticle] = useState(null);
+  const [featuredArticle, setFeaturedArticle] = useState(
+    hpArticles['featured']
+  );
+  const [subFeaturedLeftArticle, setSubFeaturedLeftArticle] = useState(
+    hpArticles['subfeatured-left']
+  );
+  const [subFeaturedRightArticle, setSubFeaturedRightArticle] = useState(
+    hpArticles['subfeatured-right']
+  );
   const [subFeaturedMiddleArticle, setSubFeaturedMiddleArticle] = useState(
-    null
+    hpArticles['subfeatured-middle']
   );
   const isAmp = useAmp();
 
