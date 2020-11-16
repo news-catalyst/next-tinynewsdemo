@@ -1,3 +1,5 @@
+import Image from 'next/image';
+
 export default function ImageNode({ node, amp }) {
   const image = node.children[0];
 
@@ -11,7 +13,12 @@ export default function ImageNode({ node, amp }) {
     />
   ) : (
     <figure className="image" key="image.imageUrl">
-      <img src={image.imageUrl} alt={image.imageAlt} />
+      <Image
+        src={image.imageUrl}
+        alt={image.imageAlt}
+        height={460}
+        width={700}
+      />
       <figcaption>{image.imageAlt}</figcaption>
     </figure>
   );

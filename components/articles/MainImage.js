@@ -1,3 +1,5 @@
+import Image from 'next/image';
+
 export default function MainImage({ article, isAmp }) {
   const mainImageNode = article.content.find(
     (node) => node.type === 'mainImage'
@@ -21,8 +23,10 @@ export default function MainImage({ article, isAmp }) {
       )}
 
       {mainImage && !isAmp && (
-        <img
+        <Image
           src={mainImage.imageUrl}
+          width={1080}
+          height={630}
           alt={mainImage.imageAlt}
           className="image"
         />
