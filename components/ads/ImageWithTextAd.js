@@ -1,4 +1,5 @@
 import React from 'react';
+import Image from 'next/image';
 
 export default function ImageWithTextAd({ ad, isAmp }) {
   return (
@@ -18,7 +19,13 @@ export default function ImageWithTextAd({ ad, isAmp }) {
                 layout="responsive"
               />
             ) : (
-              <img src={ad.image.url} className="ad-img" alt={ad.image.alt} />
+              <Image
+                src={ad.image.url}
+                height={300}
+                width={300}
+                className="ad-img"
+                alt={ad.image.alt}
+              />
             )}
           </div>
           <div className="media-content ad-text-container">
