@@ -4,6 +4,7 @@ import {
   listAllSections,
   listAllTags,
 } from '../../../lib/articles.js';
+import { getArticleAds } from '../../../lib/ads.js';
 import { cachedContents } from '../../../lib/cached';
 import { useRouter } from 'next/router';
 import Article from '../../../components/Article.js';
@@ -35,12 +36,14 @@ export async function getStaticProps({ params }) {
   const article = await getArticleBySlug(params.slug);
   const tags = await cachedContents('tags', listAllTags);
   const sections = await cachedContents('sections', listAllSections);
+  const ads = await getArticleAds();
 
   return {
     props: {
       article,
       sections,
       tags,
+      ads,
     },
     // Re-generate the post at most once per second
     // if a request comes in
