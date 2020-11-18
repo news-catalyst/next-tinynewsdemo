@@ -4,7 +4,6 @@ import {
   getHomepageData,
   listLayoutSchemas,
   createHomepageLayout,
-  publishLayout,
 } from '../../lib/homepage.js';
 import {
   listAllTags,
@@ -34,7 +33,9 @@ export default function HomePageEditor({
   const [notificationType, setNotificationType] = useState('');
   const [showNotification, setShowNotification] = useState(false);
   const [selectedLayout, setSelectedLayout] = useState();
-  const [featuredArticle, setFeaturedArticle] = useState(null);
+  const [featuredArticle, setFeaturedArticle] = useState(
+    hpArticles['featured']
+  );
   const [subFeaturedLeftArticle, setSubFeaturedLeftArticle] = useState(null);
   const [subFeaturedRightArticle, setSubFeaturedRightArticle] = useState(null);
   const [subFeaturedMiddleArticle, setSubFeaturedMiddleArticle] = useState(
@@ -53,6 +54,17 @@ export default function HomePageEditor({
     console.log('selectedLayout:', selectedLayout);
     console.log('hpData:', hpData);
     console.log('hpArticles:', hpArticles);
+
+    if (selectedLayout && selectedLayout.name === 'Big Featured Story') {
+      setFeaturedArticle(hpArticles['featured']);
+      console.log('BFS featuredArticle:', featuredArticle);
+    }
+    if (selectedLayout && selectedLayout.name === 'Large Package Story lead') {
+      setFeaturedArticle(hpArticles['featured']);
+      setSubFeaturedLeftArticle(hpArticles['subfeatured-left']);
+      setSubFeaturedRightArticle(hpArticles['subfeatured-right']);
+      setSubFeaturedMiddleArticle(hpArticles['subfeatured-middle']);
+    }
   }, [hpData]);
 
   function changeLayout(layout) {
