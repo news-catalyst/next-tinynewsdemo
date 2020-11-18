@@ -7,8 +7,10 @@ export default function BigFeaturedStory(props) {
   const [isModalActive, setModal] = useState(false);
 
   useEffect(() => {
-    props.setFeaturedArticle(props.articles['featured']);
-  }, [props.articles]);
+    //   console.log("setting featured article to", props.articles['featured'])
+    //   props.setFeaturedArticle(props.articles['featured']);
+    console.log('featuredArticle is now', props.featuredArticle);
+  }, [props.articles, props.featuredArticle]);
 
   return (
     <div className="homepage">
@@ -22,6 +24,7 @@ export default function BigFeaturedStory(props) {
                   apiToken={props.apiToken}
                   isActive={isModalActive}
                   setModal={setModal}
+                  featuredArticle={props.featuredArticle}
                   setFeaturedArticle={props.setFeaturedArticle}
                 />
 
@@ -32,10 +35,10 @@ export default function BigFeaturedStory(props) {
                   Change Featured Article
                 </button>
                 <div id="featuredArticle">
-                  {props.articles['featured'] && (
+                  {props.featuredArticle && (
                     <FeaturedArticleLink
                       key={props.articles['featured'].id}
-                      article={props.articles['featured']}
+                      article={props.featuredArticle}
                       amp={props.isAmp}
                     />
                   )}
