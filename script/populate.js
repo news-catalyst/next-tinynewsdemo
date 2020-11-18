@@ -4,9 +4,9 @@ var fs = require('fs');
 var path = require('path');
 const fetch = require("node-fetch");
 
-const CONTENT_DELIVERY_API_URL = process.env.CONTENT_DELIVERY_API_URL;
+const CONTENT_DELIVERY_API_URL = 'https://d27ff8ul81gmi2.cloudfront.net/graphql';
 const CONTENT_DELIVERY_API_ACCESS_TOKEN =
-  process.env.CONTENT_DELIVERY_API_ACCESS_TOKEN;
+  'a353ae2f42f7c81a0f4937dfa532432a436aee6a74a7c27a';
 
 function writeCache(name, data) {
   const cachedFile = path.join(process.cwd(), 'cached', `${name}.json`);
@@ -35,7 +35,7 @@ function listSections() {
       }
     }
   `
-  const url = CONTENT_DELIVERY_API_URL; 
+  const url = CONTENT_DELIVERY_API_URL;
   let opts = {
     method: "POST",
     headers: {
@@ -72,7 +72,8 @@ function listTags() {
       }
     }
   `
-  const url = CONTENT_DELIVERY_API_URL; 
+  const url = CONTENT_DELIVERY_API_URL;
+  console.log(url, process.env.CONTENT_DELIVERY_API_URL);
   let opts = {
     method: "POST",
     headers: {

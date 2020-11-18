@@ -51,7 +51,6 @@ export default function Layout({ children, meta }) {
   const trackingId = process.env.GA_TRACKING_ID;
 
   let title;
-  console.log('meta.searchTitle:', meta.searchTitle);
   if (
     meta &&
     meta.searchTitle &&
