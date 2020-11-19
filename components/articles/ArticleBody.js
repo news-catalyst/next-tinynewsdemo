@@ -3,8 +3,8 @@ import { useScrollPercentage } from 'react-scroll-percentage';
 import { useAnalytics } from '../../lib/hooks/useAnalytics.js';
 import { renderBody } from '../../lib/utils.js';
 
-export default function ArticleBody({ article, isAmp }) {
-  const body = renderBody(article, isAmp);
+export default function ArticleBody({ article, ads, isAmp }) {
+  const body = renderBody(article, ads, isAmp);
 
   const { trackEvent } = useAnalytics();
 
