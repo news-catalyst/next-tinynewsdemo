@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { renderAuthors, renderDate } from '../../lib/utils.js';
 
 export default function ArticleCard({ article, isAmp }) {
@@ -24,11 +25,12 @@ export default function ArticleCard({ article, isAmp }) {
                 layout="responsive"
               />
             ) : (
-              <img
+              <Image
                 src={mainImage.imageUrl}
+                width={400}
+                height={234}
                 alt={mainImage.imageAlt}
-                width={mainImage.width}
-                height={mainImage.height}
+                className="image"
               />
             )}
           </figure>
