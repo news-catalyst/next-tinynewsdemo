@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { renderDate, renderAuthors } from '../../lib/utils.js';
 
 export default function ArticleLink({ article, isAmp }) {
@@ -33,7 +34,13 @@ export default function ArticleLink({ article, isAmp }) {
                   layout="responsive"
                 />
               ) : (
-                <img src={mainImage.imageUrl} />
+                <Image
+                  src={mainImage.imageUrl}
+                  width={400}
+                  height={234}
+                  alt={mainImage.imageAlt}
+                  className="image"
+                />
               )}
             </p>
           </figure>
