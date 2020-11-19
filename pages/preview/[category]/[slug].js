@@ -4,6 +4,7 @@ import {
   listAllSections,
   listAllTags,
 } from '../../../lib/articles.js';
+import { getArticleAds } from '../../../lib/ads.js';
 import { cachedContents } from '../../../lib/cached';
 import Article from '../../../components/Article.js';
 
@@ -26,11 +27,14 @@ export async function getStaticProps({ params }) {
   );
   const sections = await cachedContents('sections', listAllSections);
   const tags = await cachedContents('tags', listAllTags);
+  const allAds = await cachedContents('ads', getArticleAds);
+  const ads = allAds.filter((ad) => ad.adTypeId === 164);
   return {
     props: {
       article,
       sections,
       tags,
+      ads,
     },
   };
 }
