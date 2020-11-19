@@ -36,7 +36,8 @@ export async function getStaticProps({ params }) {
   const article = await getArticleBySlug(params.slug);
   const tags = await cachedContents('tags', listAllTags);
   const sections = await cachedContents('sections', listAllSections);
-  const ads = await cachedContents('ads', getArticleAds);
+  const allAds = await cachedContents('ads', getArticleAds);
+  const ads = allAds.filter((ad) => ad.adTypeId === 164);
 
   return {
     props: {
