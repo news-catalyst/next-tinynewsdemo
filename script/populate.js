@@ -1,12 +1,12 @@
 #! /usr/bin/env node
 
-var fs = require('fs');
-var path = require('path');
-const fetch = require("node-fetch");
+const fs = require('fs');
+const path = require('path');
+const fetch = require('node-fetch');
 
-const CONTENT_DELIVERY_API_URL = 'https://d27ff8ul81gmi2.cloudfront.net/graphql';
+const CONTENT_DELIVERY_API_URL = process.env.CONTENT_DELIVERY_API_URL;
 const CONTENT_DELIVERY_API_ACCESS_TOKEN =
-  'a353ae2f42f7c81a0f4937dfa532432a436aee6a74a7c27a';
+  process.env.CONTENT_DELIVERY_API_ACCESS_TOKEN;
 
 function writeCache(name, data) {
   const cachedFile = path.join(process.cwd(), 'cached', `${name}.json`);
@@ -34,21 +34,21 @@ function listSections() {
         }
       }
     }
-  `
+  `;
   const url = CONTENT_DELIVERY_API_URL;
   let opts = {
-    method: "POST",
+    method: 'POST',
     headers: {
       authorization: CONTENT_DELIVERY_API_ACCESS_TOKEN,
-      "Content-Type": "application/json"
+      'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ query })
+    body: JSON.stringify({ query }),
   };
   fetch(url, opts)
-    .then(res => res.json())
-    .then(data => {
+    .then((res) => res.json())
+    .then((data) => {
       let sections = data.data.categories.listCategories.data;
-      writeCache("sections", sections);
+      writeCache('sections', sections);
     })
     .catch(console.error);
 }
@@ -71,29 +71,45 @@ function listTags() {
         }
       }
     }
-  `
+  `;
   const url = CONTENT_DELIVERY_API_URL;
   console.log(url, process.env.CONTENT_DELIVERY_API_URL);
   let opts = {
-    method: "POST",
+    method: 'POST',
     headers: {
       authorization: CONTENT_DELIVERY_API_ACCESS_TOKEN,
-      "Content-Type": "application/json"
+      'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ query })
+    body: JSON.stringify({ query }),
   };
   fetch(url, opts)
-    .then(res => res.json())
-    .then(data => {
+    .then((res) => res.json())
+    .then((data) => {
       let tags = data.data.tags.listTags.data;
-      writeCache("tags", tags);
+      writeCache('tags', tags);
     })
     .catch(console.error);
+}
+
+function getAds() {
+  const url = process.env.LETTERHEAD_API_URL;
+  const opts = {
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${process.env.LETTERHEAD_API_KEY}`,
+    },
+  };
+  fetch(url, opts)
+    .then((res) => res.json())
+    .then((data) => {
+      writeCache('ads', data);
+    });
 }
 
 async function main() {
   listSections();
   listTags();
+  getAds();
 }
 
-main().catch((error) => console.error(error))
+main().catch((error) => console.error(error));
