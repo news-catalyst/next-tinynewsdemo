@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { renderDate, renderAuthors } from '../../lib/utils.js';
 
 export default function ArticleLink({ article, isAmp }) {
@@ -25,6 +26,14 @@ export default function ArticleLink({ article, isAmp }) {
           <figure className="media-left">
             <p className="image article-link-img">
               {isAmp ? (
+                <amp-img
+                  width={mainImage.width}
+                  height={mainImage.height}
+                  src={mainImage.imageUrl}
+                  alt={mainImage.imageAlt}
+                  layout="responsive"
+                />
+              ) : (
                 <Image
                   src={mainImage.imageUrl}
                   width={400}
@@ -32,8 +41,6 @@ export default function ArticleLink({ article, isAmp }) {
                   alt={mainImage.imageAlt}
                   className="image"
                 />
-              ) : (
-                <img src={mainImage.imageUrl} />
               )}
             </p>
           </figure>
