@@ -24,11 +24,12 @@ export default function ArticleCard({ article, isAmp }) {
                 layout="responsive"
               />
             ) : (
-              <img
+              <Image
                 src={mainImage.imageUrl}
+                width={400}
+                height={234}
                 alt={mainImage.imageAlt}
-                width={mainImage.width}
-                height={mainImage.height}
+                className="image"
               />
             )}
           </figure>
