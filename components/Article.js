@@ -8,7 +8,7 @@ import GlobalFooter from './nav/GlobalFooter.js';
 import { useAmp } from 'next/amp';
 import Layout from './Layout.js';
 
-export default function Article({ article, sections, tags }) {
+export default function Article({ article, sections, tags, ads }) {
   const isAmp = useAmp();
 
   return (
@@ -17,7 +17,7 @@ export default function Article({ article, sections, tags }) {
       <article className="container">
         <ArticleHeader article={article} />
         <MainImage article={article} isAmp={isAmp} />
-        <ArticleBody article={article} isAmp={isAmp} />
+        <ArticleBody article={article} isAmp={isAmp} ads={ads} />
         <Tags article={article} />
         <ArticleFooter article={article} isAmp={isAmp} />
       </article>
