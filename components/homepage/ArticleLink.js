@@ -25,12 +25,12 @@ export default function ArticleLink({ article, isAmp }) {
           <figure className="media-left">
             <p className="image article-link-img">
               {isAmp ? (
-                <amp-img
-                  width={mainImage.width}
-                  height={mainImage.height}
+                <Image
                   src={mainImage.imageUrl}
+                  width={400}
+                  height={234}
                   alt={mainImage.imageAlt}
-                  layout="responsive"
+                  className="image"
                 />
               ) : (
                 <img src={mainImage.imageUrl} />

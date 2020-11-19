@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { renderDate, renderAuthors } from '../../lib/utils.js';
 
 export default function FeaturedArticleLink({ article, isAmp }) {
@@ -37,7 +38,13 @@ export default function FeaturedArticleLink({ article, isAmp }) {
                 layout="responsive"
               />
             ) : (
-              <img src={mainImage.imageUrl} />
+              <Image
+                src={mainImage.imageUrl}
+                width={1080}
+                height={630}
+                alt={mainImage.imageAlt}
+                className="image"
+              />
             )}
           </p>
         </div>
