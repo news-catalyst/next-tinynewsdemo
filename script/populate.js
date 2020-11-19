@@ -11,7 +11,7 @@ const CONTENT_DELIVERY_API_ACCESS_TOKEN =
 function writeCache(name, data) {
   const cachedFile = path.join(process.cwd(), 'cached', `${name}.json`);
   console.log(cachedFile);
-  fs.writeFileSync(cachedFile, JSON.stringify(data), { flag: 'wx' }, (err) => {
+  fs.writeFileSync(cachedFile, JSON.stringify(data), { flag: 'w' }, (err) => {
     console.log('failed to write file:', err);
   });
 }
