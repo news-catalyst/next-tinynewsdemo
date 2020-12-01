@@ -8,7 +8,6 @@ import { renderBody } from '../lib/utils.js';
 
 export default function About({ data, authors, sections }) {
   const isAmp = useAmp();
-  console.log('data:', data);
   const body = renderBody(data, isAmp);
   return (
     <Layout meta={data}>

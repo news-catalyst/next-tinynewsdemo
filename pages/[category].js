@@ -47,7 +47,6 @@ export default function CategoryPage({ articles, title, sections, tags }) {
 
 export async function getStaticPaths() {
   const paths = await listAllSectionTitles();
-  console.log('getStaticPaths on category page:', paths);
   return {
     paths,
     fallback: true,
@@ -55,12 +54,10 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ params }) {
-  console.log('getStaticProps on category page:', params.category);
   const articles = await listAllArticlesBySection(params.category);
   const sections = await listAllSections();
   // const sections = await cachedContents('sections', listAllSections);
 
-  console.log(params.category, ' - sections:', sections);
   const tags = await cachedContents('tags', listAllTags);
   let title;
 

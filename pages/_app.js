@@ -19,7 +19,13 @@ export function reportWebVitals({ id, name, label, value }) {
 }
 
 const App = ({ Component, pageProps }) => {
-  const { init, trackPageViewed } = useAnalytics();
+  const {
+    init,
+    trackPageViewed,
+    setDimension,
+    logReadingHistory,
+    summarizeReadingHistory,
+  } = useAnalytics();
   const isAmp = useAmp();
   useEffect(() => {
     if (isAmp) {
@@ -28,6 +34,9 @@ const App = ({ Component, pageProps }) => {
     init(process.env.GA_TRACKING_ID);
     trackPageViewed();
     const handleRouteChange = (url) => {
+      logReadingHistory();
+      const readingHistory = summarizeReadingHistory();
+      setDimension('dimension2', readingHistory);
       trackPageViewed(url);
     };
     Router.events.on('routeChangeComplete', handleRouteChange);
