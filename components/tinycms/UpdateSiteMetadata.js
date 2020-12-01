@@ -22,7 +22,6 @@ export default function UpdateMetadata(props) {
 
   useEffect(() => {
     if (props.metadata) {
-      console.log('metadata.data:', typeof props.metadata.data);
       let parsed = props.metadata.data;
       if (typeof props.metadata.data === 'string') {
         parsed = JSON.parse(props.metadata.data);
@@ -40,8 +39,6 @@ export default function UpdateMetadata(props) {
 
   async function handleSubmit(ev) {
     ev.preventDefault();
-
-    console.log(parsedData);
 
     const response = await updateSiteMetadata(
       props.apiUrl,
