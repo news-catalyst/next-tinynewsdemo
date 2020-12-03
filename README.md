@@ -5,7 +5,13 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 Clear out any old cache files, rebuild the cache and run the development server:
 
 ```bash
-yarn clear && yarn populate && yarn start
+yarn clear && yarn populate && yarn dev
+```
+
+To build the site and serve from the static files:
+
+```bash
+yarn clear && yarn populate && yarn build && yarn start
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser.
