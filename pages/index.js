@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import dynamic from 'next/dynamic';
 import { getHomepageData } from '../lib/homepage.js';
 import { useAmp } from 'next/amp';
+import { useRouter } from 'next/router';
 import { cachedContents } from '../lib/cached';
 import {
   listAllSections,
@@ -42,6 +43,13 @@ export default function Home({ hpData, hpArticles, streamArticles, sections }) {
   const mostRecentArticles = streamArticles.filter(
     (streamArticle) => !featuredArticleIds.includes(streamArticle.id)
   );
+
+  const router = useRouter();
+  const { locale, locales, defaultLocale } = router;
+
+  console.log('current locale:', locale);
+  console.log('default locale:', defaultLocale);
+  console.log('locales:', JSON.stringify(locales));
 
   return (
     <div className="homepage">
