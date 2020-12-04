@@ -1,11 +1,15 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { renderDate, renderAuthors } from '../../lib/utils.js';
+import { localiseText, renderDate, renderAuthors } from '../../lib/utils.js';
 
-export default function ArticleLink({ article, isAmp }) {
+export default function ArticleLink({ locale, article, isAmp }) {
   let mainImage = null;
   let mainImageNode;
+
+  let headline = localiseText(locale, article.headline);
+  let searchDescription = localiseText(locale, article.searchDescription);
+  let categoryTitle = localiseText(locale, article.category.title);
 
   if (article.content !== null && article.content !== undefined) {
     try {
@@ -50,11 +54,8 @@ export default function ArticleLink({ article, isAmp }) {
             <h6 className="is-6">
               {article.category && (
                 <span className="category">
-                  <Link
-                    key={article.category.title.values[0].value}
-                    href={`/${article.category.slug}`}
-                  >
-                    <a>{article.category.title.values[0].value}</a>
+                  <Link key={categoryTitle} href={`/${article.category.slug}`}>
+                    <a>{categoryTitle}</a>
                   </Link>
                 </span>
               )}
@@ -69,15 +70,15 @@ export default function ArticleLink({ article, isAmp }) {
                   href="/articles/[category]/[slug]"
                   as={`/articles/${article.category.slug}/${article.slug}`}
                 >
-                  <a>{article.headline.values[0].value}</a>
+                  <a>{headline}</a>
                 </Link>
               )}
-              {!article.category && article.headline.values[0].value}
+              {!article.category && headline}
             </h2>
             <p>
               <span>By</span>&nbsp;{renderAuthors(article)}
             </p>
-            <p>{article.searchDescription}</p>
+            <p>{searchDescription}</p>
           </div>
         </div>
       </article>
