@@ -6,6 +6,7 @@ import ModalArticleSearch from '../tinycms/ModalArticleSearch';
 export default function BigFeaturedStory(props) {
   const [isModalActive, setModal] = useState(false);
 
+  console.log('BigFeaturedStory locale:', props.locale);
   useEffect(() => {
     //   console.log("setting featured article to", props.articles['featured'])
     //   props.setFeaturedArticle(props.articles['featured']);
@@ -38,6 +39,7 @@ export default function BigFeaturedStory(props) {
                   {props.featuredArticle && (
                     <FeaturedArticleLink
                       key={props.articles['featured'].id}
+                      locale={props.locale}
                       article={props.featuredArticle}
                       amp={props.isAmp}
                     />
@@ -48,6 +50,7 @@ export default function BigFeaturedStory(props) {
             {!props.editable && props.articles['featured'] && (
               <FeaturedArticleLink
                 key={props.articles['featured'].id}
+                locale={props.locale}
                 article={props.articles['featured']}
                 amp={props.isAmp}
               />

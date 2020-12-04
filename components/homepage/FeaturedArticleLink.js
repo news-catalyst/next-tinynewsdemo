@@ -1,20 +1,15 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { renderDate, renderAuthors } from '../../lib/utils.js';
+import { localiseText, renderDate, renderAuthors } from '../../lib/utils.js';
 
-export default function FeaturedArticleLink({ article, isAmp }) {
+export default function FeaturedArticleLink({ locale, article, isAmp }) {
   let mainImage = null;
   let mainImageNode = null;
 
-  let headline =
-    article.headline && article.headline.values
-      ? article.headline.values[0].value
-      : article.headline;
-  let searchDescription =
-    article.searchDescription && article.searchDescription.values
-      ? article.searchDescription.values[0].value
-      : article.searchDescription;
+  let headline = localiseText(locale, article.headline);
+  let searchDescription = localiseText(locale, article.searchDescription);
+  let categoryTitle = localiseText(locale, article.category.title);
 
   if (article && article.content) {
     mainImageNode = article.content.find((node) => node.type === 'mainImage');
@@ -55,7 +50,7 @@ export default function FeaturedArticleLink({ article, isAmp }) {
             {article.category && (
               <span className="category">
                 <Link href="/[slug]" as={article.category.slug}>
-                  <a>{article.category.title.values[0].value}</a>
+                  <a>{categoryTitle}</a>
                 </Link>
               </span>
             )}
