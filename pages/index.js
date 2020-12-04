@@ -124,7 +124,7 @@ export async function getStaticProps({ locale }) {
   const hpArticles = await getHomepageArticles(currentLocale, hpData);
   // const hpArticles = { "featured": ""}
 
-  const streamArticles = await listMostRecentArticles();
+  const streamArticles = await listMostRecentArticles(currentLocale);
 
   const sections = await cachedContents('sections', listAllSections);
 
