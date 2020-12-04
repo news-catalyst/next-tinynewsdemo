@@ -5,6 +5,7 @@ import { useAmp } from 'next/amp';
 import { useRouter } from 'next/router';
 import { cachedContents } from '../lib/cached';
 import {
+  listAllLocales,
   listAllSections,
   listMostRecentArticles,
   getHomepageArticles,
@@ -22,7 +23,16 @@ const LargePackageStoryLead = dynamic(() =>
   import(`../components/homepage/LargePackageStoryLead`)
 );
 
-export default function Home({ hpData, hpArticles, streamArticles, sections }) {
+export default function Home({
+  hpData,
+  hpArticles,
+  streamArticles,
+  sections,
+  currentLocale,
+}) {
+  // const router = useRouter();
+  // const { locale, locales, defaultLocale } = router;
+
   const [featuredArticle, setFeaturedArticle] = useState(
     hpArticles['featured']
   );
@@ -44,12 +54,7 @@ export default function Home({ hpData, hpArticles, streamArticles, sections }) {
     (streamArticle) => !featuredArticleIds.includes(streamArticle.id)
   );
 
-  const router = useRouter();
-  const { locale, locales, defaultLocale } = router;
-
-  console.log('current locale:', locale);
-  console.log('default locale:', defaultLocale);
-  console.log('locales:', JSON.stringify(locales));
+  console.log('current locale:', currentLocale);
 
   return (
     <div className="homepage">
@@ -58,6 +63,7 @@ export default function Home({ hpData, hpArticles, streamArticles, sections }) {
         <div className="container">
           {hpData.layoutComponent === 'BigFeaturedStory' && (
             <BigFeaturedStory
+              locale={currentLocale}
               articles={hpArticles}
               sections={sections}
               featuredArticle={featuredArticle}
@@ -67,6 +73,7 @@ export default function Home({ hpData, hpArticles, streamArticles, sections }) {
           )}
           {hpData.layoutComponent === 'LargePackageStoryLead' && (
             <LargePackageStoryLead
+              locale={currentLocale}
               articles={hpArticles}
               featuredArticle={featuredArticle}
               setFeaturedArticle={setFeaturedArticle}
@@ -101,11 +108,19 @@ export default function Home({ hpData, hpArticles, streamArticles, sections }) {
   );
 }
 
-export async function getStaticProps() {
-  //    get selected homepage layout / data
+export async function getStaticProps({ locale }) {
+  const localeMappings = await cachedContents('locales', listAllLocales);
+
+  const currentLocale = localeMappings.find(
+    (localeMap) => localeMap.code === locale
+  );
+  console.log('currentLocale is:', currentLocale);
+  // TODO: if we can't find the selected locale fallback to the default? or just error?
+
+  //    get selected homepage layout and featured article IDs
   const hpData = await getHomepageData();
-  //    look up selected homepage articles
-  const hpArticles = await getHomepageArticles(hpData);
+  //    look up featured homepage articles
+  const hpArticles = await getHomepageArticles(currentLocale, hpData);
   // const hpArticles = { "featured": ""}
 
   const streamArticles = await listMostRecentArticles();
@@ -118,6 +133,7 @@ export async function getStaticProps() {
       hpArticles,
       streamArticles,
       sections,
+      currentLocale,
     },
     revalidate: 1,
   };
