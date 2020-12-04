@@ -94,6 +94,7 @@ export default function Home({
                   mostRecentArticles.map((streamArticle) => (
                     <ArticleLink
                       key={streamArticle.id}
+                      locale={currentLocale}
                       article={streamArticle}
                       amp={isAmp}
                     />
