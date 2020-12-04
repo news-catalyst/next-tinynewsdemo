@@ -1,9 +1,9 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { renderAuthors, renderDate } from '../../lib/utils.js';
+import { localiseText, renderDate, renderAuthors } from '../../lib/utils.js';
 
-export default function ArticleCard({ article, isAmp }) {
+export default function ArticleCard({ article, locale, isAmp }) {
   let mainImage = null;
   const mainImageNode = article.content.find(
     (node) => node.type === 'mainImage'
@@ -11,6 +11,8 @@ export default function ArticleCard({ article, isAmp }) {
   if (mainImageNode) {
     mainImage = mainImageNode.children[0];
   }
+
+  let headline = localiseText(locale, article.headline);
   return (
     <div className="card">
       {mainImage && (
@@ -43,7 +45,7 @@ export default function ArticleCard({ article, isAmp }) {
               href="/articles/[category]/[slug]"
               as={`/articles/${article.category.slug}/${article.slug}`}
             >
-              <a>{article.headline.values[0].value}</a>
+              <a>{headline}</a>
             </Link>
           </h1>
           <p>{renderAuthors(article)}</p>
