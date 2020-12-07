@@ -1,12 +1,14 @@
 import Layout from '../../components/Layout.js';
 import ArticleLink from '../../components/homepage/ArticleLink.js';
 import {
+  listAllLocales,
   listAllArticlesByTag,
   listAllSections,
   listAllTagPaths,
   getTagBySlug,
 } from '../../lib/articles.js';
 import { cachedContents } from '../../lib/cached';
+import { localiseText } from '../../lib/utils.js';
 import { siteMetadata } from '../../lib/siteMetadata.js';
 import GlobalNav from '../../components/nav/GlobalNav.js';
 import GlobalFooter from '../../components/nav/GlobalFooter.js';
@@ -49,12 +51,14 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ locale, params }) {
+  console.log('getStaticProps tag page');
   const localeMappings = await cachedContents('locales', listAllLocales);
 
   const currentLocale = localeMappings.find(
     (localeMap) => localeMap.code === locale
   );
 
+  console.log('currentLocale:', currentLocale);
   const articles = await listAllArticlesByTag(currentLocale, params.slug);
   const sections = await cachedContents('sections', listAllSections);
   const tag = await getTagBySlug(params.slug);
