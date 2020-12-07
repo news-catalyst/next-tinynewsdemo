@@ -8,18 +8,30 @@ import GlobalFooter from './nav/GlobalFooter.js';
 import { useAmp } from 'next/amp';
 import Layout from './Layout.js';
 
-export default function Article({ article, sections, tags, ads }) {
+export default function Article({
+  article,
+  currentLocale,
+  sections,
+  tags,
+  ads,
+}) {
   const isAmp = useAmp();
 
+  console.log('article:', article);
   return (
     <Layout meta={article}>
       <GlobalNav sections={sections} />
       <article className="container">
-        <ArticleHeader article={article} />
+        <ArticleHeader article={article} locale={currentLocale} />
         <MainImage article={article} isAmp={isAmp} />
-        <ArticleBody article={article} isAmp={isAmp} ads={ads} />
-        <Tags article={article} />
-        <ArticleFooter article={article} isAmp={isAmp} />
+        <ArticleBody
+          article={article}
+          locale={currentLocale}
+          isAmp={isAmp}
+          ads={ads}
+        />
+        <Tags article={article} locale={currentLocale} />
+        <ArticleFooter article={article} locale={currentLocale} isAmp={isAmp} />
       </article>
       <GlobalFooter />
     </Layout>
