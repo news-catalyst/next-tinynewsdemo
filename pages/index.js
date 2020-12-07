@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import { getHomepageData } from '../lib/homepage.js';
 import { useAmp } from 'next/amp';
-import { useRouter } from 'next/router';
 import { cachedContents } from '../lib/cached';
 import {
   listAllLocales,
@@ -30,9 +29,6 @@ export default function Home({
   sections,
   currentLocale,
 }) {
-  // const router = useRouter();
-  // const { locale, locales, defaultLocale } = router;
-
   const [featuredArticle, setFeaturedArticle] = useState(
     hpArticles['featured']
   );
@@ -45,16 +41,30 @@ export default function Home({
   const [subFeaturedMiddleArticle, setSubFeaturedMiddleArticle] = useState(
     hpArticles['subfeatured-middle']
   );
+  const [mostRecentArticles, setMostRecentArticles] = useState([]);
   const isAmp = useAmp();
 
-  const featuredArticleIds = Object.values(hpArticles).map(
-    (article) => article.id
-  );
-  const mostRecentArticles = streamArticles.filter(
-    (streamArticle) => !featuredArticleIds.includes(streamArticle.id)
-  );
+  let featuredArticleIds = [];
+  useEffect(() => {
+    for (const [key, article] of Object.entries(hpArticles)) {
+      // replace any missing featured articles with the next top article from the stream
+      if (article === null) {
+        hpArticles[key] = streamArticles.shift();
+      }
+    }
 
-  console.log('current locale:', currentLocale);
+    // build a quick list of homepage featured article ids to ensure they do not appear again in the stream
+    featuredArticleIds = Object.values(hpArticles)
+      .filter((article) => !article === null)
+      .map((article) => article.id);
+
+    // filter out any articles from the stream that are already featured using the list of IDs from right above
+    setMostRecentArticles(
+      streamArticles.filter(
+        (streamArticle) => !featuredArticleIds.includes(streamArticle.id)
+      )
+    );
+  }, [hpArticles, streamArticles]);
 
   return (
     <div className="homepage">
@@ -115,14 +125,11 @@ export async function getStaticProps({ locale }) {
   const currentLocale = localeMappings.find(
     (localeMap) => localeMap.code === locale
   );
-  console.log('currentLocale is:', currentLocale);
-  // TODO: if we can't find the selected locale fallback to the default? or just error?
-
   //    get selected homepage layout and featured article IDs
   const hpData = await getHomepageData();
+
   //    look up featured homepage articles
   const hpArticles = await getHomepageArticles(currentLocale, hpData);
-  // const hpArticles = { "featured": ""}
 
   const streamArticles = await listMostRecentArticles(currentLocale);
 
