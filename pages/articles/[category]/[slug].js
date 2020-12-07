@@ -1,4 +1,5 @@
 import {
+  listAllLocales,
   getArticleBySlug,
   listAllArticleSlugs,
   listAllSections,
@@ -32,8 +33,17 @@ export async function getStaticPaths() {
   };
 }
 
-export async function getStaticProps({ params }) {
-  const article = await getArticleBySlug(params.slug);
+export async function getStaticProps({ locale, params }) {
+  const localeMappings = await cachedContents('locales', listAllLocales);
+
+  const currentLocale = localeMappings.find(
+    (localeMap) => localeMap.code === locale
+  );
+  // console.log("article page currentLocale:", currentLocale);
+
+  const article = await getArticleBySlug(currentLocale, params.slug);
+  // console.log("article page article:", article);
+
   const tags = await cachedContents('tags', listAllTags);
   const sections = await cachedContents('sections', listAllSections);
   const allAds = await cachedContents('ads', getArticleAds);
@@ -41,6 +51,7 @@ export async function getStaticProps({ params }) {
 
   return {
     props: {
+      currentLocale,
       article,
       sections,
       tags,
