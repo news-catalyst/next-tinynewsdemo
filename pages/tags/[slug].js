@@ -42,8 +42,8 @@ export default function TagPage(props) {
   );
 }
 
-export async function getStaticPaths() {
-  const paths = await listAllTagPaths();
+export async function getStaticPaths({ locales }) {
+  const paths = await listAllTagPaths(locales);
   return {
     paths,
     fallback: false,
@@ -51,14 +51,12 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ locale, params }) {
-  console.log('getStaticProps tag page');
   const localeMappings = await cachedContents('locales', listAllLocales);
 
   const currentLocale = localeMappings.find(
     (localeMap) => localeMap.code === locale
   );
 
-  console.log('currentLocale:', currentLocale);
   const articles = await listAllArticlesByTag(currentLocale, params.slug);
   const sections = await cachedContents('sections', listAllSections);
   const tag = await getTagBySlug(params.slug);
