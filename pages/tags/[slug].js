@@ -14,7 +14,7 @@ import { useAmp } from 'next/amp';
 
 export default function TagPage(props) {
   const isAmp = useAmp();
-  let tagTitle = props.tag.title.values[0].value;
+  let tagTitle = localiseText(props.currentLocale, props.tag.title);
   return (
     <Layout meta={siteMetadata}>
       <GlobalNav sections={props.sections} />
@@ -24,7 +24,12 @@ export default function TagPage(props) {
           <div className="columns">
             <div className="column is-four-fifths">
               {props.articles.map((article) => (
-                <ArticleLink key={article.id} article={article} amp={isAmp} />
+                <ArticleLink
+                  key={article.id}
+                  locale={props.currentLocale}
+                  article={article}
+                  amp={isAmp}
+                />
               ))}
             </div>
           </div>
@@ -43,12 +48,19 @@ export async function getStaticPaths() {
   };
 }
 
-export async function getStaticProps({ params }) {
-  const articles = await listAllArticlesByTag(params.slug);
+export async function getStaticProps({ locale, params }) {
+  const localeMappings = await cachedContents('locales', listAllLocales);
+
+  const currentLocale = localeMappings.find(
+    (localeMap) => localeMap.code === locale
+  );
+
+  const articles = await listAllArticlesByTag(currentLocale, params.slug);
   const sections = await cachedContents('sections', listAllSections);
   const tag = await getTagBySlug(params.slug);
   return {
     props: {
+      currentLocale,
       articles,
       tag,
       sections,
