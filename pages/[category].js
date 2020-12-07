@@ -4,18 +4,20 @@ import Layout from '../components/Layout.js';
 import ArticleLink from '../components/homepage/ArticleLink.js';
 import { cachedContents } from '../lib/cached';
 import {
+  listAllLocales,
   listAllArticlesBySection,
   listAllSectionTitles,
   listAllSections,
   listAllTags,
 } from '../lib/articles.js';
+import { localiseText } from '../lib/utils.js';
 import { siteMetadata } from '../lib/siteMetadata.js';
 import GlobalNav from '../components/nav/GlobalNav.js';
 import GlobalFooter from '../components/nav/GlobalFooter.js';
 import { useAmp } from 'next/amp';
 
 export default function CategoryPage({
-  locale,
+  currentLocale,
   articles,
   title,
   sections,
@@ -42,7 +44,7 @@ export default function CategoryPage({
               {articles.map((article) => (
                 <ArticleLink
                   key={article.id}
-                  locale={locale}
+                  locale={currentLocale}
                   article={article}
                   amp={isAmp}
                 />
@@ -65,7 +67,16 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ locale, params }) {
-  const articles = await listAllArticlesBySection(params.category);
+  const localeMappings = await cachedContents('locales', listAllLocales);
+
+  const currentLocale = localeMappings.find(
+    (localeMap) => localeMap.code === locale
+  );
+
+  const articles = await listAllArticlesBySection(
+    currentLocale,
+    params.category
+  );
   const sections = await listAllSections();
   // const sections = await cachedContents('sections', listAllSections);
 
@@ -74,20 +85,15 @@ export async function getStaticProps({ locale, params }) {
 
   for (var i = 0; i < sections.length; i++) {
     if (sections[i].slug == params.category) {
-      if (
-        sections[i].title &&
-        sections[i].title.values &&
-        sections[i].title.values[0] &&
-        sections[i].title.values[0].value
-      ) {
-        title = sections[i].title.values[0].value;
+      if (sections[i].title && sections[i].title.values) {
+        title = localiseText(currentLocale, sections[i].title);
         break;
       }
     }
   }
   return {
     props: {
-      locale,
+      currentLocale,
       articles,
       title,
       tags,
