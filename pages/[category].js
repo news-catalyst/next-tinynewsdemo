@@ -14,7 +14,13 @@ import GlobalNav from '../components/nav/GlobalNav.js';
 import GlobalFooter from '../components/nav/GlobalFooter.js';
 import { useAmp } from 'next/amp';
 
-export default function CategoryPage({ articles, title, sections, tags }) {
+export default function CategoryPage({
+  locale,
+  articles,
+  title,
+  sections,
+  tags,
+}) {
   const isAmp = useAmp();
   siteMetadata.tags = tags;
 
@@ -34,7 +40,12 @@ export default function CategoryPage({ articles, title, sections, tags }) {
           <div className="columns">
             <div className="column is-four-fifths">
               {articles.map((article) => (
-                <ArticleLink key={article.id} article={article} amp={isAmp} />
+                <ArticleLink
+                  key={article.id}
+                  locale={locale}
+                  article={article}
+                  amp={isAmp}
+                />
               ))}
             </div>
           </div>
@@ -53,7 +64,7 @@ export async function getStaticPaths() {
   };
 }
 
-export async function getStaticProps({ params }) {
+export async function getStaticProps({ locale, params }) {
   const articles = await listAllArticlesBySection(params.category);
   const sections = await listAllSections();
   // const sections = await cachedContents('sections', listAllSections);
@@ -76,6 +87,7 @@ export async function getStaticProps({ params }) {
   }
   return {
     props: {
+      locale,
       articles,
       title,
       tags,
