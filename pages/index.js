@@ -11,7 +11,6 @@ import {
 } from '../lib/articles.js';
 import Layout from '../components/Layout';
 import { siteMetadata } from '../lib/siteMetadata.js';
-import GlobalNav from '../components/nav/GlobalNav';
 import GlobalFooter from '../components/nav/GlobalFooter';
 import ArticleLink from '../components/homepage/ArticleLink';
 
@@ -53,8 +52,7 @@ export default function Home({ hpData, hpArticles, streamArticles, sections }) {
 
   return (
     <div className="homepage">
-      <Layout meta={siteMetadata}>
-        <GlobalNav metadata={siteMetadata} sections={sections} />
+      <Layout meta={siteMetadata} sections={sections}>
         <div className="container">
           {hpData.layoutComponent === 'BigFeaturedStory' && (
             <BigFeaturedStory

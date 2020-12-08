@@ -8,33 +8,18 @@ export default function GlobalNav({ sections }) {
   if (sections) {
     sectionLinks = sections.slice(0, 4).map((section) => (
       <Link key={`navbar-${section.slug}`} href={`/${section.slug}`}>
-        <a className="navbar-item">{section.title.values[0].value}</a>
+        <a>{section.title.values[0].value}</a>
       </Link>
     ));
   }
 
   return (
-    <section className="hero is-bold">
-      <div className="hero-body">
-        <div className="container">
-          <Link key="navbar-home" href="/" as="/">
-            <a>
-              <h1 className="title is-1 has-text-centered">
-                {siteMetadata.homepageTitle}
-              </h1>
-            </a>
-          </Link>
-          <nav
-            className="navbar"
-            role="navigation"
-            aria-label="main navigation"
-          >
-            <div className="navbar-brand">
-              <div className="navbar-start">{sectionLinks}</div>
-            </div>
-          </nav>
-        </div>
+    <header className="site__header">
+      <div className="section__container">
+        <h1 className="site__logo">{siteMetadata.homepageTitle}</h1>
+        <nav>{sectionLinks}</nav>
+        <button className="site__cta">Donate</button>
       </div>
-    </section>
+    </header>
   );
 }

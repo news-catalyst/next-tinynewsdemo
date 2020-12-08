@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useScrollPercentage } from 'react-scroll-percentage';
 import { useAnalytics } from '../../lib/hooks/useAnalytics.js';
 import { renderBody } from '../../lib/utils.js';
+import MailchimpSubscribe from '../plugins/MailchimpSubscribe.js';
 
 export default function ArticleBody({ article, ads, isAmp }) {
   const body = renderBody(article, ads, isAmp);
@@ -61,9 +62,17 @@ export default function ArticleBody({ article, ads, isAmp }) {
   }, [percentage]);
 
   return (
-    <section className="section" key="body" ref={ref}>
-      <div id="articleText" className="content">
-        {body}
+    <section className="section post__body rich-text" key="body">
+      <div id="articleText" className="section__container" ref={ref}>
+        <div className="post-text">
+          <div>{body}</div>
+        </div>
+        <div className="block newsletter">
+          <h4>Get our newsletter</h4>
+          <p>Vital news from your community, every morning, in your inbox.</p>
+          <br />
+          <MailchimpSubscribe articleTitle={article.headline} />
+        </div>
       </div>
     </section>
   );

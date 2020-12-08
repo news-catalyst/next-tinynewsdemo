@@ -1,4 +1,4 @@
-import { renderAuthors, renderDate } from '../../lib/utils.js';
+import { renderDate } from '../../lib/utils.js';
 
 export default function PublishDate({ article }) {
   let firstPublishedOn = null;
@@ -13,13 +13,15 @@ export default function PublishDate({ article }) {
 
   return (
     <>
-      <h2 className="subtitle" key="byline">
-        By {renderAuthors(article)}
-      </h2>
-      <h2 className="subtitle" key="datelines">
-        {firstPublishedOn !== null && `Published ${firstPublishedOn}`}
-        {lastPublishedOn !== null && ` | Last updated: ${lastPublishedOn}`}
-      </h2>
+      <time key="datelines">
+        {firstPublishedOn !== null && <span>{firstPublishedOn}</span>}
+        {lastPublishedOn !== null && (
+          <span>
+            <em>Updated</em>
+            {lastPublishedOn}
+          </span>
+        )}
+      </time>
     </>
   );
 }
