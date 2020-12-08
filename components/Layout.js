@@ -1,10 +1,12 @@
 import Head from 'next/head';
 import { siteMetadata } from '../lib/siteMetadata.js';
 import globalStyles from '../styles/global.js';
+import GlobalNav from '../components/nav/GlobalNav';
+import GlobalFooter from './nav/GlobalFooter.js';
 import { useAmp } from 'next/amp';
 import AmpAnalytics from './amp/AmpAnalytics.js';
 
-export default function Layout({ children, meta }) {
+export default function Layout({ children, meta, sections }) {
   const metaValues = {
     canonical: meta.canonical || siteMetadata.siteUrl,
     searchTitle:
@@ -118,6 +120,7 @@ export default function Layout({ children, meta }) {
           />
         )}
       </Head>
+      <GlobalNav metadata={siteMetadata} sections={sections} />
       <main>
         {isAmp && (
           <AmpAnalytics
@@ -141,6 +144,7 @@ export default function Layout({ children, meta }) {
         )}
         {children}
       </main>
+      <GlobalFooter />
       <style jsx global>
         {globalStyles}
       </style>

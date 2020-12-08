@@ -2,8 +2,8 @@ import { siteMetadata } from '../../lib/siteMetadata.js';
 
 export default function GlobalFooter() {
   return (
-    <footer className="footer">
-      <div className="content has-text-centered">
+    <footer className="tbd">
+      <div className="section__container">
         <p>
           <strong>{siteMetadata.footerTitle}</strong> by{' '}
           <a href={siteMetadata.footerBylineLink}>

@@ -3,13 +3,13 @@ import Image from 'next/image';
 
 export default function ImageWithTextAd({ ad, isAmp }) {
   return (
-    <section className="text-ad-container">
+    <div className="text-ad-container">
       <div className="ad-container">
         <div className="ad-brand">
           <p>Advertisement from {ad.brand}</p>
         </div>
-        <div className="media">
-          <div className="media-left ad-img-container">
+        <div className="media-left">
+          <div className="media ad-img-container">
             {isAmp ? (
               <amp-img
                 width={300}
@@ -37,6 +37,6 @@ export default function ImageWithTextAd({ ad, isAmp }) {
           </div>
         </div>
       </div>
-    </section>
+    </div>
   );
 }
