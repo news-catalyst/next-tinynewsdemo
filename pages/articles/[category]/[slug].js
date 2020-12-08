@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import DefaultErrorPage from 'next/error';
+import React, { useEffect } from 'react';
 import {
   listAllLocales,
   getArticleBySlug,
@@ -20,17 +20,25 @@ export default function ArticlePage(props) {
   // initially until getStaticProps() finishes running
   // See: https://nextjs.org/docs/basic-features/data-fetching#the-fallback-key-required
   if (router.isFallback) {
+    console.log('router is fallback', router.pathname);
     return <div>Loading...</div>;
   }
 
+  useEffect(() => {
+    if (!props.article) {
+      router.push('/404');
+    }
+  }, [props.article]);
+
+  // trying to fix build errors...
   if (!props.article) {
+    console.log('ArticlePage no article prop found:', props);
     return (
-      <div>
-        <DefaultErrorPage statusCode={404} />
-      </div>
+      <>
+        <h1>404 Page Not Found</h1>
+      </>
     );
   }
-
   return <Article {...props} />;
 }
 
