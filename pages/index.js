@@ -11,8 +11,7 @@ import {
 } from '../lib/articles.js';
 import Layout from '../components/Layout';
 import { siteMetadata } from '../lib/siteMetadata.js';
-import GlobalFooter from '../components/nav/GlobalFooter';
-import ArticleLink from '../components/homepage/ArticleLink';
+import ArticleStream from '../components/homepage/ArticleStream';
 
 const BigFeaturedStory = dynamic(() =>
   import(`../components/homepage/BigFeaturedStory`)
@@ -53,47 +52,36 @@ export default function Home({ hpData, hpArticles, streamArticles, sections }) {
   return (
     <div className="homepage">
       <Layout meta={siteMetadata} sections={sections}>
-        <div className="container">
-          {hpData.layoutComponent === 'BigFeaturedStory' && (
-            <BigFeaturedStory
-              articles={hpArticles}
-              sections={sections}
-              featuredArticle={featuredArticle}
-              setFeaturedArticle={setFeaturedArticle}
-              isAmp={isAmp}
-            />
-          )}
-          {hpData.layoutComponent === 'LargePackageStoryLead' && (
-            <LargePackageStoryLead
-              articles={hpArticles}
-              featuredArticle={featuredArticle}
-              setFeaturedArticle={setFeaturedArticle}
-              subFeaturedLeftArticle={subFeaturedLeftArticle}
-              setSubFeaturedLeftArticle={setSubFeaturedLeftArticle}
-              subFeaturedRightArticle={subFeaturedRightArticle}
-              setSubFeaturedRightArticle={setSubFeaturedRightArticle}
-              subFeaturedMiddleArticle={subFeaturedMiddleArticle}
-              setSubFeaturedMiddleArticle={setSubFeaturedMiddleArticle}
-              sections={sections}
-              isAmp={isAmp}
-            />
-          )}
-          <section className="section">
-            <div className="columns">
-              <div className="column is-11 is-offset-1">
-                {mostRecentArticles &&
-                  mostRecentArticles.map((streamArticle) => (
-                    <ArticleLink
-                      key={streamArticle.id}
-                      article={streamArticle}
-                      amp={isAmp}
-                    />
-                  ))}
-              </div>
-            </div>
-          </section>
-        </div>
-        <GlobalFooter post_type="home" />
+        {hpData.layoutComponent === 'BigFeaturedStory' && (
+          <BigFeaturedStory
+            articles={hpArticles}
+            sections={sections}
+            featuredArticle={featuredArticle}
+            setFeaturedArticle={setFeaturedArticle}
+            isAmp={isAmp}
+          />
+        )}
+        {hpData.layoutComponent === 'LargePackageStoryLead' && (
+          <LargePackageStoryLead
+            articles={hpArticles}
+            featuredArticle={featuredArticle}
+            setFeaturedArticle={setFeaturedArticle}
+            subFeaturedLeftArticle={subFeaturedLeftArticle}
+            setSubFeaturedLeftArticle={setSubFeaturedLeftArticle}
+            subFeaturedRightArticle={subFeaturedRightArticle}
+            setSubFeaturedRightArticle={setSubFeaturedRightArticle}
+            subFeaturedMiddleArticle={subFeaturedMiddleArticle}
+            setSubFeaturedMiddleArticle={setSubFeaturedMiddleArticle}
+            sections={sections}
+            isAmp={isAmp}
+          />
+        )}
+        <ArticleStream
+          articles={mostRecentArticles}
+          sections={sections}
+          isAmp={isAmp}
+          title="The Latest"
+        />
       </Layout>
     </div>
   );

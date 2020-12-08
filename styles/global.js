@@ -219,11 +219,6 @@ export default css.global`
     width: 100%;
     margin-bottom: 0.625rem;
   }
-  .asset__thumbnail::before {
-    content: '';
-    display: block;
-    padding-top: 66.66%;
-  }
   .asset__thumbnail .content,
   .asset__thumbnail > a {
     bottom: 0;
