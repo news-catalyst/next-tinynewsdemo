@@ -68,7 +68,7 @@ export default function Home({
 
   return (
     <div className="homepage">
-      <Layout meta={siteMetadata}>
+      <Layout meta={siteMetadata} locale={currentLocale}>
         <GlobalNav metadata={siteMetadata} sections={sections} />
         <div className="container">
           {hpData.layoutComponent === 'BigFeaturedStory' && (
