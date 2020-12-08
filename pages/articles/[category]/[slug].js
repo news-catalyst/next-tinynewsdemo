@@ -1,3 +1,5 @@
+import { useRouter } from 'next/router';
+import DefaultErrorPage from 'next/error';
 import {
   listAllLocales,
   getArticleBySlug,
@@ -7,7 +9,6 @@ import {
 } from '../../../lib/articles.js';
 import { getArticleAds } from '../../../lib/ads.js';
 import { cachedContents } from '../../../lib/cached';
-import { useRouter } from 'next/router';
 import Article from '../../../components/Article.js';
 
 export const config = { amp: 'hybrid' };
@@ -22,11 +23,19 @@ export default function ArticlePage(props) {
     return <div>Loading...</div>;
   }
 
+  if (!props.article) {
+    return (
+      <div>
+        <DefaultErrorPage statusCode={404} />
+      </div>
+    );
+  }
+
   return <Article {...props} />;
 }
 
-export async function getStaticPaths() {
-  const paths = await listAllArticleSlugs();
+export async function getStaticPaths({ locales }) {
+  const paths = await listAllArticleSlugs(locales);
   return {
     paths,
     fallback: true,
@@ -42,8 +51,10 @@ export async function getStaticProps({ locale, params }) {
   // console.log("article page currentLocale:", currentLocale);
 
   const article = await getArticleBySlug(currentLocale, params.slug);
-  // console.log("article page article:", article);
 
+  if (article === null) {
+    console.log('failed finding article for:', currentLocale.code, params.slug);
+  }
   const tags = await cachedContents('tags', listAllTags);
   const sections = await cachedContents('sections', listAllSections);
   const allAds = await cachedContents('ads', getArticleAds);
@@ -51,8 +62,8 @@ export async function getStaticProps({ locale, params }) {
 
   return {
     props: {
-      currentLocale,
       article,
+      currentLocale,
       sections,
       tags,
       ads,
