@@ -17,11 +17,11 @@ import GlobalFooter from '../components/nav/GlobalFooter.js';
 import { useAmp } from 'next/amp';
 
 export default function CategoryPage({
-  currentLocale,
   articles,
-  title,
+  currentLocale,
   sections,
   tags,
+  title,
 }) {
   const isAmp = useAmp();
   siteMetadata.tags = tags;
@@ -34,7 +34,7 @@ export default function CategoryPage({
   }
 
   return (
-    <Layout meta={siteMetadata}>
+    <Layout meta={siteMetadata} locale={currentLocale}>
       <GlobalNav sections={sections} />
       <div className="container">
         <section className="section">
@@ -93,10 +93,10 @@ export async function getStaticProps({ locale, params }) {
   }
   return {
     props: {
-      currentLocale,
       articles,
-      title,
+      currentLocale,
       tags,
+      title,
       sections,
     },
   };
