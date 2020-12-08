@@ -10,6 +10,16 @@ export default function ArticleLink({ locale, article, isAmp }) {
   let headline = localiseText(locale, article.headline);
   let searchDescription = localiseText(locale, article.searchDescription);
   let categoryTitle = localiseText(locale, article.category.title);
+  if (typeof categoryTitle !== 'string') {
+    console.log(
+      'category title is not a string:',
+      categoryTitle,
+      typeof categoryTitle
+    );
+  }
+  if (typeof headline !== 'string') {
+    console.log('headline is not a string:', headline, typeof headline);
+  }
 
   if (article.content !== null && article.content !== undefined) {
     try {
@@ -52,7 +62,7 @@ export default function ArticleLink({ locale, article, isAmp }) {
         <div className="media-content small-margin-left article-tease">
           <div className="content">
             <h6 className="is-6">
-              {article.category && (
+              {article.category && categoryTitle && (
                 <span className="category">
                   <Link key={categoryTitle} href={`/${article.category.slug}`}>
                     <a>{categoryTitle}</a>
@@ -65,7 +75,7 @@ export default function ArticleLink({ locale, article, isAmp }) {
               </span>
             </h6>
             <h2 className="is-2 article-title">
-              {article.category && (
+              {article.category && headline && (
                 <Link
                   href="/articles/[category]/[slug]"
                   as={`/articles/${article.category.slug}/${article.slug}`}

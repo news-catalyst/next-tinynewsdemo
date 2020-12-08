@@ -113,6 +113,9 @@ export default function Layout({ children, locale, meta }) {
             key="amp-analytics"
           />
         )}
+        <style jsx global>
+          {globalStyles}
+        </style>
       </Head>
       <main>
         {isAmp && (
@@ -137,9 +140,6 @@ export default function Layout({ children, locale, meta }) {
         )}
         {children}
       </main>
-      <style jsx global>
-        {globalStyles}
-      </style>
     </>
   );
 }

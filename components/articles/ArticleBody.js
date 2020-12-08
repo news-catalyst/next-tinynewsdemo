@@ -62,7 +62,7 @@ export default function ArticleBody({ article, locale, ads, isAmp }) {
 
   return (
     <section className="section" key="body" ref={ref}>
-      <div id="articleText" className="content">
+      <div id="articleText" className="content" key="bodyContent">
         {body}
       </div>
     </section>

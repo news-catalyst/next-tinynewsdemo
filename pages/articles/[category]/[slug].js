@@ -32,7 +32,7 @@ export default function ArticlePage(props) {
 
   // trying to fix build errors...
   if (!props.article) {
-    console.log('ArticlePage no article prop found:', props);
+    console.log('ArticlePage no article prop found:', router.pathname);
     return (
       <>
         <h1>404 Page Not Found</h1>
