@@ -17,9 +17,8 @@ export default function Article({
 }) {
   const isAmp = useAmp();
 
-  console.log('article:', article);
   return (
-    <Layout meta={article}>
+    <Layout meta={article} locale={currentLocale}>
       <GlobalNav sections={sections} />
       <article className="container">
         <ArticleHeader article={article} locale={currentLocale} />
