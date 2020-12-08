@@ -1,6 +1,7 @@
 import Layout from '../../components/Layout.js';
 import ArticleLink from '../../components/homepage/ArticleLink.js';
 import {
+  listAllLocales,
   listAllArticlesByAuthor,
   listAllSections,
   listAllAuthorPaths,
@@ -15,7 +16,7 @@ import { useAmp } from 'next/amp';
 export default function AuthorPage(props) {
   const isAmp = useAmp();
   return (
-    <Layout meta={siteMetadata}>
+    <Layout meta={siteMetadata} locale={props.currentLocale}>
       <GlobalNav sections={props.sections} />
       <div className="container">
         <section className="section">
@@ -23,7 +24,12 @@ export default function AuthorPage(props) {
           <div className="columns">
             <div className="column is-four-fifths">
               {props.articles.map((article) => (
-                <ArticleLink key={article.id} article={article} amp={isAmp} />
+                <ArticleLink
+                  key={article.id}
+                  article={article}
+                  locale={props.currentLocale}
+                  amp={isAmp}
+                />
               ))}
             </div>
           </div>
@@ -34,21 +40,27 @@ export default function AuthorPage(props) {
   );
 }
 
-export async function getStaticPaths() {
-  const paths = await listAllAuthorPaths();
+export async function getStaticPaths({ locales }) {
+  const paths = await listAllAuthorPaths(locales);
   return {
     paths,
     fallback: false,
   };
 }
 
-export async function getStaticProps({ params }) {
-  const articles = await listAllArticlesByAuthor(params.slug);
+export async function getStaticProps({ locale, params }) {
+  const localeMappings = await cachedContents('locales', listAllLocales);
+
+  const currentLocale = localeMappings.find(
+    (localeMap) => localeMap.code === locale
+  );
+  const articles = await listAllArticlesByAuthor(locale, params.slug);
   const sections = await cachedContents('sections', listAllSections);
   const author = await getAuthorBySlug(params.slug);
   return {
     props: {
       articles,
+      currentLocale,
       author,
       sections,
     },
