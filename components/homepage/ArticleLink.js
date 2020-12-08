@@ -20,67 +20,56 @@ export default function ArticleLink({ article, isAmp }) {
   }
 
   return (
-    <div className="stream-article">
-      <article className="media">
-        {mainImage && (
-          <figure className="media-left">
-            <p className="image article-link-img">
-              {isAmp ? (
-                <amp-img
-                  width={mainImage.width}
-                  height={mainImage.height}
-                  src={mainImage.imageUrl}
-                  alt={mainImage.imageAlt}
-                  layout="responsive"
-                />
-              ) : (
-                <Image
-                  src={mainImage.imageUrl}
-                  width={400}
-                  height={234}
-                  alt={mainImage.imageAlt}
-                  className="image"
-                />
-              )}
-            </p>
-          </figure>
-        )}
-        <div className="media-content small-margin-left article-tease">
-          <div className="content">
-            <h6 className="is-6">
-              {article.category && (
-                <span className="category">
-                  <Link
-                    key={article.category.title.values[0].value}
-                    href={`/${article.category.slug}`}
-                  >
-                    <a>{article.category.title.values[0].value}</a>
-                  </Link>
-                </span>
-              )}
-              &nbsp;
-              <span className="pub-date">
-                {renderDate(article.firstPublishedOn, false)}
-              </span>
-            </h6>
-            <h2 className="is-2 article-title">
-              {article.category && (
-                <Link
-                  href="/articles/[category]/[slug]"
-                  as={`/articles/${article.category.slug}/${article.slug}`}
-                >
-                  <a>{article.headline.values[0].value}</a>
-                </Link>
-              )}
-              {!article.category && article.headline.values[0].value}
-            </h2>
-            <p>
-              <span>By</span>&nbsp;{renderAuthors(article)}
-            </p>
-            <p>{article.searchDescription}</p>
-          </div>
+    <li className="asset">
+      <div className="asset__meta-container">
+        <span className="asset__descriptor">
+          {article.category && (
+            <Link
+              key={article.category.title.values[0].value}
+              href={`/${article.category.slug}`}
+            >
+              <a>{article.category.title.values[0].value}</a>
+            </Link>
+          )}
+        </span>
+        <h4 className="asset__title">
+          {article.category && (
+            <Link
+              href="/articles/[category]/[slug]"
+              as={`/articles/${article.category.slug}/${article.slug}`}
+            >
+              <a>{article.headline.values[0].value}</a>
+            </Link>
+          )}
+        </h4>
+        <div className="asset__byline">
+          By {renderAuthors(article)}
+          <time>
+            <span>{renderDate(article.firstPublishedOn, false)}</span>
+          </time>
         </div>
-      </article>
-    </div>
+      </div>
+      {mainImage && (
+        <figure className="asset__thumbnail">
+          {isAmp ? (
+            <amp-img
+              width={mainImage.width}
+              height={mainImage.height}
+              src={mainImage.imageUrl}
+              alt={mainImage.imageAlt}
+              layout="responsive"
+            />
+          ) : (
+            <Image
+              src={mainImage.imageUrl}
+              width={400}
+              height={234}
+              alt={mainImage.imageAlt}
+              className="image"
+            />
+          )}
+        </figure>
+      )}
+    </li>
   );
 }

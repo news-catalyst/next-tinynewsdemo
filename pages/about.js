@@ -2,8 +2,6 @@ import { useAmp } from 'next/amp';
 import { getAboutPage, listAuthors, listAllSections } from '../lib/articles.js';
 import { cachedContents } from '../lib/cached';
 import Layout from '../components/Layout';
-import GlobalNav from '../components/nav/GlobalNav';
-import GlobalFooter from '../components/nav/GlobalFooter';
 import { renderBody } from '../lib/utils.js';
 
 export default function About({ data, authors, sections }) {
@@ -11,7 +9,6 @@ export default function About({ data, authors, sections }) {
   const body = renderBody(data, isAmp);
   return (
     <Layout meta={data}>
-      <GlobalNav sections={sections} />
       <article className="container">
         <section className="section" key="body">
           <div id="articleText" className="content">
@@ -45,7 +42,6 @@ export default function About({ data, authors, sections }) {
           </div>
         </section>
       </article>
-      <GlobalFooter />
     </Layout>
   );
 }

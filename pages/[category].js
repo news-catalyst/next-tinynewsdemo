@@ -1,7 +1,5 @@
-import _ from 'lodash';
 import { useRouter } from 'next/router';
 import Layout from '../components/Layout.js';
-import ArticleLink from '../components/homepage/ArticleLink.js';
 import { cachedContents } from '../lib/cached';
 import {
   listAllArticlesBySection,
@@ -10,9 +8,8 @@ import {
   listAllTags,
 } from '../lib/articles.js';
 import { siteMetadata } from '../lib/siteMetadata.js';
-import GlobalNav from '../components/nav/GlobalNav.js';
-import GlobalFooter from '../components/nav/GlobalFooter.js';
 import { useAmp } from 'next/amp';
+import ArticleStream from '../components/homepage/ArticleStream';
 
 export default function CategoryPage({ articles, title, sections, tags }) {
   const isAmp = useAmp();
@@ -26,21 +23,13 @@ export default function CategoryPage({ articles, title, sections, tags }) {
   }
 
   return (
-    <Layout meta={siteMetadata}>
-      <GlobalNav sections={sections} />
-      <div className="container">
-        <section className="section">
-          <h1 className="title">{title}</h1>
-          <div className="columns">
-            <div className="column is-four-fifths">
-              {articles.map((article) => (
-                <ArticleLink key={article.id} article={article} amp={isAmp} />
-              ))}
-            </div>
-          </div>
-        </section>
-      </div>
-      <GlobalFooter />
+    <Layout meta={siteMetadata} sections={sections}>
+      <ArticleStream
+        articles={articles}
+        sections={sections}
+        isAmp={isAmp}
+        title={title}
+      />
     </Layout>
   );
 }
