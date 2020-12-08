@@ -18,7 +18,7 @@ export default function TagPage(props) {
   const isAmp = useAmp();
   let tagTitle = localiseText(props.currentLocale, props.tag.title);
   return (
-    <Layout meta={siteMetadata}>
+    <Layout meta={siteMetadata} locale={props.currentLocale}>
       <GlobalNav sections={props.sections} />
       <div className="container">
         <section className="section">
