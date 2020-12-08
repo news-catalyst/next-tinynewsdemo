@@ -9,7 +9,6 @@ export default function ArticleLink({ locale, article, isAmp }) {
 
   let headline = localiseText(locale, article.headline);
   let searchDescription = localiseText(locale, article.searchDescription);
-  console.log(locale, 'article.category.title:', article.category.title);
   let categoryTitle = localiseText(locale, article.category.title);
 
   if (article.content !== null && article.content !== undefined) {

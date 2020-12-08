@@ -3,7 +3,6 @@ import { localiseText } from '../../lib/utils.js';
 
 export default function Tags({ article, locale }) {
   let tagLinks;
-  console.log('locale:', locale, 'article.tags', article.tags);
   if (article.tags) {
     tagLinks = article.tags.map((tag, index) => (
       <Link href={`/tags/${tag.slug}`} key={`${tag.slug}-${index}`}>
