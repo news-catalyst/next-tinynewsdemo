@@ -35,7 +35,7 @@ export default function BigFeaturedStory(props) {
                 <div id="featuredArticle">
                   {props.featuredArticle && (
                     <FeaturedArticleLink
-                      key={props.articles['featured'].id}
+                      key={props.featuredArticle.id}
                       locale={props.locale}
                       article={props.featuredArticle}
                       amp={props.isAmp}
