@@ -6,6 +6,7 @@ import {
   listAllSections,
 } from '../lib/articles.js';
 import { cachedContents } from '../lib/cached';
+import { localiseText } from '../lib/utils';
 import Layout from '../components/Layout';
 import GlobalNav from '../components/nav/GlobalNav';
 import GlobalFooter from '../components/nav/GlobalFooter';
@@ -14,6 +15,7 @@ import { renderBody } from '../lib/utils.js';
 export default function About({ data, authors, currentLocale, sections }) {
   const isAmp = useAmp();
   const body = renderBody(data, isAmp);
+  console.log(authors[0].title.values);
   return (
     <Layout meta={data} locale={currentLocale}>
       <GlobalNav sections={sections} />
@@ -29,21 +31,10 @@ export default function About({ data, authors, currentLocale, sections }) {
             {authors.map((author) => (
               <div className="author mb-4">
                 <h4 className="subtitle is-4">
-                  {author.name},{' '}
-                  {author.title &&
-                  author.title.values &&
-                  author.title.values[0] &&
-                  author.title.values[0].value
-                    ? author.title.values[0].value
-                    : ''}
+                  {author.name}, {localiseText(currentLocale, author.title)}
                 </h4>
                 <p className="content is-medium">
-                  {author.bio &&
-                  author.bio.values &&
-                  author.bio.values[0] &&
-                  author.bio.values[0].value
-                    ? author.bio.values[0].value
-                    : ''}
+                  {localiseText(currentLocale, author.bio)}
                 </p>
               </div>
             ))}
