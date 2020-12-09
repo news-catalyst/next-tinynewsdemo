@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import AdminLayout from '../../../components/AdminLayout';
 import AdminNav from '../../../components/nav/AdminNav';
 import Notification from '../../../components/tinycms/Notification';
+import { listAllLocales } from '../../../lib/articles.js';
+import { cachedContents } from '../../../lib/cached';
 import { createAuthor } from '../../../lib/authors';
 
-export default function AddAuthor({ apiUrl, apiToken }) {
+export default function AddAuthor({ apiUrl, apiToken, currentLocale }) {
   const [notificationMessage, setNotificationMessage] = useState('');
   const [notificationType, setNotificationType] = useState('');
   const [showNotification, setShowNotification] = useState(false);
@@ -27,7 +29,8 @@ export default function AddAuthor({ apiUrl, apiToken }) {
       title,
       twitter,
       bio,
-      staff
+      staff,
+      currentLocale
     );
 
     if (response.authors.createAuthor.error !== null) {
@@ -155,13 +158,23 @@ export default function AddAuthor({ apiUrl, apiToken }) {
     </AdminLayout>
   );
 }
-export async function getServerSideProps() {
+export async function getServerSideProps(context) {
+  console.log('locales:', context.locales);
+  console.log('current locale:', context.locale);
+
+  const localeMappings = await cachedContents('locales', listAllLocales);
+
+  const currentLocale = localeMappings.find(
+    (localeMap) => localeMap.code === context.locale
+  );
+
   const apiUrl = process.env.CONTENT_DELIVERY_API_URL;
   const apiToken = process.env.CONTENT_DELIVERY_API_ACCESS_TOKEN;
   return {
     props: {
       apiUrl: apiUrl,
       apiToken: apiToken,
+      currentLocale: currentLocale,
     },
   };
 }
