@@ -14,6 +14,7 @@ export default function AddAuthor({ apiUrl, apiToken, currentLocale }) {
   const [name, setName] = useState('');
   const [title, setTitle] = useState('');
   const [twitter, setTwitter] = useState('');
+  const [slug, setSlug] = useState('');
   const [staff, setStaff] = useState('no');
   const [bio, setBio] = useState('');
 
@@ -26,6 +27,7 @@ export default function AddAuthor({ apiUrl, apiToken, currentLocale }) {
       apiUrl,
       apiToken,
       name,
+      slug,
       title,
       twitter,
       bio,
@@ -71,6 +73,21 @@ export default function AddAuthor({ apiUrl, apiToken, currentLocale }) {
                 value={name}
                 name="name"
                 onChange={(ev) => setName(ev.target.value)}
+              />
+            </div>
+          </div>
+
+          <div className="field">
+            <label className="label" htmlFor="slug">
+              Slug
+            </label>
+            <div className="control">
+              <input
+                className="input"
+                type="text"
+                value={slug}
+                name="slug"
+                onChange={(ev) => setSlug(ev.target.value)}
               />
             </div>
           </div>

@@ -21,6 +21,7 @@ export default function EditAuthor({
   const [name, setName] = useState('');
   const [title, setTitle] = useState('');
   const [twitter, setTwitter] = useState('');
+  const [slug, setSlug] = useState('');
   const [staff, setStaff] = useState(false);
   const [bio, setBio] = useState('');
   const [authorId, setAuthorId] = useState(null);
@@ -32,6 +33,9 @@ export default function EditAuthor({
       if (author.title && author.title.values) {
         let title = localiseText(currentLocale, author.title);
         setTitle(title);
+      }
+      if (author.slug) {
+        setSlug(author.slug);
       }
       if (author.twitter) {
         setTwitter(author.twitter);
@@ -74,6 +78,7 @@ export default function EditAuthor({
       apiToken,
       authorId,
       name,
+      slug,
       title,
       twitter,
       bio,
@@ -121,6 +126,21 @@ export default function EditAuthor({
                 value={name}
                 name="name"
                 onChange={(ev) => setName(ev.target.value)}
+              />
+            </div>
+          </div>
+
+          <div className="field">
+            <label className="label" htmlFor="slug">
+              Slug
+            </label>
+            <div className="control">
+              <input
+                className="input"
+                type="text"
+                value={slug}
+                name="slug"
+                onChange={(ev) => setSlug(ev.target.value)}
               />
             </div>
           </div>
