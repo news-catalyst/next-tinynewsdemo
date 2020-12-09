@@ -24,10 +24,14 @@ export default function EditCategory({
   const [categoryId, setCategoryId] = useState('');
 
   const [title, setTitle] = useState('');
+  const [i18nTitleValues, setI18nTitleValues] = useState([]);
+
   const [slug, setSlug] = useState('');
 
   useEffect(() => {
     if (category) {
+      setI18nTitleValues(category.title.values);
+
       let localisedTitle = localiseText(currentLocale, category.title);
       setTitle(localisedTitle);
       setSlug(category.slug);
@@ -61,12 +65,23 @@ export default function EditCategory({
   async function handleSubmit(ev) {
     ev.preventDefault();
 
+    let foundIt = false;
+    i18nTitleValues.map((localValue) => {
+      if (localValue.locale === currentLocale.id) {
+        foundIt = true;
+        localValue.value = title;
+      }
+    });
+    if (!foundIt) {
+      i18nTitleValues.push({ value: title, locale: currentLocale.id });
+      setI18nTitleValues(i18nTitleValues);
+    }
+
     const response = await updateCategory(
       apiUrl,
       apiToken,
-      currentLocale,
       categoryId,
-      title,
+      i18nTitleValues,
       slug
     );
 
