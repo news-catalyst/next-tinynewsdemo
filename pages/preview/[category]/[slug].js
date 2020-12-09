@@ -1,4 +1,6 @@
+import DefaultErrorPage from 'next/error';
 import {
+  listAllLocales,
   getArticleBySlug,
   listAllArticleSlugs,
   listAllSections,
@@ -9,19 +11,34 @@ import { cachedContents } from '../../../lib/cached';
 import Article from '../../../components/Article.js';
 
 export default function PreviewArticle(props) {
+  if (!props.article) {
+    return (
+      <div>
+        <DefaultErrorPage statusCode={404} />
+      </div>
+    );
+  }
+
   return <Article {...props} />;
 }
 
-export async function getStaticPaths() {
-  const paths = await listAllArticleSlugs();
+export async function getStaticPaths({ locales }) {
+  const paths = await listAllArticleSlugs(locales);
   return {
     paths,
     fallback: false,
   };
 }
 
-export async function getStaticProps({ params }) {
+export async function getStaticProps({ locale, params }) {
+  const localeMappings = await cachedContents('locales', listAllLocales);
+
+  const currentLocale = localeMappings.find(
+    (localeMap) => localeMap.code === locale
+  );
+
   const article = await getArticleBySlug(
+    currentLocale,
     params.slug,
     process.env.PREVIEW_API_URL
   );
@@ -31,10 +48,11 @@ export async function getStaticProps({ params }) {
   const ads = allAds.filter((ad) => ad.adTypeId === 164);
   return {
     props: {
+      ads,
       article,
+      currentLocale,
       sections,
       tags,
-      ads,
     },
   };
 }

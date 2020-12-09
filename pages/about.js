@@ -1,16 +1,21 @@
 import { useAmp } from 'next/amp';
-import { getAboutPage, listAuthors, listAllSections } from '../lib/articles.js';
+import {
+  listAllLocales,
+  getAboutPage,
+  listAuthors,
+  listAllSections,
+} from '../lib/articles.js';
 import { cachedContents } from '../lib/cached';
 import Layout from '../components/Layout';
 import GlobalNav from '../components/nav/GlobalNav';
 import GlobalFooter from '../components/nav/GlobalFooter';
 import { renderBody } from '../lib/utils.js';
 
-export default function About({ data, authors, sections }) {
+export default function About({ data, authors, currentLocale, sections }) {
   const isAmp = useAmp();
   const body = renderBody(data, isAmp);
   return (
-    <Layout meta={data}>
+    <Layout meta={data} locale={currentLocale}>
       <GlobalNav sections={sections} />
       <article className="container">
         <section className="section" key="body">
@@ -50,7 +55,13 @@ export default function About({ data, authors, sections }) {
   );
 }
 
-export async function getStaticProps() {
+export async function getStaticProps({ locale }) {
+  const localeMappings = await cachedContents('locales', listAllLocales);
+
+  const currentLocale = localeMappings.find(
+    (localeMap) => localeMap.code === locale
+  );
+
   //    get about page contents
   const data = await getAboutPage();
   const authors = await listAuthors();
@@ -59,6 +70,7 @@ export async function getStaticProps() {
     props: {
       data,
       authors,
+      currentLocale,
       sections,
     },
   };

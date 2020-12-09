@@ -7,9 +7,11 @@ export default function BigFeaturedStory(props) {
   const [isModalActive, setModal] = useState(false);
 
   useEffect(() => {
-    //   console.log("setting featured article to", props.articles['featured'])
-    //   props.setFeaturedArticle(props.articles['featured']);
-    console.log('featuredArticle is now', props.featuredArticle);
+    console.log(
+      "BigFeaturedStory useEffect props.articles['featured']:",
+      props.articles['featured']
+    );
+    // props.setFeaturedArticle(props.articles['featured']);
   }, [props.articles, props.featuredArticle]);
 
   return (
@@ -37,7 +39,8 @@ export default function BigFeaturedStory(props) {
                 <div id="featuredArticle">
                   {props.featuredArticle && (
                     <FeaturedArticleLink
-                      key={props.articles['featured'].id}
+                      key={props.featuredArticle.id}
+                      locale={props.locale}
                       article={props.featuredArticle}
                       amp={props.isAmp}
                     />
@@ -48,6 +51,7 @@ export default function BigFeaturedStory(props) {
             {!props.editable && props.articles['featured'] && (
               <FeaturedArticleLink
                 key={props.articles['featured'].id}
+                locale={props.locale}
                 article={props.articles['featured']}
                 amp={props.isAmp}
               />
