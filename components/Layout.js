@@ -3,34 +3,37 @@ import { siteMetadata } from '../lib/siteMetadata.js';
 import globalStyles from '../styles/global.js';
 import { useAmp } from 'next/amp';
 import AmpAnalytics from './amp/AmpAnalytics.js';
+import { localiseText } from '../lib/utils.js';
 
-export default function Layout({ children, meta }) {
+export default function Layout({ children, locale, meta }) {
+  if (meta === null || meta === undefined) {
+    console.log('Layout meta is missing');
+    meta = {};
+  }
+  if (locale === null || locale === undefined) {
+    console.log('Layout locale is missing');
+    meta = {};
+  }
   const metaValues = {
     canonical: meta.canonical || siteMetadata.siteUrl,
-    searchTitle:
-      meta.searchTitle && meta.searchTitle.values
-        ? meta.searchTitle.values[0].value
-        : siteMetadata.searchTitle,
-    searchDescription:
-      meta.searchDescription && meta.searchDescription.values
-        ? meta.searchDescription.values[0].value
-        : siteMetadata.searchDescription,
-    facebookTitle:
-      meta.facebookTitle && meta.facebookTitle.values
-        ? meta.facebookTitle.values[0].value
-        : siteMetadata.facebookTitle,
-    facebookDescription:
-      meta.facebookDescription && meta.facebookDescription.values
-        ? meta.facebookDescription.values[0].value
-        : siteMetadata.facebookDescription,
-    twitterTitle:
-      meta.twitterTitle && meta.twitterTitle.values
-        ? meta.twitterTitle.values[0].value
-        : siteMetadata.twitterTitle,
-    twitterDescription:
-      meta.twitterDescription && meta.twitterDescription.values
-        ? meta.twitterDescription.values[0].value
-        : siteMetadata.twitterDescription,
+    searchTitle: meta.searchTitle
+      ? localiseText(locale, meta.searchTitle)
+      : siteMetadata.searchTitle,
+    searchDescription: meta.searchDescription
+      ? localiseText(locale, meta.searchDescription)
+      : siteMetadata.searchDescription,
+    facebookTitle: meta.facebookTitle
+      ? localiseText(locale, meta.facebookTitle)
+      : siteMetadata.facebookTitle,
+    facebookDescription: meta.facebookDescription
+      ? localiseText(locale, meta.facebookDescription)
+      : siteMetadata.facebookDescription,
+    twitterTitle: meta.twitterTitle
+      ? localiseText(locale, meta.twitterTitle)
+      : siteMetadata.twitterTitle,
+    twitterDescription: meta.twitterDescription
+      ? localiseText(locale, meta.twitterDescription)
+      : siteMetadata.twitterDescription,
     firstPublishedOn: meta.firstPublishedOn || siteMetadata.firstPublishedOn,
     lastPublishedOn: meta.lastPublishedOn || siteMetadata.lastPublishedOn,
     tags: meta.tags || siteMetadata.tags,
@@ -51,17 +54,10 @@ export default function Layout({ children, meta }) {
   const trackingId = process.env.GA_TRACKING_ID;
 
   let title;
-  if (
-    meta &&
-    meta.searchTitle &&
-    meta.searchTitle.values &&
-    meta.searchTitle.values[0]
-  ) {
-    title = meta.searchTitle.values[0].value;
-  } else if (meta && meta.searchTitle) {
-    title = meta.searchTitle;
+  if (meta && meta.searchTitle) {
+    title = localiseText(locale, meta.searchTitle);
   } else if (metaValues.searchTitle) {
-    title = metaValues.searchTitle.values[0].value;
+    title = localiseText(locale, metaValues.searchTitle);
   }
 
   return (
