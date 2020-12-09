@@ -7,7 +7,11 @@ export default function BigFeaturedStory(props) {
   const [isModalActive, setModal] = useState(false);
 
   useEffect(() => {
-    props.setFeaturedArticle(props.articles['featured']);
+    console.log(
+      "BigFeaturedStory useEffect props.articles['featured']:",
+      props.articles['featured']
+    );
+    // props.setFeaturedArticle(props.articles['featured']);
   }, [props.articles, props.featuredArticle]);
 
   return (

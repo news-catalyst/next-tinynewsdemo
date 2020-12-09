@@ -1,10 +1,18 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { searchArticles } from '../../lib/articles.js';
 
 export default function ModalArticleSearch(props) {
   const [isLoading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
+
+  useEffect(() => {
+    console.log(
+      'ModalArticleSearch useEffect props.featuredArticle:',
+      props.featuredArticle
+    );
+    // props.setFeaturedArticle(props.articles['featured']);
+  }, [props.featuredArticle]);
 
   function selectArticle(article) {
     console.log(
