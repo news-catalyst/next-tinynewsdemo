@@ -9,7 +9,12 @@ export default function FeaturedArticleLink({ locale, article, isAmp }) {
 
   let headline = localiseText(locale, article.headline);
   let searchDescription = localiseText(locale, article.searchDescription);
-  let categoryTitle = localiseText(locale, article.category.title);
+
+  let categoryTitle;
+
+  if (article.category && article.category.title) {
+    categoryTitle = localiseText(locale, article.category.title);
+  }
 
   if (article && article.content) {
     mainImageNode = article.content.find((node) => node.type === 'mainImage');
