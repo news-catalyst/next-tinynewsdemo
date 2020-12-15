@@ -210,8 +210,8 @@ export default function EditAuthor({ apiUrl, apiToken, author }) {
 }
 
 export async function getServerSideProps(context) {
-  const apiUrl = process.env.ADMIN_CONTENT_DELIVERY_API_URL;
-  const apiToken = process.env.ADMIN_CONTENT_DELIVERY_API_ACCESS_TOKEN;
+  const apiUrl = process.env.CONTENT_DELIVERY_API_URL;
+  const apiToken = process.env.CONTENT_DELIVERY_API_ACCESS_TOKEN;
   let author = await getAuthor(context.params.id);
   return {
     props: {

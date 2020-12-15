@@ -60,8 +60,8 @@ export default function Metadata({ apiUrl, apiToken, siteMetadata }) {
 }
 
 export async function getServerSideProps() {
-  const apiUrl = process.env.ADMIN_CONTENT_DELIVERY_API_URL;
-  const apiToken = process.env.ADMIN_CONTENT_DELIVERY_API_ACCESS_TOKEN;
+  const apiUrl = process.env.CONTENT_DELIVERY_API_URL;
+  const apiToken = process.env.CONTENT_DELIVERY_API_ACCESS_TOKEN;
 
   let siteMetadata = await getSiteMetadata(apiUrl, apiToken);
   if (siteMetadata === undefined) {
