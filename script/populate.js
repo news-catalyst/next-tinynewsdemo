@@ -1,5 +1,7 @@
 #! /usr/bin/env node
 
+require('dotenv').config({ path: '.env.local' })
+
 const fs = require('fs');
 const path = require('path');
 const fetch = require('node-fetch');
