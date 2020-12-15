@@ -40,7 +40,7 @@ export async function getStaticProps({ locale, params }) {
   const article = await getArticleBySlug(
     currentLocale,
     params.slug,
-    process.env.PREVIEW_API_URL
+    process.env.CONTENT_DELIVERY_API_URL
   );
   const sections = await cachedContents('sections', listAllSections);
   const tags = await cachedContents('tags', listAllTags);
