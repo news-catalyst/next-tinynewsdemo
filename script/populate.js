@@ -108,7 +108,7 @@ function listTags() {
     }
   `;
   const url = CONTENT_DELIVERY_API_URL;
-  console.log(url, process.env.CONTENT_DELIVERY_API_URL);
+  console.log(url, CONTENT_DELIVERY_API_ACCESS_TOKEN);
   let opts = {
     method: 'POST',
     headers: {
