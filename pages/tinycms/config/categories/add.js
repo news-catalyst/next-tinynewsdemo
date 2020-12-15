@@ -4,8 +4,11 @@ import AdminLayout from '../../../../components/AdminLayout';
 import AdminNav from '../../../../components/nav/AdminNav';
 import Notification from '../../../../components/tinycms/Notification';
 import { createCategory } from '../../../../lib/category';
+import { localiseText } from '../../../../lib/utils';
+import { listAllLocales } from '../../../../lib/articles.js';
+import { cachedContents } from '../../../../lib/cached';
 
-export default function AddCategory({ apiUrl, apiToken, localeID }) {
+export default function AddCategory({ apiUrl, apiToken, currentLocale }) {
   const [notificationMessage, setNotificationMessage] = useState([]);
   const [notificationType, setNotificationType] = useState('');
   const [showNotification, setShowNotification] = useState(false);
@@ -58,7 +61,7 @@ export default function AddCategory({ apiUrl, apiToken, localeID }) {
     const response = await createCategory(
       apiUrl,
       apiToken,
-      localeID,
+      currentLocale,
       title,
       slug
     );
@@ -69,7 +72,6 @@ export default function AddCategory({ apiUrl, apiToken, localeID }) {
       setNotificationType('error');
       setShowNotification(true);
     } else {
-      // console.log("success creating category:", response.categories);
       // display success message
       setNotificationMessage([
         'Successfully saved and published the category!',
@@ -144,7 +146,13 @@ export default function AddCategory({ apiUrl, apiToken, localeID }) {
   );
 }
 
-export async function getServerSideProps() {
+export async function getServerSideProps(context) {
+  const localeMappings = await cachedContents('locales', listAllLocales);
+
+  const currentLocale = localeMappings.find(
+    (localeMap) => localeMap.code === context.locale
+  );
+
   const apiUrl = process.env.CONTENT_DELIVERY_API_URL;
   const apiToken = process.env.CONTENT_DELIVERY_API_ACCESS_TOKEN;
   const localeID = process.env.LOCALE_ID;
@@ -152,7 +160,7 @@ export async function getServerSideProps() {
     props: {
       apiUrl: apiUrl,
       apiToken: apiToken,
-      localeID: localeID,
+      currentLocale: currentLocale,
     },
   };
 }

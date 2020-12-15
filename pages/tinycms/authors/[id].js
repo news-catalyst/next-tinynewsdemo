@@ -1,11 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import AdminLayout from '../../../components/AdminLayout';
-import { getAuthor, updateAuthor } from '../../../lib/authors';
 import AdminNav from '../../../components/nav/AdminNav';
 import Notification from '../../../components/tinycms/Notification';
+import { listAllLocales } from '../../../lib/articles.js';
+import { getAuthor, updateAuthor } from '../../../lib/authors';
+import { localiseText } from '../../../lib/utils.js';
+import { cachedContents } from '../../../lib/cached';
 
-export default function EditAuthor({ apiUrl, apiToken, author }) {
+export default function EditAuthor({
+  apiUrl,
+  apiToken,
+  author,
+  currentLocale,
+}) {
   const [notificationMessage, setNotificationMessage] = useState('');
   const [notificationType, setNotificationType] = useState('');
   const [showNotification, setShowNotification] = useState(false);
@@ -13,6 +21,7 @@ export default function EditAuthor({ apiUrl, apiToken, author }) {
   const [name, setName] = useState('');
   const [title, setTitle] = useState('');
   const [twitter, setTwitter] = useState('');
+  const [slug, setSlug] = useState('');
   const [staff, setStaff] = useState(false);
   const [bio, setBio] = useState('');
   const [authorId, setAuthorId] = useState(null);
@@ -21,14 +30,19 @@ export default function EditAuthor({ apiUrl, apiToken, author }) {
   useEffect(() => {
     if (author) {
       setName(author.name);
-      if (author.title && author.title.values && author.title.values[0]) {
-        setTitle(author.title.values[0].value);
+      if (author.title && author.title.values) {
+        let title = localiseText(currentLocale, author.title);
+        setTitle(title);
+      }
+      if (author.slug) {
+        setSlug(author.slug);
       }
       if (author.twitter) {
         setTwitter(author.twitter);
       }
-      if (author.bio && author.bio.values && author.bio.values[0]) {
-        setBio(author.bio.values[0].value);
+      if (author.bio && author.bio.values) {
+        let bio = localiseText(currentLocale, author.bio);
+        setBio(bio);
       }
       setAuthorId(author.id);
       if (author.staff) {
@@ -64,10 +78,12 @@ export default function EditAuthor({ apiUrl, apiToken, author }) {
       apiToken,
       authorId,
       name,
+      slug,
       title,
       twitter,
       bio,
-      staff
+      staff,
+      currentLocale
     );
 
     if (response.authors.updateAuthor.error !== null) {
@@ -110,6 +126,21 @@ export default function EditAuthor({ apiUrl, apiToken, author }) {
                 value={name}
                 name="name"
                 onChange={(ev) => setName(ev.target.value)}
+              />
+            </div>
+          </div>
+
+          <div className="field">
+            <label className="label" htmlFor="slug">
+              Slug
+            </label>
+            <div className="control">
+              <input
+                className="input"
+                type="text"
+                value={slug}
+                name="slug"
+                onChange={(ev) => setSlug(ev.target.value)}
               />
             </div>
           </div>
@@ -210,14 +241,22 @@ export default function EditAuthor({ apiUrl, apiToken, author }) {
 }
 
 export async function getServerSideProps(context) {
+  const localeMappings = await cachedContents('locales', listAllLocales);
+
+  const currentLocale = localeMappings.find(
+    (localeMap) => localeMap.code === context.locale
+  );
+
   const apiUrl = process.env.CONTENT_DELIVERY_API_URL;
   const apiToken = process.env.CONTENT_DELIVERY_API_ACCESS_TOKEN;
+
   let author = await getAuthor(context.params.id);
   return {
     props: {
       apiUrl: apiUrl,
       apiToken: apiToken,
       author: author,
+      currentLocale: currentLocale,
     },
   };
 }

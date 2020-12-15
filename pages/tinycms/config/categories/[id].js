@@ -8,19 +8,32 @@ import {
 } from '../../../../lib/category';
 import AdminNav from '../../../../components/nav/AdminNav';
 import Notification from '../../../../components/tinycms/Notification';
+import { localiseText } from '../../../../lib/utils';
+import { listAllLocales } from '../../../../lib/articles.js';
+import { cachedContents } from '../../../../lib/cached';
 
-export default function EditCategory({ apiUrl, apiToken, localeID, category }) {
+export default function EditCategory({
+  apiUrl,
+  apiToken,
+  currentLocale,
+  category,
+}) {
   const [notificationMessage, setNotificationMessage] = useState('');
   const [notificationType, setNotificationType] = useState('');
   const [showNotification, setShowNotification] = useState(false);
   const [categoryId, setCategoryId] = useState('');
 
   const [title, setTitle] = useState('');
+  const [i18nTitleValues, setI18nTitleValues] = useState([]);
+
   const [slug, setSlug] = useState('');
 
   useEffect(() => {
     if (category) {
-      setTitle(category.title.values[0].value);
+      setI18nTitleValues(category.title.values);
+
+      let localisedTitle = localiseText(currentLocale, category.title);
+      setTitle(localisedTitle);
       setSlug(category.slug);
       setCategoryId(category.id);
     }
@@ -33,7 +46,6 @@ export default function EditCategory({ apiUrl, apiToken, localeID, category }) {
   }
 
   async function handleDeleteCategory(cat) {
-    console.log('deleting category:', cat);
     const response = await deleteCategory(apiUrl, apiToken, cat.id);
 
     if (response.categories.deleteCategory.error !== null) {
@@ -53,12 +65,23 @@ export default function EditCategory({ apiUrl, apiToken, localeID, category }) {
   async function handleSubmit(ev) {
     ev.preventDefault();
 
+    let foundIt = false;
+    i18nTitleValues.map((localValue) => {
+      if (localValue.locale === currentLocale.id) {
+        foundIt = true;
+        localValue.value = title;
+      }
+    });
+    if (!foundIt) {
+      i18nTitleValues.push({ value: title, locale: currentLocale.id });
+      setI18nTitleValues(i18nTitleValues);
+    }
+
     const response = await updateCategory(
       apiUrl,
       apiToken,
-      localeID,
       categoryId,
-      title,
+      i18nTitleValues,
       slug
     );
 
@@ -91,7 +114,7 @@ export default function EditCategory({ apiUrl, apiToken, localeID, category }) {
         <nav className="level">
           <div className="level-left">
             <div className="level-item">
-              <h1 className="title">Edit Category</h1>
+              <h1 className="title">Edit Category: {currentLocale.code}</h1>
             </div>
           </div>
           <div className="level-right">
@@ -170,9 +193,13 @@ export default function EditCategory({ apiUrl, apiToken, localeID, category }) {
 }
 
 export async function getServerSideProps(context) {
+  const localeMappings = await cachedContents('locales', listAllLocales);
+
+  const currentLocale = localeMappings.find(
+    (localeMap) => localeMap.code === context.locale
+  );
   const apiUrl = process.env.CONTENT_DELIVERY_API_URL;
   const apiToken = process.env.CONTENT_DELIVERY_API_ACCESS_TOKEN;
-  const localeID = process.env.LOCALE_ID;
 
   let category = await getCategory(context.params.id);
 
@@ -180,7 +207,7 @@ export async function getServerSideProps(context) {
     props: {
       apiUrl: apiUrl,
       apiToken: apiToken,
-      localeID: localeID,
+      currentLocale,
       category: category,
     },
   };
