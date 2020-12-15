@@ -4,8 +4,11 @@ import { useRouter } from 'next/router';
 import { listAllSections } from '../../../../lib/articles.js';
 import AdminLayout from '../../../../components/AdminLayout.js';
 import AdminNav from '../../../../components/nav/AdminNav';
+import { localiseText } from '../../../../lib/utils';
+import { listAllLocales } from '../../../../lib/articles.js';
+import { cachedContents } from '../../../../lib/cached';
 
-export default function Categories({ categories }) {
+export default function Categories({ categories, currentLocale }) {
   const [message, setMessage] = useState(null);
 
   const router = useRouter();
@@ -21,13 +24,14 @@ export default function Categories({ categories }) {
   }, []);
 
   const listItems = categories.map((category) => {
+    let title = localiseText(currentLocale, category.title);
     return (
       <li key={category.id}>
         <Link
           key={`${category.id}-link`}
           href={`/tinycms/config/categories/${category.id}`}
         >
-          <a>{category.title.values[0].value}</a>
+          <a>{title}</a>
         </Link>
       </li>
     );
@@ -52,11 +56,18 @@ export default function Categories({ categories }) {
   );
 }
 
-export async function getServerSideProps() {
+export async function getServerSideProps(context) {
+  const localeMappings = await cachedContents('locales', listAllLocales);
+
+  const currentLocale = localeMappings.find(
+    (localeMap) => localeMap.code === context.locale
+  );
+
   let categories = await listAllSections();
   return {
     props: {
       categories: categories,
+      currentLocale: currentLocale,
     },
   };
 }
