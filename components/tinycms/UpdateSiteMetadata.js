@@ -26,6 +26,11 @@ export default function UpdateMetadata(props) {
       if (typeof props.metadata.data === 'string') {
         parsed = JSON.parse(props.metadata.data);
       }
+      Object.keys(parsed).map((key) => {
+        if (typeof parsed[key] !== 'string') {
+          parsed[key] = JSON.stringify(parsed[key]);
+        }
+      });
       setParsedData(parsed);
       let formattedJSON = JSON.stringify(parsed, null, 2);
       setData(formattedJSON);
