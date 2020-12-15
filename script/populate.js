@@ -1,5 +1,7 @@
 #! /usr/bin/env node
 
+require('dotenv').config({ path: '.env.local' })
+
 const fs = require('fs');
 const path = require('path');
 const fetch = require('node-fetch');
@@ -106,7 +108,7 @@ function listTags() {
     }
   `;
   const url = CONTENT_DELIVERY_API_URL;
-  console.log(url, process.env.CONTENT_DELIVERY_API_URL);
+  console.log(url, CONTENT_DELIVERY_API_ACCESS_TOKEN);
   let opts = {
     method: 'POST',
     headers: {
