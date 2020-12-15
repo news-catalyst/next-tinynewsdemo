@@ -14,6 +14,7 @@ import { siteMetadata } from '../lib/siteMetadata.js';
 import GlobalNav from '../components/nav/GlobalNav';
 import GlobalFooter from '../components/nav/GlobalFooter';
 import ArticleLink from '../components/homepage/ArticleLink';
+import Placeholder from '../components/homepage/Placeholder';
 
 const BigFeaturedStory = dynamic(() =>
   import(`../components/homepage/BigFeaturedStory`)
@@ -71,7 +72,8 @@ export default function Home({
       <Layout meta={siteMetadata} locale={currentLocale}>
         <GlobalNav metadata={siteMetadata} sections={sections} />
         <div className="container">
-          {hpData.layoutComponent === 'BigFeaturedStory' && (
+          {!hpData && <Placeholder />}
+          {hpData && hpData.layoutComponent === 'BigFeaturedStory' && (
             <BigFeaturedStory
               locale={currentLocale}
               articles={hpArticles}
@@ -81,7 +83,7 @@ export default function Home({
               isAmp={isAmp}
             />
           )}
-          {hpData.layoutComponent === 'LargePackageStoryLead' && (
+          {hpData && hpData.layoutComponent === 'LargePackageStoryLead' && (
             <LargePackageStoryLead
               locale={currentLocale}
               articles={hpArticles}

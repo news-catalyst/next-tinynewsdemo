@@ -198,8 +198,8 @@ export async function getServerSideProps(context) {
   const currentLocale = localeMappings.find(
     (localeMap) => localeMap.code === context.locale
   );
-  const apiUrl = process.env.ADMIN_CONTENT_DELIVERY_API_URL;
-  const apiToken = process.env.ADMIN_CONTENT_DELIVERY_API_ACCESS_TOKEN;
+  const apiUrl = process.env.CONTENT_DELIVERY_API_URL;
+  const apiToken = process.env.CONTENT_DELIVERY_API_ACCESS_TOKEN;
 
   let category = await getCategory(context.params.id);
 
