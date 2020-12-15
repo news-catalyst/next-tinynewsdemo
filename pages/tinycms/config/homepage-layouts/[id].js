@@ -140,8 +140,9 @@ export default function EditHomepageLayout({
 }
 
 export async function getServerSideProps(context) {
-  const apiUrl = process.env.ADMIN_CONTENT_DELIVERY_API_URL;
-  const apiToken = process.env.ADMIN_CONTENT_DELIVERY_API_ACCESS_TOKEN;
+  const apiUrl = process.env.CONTENT_DELIVERY_API_URL;
+  const apiToken = process.env.CONTENT_DELIVERY_API_ACCESS_TOKEN;
+
   let homepageLayout = await getHomepageLayout(context.params.id);
   return {
     props: {
