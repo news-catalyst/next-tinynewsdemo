@@ -20,15 +20,20 @@ export default function EditAuthor({
 
   const [name, setName] = useState('');
   const [title, setTitle] = useState('');
+  const [i18nTitleValues, setI18nTitleValues] = useState([]);
   const [twitter, setTwitter] = useState('');
   const [slug, setSlug] = useState('');
   const [staff, setStaff] = useState(false);
   const [bio, setBio] = useState('');
+  const [i18nBioValues, setI18nBioValues] = useState([]);
   const [authorId, setAuthorId] = useState(null);
   const [staffYesNo, setStaffYesNo] = useState('no');
 
   useEffect(() => {
     if (author) {
+      setI18nTitleValues(author.title.values);
+      setI18nBioValues(author.bio.values);
+
       setName(author.name);
       if (author.title && author.title.values) {
         let title = localiseText(currentLocale, author.title);
@@ -73,17 +78,40 @@ export default function EditAuthor({
   async function handleSubmit(ev) {
     ev.preventDefault();
 
+    let foundTitle = false;
+    i18nTitleValues.map((localValue) => {
+      if (localValue.locale === currentLocale.id) {
+        foundTitle = true;
+        localValue.value = title;
+      }
+    });
+    if (!foundTitle) {
+      i18nTitleValues.push({ value: title, locale: currentLocale.id });
+      setI18nTitleValues(i18nTitleValues);
+    }
+
+    let foundBio = false;
+    i18nBioValues.map((localValue) => {
+      if (localValue.locale === currentLocale.id) {
+        foundBio = true;
+        localValue.value = bio;
+      }
+    });
+    if (!foundBio) {
+      i18nBioValues.push({ value: bio, locale: currentLocale.id });
+      setI18nBioValues(i18nBioValues);
+    }
+
     const response = await updateAuthor(
       apiUrl,
       apiToken,
       authorId,
       name,
       slug,
-      title,
+      i18nTitleValues,
       twitter,
-      bio,
-      staff,
-      currentLocale
+      i18nBioValues,
+      staff
     );
 
     if (response.authors.updateAuthor.error !== null) {
