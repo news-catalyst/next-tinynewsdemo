@@ -64,6 +64,12 @@ export async function getStaticProps({ locale }) {
 
   //    get about page contents
   const data = await getAboutPage();
+  if (!data) {
+    return {
+      notFound: true,
+    };
+  }
+
   const authors = await listAuthors();
   const sections = await cachedContents('sections', listAllSections);
   return {
