@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useRouter } from 'next/router';
 import AdminLayout from '../../../components/AdminLayout';
 import AdminNav from '../../../components/nav/AdminNav';
 import Notification from '../../../components/tinycms/Notification';
@@ -17,6 +18,8 @@ export default function AddAuthor({ apiUrl, apiToken, currentLocale }) {
   const [slug, setSlug] = useState('');
   const [staff, setStaff] = useState('no');
   const [bio, setBio] = useState('');
+
+  const router = useRouter();
 
   const handleChange = (ev) => setStaff(ev.target.value);
 
@@ -44,6 +47,8 @@ export default function AddAuthor({ apiUrl, apiToken, currentLocale }) {
       setNotificationMessage('Successfully saved and published the author!');
       setNotificationType('success');
       setShowNotification(true);
+
+      router.push('/tinycms/authors?action=create');
     }
   }
 
