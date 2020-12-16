@@ -29,6 +29,8 @@ export default function EditAuthor({
   const [authorId, setAuthorId] = useState(null);
   const [staffYesNo, setStaffYesNo] = useState('no');
 
+  const router = useRouter();
+
   useEffect(() => {
     if (author) {
       setI18nTitleValues(author.title.values);
@@ -59,7 +61,6 @@ export default function EditAuthor({
       }
     }
   }, []);
-  const router = useRouter();
 
   const handleChange = (ev) => {
     if (ev.target.value === 'yes') {
@@ -124,6 +125,7 @@ export default function EditAuthor({
       setNotificationMessage('Successfully saved and published the author!');
       setNotificationType('success');
       setShowNotification(true);
+      router.push('/tinycms/authors?action=edit');
     }
   }
 
