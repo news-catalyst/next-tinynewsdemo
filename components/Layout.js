@@ -1,9 +1,7 @@
 import Head from 'next/head';
-import { siteMetadata } from '../lib/siteMetadata.js';
 import globalStyles from '../styles/global.js';
 import { useAmp } from 'next/amp';
 import AmpAnalytics from './amp/AmpAnalytics.js';
-import { localiseText } from '../lib/utils.js';
 
 export default function Layout({ children, locale, meta }) {
   if (meta === null || meta === undefined) {
@@ -14,30 +12,20 @@ export default function Layout({ children, locale, meta }) {
     console.log('Layout locale is missing');
     meta = {};
   }
+
+  console.log('layout meta:', meta);
   const metaValues = {
-    canonical: meta.canonical || siteMetadata.siteUrl,
-    searchTitle: meta.searchTitle
-      ? localiseText(locale, meta.searchTitle)
-      : siteMetadata.searchTitle,
-    searchDescription: meta.searchDescription
-      ? localiseText(locale, meta.searchDescription)
-      : siteMetadata.searchDescription,
-    facebookTitle: meta.facebookTitle
-      ? localiseText(locale, meta.facebookTitle)
-      : siteMetadata.facebookTitle,
-    facebookDescription: meta.facebookDescription
-      ? localiseText(locale, meta.facebookDescription)
-      : siteMetadata.facebookDescription,
-    twitterTitle: meta.twitterTitle
-      ? localiseText(locale, meta.twitterTitle)
-      : siteMetadata.twitterTitle,
-    twitterDescription: meta.twitterDescription
-      ? localiseText(locale, meta.twitterDescription)
-      : siteMetadata.twitterDescription,
-    firstPublishedOn: meta.firstPublishedOn || siteMetadata.firstPublishedOn,
-    lastPublishedOn: meta.lastPublishedOn || siteMetadata.lastPublishedOn,
-    tags: meta.tags || siteMetadata.tags,
-    coverImage: meta.coverImage || siteMetadata.coverImage,
+    canonical: meta['siteUrl'],
+    searchTitle: meta['searchTitle'],
+    searchDescription: meta['searchDescription'],
+    facebookTitle: meta['facebookTitle'],
+    facebookDescription: meta['facebookDescription'],
+    twitterTitle: meta['twitterTitle'],
+    twitterDescription: meta['twitterDescription'],
+    // firstPublishedOn: meta["firstPublishedOn"],
+    // lastPublishedOn: meta["lastPublishedOn"],
+    // tags: meta["tags"],
+    coverImage: meta['coverImage'],
   };
 
   let tagList = [];
@@ -53,17 +41,10 @@ export default function Layout({ children, locale, meta }) {
 
   const trackingId = process.env.GA_TRACKING_ID;
 
-  let title;
-  if (meta && meta.searchTitle) {
-    title = localiseText(locale, meta.searchTitle);
-  } else if (metaValues.searchTitle) {
-    title = localiseText(locale, metaValues.searchTitle);
-  }
-
   return (
     <>
       <Head>
-        <title>{title}</title>
+        <title>{meta['homepageTitle']}</title>
         <link rel="icon" href="/favicon.ico" />
         <meta property="description" content={metaValues.searchDescription} />
         {tagList}

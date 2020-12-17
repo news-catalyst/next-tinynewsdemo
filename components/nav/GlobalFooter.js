@@ -1,13 +1,11 @@
-import { siteMetadata } from '../../lib/siteMetadata.js';
-
-export default function GlobalFooter() {
+export default function GlobalFooter(props) {
   return (
     <footer className="footer">
       <div className="content has-text-centered">
         <p>
-          <strong>{siteMetadata.footerTitle}</strong> by{' '}
-          <a href={siteMetadata.footerBylineLink}>
-            {siteMetadata.footerBylineName}
+          <strong>{props.metadata['footerTitle']}</strong> by{' '}
+          <a href={props.metadata['footerBylineLink']}>
+            {props.metadata['footerBylineName']}
           </a>
           .
         </p>
