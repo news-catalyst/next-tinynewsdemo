@@ -8,6 +8,7 @@ import {
   listAllTags,
 } from '../../../lib/articles.js';
 import { getArticleAds } from '../../../lib/ads.js';
+import { getSiteMetadataForLocale } from '../../../lib/site_metadata.js';
 import { cachedContents } from '../../../lib/cached';
 import Article from '../../../components/Article.js';
 
@@ -68,6 +69,9 @@ export async function getStaticProps({ locale, params }) {
   const allAds = await cachedContents('ads', getArticleAds);
   const ads = allAds.filter((ad) => ad.adTypeId === 164);
 
+  const siteMetadata = await getSiteMetadataForLocale(currentLocale);
+  console.log('siteMetadata:', siteMetadata);
+
   return {
     props: {
       article,
@@ -75,6 +79,7 @@ export async function getStaticProps({ locale, params }) {
       sections,
       tags,
       ads,
+      siteMetadata,
     },
     // Re-generate the post at most once per second
     // if a request comes in

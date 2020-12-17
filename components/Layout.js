@@ -2,8 +2,9 @@ import Head from 'next/head';
 import globalStyles from '../styles/global.js';
 import { useAmp } from 'next/amp';
 import AmpAnalytics from './amp/AmpAnalytics.js';
+import { localiseText } from '../lib/utils';
 
-export default function Layout({ children, locale, meta }) {
+export default function Layout({ children, locale, meta, article }) {
   if (meta === null || meta === undefined) {
     console.log('Layout meta is missing');
     meta = {};
@@ -22,19 +23,26 @@ export default function Layout({ children, locale, meta }) {
     facebookDescription: meta['facebookDescription'],
     twitterTitle: meta['twitterTitle'],
     twitterDescription: meta['twitterDescription'],
-    // firstPublishedOn: meta["firstPublishedOn"],
-    // lastPublishedOn: meta["lastPublishedOn"],
-    // tags: meta["tags"],
     coverImage: meta['coverImage'],
   };
+  if (article && article.firstPublishedOn) {
+    metaValues['firstPublishedOn'] = article.firstPublishedOn;
+  }
+  if (article && article.lastPublishedOn) {
+    metaValues['lastPublishedOn'] = article.lastPublishedOn;
+  }
 
   let tagList = [];
-  if (metaValues.tags) {
-    for (const [index, value] of metaValues.tags.entries()) {
+  if (article && article.tags) {
+    article.tags.map((tag) => {
       tagList.push(
-        <meta property="article:tag" content={value.title} key={value.slug} />
+        <meta
+          property="article:tag"
+          content={localiseText(locale, tag.title)}
+          key={tag.slug}
+        />
       );
-    }
+    });
   }
 
   const isAmp = useAmp();
