@@ -10,7 +10,7 @@ import {
   getHomepageArticles,
 } from '../lib/articles.js';
 import Layout from '../components/Layout';
-import { siteMetadata } from '../lib/siteMetadata.js';
+import { getSiteMetadataForLocale } from '../lib/site_metadata.js';
 import GlobalNav from '../components/nav/GlobalNav';
 import GlobalFooter from '../components/nav/GlobalFooter';
 import ArticleLink from '../components/homepage/ArticleLink';
@@ -29,6 +29,7 @@ export default function Home({
   streamArticles,
   sections,
   currentLocale,
+  siteMetadata,
 }) {
   const [featuredArticle, setFeaturedArticle] = useState(
     hpArticles['featured']
@@ -43,6 +44,8 @@ export default function Home({
     hpArticles['subfeatured-middle']
   );
   const [mostRecentArticles, setMostRecentArticles] = useState([]);
+  const [metadata, setMetadata] = useState(siteMetadata);
+
   const isAmp = useAmp();
 
   let featuredArticleIds = [];
@@ -69,8 +72,8 @@ export default function Home({
 
   return (
     <div className="homepage">
-      <Layout meta={siteMetadata} locale={currentLocale}>
-        <GlobalNav metadata={siteMetadata} sections={sections} />
+      <Layout meta={metadata} locale={currentLocale}>
+        <GlobalNav metadata={metadata} sections={sections} />
         <div className="container">
           {!hpData && <Placeholder />}
           {hpData && hpData.layoutComponent === 'BigFeaturedStory' && (
@@ -115,7 +118,7 @@ export default function Home({
             </div>
           </section>
         </div>
-        <GlobalFooter post_type="home" />
+        <GlobalFooter metadata={metadata} post_type="home" />
       </Layout>
     </div>
   );
@@ -137,6 +140,9 @@ export async function getStaticProps({ locale }) {
 
   const sections = await cachedContents('sections', listAllSections);
 
+  const siteMetadata = await getSiteMetadataForLocale(currentLocale);
+  console.log('siteMetadata:', siteMetadata);
+
   return {
     props: {
       hpData,
@@ -144,6 +150,7 @@ export async function getStaticProps({ locale }) {
       streamArticles,
       sections,
       currentLocale,
+      siteMetadata,
     },
     revalidate: 1,
   };
