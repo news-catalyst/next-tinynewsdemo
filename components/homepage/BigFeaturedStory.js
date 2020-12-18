@@ -25,6 +25,7 @@ export default function BigFeaturedStory(props) {
                   apiUrl={props.apiUrl}
                   apiToken={props.apiToken}
                   isActive={isModalActive}
+                  locale={props.locale}
                   setModal={setModal}
                   featuredArticle={props.featuredArticle}
                   setFeaturedArticle={props.setFeaturedArticle}

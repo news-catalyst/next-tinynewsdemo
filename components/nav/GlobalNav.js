@@ -1,8 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
-import { siteMetadata } from '../../lib/siteMetadata.js';
 
-export default function GlobalNav({ sections }) {
+export default function GlobalNav({ metadata, sections }) {
   let sectionLinks;
 
   if (sections) {
@@ -13,15 +12,18 @@ export default function GlobalNav({ sections }) {
     ));
   }
 
+  let title;
+  if (metadata) {
+    title = metadata['homepageTitle'];
+  }
+
   return (
     <section className="hero is-bold">
       <div className="hero-body">
         <div className="container">
           <Link key="navbar-home" href="/" as="/">
             <a>
-              <h1 className="title is-1 has-text-centered">
-                {siteMetadata.homepageTitle}
-              </h1>
+              <h1 className="title is-1 has-text-centered">{title}</h1>
             </a>
           </Link>
           <nav

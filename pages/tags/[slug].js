@@ -7,19 +7,20 @@ import {
   listAllTagPaths,
   getTagBySlug,
 } from '../../lib/articles.js';
+import { getSiteMetadataForLocale } from '../../lib/site_metadata.js';
 import { cachedContents } from '../../lib/cached';
 import { localiseText } from '../../lib/utils.js';
-import { siteMetadata } from '../../lib/siteMetadata.js';
 import GlobalNav from '../../components/nav/GlobalNav.js';
 import GlobalFooter from '../../components/nav/GlobalFooter.js';
 import { useAmp } from 'next/amp';
 
 export default function TagPage(props) {
   const isAmp = useAmp();
+  console.log('props.tag', props.tag);
   let tagTitle = localiseText(props.currentLocale, props.tag.title);
   return (
-    <Layout meta={siteMetadata} locale={props.currentLocale}>
-      <GlobalNav sections={props.sections} />
+    <Layout meta={props.siteMetadata} locale={props.currentLocale}>
+      <GlobalNav metadata={props.siteMetadata} sections={props.sections} />
       <div className="container">
         <section className="section">
           <h1 className="title">Articles tagged with {tagTitle}</h1>
@@ -37,7 +38,7 @@ export default function TagPage(props) {
           </div>
         </section>
       </div>
-      <GlobalFooter />
+      <GlobalFooter metadata={props.siteMetadata} />
     </Layout>
   );
 }
@@ -57,6 +58,9 @@ export async function getStaticProps({ locale, params }) {
     (localeMap) => localeMap.code === locale
   );
 
+  const siteMetadata = await getSiteMetadataForLocale(currentLocale);
+  console.log('siteMetadata:', siteMetadata);
+
   const articles = await listAllArticlesByTag(currentLocale, params.slug);
   const sections = await cachedContents('sections', listAllSections);
   const tag = await getTagBySlug(params.slug);
@@ -66,6 +70,7 @@ export async function getStaticProps({ locale, params }) {
       articles,
       tag,
       sections,
+      siteMetadata,
     },
   };
 }

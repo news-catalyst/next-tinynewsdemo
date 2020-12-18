@@ -1,4 +1,3 @@
-import { siteMetadata } from '../../lib/siteMetadata.js';
 import MailchimpSubscribe from '../plugins/MailchimpSubscribe.js';
 import Coral from '../plugins/Coral.js';
 
