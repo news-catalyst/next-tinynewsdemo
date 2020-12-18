@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
+import { useRouter } from 'next/router';
 import AdminLayout from '../../../components/AdminLayout';
 import AdminNav from '../../../components/nav/AdminNav';
 import Notification from '../../../components/tinycms/Notification';
+import { listAllLocales } from '../../../lib/articles.js';
+import { cachedContents } from '../../../lib/cached';
 import { createAuthor } from '../../../lib/authors';
 
-export default function AddAuthor({ apiUrl, apiToken }) {
+export default function AddAuthor({ apiUrl, apiToken, currentLocale }) {
   const [notificationMessage, setNotificationMessage] = useState('');
   const [notificationType, setNotificationType] = useState('');
   const [showNotification, setShowNotification] = useState(false);
@@ -12,8 +15,11 @@ export default function AddAuthor({ apiUrl, apiToken }) {
   const [name, setName] = useState('');
   const [title, setTitle] = useState('');
   const [twitter, setTwitter] = useState('');
+  const [slug, setSlug] = useState('');
   const [staff, setStaff] = useState('no');
   const [bio, setBio] = useState('');
+
+  const router = useRouter();
 
   const handleChange = (ev) => setStaff(ev.target.value);
 
@@ -24,10 +30,12 @@ export default function AddAuthor({ apiUrl, apiToken }) {
       apiUrl,
       apiToken,
       name,
+      slug,
       title,
       twitter,
       bio,
-      staff
+      staff,
+      currentLocale
     );
 
     if (response.authors.createAuthor.error !== null) {
@@ -39,6 +47,8 @@ export default function AddAuthor({ apiUrl, apiToken }) {
       setNotificationMessage('Successfully saved and published the author!');
       setNotificationType('success');
       setShowNotification(true);
+
+      router.push('/tinycms/authors?action=create');
     }
   }
 
@@ -68,6 +78,21 @@ export default function AddAuthor({ apiUrl, apiToken }) {
                 value={name}
                 name="name"
                 onChange={(ev) => setName(ev.target.value)}
+              />
+            </div>
+          </div>
+
+          <div className="field">
+            <label className="label" htmlFor="slug">
+              Slug
+            </label>
+            <div className="control">
+              <input
+                className="input"
+                type="text"
+                value={slug}
+                name="slug"
+                onChange={(ev) => setSlug(ev.target.value)}
               />
             </div>
           </div>
@@ -155,13 +180,23 @@ export default function AddAuthor({ apiUrl, apiToken }) {
     </AdminLayout>
   );
 }
-export async function getServerSideProps() {
+export async function getServerSideProps(context) {
+  console.log('locales:', context.locales);
+  console.log('current locale:', context.locale);
+
+  const localeMappings = await cachedContents('locales', listAllLocales);
+
+  const currentLocale = localeMappings.find(
+    (localeMap) => localeMap.code === context.locale
+  );
+
   const apiUrl = process.env.CONTENT_DELIVERY_API_URL;
   const apiToken = process.env.CONTENT_DELIVERY_API_ACCESS_TOKEN;
   return {
     props: {
       apiUrl: apiUrl,
       apiToken: apiToken,
+      currentLocale: currentLocale,
     },
   };
 }

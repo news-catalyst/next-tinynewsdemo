@@ -41,6 +41,7 @@ export default function LargePackageStoryLead(props) {
         )}
         {props.featuredArticle && (
           <FeaturedArticleLink
+            locale={props.locale}
             key={props.featuredArticle.id}
             article={props.featuredArticle}
             amp={props.isAmp}
@@ -73,6 +74,7 @@ export default function LargePackageStoryLead(props) {
             {props.subFeaturedLeftArticle && (
               <ArticleCard
                 key={props.subFeaturedLeftArticle.id}
+                locale={props.locale}
                 article={props.subFeaturedLeftArticle}
                 amp={props.isAmp}
               />
@@ -102,6 +104,7 @@ export default function LargePackageStoryLead(props) {
             {props.subFeaturedMiddleArticle && (
               <ArticleCard
                 key={props.subFeaturedMiddleArticle.id}
+                locale={props.locale}
                 article={props.subFeaturedMiddleArticle}
                 amp={props.isAmp}
               />
@@ -130,6 +133,7 @@ export default function LargePackageStoryLead(props) {
             {props.subFeaturedRightArticle && (
               <ArticleCard
                 key={props.subFeaturedRightArticle.id}
+                locale={props.locale}
                 article={props.subFeaturedRightArticle}
                 amp={props.isAmp}
               />

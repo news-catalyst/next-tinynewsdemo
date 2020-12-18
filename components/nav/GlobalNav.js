@@ -1,8 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
-import { siteMetadata } from '../../lib/siteMetadata.js';
 
-export default function GlobalNav({ sections }) {
+export default function GlobalNav({ metadata, sections }) {
   let sectionLinks;
 
   if (sections) {
@@ -13,10 +12,15 @@ export default function GlobalNav({ sections }) {
     ));
   }
 
+  let title;
+  if (metadata) {
+    title = metadata['homepageTitle'];
+  }
+
   return (
     <header className="site__header">
       <div className="section__container">
-        <h1 className="site__logo">{siteMetadata.homepageTitle}</h1>
+        <h1 className="site__logo">{title}</h1>
         <nav>{sectionLinks}</nav>
         <button className="site__cta">Donate</button>
       </div>

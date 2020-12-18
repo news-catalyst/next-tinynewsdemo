@@ -1,14 +1,21 @@
 import { useAmp } from 'next/amp';
-import { getAboutPage, listAuthors, listAllSections } from '../lib/articles.js';
+import {
+  listAllLocales,
+  getAboutPage,
+  listAuthors,
+  listAllSections,
+} from '../lib/articles.js';
 import { cachedContents } from '../lib/cached';
+import { localiseText } from '../lib/utils';
 import Layout from '../components/Layout';
 import { renderBody } from '../lib/utils.js';
 
-export default function About({ data, authors, sections }) {
+export default function About({ data, authors, currentLocale, sections }) {
   const isAmp = useAmp();
   const body = renderBody(data, isAmp);
+  console.log(authors[0].title.values);
   return (
-    <Layout meta={data}>
+    <Layout meta={data} locale={currentLocale} sections={sections}>
       <article className="container">
         <section className="section" key="body">
           <div id="articleText" className="content">
@@ -19,23 +26,12 @@ export default function About({ data, authors, sections }) {
           <div className="content">
             <h1 className="title">Authors</h1>
             {authors.map((author) => (
-              <div className="author mb-4">
+              <div className="author mb-4" key={author.name}>
                 <h4 className="subtitle is-4">
-                  {author.name},{' '}
-                  {author.title &&
-                  author.title.values &&
-                  author.title.values[0] &&
-                  author.title.values[0].value
-                    ? author.title.values[0].value
-                    : ''}
+                  {author.name}, {localiseText(currentLocale, author.title)}
                 </h4>
                 <p className="content is-medium">
-                  {author.bio &&
-                  author.bio.values &&
-                  author.bio.values[0] &&
-                  author.bio.values[0].value
-                    ? author.bio.values[0].value
-                    : ''}
+                  {localiseText(currentLocale, author.bio)}
                 </p>
               </div>
             ))}
@@ -46,15 +42,28 @@ export default function About({ data, authors, sections }) {
   );
 }
 
-export async function getStaticProps() {
+export async function getStaticProps({ locale }) {
+  const localeMappings = await cachedContents('locales', listAllLocales);
+
+  const currentLocale = localeMappings.find(
+    (localeMap) => localeMap.code === locale
+  );
+
   //    get about page contents
   const data = await getAboutPage();
+  if (!data) {
+    return {
+      notFound: true,
+    };
+  }
+
   const authors = await listAuthors();
   const sections = await cachedContents('sections', listAllSections);
   return {
     props: {
       data,
       authors,
+      currentLocale,
       sections,
     },
   };

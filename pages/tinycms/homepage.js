@@ -1,11 +1,13 @@
 import dynamic from 'next/dynamic';
 import React, { useEffect, useState } from 'react';
+import { cachedContents } from '../../lib/cached';
 import {
   getHomepageData,
   listLayoutSchemas,
   createHomepageLayout,
 } from '../../lib/homepage.js';
 import {
+  listAllLocales,
   listAllTags,
   listAllSections,
   getHomepageArticles,
@@ -26,6 +28,7 @@ export default function HomePageEditor({
   hpArticles,
   tags,
   sections,
+  currentLocale,
   apiUrl,
   apiToken,
 }) {
@@ -167,6 +170,7 @@ export default function HomePageEditor({
             articles={hpArticles}
             tags={tags}
             sections={sections}
+            locale={currentLocale}
           />
         )}
         {selectedLayout &&
@@ -187,6 +191,7 @@ export default function HomePageEditor({
               articles={hpArticles}
               tags={tags}
               sections={sections}
+              locale={currentLocale}
             />
           )}
       </div>
@@ -194,9 +199,18 @@ export default function HomePageEditor({
   );
 }
 
-export async function getServerSideProps() {
-  const apiUrl = process.env.ADMIN_CONTENT_DELIVERY_API_URL;
-  const apiToken = process.env.ADMIN_CONTENT_DELIVERY_API_ACCESS_TOKEN;
+export async function getServerSideProps(context) {
+  console.log('locales:', context.locales);
+  console.log('current locale:', context.locale);
+
+  const localeMappings = await cachedContents('locales', listAllLocales);
+
+  const currentLocale = localeMappings.find(
+    (localeMap) => localeMap.code === context.locale
+  );
+
+  const apiUrl = process.env.CONTENT_DELIVERY_API_URL;
+  const apiToken = process.env.CONTENT_DELIVERY_API_ACCESS_TOKEN;
 
   // get all available layout options
   const layoutSchemas = await listLayoutSchemas();
@@ -205,7 +219,7 @@ export async function getServerSideProps() {
   const hpData = await getHomepageData();
 
   //    look up selected homepage articles
-  const hpArticles = await getHomepageArticles(hpData);
+  const hpArticles = await getHomepageArticles(currentLocale, hpData);
 
   const tags = await listAllTags();
   const sections = await listAllSections();
@@ -217,6 +231,7 @@ export async function getServerSideProps() {
       hpArticles,
       tags,
       sections,
+      currentLocale,
       apiUrl,
       apiToken,
     },
