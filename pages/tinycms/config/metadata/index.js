@@ -23,7 +23,6 @@ export default function Metadata({
 
   useEffect(() => {
     if (siteMetadata) {
-      console.log('siteMetadata:', siteMetadata);
       setMetadata(siteMetadata);
     }
     if (action && action === 'edit') {

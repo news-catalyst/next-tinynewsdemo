@@ -16,16 +16,11 @@ import GlobalNav from '../components/nav/GlobalNav.js';
 import GlobalFooter from '../components/nav/GlobalFooter.js';
 import { useAmp } from 'next/amp';
 
-export default function CategoryPage({
-  articles,
-  currentLocale,
-  sections,
-  tags,
-  title,
-  siteMetadata,
-}) {
+export default function CategoryPage(props) {
+  console.log('CategoryPage props:', props);
+  console.log('CategoryPage metadata:', props.siteMetadata);
+
   const isAmp = useAmp();
-  siteMetadata['tags'] = tags;
 
   const router = useRouter();
   // If the page is not yet generated, this will be displayed
@@ -35,17 +30,17 @@ export default function CategoryPage({
   }
 
   return (
-    <Layout meta={siteMetadata} locale={currentLocale}>
-      <GlobalNav metadata={siteMetadata} sections={sections} />
+    <Layout meta={props.siteMetadata} locale={props.currentLocale}>
+      <GlobalNav metadata={props.siteMetadata} sections={props.sections} />
       <div className="container">
         <section className="section">
-          <h1 className="title">{title}</h1>
+          <h1 className="title">{props.title}</h1>
           <div className="columns">
             <div className="column is-four-fifths">
-              {articles.map((article) => (
+              {props.articles.map((article) => (
                 <ArticleLink
                   key={article.id}
-                  locale={currentLocale}
+                  locale={props.currentLocale}
                   article={article}
                   amp={isAmp}
                 />
@@ -54,13 +49,13 @@ export default function CategoryPage({
           </div>
         </section>
       </div>
-      <GlobalFooter metadata={siteMetadata} />
+      <GlobalFooter metadata={props.siteMetadata} />
     </Layout>
   );
 }
 
-export async function getStaticPaths() {
-  const paths = await listAllSectionTitles();
+export async function getStaticPaths({ locales }) {
+  const paths = await listAllSectionTitles(locales);
   return {
     paths,
     fallback: true,
@@ -75,7 +70,7 @@ export async function getStaticProps({ locale, params }) {
   );
 
   const siteMetadata = await getSiteMetadataForLocale(currentLocale);
-  console.log('siteMetadata:', siteMetadata);
+  console.log('CategoryPageProps siteMetadata:', siteMetadata);
 
   const articles = await listAllArticlesBySection(
     currentLocale,

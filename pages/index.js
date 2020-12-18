@@ -141,7 +141,6 @@ export async function getStaticProps({ locale }) {
   const sections = await cachedContents('sections', listAllSections);
 
   const siteMetadata = await getSiteMetadataForLocale(currentLocale);
-  console.log('siteMetadata:', siteMetadata);
 
   return {
     props: {

@@ -6,6 +6,7 @@ import {
   listAllSections,
   listAllTags,
 } from '../../../lib/articles.js';
+import { getSiteMetadataForLocale } from '../../../lib/site_metadata.js';
 import { getArticleAds } from '../../../lib/ads.js';
 import { cachedContents } from '../../../lib/cached';
 import Article from '../../../components/Article.js';
@@ -46,6 +47,8 @@ export async function getStaticProps({ locale, params }) {
   const tags = await cachedContents('tags', listAllTags);
   const allAds = await cachedContents('ads', getArticleAds);
   const ads = allAds.filter((ad) => ad.adTypeId === 164);
+  const siteMetadata = await getSiteMetadataForLocale(currentLocale);
+
   return {
     props: {
       ads,
@@ -53,6 +56,7 @@ export async function getStaticProps({ locale, params }) {
       currentLocale,
       sections,
       tags,
+      siteMetadata,
     },
   };
 }
