@@ -1,8 +1,13 @@
 import MailchimpSubscribe from '../plugins/MailchimpSubscribe';
 import ArticleLink from './ArticleLink';
 
-export default function ArticleStream({ articles, sections, isAmp, title }) {
-  console.log(sections);
+export default function ArticleStream({
+  articles,
+  sections,
+  isAmp,
+  title,
+  locale,
+}) {
   return (
     <section className="section section-layout__3">
       <div className="section__container">
@@ -29,6 +34,7 @@ export default function ArticleStream({ articles, sections, isAmp, title }) {
                   key={streamArticle.id}
                   article={streamArticle}
                   amp={isAmp}
+                  locale={locale}
                 />
               ))}
           </ul>

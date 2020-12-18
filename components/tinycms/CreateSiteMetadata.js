@@ -23,6 +23,7 @@ export default function AddMetadata(props) {
     const response = await createSiteMetadata(
       props.apiUrl,
       props.apiToken,
+      props.currentLocale,
       data
     );
 

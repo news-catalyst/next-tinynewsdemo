@@ -22,10 +22,24 @@ export default function UpdateMetadata(props) {
 
   useEffect(() => {
     if (props.metadata) {
-      let parsed = props.metadata.data;
-      if (typeof props.metadata.data === 'string') {
-        parsed = JSON.parse(props.metadata.data);
+      let localisedData = props.metadata.data.values.find(
+        (item) => item.locale === props.currentLocale.id
+      );
+
+      let parsed = {};
+      if (
+        localisedData &&
+        localisedData.value &&
+        typeof localisedData.value === 'string'
+      ) {
+        parsed = JSON.parse(localisedData.value);
       }
+
+      Object.keys(parsed).map((key) => {
+        if (typeof parsed[key] !== 'string') {
+          parsed[key] = JSON.stringify(parsed[key]);
+        }
+      });
       setParsedData(parsed);
       let formattedJSON = JSON.stringify(parsed, null, 2);
       setData(formattedJSON);
@@ -40,11 +54,28 @@ export default function UpdateMetadata(props) {
   async function handleSubmit(ev) {
     ev.preventDefault();
 
+    console.log('data:', data);
+    console.log('parsedData:', parsedData);
+
+    let parsed = parsedData;
+    if (data && Object.keys(parsedData).length === 0) {
+      console.log('Populating new locale site metadata');
+      parsed = JSON.parse(data);
+      Object.keys(parsed).map((key) => {
+        if (typeof parsed[key] !== 'string') {
+          parsed[key] = JSON.stringify(parsed[key]);
+        }
+      });
+      setParsedData(parsed);
+      console.log('parsed:', parsedData);
+    }
+    // return;
     const response = await updateSiteMetadata(
       props.apiUrl,
       props.apiToken,
-      props.metadata.id,
-      parsedData
+      props.metadata,
+      props.currentLocale,
+      parsed
     );
 
     if (response.siteMetadatas.updateSiteMetadata.error !== null) {
@@ -76,6 +107,21 @@ export default function UpdateMetadata(props) {
           <pre>{data}</pre>
         </div>
       </div>
+      {Object.keys(parsedData).length === 0 && (
+        <div className="field">
+          <label className="label" htmlFor="name">
+            Data: enter as JSON
+          </label>
+          <div className="control">
+            <textarea
+              className="textarea"
+              name="data"
+              value={data}
+              onChange={(ev) => setData(ev.target.value)}
+            />
+          </div>
+        </div>
+      )}
       {Object.keys(parsedData).map((key) => (
         <div className="field" key={key}>
           <label className="label" htmlFor={key}>

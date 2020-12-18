@@ -1,47 +1,67 @@
 import Layout from '../../components/Layout.js';
 import {
+  listAllLocales,
   listAllArticlesByTag,
   listAllSections,
   listAllTagPaths,
   getTagBySlug,
 } from '../../lib/articles.js';
+import { getSiteMetadataForLocale } from '../../lib/site_metadata.js';
 import { cachedContents } from '../../lib/cached';
-import { siteMetadata } from '../../lib/siteMetadata.js';
+import { localiseText } from '../../lib/utils.js';
 import { useAmp } from 'next/amp';
 import ArticleStream from '../../components/homepage/ArticleStream';
 
-export default function TagPage({ articles, tag, sections }) {
+export default function TagPage({
+  articles,
+  tag,
+  sections,
+  currentLocale,
+  siteMetadata,
+}) {
   const isAmp = useAmp();
-  let tagTitle = tag.title.values[0].value;
+  let tagTitle = localiseText(currentLocale, tag.title);
   return (
-    <Layout meta={siteMetadata} sections={sections}>
+    <Layout meta={siteMetadata} sections={sections} locale={currentLocale}>
       <ArticleStream
         articles={articles}
         sections={sections}
         isAmp={isAmp}
         title={tagTitle}
+        locale={currentLocale}
       />
     </Layout>
   );
 }
 
-export async function getStaticPaths() {
-  const paths = await listAllTagPaths();
+export async function getStaticPaths({ locales }) {
+  const paths = await listAllTagPaths(locales);
   return {
     paths,
     fallback: false,
   };
 }
 
-export async function getStaticProps({ params }) {
-  const articles = await listAllArticlesByTag(params.slug);
+export async function getStaticProps({ locale, params }) {
+  const localeMappings = await cachedContents('locales', listAllLocales);
+
+  const currentLocale = localeMappings.find(
+    (localeMap) => localeMap.code === locale
+  );
+
+  const siteMetadata = await getSiteMetadataForLocale(currentLocale);
+  console.log('siteMetadata:', siteMetadata);
+
+  const articles = await listAllArticlesByTag(currentLocale, params.slug);
   const sections = await cachedContents('sections', listAllSections);
   const tag = await getTagBySlug(params.slug);
   return {
     props: {
+      currentLocale,
       articles,
       tag,
       sections,
+      siteMetadata,
     },
   };
 }

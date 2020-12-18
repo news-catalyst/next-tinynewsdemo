@@ -1,5 +1,7 @@
 #! /usr/bin/env node
 
+require('dotenv').config({ path: '.env.local' })
+
 const fs = require('fs');
 const path = require('path');
 const fetch = require('node-fetch');
@@ -14,6 +16,39 @@ function writeCache(name, data) {
   fs.writeFileSync(cachedFile, JSON.stringify(data), { flag: 'w' }, (err) => {
     console.log('failed to write file:', err);
   });
+}
+
+function listLocales() {
+  const query = `
+    query ListI18nLocales {
+      i18n {
+        listI18NLocales {
+          data {
+            id
+            code
+            default
+          }
+        }
+      }
+    }
+  `;
+
+  const url = CONTENT_DELIVERY_API_URL;
+  let opts = {
+    method: 'POST',
+    headers: {
+      authorization: CONTENT_DELIVERY_API_ACCESS_TOKEN,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ query }),
+  };
+  fetch(url, opts)
+    .then((res) => res.json())
+    .then((responseParsed) => {
+      let locales = responseParsed.data.i18n.listI18NLocales.data;
+      writeCache('locales', locales);
+    })
+    .catch(console.error);
 }
 
 function listSections() {
@@ -73,7 +108,7 @@ function listTags() {
     }
   `;
   const url = CONTENT_DELIVERY_API_URL;
-  console.log(url, process.env.CONTENT_DELIVERY_API_URL);
+  console.log(url, CONTENT_DELIVERY_API_ACCESS_TOKEN);
   let opts = {
     method: 'POST',
     headers: {
@@ -107,6 +142,7 @@ function getAds() {
 }
 
 async function main() {
+  listLocales();
   listSections();
   listTags();
   getAds();

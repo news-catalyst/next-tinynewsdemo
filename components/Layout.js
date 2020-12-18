@@ -1,75 +1,59 @@
 import Head from 'next/head';
-import { siteMetadata } from '../lib/siteMetadata.js';
 import globalStyles from '../styles/global.js';
 import GlobalNav from '../components/nav/GlobalNav';
 import GlobalFooter from './nav/GlobalFooter.js';
 import { useAmp } from 'next/amp';
 import AmpAnalytics from './amp/AmpAnalytics.js';
+import { localiseText } from '../lib/utils';
 
-export default function Layout({ children, meta, sections }) {
+export default function Layout({ children, locale, meta, article, sections }) {
+  if (meta === null || meta === undefined) {
+    console.log('Layout meta is missing');
+    meta = {};
+  }
+  if (locale === null || locale === undefined) {
+    console.log('Layout locale is missing');
+    meta = {};
+  }
+
   const metaValues = {
-    canonical: meta.canonical || siteMetadata.siteUrl,
-    searchTitle:
-      meta.searchTitle && meta.searchTitle.values
-        ? meta.searchTitle.values[0].value
-        : siteMetadata.searchTitle,
-    searchDescription:
-      meta.searchDescription && meta.searchDescription.values
-        ? meta.searchDescription.values[0].value
-        : siteMetadata.searchDescription,
-    facebookTitle:
-      meta.facebookTitle && meta.facebookTitle.values
-        ? meta.facebookTitle.values[0].value
-        : siteMetadata.facebookTitle,
-    facebookDescription:
-      meta.facebookDescription && meta.facebookDescription.values
-        ? meta.facebookDescription.values[0].value
-        : siteMetadata.facebookDescription,
-    twitterTitle:
-      meta.twitterTitle && meta.twitterTitle.values
-        ? meta.twitterTitle.values[0].value
-        : siteMetadata.twitterTitle,
-    twitterDescription:
-      meta.twitterDescription && meta.twitterDescription.values
-        ? meta.twitterDescription.values[0].value
-        : siteMetadata.twitterDescription,
-    firstPublishedOn: meta.firstPublishedOn || siteMetadata.firstPublishedOn,
-    lastPublishedOn: meta.lastPublishedOn || siteMetadata.lastPublishedOn,
-    tags: meta.tags || siteMetadata.tags,
-    coverImage: meta.coverImage || siteMetadata.coverImage,
+    canonical: meta['siteUrl'],
+    searchTitle: meta['searchTitle'],
+    searchDescription: meta['searchDescription'],
+    facebookTitle: meta['facebookTitle'],
+    facebookDescription: meta['facebookDescription'],
+    twitterTitle: meta['twitterTitle'],
+    twitterDescription: meta['twitterDescription'],
+    coverImage: meta['coverImage'],
   };
+  if (article && article.firstPublishedOn) {
+    metaValues['firstPublishedOn'] = article.firstPublishedOn;
+  }
+  if (article && article.lastPublishedOn) {
+    metaValues['lastPublishedOn'] = article.lastPublishedOn;
+  }
 
   let tagList = [];
-  if (metaValues.tags) {
-    for (const [index, value] of metaValues.tags.entries()) {
+  if (article && article.tags) {
+    article.tags.map((tag) => {
       tagList.push(
-        <meta property="article:tag" content={value.title} key={value.slug} />
+        <meta
+          property="article:tag"
+          content={localiseText(locale, tag.title)}
+          key={tag.slug}
+        />
       );
-    }
+    });
   }
 
   const isAmp = useAmp();
 
   const trackingId = process.env.GA_TRACKING_ID;
 
-  let title;
-  if (
-    meta &&
-    meta.searchTitle &&
-    meta.searchTitle.values &&
-    meta.searchTitle.values[0]
-  ) {
-    title = meta.searchTitle.values[0].value;
-  } else if (meta && meta.searchTitle) {
-    title = meta.searchTitle;
-  } else if (metaValues.searchTitle) {
-    title = metaValues.searchTitle.values[0].value;
-  }
-
   return (
     <>
       <Head>
-        <title>{title}</title>
+        <title>{meta['homepageTitle']}</title>
         <link rel="icon" href="/favicon.ico" />
         <meta property="description" content={metaValues.searchDescription} />
         {tagList}
@@ -120,7 +104,7 @@ export default function Layout({ children, meta, sections }) {
           />
         )}
       </Head>
-      <GlobalNav metadata={siteMetadata} sections={sections} />
+      <GlobalNav metadata={meta} sections={sections} />
       <main>
         {isAmp && (
           <AmpAnalytics

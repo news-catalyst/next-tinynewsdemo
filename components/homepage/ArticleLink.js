@@ -1,11 +1,34 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { renderDate, renderAuthors } from '../../lib/utils.js';
+import { localiseText, renderDate, renderAuthors } from '../../lib/utils.js';
 
-export default function ArticleLink({ article, isAmp }) {
+export default function ArticleLink({ locale, article, isAmp }) {
   let mainImage = null;
   let mainImageNode;
+
+  let headline = localiseText(locale, article.headline);
+
+  console.log('locale:', locale, 'article.headline:', article.headline);
+  console.log('search description:', article.searchDescription);
+  let searchDescription = localiseText(locale, article.searchDescription);
+
+  let categoryTitle;
+
+  if (article.category && article.category.title) {
+    categoryTitle = localiseText(locale, article.category.title);
+  }
+
+  if (typeof categoryTitle !== 'string') {
+    console.log(
+      'category title is not a string:',
+      categoryTitle,
+      typeof categoryTitle
+    );
+  }
+  if (typeof headline !== 'string') {
+    console.log('headline is not a string:', headline, typeof headline);
+  }
 
   if (article.content !== null && article.content !== undefined) {
     try {

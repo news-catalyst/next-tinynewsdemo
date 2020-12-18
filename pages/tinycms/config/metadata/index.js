@@ -1,14 +1,20 @@
-import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { getSiteMetadata } from '../../../../lib/site_metadata.js';
+import { listAllLocales } from '../../../../lib/articles.js';
+import { cachedContents } from '../../../../lib/cached';
 import AdminLayout from '../../../../components/AdminLayout.js';
 import AdminNav from '../../../../components/nav/AdminNav';
 import CreateMetadata from '../../../../components/tinycms/CreateSiteMetadata.js';
 import UpdateMetadata from '../../../../components/tinycms/UpdateSiteMetadata.js';
+import { localiseText } from '../../../../lib/utils.js';
 
-export default function Metadata({ apiUrl, apiToken, siteMetadata }) {
-  console.log('metadata:', siteMetadata);
+export default function Metadata({
+  apiUrl,
+  apiToken,
+  currentLocale,
+  siteMetadata,
+}) {
   const [message, setMessage] = useState(null);
   const [metadata, setMetadata] = useState(null);
 
@@ -40,6 +46,7 @@ export default function Metadata({ apiUrl, apiToken, siteMetadata }) {
             <UpdateMetadata
               apiUrl={apiUrl}
               apiToken={apiToken}
+              currentLocale={currentLocale}
               metadata={metadata}
               setMetadata={setMetadata}
             />
@@ -49,6 +56,7 @@ export default function Metadata({ apiUrl, apiToken, siteMetadata }) {
             <CreateMetadata
               apiUrl={apiUrl}
               apiToken={apiToken}
+              currentLocale={currentLocale}
               metadata={metadata}
               setMetadata={setMetadata}
             />
@@ -59,11 +67,17 @@ export default function Metadata({ apiUrl, apiToken, siteMetadata }) {
   );
 }
 
-export async function getServerSideProps() {
-  const apiUrl = process.env.ADMIN_CONTENT_DELIVERY_API_URL;
-  const apiToken = process.env.ADMIN_CONTENT_DELIVERY_API_ACCESS_TOKEN;
+export async function getServerSideProps(context) {
+  const localeMappings = await cachedContents('locales', listAllLocales);
 
-  let siteMetadata = await getSiteMetadata(apiUrl, apiToken);
+  const currentLocale = localeMappings.find(
+    (localeMap) => localeMap.code === context.locale
+  );
+
+  const apiUrl = process.env.CONTENT_DELIVERY_API_URL;
+  const apiToken = process.env.CONTENT_DELIVERY_API_ACCESS_TOKEN;
+
+  let siteMetadata = await getSiteMetadata(apiUrl, apiToken, currentLocale);
   if (siteMetadata === undefined) {
     siteMetadata = null;
   }
@@ -71,6 +85,7 @@ export async function getServerSideProps() {
     props: {
       apiUrl: apiUrl,
       apiToken: apiToken,
+      currentLocale: currentLocale,
       siteMetadata: siteMetadata,
     },
   };

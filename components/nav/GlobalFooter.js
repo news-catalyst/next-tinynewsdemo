@@ -1,15 +1,17 @@
-import { siteMetadata } from '../../lib/siteMetadata.js';
-
-export default function GlobalFooter() {
+export default function GlobalFooter(props) {
+  let title;
+  let bylineLink;
+  let byline;
+  if (props.metadata) {
+    title = props.metadata['footerTitle'];
+    bylineLink = props.metadata['footerBylineLink'];
+    byline = props.metadata['footerBylineName'];
+  }
   return (
     <footer className="tbd">
       <div className="section__container">
         <p>
-          <strong>{siteMetadata.footerTitle}</strong> by{' '}
-          <a href={siteMetadata.footerBylineLink}>
-            {siteMetadata.footerBylineName}
-          </a>
-          .
+          <strong>{title}</strong> by <a href={bylineLink}>{byline}</a>.
         </p>
       </div>
     </footer>
