@@ -7,6 +7,7 @@ export default function FeaturedArticleLink({ locale, article, isAmp }) {
   let mainImage = null;
   let mainImageNode = null;
 
+  console.log('article:', article);
   let headline = localiseText(locale, article.headline);
   let searchDescription = localiseText(locale, article.searchDescription);
 

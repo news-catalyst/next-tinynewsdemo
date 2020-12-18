@@ -14,12 +14,13 @@ export default function Article({
   sections,
   tags,
   ads,
+  siteMetadata,
 }) {
   const isAmp = useAmp();
 
   return (
-    <Layout meta={article} locale={currentLocale}>
-      <GlobalNav sections={sections} />
+    <Layout meta={siteMetadata} locale={currentLocale} article={article}>
+      <GlobalNav metadata={siteMetadata} sections={sections} />
       <article className="container">
         <ArticleHeader article={article} locale={currentLocale} />
         <MainImage article={article} isAmp={isAmp} />
@@ -32,7 +33,7 @@ export default function Article({
         <Tags article={article} locale={currentLocale} />
         <ArticleFooter article={article} locale={currentLocale} isAmp={isAmp} />
       </article>
-      <GlobalFooter />
+      <GlobalFooter metadata={siteMetadata} />
     </Layout>
   );
 }

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { searchArticles } from '../../lib/articles.js';
+import { localiseText } from '../../lib/utils.js';
 
 export default function ModalArticleSearch(props) {
   const [isLoading, setLoading] = useState(false);
@@ -32,7 +33,8 @@ export default function ModalArticleSearch(props) {
     const results = await searchArticles(
       props.apiUrl,
       props.apiToken,
-      searchTerm
+      searchTerm,
+      props.locale
     );
     setLoading(false);
     setSearchResults(results);
@@ -64,7 +66,7 @@ export default function ModalArticleSearch(props) {
           <ul>
             {searchResults.map((result) => (
               <li key={result.id} onClick={() => selectArticle(result)}>
-                {result.headline}
+                {localiseText(props.locale, result.headline)}
               </li>
             ))}
           </ul>
@@ -79,30 +81,3 @@ export default function ModalArticleSearch(props) {
     </div>
   );
 }
-// <article className="message">
-//   <div className="message-header">
-//     <p>Feature an Article</p>
-//     <button
-//       className="delete"
-//       onClick={() => setEditing(false)}
-//     ></button>
-//   </div>
-//   <div className="message-body">
-//     {isSaving ? (
-//       <>
-//         <h2 className="subtitle">
-//           Saving and publishing new homepage data...
-//         </h2>
-//         <progress
-//           className="progress is-medium is-dark"
-//           max="100"
-//         >
-//           45%
-//         </progress>
-//       </>
-//     ) : (
-//       <>
-//       </>
-//     )}
-//   </div>
-// </article>

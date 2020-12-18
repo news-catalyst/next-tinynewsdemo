@@ -8,7 +8,6 @@ import AdminNav from '../../../../components/nav/AdminNav';
 import CreateMetadata from '../../../../components/tinycms/CreateSiteMetadata.js';
 import UpdateMetadata from '../../../../components/tinycms/UpdateSiteMetadata.js';
 import { localiseText } from '../../../../lib/utils.js';
-// import { localiseText } from '../../../lib/utils.js';
 
 export default function Metadata({
   apiUrl,
@@ -24,7 +23,6 @@ export default function Metadata({
 
   useEffect(() => {
     if (siteMetadata) {
-      console.log('siteMetadata:', siteMetadata);
       setMetadata(siteMetadata);
     }
     if (action && action === 'edit') {
