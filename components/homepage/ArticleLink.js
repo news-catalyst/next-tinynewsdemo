@@ -9,6 +9,7 @@ export default function ArticleLink({ locale, article, isAmp }) {
 
   let headline = localiseText(locale, article.headline);
 
+  console.log('locale:', locale, 'article.headline:', article.headline);
   console.log('search description:', article.searchDescription);
   let searchDescription = localiseText(locale, article.searchDescription);
 
