@@ -14,7 +14,6 @@ export default function Layout({ children, locale, meta, article }) {
     meta = {};
   }
 
-  console.log('layout meta:', meta);
   const metaValues = {
     canonical: meta['siteUrl'],
     searchTitle: meta['searchTitle'],

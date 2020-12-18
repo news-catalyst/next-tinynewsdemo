@@ -12,15 +12,18 @@ export default function GlobalNav({ metadata, sections }) {
     ));
   }
 
+  let title;
+  if (metadata) {
+    title = metadata['homepageTitle'];
+  }
+
   return (
     <section className="hero is-bold">
       <div className="hero-body">
         <div className="container">
           <Link key="navbar-home" href="/" as="/">
             <a>
-              <h1 className="title is-1 has-text-centered">
-                {metadata['homepageTitle']}
-              </h1>
+              <h1 className="title is-1 has-text-centered">{title}</h1>
             </a>
           </Link>
           <nav
