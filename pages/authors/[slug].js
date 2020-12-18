@@ -22,7 +22,6 @@ export default function AuthorPage({
   const isAmp = useAmp();
   return (
     <Layout meta={siteMetadata} sections={sections} locale={currentLocale}>
-      <h1 className="title">Articles by {props.author.name}</h1>
       <ArticleStream
         sections={sections}
         articles={articles}
