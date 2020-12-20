@@ -7,12 +7,10 @@ export default function ArticleHeader({ article, locale }) {
   let categoryTitle;
   let headline;
 
-  useEffect(() => {
-    if (article && article.category) {
-      categoryTitle = localiseText(locale, article.category.title);
-      headline = localiseText(locale, article.headline);
-    }
-  }, [article]);
+  if (article && article.category) {
+    categoryTitle = localiseText(locale, article.category.title);
+    headline = localiseText(locale, article.headline);
+  }
 
   if (!article) {
     return null;
