@@ -9,7 +9,6 @@ import { localiseText } from '../../../lib/utils.js';
 import { cachedContents } from '../../../lib/cached';
 
 export default function Tags({ tags, currentLocale }) {
-  // const [message, setMessage] = useState(null);
   const [notificationMessage, setNotificationMessage] = useState('');
   const [notificationType, setNotificationType] = useState('');
   const [showNotification, setShowNotification] = useState(false);
@@ -37,7 +36,8 @@ export default function Tags({ tags, currentLocale }) {
       <li key={tag.id}>
         <Link key={`${tag.id}-link`} href={`/tinycms/tags/${tag.id}`}>
           <a>{title}</a>
-        </Link>
+        </Link>{' '}
+        ({tag.slug})
       </li>
     );
   });
