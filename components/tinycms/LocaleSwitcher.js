@@ -1,26 +1,42 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 
-export default function LocaleSwitcher({ currentLocale, locales }) {
+export default function LocaleSwitcher({ currentLocale, locales, id }) {
+  const [selectedLocale, setSelectedLocale] = useState(currentLocale.code);
   const router = useRouter();
 
   console.log('currentLocale:', currentLocale, 'locales:', locales);
 
   function localisePath(event) {
-    router.push(router.pathname, router.pathname, {
-      locale: event.target.value,
-    });
+    setSelectedLocale(event.target.value);
+
+    if (id) {
+      console.log('switching to:', event.target.value, id);
+      router.push(
+        {
+          pathname: router.pathname,
+          query: { id: id },
+        },
+        {
+          pathname: router.pathname,
+          query: { id: id },
+        },
+        {
+          locale: event.target.value,
+        }
+      );
+    } else {
+      router.push(router.pathname, router.pathname, {
+        locale: event.target.value,
+      });
+    }
   }
 
   let localeOptions;
 
   if (locales) {
     localeOptions = locales.map((locale, index) => (
-      <option
-        key={`locale-${index}`}
-        value={locale.code}
-        selected={currentLocale.code === locale.code ? 'true' : ''}
-      >
+      <option key={`locale-${index}`} value={locale.code}>
         {locale.code}
       </option>
     ));
@@ -28,7 +44,11 @@ export default function LocaleSwitcher({ currentLocale, locales }) {
 
   return (
     <div>
-      <select onChange={localisePath} id="localeSwitcher">
+      <select
+        value={selectedLocale}
+        onChange={localisePath}
+        id="localeSwitcher"
+      >
         {localeOptions}
       </select>
     </div>
