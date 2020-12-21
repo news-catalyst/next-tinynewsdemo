@@ -2,13 +2,14 @@ import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import AdminLayout from '../../../components/AdminLayout.js';
+import AdminHeader from '../../../components/tinycms/AdminHeader';
 import AdminNav from '../../../components/nav/AdminNav';
 import Notification from '../../../components/tinycms/Notification';
 import { listAllLocales, listAllTags } from '../../../lib/articles.js';
 import { localiseText } from '../../../lib/utils.js';
 import { cachedContents } from '../../../lib/cached';
 
-export default function Tags({ tags, currentLocale }) {
+export default function Tags({ tags, currentLocale, locales }) {
   const [notificationMessage, setNotificationMessage] = useState('');
   const [notificationType, setNotificationType] = useState('');
   const [showNotification, setShowNotification] = useState(false);
@@ -44,7 +45,7 @@ export default function Tags({ tags, currentLocale }) {
 
   return (
     <AdminLayout>
-      <AdminNav homePageEditor={false} />
+      <AdminNav homePageEditor={false} showConfigOptions={true} />
       {showNotification && (
         <Notification
           message={notificationMessage}
@@ -53,7 +54,11 @@ export default function Tags({ tags, currentLocale }) {
         />
       )}
       <div id="page">
-        <h1 className="title">Tags</h1>
+        <AdminHeader
+          locales={locales}
+          currentLocale={currentLocale}
+          title="Tags"
+        />
         <Link href="/tinycms/tags/add">Add Tag</Link>
 
         <ul>{listItems}</ul>
@@ -74,6 +79,7 @@ export async function getServerSideProps(context) {
     props: {
       tags: tags,
       currentLocale: currentLocale,
+      locales: localeMappings,
     },
   };
 }
