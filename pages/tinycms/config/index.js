@@ -4,30 +4,18 @@ import { listAllLocales } from '../../../lib/articles.js';
 import { cachedContents } from '../../../lib/cached';
 import AdminLayout from '../../../components/AdminLayout.js';
 import AdminNav from '../../../components/nav/AdminNav';
-import LocaleSwitcher from '../LocaleSwitcher';
+import AdminHeader from '../../../components/tinycms/AdminHeader';
 
 export default function Config(props) {
   return (
     <AdminLayout>
       <AdminNav homePageEditor={false} showConfigOptions={true} />
       <div id="page">
-        <div className="level">
-          <div className="level-left">
-            <div className="level-item">
-              <h1 className="title">
-                Site Config & Setup ({props.currentLocale.code})
-              </h1>
-            </div>
-          </div>
-          <div className="level-right">
-            <div className="level-item">
-              <LocaleSwitcher
-                locales={props.locales}
-                currentLocale={props.currentLocale}
-              />
-            </div>
-          </div>
-        </div>
+        <AdminHeader
+          locales={props.locales}
+          currentLocale={props.currentLocale}
+          title="Site Config and Setup"
+        />
         <ul>
           <li>
             <Link href="/tinycms/config/homepage-layouts">
