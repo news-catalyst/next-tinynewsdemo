@@ -25,7 +25,7 @@ export default function AdminNav(props) {
           <a className="navbar-item" href="/tinycms/homepage">
             homepage editor
           </a>
-          <a className="navbar-item" href="/tinycms/config/homepage-layouts">
+          <a className="navbar-item" href="/tinycms/homepage-layouts">
             homepage layouts
           </a>
           <a className="navbar-item" href="/tinycms/authors">

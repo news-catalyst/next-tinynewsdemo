@@ -60,7 +60,7 @@ export default function AddAuthor({
 
   return (
     <AdminLayout>
-      <AdminNav homePageEditor={false} />
+      <AdminNav homePageEditor={false} showConfigOptions={true} />
 
       {showNotification && (
         <Notification

@@ -33,7 +33,7 @@ export default function EditHomepageLayout({
 
   async function handleCancel(ev) {
     ev.preventDefault();
-    router.push('/tinycms/config');
+    router.push('/tinycms/homepage-layouts');
   }
 
   async function handleSubmit(ev) {
