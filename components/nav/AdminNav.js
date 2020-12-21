@@ -19,7 +19,9 @@ export default function AdminNav(props) {
 
   return (
     <nav className="navbar">
-      <div className="navbar-item">tinycms</div>
+      <div className="navbar-item">
+        <a href="/tinycms">tinycms</a>
+      </div>
       <div className="navbar-menu">
         <div className="navbar-start">
           <a className="navbar-item" href="/tinycms/homepage">
