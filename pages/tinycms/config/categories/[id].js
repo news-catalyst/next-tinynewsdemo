@@ -7,6 +7,7 @@ import {
   updateCategory,
 } from '../../../../lib/category';
 import AdminNav from '../../../../components/nav/AdminNav';
+import AdminHeader from '../../../../components/tinycms/AdminHeader';
 import Notification from '../../../../components/tinycms/Notification';
 import { localiseText } from '../../../../lib/utils';
 import { listAllLocales } from '../../../../lib/articles.js';
@@ -17,6 +18,7 @@ export default function EditCategory({
   apiToken,
   currentLocale,
   category,
+  locales,
 }) {
   const [notificationMessage, setNotificationMessage] = useState('');
   const [notificationType, setNotificationType] = useState('');
@@ -38,6 +40,7 @@ export default function EditCategory({
       setCategoryId(category.id);
     }
   }, []);
+
   const router = useRouter();
 
   async function handleCancel(ev) {
@@ -111,30 +114,12 @@ export default function EditCategory({
       )}
 
       <div id="page">
-        <nav className="level">
-          <div className="level-left">
-            <div className="level-item">
-              <h1 className="title">Edit Category: {currentLocale.code}</h1>
-            </div>
-          </div>
-          <div className="level-right">
-            <div className="level-item">
-              <a
-                onClick={() => {
-                  if (
-                    window.confirm(
-                      'Are you sure you want to delete this category?'
-                    )
-                  )
-                    handleDeleteCategory(category);
-                }}
-                className="button is-danger"
-              >
-                Delete
-              </a>
-            </div>
-          </div>
-        </nav>
+        <AdminHeader
+          locales={locales}
+          currentLocale={currentLocale}
+          title="Edit Category"
+          id={category.id}
+        />
 
         <form onSubmit={handleSubmit}>
           <div className="field">
@@ -167,23 +152,44 @@ export default function EditCategory({
             </div>
           </div>
 
-          <div className="field is-grouped">
-            <div className="control">
-              <input
-                className="button is-link"
-                name="submit"
-                type="submit"
-                value="Submit"
-              />
+          <div className="level">
+            <div className="level-left">
+              <div className="level-item">
+                <div className="control">
+                  <input
+                    className="button is-link"
+                    name="submit"
+                    type="submit"
+                    value="Submit"
+                  />
+                </div>
+                <div className="control">
+                  <button
+                    className="button is-link is-light"
+                    name="cancel"
+                    onClick={handleCancel}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
             </div>
-            <div className="control">
-              <button
-                className="button is-link is-light"
-                name="cancel"
-                onClick={handleCancel}
-              >
-                Cancel
-              </button>
+            <div className="level-right">
+              <div className="level-item">
+                <a
+                  onClick={() => {
+                    if (
+                      window.confirm(
+                        'Are you sure you want to delete this category?'
+                      )
+                    )
+                      handleDeleteCategory(category);
+                  }}
+                  className="button is-danger"
+                >
+                  Delete
+                </a>
+              </div>
             </div>
           </div>
         </form>
@@ -209,6 +215,7 @@ export async function getServerSideProps(context) {
       apiToken: apiToken,
       currentLocale,
       category: category,
+      locales: localeMappings,
     },
   };
 }

@@ -16,6 +16,7 @@ export default function AdminHeader(props) {
           <LocaleSwitcher
             locales={props.locales}
             currentLocale={props.currentLocale}
+            id={props.id}
           />
         </div>
       </div>
