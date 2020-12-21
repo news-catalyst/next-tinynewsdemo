@@ -1,14 +1,21 @@
 import Link from 'next/link';
 import React from 'react';
+import { listAllLocales } from '../../../lib/articles.js';
+import { cachedContents } from '../../../lib/cached';
 import AdminLayout from '../../../components/AdminLayout.js';
 import AdminNav from '../../../components/nav/AdminNav';
+import LocaleSwitcher from '../LocaleSwitcher';
 
 export default function Config(props) {
   return (
     <AdminLayout>
-      <AdminNav homePageEditor={false} />
+      <AdminNav homePageEditor={false} showConfigOptions={true} />
       <div id="page">
         <h1 className="title">Site Config & Setup</h1>
+        <LocaleSwitcher
+          locales={props.locales}
+          currentLocale={props.currentLocale}
+        />
         <ul>
           <li>
             <Link href="/tinycms/config/homepage-layouts">
@@ -16,10 +23,35 @@ export default function Config(props) {
             </Link>
           </li>
           <li>
+            <Link href="/tinycms/authors">Authors</Link>
+          </li>
+          <li>
             <Link href="/tinycms/config/categories">Categories/Sections</Link>
+          </li>
+          <li>
+            <Link href="/tinycms/metadata">Metadata</Link>
+          </li>
+          <li>
+            <Link href="/tinycms/tags">Tags</Link>
           </li>
         </ul>
       </div>
     </AdminLayout>
   );
+}
+
+export async function getServerSideProps(context) {
+  console.log('getServerSideProps:', context);
+  const localeMappings = await cachedContents('locales', listAllLocales);
+
+  const currentLocale = localeMappings.find(
+    (localeMap) => localeMap.code === context.locale
+  );
+
+  return {
+    props: {
+      locales: localeMappings,
+      currentLocale: currentLocale,
+    },
+  };
 }
