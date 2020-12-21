@@ -59,9 +59,13 @@ export default function Tags({ tags, currentLocale, locales }) {
           currentLocale={currentLocale}
           title="Tags"
         />
-        <Link href="/tinycms/tags/add">Add Tag</Link>
 
         <ul>{listItems}</ul>
+        <section className="section">
+          <Link href="/tinycms/tags/add">
+            <button className="button">Add Tag</button>
+          </Link>
+        </section>
       </div>
     </AdminLayout>
   );
