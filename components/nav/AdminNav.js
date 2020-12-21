@@ -31,7 +31,7 @@ export default function AdminNav(props) {
           <a className="navbar-item" href="/tinycms/authors">
             authors
           </a>
-          <a className="navbar-item" href="/tinycms/config/metadata">
+          <a className="navbar-item" href="/tinycms/metadata">
             metadata
           </a>
           <a className="navbar-item" href="/tinycms/sections">

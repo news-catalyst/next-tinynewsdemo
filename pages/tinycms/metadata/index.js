@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { getSiteMetadata } from '../../../../lib/site_metadata.js';
-import { listAllLocales } from '../../../../lib/articles.js';
-import { cachedContents } from '../../../../lib/cached';
-import AdminLayout from '../../../../components/AdminLayout.js';
-import AdminNav from '../../../../components/nav/AdminNav';
-import AdminHeader from '../../../../components/tinycms/AdminHeader';
-import CreateMetadata from '../../../../components/tinycms/CreateSiteMetadata.js';
-import UpdateMetadata from '../../../../components/tinycms/UpdateSiteMetadata.js';
+import { getSiteMetadata } from '../../../lib/site_metadata.js';
+import { listAllLocales } from '../../../lib/articles.js';
+import { cachedContents } from '../../../lib/cached';
+import AdminLayout from '../../../components/AdminLayout.js';
+import AdminNav from '../../../components/nav/AdminNav';
+import AdminHeader from '../../../components/tinycms/AdminHeader';
+import CreateMetadata from '../../../components/tinycms/CreateSiteMetadata.js';
+import UpdateMetadata from '../../../components/tinycms/UpdateSiteMetadata.js';
 
 export default function Metadata({
   apiUrl,
