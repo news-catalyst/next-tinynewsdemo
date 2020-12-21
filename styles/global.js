@@ -149,7 +149,7 @@ export default css.global`
     color: #FCFFF5;
   }
   .navbar-start a {
-    color: #D1DBBD;
+    color: #000000;
   }
   .sidebar {
     background-color: #D1DBBD;
