@@ -1,15 +1,15 @@
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { listAllSections } from '../../../../lib/articles.js';
-import AdminLayout from '../../../../components/AdminLayout.js';
-import AdminNav from '../../../../components/nav/AdminNav';
-import AdminHeader from '../../../../components/tinycms/AdminHeader';
-import { localiseText } from '../../../../lib/utils';
-import { listAllLocales } from '../../../../lib/articles.js';
-import { cachedContents } from '../../../../lib/cached';
+import { listAllSections } from '../../../lib/articles.js';
+import AdminLayout from '../../../components/AdminLayout.js';
+import AdminNav from '../../../components/nav/AdminNav';
+import AdminHeader from '../../../components/tinycms/AdminHeader';
+import { localiseText } from '../../../lib/utils';
+import { listAllLocales } from '../../../lib/articles.js';
+import { cachedContents } from '../../../lib/cached';
 
-export default function Categories({ categories, currentLocale, locales }) {
+export default function Sections({ sections, currentLocale, locales }) {
   const [message, setMessage] = useState(null);
 
   const router = useRouter();
@@ -17,24 +17,24 @@ export default function Categories({ categories, currentLocale, locales }) {
 
   useEffect(() => {
     if (action && action === 'edit') {
-      setMessage('Successfully updated category.');
+      setMessage('Successfully updated section.');
     }
     if (action && action === 'create') {
-      setMessage('Successfully created category.');
+      setMessage('Successfully created section.');
     }
   }, []);
 
-  const listItems = categories.map((category) => {
-    let title = localiseText(currentLocale, category.title);
+  const listItems = sections.map((section) => {
+    let title = localiseText(currentLocale, section.title);
     return (
-      <li key={category.id}>
+      <li key={section.id}>
         <Link
-          key={`${category.id}-link`}
-          href={`/tinycms/config/categories/${category.id}`}
+          key={`${section.id}-link`}
+          href={`/tinycms/sections/${section.id}`}
         >
           <a>{title}</a>
         </Link>{' '}
-        ({category.slug})
+        ({section.slug})
       </li>
     );
   });
@@ -46,15 +46,15 @@ export default function Categories({ categories, currentLocale, locales }) {
         <AdminHeader
           locales={locales}
           currentLocale={currentLocale}
-          title="Categories"
+          title="Sections"
         />
 
         {message && <div className="success">{message}</div>}
         <ul>{listItems}</ul>
 
         <section className="section">
-          <Link href="/tinycms/config/categories/add">
-            <button className="button">Add Category</button>
+          <Link href="/tinycms/sections/add">
+            <button className="button">Add Section</button>
           </Link>
         </section>
       </div>
@@ -69,10 +69,10 @@ export async function getServerSideProps(context) {
     (localeMap) => localeMap.code === context.locale
   );
 
-  let categories = await listAllSections();
+  let sections = await listAllSections();
   return {
     props: {
-      categories: categories,
+      sections: sections,
       currentLocale: currentLocale,
       locales: localeMappings,
     },

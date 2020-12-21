@@ -26,7 +26,7 @@ export default function AdminNav(props) {
             homepage editor
           </a>
           <a className="navbar-item" href="/tinycms/authors">
-            manage authors
+            authors
           </a>
           {props.showConfigOptions && (
             <>
@@ -39,7 +39,7 @@ export default function AdminNav(props) {
               <a className="navbar-item" href="/tinycms/config/metadata">
                 metadata
               </a>
-              <a className="navbar-item" href="/tinycms/config/categories">
+              <a className="navbar-item" href="/tinycms/sections">
                 sections
               </a>
             </>

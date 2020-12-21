@@ -26,10 +26,10 @@ export default function Config(props) {
             <Link href="/tinycms/authors">Authors</Link>
           </li>
           <li>
-            <Link href="/tinycms/config/categories">Categories/Sections</Link>
+            <Link href="/tinycms/metadata">Metadata</Link>
           </li>
           <li>
-            <Link href="/tinycms/metadata">Metadata</Link>
+            <Link href="/tinycms/sections">Sections</Link>
           </li>
           <li>
             <Link href="/tinycms/tags">Tags</Link>

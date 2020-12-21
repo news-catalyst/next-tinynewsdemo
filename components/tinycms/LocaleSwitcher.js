@@ -11,7 +11,6 @@ export default function LocaleSwitcher({ currentLocale, locales, id }) {
     setSelectedLocale(event.target.value);
 
     if (id) {
-      console.log('switching to:', event.target.value, id);
       router.push(
         {
           pathname: router.pathname,

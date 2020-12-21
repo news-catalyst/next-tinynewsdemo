@@ -1,29 +1,25 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import AdminLayout from '../../../../components/AdminLayout';
-import {
-  getCategory,
-  deleteCategory,
-  updateCategory,
-} from '../../../../lib/category';
-import AdminNav from '../../../../components/nav/AdminNav';
-import AdminHeader from '../../../../components/tinycms/AdminHeader';
-import Notification from '../../../../components/tinycms/Notification';
-import { localiseText } from '../../../../lib/utils';
-import { listAllLocales } from '../../../../lib/articles.js';
-import { cachedContents } from '../../../../lib/cached';
+import AdminLayout from '../../../components/AdminLayout';
+import { getSection, deleteSection, updateSection } from '../../../lib/section';
+import AdminNav from '../../../components/nav/AdminNav';
+import AdminHeader from '../../../components/tinycms/AdminHeader';
+import Notification from '../../../components/tinycms/Notification';
+import { localiseText } from '../../../lib/utils';
+import { listAllLocales } from '../../../lib/articles.js';
+import { cachedContents } from '../../../lib/cached';
 
-export default function EditCategory({
+export default function EditSection({
   apiUrl,
   apiToken,
   currentLocale,
-  category,
+  section,
   locales,
 }) {
   const [notificationMessage, setNotificationMessage] = useState('');
   const [notificationType, setNotificationType] = useState('');
   const [showNotification, setShowNotification] = useState(false);
-  const [categoryId, setCategoryId] = useState('');
+  const [sectionId, setSectionId] = useState('');
 
   const [title, setTitle] = useState('');
   const [i18nTitleValues, setI18nTitleValues] = useState([]);
@@ -31,13 +27,13 @@ export default function EditCategory({
   const [slug, setSlug] = useState('');
 
   useEffect(() => {
-    if (category) {
-      setI18nTitleValues(category.title.values);
+    if (section) {
+      setI18nTitleValues(section.title.values);
 
-      let localisedTitle = localiseText(currentLocale, category.title);
+      let localisedTitle = localiseText(currentLocale, section.title);
       setTitle(localisedTitle);
-      setSlug(category.slug);
-      setCategoryId(category.id);
+      setSlug(section.slug);
+      setSectionId(section.id);
     }
   }, []);
 
@@ -45,11 +41,11 @@ export default function EditCategory({
 
   async function handleCancel(ev) {
     ev.preventDefault();
-    router.push('/tinycms/config/categories');
+    router.push('/tinycms/sections');
   }
 
-  async function handleDeleteCategory(cat) {
-    const response = await deleteCategory(apiUrl, apiToken, cat.id);
+  async function handleDeleteSection(section) {
+    const response = await deleteSection(apiUrl, apiToken, section.id);
 
     if (response.categories.deleteCategory.error !== null) {
       setNotificationMessage(response.categories.deleteCategory.error);
@@ -58,7 +54,7 @@ export default function EditCategory({
     } else {
       // display success message
 
-      setNotificationMessage('Successfully deleted the category!');
+      setNotificationMessage('Successfully deleted the section!');
       setNotificationType('success');
       setShowNotification(true);
       // handleCancel();
@@ -80,10 +76,10 @@ export default function EditCategory({
       setI18nTitleValues(i18nTitleValues);
     }
 
-    const response = await updateCategory(
+    const response = await updateSection(
       apiUrl,
       apiToken,
-      categoryId,
+      sectionId,
       i18nTitleValues,
       slug
     );
@@ -93,9 +89,9 @@ export default function EditCategory({
       setNotificationType('error');
       setShowNotification(true);
     } else {
-      setCategoryId(response.categories.updateCategory.data.id);
+      setSectionId(response.categories.updateCategory.data.id);
       // display success message
-      setNotificationMessage('Successfully saved and published the category!');
+      setNotificationMessage('Successfully saved and published the section!');
       setNotificationType('success');
       setShowNotification(true);
     }
@@ -117,8 +113,8 @@ export default function EditCategory({
         <AdminHeader
           locales={locales}
           currentLocale={currentLocale}
-          title="Edit Category"
-          id={category.id}
+          title="Edit Section"
+          id={section.id}
         />
 
         <form onSubmit={handleSubmit}>
@@ -180,10 +176,10 @@ export default function EditCategory({
                   onClick={() => {
                     if (
                       window.confirm(
-                        'Are you sure you want to delete this category?'
+                        'Are you sure you want to delete this section?'
                       )
                     )
-                      handleDeleteCategory(category);
+                      handleDeleteSection(section);
                   }}
                   className="button is-danger"
                 >
@@ -207,14 +203,14 @@ export async function getServerSideProps(context) {
   const apiUrl = process.env.CONTENT_DELIVERY_API_URL;
   const apiToken = process.env.CONTENT_DELIVERY_API_ACCESS_TOKEN;
 
-  let category = await getCategory(context.params.id);
+  let section = await getSection(context.params.id);
 
   return {
     props: {
       apiUrl: apiUrl,
       apiToken: apiToken,
       currentLocale,
-      category: category,
+      section: section,
       locales: localeMappings,
     },
   };
