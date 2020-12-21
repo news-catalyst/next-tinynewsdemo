@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import AdminLayout from '../../../../components/AdminLayout';
-import AdminNav from '../../../../components/nav/AdminNav';
-import Notification from '../../../../components/tinycms/Notification';
-import { createHomepageLayoutSchema } from '../../../../lib/homepage';
+import AdminLayout from '../../../components/AdminLayout';
+import AdminNav from '../../../components/nav/AdminNav';
+import Notification from '../../../components/tinycms/Notification';
+import { createHomepageLayoutSchema } from '../../../lib/homepage';
 
 export default function AddHomepageLayout({ apiUrl, apiToken }) {
   const [notificationMessage, setNotificationMessage] = useState('');

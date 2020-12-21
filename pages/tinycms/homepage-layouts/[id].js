@@ -1,13 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import AdminLayout from '../../../../components/AdminLayout';
-import {
-  getHomepageLayout,
-  listLayoutSchemaIds,
-  updateHomepageLayout,
-} from '../../../../lib/homepage';
-import AdminNav from '../../../../components/nav/AdminNav';
-import Notification from '../../../../components/tinycms/Notification';
+import AdminLayout from '../../../components/AdminLayout';
+import { getHomepageLayout, updateHomepageLayout } from '../../../lib/homepage';
+import AdminNav from '../../../components/nav/AdminNav';
+import Notification from '../../../components/tinycms/Notification';
 
 export default function EditHomepageLayout({
   apiUrl,
@@ -25,7 +21,7 @@ export default function EditHomepageLayout({
   useEffect(() => {
     if (homepageLayout) {
       setName(homepageLayout.name);
-      setData(JSON.parse(homepageLayout.data));
+      setData(homepageLayout.data);
       setHomepageLayoutId(homepageLayout.id);
     }
   }, []);
