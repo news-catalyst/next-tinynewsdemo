@@ -1,12 +1,12 @@
 import Link from 'next/link';
 import React from 'react';
-import { listAllLocales } from '../../../lib/articles.js';
-import { cachedContents } from '../../../lib/cached';
-import AdminLayout from '../../../components/AdminLayout.js';
-import AdminNav from '../../../components/nav/AdminNav';
-import AdminHeader from '../../../components/tinycms/AdminHeader';
+import { listAllLocales } from '../../lib/articles.js';
+import { cachedContents } from '../../lib/cached';
+import AdminLayout from '../../components/AdminLayout.js';
+import AdminNav from '../../components/nav/AdminNav';
+import AdminHeader from '../../components/tinycms/AdminHeader';
 
-export default function Config(props) {
+export default function TinyCmsHome(props) {
   return (
     <AdminLayout>
       <AdminNav homePageEditor={false} showConfigOptions={true} />
@@ -14,16 +14,17 @@ export default function Config(props) {
         <AdminHeader
           locales={props.locales}
           currentLocale={props.currentLocale}
-          title="Site Config and Setup"
+          title="tinycms site config"
         />
         <ul>
           <li>
-            <Link href="/tinycms/config/homepage-layouts">
-              Homepage Layouts
-            </Link>
+            <Link href="/tinycms/authors">Authors</Link>
           </li>
           <li>
-            <Link href="/tinycms/authors">Authors</Link>
+            <Link href="/tinycms/homepage">Homepage Editor</Link>
+          </li>
+          <li>
+            <Link href="/tinycms/homepage-layouts">Homepage Layouts</Link>
           </li>
           <li>
             <Link href="/tinycms/metadata">Metadata</Link>
