@@ -11,11 +11,23 @@ export default function Config(props) {
     <AdminLayout>
       <AdminNav homePageEditor={false} showConfigOptions={true} />
       <div id="page">
-        <h1 className="title">Site Config & Setup</h1>
-        <LocaleSwitcher
-          locales={props.locales}
-          currentLocale={props.currentLocale}
-        />
+        <div className="level">
+          <div className="level-left">
+            <div className="level-item">
+              <h1 className="title">
+                Site Config & Setup ({props.currentLocale.code})
+              </h1>
+            </div>
+          </div>
+          <div className="level-right">
+            <div className="level-item">
+              <LocaleSwitcher
+                locales={props.locales}
+                currentLocale={props.currentLocale}
+              />
+            </div>
+          </div>
+        </div>
         <ul>
           <li>
             <Link href="/tinycms/config/homepage-layouts">
