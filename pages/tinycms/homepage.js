@@ -14,6 +14,7 @@ import {
 } from '../../lib/articles.js';
 import AdminNav from '../../components/nav/AdminNav';
 import Notification from '../../components/tinycms/Notification';
+import Layout from '../../components/Layout';
 
 const BigFeaturedStory = dynamic(() =>
   import(`../../components/homepage/BigFeaturedStory`)

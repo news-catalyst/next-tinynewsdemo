@@ -48,7 +48,17 @@ export default function ArticleHeader({ article, locale, isAmp }) {
               <div className="post__author-avatar">
                 <figure>
                   <a className="content" href="#">
-                    <img src="4ab3c1806d4d17cc6670d111a4bbd8d7.jpg" />
+                    {isAmp ? (
+                      <amp-img
+                        width={41}
+                        height={41}
+                        src="4ab3c1806d4d17cc6670d111a4bbd8d7.jpg"
+                        alt="author"
+                        layout="responsive"
+                      />
+                    ) : (
+                      <img src="4ab3c1806d4d17cc6670d111a4bbd8d7.jpg" />
+                    )}
                   </a>
                 </figure>
               </div>
