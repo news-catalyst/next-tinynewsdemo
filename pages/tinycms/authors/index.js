@@ -61,10 +61,15 @@ export default function Authors({ authors, currentLocale, locales }) {
           currentLocale={currentLocale}
           title="Authors"
         />
-        <Link href="/tinycms/authors/add">Add Author</Link>
 
         {/* {message && <div className="success">{message}</div>} */}
         <ul>{listItems}</ul>
+
+        <section className="section">
+          <Link href="/tinycms/authors/add">
+            <button className="button">Add an Author</button>
+          </Link>
+        </section>
       </div>
     </AdminLayout>
   );
