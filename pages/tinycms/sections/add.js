@@ -1,14 +1,19 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
-import AdminLayout from '../../../../components/AdminLayout';
-import AdminNav from '../../../../components/nav/AdminNav';
-import Notification from '../../../../components/tinycms/Notification';
-import { createCategory } from '../../../../lib/category';
-import { localiseText } from '../../../../lib/utils';
-import { listAllLocales } from '../../../../lib/articles.js';
-import { cachedContents } from '../../../../lib/cached';
+import AdminLayout from '../../../components/AdminLayout';
+import AdminNav from '../../../components/nav/AdminNav';
+import AdminHeader from '../../../components/tinycms/AdminHeader';
+import Notification from '../../../components/tinycms/Notification';
+import { createSection } from '../../../lib/section';
+import { listAllLocales } from '../../../lib/articles.js';
+import { cachedContents } from '../../../lib/cached';
 
-export default function AddCategory({ apiUrl, apiToken, currentLocale }) {
+export default function AddSection({
+  apiUrl,
+  apiToken,
+  currentLocale,
+  locales,
+}) {
   const [notificationMessage, setNotificationMessage] = useState([]);
   const [notificationType, setNotificationType] = useState('');
   const [showNotification, setShowNotification] = useState(false);
@@ -20,7 +25,7 @@ export default function AddCategory({ apiUrl, apiToken, currentLocale }) {
 
   async function handleCancel(ev) {
     ev.preventDefault();
-    router.push('/tinycms/config/categories');
+    router.push('/tinycms/sections');
   }
 
   async function handleSubmit(ev) {
@@ -58,7 +63,7 @@ export default function AddCategory({ apiUrl, apiToken, currentLocale }) {
       return;
     }
 
-    const response = await createCategory(
+    const response = await createSection(
       apiUrl,
       apiToken,
       currentLocale,
@@ -73,9 +78,7 @@ export default function AddCategory({ apiUrl, apiToken, currentLocale }) {
       setShowNotification(true);
     } else {
       // display success message
-      setNotificationMessage([
-        'Successfully saved and published the category!',
-      ]);
+      setNotificationMessage(['Successfully saved and published the section!']);
       setNotificationType('success');
       setShowNotification(true);
     }
@@ -93,7 +96,11 @@ export default function AddCategory({ apiUrl, apiToken, currentLocale }) {
         />
       )}
       <div id="page">
-        <h1 className="title">Add a category</h1>
+        <AdminHeader
+          locales={locales}
+          currentLocale={currentLocale}
+          title="Add a Section"
+        />
 
         <form onSubmit={handleSubmit}>
           <div className="field">
@@ -155,12 +162,12 @@ export async function getServerSideProps(context) {
 
   const apiUrl = process.env.CONTENT_DELIVERY_API_URL;
   const apiToken = process.env.CONTENT_DELIVERY_API_ACCESS_TOKEN;
-  const localeID = process.env.LOCALE_ID;
   return {
     props: {
       apiUrl: apiUrl,
       apiToken: apiToken,
       currentLocale: currentLocale,
+      locales: localeMappings,
     },
   };
 }
