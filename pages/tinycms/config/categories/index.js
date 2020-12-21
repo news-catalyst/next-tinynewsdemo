@@ -4,11 +4,12 @@ import { useRouter } from 'next/router';
 import { listAllSections } from '../../../../lib/articles.js';
 import AdminLayout from '../../../../components/AdminLayout.js';
 import AdminNav from '../../../../components/nav/AdminNav';
+import AdminHeader from '../../../../components/tinycms/AdminHeader';
 import { localiseText } from '../../../../lib/utils';
 import { listAllLocales } from '../../../../lib/articles.js';
 import { cachedContents } from '../../../../lib/cached';
 
-export default function Categories({ categories, currentLocale }) {
+export default function Categories({ categories, currentLocale, locales }) {
   const [message, setMessage] = useState(null);
 
   const router = useRouter();
@@ -32,7 +33,8 @@ export default function Categories({ categories, currentLocale }) {
           href={`/tinycms/config/categories/${category.id}`}
         >
           <a>{title}</a>
-        </Link>
+        </Link>{' '}
+        ({category.slug})
       </li>
     );
   });
@@ -41,7 +43,11 @@ export default function Categories({ categories, currentLocale }) {
     <AdminLayout>
       <AdminNav homePageEditor={false} showConfigOptions={true} />
       <div id="page">
-        <h1 className="title">Categories</h1>
+        <AdminHeader
+          locales={locales}
+          currentLocale={currentLocale}
+          title="Categories"
+        />
 
         {message && <div className="success">{message}</div>}
         <ul>{listItems}</ul>
@@ -68,6 +74,7 @@ export async function getServerSideProps(context) {
     props: {
       categories: categories,
       currentLocale: currentLocale,
+      locales: localeMappings,
     },
   };
 }
