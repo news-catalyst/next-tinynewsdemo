@@ -29,6 +29,7 @@ export default function HomePageEditor({
   tags,
   sections,
   currentLocale,
+  localeMappings,
   apiUrl,
   apiToken,
 }) {
@@ -232,6 +233,7 @@ export async function getServerSideProps(context) {
       tags,
       sections,
       currentLocale,
+      localeMappings,
       apiUrl,
       apiToken,
     },
