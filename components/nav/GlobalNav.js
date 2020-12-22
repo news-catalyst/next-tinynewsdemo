@@ -20,7 +20,11 @@ export default function GlobalNav({ metadata, sections }) {
   return (
     <header className="site__header">
       <div className="section__container">
-        <h1 className="site__logo">{title}</h1>
+        <Link href="/">
+          <a>
+            <h1 className="site__logo">{title}</h1>
+          </a>
+        </Link>
         <nav>{sectionLinks}</nav>
         <button className="site__cta">Donate</button>
       </div>
