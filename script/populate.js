@@ -138,10 +138,13 @@ function getAds() {
     .then((res) => res.json())
     .then((data) => {
       writeCache('ads', data);
-    });
+    })
+    .catch(console.error);
 }
 
 async function main() {
+  console.log("LETTERHEAD:", process.env.LETTERHEAD_API_URL, process.env.LETTERHEAD_API_KEY);
+  console.log("WEBINY:", process.env.CONTENT_DELIVERY_API_URL, process.env.CONTENT_DELIVERY_API_ACCESS_TOKEN);
   listLocales();
   listSections();
   listTags();
