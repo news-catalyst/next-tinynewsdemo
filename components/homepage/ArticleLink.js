@@ -66,7 +66,7 @@ export default function ArticleLink({ locale, article, isAmp }) {
           )}
         </h4>
         <div className="asset__byline">
-          By {renderAuthors(article)}
+          By&nbsp;{renderAuthors(article)}&nbsp;
           <time>
             <span>{renderDate(article.firstPublishedOn, false)}</span>
           </time>

@@ -48,7 +48,7 @@ export default function FeaturedArticleLink({ locale, article, isAmp }) {
         )}
         <div className="asset__excerpt">{searchDescription}</div>
         <div className="asset__byline">
-          By&nbsp;{renderAuthors(article)}
+          By&nbsp;{renderAuthors(article)}&nbsp;
           <time>
             <span>{renderDate(article.firstPublishedOn, false)}</span>
           </time>
