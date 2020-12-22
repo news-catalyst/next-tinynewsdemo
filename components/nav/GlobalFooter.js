@@ -8,8 +8,8 @@ export default function GlobalFooter(props) {
     byline = props.metadata['footerBylineName'];
   }
   return (
-    <footer className="footer">
-      <div className="content has-text-centered">
+    <footer className="tbd">
+      <div className="section__container">
         <p>
           <strong>{title}</strong> by <a href={bylineLink}>{byline}</a>.
         </p>

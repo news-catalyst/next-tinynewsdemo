@@ -8,8 +8,6 @@ import {
 import { cachedContents } from '../lib/cached';
 import { localiseText } from '../lib/utils';
 import Layout from '../components/Layout';
-import GlobalNav from '../components/nav/GlobalNav';
-import GlobalFooter from '../components/nav/GlobalFooter';
 import { renderBody } from '../lib/utils.js';
 
 export default function About({ data, authors, currentLocale, sections }) {
@@ -17,8 +15,7 @@ export default function About({ data, authors, currentLocale, sections }) {
   const body = renderBody(data, isAmp);
   console.log(authors[0].title.values);
   return (
-    <Layout meta={data} locale={currentLocale}>
-      <GlobalNav sections={sections} />
+    <Layout meta={data} locale={currentLocale} sections={sections}>
       <article className="container">
         <section className="section" key="body">
           <div id="articleText" className="content">
@@ -29,7 +26,7 @@ export default function About({ data, authors, currentLocale, sections }) {
           <div className="content">
             <h1 className="title">Authors</h1>
             {authors.map((author) => (
-              <div className="author mb-4">
+              <div className="author mb-4" key={author.name}>
                 <h4 className="subtitle is-4">
                   {author.name}, {localiseText(currentLocale, author.title)}
                 </h4>
@@ -41,7 +38,6 @@ export default function About({ data, authors, currentLocale, sections }) {
           </div>
         </section>
       </article>
-      <GlobalFooter />
     </Layout>
   );
 }

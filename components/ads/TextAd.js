@@ -2,7 +2,7 @@ import React from 'react';
 
 export default function TextAd(props) {
   return (
-    <section className="text-ad-container">
+    <div className="text-ad-container">
       <div className="ad-container">
         <div className="ad-brand">
           <p>Advertisement from {props.ad.brand}</p>
@@ -15,6 +15,6 @@ export default function TextAd(props) {
           </a>
         </div>
       </div>
-    </section>
+    </div>
   );
 }

@@ -1,10 +1,7 @@
 import ArticleHeader from './articles/ArticleHeader';
 import ArticleBody from './articles/ArticleBody';
-import MainImage from './articles/MainImage.js';
-import Tags from './articles/Tags.js';
+import Comments from './articles/Comments.js';
 import ArticleFooter from './articles/ArticleFooter.js';
-import GlobalNav from './nav/GlobalNav.js';
-import GlobalFooter from './nav/GlobalFooter.js';
 import { useAmp } from 'next/amp';
 import Layout from './Layout.js';
 
@@ -12,28 +9,35 @@ export default function Article({
   article,
   currentLocale,
   sections,
-  tags,
   ads,
   siteMetadata,
 }) {
   const isAmp = useAmp();
 
   return (
-    <Layout meta={siteMetadata} locale={currentLocale} article={article}>
-      <GlobalNav metadata={siteMetadata} sections={sections} />
-      <article className="container">
-        <ArticleHeader article={article} locale={currentLocale} />
-        <MainImage article={article} isAmp={isAmp} />
-        <ArticleBody
-          article={article}
-          locale={currentLocale}
-          isAmp={isAmp}
-          ads={ads}
-        />
-        <Tags article={article} locale={currentLocale} />
-        <ArticleFooter article={article} locale={currentLocale} isAmp={isAmp} />
-      </article>
-      <GlobalFooter metadata={siteMetadata} />
+    <Layout
+      meta={siteMetadata}
+      locale={currentLocale}
+      article={article}
+      sections={sections}
+    >
+      <div className="post">
+        <ArticleHeader article={article} isAmp={isAmp} locale={currentLocale} />
+        <section className="section post__body rich-text" key="body">
+          <ArticleBody
+            article={article}
+            isAmp={isAmp}
+            ads={ads}
+            locale={currentLocale}
+          />
+          <ArticleFooter
+            article={article}
+            isAmp={isAmp}
+            locale={currentLocale}
+          />
+        </section>
+        <Comments article={article} isAmp={isAmp} />
+      </div>
     </Layout>
   );
 }
