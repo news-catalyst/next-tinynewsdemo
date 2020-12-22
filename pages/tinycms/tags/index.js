@@ -5,12 +5,11 @@ import AdminLayout from '../../../components/AdminLayout.js';
 import AdminHeader from '../../../components/tinycms/AdminHeader';
 import AdminNav from '../../../components/nav/AdminNav';
 import Notification from '../../../components/tinycms/Notification';
-import { listAllLocales } from '../../../lib/articles.js';
-import { listAllAuthors } from '../../../lib/authors.js';
+import { listAllLocales, listAllTags } from '../../../lib/articles.js';
 import { localiseText } from '../../../lib/utils.js';
 import { cachedContents } from '../../../lib/cached';
 
-export default function Authors({ authors, currentLocale, locales }) {
+export default function Tags({ tags, currentLocale, locales }) {
   const [notificationMessage, setNotificationMessage] = useState('');
   const [notificationType, setNotificationType] = useState('');
   const [showNotification, setShowNotification] = useState(false);
@@ -20,27 +19,26 @@ export default function Authors({ authors, currentLocale, locales }) {
 
   useEffect(() => {
     if (action && action === 'edit') {
-      setNotificationMessage('Successfully updated author.');
+      setNotificationMessage('Successfully updated tag.');
       setNotificationType('success');
       setShowNotification(true);
     }
     if (action && action === 'create') {
-      setNotificationMessage('Successfully created author.');
+      setNotificationMessage('Successfully created tag.');
       setNotificationType('success');
       setShowNotification(true);
     }
   }, []);
 
-  const listItems = authors.map((author) => {
-    let title = localiseText(currentLocale, author.title);
+  const listItems = tags.map((tag) => {
+    let title = localiseText(currentLocale, tag.title);
 
     return (
-      <li key={author.id}>
-        <Link key={`${author.id}-link`} href={`/tinycms/authors/${author.id}`}>
-          <a>
-            {author.name}, {title}
-          </a>
-        </Link>
+      <li key={tag.id}>
+        <Link key={`${tag.id}-link`} href={`/tinycms/tags/${tag.id}`}>
+          <a>{title}</a>
+        </Link>{' '}
+        ({tag.slug})
       </li>
     );
   });
@@ -59,15 +57,13 @@ export default function Authors({ authors, currentLocale, locales }) {
         <AdminHeader
           locales={locales}
           currentLocale={currentLocale}
-          title="Authors"
+          title="Tags"
         />
 
-        {/* {message && <div className="success">{message}</div>} */}
         <ul>{listItems}</ul>
-
         <section className="section">
-          <Link href="/tinycms/authors/add">
-            <button className="button">Add an Author</button>
+          <Link href="/tinycms/tags/add">
+            <button className="button">Add Tag</button>
           </Link>
         </section>
       </div>
@@ -82,10 +78,10 @@ export async function getServerSideProps(context) {
     (localeMap) => localeMap.code === context.locale
   );
 
-  let authors = await listAllAuthors();
+  let tags = await listAllTags();
   return {
     props: {
-      authors: authors,
+      tags: tags,
       currentLocale: currentLocale,
       locales: localeMappings,
     },

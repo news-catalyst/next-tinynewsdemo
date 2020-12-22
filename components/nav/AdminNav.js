@@ -19,31 +19,29 @@ export default function AdminNav(props) {
 
   return (
     <nav className="navbar">
-      <div className="navbar-item">tinycms</div>
+      <div className="navbar-item">
+        <a href="/tinycms">tinycms</a>
+      </div>
       <div className="navbar-menu">
         <div className="navbar-start">
           <a className="navbar-item" href="/tinycms/homepage">
             homepage editor
           </a>
-          <a className="navbar-item" href="/tinycms/authors">
-            manage authors
+          <a className="navbar-item" href="/tinycms/homepage-layouts">
+            homepage layouts
           </a>
-          {props.showConfigOptions && (
-            <>
-              <a
-                className="navbar-item"
-                href="/tinycms/config/homepage-layouts"
-              >
-                homepage layouts
-              </a>
-              <a className="navbar-item" href="/tinycms/config/metadata">
-                metadata
-              </a>
-              <a className="navbar-item" href="/tinycms/config/categories">
-                sections
-              </a>
-            </>
-          )}
+          <a className="navbar-item" href="/tinycms/authors">
+            authors
+          </a>
+          <a className="navbar-item" href="/tinycms/metadata">
+            metadata
+          </a>
+          <a className="navbar-item" href="/tinycms/sections">
+            sections
+          </a>
+          <a className="navbar-item" href="/tinycms/tags">
+            tags
+          </a>
         </div>
         {props.homePageEditor && (
           <div className="navbar-end">
