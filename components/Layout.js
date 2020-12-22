@@ -1,10 +1,12 @@
 import Head from 'next/head';
 import globalStyles from '../styles/global.js';
+import GlobalNav from '../components/nav/GlobalNav';
+import GlobalFooter from './nav/GlobalFooter.js';
 import { useAmp } from 'next/amp';
 import AmpAnalytics from './amp/AmpAnalytics.js';
 import { localiseText } from '../lib/utils';
 
-export default function Layout({ children, locale, meta, article }) {
+export default function Layout({ children, locale, meta, article, sections }) {
   if (meta === null || meta === undefined) {
     console.log('Layout meta is missing');
     meta = {};
@@ -102,6 +104,7 @@ export default function Layout({ children, locale, meta, article }) {
           />
         )}
       </Head>
+      <GlobalNav metadata={meta} sections={sections} />
       <main>
         {isAmp && (
           <AmpAnalytics
@@ -125,6 +128,7 @@ export default function Layout({ children, locale, meta, article }) {
         )}
         {children}
       </main>
+      <GlobalFooter />
       <style jsx global>
         {globalStyles}
       </style>

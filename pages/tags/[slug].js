@@ -1,5 +1,4 @@
 import Layout from '../../components/Layout.js';
-import ArticleLink from '../../components/homepage/ArticleLink.js';
 import {
   listAllLocales,
   listAllArticlesByTag,
@@ -10,35 +9,27 @@ import {
 import { getSiteMetadataForLocale } from '../../lib/site_metadata.js';
 import { cachedContents } from '../../lib/cached';
 import { localiseText } from '../../lib/utils.js';
-import GlobalNav from '../../components/nav/GlobalNav.js';
-import GlobalFooter from '../../components/nav/GlobalFooter.js';
 import { useAmp } from 'next/amp';
+import ArticleStream from '../../components/homepage/ArticleStream';
 
-export default function TagPage(props) {
+export default function TagPage({
+  articles,
+  tag,
+  sections,
+  currentLocale,
+  siteMetadata,
+}) {
   const isAmp = useAmp();
-  console.log('props.tag', props.tag);
-  let tagTitle = localiseText(props.currentLocale, props.tag.title);
+  let tagTitle = localiseText(currentLocale, tag.title);
   return (
-    <Layout meta={props.siteMetadata} locale={props.currentLocale}>
-      <GlobalNav metadata={props.siteMetadata} sections={props.sections} />
-      <div className="container">
-        <section className="section">
-          <h1 className="title">Articles tagged with {tagTitle}</h1>
-          <div className="columns">
-            <div className="column is-four-fifths">
-              {props.articles.map((article) => (
-                <ArticleLink
-                  key={article.id}
-                  locale={props.currentLocale}
-                  article={article}
-                  amp={isAmp}
-                />
-              ))}
-            </div>
-          </div>
-        </section>
-      </div>
-      <GlobalFooter metadata={props.siteMetadata} />
+    <Layout meta={siteMetadata} sections={sections} locale={currentLocale}>
+      <ArticleStream
+        articles={articles}
+        sections={sections}
+        isAmp={isAmp}
+        title={`Articles tagged with ${tagTitle}`}
+        locale={currentLocale}
+      />
     </Layout>
   );
 }

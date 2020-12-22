@@ -30,20 +30,15 @@ const CustomForm = ({ status, message, onValidated }) => {
           dangerouslySetInnerHTML={{ __html: message }}
         />
       )}
-      <div className="field has-addons">
-        <div className="control">
-          <input
-            ref={(node) => (email = node)}
-            type="email"
-            placeholder="Your email"
-            className="input"
-          />
-        </div>
-        <div className="control">
-          <button onClick={submit} className="button">
-            Submit
-          </button>
-        </div>
+      <div className="group">
+        <input
+          ref={(node) => (email = node)}
+          type="email"
+          placeholder="Your email"
+          className="input"
+        />
+        <span className="bar"></span>
+        <input type="submit" onClick={submit} className="submit" value="→" />
       </div>
     </div>
   );
