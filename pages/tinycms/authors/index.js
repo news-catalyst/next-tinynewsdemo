@@ -2,6 +2,7 @@ import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import AdminLayout from '../../../components/AdminLayout.js';
+import AdminHeader from '../../../components/tinycms/AdminHeader';
 import AdminNav from '../../../components/nav/AdminNav';
 import Notification from '../../../components/tinycms/Notification';
 import { listAllLocales } from '../../../lib/articles.js';
@@ -9,8 +10,7 @@ import { listAllAuthors } from '../../../lib/authors.js';
 import { localiseText } from '../../../lib/utils.js';
 import { cachedContents } from '../../../lib/cached';
 
-export default function Authors({ authors, currentLocale }) {
-  // const [message, setMessage] = useState(null);
+export default function Authors({ authors, currentLocale, locales }) {
   const [notificationMessage, setNotificationMessage] = useState('');
   const [notificationType, setNotificationType] = useState('');
   const [showNotification, setShowNotification] = useState(false);
@@ -47,7 +47,7 @@ export default function Authors({ authors, currentLocale }) {
 
   return (
     <AdminLayout>
-      <AdminNav homePageEditor={false} />
+      <AdminNav homePageEditor={false} showConfigOptions={true} />
       {showNotification && (
         <Notification
           message={notificationMessage}
@@ -56,11 +56,20 @@ export default function Authors({ authors, currentLocale }) {
         />
       )}
       <div id="page">
-        <h1 className="title">Authors</h1>
-        <Link href="/tinycms/authors/add">Add Author</Link>
+        <AdminHeader
+          locales={locales}
+          currentLocale={currentLocale}
+          title="Authors"
+        />
 
         {/* {message && <div className="success">{message}</div>} */}
         <ul>{listItems}</ul>
+
+        <section className="section">
+          <Link href="/tinycms/authors/add">
+            <button className="button">Add an Author</button>
+          </Link>
+        </section>
       </div>
     </AdminLayout>
   );
@@ -78,6 +87,7 @@ export async function getServerSideProps(context) {
     props: {
       authors: authors,
       currentLocale: currentLocale,
+      locales: localeMappings,
     },
   };
 }

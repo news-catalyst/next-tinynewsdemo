@@ -1,64 +1,36 @@
-import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
-import AdminLayout from '../../../../components/AdminLayout';
-import {
-  getHomepageLayout,
-  listLayoutSchemaIds,
-  updateHomepageLayout,
-} from '../../../../lib/homepage';
-import AdminNav from '../../../../components/nav/AdminNav';
-import Notification from '../../../../components/tinycms/Notification';
+import React, { useState } from 'react';
+import AdminLayout from '../../../components/AdminLayout';
+import AdminNav from '../../../components/nav/AdminNav';
+import Notification from '../../../components/tinycms/Notification';
+import { createHomepageLayoutSchema } from '../../../lib/homepage';
 
-export default function EditHomepageLayout({
-  apiUrl,
-  apiToken,
-  homepageLayout,
-}) {
+export default function AddHomepageLayout({ apiUrl, apiToken }) {
   const [notificationMessage, setNotificationMessage] = useState('');
   const [notificationType, setNotificationType] = useState('');
   const [showNotification, setShowNotification] = useState(false);
-  const [homepageLayoutId, setHomepageLayoutId] = useState('');
 
   const [name, setName] = useState('');
   const [data, setData] = useState('');
 
-  useEffect(() => {
-    if (homepageLayout) {
-      setName(homepageLayout.name);
-      setData(JSON.parse(homepageLayout.data));
-      setHomepageLayoutId(homepageLayout.id);
-    }
-  }, []);
-  const router = useRouter();
-
-  async function handleCancel(ev) {
-    ev.preventDefault();
-    router.push('/tinycms/config');
-  }
-
   async function handleSubmit(ev) {
     ev.preventDefault();
 
-    const response = await updateHomepageLayout(
+    const response = await createHomepageLayoutSchema(
       apiUrl,
       apiToken,
-      homepageLayoutId,
       name,
       data
     );
 
     if (
-      response.homepageLayoutSchemas.updateHomepageLayoutSchema.error !== null
+      response.homepageLayoutSchemas.createHomepageLayoutSchema.error !== null
     ) {
       setNotificationMessage(
-        response.homepageLayoutSchemas.updateHomepageLayoutSchema.error
+        response.homepageLayoutSchemas.createHomepageLayoutSchema.error
       );
       setNotificationType('error');
       setShowNotification(true);
     } else {
-      setHomepageLayoutId(
-        response.homepageLayoutSchemas.updateHomepageLayoutSchema.data.id
-      );
       // display success message
       setNotificationMessage(
         'Successfully saved and published the homepage layout!'
@@ -79,9 +51,8 @@ export default function EditHomepageLayout({
           notificationType={notificationType}
         />
       )}
-
       <div id="page">
-        <h1 className="title">Edit Homepage Layout</h1>
+        <h1 className="title">Add a homepage layout</h1>
 
         <form onSubmit={handleSubmit}>
           <div className="field">
@@ -116,21 +87,10 @@ export default function EditHomepageLayout({
 
           <div className="field is-grouped">
             <div className="control">
-              <input
-                className="button is-link"
-                name="submit"
-                type="submit"
-                value="Submit"
-              />
+              <input type="submit" className="button is-link" value="Submit" />
             </div>
             <div className="control">
-              <button
-                className="button is-link is-light"
-                name="cancel"
-                onClick={handleCancel}
-              >
-                Cancel
-              </button>
+              <button className="button is-link is-light">Cancel</button>
             </div>
           </div>
         </form>
@@ -139,16 +99,13 @@ export default function EditHomepageLayout({
   );
 }
 
-export async function getServerSideProps(context) {
+export async function getServerSideProps() {
   const apiUrl = process.env.CONTENT_DELIVERY_API_URL;
   const apiToken = process.env.CONTENT_DELIVERY_API_ACCESS_TOKEN;
-
-  let homepageLayout = await getHomepageLayout(context.params.id);
   return {
     props: {
       apiUrl: apiUrl,
       apiToken: apiToken,
-      homepageLayout: homepageLayout,
     },
   };
 }

@@ -7,7 +7,10 @@ export default function FeaturedArticleLink({ locale, article, isAmp }) {
   let mainImage = null;
   let mainImageNode = null;
 
-  console.log('article:', article);
+  if (article === null || article === undefined || !article) {
+    console.log('FeaturedArticleLink missing article:', article);
+  }
+
   let headline = localiseText(locale, article.headline);
   let searchDescription = localiseText(locale, article.searchDescription);
 

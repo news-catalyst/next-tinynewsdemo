@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import AdminLayout from '../../../components/AdminLayout';
 import AdminNav from '../../../components/nav/AdminNav';
+import AdminHeader from '../../../components/tinycms/AdminHeader';
 import Notification from '../../../components/tinycms/Notification';
 import { listAllLocales } from '../../../lib/articles.js';
 import { getAuthor, updateAuthor } from '../../../lib/authors';
@@ -13,6 +14,7 @@ export default function EditAuthor({
   apiToken,
   author,
   currentLocale,
+  locales,
 }) {
   const [notificationMessage, setNotificationMessage] = useState('');
   const [notificationType, setNotificationType] = useState('');
@@ -142,7 +144,12 @@ export default function EditAuthor({
       )}
 
       <div id="page">
-        <h1 className="title">Edit Author</h1>
+        <AdminHeader
+          locales={locales}
+          currentLocale={currentLocale}
+          title="Edit Author"
+          id={author.id}
+        />
 
         <form onSubmit={handleSubmit}>
           <div className="field">
@@ -287,6 +294,7 @@ export async function getServerSideProps(context) {
       apiToken: apiToken,
       author: author,
       currentLocale: currentLocale,
+      locales: localeMappings,
     },
   };
 }

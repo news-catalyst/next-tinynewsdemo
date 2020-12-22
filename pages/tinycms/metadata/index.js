@@ -1,19 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { getSiteMetadata } from '../../../../lib/site_metadata.js';
-import { listAllLocales } from '../../../../lib/articles.js';
-import { cachedContents } from '../../../../lib/cached';
-import AdminLayout from '../../../../components/AdminLayout.js';
-import AdminNav from '../../../../components/nav/AdminNav';
-import CreateMetadata from '../../../../components/tinycms/CreateSiteMetadata.js';
-import UpdateMetadata from '../../../../components/tinycms/UpdateSiteMetadata.js';
-import { localiseText } from '../../../../lib/utils.js';
+import { getSiteMetadata } from '../../../lib/site_metadata.js';
+import { listAllLocales } from '../../../lib/articles.js';
+import { cachedContents } from '../../../lib/cached';
+import AdminLayout from '../../../components/AdminLayout.js';
+import AdminNav from '../../../components/nav/AdminNav';
+import AdminHeader from '../../../components/tinycms/AdminHeader';
+import CreateMetadata from '../../../components/tinycms/CreateSiteMetadata.js';
+import UpdateMetadata from '../../../components/tinycms/UpdateSiteMetadata.js';
 
 export default function Metadata({
   apiUrl,
   apiToken,
   currentLocale,
   siteMetadata,
+  locales,
 }) {
   const [message, setMessage] = useState(null);
   const [metadata, setMetadata] = useState(null);
@@ -37,8 +38,11 @@ export default function Metadata({
     <AdminLayout>
       <AdminNav homePageEditor={false} showConfigOptions={true} />
       <div id="page">
-        <h1 className="title">Site Metadata</h1>
-
+        <AdminHeader
+          locales={locales}
+          currentLocale={currentLocale}
+          title="Site Metadata"
+        />
         {message && <div className="success">{message}</div>}
 
         <section className="section">
@@ -87,6 +91,7 @@ export async function getServerSideProps(context) {
       apiToken: apiToken,
       currentLocale: currentLocale,
       siteMetadata: siteMetadata,
+      locales: localeMappings,
     },
   };
 }
