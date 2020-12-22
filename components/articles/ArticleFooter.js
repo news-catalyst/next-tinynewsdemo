@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { renderAuthors } from '../../lib/utils.js';
+import ArticleFooterAuthor from './ArticleFooterAuthor';
 
 export default function ArticleFooter({ article, isAmp }) {
   let tagLinks;
@@ -17,26 +17,13 @@ export default function ArticleFooter({ article, isAmp }) {
     <div className="section post__meta post__meta--bottom">
       <div className="section__container">
         <div className="post__byline">
-          <div className="post__author">
-            <div className="post__author-avatar">
-              <figure>
-                <a className="content" href="#">
-                  {isAmp ? (
-                    <amp-img
-                      width={41}
-                      height={41}
-                      src="4ab3c1806d4d17cc6670d111a4bbd8d7.jpg"
-                      alt="author"
-                      layout="responsive"
-                    />
-                  ) : (
-                    <img src="4ab3c1806d4d17cc6670d111a4bbd8d7.jpg" />
-                  )}
-                </a>
-              </figure>
-            </div>
-            <div className="post__author-meta">By {renderAuthors(article)}</div>
-          </div>
+          {article.authors.map((author) => (
+            <ArticleFooterAuthor
+              key={author.slug}
+              author={author}
+              isAmp={isAmp}
+            />
+          ))}
         </div>
         <div className="post__tags">
           {tagLinks && <div className="subtitle">Read more:</div>}
