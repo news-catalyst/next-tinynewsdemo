@@ -71,12 +71,15 @@ export async function getStaticProps({ locale, params }) {
   const allAds = await cachedContents('ads', getArticleAds);
   const ads = allAds.filter((ad) => ad.adTypeId === 164);
 
-  let sectionArticles = await listAllArticlesBySection(
-    currentLocale,
-    article.category.slug
-  );
+  let sectionArticles = null;
 
-  sectionArticles = sectionArticles.filter((a) => a.slug !== article.slug);
+  if (article) {
+    sectionArticles = await listAllArticlesBySection(
+      currentLocale,
+      article.category.slug
+    );
+    sectionArticles = sectionArticles.filter((a) => a.slug !== article.slug);
+  }
 
   const siteMetadata = await getSiteMetadataForLocale(currentLocale);
 
