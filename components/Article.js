@@ -1,7 +1,8 @@
 import ArticleHeader from './articles/ArticleHeader';
 import ArticleBody from './articles/ArticleBody';
-import Comments from './articles/Comments.js';
-import ArticleFooter from './articles/ArticleFooter.js';
+import Comments from './articles/Comments';
+import ArticleFooter from './articles/ArticleFooter';
+import Recirculation from './articles/Recirculation';
 import { useAmp } from 'next/amp';
 import Layout from './Layout.js';
 
@@ -11,6 +12,7 @@ export default function Article({
   sections,
   ads,
   siteMetadata,
+  sectionArticles,
 }) {
   const isAmp = useAmp();
 
@@ -37,6 +39,13 @@ export default function Article({
           />
         </section>
         <Comments article={article} isAmp={isAmp} />
+        <Recirculation
+          articles={sectionArticles}
+          isAmp={isAmp}
+          locale={currentLocale}
+          siteMetadata={siteMetadata}
+          section={article.category}
+        />
       </div>
     </Layout>
   );
