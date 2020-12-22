@@ -14,7 +14,8 @@ import {
 } from '../../lib/articles.js';
 import AdminNav from '../../components/nav/AdminNav';
 import Notification from '../../components/tinycms/Notification';
-import Layout from '../../components/Layout';
+import AdminLayout from '../../components/AdminLayout';
+import globalStyles from '../../styles/global.js';
 
 const BigFeaturedStory = dynamic(() =>
   import(`../../components/homepage/BigFeaturedStory`)
@@ -142,7 +143,7 @@ export default function HomePageEditor({
   }
 
   return (
-    <>
+    <AdminLayout>
       <AdminNav
         homePageEditor={true}
         layoutSchemas={layoutSchemas}
@@ -196,7 +197,10 @@ export default function HomePageEditor({
             />
           )}
       </div>
-    </>
+      <style jsx global>
+        {globalStyles}
+      </style>
+    </AdminLayout>
   );
 }
 
