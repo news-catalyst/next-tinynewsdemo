@@ -8,6 +8,7 @@ export default function Recirculation({
   siteMetadata,
   section,
 }) {
+  console.log(isAmp);
   const localisedSection = localiseText(locale, section.title);
 
   return (
@@ -22,7 +23,7 @@ export default function Recirculation({
               <ArticleLink
                 key={streamArticle.id}
                 article={streamArticle}
-                amp={isAmp}
+                isAmp={isAmp}
                 locale={locale}
               />
             ))}
