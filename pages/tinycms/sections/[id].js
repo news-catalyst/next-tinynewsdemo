@@ -1,27 +1,25 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import AdminLayout from '../../../../components/AdminLayout';
-import {
-  getCategory,
-  deleteCategory,
-  updateCategory,
-} from '../../../../lib/category';
-import AdminNav from '../../../../components/nav/AdminNav';
-import Notification from '../../../../components/tinycms/Notification';
-import { localiseText } from '../../../../lib/utils';
-import { listAllLocales } from '../../../../lib/articles.js';
-import { cachedContents } from '../../../../lib/cached';
+import AdminLayout from '../../../components/AdminLayout';
+import { getSection, deleteSection, updateSection } from '../../../lib/section';
+import AdminNav from '../../../components/nav/AdminNav';
+import AdminHeader from '../../../components/tinycms/AdminHeader';
+import Notification from '../../../components/tinycms/Notification';
+import { localiseText } from '../../../lib/utils';
+import { listAllLocales } from '../../../lib/articles.js';
+import { cachedContents } from '../../../lib/cached';
 
-export default function EditCategory({
+export default function EditSection({
   apiUrl,
   apiToken,
   currentLocale,
-  category,
+  section,
+  locales,
 }) {
   const [notificationMessage, setNotificationMessage] = useState('');
   const [notificationType, setNotificationType] = useState('');
   const [showNotification, setShowNotification] = useState(false);
-  const [categoryId, setCategoryId] = useState('');
+  const [sectionId, setSectionId] = useState('');
 
   const [title, setTitle] = useState('');
   const [i18nTitleValues, setI18nTitleValues] = useState([]);
@@ -29,24 +27,25 @@ export default function EditCategory({
   const [slug, setSlug] = useState('');
 
   useEffect(() => {
-    if (category) {
-      setI18nTitleValues(category.title.values);
+    if (section) {
+      setI18nTitleValues(section.title.values);
 
-      let localisedTitle = localiseText(currentLocale, category.title);
+      let localisedTitle = localiseText(currentLocale, section.title);
       setTitle(localisedTitle);
-      setSlug(category.slug);
-      setCategoryId(category.id);
+      setSlug(section.slug);
+      setSectionId(section.id);
     }
   }, []);
+
   const router = useRouter();
 
   async function handleCancel(ev) {
     ev.preventDefault();
-    router.push('/tinycms/config/categories');
+    router.push('/tinycms/sections');
   }
 
-  async function handleDeleteCategory(cat) {
-    const response = await deleteCategory(apiUrl, apiToken, cat.id);
+  async function handleDeleteSection(section) {
+    const response = await deleteSection(apiUrl, apiToken, section.id);
 
     if (response.categories.deleteCategory.error !== null) {
       setNotificationMessage(response.categories.deleteCategory.error);
@@ -55,7 +54,7 @@ export default function EditCategory({
     } else {
       // display success message
 
-      setNotificationMessage('Successfully deleted the category!');
+      setNotificationMessage('Successfully deleted the section!');
       setNotificationType('success');
       setShowNotification(true);
       // handleCancel();
@@ -77,10 +76,10 @@ export default function EditCategory({
       setI18nTitleValues(i18nTitleValues);
     }
 
-    const response = await updateCategory(
+    const response = await updateSection(
       apiUrl,
       apiToken,
-      categoryId,
+      sectionId,
       i18nTitleValues,
       slug
     );
@@ -90,9 +89,9 @@ export default function EditCategory({
       setNotificationType('error');
       setShowNotification(true);
     } else {
-      setCategoryId(response.categories.updateCategory.data.id);
+      setSectionId(response.categories.updateCategory.data.id);
       // display success message
-      setNotificationMessage('Successfully saved and published the category!');
+      setNotificationMessage('Successfully saved and published the section!');
       setNotificationType('success');
       setShowNotification(true);
     }
@@ -111,30 +110,12 @@ export default function EditCategory({
       )}
 
       <div id="page">
-        <nav className="level">
-          <div className="level-left">
-            <div className="level-item">
-              <h1 className="title">Edit Category: {currentLocale.code}</h1>
-            </div>
-          </div>
-          <div className="level-right">
-            <div className="level-item">
-              <a
-                onClick={() => {
-                  if (
-                    window.confirm(
-                      'Are you sure you want to delete this category?'
-                    )
-                  )
-                    handleDeleteCategory(category);
-                }}
-                className="button is-danger"
-              >
-                Delete
-              </a>
-            </div>
-          </div>
-        </nav>
+        <AdminHeader
+          locales={locales}
+          currentLocale={currentLocale}
+          title="Edit Section"
+          id={section.id}
+        />
 
         <form onSubmit={handleSubmit}>
           <div className="field">
@@ -167,23 +148,44 @@ export default function EditCategory({
             </div>
           </div>
 
-          <div className="field is-grouped">
-            <div className="control">
-              <input
-                className="button is-link"
-                name="submit"
-                type="submit"
-                value="Submit"
-              />
+          <div className="level">
+            <div className="level-left">
+              <div className="level-item">
+                <div className="control">
+                  <input
+                    className="button is-link"
+                    name="submit"
+                    type="submit"
+                    value="Submit"
+                  />
+                </div>
+                <div className="control">
+                  <button
+                    className="button is-link is-light"
+                    name="cancel"
+                    onClick={handleCancel}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
             </div>
-            <div className="control">
-              <button
-                className="button is-link is-light"
-                name="cancel"
-                onClick={handleCancel}
-              >
-                Cancel
-              </button>
+            <div className="level-right">
+              <div className="level-item">
+                <a
+                  onClick={() => {
+                    if (
+                      window.confirm(
+                        'Are you sure you want to delete this section?'
+                      )
+                    )
+                      handleDeleteSection(section);
+                  }}
+                  className="button is-danger"
+                >
+                  Delete
+                </a>
+              </div>
             </div>
           </div>
         </form>
@@ -201,14 +203,15 @@ export async function getServerSideProps(context) {
   const apiUrl = process.env.CONTENT_DELIVERY_API_URL;
   const apiToken = process.env.CONTENT_DELIVERY_API_ACCESS_TOKEN;
 
-  let category = await getCategory(context.params.id);
+  let section = await getSection(context.params.id);
 
   return {
     props: {
       apiUrl: apiUrl,
       apiToken: apiToken,
       currentLocale,
-      category: category,
+      section: section,
+      locales: localeMappings,
     },
   };
 }

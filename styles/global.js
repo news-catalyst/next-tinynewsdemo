@@ -2428,7 +2428,6 @@ export default css.global`
   .block-ad {
     margin: 0 auto;
   }
-
   main {
     padding: 2rem 0 6rem;
   }

@@ -1,9 +1,9 @@
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { listLayoutSchemas } from '../../../../lib/homepage.js';
-import AdminLayout from '../../../../components/AdminLayout.js';
-import AdminNav from '../../../../components/nav/AdminNav';
+import { listLayoutSchemas } from '../../../lib/homepage.js';
+import AdminLayout from '../../../components/AdminLayout.js';
+import AdminNav from '../../../components/nav/AdminNav';
 
 export default function HomepageLayouts({ homepageLayouts }) {
   const [message, setMessage] = useState(null);
@@ -25,7 +25,7 @@ export default function HomepageLayouts({ homepageLayouts }) {
       <li key={homepageLayout.id}>
         <Link
           key={`${homepageLayout.id}-link`}
-          href={`/tinycms/config/homepage-layouts/${homepageLayout.id}`}
+          href={`/tinycms/homepage-layouts/${homepageLayout.id}`}
         >
           <a>{homepageLayout.name}</a>
         </Link>
@@ -43,7 +43,7 @@ export default function HomepageLayouts({ homepageLayouts }) {
         <ul>{listItems}</ul>
 
         <section className="section">
-          <Link href="/tinycms/config/homepage-layouts/add">
+          <Link href="/tinycms/homepage-layouts/add">
             <button className="button">Add Homepage Layout</button>
           </Link>
         </section>

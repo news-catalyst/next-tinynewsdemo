@@ -2,12 +2,18 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import AdminLayout from '../../../components/AdminLayout';
 import AdminNav from '../../../components/nav/AdminNav';
+import AdminHeader from '../../../components/tinycms/AdminHeader';
 import Notification from '../../../components/tinycms/Notification';
 import { listAllLocales } from '../../../lib/articles.js';
 import { cachedContents } from '../../../lib/cached';
 import { createAuthor } from '../../../lib/authors';
 
-export default function AddAuthor({ apiUrl, apiToken, currentLocale }) {
+export default function AddAuthor({
+  apiUrl,
+  apiToken,
+  currentLocale,
+  locales,
+}) {
   const [notificationMessage, setNotificationMessage] = useState('');
   const [notificationType, setNotificationType] = useState('');
   const [showNotification, setShowNotification] = useState(false);
@@ -54,7 +60,7 @@ export default function AddAuthor({ apiUrl, apiToken, currentLocale }) {
 
   return (
     <AdminLayout>
-      <AdminNav homePageEditor={false} />
+      <AdminNav homePageEditor={false} showConfigOptions={true} />
 
       {showNotification && (
         <Notification
@@ -64,7 +70,11 @@ export default function AddAuthor({ apiUrl, apiToken, currentLocale }) {
         />
       )}
       <div id="page">
-        <h1 className="title">Add an author</h1>
+        <AdminHeader
+          locales={locales}
+          currentLocale={currentLocale}
+          title="Add an Author"
+        />
 
         <form onSubmit={handleSubmit}>
           <div className="field">
@@ -197,6 +207,7 @@ export async function getServerSideProps(context) {
       apiUrl: apiUrl,
       apiToken: apiToken,
       currentLocale: currentLocale,
+      locales: localeMappings,
     },
   };
 }
