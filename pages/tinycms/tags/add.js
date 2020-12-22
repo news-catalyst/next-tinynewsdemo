@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import AdminLayout from '../../../components/AdminLayout';
+import AdminHeader from '../../../components/tinycms/AdminHeader';
 import AdminNav from '../../../components/nav/AdminNav';
 import Notification from '../../../components/tinycms/Notification';
 import { cachedContents } from '../../../lib/cached';
 import { createTag, listAllLocales } from '../../../lib/articles.js';
 
-export default function AddTag({ apiUrl, apiToken, currentLocale }) {
+export default function AddTag({ apiUrl, apiToken, currentLocale, locales }) {
   const [notificationMessage, setNotificationMessage] = useState('');
   const [notificationType, setNotificationType] = useState('');
   const [showNotification, setShowNotification] = useState(false);
@@ -56,7 +57,7 @@ export default function AddTag({ apiUrl, apiToken, currentLocale }) {
 
   return (
     <AdminLayout>
-      <AdminNav homePageEditor={false} />
+      <AdminNav homePageEditor={false} showConfigOptions={true} />
 
       {showNotification && (
         <Notification
@@ -66,7 +67,11 @@ export default function AddTag({ apiUrl, apiToken, currentLocale }) {
         />
       )}
       <div id="page">
-        <h1 className="title">Add a tag</h1>
+        <AdminHeader
+          locales={locales}
+          currentLocale={currentLocale}
+          title="Add a Tag"
+        />
 
         <form onSubmit={handleSubmit}>
           <div className="field">
@@ -131,6 +136,7 @@ export async function getServerSideProps(context) {
       apiUrl: apiUrl,
       apiToken: apiToken,
       currentLocale: currentLocale,
+      locales: localeMappings,
     },
   };
 }

@@ -1,13 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import AdminLayout from '../../../components/AdminLayout';
+import AdminHeader from '../../../components/tinycms/AdminHeader';
 import AdminNav from '../../../components/nav/AdminNav';
 import Notification from '../../../components/tinycms/Notification';
 import { getTag, updateTag, listAllLocales } from '../../../lib/articles.js';
 import { localiseText } from '../../../lib/utils.js';
 import { cachedContents } from '../../../lib/cached';
 
-export default function EditTag({ apiUrl, apiToken, tag, currentLocale }) {
+export default function EditTag({
+  apiUrl,
+  apiToken,
+  tag,
+  currentLocale,
+  locales,
+}) {
   const [notificationMessage, setNotificationMessage] = useState('');
   const [notificationType, setNotificationType] = useState('');
   const [showNotification, setShowNotification] = useState(false);
@@ -89,7 +96,12 @@ export default function EditTag({ apiUrl, apiToken, tag, currentLocale }) {
       )}
 
       <div id="page">
-        <h1 className="title">Edit Tag ({currentLocale.code})</h1>
+        <AdminHeader
+          locales={locales}
+          currentLocale={currentLocale}
+          title="Edit Tag"
+          id={tag.id}
+        />
 
         <form onSubmit={handleSubmit}>
           <div className="field">
@@ -164,6 +176,7 @@ export async function getServerSideProps(context) {
       apiToken: apiToken,
       tag: tag,
       currentLocale: currentLocale,
+      locales: localeMappings,
     },
   };
 }

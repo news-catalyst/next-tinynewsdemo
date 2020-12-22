@@ -132,9 +132,11 @@ export async function getStaticProps({ locale }) {
   );
   //    get selected homepage layout and featured article IDs
   const hpData = await getHomepageData();
+  console.log('hpData:', hpData);
 
   //    look up featured homepage articles
   const hpArticles = await getHomepageArticles(currentLocale, hpData);
+  console.log('hpArticles:', hpArticles);
 
   const streamArticles = await listMostRecentArticles(currentLocale);
 
