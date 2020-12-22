@@ -27,7 +27,7 @@ export default function TagPage({
         articles={articles}
         sections={sections}
         isAmp={isAmp}
-        title={tagTitle}
+        title={`Articles tagged with ${tagTitle}`}
         locale={currentLocale}
       />
     </Layout>
