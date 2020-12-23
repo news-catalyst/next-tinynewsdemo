@@ -18,6 +18,7 @@ export default function Layout({ children, locale, meta, article, sections }) {
 
   const metaValues = {
     canonical: meta['siteUrl'],
+    siteName: meta['shortName'],
     searchTitle: meta['searchTitle'],
     searchDescription: meta['searchDescription'],
     facebookTitle: meta['facebookTitle'],
@@ -26,6 +27,25 @@ export default function Layout({ children, locale, meta, article, sections }) {
     twitterDescription: meta['twitterDescription'],
     coverImage: meta['coverImage'],
   };
+  if (article) {
+    metaValues.section = localiseText(locale, article.category.title);
+    metaValues.searchTitle = localiseText(locale, article.searchTitle);
+    metaValues.searchDescription = localiseText(
+      locale,
+      article.searchDescription
+    );
+    metaValues.twitterTitle = localiseText(locale, article.twitterTitle);
+    metaValues.twitterDescription = localiseText(
+      locale,
+      article.twitterDescription
+    );
+    metaValues.facebookTitle = localiseText(locale, article.facebookTitle);
+    metaValues.facebookDescription = localiseText(
+      locale,
+      article.facebookDescription
+    );
+  }
+
   if (article && article.firstPublishedOn) {
     metaValues['firstPublishedOn'] = article.firstPublishedOn;
   }
@@ -82,7 +102,7 @@ export default function Layout({ children, locale, meta, article, sections }) {
           property="og:description"
           content={metaValues.facebookDescription}
         />
-        <meta property="og:site_name" content="Site Name, i.e. Moz" />
+        <meta property="og:site_name" content={metaValues.siteName} />
         <meta
           property="article:published_time"
           content={metaValues.firstPublishedOn}
@@ -91,8 +111,15 @@ export default function Layout({ children, locale, meta, article, sections }) {
           property="article:modified_time"
           content={metaValues.lastPublishedOn}
         />
-        <meta property="article:section" content="Article Section" />
-        <meta property="article:tag" content="Article Tag" />
+        <meta property="article:section" content={metaValues.section} />
+
+        {article !== undefined &&
+          article.tags.map((tag) => (
+            <meta
+              property="article:tag"
+              content={localiseText(locale, tag.title)}
+            />
+          ))}
         <meta property="fb:admins" content="Facebook numeric ID" />
 
         {isAmp && (
