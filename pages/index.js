@@ -48,7 +48,9 @@ export default function Home({
 
   let featuredArticleIds = [];
   useEffect(() => {
+    console.log('hpArticles:', hpArticles);
     for (const [key, article] of Object.entries(hpArticles)) {
+      console.log(key, article);
       // replace any missing featured articles with the next top article from the stream
       if (article === null) {
         hpArticles[key] = streamArticles.shift();
@@ -56,9 +58,9 @@ export default function Home({
     }
 
     // build a quick list of homepage featured article ids to ensure they do not appear again in the stream
-    featuredArticleIds = Object.values(hpArticles)
-      .filter((article) => !article === null)
-      .map((article) => article.id);
+    featuredArticleIds = Object.values(hpArticles).map((article) => {
+      return article.id;
+    });
 
     // filter out any articles from the stream that are already featured using the list of IDs from right above
     setMostRecentArticles(
@@ -122,7 +124,6 @@ export async function getStaticProps({ locale }) {
 
   //    look up featured homepage articles
   const hpArticles = await getHomepageArticles(currentLocale, hpData);
-  console.log('hpArticles:', hpArticles);
 
   const streamArticles = await listMostRecentArticles(currentLocale);
 
