@@ -16,8 +16,8 @@ export default function ImageNode({ node, amp }) {
       <Image
         src={image.imageUrl}
         alt={image.imageAlt}
-        height={460}
-        width={700}
+        width={image.width}
+        height={image.height}
       />
       <figcaption>{image.imageAlt}</figcaption>
     </figure>
