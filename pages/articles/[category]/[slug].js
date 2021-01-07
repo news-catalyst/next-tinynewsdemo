@@ -5,7 +5,7 @@ import {
   getArticleBySlug,
   listAllArticleSlugs,
   listAllSections,
-  listAllTags,
+  listAllArticlesBySection,
 } from '../../../lib/articles.js';
 import { getArticleAds } from '../../../lib/ads.js';
 import { getSiteMetadataForLocale } from '../../../lib/site_metadata.js';
@@ -67,10 +67,19 @@ export async function getStaticProps({ locale, params }) {
   if (article === null) {
     console.log('failed finding article for:', currentLocale.code, params.slug);
   }
-  const tags = await cachedContents('tags', listAllTags);
   const sections = await cachedContents('sections', listAllSections);
   const allAds = await cachedContents('ads', getArticleAds);
   const ads = allAds.filter((ad) => ad.adTypeId === 164);
+
+  let sectionArticles = null;
+
+  if (article) {
+    sectionArticles = await listAllArticlesBySection(
+      currentLocale,
+      article.category.slug
+    );
+    sectionArticles = sectionArticles.filter((a) => a.slug !== article.slug);
+  }
 
   const siteMetadata = await getSiteMetadataForLocale(currentLocale);
 
@@ -79,9 +88,9 @@ export async function getStaticProps({ locale, params }) {
       article,
       currentLocale,
       sections,
-      tags,
       ads,
       siteMetadata,
+      sectionArticles,
     },
     // Re-generate the post at most once per second
     // if a request comes in
