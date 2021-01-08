@@ -3,13 +3,11 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { localiseText, renderDate, renderAuthors } from '../../lib/utils.js';
 
-export default function ArticleLink({ locale, article, isAmp }) {
+export default function ArticleLink({ locale, article, isAmp, showCategory }) {
   let mainImage = null;
   let mainImageNode;
 
   let headline = localiseText(locale, article.headline);
-
-  let searchDescription = localiseText(locale, article.searchDescription);
 
   let categoryTitle;
 
@@ -44,7 +42,7 @@ export default function ArticleLink({ locale, article, isAmp }) {
     <li className="asset">
       <div className="asset__meta-container">
         <span className="asset__descriptor">
-          {article.category && (
+          {article.category && showCategory && (
             <Link
               key={article.category.title.values[0].value}
               href={`/${article.category.slug}`}

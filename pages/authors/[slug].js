@@ -26,6 +26,7 @@ export default function AuthorPage({
         sections={sections}
         articles={articles}
         title={`Stories by ${author.name}`}
+        showCategory={true}
         isAmp={isAmp}
         locale={currentLocale}
       />
