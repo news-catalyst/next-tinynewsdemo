@@ -29,6 +29,7 @@ export default function TagPage({
         isAmp={isAmp}
         title={`Articles tagged with ${tagTitle}`}
         locale={currentLocale}
+        metadata={siteMetadata}
       />
     </Layout>
   );

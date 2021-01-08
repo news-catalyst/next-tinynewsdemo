@@ -40,6 +40,7 @@ export default function CategoryPage(props) {
         isAmp={isAmp}
         title={props.title}
         locale={props.currentLocale}
+        metadata={props.siteMetadata}
       />
     </Layout>
   );
