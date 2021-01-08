@@ -82,6 +82,7 @@ export default function Home({
             featuredArticle={featuredArticle}
             setFeaturedArticle={setFeaturedArticle}
             isAmp={isAmp}
+            metadata={metadata}
           />
         )}
         {hpData.layoutComponent === 'LargePackageStoryLead' && (
@@ -98,14 +99,16 @@ export default function Home({
             setSubFeaturedMiddleArticle={setSubFeaturedMiddleArticle}
             sections={sections}
             isAmp={isAmp}
+            metadata={metadata}
           />
         )}
         <ArticleStream
           articles={mostRecentArticles}
           sections={sections}
           isAmp={isAmp}
-          title="The Latest"
+          title={metadata.homepageArticleStreamHed}
           locale={currentLocale}
+          metadata={metadata}
         />
       </Layout>
     </div>

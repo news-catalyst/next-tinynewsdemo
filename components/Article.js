@@ -29,6 +29,7 @@ export default function Article({
             isAmp={isAmp}
             ads={ads}
             locale={currentLocale}
+            metadata={siteMetadata}
           />
           <ArticleFooter
             article={article}
