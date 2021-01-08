@@ -26,6 +26,7 @@ export default function TagPage({
       <ArticleStream
         articles={articles}
         sections={sections}
+        showCategory={true}
         isAmp={isAmp}
         title={`Articles tagged with ${tagTitle}`}
         locale={currentLocale}

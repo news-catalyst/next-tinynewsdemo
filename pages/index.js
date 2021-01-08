@@ -103,6 +103,7 @@ export default function Home({
         <ArticleStream
           articles={mostRecentArticles}
           sections={sections}
+          showCategory={true}
           isAmp={isAmp}
           title="The Latest"
           locale={currentLocale}

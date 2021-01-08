@@ -4,6 +4,7 @@ import ArticleLink from './ArticleLink';
 export default function ArticleStream({
   articles,
   sections,
+  showCategory,
   isAmp,
   title,
   locale,
@@ -35,6 +36,7 @@ export default function ArticleStream({
                   article={streamArticle}
                   amp={isAmp}
                   locale={locale}
+                  showCategory={showCategory}
                 />
               ))}
           </ul>
