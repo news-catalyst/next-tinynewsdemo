@@ -28,6 +28,7 @@ export default function AuthorPage({
         title={`Stories by ${author.name}`}
         isAmp={isAmp}
         locale={currentLocale}
+        metadata={siteMetadata}
       />
     </Layout>
   );
