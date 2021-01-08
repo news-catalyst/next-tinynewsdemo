@@ -913,6 +913,61 @@ export default css.global`
 ***
 **/
   }
+  .section-layout__4 {
+    display: flex;
+    margin: 0 0 1.875rem 0;
+  }
+
+  .section-layout__4 .section__container .block {
+    display: flex;
+  }
+  .section-layout__4 .section__container .block .asset {
+    flex-flow: column nowrap;
+    flex-direction: column-reverse;
+  }
+
+  @media only screen and (min-width: 768px) {
+    .section-layout__4 .section__container .block .asset {
+      flex-flow: row;
+    }
+    .section-layout__4
+      .section__container
+      .block
+      .asset
+      .asset__meta-container {
+      flex: 1 1 0;
+    }
+    .section-layout__4 .section__container .block .asset .asset__thumbnail {
+      flex: 2 1 0;
+      margin-left: 2rem;
+    }
+    .section-layout__4
+      .section__container
+      .block
+      .asset
+      .asset__meta-container
+      .asset__descriptor
+      a {
+      font-size: 1rem;
+    }
+    .section-layout__4
+      .section__container
+      .block
+      .asset
+      .asset__meta-container
+      .asset__title {
+      font-size: 2rem;
+    }
+    .section-layout__4
+      .section__container
+      .block
+      .asset
+      .asset__meta-container
+      .asset__excerpt {
+      font-size: 18px;
+    }
+  }
+
   .section-layout__1 {
     display: flex;
     margin: 0 0 1.875rem 0;
