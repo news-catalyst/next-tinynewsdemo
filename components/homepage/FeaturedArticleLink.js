@@ -38,7 +38,6 @@ export default function FeaturedArticleLink({ locale, article, isAmp }) {
             </Link>
           </span>
         )}
-        &nbsp;
         {article.category && (
           <h4 className="asset__title">
             <Link
