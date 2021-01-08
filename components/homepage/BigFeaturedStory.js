@@ -60,7 +60,7 @@ export default function BigFeaturedStory(props) {
       </section>
       <section className="section section-layout__2">
         <div className="section__container">
-          <FeaturedSidebar />
+          <FeaturedSidebar metadata={props.metadata} />
         </div>
       </section>
     </>

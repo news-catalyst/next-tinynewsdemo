@@ -26,7 +26,7 @@ export default function GlobalNav({ metadata, sections }) {
           </a>
         </Link>
         <nav>{sectionLinks}</nav>
-        <button className="site__cta">Donate</button>
+        <button className="site__cta">{metadata.supportCTA}</button>
       </div>
     </header>
   );
