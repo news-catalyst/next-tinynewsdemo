@@ -5,13 +5,15 @@ import MainImage from './MainImage.js';
 import { renderAuthors } from '../../lib/utils.js';
 import { localiseText } from '../../lib/utils.js';
 
-export default function ArticleHeader({ article, locale, isAmp }) {
+export default function ArticleHeader({ article, locale, isAmp, metadata }) {
   let categoryTitle;
   let headline;
+  let postUrl;
 
   if (article && article.category) {
     categoryTitle = localiseText(locale, article.category.title);
     headline = localiseText(locale, article.headline);
+    postUrl = `${metadata.siteUrl}${article.category.slug}/${article.slug}`;
   }
 
   if (!article) {
@@ -74,14 +76,20 @@ export default function ArticleHeader({ article, locale, isAmp }) {
           <div className="post__share top">
             <ul className="post__share share__list">
               <li>
-                <a>
+                <a
+                  href={`https://facebook.com/sharer.php?display=page&u=${postUrl}`}
+                  target="_blank"
+                >
                   <span className="share__button facebook">
                     <span>share to facebook</span>
                   </span>
                 </a>
               </li>
               <li>
-                <a>
+                <a
+                  href={`https://twitter.com/intent/tweet?text=${postUrl}`}
+                  target="_blank"
+                >
                   <span className="share__button twitter">
                     <span>share to twitter</span>
                   </span>

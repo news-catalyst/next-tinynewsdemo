@@ -24,7 +24,12 @@ export default function Article({
       sections={sections}
     >
       <div className="post">
-        <ArticleHeader article={article} isAmp={isAmp} locale={currentLocale} />
+        <ArticleHeader
+          article={article}
+          isAmp={isAmp}
+          locale={currentLocale}
+          metadata={siteMetadata}
+        />
         <section className="section post__body rich-text" key="body">
           <ArticleBody
             article={article}
