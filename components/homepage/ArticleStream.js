@@ -1,4 +1,4 @@
-import MailchimpSubscribe from '../plugins/MailchimpSubscribe';
+import NewsletterBlock from '../plugins/NewsletterBlock';
 import ArticleLink from './ArticleLink';
 
 export default function ArticleStream({
@@ -7,6 +7,7 @@ export default function ArticleStream({
   isAmp,
   title,
   locale,
+  metadata,
 }) {
   return (
     <section className="section section-layout__3">
@@ -39,13 +40,7 @@ export default function ArticleStream({
               ))}
           </ul>
         </div>
-        <div className="block">
-          <div className="newsletter">
-            <h4>Get our newsletter</h4>
-            <p>Vital news from your community, every morning, in your inbox.</p>
-            <MailchimpSubscribe />
-          </div>
-        </div>
+        <NewsletterBlock metadata={metadata} headline={'Home'} />
       </div>
     </section>
   );
