@@ -2059,6 +2059,10 @@ export default css.global`
     padding-top: 2rem;
   }
 
+  .post__body .post-text figure {
+    margin: 1em 0;
+  }
+
   .post time {
     color: #565454;
     display: block;
