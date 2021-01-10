@@ -37,6 +37,7 @@ export default function CategoryPage(props) {
       <ArticleStream
         articles={props.articles}
         sections={props.sections}
+        showCategory={false}
         isAmp={isAmp}
         title={props.title}
         locale={props.currentLocale}

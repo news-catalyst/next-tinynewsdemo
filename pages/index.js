@@ -105,6 +105,7 @@ export default function Home({
         <ArticleStream
           articles={mostRecentArticles}
           sections={sections}
+          showCategory={true}
           isAmp={isAmp}
           title={metadata.homepageArticleStreamHed}
           locale={currentLocale}
