@@ -23,6 +23,7 @@ export default function Recirculation({
               <ArticleLink
                 key={streamArticle.id}
                 article={streamArticle}
+                showCategory={false}
                 isAmp={isAmp}
                 locale={locale}
               />
