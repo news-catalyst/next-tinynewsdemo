@@ -13,7 +13,7 @@ export default function BigFeaturedStory(props) {
 
   return (
     <>
-      <section className="section section-layout__1">
+      <section className="section section-layout__4">
         <div className="section__container">
           <div className="block">
             <div className="asset">
