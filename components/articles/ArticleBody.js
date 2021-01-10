@@ -2,9 +2,9 @@ import { useState, useEffect } from 'react';
 import { useScrollPercentage } from 'react-scroll-percentage';
 import { useAnalytics } from '../../lib/hooks/useAnalytics.js';
 import { renderBody } from '../../lib/utils.js';
-import MailchimpSubscribe from '../plugins/MailchimpSubscribe.js';
+import NewsletterBlock from '../plugins/NewsletterBlock';
 
-export default function ArticleBody({ article, locale, ads, isAmp }) {
+export default function ArticleBody({ article, locale, ads, isAmp, metadata }) {
   const body = renderBody(article, ads, isAmp);
 
   const { trackEvent } = useAnalytics();
@@ -67,12 +67,7 @@ export default function ArticleBody({ article, locale, ads, isAmp }) {
         <div className="post-text">
           <div>{body}</div>
         </div>
-        <div className="block newsletter">
-          <h4>Get our newsletter</h4>
-          <p>Vital news from your community, every morning, in your inbox.</p>
-          <br />
-          <MailchimpSubscribe articleTitle={article.headline} />
-        </div>
+        <NewsletterBlock metadata={metadata} headline={article.headline} />
       </div>
     </section>
   );
