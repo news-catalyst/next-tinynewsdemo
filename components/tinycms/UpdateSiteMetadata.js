@@ -9,6 +9,7 @@ export default function UpdateMetadata(props) {
   const [showNotification, setShowNotification] = useState(false);
   const [data, setData] = useState('');
   const [parsedData, setParsedData] = useState({});
+  const [editData, setEditData] = useState(false);
 
   const router = useRouter();
 
@@ -58,7 +59,7 @@ export default function UpdateMetadata(props) {
     console.log('parsedData:', parsedData);
 
     let parsed = parsedData;
-    if (data && Object.keys(parsedData).length === 0) {
+    if (data && (Object.keys(parsedData).length === 0 || editData)) {
       console.log('Populating new locale site metadata');
       parsed = JSON.parse(data);
       Object.keys(parsed).map((key) => {
@@ -99,29 +100,39 @@ export default function UpdateMetadata(props) {
           notificationType={notificationType}
         />
       )}
-      <div className="field">
-        <label className="label" htmlFor="name">
-          JSON Data:
-        </label>
-        <div className="control">
-          <pre>{data}</pre>
-        </div>
-      </div>
-      {Object.keys(parsedData).length === 0 && (
+      {!editData && (
         <div className="field">
           <label className="label" htmlFor="name">
-            Data: enter as JSON
+            JSON Data:
           </label>
           <div className="control">
-            <textarea
-              className="textarea"
-              name="data"
-              value={data}
-              onChange={(ev) => setData(ev.target.value)}
-            />
+            <pre>{data}</pre>
           </div>
+          <a
+            href="#"
+            className="button is-link"
+            onClick={() => setEditData(true)}
+          >
+            Edit JSON
+          </a>
         </div>
       )}
+      {Object.keys(parsedData).length === 0 ||
+        (editData && (
+          <div className="field">
+            <label className="label" htmlFor="name">
+              Data: enter as JSON
+            </label>
+            <div className="control">
+              <textarea
+                className="textarea"
+                name="data"
+                value={data}
+                onChange={(ev) => setData(ev.target.value)}
+              />
+            </div>
+          </div>
+        ))}
       {Object.keys(parsedData).map((key) => (
         <div className="field" key={key}>
           <label className="label" htmlFor={key}>
