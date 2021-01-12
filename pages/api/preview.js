@@ -8,7 +8,7 @@ export default async (req, res) => {
   }
 
   // Fetch the headless CMS to check if the provided `slug` exists
-  const article = await getArticleBySlug(req.query.slug);
+  const article = await getArticleBySlug(req.query.locale, req.query.slug);
 
   // If the slug doesn't exist prevent preview mode from being enabled
   if (!article) {
