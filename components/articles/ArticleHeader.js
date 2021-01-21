@@ -20,6 +20,15 @@ export default function ArticleHeader({ article, locale, isAmp, metadata }) {
     return null;
   }
 
+  const mainImageNode = article.content.find(
+    (node) => node.type === 'mainImage'
+  );
+  let mainImage = null;
+
+  if (mainImageNode) {
+    mainImage = mainImageNode.children[0];
+  }
+
   return (
     <section key="title" className="section post__header">
       <div className="section__container">
@@ -40,8 +49,9 @@ export default function ArticleHeader({ article, locale, isAmp, metadata }) {
                 <MainImage article={article} isAmp={isAmp} />
               </div>
             </div>
-            <span className="media-credit">Getty Images</span>
-            <figcaption className="media-caption">Caption</figcaption>
+            <figcaption className="media-caption">
+              {mainImage.imageAlt}
+            </figcaption>
           </figure>
         </div>
         <div className="post__meta post__meta--top">
