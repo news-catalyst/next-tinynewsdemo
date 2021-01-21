@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import { getHomepageData } from '../lib/homepage.js';
-import { useAmp } from 'next/amp';
 import { cachedContents } from '../lib/cached';
 import {
   listAllLocales,
@@ -13,6 +12,7 @@ import Layout from '../components/Layout';
 import ArticleStream from '../components/homepage/ArticleStream';
 import { getSiteMetadataForLocale } from '../lib/site_metadata.js';
 import Placeholder from '../components/homepage/Placeholder';
+import homepageStyles from '../styles/homepage.js';
 
 const BigFeaturedStory = dynamic(() =>
   import(`../components/homepage/BigFeaturedStory`)
@@ -43,8 +43,6 @@ export default function Home({
   );
   const [mostRecentArticles, setMostRecentArticles] = useState([]);
   const [metadata, setMetadata] = useState(siteMetadata);
-
-  const isAmp = useAmp();
 
   let featuredArticleIds = [];
   useEffect(() => {
@@ -81,7 +79,7 @@ export default function Home({
             sections={sections}
             featuredArticle={featuredArticle}
             setFeaturedArticle={setFeaturedArticle}
-            isAmp={isAmp}
+            isAmp={false}
             metadata={metadata}
           />
         )}
@@ -98,7 +96,7 @@ export default function Home({
             subFeaturedMiddleArticle={subFeaturedMiddleArticle}
             setSubFeaturedMiddleArticle={setSubFeaturedMiddleArticle}
             sections={sections}
-            isAmp={isAmp}
+            isAmp={false}
             metadata={metadata}
           />
         )}
@@ -106,12 +104,15 @@ export default function Home({
           articles={mostRecentArticles}
           sections={sections}
           showCategory={true}
-          isAmp={isAmp}
+          isAmp={false}
           title={metadata.homepageArticleStreamHed}
           locale={currentLocale}
           metadata={metadata}
         />
       </Layout>
+      <style jsx global>
+        {homepageStyles}
+      </style>
     </div>
   );
 }
