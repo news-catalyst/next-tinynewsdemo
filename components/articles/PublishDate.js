@@ -17,7 +17,7 @@ export default function PublishDate({ article }) {
         {firstPublishedOn !== null && <span>{firstPublishedOn}</span>}
         {lastPublishedOn !== null && (
           <span>
-            <em>Updated</em>
+            <em>Updated</em>&nbsp;
             {lastPublishedOn}
           </span>
         )}
