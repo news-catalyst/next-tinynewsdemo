@@ -1,6 +1,7 @@
 import dynamic from 'next/dynamic';
 import React, { useEffect, useState } from 'react';
 import { cachedContents } from '../../lib/cached';
+import { getSiteMetadataForLocale } from '../../lib/site_metadata.js';
 import {
   getHomepageData,
   listLayoutSchemas,
@@ -31,7 +32,7 @@ export default function HomePageEditor({
   tags,
   sections,
   currentLocale,
-  localeMappings,
+  metadata,
   apiUrl,
   apiToken,
 }) {
@@ -174,6 +175,7 @@ export default function HomePageEditor({
             tags={tags}
             sections={sections}
             locale={currentLocale}
+            metadata={metadata}
           />
         )}
         {selectedLayout &&
@@ -195,6 +197,7 @@ export default function HomePageEditor({
               tags={tags}
               sections={sections}
               locale={currentLocale}
+              metadata={metadata}
             />
           )}
       </div>
@@ -227,6 +230,8 @@ export async function getServerSideProps(context) {
   //    look up selected homepage articles
   const hpArticles = await getHomepageArticles(currentLocale, hpData);
 
+  const metadata = await getSiteMetadataForLocale(currentLocale);
+
   const tags = await listAllTags();
   const sections = await listAllSections();
 
@@ -238,7 +243,7 @@ export async function getServerSideProps(context) {
       tags,
       sections,
       currentLocale,
-      localeMappings,
+      metadata,
       apiUrl,
       apiToken,
     },
