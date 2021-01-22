@@ -6,6 +6,7 @@
     "dev": "next dev",
     "clear": "node script/clear.js",
     "populate": "node script/populate.js",
+    "bootstrap": "node script/bootstrap.js",
     "build": "next build",
     "start": "next start",
     "export": "next build && next export",
