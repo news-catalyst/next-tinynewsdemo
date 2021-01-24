@@ -10,6 +10,66 @@ const CONTENT_DELIVERY_API_URL = process.env.CONTENT_DELIVERY_API_URL;
 const CONTENT_DELIVERY_API_ACCESS_TOKEN =
   process.env.CONTENT_DELIVERY_API_ACCESS_TOKEN;
 
+function createGeneralNewsCategory() {
+  const url = CONTENT_DELIVERY_API_URL;
+
+  let localeOpts = {
+    method: 'POST',
+    headers: {
+      authorization: CONTENT_DELIVERY_API_ACCESS_TOKEN,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({query: gql.LIST_LOCALES}),
+  };
+
+  let values = [];
+  fetch(url, localeOpts)
+    .then((res) => res.json())
+    .then((responseParsed) => {
+      // console.log(responseParsed)
+      let locales = responseParsed.data.i18n.listI18NLocales.data;
+
+      locales.map(
+        (locale) => {
+          values.push({
+            value: "News",
+            locale: locale.id
+          })
+
+        });
+      })
+    .then((arg) => {
+      const catVars = {
+        data: {
+          slug: "news",
+          title: {
+            values: values
+          }
+        }
+      };
+
+      let opts = {
+        method: 'POST',
+        headers: {
+          authorization: CONTENT_DELIVERY_API_ACCESS_TOKEN,
+          'Content-Type': 'application/json',
+        },
+
+        body: JSON.stringify({ 
+          query: gql.CREATE_CATEGORY,
+          variables: catVars
+        }),
+      };
+
+      fetch(url, opts)
+        .then((res) => res.json())
+        .then((data) => {
+          console.log("- created general news category in all locales");
+        })
+        .catch(console.error);
+    })
+}
+
 function createHomepageLayouts() {
   const url = CONTENT_DELIVERY_API_URL;
 
@@ -239,6 +299,7 @@ function createMetadata() {
 }
 
 async function main() {
+  createGeneralNewsCategory();
   createHomepageLayouts();
   createMetadata();
 }
