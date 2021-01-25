@@ -32,14 +32,11 @@ export default function Home({
   const [featuredArticle, setFeaturedArticle] = useState(
     hpArticles['featured']
   );
-  const [subFeaturedLeftArticle, setSubFeaturedLeftArticle] = useState(
-    hpArticles['subfeatured-left']
+  const [subFeaturedTopArticle, setSubFeaturedTopArticle] = useState(
+    hpArticles['subfeatured-top']
   );
-  const [subFeaturedRightArticle, setSubFeaturedRightArticle] = useState(
-    hpArticles['subfeatured-right']
-  );
-  const [subFeaturedMiddleArticle, setSubFeaturedMiddleArticle] = useState(
-    hpArticles['subfeatured-middle']
+  const [subFeaturedBottomArticle, setSubFeaturedBottomArticle] = useState(
+    hpArticles['subfeatured-bottom']
   );
   const [mostRecentArticles, setMostRecentArticles] = useState([]);
   const [metadata, setMetadata] = useState(siteMetadata);
@@ -89,12 +86,10 @@ export default function Home({
             articles={hpArticles}
             featuredArticle={featuredArticle}
             setFeaturedArticle={setFeaturedArticle}
-            subFeaturedLeftArticle={subFeaturedLeftArticle}
-            setSubFeaturedLeftArticle={setSubFeaturedLeftArticle}
-            subFeaturedRightArticle={subFeaturedRightArticle}
-            setSubFeaturedRightArticle={setSubFeaturedRightArticle}
-            subFeaturedMiddleArticle={subFeaturedMiddleArticle}
-            setSubFeaturedMiddleArticle={setSubFeaturedMiddleArticle}
+            subFeaturedTopArticle={subFeaturedTopArticle}
+            setSubFeaturedTopArticle={setSubFeaturedTopArticle}
+            subFeaturedBottomArticle={subFeaturedBottomArticle}
+            setSubFeaturedBottomArticle={setSubFeaturedBottomArticle}
             sections={sections}
             isAmp={false}
             metadata={metadata}

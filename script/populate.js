@@ -151,7 +151,7 @@ function createHomepageLayouts() {
   const lpslVars = {
     data: {
       name: "Large Package Story Lead",
-      data: "{ \"subfeatured-left\":\"string\", \"subfeatured-middle\":\"string\", \"subfeatured-right\":\"string\", \"featured\":\"string\" }"
+      data: "{ \"subfeatured-top\":\"string\", \"subfeatured-bottom\":\"string\", \"featured\":\"string\" }"
     }
   };
 
@@ -161,7 +161,7 @@ function createHomepageLayouts() {
       data: "{ \"featured\":\"string\" }"
     }
   };
-  
+
   let opts = {
     method: 'POST',
     headers: {
@@ -169,7 +169,7 @@ function createHomepageLayouts() {
       'Content-Type': 'application/json',
     },
 
-    body: JSON.stringify({ 
+    body: JSON.stringify({
       query: gql.CREATE_LAYOUT_SCHEMA,
       variables: lpslVars
     }),
