@@ -21,7 +21,7 @@ export default function LargePackageStoryLead(props) {
           <div className="block">
             <div className="asset">
               {props.editable && (
-                <>
+                <div style={{ position: 'relative' }}>
                   <ModalArticleSearch
                     apiUrl={props.apiUrl}
                     apiToken={props.apiToken}
@@ -36,10 +36,15 @@ export default function LargePackageStoryLead(props) {
                   <button
                     className="button is-info"
                     onClick={() => setFeaturedModal(true)}
+                    style={{
+                      position: 'absolute',
+                      bottom: 0,
+                      left: 0,
+                    }}
                   >
                     Change Main Featured Article
                   </button>
-                </>
+                </div>
               )}
               {props.featuredArticle && (
                 <FeaturedArticleLink
@@ -54,7 +59,7 @@ export default function LargePackageStoryLead(props) {
           <div className="block">
             <div className="asset">
               {props.editable && (
-                <>
+                <div style={{ position: 'relative' }}>
                   <ModalArticleSearch
                     apiUrl={props.apiUrl}
                     apiToken={props.apiToken}
@@ -69,10 +74,15 @@ export default function LargePackageStoryLead(props) {
                   <button
                     className="button is-info"
                     onClick={() => setTopModal(true)}
+                    style={{
+                      position: 'absolute',
+                      bottom: 0,
+                      left: 0,
+                    }}
                   >
                     Change Top Subfeatured Article
                   </button>
-                </>
+                </div>
               )}
               {props.subFeaturedTopArticle && (
                 <FeaturedArticleLink
@@ -87,7 +97,7 @@ export default function LargePackageStoryLead(props) {
           <div className="block">
             <div className="asset">
               {props.editable && (
-                <>
+                <div style={{ position: 'relative' }}>
                   <ModalArticleSearch
                     apiUrl={props.apiUrl}
                     apiToken={props.apiToken}
@@ -102,10 +112,15 @@ export default function LargePackageStoryLead(props) {
                   <button
                     className="button is-info"
                     onClick={() => setBottomModal(true)}
+                    style={{
+                      position: 'absolute',
+                      bottom: 0,
+                      left: 0,
+                    }}
                   >
                     Change Bottom Subfeatured Article
                   </button>
-                </>
+                </div>
               )}
               {props.subFeaturedBottomArticle && (
                 <FeaturedArticleLink
