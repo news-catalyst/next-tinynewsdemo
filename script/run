@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+
+rm .env.local
+ln -s .env.local-$1 .env.local
+yarn clear && yarn populate && yarn dev
