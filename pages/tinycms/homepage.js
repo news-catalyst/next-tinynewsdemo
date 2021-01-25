@@ -16,7 +16,7 @@ import {
 import AdminNav from '../../components/nav/AdminNav';
 import Notification from '../../components/tinycms/Notification';
 import AdminLayout from '../../components/AdminLayout';
-import globalStyles from '../../styles/global.js';
+import homepageStyles from '../../styles/homepage.js';
 
 const BigFeaturedStory = dynamic(() =>
   import(`../../components/homepage/BigFeaturedStory`)
@@ -43,9 +43,8 @@ export default function HomePageEditor({
   const [featuredArticle, setFeaturedArticle] = useState(
     hpArticles['featured']
   );
-  const [subFeaturedLeftArticle, setSubFeaturedLeftArticle] = useState(null);
-  const [subFeaturedRightArticle, setSubFeaturedRightArticle] = useState(null);
-  const [subFeaturedMiddleArticle, setSubFeaturedMiddleArticle] = useState(
+  const [subFeaturedTopArticle, setSubFeaturedTopArticle] = useState(null);
+  const [subFeaturedBottomArticle, setSubFeaturedBottomArticle] = useState(
     null
   );
   const [homepageKey, setHomepageKey] = useState(Math.random());
@@ -68,9 +67,8 @@ export default function HomePageEditor({
     }
     if (selectedLayout && selectedLayout.name === 'Large Package Story lead') {
       setFeaturedArticle(hpArticles['featured']);
-      setSubFeaturedLeftArticle(hpArticles['subfeatured-left']);
-      setSubFeaturedRightArticle(hpArticles['subfeatured-right']);
-      setSubFeaturedMiddleArticle(hpArticles['subfeatured-middle']);
+      setSubFeaturedTopArticle(hpArticles['subfeatured-top']);
+      setSubFeaturedBottomArticle(hpArticles['subfeatured-bottom']);
     }
   }, [hpData]);
 
@@ -97,19 +95,16 @@ export default function HomePageEditor({
       articlesData = {
         featured: featuredArticle.slug,
       };
-    } else if (selectedLayout.name === 'Large Package Story lead') {
+    } else if (selectedLayout.name === 'Large Package Story Lead') {
       articlesData = {};
       if (featuredArticle) {
         articlesData.featured = featuredArticle.slug;
       }
-      if (subFeaturedLeftArticle) {
-        articlesData['subfeatured-left'] = subFeaturedLeftArticle.slug;
+      if (subFeaturedTopArticle) {
+        articlesData['subfeatured-top'] = subFeaturedTopArticle.slug;
       }
-      if (subFeaturedMiddleArticle) {
-        articlesData['subfeatured-middle'] = subFeaturedMiddleArticle.slug;
-      }
-      if (subFeaturedRightArticle) {
-        articlesData['subfeatured-right'] = subFeaturedRightArticle.slug;
+      if (subFeaturedBottomArticle) {
+        articlesData['subfeatured-bottom'] = subFeaturedBottomArticle.slug;
       }
     }
 
@@ -162,7 +157,7 @@ export default function HomePageEditor({
         />
       )}
 
-      <div key={homepageKey}>
+      <div className="homepage" key={homepageKey}>
         {selectedLayout && selectedLayout.name === 'Big Featured Story' && (
           <BigFeaturedStory
             editable={true}
@@ -179,19 +174,17 @@ export default function HomePageEditor({
           />
         )}
         {selectedLayout &&
-          selectedLayout.name === 'Large Package Story lead' && (
+          selectedLayout.name === 'Large Package Story Lead' && (
             <LargePackageStoryLead
               editable={true}
               apiUrl={apiUrl}
               apiToken={apiToken}
               featuredArticle={featuredArticle}
               setFeaturedArticle={setFeaturedArticle}
-              subFeaturedLeftArticle={subFeaturedLeftArticle}
-              setSubFeaturedLeftArticle={setSubFeaturedLeftArticle}
-              subFeaturedRightArticle={subFeaturedRightArticle}
-              setSubFeaturedRightArticle={setSubFeaturedRightArticle}
-              subFeaturedMiddleArticle={subFeaturedMiddleArticle}
-              setSubFeaturedMiddleArticle={setSubFeaturedMiddleArticle}
+              subFeaturedTopArticle={subFeaturedTopArticle}
+              setSubFeaturedTopArticle={setSubFeaturedTopArticle}
+              subFeaturedBottomArticle={subFeaturedBottomArticle}
+              setSubFeaturedBottomArticle={setSubFeaturedBottomArticle}
               hpData={hpData}
               articles={hpArticles}
               tags={tags}
@@ -202,7 +195,7 @@ export default function HomePageEditor({
           )}
       </div>
       <style jsx global>
-        {globalStyles}
+        {homepageStyles}
       </style>
     </AdminLayout>
   );
