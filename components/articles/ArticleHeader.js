@@ -9,11 +9,13 @@ export default function ArticleHeader({ article, locale, isAmp, metadata }) {
   let categoryTitle;
   let headline;
   let postUrl;
+  let searchDescription;
 
   if (article && article.category) {
     categoryTitle = localiseText(locale, article.category.title);
     headline = localiseText(locale, article.headline);
     postUrl = `${metadata.siteUrl}${article.category.slug}/${article.slug}`;
+    searchDescription = localiseText(locale, article.searchDescription);
   }
 
   if (!article) {
@@ -38,9 +40,7 @@ export default function ArticleHeader({ article, locale, isAmp, metadata }) {
           </Link>
         </div>
         <div className="post__title">{headline}</div>
-        <div className="post__dek">
-          {article.searchDescription.values[0].value}
-        </div>
+        <div className="post__dek">{searchDescription}</div>
         <PublishDate article={article} />
         <div className="section post__featured-media">
           <figure>
