@@ -18,7 +18,7 @@ export default function BigFeaturedStory(props) {
           <div className="block">
             <div className="asset">
               {props.editable && (
-                <>
+                <div style={{ position: 'relative' }}>
                   <ModalArticleSearch
                     apiUrl={props.apiUrl}
                     apiToken={props.apiToken}
@@ -26,25 +26,30 @@ export default function BigFeaturedStory(props) {
                     setModal={setModal}
                     featuredArticle={props.featuredArticle}
                     setFeaturedArticle={props.setFeaturedArticle}
+                    locale={props.locale}
                   />
-
-                  <button
-                    className="button is-info"
-                    onClick={() => setModal(true)}
-                  >
-                    Change Featured Article
-                  </button>
                   <div id="featuredArticle">
                     {props.featuredArticle && (
                       <FeaturedArticleLink
-                        key={props.articles['featured'].id}
+                        key={props.featuredArticle.id}
                         article={props.featuredArticle}
                         amp={props.isAmp}
                         locale={props.locale}
                       />
                     )}
                   </div>
-                </>
+                  <button
+                    className="button is-info"
+                    onClick={() => setModal(true)}
+                    style={{
+                      position: 'absolute',
+                      bottom: 0,
+                      left: 0,
+                    }}
+                  >
+                    Change Featured Article
+                  </button>
+                </div>
               )}
               {!props.editable && props.articles['featured'] && (
                 <FeaturedArticleLink
