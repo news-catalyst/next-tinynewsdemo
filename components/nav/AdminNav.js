@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 export default function AdminNav(props) {
   const [currentLayoutName, setCurrentLayoutName] = useState('');
+  const [showDropdown, setShowDropdown] = useState(false);
 
   useEffect(() => {
     if (props.homePageEditor && props.hpData && props.hpData.layoutSchema) {
@@ -45,7 +46,13 @@ export default function AdminNav(props) {
         </div>
         {props.homePageEditor && (
           <div className="navbar-end">
-            <div className="navbar-item has-dropdown is-active">
+            <div
+              className={`navbar-item has-dropdown ${
+                showDropdown && 'is-active'
+              }`}
+              onMouseEnter={() => setShowDropdown(true)}
+              onMouseLeave={() => setShowDropdown(false)}
+            >
               <a className="navbar-link">Change layout</a>
               <div className="navbar-dropdown is-right">
                 {props.layoutSchemas.map((option) => (

@@ -55,7 +55,7 @@ function createGeneralNewsCategory() {
           'Content-Type': 'application/json',
         },
 
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           query: gql.CREATE_CATEGORY,
           variables: catVars
         }),
@@ -76,7 +76,7 @@ function createHomepageLayouts() {
   const lpslVars = {
     data: {
       name: "Large Package Story Lead",
-      data: "{ \"subfeatured-left\":\"string\", \"subfeatured-middle\":\"string\", \"subfeatured-right\":\"string\", \"featured\":\"string\" }"
+      data: "{ \"subfeatured-top\":\"string\", \"subfeatured-bottom\":\"string\", \"featured\":\"string\" }"
     }
   };
 
@@ -86,7 +86,7 @@ function createHomepageLayouts() {
       data: "{ \"featured\":\"string\" }"
     }
   };
-  
+
   let opts = {
     method: 'POST',
     headers: {
@@ -94,7 +94,7 @@ function createHomepageLayouts() {
       'Content-Type': 'application/json',
     },
 
-    body: JSON.stringify({ 
+    body: JSON.stringify({
       query: gql.CREATE_LAYOUT_SCHEMA,
       variables: lpslVars
     }),
@@ -201,14 +201,14 @@ function createMetadata() {
                 published: true,
               },
             };
-            
+
             let opts = {
               method: 'POST',
               headers: {
                 authorization: CONTENT_DELIVERY_API_ACCESS_TOKEN,
                 'Content-Type': 'application/json',
               },
-              body: JSON.stringify({ 
+              body: JSON.stringify({
                 query: gql.CREATE_METADATA,
                 variables: variables
               }),
@@ -261,14 +261,14 @@ function createMetadata() {
                   published: true,
                 },
               };
-            
+
               let opts = {
                 method: 'POST',
                 headers: {
                   authorization: CONTENT_DELIVERY_API_ACCESS_TOKEN,
                   'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ 
+                body: JSON.stringify({
                   query: gql.UPDATE_METADATA,
                   variables: variables
                 }),
