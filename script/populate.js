@@ -6,6 +6,9 @@ const fs = require('fs');
 const path = require('path');
 const fetch = require('node-fetch');
 
+const gql = require('../lib/graphql/queries');
+const { create } = require('domain');
+
 const CONTENT_DELIVERY_API_URL = process.env.CONTENT_DELIVERY_API_URL;
 const CONTENT_DELIVERY_API_ACCESS_TOKEN =
   process.env.CONTENT_DELIVERY_API_ACCESS_TOKEN;
@@ -142,9 +145,58 @@ function getAds() {
     .catch(console.error);
 }
 
+function createHomepageLayouts() {
+  const url = CONTENT_DELIVERY_API_URL;
+
+  const lpslVars = {
+    data: {
+      name: "Large Package Story Lead",
+      data: "{ \"subfeatured-left\":\"string\", \"subfeatured-middle\":\"string\", \"subfeatured-right\":\"string\", \"featured\":\"string\" }"
+    }
+  };
+
+  const bfsVars = {
+    data: {
+      name: "Big Featured Story",
+      data: "{ \"featured\":\"string\" }"
+    }
+  };
+  
+  let opts = {
+    method: 'POST',
+    headers: {
+      authorization: CONTENT_DELIVERY_API_ACCESS_TOKEN,
+      'Content-Type': 'application/json',
+    },
+
+    body: JSON.stringify({ 
+      query: gql.CREATE_LAYOUT_SCHEMA,
+      variables: lpslVars
+    }),
+  };
+
+  fetch(url, opts)
+    .then((res) => res.json())
+    .then((data) => {
+      console.log(JSON.stringify(data));
+    })
+    .catch(console.error);
+
+  opts.body = JSON.stringify({
+      query: gql.CREATE_LAYOUT_SCHEMA,
+      variables: bfsVars
+  })
+
+  fetch(url, opts)
+    .then((res) => res.json())
+    .then((data) => {
+      console.log(JSON.stringify(data));
+    })
+    .catch(console.error);
+}
+
 async function main() {
-  console.log("LETTERHEAD:", process.env.LETTERHEAD_API_URL, process.env.LETTERHEAD_API_KEY);
-  console.log("WEBINY:", process.env.CONTENT_DELIVERY_API_URL, process.env.CONTENT_DELIVERY_API_ACCESS_TOKEN);
+  createHomepageLayouts();
   listLocales();
   listSections();
   listTags();
