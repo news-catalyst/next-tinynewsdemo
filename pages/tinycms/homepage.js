@@ -16,6 +16,7 @@ import {
 import AdminNav from '../../components/nav/AdminNav';
 import Notification from '../../components/tinycms/Notification';
 import AdminLayout from '../../components/AdminLayout';
+import globalStyles from '../../styles/global.js';
 import homepageStyles from '../../styles/homepage.js';
 
 const BigFeaturedStory = dynamic(() =>
@@ -194,6 +195,9 @@ export default function HomePageEditor({
             />
           )}
       </div>
+      <style jsx global>
+        {globalStyles}
+      </style>
       <style jsx global>
         {homepageStyles}
       </style>
