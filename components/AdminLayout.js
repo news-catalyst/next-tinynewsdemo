@@ -1,6 +1,5 @@
 import Head from 'next/head';
 import 'bulma/css/bulma.min.css';
-import globalStyles from '../styles/global.js';
 
 export default function AdminLayout({ children }) {
   return (
@@ -14,9 +13,6 @@ export default function AdminLayout({ children }) {
         />
       </Head>
       <main className="container">{children}</main>
-      <style jsx global>
-        {globalStyles}
-      </style>
     </>
   );
 }
