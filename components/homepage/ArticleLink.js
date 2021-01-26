@@ -43,11 +43,8 @@ export default function ArticleLink({ locale, article, isAmp, showCategory }) {
       <div className="asset__meta-container">
         <span className="asset__descriptor">
           {article.category && showCategory && (
-            <Link
-              key={article.category.title.values[0].value}
-              href={`/${article.category.slug}`}
-            >
-              <a>{article.category.title.values[0].value}</a>
+            <Link key={categoryTitle} href={`/${article.category.slug}`}>
+              <a>{categoryTitle}</a>
             </Link>
           )}
         </span>
@@ -57,7 +54,7 @@ export default function ArticleLink({ locale, article, isAmp, showCategory }) {
               href="/articles/[category]/[slug]"
               as={`/articles/${article.category.slug}/${article.slug}`}
             >
-              <a>{article.headline.values[0].value}</a>
+              <a>{headline}</a>
             </Link>
           )}
         </h4>
