@@ -8,6 +8,7 @@ import {
   listMostRecentArticles,
   getHomepageArticles,
 } from '../lib/articles.js';
+import { getArticleAds } from '../lib/ads.js';
 import Layout from '../components/Layout';
 import ArticleStream from '../components/homepage/ArticleStream';
 import { getSiteMetadataForLocale } from '../lib/site_metadata.js';
@@ -28,6 +29,7 @@ export default function Home({
   sections,
   currentLocale,
   siteMetadata,
+  expandedAds,
 }) {
   const [featuredArticle, setFeaturedArticle] = useState(
     hpArticles['featured']
@@ -103,6 +105,7 @@ export default function Home({
           title={metadata.homepageArticleStreamHed}
           locale={currentLocale}
           metadata={metadata}
+          ads={expandedAds}
         />
       </Layout>
       <style jsx global>
@@ -131,6 +134,10 @@ export async function getStaticProps({ locale }) {
 
   const siteMetadata = await getSiteMetadataForLocale(currentLocale);
 
+  const allAds = await cachedContents('ads', getArticleAds);
+  const expandedAds = allAds.filter((ad) => ad.adTypeId === 166);
+  console.log(expandedAds);
+
   return {
     props: {
       hpData,
@@ -139,6 +146,7 @@ export async function getStaticProps({ locale }) {
       sections,
       currentLocale,
       siteMetadata,
+      expandedAds,
     },
     revalidate: 1,
   };
