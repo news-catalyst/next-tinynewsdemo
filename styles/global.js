@@ -846,15 +846,32 @@ export default css.global`
       flex: 1;
     }
   }
-  .section-layout__3 .block .text-ad-container {
+  .section-layout__3 .block .ad-wrapper {
     border-top: none;
     border-bottom: none;
     margin: 0;
   }
-  .section-layout__3 .block .text-ad-container .media.ad-img-container {
-    max-width: 11.25rem;
+
+  .section-layout__3 .block .ad-wrapper .media-left {
+    flex-direction: column;
+    align-items: center;
   }
-  .section-layout__3 .block .text-ad-container .button {
+
+  .section-layout__3 .block .ad-wrapper .media-left .media.ad-img-container {
+    margin-bottom: 1rem;
+    width: 100%;
+  }
+
+  @media only screen and (min-width: 960px) {
+    .section-layout__3 .block .ad-wrapper .media-left {
+      flex-direction: row;
+    }
+    .section-layout__3 .block .ad-wrapper .media-left .media.ad-img-container {
+      margin-bottom: 0;
+      width: calc(100% / 3);
+    }
+  }
+  .section-layout__3 .block .ad-wrapper .button {
     margin-top: 1rem;
   }
   .styleone .section-layout__3 .block:nth-child(1) .section__title {
@@ -1727,8 +1744,8 @@ export default css.global`
     background-size: 0.9375rem auto;
   }
 
-  .text-ad-container,
-  .rich-text .text-ad-container {
+  .ad-wrapper,
+  .rich-text .ad-wrapper {
     border-bottom: 0.0625rem solid #e7e5e4;
     border-top: 0.0625rem solid #e7e5e4;
     display: block;
@@ -1736,23 +1753,23 @@ export default css.global`
     padding: 0.5rem 0 1.5rem;
   }
   @media (min-width: 48rem) {
-    .text-ad-container,
-    .rich-text .text-ad-container {
+    .ad-wrapper,
+    .rich-text .ad-wrapper {
       padding-left: 2rem;
       padding-right: 2rem;
     }
   }
-  .text-ad-container .media,
-  .rich-text .text-ad-container .media {
+  .ad-wrapper .media,
+  .rich-text .ad-wrapper .media {
     background-color: #f7f5f4;
     overflow: hidden;
     position: relative;
     width: 100%;
   }
-  .text-ad-container .media .content,
-  .text-ad-container .media > a,
-  .rich-text .text-ad-container .media .content,
-  .rich-text .text-ad-container .media > a {
+  .ad-wrapper .media .content,
+  .ad-wrapper .media > a,
+  .rich-text .ad-wrapper .media .content,
+  .rich-text .ad-wrapper .media > a {
     bottom: 0;
     display: block;
     left: 0;
@@ -1761,8 +1778,8 @@ export default css.global`
     text-align: center;
     top: 0;
   }
-  .text-ad-container .media img,
-  .rich-text .text-ad-container .media img {
+  .ad-wrapper .media img,
+  .rich-text .ad-wrapper .media img {
     height: 100%;
     left: 100%;
     margin-left: -200%;
@@ -1770,43 +1787,43 @@ export default css.global`
     position: relative;
     width: auto;
   }
-  .text-ad-container .media-left,
-  .rich-text .text-ad-container .media-left {
+  .ad-wrapper .media-left,
+  .rich-text .ad-wrapper .media-left {
     display: flex;
     flex-flow: row wrap;
   }
   @media (max-width: 47.9375rem) {
-    .text-ad-container .media-left,
-    .rich-text .text-ad-container .media-left {
+    .ad-wrapper .media-left,
+    .rich-text .ad-wrapper .media-left {
       align-items: flex-start;
     }
   }
   @media (min-width: 48rem) {
-    .text-ad-container .media-left,
-    .rich-text .text-ad-container .media-left {
+    .ad-wrapper .media-left,
+    .rich-text .ad-wrapper .media-left {
       align-items: center;
     }
   }
-  .text-ad-container .media.ad-img-container,
-  .rich-text .text-ad-container .media.ad-img-container {
+  .ad-wrapper .media.ad-img-container,
+  .rich-text .ad-wrapper .media.ad-img-container {
     max-width: 18.75rem;
     width: calc(100% / 3);
   }
-  .text-ad-container .media-content,
-  .rich-text .text-ad-container .media-content {
+  .ad-wrapper .media-content,
+  .rich-text .ad-wrapper .media-content {
     padding-left: 1.5rem;
     flex: 1;
   }
-  .text-ad-container .media-content > *:not(:last-of-type),
-  .rich-text .text-ad-container .media-content > *:not(:last-of-type) {
+  .ad-wrapper .media-content > *:not(:last-of-type),
+  .rich-text .ad-wrapper .media-content > *:not(:last-of-type) {
     margin-bottom: 0;
   }
-  .text-ad-container .media-content p,
-  .rich-text .text-ad-container .media-content p {
+  .ad-wrapper .media-content p,
+  .rich-text .ad-wrapper .media-content p {
     font-size: 0.875rem;
   }
-  .text-ad-container h3,
-  .rich-text .text-ad-container h3 {
+  .ad-wrapper h3,
+  .rich-text .ad-wrapper h3 {
     font-family: 'San Francisco', -apple-system, BlinkMacSystemFont,
       '.SFNSText-Regular', 'Helvetica Neue', Helvetica, sans-serif;
     font-size: 1.3125rem;
@@ -1817,16 +1834,16 @@ export default css.global`
     margin-bottom: 0.5rem;
     margin-top: 0;
   }
-  .text-ad-container .ad-brand p,
-  .rich-text .text-ad-container .ad-brand p {
+  .ad-wrapper .ad-brand p,
+  .rich-text .ad-wrapper .ad-brand p {
     color: #263238;
     font-size: 0.8125rem;
     padding-top: 0.3125rem;
     margin-bottom: 1rem;
     text-align: center;
   }
-  .text-ad-container .button,
-  .rich-text .text-ad-container .button {
+  .ad-wrapper .button,
+  .rich-text .ad-wrapper .button {
     align-items: center;
     background-color: #e7e5e4;
     border-bottom: none;
@@ -2055,12 +2072,12 @@ export default css.global`
   .colorone .newsletter,
   .colorone .bar:before,
   .colorone .bar:after,
-  .colorone .text-ad-container .button {
+  .colorone .ad-wrapper .button {
     background-color: #3666d1;
     color: #fff;
   }
 
-  .colorone .text-ad-container .button {
+  .colorone .ad-wrapper .button {
     font-weight: 700;
   }
 
@@ -2114,12 +2131,12 @@ export default css.global`
   .colortwo .site__cta,
   .colortwo .bar:before,
   .colortwo .bar:after,
-  .colortwo .text-ad-container .button {
+  .colortwo .ad-wrapper .button {
     background-color: #193441;
     color: #fff;
   }
 
-  .colortwo .text-ad-container .button {
+  .colortwo .ad-wrapper .button {
     font-weight: 700;
   }
 
@@ -2160,11 +2177,11 @@ export default css.global`
 
   .colorthree .post__descriptor a,
   .colorthree .section-layout__2 .block__cta,
-  .colorthree .text-ad-container .button {
+  .colorthree .ad-wrapper .button {
     color: #bf0413;
   }
 
-  .colorthree .text-ad-container .button {
+  .colorthree .ad-wrapper .button {
     background-color: #ffffff;
     border: 0.0625rem solid #e7e5e4;
     font-weight: 700;
@@ -2256,10 +2273,10 @@ export default css.global`
   .styleone .asset__title,
   .styleone .newsletter *,
   .styleone .post__meta--bottom .post__author-meta p,
-  .styleone .text-ad-container .ad-brand p,
-  .styleone .rich-text .text-ad-container .ad-brand p,
-  .styleone .text-ad-container .media-content p,
-  .styleone .rich-text .text-ad-container .media-content p,
+  .styleone .ad-wrapper .ad-brand p,
+  .styleone .rich-text .ad-wrapper .ad-brand p,
+  .styleone .ad-wrapper .media-content p,
+  .styleone .rich-text .ad-wrapper .media-content p,
   .styleone .site__logo,
   .styleone .rich-text h1,
   .styleone .rich-text h3,
@@ -2320,8 +2337,8 @@ export default css.global`
   .styleone .post__featured-media .media-caption,
   .styleone .post__author-meta .contact,
   .styleone .post__tags .tags a,
-  .styleone .text-ad-container .ad-brand p,
-  .styleone .rich-text .text-ad-container .ad-brand p {
+  .styleone .ad-wrapper .ad-brand p,
+  .styleone .rich-text .ad-wrapper .ad-brand p {
     font-size: 0.8125rem;
   }
   .styleone .post__author-meta,
@@ -2400,10 +2417,10 @@ export default css.global`
   .styletwo .post__dek,
   .styletwo .rich-text p,
   .styletwo .post__meta--bottom .post__author-meta p,
-  .styletwo .text-ad-container .ad-brand p,
-  .styletwo .rich-text .text-ad-container .ad-brand p,
-  .styletwo .text-ad-container .media-content p,
-  .styletwo .rich-text .text-ad-container .media-content p,
+  .styletwo .ad-wrapper .ad-brand p,
+  .styletwo .rich-text .ad-wrapper .ad-brand p,
+  .styletwo .ad-wrapper .media-content p,
+  .styletwo .rich-text .ad-wrapper .media-content p,
   .styletwo .block__cta,
   .styletwo .post__author-meta .contact,
   .styletwo .post__tags .tags a,
@@ -2412,8 +2429,8 @@ export default css.global`
   .styletwo .media-caption,
   .styletwo .media-credit,
   .styletwo .post__comment-counter .label,
-  .styletwo .text-ad-container .button,
-  .styletwo .rich-text .text-ad-container .button,
+  .styletwo .ad-wrapper .button,
+  .styletwo .rich-text .ad-wrapper .button,
   .styletwo .site__header nav a,
   .styletwo .rich-text li,
   .styletwo .post__tags .tags a {
@@ -2434,17 +2451,17 @@ export default css.global`
   .styletwo .post__featured-media .media-caption,
   .styletwo .post__author-meta .contact,
   .styletwo .post__tags .tags a,
-  .styletwo .text-ad-container .ad-brand p,
-  .styletwo .rich-text .text-ad-container .ad-brand p,
+  .styletwo .ad-wrapper .ad-brand p,
+  .styletwo .rich-text .ad-wrapper .ad-brand p,
   .styletwo .block__list .asset__descriptor a {
     font-size: 0.875rem;
   }
   .styletwo .post__author-meta,
   .styletwo .post__meta--bottom .post__author-meta p,
   .styletwo .post__author-meta,
-  .styletwo .text-ad-container .media-content p,
-  .styletwo .text-ad-container .button,
-  .styletwo .rich-text .text-ad-container .button {
+  .styletwo .ad-wrapper .media-content p,
+  .styletwo .ad-wrapper .button,
+  .styletwo .rich-text .ad-wrapper .button {
     font-size: 1rem;
   }
   .styletwo .rich-text a:hover,
@@ -2538,8 +2555,8 @@ export default css.global`
   .styletwo .newsletter h4 {
     font-size: 1.5rem;
   }
-  .styletwo .text-ad-container .button,
-  .styletwo .rich-text .text-ad-container .button {
+  .styletwo .ad-wrapper .button,
+  .styletwo .rich-text .ad-wrapper .button {
     font-weight: 600;
     letter-spacing: -0.005em;
   }
@@ -2555,10 +2572,10 @@ export default css.global`
   .stylethree .post__dek,
   .stylethree .rich-text p,
   .stylethree .post__meta--bottom .post__author-meta p,
-  .stylethree .text-ad-container .ad-brand p,
-  .stylethree .rich-text .text-ad-container .ad-brand p,
-  .stylethree .text-ad-container .media-content p,
-  .stylethree .rich-text .text-ad-container .media-content p,
+  .stylethree .ad-wrapper .ad-brand p,
+  .stylethree .rich-text .ad-wrapper .ad-brand p,
+  .stylethree .ad-wrapper .media-content p,
+  .stylethree .rich-text .ad-wrapper .media-content p,
   .stylethree .block-list .block__cta,
   .stylethree .post__author-meta .contact,
   .stylethree .post__tags .tags a,
@@ -2567,8 +2584,8 @@ export default css.global`
   .stylethree .media-caption,
   .stylethree .media-credit,
   .stylethree .post__comment-counter .label,
-  .stylethree .text-ad-container .button,
-  .stylethree .rich-text .text-ad-container .button,
+  .stylethree .ad-wrapper .button,
+  .stylethree .rich-text .ad-wrapper .button,
   .stylethree .site__header nav a,
   .stylethree .rich-text > *,
   .stylethree .post__tags .tags a {
@@ -2589,17 +2606,17 @@ export default css.global`
   .stylethree .post__featured-media .media-caption,
   .stylethree .post__author-meta .contact,
   .stylethree .post__tags .tags a,
-  .stylethree .text-ad-container .ad-brand p,
-  .stylethree .rich-text .text-ad-container .ad-brand p,
+  .stylethree .ad-wrapper .ad-brand p,
+  .stylethree .rich-text .ad-wrapper .ad-brand p,
   .stylethree .asset .asset__descriptor a {
     font-size: 0.875rem;
   }
   .stylethree .post__author-meta,
   .stylethree .post__meta--bottom .post__author-meta p,
   .stylethree .post__author-meta,
-  .stylethree .text-ad-container .media-content p,
-  .stylethree .text-ad-container .button,
-  .stylethree .rich-text .text-ad-container .button {
+  .stylethree .ad-wrapper .media-content p,
+  .stylethree .ad-wrapper .button,
+  .stylethree .rich-text .ad-wrapper .button {
     font-size: 1rem;
   }
   .stylethree .rich-text a:hover,
@@ -2707,10 +2724,10 @@ export default css.global`
   .stylefour time,
   .stylefour .rich-text p,
   .stylefour .post__meta--bottom .post__author-meta p,
-  .stylefour .text-ad-container .ad-brand p,
-  .stylefour .rich-text .text-ad-container .ad-brand p,
-  .stylefour .text-ad-container .media-content p,
-  .stylefour .rich-text .text-ad-container .media-content p,
+  .stylefour .ad-wrapper .ad-brand p,
+  .stylefour .rich-text .ad-wrapper .ad-brand p,
+  .stylefour .ad-wrapper .media-content p,
+  .stylefour .rich-text .ad-wrapper .media-content p,
   .stylefour .block__cta,
   .stylefour .post__author-meta .contact,
   .stylefour .post__tags .tags a,
@@ -2719,8 +2736,8 @@ export default css.global`
   .stylefour .media-caption,
   .stylefour .media-credit,
   .stylefour .post__comment-counter .label,
-  .stylefour .text-ad-container .button,
-  .stylefour .rich-text .text-ad-container .button,
+  .stylefour .ad-wrapper .button,
+  .stylefour .rich-text .ad-wrapper .button,
   .stylefour .post__dek,
   .stylefour .asset__title,
   .stylefour .site__header nav a,
@@ -2734,9 +2751,9 @@ export default css.global`
   }
   .stylefour .rich-text p,
   .stylefour .post__meta--bottom .post__author-meta p,
-  .stylefour .text-ad-container .media-content p,
-  .stylefour .text-ad-container .button,
-  .stylefour .rich-text .text-ad-container .button {
+  .stylefour .ad-wrapper .media-content p,
+  .stylefour .ad-wrapper .button,
+  .stylefour .rich-text .ad-wrapper .button {
     font-family: 'San Francisco', -apple-system, BlinkMacSystemFont,
       '.SFNSText-Regular', 'Helvetica Neue', Helvetica, sans-serif;
   }
@@ -2750,8 +2767,8 @@ export default css.global`
   .stylefour .post__featured-media .media-caption,
   .stylefour .post__author-meta .contact,
   .stylefour .post__tags .tags a,
-  .stylefour .text-ad-container .ad-brand p,
-  .stylefour .rich-text .text-ad-container .ad-brand p,
+  .stylefour .ad-wrapper .ad-brand p,
+  .stylefour .rich-text .ad-wrapper .ad-brand p,
   .stylefour .asset .asset__descriptor a {
     font-size: 0.8125rem;
   }
@@ -2759,9 +2776,9 @@ export default css.global`
   .stylefour .post__meta--bottom .post__author-meta p,
   .stylefour .post__author-meta,
   .stylefour .rich-text .newsletter p,
-  .stylefour .text-ad-container .media-content p,
-  .stylefour .text-ad-container .button,
-  .stylefour .rich-text .text-ad-container .button {
+  .stylefour .ad-wrapper .media-content p,
+  .stylefour .ad-wrapper .button,
+  .stylefour .rich-text .ad-wrapper .button {
     font-size: 1rem;
   }
   .stylefour .rich-text a:hover,

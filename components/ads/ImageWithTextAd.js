@@ -3,7 +3,7 @@ import Image from 'next/image';
 
 export default function ImageWithTextAd({ ad, isAmp }) {
   return (
-    <div className="text-ad-container">
+    <div className="ad-wrapper">
       <div className="ad-container">
         <div className="ad-brand">
           <p>Advertisement from {ad.brand}</p>
