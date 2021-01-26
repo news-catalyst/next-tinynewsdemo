@@ -1,5 +1,6 @@
 import NewsletterBlock from '../plugins/NewsletterBlock';
 import ArticleLink from './ArticleLink';
+import ExpandedTextWithImageAd from '../ads/ExpandedTextWithImageAd';
 
 export default function ArticleStream({
   articles,
@@ -9,6 +10,7 @@ export default function ArticleStream({
   title,
   locale,
   metadata,
+  ads,
 }) {
   return (
     <section className="section section-layout__3">
@@ -31,15 +33,51 @@ export default function ArticleStream({
           </h3>
           <ul className="block__list">
             {articles &&
-              articles.map((streamArticle) => (
-                <ArticleLink
-                  key={streamArticle.id}
-                  article={streamArticle}
-                  amp={isAmp}
-                  locale={locale}
-                  showCategory={showCategory}
-                />
-              ))}
+              articles.map((streamArticle, i) => {
+                if (i > 0 && i % 1 === 0) {
+                  const articleLink = (
+                    <ArticleLink
+                      key={streamArticle.id}
+                      article={streamArticle}
+                      amp={isAmp}
+                      locale={locale}
+                      showCategory={showCategory}
+                    />
+                  );
+                  const ad = ads[0];
+                  return (
+                    <>
+                      <li className="asset">
+                        <ExpandedTextWithImageAd
+                          ad={{
+                            brand: ad.promoterDisplayName,
+                            image: {
+                              url: ad.promoterImage,
+                              alt: ad.promoterImageAlternativeText,
+                            },
+                            header: ad.heading,
+                            body: ad.content,
+                            call: ad.callToAction,
+                            url: ad.callToActionUrl,
+                          }}
+                          isAmp={isAmp}
+                        />
+                      </li>
+                      {articleLink}
+                    </>
+                  );
+                } else {
+                  return (
+                    <ArticleLink
+                      key={streamArticle.id}
+                      article={streamArticle}
+                      amp={isAmp}
+                      locale={locale}
+                      showCategory={showCategory}
+                    />
+                  );
+                }
+              })}
           </ul>
         </div>
         <NewsletterBlock metadata={metadata} headline={'Home'} />
