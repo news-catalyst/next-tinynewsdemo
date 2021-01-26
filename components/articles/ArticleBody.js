@@ -67,7 +67,11 @@ export default function ArticleBody({ article, locale, ads, isAmp, metadata }) {
         <div className="post-text">
           <div>{body}</div>
         </div>
-        <NewsletterBlock metadata={metadata} headline={article.headline} />
+        <NewsletterBlock
+          metadata={metadata}
+          headline={article.headline}
+          wrap={false}
+        />
       </div>
     </section>
   );
