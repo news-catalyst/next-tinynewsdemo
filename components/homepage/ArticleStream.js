@@ -44,9 +44,9 @@ export default function ArticleStream({
       />
     );
   };
+  let adIndex = 0;
 
   const articleStream = articles.map((article, i) => {
-    let adIndex = 0;
     const streamArticle = renderArticle(article);
 
     if (i > 0 && i % AD_PLACEMENT_INDEX === 0 && adIndex < ads.length) {
