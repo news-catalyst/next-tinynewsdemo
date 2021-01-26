@@ -131,31 +131,33 @@ export default function Layout({ children, locale, meta, article, sections }) {
           />
         )}
       </Head>
-      <GlobalNav metadata={meta} sections={sections} />
-      <main>
-        {isAmp && (
-          <AmpAnalytics
-            type="googleanalytics"
-            script={{
-              vars: {
-                account: trackingId,
-                gtag_id: trackingId,
-                config: {
-                  [trackingId]: { groups: 'default' },
+      <div className={meta.theme + ' ' + meta.color}>
+        <GlobalNav metadata={meta} sections={sections} />
+        <main>
+          {isAmp && (
+            <AmpAnalytics
+              type="googleanalytics"
+              script={{
+                vars: {
+                  account: trackingId,
+                  gtag_id: trackingId,
+                  config: {
+                    [trackingId]: { groups: 'default' },
+                  },
                 },
-              },
-              triggers: {
-                trackPageview: {
-                  on: 'visible',
-                  request: 'pageview',
+                triggers: {
+                  trackPageview: {
+                    on: 'visible',
+                    request: 'pageview',
+                  },
                 },
-              },
-            }}
-          />
-        )}
-        {children}
-      </main>
-      <GlobalFooter />
+              }}
+            />
+          )}
+          {children}
+        </main>
+        <GlobalFooter />
+      </div>
       <style jsx global>
         {globalStyles}
       </style>
