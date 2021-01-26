@@ -12,6 +12,57 @@ export default function ArticleStream({
   metadata,
   ads,
 }) {
+  const AD_PLACEMENT_INDEX = 1;
+
+  const renderArticle = function (article) {
+    return (
+      <ArticleLink
+        key={article.id}
+        article={article}
+        amp={isAmp}
+        locale={locale}
+        showCategory={showCategory}
+      />
+    );
+  };
+
+  const renderAd = function (ad) {
+    return (
+      <ExpandedTextWithImageAd
+        ad={{
+          brand: ad.promoterDisplayName,
+          image: {
+            url: ad.promoterImage,
+            alt: ad.promoterImageAlternativeText,
+          },
+          header: ad.heading,
+          body: ad.content,
+          call: ad.callToAction,
+          url: ad.callToActionUrl,
+        }}
+        isAmp={isAmp}
+      />
+    );
+  };
+
+  const articleStream = articles.map((article, i) => {
+    let adIndex = 0;
+    const streamArticle = renderArticle(article);
+
+    if (i > 0 && i % AD_PLACEMENT_INDEX === 0 && adIndex < ads.length) {
+      const ad = renderAd(ads[adIndex]);
+      adIndex++;
+      return (
+        <>
+          <li className="asset">{ad}</li>
+          {streamArticle}
+        </>
+      );
+    } else {
+      return streamArticle;
+    }
+  });
+
   return (
     <section className="section section-layout__3">
       <div className="section__container">
@@ -31,54 +82,7 @@ export default function ArticleStream({
           <h3 className="block__head">
             <div className="section__title">{title}</div>
           </h3>
-          <ul className="block__list">
-            {articles &&
-              articles.map((streamArticle, i) => {
-                if (i > 0 && i % 1 === 0) {
-                  const articleLink = (
-                    <ArticleLink
-                      key={streamArticle.id}
-                      article={streamArticle}
-                      amp={isAmp}
-                      locale={locale}
-                      showCategory={showCategory}
-                    />
-                  );
-                  const ad = ads[0];
-                  return (
-                    <>
-                      <li className="asset">
-                        <ExpandedTextWithImageAd
-                          ad={{
-                            brand: ad.promoterDisplayName,
-                            image: {
-                              url: ad.promoterImage,
-                              alt: ad.promoterImageAlternativeText,
-                            },
-                            header: ad.heading,
-                            body: ad.content,
-                            call: ad.callToAction,
-                            url: ad.callToActionUrl,
-                          }}
-                          isAmp={isAmp}
-                        />
-                      </li>
-                      {articleLink}
-                    </>
-                  );
-                } else {
-                  return (
-                    <ArticleLink
-                      key={streamArticle.id}
-                      article={streamArticle}
-                      amp={isAmp}
-                      locale={locale}
-                      showCategory={showCategory}
-                    />
-                  );
-                }
-              })}
-          </ul>
+          <ul className="block__list">{articleStream}</ul>
         </div>
         <NewsletterBlock metadata={metadata} headline={'Home'} />
       </div>
