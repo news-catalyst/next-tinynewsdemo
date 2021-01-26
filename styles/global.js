@@ -851,8 +851,25 @@ export default css.global`
     border-bottom: none;
     margin: 0;
   }
-  .section-layout__3 .block .ad-wrapper .media.ad-img-container {
-    max-width: 11.25rem;
+
+  .section-layout__3 .block .ad-wrapper .media-left {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .section-layout__3 .block .ad-wrapper .media-left .media.ad-img-container {
+    margin-bottom: 1rem;
+    width: 100%;
+  }
+
+  @media only screen and (min-width: 960px) {
+    .section-layout__3 .block .ad-wrapper .media-left {
+      flex-direction: row;
+    }
+    .section-layout__3 .block .ad-wrapper .media-left .media.ad-img-container {
+      margin-bottom: 0;
+      width: calc(100% / 3);
+    }
   }
   .section-layout__3 .block .ad-wrapper .button {
     margin-top: 1rem;
