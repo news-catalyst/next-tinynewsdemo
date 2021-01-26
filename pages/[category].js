@@ -9,6 +9,7 @@ import {
   listAllSections,
   listAllTags,
 } from '../lib/articles.js';
+import { getArticleAds } from '../lib/ads.js';
 import { localiseText } from '../lib/utils.js';
 import { useAmp } from 'next/amp';
 import ArticleStream from '../components/homepage/ArticleStream';
@@ -37,6 +38,7 @@ export default function CategoryPage(props) {
         title={props.title}
         locale={props.currentLocale}
         metadata={props.siteMetadata}
+        ads={props.expandedAds}
       />
     </Layout>
   );
@@ -77,6 +79,10 @@ export async function getStaticProps({ locale, params }) {
       }
     }
   }
+
+  const allAds = await cachedContents('ads', getArticleAds);
+  const expandedAds = allAds.filter((ad) => ad.adTypeId === 166);
+
   return {
     props: {
       articles,
@@ -85,6 +91,7 @@ export async function getStaticProps({ locale, params }) {
       title,
       sections,
       siteMetadata,
+      expandedAds,
     },
   };
 }

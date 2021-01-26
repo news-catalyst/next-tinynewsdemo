@@ -2,7 +2,7 @@ import React from 'react';
 
 export default function TextAd(props) {
   return (
-    <div className="text-ad-container">
+    <div className="ad-wrapper">
       <div className="ad-container">
         <div className="ad-brand">
           <p>Advertisement from {props.ad.brand}</p>

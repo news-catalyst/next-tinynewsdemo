@@ -8,6 +8,7 @@ import {
 } from '../../lib/articles.js';
 import { getSiteMetadataForLocale } from '../../lib/site_metadata.js';
 import { cachedContents } from '../../lib/cached';
+import { getArticleAds } from '../../lib/ads.js';
 import { localiseText } from '../../lib/utils.js';
 import { useAmp } from 'next/amp';
 import ArticleStream from '../../components/homepage/ArticleStream';
@@ -18,6 +19,7 @@ export default function TagPage({
   sections,
   currentLocale,
   siteMetadata,
+  expandedAds,
 }) {
   const isAmp = useAmp();
   let tagTitle = localiseText(currentLocale, tag.title);
@@ -31,6 +33,7 @@ export default function TagPage({
         title={`Articles tagged with ${tagTitle}`}
         locale={currentLocale}
         metadata={siteMetadata}
+        ads={expandedAds}
       />
     </Layout>
   );
@@ -57,6 +60,9 @@ export async function getStaticProps({ locale, params }) {
   const articles = await listAllArticlesByTag(currentLocale, params.slug);
   const sections = await cachedContents('sections', listAllSections);
   const tag = await getTagBySlug(params.slug);
+  const allAds = await cachedContents('ads', getArticleAds);
+  const expandedAds = allAds.filter((ad) => ad.adTypeId === 166);
+
   return {
     props: {
       currentLocale,
@@ -64,6 +70,7 @@ export async function getStaticProps({ locale, params }) {
       tag,
       sections,
       siteMetadata,
+      expandedAds,
     },
   };
 }
