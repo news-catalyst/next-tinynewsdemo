@@ -4,6 +4,7 @@ import AdminLayout from '../../../components/AdminLayout';
 import AdminNav from '../../../components/nav/AdminNav';
 import AdminHeader from '../../../components/tinycms/AdminHeader';
 import Notification from '../../../components/tinycms/Notification';
+import Upload from '../../../components/tinycms/Upload';
 import { listAllLocales } from '../../../lib/articles.js';
 import { cachedContents } from '../../../lib/cached';
 import { createAuthor } from '../../../lib/authors';
@@ -24,8 +25,17 @@ export default function AddAuthor({
   const [slug, setSlug] = useState('');
   const [staff, setStaff] = useState('no');
   const [bio, setBio] = useState('');
+  const [bioImage, setBioImage] = useState('');
+  const [displayUpload, setDisplayUpload] = useState(false);
 
   const router = useRouter();
+
+  function updateSlug(ev) {
+    let val = ev.target.value;
+    setSlug(val);
+
+    setDisplayUpload(true);
+  }
 
   const handleChange = (ev) => setStaff(ev.target.value);
 
@@ -76,6 +86,17 @@ export default function AddAuthor({
           title="Add an Author"
         />
 
+        {displayUpload && (
+          <Upload
+            slug={slug}
+            bioImage={bioImage}
+            setBioImage={setBioImage}
+            setNotificationMessage={setNotificationMessage}
+            setNotificationType={setNotificationType}
+            setShowNotification={setShowNotification}
+          />
+        )}
+
         <form onSubmit={handleSubmit}>
           <div className="field">
             <label className="label" htmlFor="name">
@@ -102,7 +123,7 @@ export default function AddAuthor({
                 type="text"
                 value={slug}
                 name="slug"
-                onChange={(ev) => setSlug(ev.target.value)}
+                onChange={(ev) => updateSlug(ev)}
               />
             </div>
           </div>
@@ -191,9 +212,6 @@ export default function AddAuthor({
   );
 }
 export async function getServerSideProps(context) {
-  console.log('locales:', context.locales);
-  console.log('current locale:', context.locale);
-
   const localeMappings = await cachedContents('locales', listAllLocales);
 
   const currentLocale = localeMappings.find(
