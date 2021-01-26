@@ -16,6 +16,7 @@ export default function EditAuthor({
   author,
   currentLocale,
   locales,
+  awsConfig,
 }) {
   const [notificationMessage, setNotificationMessage] = useState('');
   const [notificationType, setNotificationType] = useState('');
@@ -157,6 +158,7 @@ export default function EditAuthor({
         />
 
         <Upload
+          awsConfig={awsConfig}
           slug={slug}
           bioImage={bioImage}
           setBioImage={setBioImage}
@@ -300,6 +302,14 @@ export async function getServerSideProps(context) {
   const apiUrl = process.env.CONTENT_DELIVERY_API_URL;
   const apiToken = process.env.CONTENT_DELIVERY_API_ACCESS_TOKEN;
 
+  const awsConfig = {
+    bucketName: process.env.AWS_BUCKET_NAME,
+    dirName: process.env.AWS_DIR_NAME,
+    region: process.env.AWS_REGION,
+    accessKeyId: process.env.AWS_ACCESS_ID,
+    secretAccessKey: process.env.AWS_ACCESS_KEY,
+  };
+
   let author = await getAuthor(context.params.id);
   return {
     props: {
@@ -308,6 +318,7 @@ export async function getServerSideProps(context) {
       author: author,
       currentLocale: currentLocale,
       locales: localeMappings,
+      awsConfig: awsConfig,
     },
   };
 }
