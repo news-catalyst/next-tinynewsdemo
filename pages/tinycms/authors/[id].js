@@ -303,11 +303,11 @@ export async function getServerSideProps(context) {
   const apiToken = process.env.CONTENT_DELIVERY_API_ACCESS_TOKEN;
 
   const awsConfig = {
-    bucketName: process.env.AWS_BUCKET_NAME,
-    dirName: process.env.AWS_DIR_NAME,
-    region: process.env.AWS_REGION,
-    accessKeyId: process.env.AWS_ACCESS_ID,
-    secretAccessKey: process.env.AWS_ACCESS_KEY,
+    bucketName: process.env.TNC_AWS_BUCKET_NAME,
+    dirName: process.env.TNC_AWS_DIR_NAME,
+    region: process.env.TNC_AWS_REGION,
+    accessKeyId: process.env.TNC_AWS_ACCESS_ID,
+    secretAccessKey: process.env.TNC_AWS_ACCESS_KEY,
   };
 
   let author = await getAuthor(context.params.id);
