@@ -144,7 +144,9 @@ function createMetadata() {
     "aboutCTA": "Learn more",
     "supportHed": "Support our work",
     "supportDek": "The Oaklyn Observer exists based on the support of our readers. Chip in today to help us continue serving Oaklyn with quality journalism.",
-    "supportCTA": "Donate"
+    "supportCTA": "Donate",
+    "theme": "styleone",
+    "color": "colorone",
   };
 
   const url = CONTENT_DELIVERY_API_URL;
