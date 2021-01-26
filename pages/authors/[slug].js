@@ -9,6 +9,7 @@ import {
 } from '../../lib/articles.js';
 import { getSiteMetadataForLocale } from '../../lib/site_metadata.js';
 import { cachedContents } from '../../lib/cached';
+import { getArticleAds } from '../../lib/ads.js';
 import { useAmp } from 'next/amp';
 import ArticleStream from '../../components/homepage/ArticleStream';
 
@@ -18,6 +19,7 @@ export default function AuthorPage({
   author,
   siteMetadata,
   currentLocale,
+  expandedAds,
 }) {
   const isAmp = useAmp();
   return (
@@ -30,6 +32,7 @@ export default function AuthorPage({
         isAmp={isAmp}
         locale={currentLocale}
         metadata={siteMetadata}
+        ads={expandedAds}
       />
     </Layout>
   );
@@ -54,7 +57,8 @@ export async function getStaticProps({ locale, params }) {
   const author = await getAuthorBySlug(params.slug);
 
   const siteMetadata = await getSiteMetadataForLocale(currentLocale);
-  console.log('siteMetadata:', siteMetadata);
+  const allAds = await cachedContents('ads', getArticleAds);
+  const expandedAds = allAds.filter((ad) => ad.adTypeId === 166);
 
   return {
     props: {
@@ -63,6 +67,7 @@ export async function getStaticProps({ locale, params }) {
       author,
       sections,
       siteMetadata,
+      expandedAds,
     },
   };
 }
