@@ -18,15 +18,7 @@ export default function Upload(props) {
     let file = fileInput.current.files[0];
     let newFilename = 'authors/' + props.slug; // ;
 
-    const config = {
-      bucketName: process.env.NEXT_PUBLIC_AWS_BUCKET_NAME,
-      dirName: process.env.NEXT_PUBLIC_AWS_DIR_NAME,
-      region: process.env.NEXT_PUBLIC_AWS_REGION,
-      accessKeyId: process.env.NEXT_PUBLIC_AWS_ACCESS_ID,
-      secretAccessKey: process.env.NEXT_PUBLIC_AWS_ACCESS_KEY,
-    };
-
-    const ReactS3Client = new S3(config);
+    const ReactS3Client = new S3(props.awsConfig);
     ReactS3Client.uploadFile(file, newFilename)
       .then((data) => {
         if (data.status === 204) {
