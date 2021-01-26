@@ -10,15 +10,10 @@ import {
   listAllTags,
 } from '../lib/articles.js';
 import { localiseText } from '../lib/utils.js';
-import GlobalNav from '../components/nav/GlobalNav.js';
-import GlobalFooter from '../components/nav/GlobalFooter.js';
 import { useAmp } from 'next/amp';
 import ArticleStream from '../components/homepage/ArticleStream';
 
 export default function CategoryPage(props) {
-  console.log('CategoryPage props:', props);
-  console.log('CategoryPage metadata:', props.siteMetadata);
-
   const isAmp = useAmp();
 
   const router = useRouter();
@@ -63,7 +58,6 @@ export async function getStaticProps({ locale, params }) {
   );
 
   const siteMetadata = await getSiteMetadataForLocale(currentLocale);
-  console.log('CategoryPageProps siteMetadata:', siteMetadata);
 
   const articles = await listAllArticlesBySection(
     currentLocale,
