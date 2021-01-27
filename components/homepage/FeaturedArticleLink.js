@@ -13,6 +13,7 @@ export default function FeaturedArticleLink({ locale, article, isAmp }) {
 
   let headline = localiseText(locale, article.headline);
   let searchDescription = localiseText(locale, article.searchDescription);
+  let articleContent = localiseText(locale, article.content);
 
   let categoryTitle;
 
@@ -20,12 +21,24 @@ export default function FeaturedArticleLink({ locale, article, isAmp }) {
     categoryTitle = localiseText(locale, article.category.title);
   }
 
-  if (article && article.content) {
-    mainImageNode = article.content.find((node) => node.type === 'mainImage');
+  try {
+    if (typeof articleContent === 'string') {
+      mainImageNode = JSON.parse(articleContent).find(
+        (node) => node.type === 'mainImage'
+      );
+    } else {
+      mainImageNode = articleContent.find((node) => node.type === 'mainImage');
+    }
+  } catch (err) {
+    console.error(err, typeof articleContent);
+  }
 
+  try {
     if (mainImageNode) {
       mainImage = mainImageNode.children[0];
     }
+  } catch (err) {
+    console.error(err);
   }
 
   return (
@@ -33,17 +46,14 @@ export default function FeaturedArticleLink({ locale, article, isAmp }) {
       <div className="asset__meta-container">
         {article.category && (
           <span className="asset__descriptor">
-            <Link href="/[slug]" as={article.category.slug}>
+            <Link href={`/${article.category.slug}`}>
               <a>{article.category.title.values[0].value}</a>
             </Link>
           </span>
         )}
         {article.category && (
           <h4 className="asset__title">
-            <Link
-              href="/articles/[category]/[slug]"
-              as={`/articles/${article.category.slug}/${article.slug}`}
-            >
+            <Link href={`/articles/${article.category.slug}/${article.slug}`}>
               <a className="featured">{headline}</a>
             </Link>
           </h4>
