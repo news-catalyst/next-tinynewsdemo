@@ -113,7 +113,6 @@ export async function getStaticProps({ locale }) {
   );
   //    get selected homepage layout and featured article IDs
   const hpData = await getHomepageData();
-  console.log('hpData:', hpData);
 
   let featuredArticleSlug = hpData.articles['featured'];
   let featured = await getArticleBySlugNoLocale(featuredArticleSlug);
