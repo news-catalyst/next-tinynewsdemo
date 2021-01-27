@@ -6,7 +6,7 @@ import {
   listAllLocales,
   listAllSections,
   listMostRecentArticles,
-  getHomepageArticles,
+  getArticleBySlugNoLocale,
 } from '../lib/articles.js';
 import { getArticleAds } from '../lib/ads.js';
 import Layout from '../components/Layout';
@@ -24,68 +24,58 @@ const LargePackageStoryLead = dynamic(() =>
 
 export default function Home({
   hpData,
-  hpArticles,
+  featured,
+  topFeatured,
+  bottomFeatured,
   streamArticles,
   sections,
   currentLocale,
   siteMetadata,
   expandedAds,
 }) {
-  const [featuredArticle, setFeaturedArticle] = useState(
-    hpArticles['featured']
-  );
+  const [featuredArticle, setFeaturedArticle] = useState(featured);
   const [subFeaturedTopArticle, setSubFeaturedTopArticle] = useState(
-    hpArticles['subfeatured-top']
+    topFeatured
   );
   const [subFeaturedBottomArticle, setSubFeaturedBottomArticle] = useState(
-    hpArticles['subfeatured-bottom']
+    bottomFeatured
   );
   const [mostRecentArticles, setMostRecentArticles] = useState([]);
-  const [metadata, setMetadata] = useState(siteMetadata);
 
-  let featuredArticleIds = [];
+  let ids = [];
+
   useEffect(() => {
-    console.log('hpArticles:', hpArticles);
-    for (const [key, article] of Object.entries(hpArticles)) {
-      console.log(key, article);
-      // replace any missing featured articles with the next top article from the stream
-      if (article === null) {
-        hpArticles[key] = streamArticles.shift();
-      }
+    ids.push(featuredArticle.id);
+    if (subFeaturedTopArticle) {
+      ids.push(subFeaturedTopArticle.id);
     }
-
-    // build a quick list of homepage featured article ids to ensure they do not appear again in the stream
-    featuredArticleIds = Object.values(hpArticles).map((article) => {
-      return article.id;
-    });
+    if (subFeaturedBottomArticle) {
+      ids.push(subFeaturedBottomArticle.id);
+    }
 
     // filter out any articles from the stream that are already featured using the list of IDs from right above
     setMostRecentArticles(
-      streamArticles.filter(
-        (streamArticle) => !featuredArticleIds.includes(streamArticle.id)
-      )
+      streamArticles.filter((streamArticle) => !ids.includes(streamArticle.id))
     );
-  }, [hpArticles, streamArticles]);
+  }, [hpData]);
 
   return (
     <div className="homepage">
-      <Layout meta={metadata} sections={sections} locale={currentLocale}>
+      <Layout meta={siteMetadata} sections={sections} locale={currentLocale}>
         {!hpData && <Placeholder />}
         {hpData.layoutComponent === 'BigFeaturedStory' && (
           <BigFeaturedStory
-            articles={hpArticles}
             locale={currentLocale}
             sections={sections}
             featuredArticle={featuredArticle}
             setFeaturedArticle={setFeaturedArticle}
             isAmp={false}
-            metadata={metadata}
+            metadata={siteMetadata}
           />
         )}
         {hpData.layoutComponent === 'LargePackageStoryLead' && (
           <LargePackageStoryLead
             locale={currentLocale}
-            articles={hpArticles}
             featuredArticle={featuredArticle}
             setFeaturedArticle={setFeaturedArticle}
             subFeaturedTopArticle={subFeaturedTopArticle}
@@ -94,7 +84,7 @@ export default function Home({
             setSubFeaturedBottomArticle={setSubFeaturedBottomArticle}
             sections={sections}
             isAmp={false}
-            metadata={metadata}
+            metadata={siteMetadata}
           />
         )}
         <ArticleStream
@@ -102,9 +92,9 @@ export default function Home({
           sections={sections}
           showCategory={true}
           isAmp={false}
-          title={metadata.homepageArticleStreamHed}
+          title={siteMetadata.homepageArticleStreamHed}
           locale={currentLocale}
-          metadata={metadata}
+          metadata={siteMetadata}
           ads={expandedAds}
         />
       </Layout>
@@ -125,8 +115,21 @@ export async function getStaticProps({ locale }) {
   const hpData = await getHomepageData();
   console.log('hpData:', hpData);
 
-  //    look up featured homepage articles
-  const hpArticles = await getHomepageArticles(currentLocale, hpData);
+  let featuredArticleSlug = hpData.articles['featured'];
+  let featured = await getArticleBySlugNoLocale(featuredArticleSlug);
+  let topFeatured = null;
+  let bottomFeatured = null;
+
+  if (hpData.articles['subfeatured-top']) {
+    topFeatured = await getArticleBySlugNoLocale(
+      hpData.articles['subfeatured-top']
+    );
+  }
+  if (hpData.articles['subfeatured-bottom']) {
+    bottomFeatured = await getArticleBySlugNoLocale(
+      hpData.articles['subfeatured-bottom']
+    );
+  }
 
   const streamArticles = await listMostRecentArticles(currentLocale);
 
@@ -140,7 +143,9 @@ export async function getStaticProps({ locale }) {
   return {
     props: {
       hpData,
-      hpArticles,
+      featured,
+      topFeatured,
+      bottomFeatured,
       streamArticles,
       sections,
       currentLocale,
