@@ -13,7 +13,9 @@
     "purgecss": "purgecss --css styles/bulma.css --content pages/** components/** --output ./purge.css",
     "lint": "eslint ./components/** ./pages/** ./lib/** -c .eslintrc.json --fix --ext js,jsx",
     "lint:fix": "npm run lint -- --fix",
-    "format": "prettier --write ./components/** ./pages/** ./lib/**"
+    "format": "prettier --write ./components/** ./pages/** ./lib/**",
+    "postinstall": "cd ./node_modules/react-aws-s3 && npm install && npm run build"
+
   },
   "lint-staged": {
     "./components/**": "npm run format",
@@ -42,6 +44,7 @@
     "postcss-preset-env": "^6.7.0",
     "purgecss": "^2.3.0",
     "react": "^17.0.1",
+    "react-aws-s3": "https://github.com/news-catalyst/react-aws-s3.git",
     "react-dom": "^17.0.1",
     "react-ga": "^3.1.2",
     "react-intersection-observer": "^8.27.1",
