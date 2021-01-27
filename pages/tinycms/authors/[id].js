@@ -4,6 +4,7 @@ import AdminLayout from '../../../components/AdminLayout';
 import AdminNav from '../../../components/nav/AdminNav';
 import AdminHeader from '../../../components/tinycms/AdminHeader';
 import Notification from '../../../components/tinycms/Notification';
+import Upload from '../../../components/tinycms/Upload';
 import { listAllLocales } from '../../../lib/articles.js';
 import { getAuthor, updateAuthor } from '../../../lib/authors';
 import { localiseText } from '../../../lib/utils.js';
@@ -15,6 +16,7 @@ export default function EditAuthor({
   author,
   currentLocale,
   locales,
+  awsConfig,
 }) {
   const [notificationMessage, setNotificationMessage] = useState('');
   const [notificationType, setNotificationType] = useState('');
@@ -27,6 +29,7 @@ export default function EditAuthor({
   const [slug, setSlug] = useState('');
   const [staff, setStaff] = useState(false);
   const [bio, setBio] = useState('');
+  const [bioImage, setBioImage] = useState('');
   const [i18nBioValues, setI18nBioValues] = useState([]);
   const [authorId, setAuthorId] = useState(null);
   const [staffYesNo, setStaffYesNo] = useState('no');
@@ -35,10 +38,13 @@ export default function EditAuthor({
 
   useEffect(() => {
     if (author) {
+      setAuthorId(author.id);
+      setName(author.name);
+      setBioImage(author.photoUrl);
+
       setI18nTitleValues(author.title.values);
       setI18nBioValues(author.bio.values);
 
-      setName(author.name);
       if (author.title && author.title.values) {
         let title = localiseText(currentLocale, author.title);
         setTitle(title);
@@ -53,7 +59,6 @@ export default function EditAuthor({
         let bio = localiseText(currentLocale, author.bio);
         setBio(bio);
       }
-      setAuthorId(author.id);
       if (author.staff) {
         setStaffYesNo('yes');
         setStaff(true);
@@ -114,7 +119,8 @@ export default function EditAuthor({
       i18nTitleValues,
       twitter,
       i18nBioValues,
-      staff
+      staff,
+      bioImage
     );
 
     if (response.authors.updateAuthor.error !== null) {
@@ -151,6 +157,15 @@ export default function EditAuthor({
           id={author.id}
         />
 
+        <Upload
+          awsConfig={awsConfig}
+          slug={slug}
+          bioImage={bioImage}
+          setBioImage={setBioImage}
+          setNotificationMessage={setNotificationMessage}
+          setNotificationType={setNotificationType}
+          setShowNotification={setShowNotification}
+        />
         <form onSubmit={handleSubmit}>
           <div className="field">
             <label className="label" htmlFor="name">
@@ -287,6 +302,14 @@ export async function getServerSideProps(context) {
   const apiUrl = process.env.CONTENT_DELIVERY_API_URL;
   const apiToken = process.env.CONTENT_DELIVERY_API_ACCESS_TOKEN;
 
+  const awsConfig = {
+    bucketName: process.env.TNC_AWS_BUCKET_NAME,
+    dirName: process.env.TNC_AWS_DIR_NAME,
+    region: process.env.TNC_AWS_REGION,
+    accessKeyId: process.env.TNC_AWS_ACCESS_ID,
+    secretAccessKey: process.env.TNC_AWS_ACCESS_KEY,
+  };
+
   let author = await getAuthor(context.params.id);
   return {
     props: {
@@ -295,6 +318,7 @@ export async function getServerSideProps(context) {
       author: author,
       currentLocale: currentLocale,
       locales: localeMappings,
+      awsConfig: awsConfig,
     },
   };
 }
