@@ -40,7 +40,7 @@ export default function HomePageEditor({
   const [notificationMessage, setNotificationMessage] = useState('');
   const [notificationType, setNotificationType] = useState('');
   const [showNotification, setShowNotification] = useState(false);
-  const [selectedLayout, setSelectedLayout] = useState();
+  const [selectedLayout, setSelectedLayout] = useState(hpData.layoutSchema);
   const [featuredArticle, setFeaturedArticle] = useState(
     hpArticles['featured']
   );
@@ -54,9 +54,6 @@ export default function HomePageEditor({
     if (hpData === null) {
       console.log('setting layout to:', layoutSchemas[0]);
       setSelectedLayout(layoutSchemas[0]);
-    } else {
-      console.log('setting layout to hpdata:', hpData);
-      setSelectedLayout(hpData.layoutSchema);
     }
     console.log('selectedLayout:', selectedLayout);
     console.log('hpData:', hpData);
