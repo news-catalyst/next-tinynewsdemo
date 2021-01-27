@@ -46,17 +46,14 @@ export default function FeaturedArticleLink({ locale, article, isAmp }) {
       <div className="asset__meta-container">
         {article.category && (
           <span className="asset__descriptor">
-            <Link href="/[slug]" as={article.category.slug}>
+            <Link href={`/${article.category.slug}`}>
               <a>{article.category.title.values[0].value}</a>
             </Link>
           </span>
         )}
         {article.category && (
           <h4 className="asset__title">
-            <Link
-              href="/articles/[category]/[slug]"
-              as={`/articles/${article.category.slug}/${article.slug}`}
-            >
+            <Link href={`/articles/${article.category.slug}/${article.slug}`}>
               <a className="featured">{headline}</a>
             </Link>
           </h4>
