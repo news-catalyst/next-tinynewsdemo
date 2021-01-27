@@ -13,6 +13,7 @@ export default function FeaturedArticleLink({ locale, article, isAmp }) {
 
   let headline = localiseText(locale, article.headline);
   let searchDescription = localiseText(locale, article.searchDescription);
+  let articleContent = localiseText(locale, article.content);
 
   let categoryTitle;
 
@@ -20,12 +21,24 @@ export default function FeaturedArticleLink({ locale, article, isAmp }) {
     categoryTitle = localiseText(locale, article.category.title);
   }
 
-  if (article && article.content) {
-    mainImageNode = article.content.find((node) => node.type === 'mainImage');
+  try {
+    if (typeof articleContent === 'string') {
+      mainImageNode = JSON.parse(articleContent).find(
+        (node) => node.type === 'mainImage'
+      );
+    } else {
+      mainImageNode = articleContent.find((node) => node.type === 'mainImage');
+    }
+  } catch (err) {
+    console.error(err, typeof articleContent);
+  }
 
+  try {
     if (mainImageNode) {
       mainImage = mainImageNode.children[0];
     }
+  } catch (err) {
+    console.error(err);
   }
 
   return (

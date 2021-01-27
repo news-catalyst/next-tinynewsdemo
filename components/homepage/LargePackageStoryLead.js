@@ -8,12 +8,6 @@ export default function LargePackageStoryLead(props) {
   const [isTopModalActive, setTopModal] = useState(false);
   const [isBottomModalActive, setBottomModal] = useState(false);
 
-  useEffect(() => {
-    props.setFeaturedArticle(props.articles['featured']);
-    props.setSubFeaturedTopArticle(props.articles['subfeatured-top']);
-    props.setSubFeaturedBottomArticle(props.articles['subfeatured-bottom']);
-  }, [props.articles]);
-
   return (
     <>
       <section className="section section-layout__1">
