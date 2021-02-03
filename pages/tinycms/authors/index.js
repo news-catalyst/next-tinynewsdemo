@@ -6,8 +6,8 @@ import AdminHeader from '../../../components/tinycms/AdminHeader';
 import AdminNav from '../../../components/nav/AdminNav';
 import Notification from '../../../components/tinycms/Notification';
 import { listAllLocales } from '../../../lib/articles.js';
-import { listAllAuthors } from '../../../lib/authors.js';
-import { localiseText } from '../../../lib/utils.js';
+import { hasuraListAllAuthors } from '../../../lib/authors.js';
+import { hasuraLocaliseText } from '../../../lib/utils.js';
 import { cachedContents } from '../../../lib/cached';
 
 export default function Authors({ authors, currentLocale, locales }) {
@@ -32,7 +32,7 @@ export default function Authors({ authors, currentLocale, locales }) {
   }, []);
 
   const listItems = authors.map((author) => {
-    let title = localiseText(currentLocale, author.title);
+    let title = hasuraLocaliseText(author.author_translations, 'title');
 
     return (
       <li key={author.id}>
@@ -82,7 +82,14 @@ export async function getServerSideProps(context) {
     (localeMap) => localeMap.code === context.locale
   );
 
-  let authors = await listAllAuthors();
+  const { errors, data } = await hasuraListAllAuthors(currentLocale.code);
+
+  if (errors) {
+    console.error(errors);
+  }
+
+  let authors = data.authors;
+
   return {
     props: {
       authors: authors,
