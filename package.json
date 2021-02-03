@@ -13,9 +13,7 @@
     "purgecss": "purgecss --css styles/bulma.css --content pages/** components/** --output ./purge.css",
     "lint": "eslint ./components/** ./pages/** ./lib/** -c .eslintrc.json --fix --ext js,jsx",
     "lint:fix": "npm run lint -- --fix",
-    "format": "prettier --write ./components/** ./pages/** ./lib/**",
-    "postinstall": "cd ./node_modules/react-aws-s3 && npm install && npm run build"
-
+    "format": "prettier --write ./components/** ./pages/** ./lib/**"
   },
   "lint-staged": {
     "./components/**": "npm run format",
