@@ -1,11 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import AdminLayout from '../../../components/AdminLayout';
-import { getSection, deleteSection, updateSection } from '../../../lib/section';
+import {
+  hasuraGetSectionById,
+  deleteSection,
+  updateSection,
+  hasuraUpdateSection,
+} from '../../../lib/section';
 import AdminNav from '../../../components/nav/AdminNav';
 import AdminHeader from '../../../components/tinycms/AdminHeader';
 import Notification from '../../../components/tinycms/Notification';
-import { localiseText } from '../../../lib/utils';
+import { hasuraLocaliseText, localiseText } from '../../../lib/utils';
 import { listAllLocales } from '../../../lib/articles.js';
 import { cachedContents } from '../../../lib/cached';
 
@@ -19,23 +24,12 @@ export default function EditSection({
   const [notificationMessage, setNotificationMessage] = useState('');
   const [notificationType, setNotificationType] = useState('');
   const [showNotification, setShowNotification] = useState(false);
-  const [sectionId, setSectionId] = useState('');
+  const [sectionId, setSectionId] = useState(section.id);
 
-  const [title, setTitle] = useState('');
-  const [i18nTitleValues, setI18nTitleValues] = useState([]);
-
-  const [slug, setSlug] = useState('');
-
-  useEffect(() => {
-    if (section) {
-      setI18nTitleValues(section.title.values);
-
-      let localisedTitle = localiseText(currentLocale, section.title);
-      setTitle(localisedTitle);
-      setSlug(section.slug);
-      setSectionId(section.id);
-    }
-  }, []);
+  const [title, setTitle] = useState(
+    hasuraLocaliseText(section.category_translations, 'title')
+  );
+  const [slug, setSlug] = useState(section.slug);
 
   const router = useRouter();
 
@@ -64,32 +58,25 @@ export default function EditSection({
   async function handleSubmit(ev) {
     ev.preventDefault();
 
-    let foundIt = false;
-    i18nTitleValues.map((localValue) => {
-      if (localValue.locale === currentLocale.id) {
-        foundIt = true;
-        localValue.value = title;
-      }
-    });
-    if (!foundIt) {
-      i18nTitleValues.push({ value: title, locale: currentLocale.id });
-      setI18nTitleValues(i18nTitleValues);
-    }
+    let published = true;
+    let params = {
+      url: apiUrl,
+      orgSlug: apiToken,
+      id: sectionId,
+      localeCode: currentLocale.code,
+      title: title,
+      published: published,
+      slug: slug,
+    };
+    const { errors, data } = await hasuraUpdateSection(params);
+    console.log(errors);
 
-    const response = await updateSection(
-      apiUrl,
-      apiToken,
-      sectionId,
-      i18nTitleValues,
-      slug
-    );
-
-    if (response.categories.updateCategory.error !== null) {
-      setNotificationMessage(response.categories.updateCategory.error);
+    if (errors) {
+      setNotificationMessage(errors);
       setNotificationType('error');
       setShowNotification(true);
     } else {
-      setSectionId(response.categories.updateCategory.data.id);
+      console.log(data);
       // display success message
       setNotificationMessage('Successfully saved and published the section!');
       setNotificationType('success');
@@ -171,21 +158,7 @@ export default function EditSection({
               </div>
             </div>
             <div className="level-right">
-              <div className="level-item">
-                <a
-                  onClick={() => {
-                    if (
-                      window.confirm(
-                        'Are you sure you want to delete this section?'
-                      )
-                    )
-                      handleDeleteSection(section);
-                  }}
-                  className="button is-danger"
-                >
-                  Delete
-                </a>
-              </div>
+              <div className="level-item"></div>
             </div>
           </div>
         </form>
@@ -200,10 +173,21 @@ export async function getServerSideProps(context) {
   const currentLocale = localeMappings.find(
     (localeMap) => localeMap.code === context.locale
   );
-  const apiUrl = process.env.CONTENT_DELIVERY_API_URL;
-  const apiToken = process.env.CONTENT_DELIVERY_API_ACCESS_TOKEN;
 
-  let section = await getSection(context.params.id);
+  const apiUrl = process.env.HASURA_API_URL;
+  const apiToken = process.env.ORG_SLUG;
+
+  let section = {};
+  const { errors, data } = await hasuraGetSectionById({
+    url: apiUrl,
+    orgSlug: apiToken,
+    id: context.params.id,
+  });
+  if (errors) {
+    throw errors;
+  } else {
+    section = data.categories_by_pk;
+  }
 
   return {
     props: {
