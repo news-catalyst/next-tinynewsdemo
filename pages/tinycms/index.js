@@ -42,7 +42,6 @@ export default function TinyCmsHome(props) {
 }
 
 export async function getServerSideProps(context) {
-  console.log('getServerSideProps:', context);
   const localeMappings = await cachedContents('locales', listAllLocales);
 
   const currentLocale = localeMappings.find(
