@@ -7,7 +7,7 @@ import Notification from '../../../components/tinycms/Notification';
 import Upload from '../../../components/tinycms/Upload';
 import { listAllLocales } from '../../../lib/articles.js';
 import { cachedContents } from '../../../lib/cached';
-import { createAuthor } from '../../../lib/authors';
+import { hasuraCreateAuthor, createAuthor } from '../../../lib/authors';
 
 export default function AddAuthor({
   apiUrl,
@@ -41,31 +41,35 @@ export default function AddAuthor({
   const handleChange = (ev) => setStaff(ev.target.value);
 
   async function handleSubmit(ev) {
+    console.log('handle submit button clicked');
     ev.preventDefault();
 
-    const response = await createAuthor(
-      apiUrl,
-      apiToken,
-      name,
-      slug,
-      title,
-      twitter,
-      bio,
-      staff,
-      currentLocale
-    );
+    let published = true;
+    let params = {
+      url: apiUrl,
+      orgSlug: apiToken,
+      localeCode: currentLocale.code,
+      bio: bio,
+      title: title,
+      name: name,
+      published: published,
+      slug: slug,
+      staff: staff,
+      twitter: twitter,
+      photoUrl: bioImage,
+    };
+    const { errors, data } = await hasuraCreateAuthor(params);
 
-    if (response.authors.createAuthor.error !== null) {
-      setNotificationMessage(response.authors.createAuthor.error);
-      setNotificationType('error');
-      setShowNotification(true);
-    } else {
-      // display success message
+    if (data && data.insert_authors_one) {
+      console.log(data.insert_authors_one);
       setNotificationMessage('Successfully saved and published the author!');
       setNotificationType('success');
       setShowNotification(true);
-
       router.push('/tinycms/authors?action=create');
+    } else if (errors) {
+      setNotificationMessage(errors);
+      setNotificationType('error');
+      setShowNotification(true);
     }
   }
 
@@ -220,8 +224,8 @@ export async function getServerSideProps(context) {
     (localeMap) => localeMap.code === context.locale
   );
 
-  const apiUrl = process.env.CONTENT_DELIVERY_API_URL;
-  const apiToken = process.env.CONTENT_DELIVERY_API_ACCESS_TOKEN;
+  const apiUrl = process.env.HASURA_API_URL;
+  const apiToken = process.env.ORG_SLUG;
 
   const awsConfig = {
     bucketName: process.env.TNC_AWS_BUCKET_NAME,
