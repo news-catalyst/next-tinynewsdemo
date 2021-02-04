@@ -6,8 +6,8 @@ import AdminHeader from '../../../components/tinycms/AdminHeader';
 import Notification from '../../../components/tinycms/Notification';
 import Upload from '../../../components/tinycms/Upload';
 import { listAllLocales } from '../../../lib/articles.js';
-import { getAuthor, updateAuthor } from '../../../lib/authors';
-import { localiseText } from '../../../lib/utils.js';
+import { hasuraGetAuthorById, hasuraUpdateAuthor } from '../../../lib/authors';
+import { hasuraLocaliseText } from '../../../lib/utils.js';
 import { cachedContents } from '../../../lib/cached';
 
 export default function EditAuthor({
@@ -22,50 +22,29 @@ export default function EditAuthor({
   const [notificationType, setNotificationType] = useState('');
   const [showNotification, setShowNotification] = useState(false);
 
-  const [name, setName] = useState('');
-  const [title, setTitle] = useState('');
-  const [i18nTitleValues, setI18nTitleValues] = useState([]);
-  const [twitter, setTwitter] = useState('');
-  const [slug, setSlug] = useState('');
-  const [staff, setStaff] = useState(false);
-  const [bio, setBio] = useState('');
-  const [bioImage, setBioImage] = useState('');
-  const [i18nBioValues, setI18nBioValues] = useState([]);
-  const [authorId, setAuthorId] = useState(null);
+  const [name, setName] = useState(author.name);
+  const [title, setTitle] = useState(
+    hasuraLocaliseText(author.author_translations, 'title')
+  );
+  const [bio, setBio] = useState(
+    hasuraLocaliseText(author.author_translations, 'bio')
+  );
+  const [twitter, setTwitter] = useState(author.twitter);
+  const [slug, setSlug] = useState(author.slug);
+  const [staff, setStaff] = useState(author.staff);
+  const [bioImage, setBioImage] = useState(author.photoUrl);
+  const [authorId, setAuthorId] = useState(author.id);
   const [staffYesNo, setStaffYesNo] = useState('no');
 
   const router = useRouter();
 
   useEffect(() => {
-    if (author) {
-      setAuthorId(author.id);
-      setName(author.name);
-      setBioImage(author.photoUrl);
-
-      setI18nTitleValues(author.title.values);
-      setI18nBioValues(author.bio.values);
-
-      if (author.title && author.title.values) {
-        let title = localiseText(currentLocale, author.title);
-        setTitle(title);
-      }
-      if (author.slug) {
-        setSlug(author.slug);
-      }
-      if (author.twitter) {
-        setTwitter(author.twitter);
-      }
-      if (author.bio && author.bio.values) {
-        let bio = localiseText(currentLocale, author.bio);
-        setBio(bio);
-      }
-      if (author.staff) {
-        setStaffYesNo('yes');
-        setStaff(true);
-      } else {
-        setStaffYesNo('no');
-        setStaff(false);
-      }
+    if (author && author.staff) {
+      setStaffYesNo('yes');
+      setStaff(true);
+    } else {
+      setStaffYesNo('no');
+      setStaff(false);
     }
   }, []);
 
@@ -84,51 +63,30 @@ export default function EditAuthor({
   }
 
   async function handleSubmit(ev) {
+    let published = true;
     ev.preventDefault();
+    let params = {
+      url: apiUrl,
+      orgSlug: apiToken,
+      id: authorId,
+      localeCode: currentLocale.code,
+      bio: bio,
+      title: title,
+      name: name,
+      published: published,
+      slug: slug,
+      staff: staff,
+      twitter: twitter,
+      photoUrl: bioImage,
+    };
+    const { errors, data } = await hasuraUpdateAuthor(params);
 
-    let foundTitle = false;
-    i18nTitleValues.map((localValue) => {
-      if (localValue.locale === currentLocale.id) {
-        foundTitle = true;
-        localValue.value = title;
-      }
-    });
-    if (!foundTitle) {
-      i18nTitleValues.push({ value: title, locale: currentLocale.id });
-      setI18nTitleValues(i18nTitleValues);
-    }
-
-    let foundBio = false;
-    i18nBioValues.map((localValue) => {
-      if (localValue.locale === currentLocale.id) {
-        foundBio = true;
-        localValue.value = bio;
-      }
-    });
-    if (!foundBio) {
-      i18nBioValues.push({ value: bio, locale: currentLocale.id });
-      setI18nBioValues(i18nBioValues);
-    }
-
-    const response = await updateAuthor(
-      apiUrl,
-      apiToken,
-      authorId,
-      name,
-      slug,
-      i18nTitleValues,
-      twitter,
-      i18nBioValues,
-      staff,
-      bioImage
-    );
-
-    if (response.authors.updateAuthor.error !== null) {
-      setNotificationMessage(response.authors.updateAuthor.error);
+    if (errors) {
+      console.error(errors);
+      setNotificationMessage(errors);
       setNotificationType('error');
       setShowNotification(true);
     } else {
-      setAuthorId(response.authors.updateAuthor.data.id);
       // display success message
       setNotificationMessage('Successfully saved and published the author!');
       setNotificationType('success');
@@ -299,8 +257,8 @@ export async function getServerSideProps(context) {
     (localeMap) => localeMap.code === context.locale
   );
 
-  const apiUrl = process.env.CONTENT_DELIVERY_API_URL;
-  const apiToken = process.env.CONTENT_DELIVERY_API_ACCESS_TOKEN;
+  const apiUrl = process.env.HASURA_API_URL;
+  const apiToken = process.env.ORG_SLUG;
 
   const awsConfig = {
     bucketName: process.env.TNC_AWS_BUCKET_NAME,
@@ -310,7 +268,18 @@ export async function getServerSideProps(context) {
     secretAccessKey: process.env.TNC_AWS_ACCESS_KEY,
   };
 
-  let author = await getAuthor(context.params.id);
+  let author = {};
+  const { errors, data } = await hasuraGetAuthorById({
+    url: apiUrl,
+    orgSlug: apiToken,
+    id: context.params.id,
+  });
+  if (errors) {
+    throw errors;
+  } else {
+    author = data.authors_by_pk;
+  }
+
   return {
     props: {
       apiUrl: apiUrl,
