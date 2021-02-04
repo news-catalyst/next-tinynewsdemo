@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import AdminLayout from '../../../components/AdminLayout.js';
 import AdminNav from '../../../components/nav/AdminNav';
 import AdminHeader from '../../../components/tinycms/AdminHeader';
-import { localiseText } from '../../../lib/utils';
+import { hasuraLocaliseText } from '../../../lib/utils';
 import { listAllLocales } from '../../../lib/articles.js';
 import { hasuraListAllSections } from '../../../lib/section.js';
 import { cachedContents } from '../../../lib/cached';
@@ -25,7 +25,7 @@ export default function Sections({ sections, currentLocale, locales }) {
   }, []);
 
   const listItems = sections.map((section) => {
-    let title = localiseText(currentLocale, section.title);
+    let title = hasuraLocaliseText(section.category_translations, 'title');
     return (
       <li key={section.id}>
         <Link
