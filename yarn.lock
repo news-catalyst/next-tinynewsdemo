@@ -4705,9 +4705,10 @@ rc@^1.2.7:
     minimist "^1.2.0"
     strip-json-comments "~2.0.1"
 
-"react-aws-s3@https://github.com/news-catalyst/react-aws-s3.git":
+react-aws-s3@^1.3.0:
   version "1.3.0"
-  resolved "https://github.com/news-catalyst/react-aws-s3.git#25d03cdd817661952861b45ba0fa7a9c96d2509c"
+  resolved "https://registry.yarnpkg.com/react-aws-s3/-/react-aws-s3-1.3.0.tgz#b65c7968c5a6bf838ff68df491cb10be0d5992cd"
+  integrity sha512-aN0h2QeK2P3XTIGs+boA9CJlSkoR8RzEFXW6CSSl526nC/cqpKHLKvDHmbfvQ6N225Q+pbK7VQIhgBVk5KbJkQ==
   dependencies:
     crypto-js "^3.1.9-1"
     short-uuid "^3.1.0"

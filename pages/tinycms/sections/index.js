@@ -1,12 +1,12 @@
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { listAllSections } from '../../../lib/articles.js';
 import AdminLayout from '../../../components/AdminLayout.js';
 import AdminNav from '../../../components/nav/AdminNav';
 import AdminHeader from '../../../components/tinycms/AdminHeader';
-import { localiseText } from '../../../lib/utils';
+import { hasuraLocaliseText } from '../../../lib/utils';
 import { listAllLocales } from '../../../lib/articles.js';
+import { hasuraListAllSections } from '../../../lib/section.js';
 import { cachedContents } from '../../../lib/cached';
 
 export default function Sections({ sections, currentLocale, locales }) {
@@ -25,7 +25,7 @@ export default function Sections({ sections, currentLocale, locales }) {
   }, []);
 
   const listItems = sections.map((section) => {
-    let title = localiseText(currentLocale, section.title);
+    let title = hasuraLocaliseText(section.category_translations, 'title');
     return (
       <li key={section.id}>
         <Link
@@ -69,7 +69,14 @@ export async function getServerSideProps(context) {
     (localeMap) => localeMap.code === context.locale
   );
 
-  let sections = await listAllSections();
+  const { errors, data } = await hasuraListAllSections(currentLocale.code);
+
+  if (errors) {
+    console.error(errors);
+  }
+
+  let sections = data.categories;
+
   return {
     props: {
       sections: sections,

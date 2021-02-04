@@ -6,11 +6,6 @@ import ModalArticleSearch from '../tinycms/ModalArticleSearch';
 export default function BigFeaturedStory(props) {
   const [isModalActive, setModal] = useState(false);
 
-  // useEffect(() => {
-  //   console.log('BigFeaturedStory useEffect props:', props);
-  //   // props.setFeaturedArticle(props.articles['featured']);
-  // }, [props.articles, props.featuredArticle]);
-
   return (
     <>
       <section className="section section-layout__4">

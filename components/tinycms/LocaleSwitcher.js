@@ -5,7 +5,7 @@ export default function LocaleSwitcher({ currentLocale, locales, id }) {
   const [selectedLocale, setSelectedLocale] = useState(currentLocale.code);
   const router = useRouter();
 
-  console.log('currentLocale:', currentLocale, 'locales:', locales);
+  // console.log('currentLocale:', currentLocale, 'locales:', locales);
 
   function localisePath(event) {
     setSelectedLocale(event.target.value);
