@@ -4,7 +4,7 @@ import AdminLayout from '../../../components/AdminLayout';
 import AdminNav from '../../../components/nav/AdminNav';
 import AdminHeader from '../../../components/tinycms/AdminHeader';
 import Notification from '../../../components/tinycms/Notification';
-import { createSection } from '../../../lib/section';
+import { hasuraCreateSection } from '../../../lib/section';
 import { listAllLocales } from '../../../lib/articles.js';
 import { cachedContents } from '../../../lib/cached';
 
@@ -38,7 +38,6 @@ export default function AddSection({
         errors.push('Title is required.');
         setErrors(errors);
       }
-      console.log('errors:', errors);
       formIsValid = false;
     } else {
       let removeAtIndex = errors.indexOf('Title is required.');
@@ -63,23 +62,25 @@ export default function AddSection({
       return;
     }
 
-    const response = await createSection(
-      apiUrl,
-      apiToken,
-      currentLocale,
-      title,
-      slug
-    );
+    let published = true;
+    let params = {
+      url: apiUrl,
+      orgSlug: apiToken,
+      localeCode: currentLocale.code,
+      title: title,
+      published: published,
+      slug: slug,
+    };
+    const { hasuraErrors, data } = await hasuraCreateSection(params);
 
-    if (response.categories.createCategory.error !== null) {
-      console.log('error creating category:', response.categories);
-      setNotificationMessage(response.categories.createCategory.error);
-      setNotificationType('error');
-      setShowNotification(true);
-    } else {
-      // display success message
-      setNotificationMessage(['Successfully saved and published the section!']);
+    if (data && data.insert_categories_one) {
+      console.log(data.insert_categories_one);
+      setNotificationMessage('Successfully saved and published the section!');
       setNotificationType('success');
+      setShowNotification(true);
+    } else if (hasuraErrors) {
+      setNotificationMessage(hasuraErrors);
+      setNotificationType('error');
       setShowNotification(true);
     }
   }
@@ -160,8 +161,9 @@ export async function getServerSideProps(context) {
     (localeMap) => localeMap.code === context.locale
   );
 
-  const apiUrl = process.env.CONTENT_DELIVERY_API_URL;
-  const apiToken = process.env.CONTENT_DELIVERY_API_ACCESS_TOKEN;
+  const apiUrl = process.env.HASURA_API_URL;
+  const apiToken = process.env.ORG_SLUG;
+
   return {
     props: {
       apiUrl: apiUrl,
