@@ -196,6 +196,7 @@ function createHomepageLayouts() {
 }
 
 async function main() {
+  console.log("HASURA_API_URL:", process.env.HASURA_API_URL, "ORG_SLUG:", process.env.ORG_SLUG);
   createHomepageLayouts();
   listLocales();
   listSections();
