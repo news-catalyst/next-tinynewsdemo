@@ -1,7 +1,7 @@
 import { useAmp } from 'next/amp';
 import {
   listAllLocales,
-  getAboutPage,
+  hasuraGetPage,
   listAuthors,
   listAllSections,
 } from '../lib/articles.js';
@@ -10,13 +10,17 @@ import { localiseText } from '../lib/utils';
 import Layout from '../components/Layout';
 import { renderBody } from '../lib/utils.js';
 
-export default function About({ data, authors, currentLocale, sections }) {
+export default function About({ page, authors, currentLocale, sections }) {
   const isAmp = useAmp();
-  const body = renderBody(data, isAmp);
-  console.log(authors[0].title.values);
+
+  // there will only be one translation returned for a given page + locale
+  const localisedPage = page.page_translations[0];
+  const body = renderBody(localisedPage, isAmp);
+
   return (
-    <Layout meta={data} locale={currentLocale} sections={sections}>
+    <Layout meta={localisedPage} locale={currentLocale} sections={sections}>
       <article className="container">
+        <div className="post__title">{localisedPage.headline}</div>
         <section className="section" key="body">
           <div id="articleText" className="content">
             {body}
@@ -49,19 +53,31 @@ export async function getStaticProps({ locale }) {
     (localeMap) => localeMap.code === locale
   );
 
-  //    get about page contents
-  const data = await getAboutPage();
-  if (!data) {
+  const apiUrl = process.env.HASURA_API_URL;
+  const apiToken = process.env.ORG_SLUG;
+
+  let page = {};
+
+  const { errors, data } = await hasuraGetPage({
+    url: apiUrl,
+    orgSlug: apiToken,
+    slug: 'about',
+    localeCode: currentLocale.code,
+  });
+  if (errors || !data) {
     return {
       notFound: true,
     };
+    // throw errors;
+  } else {
+    page = data.pages[0];
   }
 
   const authors = await listAuthors();
   const sections = await cachedContents('sections', listAllSections);
   return {
     props: {
-      data,
+      page,
       authors,
       currentLocale,
       sections,
