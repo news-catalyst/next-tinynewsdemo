@@ -1,6 +1,7 @@
 import { renderAuthor } from '../../lib/utils';
 
 export default function ArticleFooterAuthor({ author, isAmp }) {
+  console.log('author footer:', author);
   return (
     <div className="post__author">
       <div className="post__author-avatar">

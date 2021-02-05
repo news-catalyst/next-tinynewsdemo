@@ -2,8 +2,8 @@ import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 import {
   listAllLocales,
-  getArticleBySlug,
-  listAllArticleSlugs,
+  hasuraGetArticleBySlug,
+  hasuraListAllArticleSlugs,
   listAllSections,
   listAllArticlesBySection,
 } from '../../../lib/articles.js';
@@ -43,10 +43,24 @@ export default function ArticlePage(props) {
   return <Article {...props} />;
 }
 
-export async function getStaticPaths({ locales }) {
-  const paths = await listAllArticleSlugs(locales);
+export async function getStaticPaths() {
+  const { errors, data } = await hasuraListAllArticleSlugs();
+  if (errors) {
+    throw errors;
+  }
 
-  console.log('ARTICLE PATHS:', paths);
+  let paths = [];
+  for (const article of data.articles) {
+    for (const locale of article.article_translations) {
+      paths.push({
+        params: {
+          category: article.category.slug,
+          slug: article.slug,
+        },
+        locale: locale.locale_code,
+      });
+    }
+  }
 
   return {
     paths,
@@ -60,13 +74,27 @@ export async function getStaticProps({ locale, params }) {
   const currentLocale = localeMappings.find(
     (localeMap) => localeMap.code === locale
   );
-  // console.log("article page currentLocale:", currentLocale);
 
-  const article = await getArticleBySlug(currentLocale, params.slug);
+  const apiUrl = process.env.HASURA_API_URL;
+  const apiToken = process.env.ORG_SLUG;
 
-  if (article === null) {
-    console.log('failed finding article for:', currentLocale.code, params.slug);
+  let article = {};
+  const { errors, data } = await hasuraGetArticleBySlug({
+    url: apiUrl,
+    orgSlug: apiToken,
+    slug: params.slug,
+    localeCode: currentLocale.code,
+  });
+  if (errors || !data) {
+    return {
+      notFound: true,
+    };
+    // throw errors;
+  } else {
+    article = data.articles[0];
+    console.log('article:', article);
   }
+
   const sections = await cachedContents('sections', listAllSections);
   const allAds = await cachedContents('ads', getArticleAds);
   const ads = allAds.filter((ad) => ad.adTypeId === 164);
