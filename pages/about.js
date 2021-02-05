@@ -1,22 +1,25 @@
 import { useAmp } from 'next/amp';
 import {
   listAllLocales,
-  getAboutPage,
-  listAuthors,
+  hasuraGetPage,
   listAllSections,
 } from '../lib/articles.js';
 import { cachedContents } from '../lib/cached';
-import { localiseText } from '../lib/utils';
+import { hasuraLocaliseText } from '../lib/utils';
 import Layout from '../components/Layout';
 import { renderBody } from '../lib/utils.js';
 
-export default function About({ data, authors, currentLocale, sections }) {
+export default function About({ page, currentLocale, sections }) {
   const isAmp = useAmp();
-  const body = renderBody(data, isAmp);
-  console.log(authors[0].title.values);
+
+  // there will only be one translation returned for a given page + locale
+  const localisedPage = page.page_translations[0];
+  const body = renderBody(localisedPage, isAmp);
+
   return (
-    <Layout meta={data} locale={currentLocale} sections={sections}>
+    <Layout meta={localisedPage} locale={currentLocale} sections={sections}>
       <article className="container">
+        <div className="post__title">{localisedPage.headline}</div>
         <section className="section" key="body">
           <div id="articleText" className="content">
             {body}
@@ -25,13 +28,20 @@ export default function About({ data, authors, currentLocale, sections }) {
         <section className="section" key="authors">
           <div className="content">
             <h1 className="title">Authors</h1>
-            {authors.map((author) => (
-              <div className="author mb-4" key={author.name}>
+            {page.author_pages.map((authorPage) => (
+              <div className="author mb-4" key={authorPage.author.name}>
                 <h4 className="subtitle is-4">
-                  {author.name}, {localiseText(currentLocale, author.title)}
+                  {authorPage.author.name},{' '}
+                  {hasuraLocaliseText(
+                    authorPage.author.author_translations,
+                    'title'
+                  )}
                 </h4>
                 <p className="content is-medium">
-                  {localiseText(currentLocale, author.bio)}
+                  {hasuraLocaliseText(
+                    authorPage.author.author_translations,
+                    'bio'
+                  )}
                 </p>
               </div>
             ))}
@@ -49,20 +59,30 @@ export async function getStaticProps({ locale }) {
     (localeMap) => localeMap.code === locale
   );
 
-  //    get about page contents
-  const data = await getAboutPage();
-  if (!data) {
+  const apiUrl = process.env.HASURA_API_URL;
+  const apiToken = process.env.ORG_SLUG;
+
+  let page = {};
+
+  const { errors, data } = await hasuraGetPage({
+    url: apiUrl,
+    orgSlug: apiToken,
+    slug: 'about',
+    localeCode: currentLocale.code,
+  });
+  if (errors || !data) {
     return {
       notFound: true,
     };
+    // throw errors;
+  } else {
+    page = data.pages[0];
   }
 
-  const authors = await listAuthors();
   const sections = await cachedContents('sections', listAllSections);
   return {
     props: {
-      data,
-      authors,
+      page,
       currentLocale,
       sections,
     },
