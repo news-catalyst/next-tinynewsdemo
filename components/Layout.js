@@ -54,17 +54,17 @@ export default function Layout({ children, locale, meta, article, sections }) {
   }
 
   let tagList = [];
-  if (article && article.tags) {
-    article.tags.map((tag) => {
-      tagList.push(
-        <meta
-          property="article:tag"
-          content={localiseText(locale, tag.title)}
-          key={tag.slug}
-        />
-      );
-    });
-  }
+  // if (article && article.tags) {
+  //   article.tags.map((tag) => {
+  //     tagList.push(
+  //       <meta
+  //         property="article:tag"
+  //         content={localiseText(locale, tag.title)}
+  //         key={tag.slug}
+  //       />
+  //     );
+  //   });
+  // }
 
   const isAmp = useAmp();
 
@@ -113,13 +113,13 @@ export default function Layout({ children, locale, meta, article, sections }) {
         />
         <meta property="article:section" content={metaValues.section} />
 
-        {article !== undefined &&
+        {/* {article !== undefined &&
           article.tags.map((tag) => (
             <meta
               property="article:tag"
               content={localiseText(locale, tag.title)}
             />
-          ))}
+          ))} */}
         <meta property="fb:admins" content="Facebook numeric ID" />
 
         {isAmp && (

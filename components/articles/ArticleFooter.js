@@ -3,24 +3,24 @@ import ArticleFooterAuthor from './ArticleFooterAuthor';
 
 export default function ArticleFooter({ article, isAmp }) {
   let tagLinks;
-  if (article.tags) {
-    tagLinks = article.tags.map((tag) => (
-      <li key={tag.slug}>
-        <Link href={`/tags/${tag.slug}`}>
-          <a className="is-link tag">{tag.title.values[0].value}</a>
-        </Link>
-      </li>
-    ));
-  }
+  // if (article.tags) {
+  //   tagLinks = article.tags.map((tag) => (
+  //     <li key={tag.slug}>
+  //       <Link href={`/tags/${tag.slug}`}>
+  //         <a className="is-link tag">{tag.title.values[0].value}</a>
+  //       </Link>
+  //     </li>
+  //   ));
+  // }
 
   return (
     <div className="section post__meta post__meta--bottom">
       <div className="section__container">
         <div className="post__byline">
-          {article.authors.map((author) => (
+          {article.author_articles.map((authorArticle) => (
             <ArticleFooterAuthor
-              key={author.slug}
-              author={author}
+              key={authorArticle.author.slug}
+              author={authorArticle.author}
               isAmp={isAmp}
             />
           ))}

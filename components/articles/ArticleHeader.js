@@ -2,7 +2,7 @@ import Link from 'next/link';
 import React, { useEffect } from 'react';
 import PublishDate from './PublishDate.js';
 import MainImage from './MainImage.js';
-import { renderAuthors } from '../../lib/utils.js';
+import { hasuraLocaliseText, renderAuthors } from '../../lib/utils.js';
 import { localiseText } from '../../lib/utils.js';
 
 export default function ArticleHeader({ article, locale, isAmp, metadata }) {
@@ -12,23 +12,34 @@ export default function ArticleHeader({ article, locale, isAmp, metadata }) {
   let searchDescription;
 
   if (article && article.category) {
-    categoryTitle = localiseText(locale, article.category.title);
-    headline = localiseText(locale, article.headline);
+    categoryTitle = hasuraLocaliseText(
+      article.category.category_translations,
+      'title'
+    );
+    headline = hasuraLocaliseText(article.article_translations, 'headline');
     postUrl = `${metadata.siteUrl}${article.category.slug}/${article.slug}`;
-    searchDescription = localiseText(locale, article.searchDescription);
+    searchDescription = hasuraLocaliseText(
+      article.article_translations,
+      'search_description'
+    );
   }
 
   if (!article) {
     return null;
   }
 
-  const mainImageNode = article.content.find(
-    (node) => node.type === 'mainImage'
-  );
+  let mainImageNode;
   let mainImage = null;
+  let localisedContent = hasuraLocaliseText(
+    article.article_translations,
+    'content'
+  );
+  if (localisedContent !== undefined && localisedContent !== null) {
+    mainImageNode = localisedContent.find((node) => node.type === 'mainImage');
 
-  if (mainImageNode) {
-    mainImage = mainImageNode.children[0];
+    if (mainImageNode) {
+      mainImage = mainImageNode.children[0];
+    }
   }
 
   return (
@@ -46,11 +57,11 @@ export default function ArticleHeader({ article, locale, isAmp, metadata }) {
           <figure>
             <div className="media">
               <div className="content">
-                <MainImage article={article} isAmp={isAmp} />
+                {mainImage && <MainImage article={article} isAmp={isAmp} />}
               </div>
             </div>
             <figcaption className="media-caption">
-              {mainImage.imageAlt}
+              {mainImage ? mainImage.imageAlt : null}
             </figcaption>
           </figure>
         </div>
