@@ -4,7 +4,7 @@ import GlobalNav from '../components/nav/GlobalNav';
 import GlobalFooter from './nav/GlobalFooter.js';
 import { useAmp } from 'next/amp';
 import AmpAnalytics from './amp/AmpAnalytics.js';
-import { localiseText } from '../lib/utils';
+import { hasuraLocaliseText } from '../lib/utils';
 
 export default function Layout({ children, locale, meta, article, sections }) {
   if (meta === null || meta === undefined) {
@@ -28,21 +28,33 @@ export default function Layout({ children, locale, meta, article, sections }) {
     coverImage: meta['coverImage'],
   };
   if (article) {
-    metaValues.section = localiseText(locale, article.category.title);
-    metaValues.searchTitle = localiseText(locale, article.searchTitle);
-    metaValues.searchDescription = localiseText(
-      locale,
-      article.searchDescription
+    metaValues.section = hasuraLocaliseText(
+      article.category.category_translations,
+      'title'
     );
-    metaValues.twitterTitle = localiseText(locale, article.twitterTitle);
-    metaValues.twitterDescription = localiseText(
-      locale,
-      article.twitterDescription
+    metaValues.searchTitle = hasuraLocaliseText(
+      article.article_translations,
+      'search_title'
     );
-    metaValues.facebookTitle = localiseText(locale, article.facebookTitle);
-    metaValues.facebookDescription = localiseText(
-      locale,
-      article.facebookDescription
+    metaValues.searchDescription = hasuraLocaliseText(
+      article.article_translations,
+      'search_description'
+    );
+    metaValues.twitterTitle = hasuraLocaliseText(
+      article.article_translations,
+      'twitter_title'
+    );
+    metaValues.twitterDescription = hasuraLocaliseText(
+      article.article_translations,
+      'twitter_description'
+    );
+    metaValues.facebookTitle = hasuraLocaliseText(
+      article.article_translations,
+      'facebook_title'
+    );
+    metaValues.facebookDescription = hasuraLocaliseText(
+      article.article_translations,
+      'facebook_description'
     );
   }
 
