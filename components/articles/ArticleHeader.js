@@ -39,10 +39,16 @@ export default function ArticleHeader({ article, locale, isAmp, metadata }) {
     'content'
   );
   if (localisedContent !== undefined && localisedContent !== null) {
-    mainImageNode = localisedContent.find((node) => node.type === 'mainImage');
+    try {
+      mainImageNode = localisedContent.find(
+        (node) => node.type === 'mainImage'
+      );
 
-    if (mainImageNode) {
-      mainImage = mainImageNode.children[0];
+      if (mainImageNode) {
+        mainImage = mainImageNode.children[0];
+      }
+    } catch (err) {
+      console.error(err);
     }
   }
 
