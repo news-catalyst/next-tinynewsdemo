@@ -21,7 +21,6 @@ export default function ArticlePage(props) {
   // initially until getStaticProps() finishes running
   // See: https://nextjs.org/docs/basic-features/data-fetching#the-fallback-key-required
   if (router.isFallback) {
-    console.log('router is fallback', router.pathname);
     return <div>Loading...</div>;
   }
 
@@ -33,7 +32,6 @@ export default function ArticlePage(props) {
 
   // trying to fix build errors...
   if (!props.article) {
-    console.log('ArticlePage no article prop found:', router.pathname);
     return (
       <>
         <h1>404 Page Not Found</h1>
@@ -92,7 +90,6 @@ export async function getStaticProps({ locale, params }) {
     // throw errors;
   } else {
     article = data.articles[0];
-    console.log('article:', article);
   }
 
   const sections = await cachedContents('sections', listAllSections);
