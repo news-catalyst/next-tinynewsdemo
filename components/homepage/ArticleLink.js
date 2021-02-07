@@ -1,7 +1,12 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { localiseText, renderDate, renderAuthors } from '../../lib/utils.js';
+import {
+  localiseText,
+  renderDate,
+  renderAuthors,
+  hasuraLocaliseText,
+} from '../../lib/utils.js';
 
 export default function ArticleLink({ locale, article, isAmp, showCategory }) {
   let mainImage = null;
@@ -26,11 +31,15 @@ export default function ArticleLink({ locale, article, isAmp, showCategory }) {
     console.log('headline is not a string:', headline, typeof headline);
   }
 
-  if (article.content !== null && article.content !== undefined) {
+  let articleContent = hasuraLocaliseText(
+    article.article_translations,
+    'content'
+  );
+  if (articleContent !== null && articleContent !== undefined) {
     try {
-      mainImageNode = article.content.find((node) => node.type === 'mainImage');
+      mainImageNode = articleContent.find((node) => node.type === 'mainImage');
     } catch (e) {
-      console.log('error finding main image:', e, article.content);
+      console.log('error finding main image:', e, articleContent);
     }
   }
 
