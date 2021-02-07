@@ -55,7 +55,6 @@ export async function getStaticProps({ locale, params }) {
   );
 
   const siteMetadata = await getSiteMetadataForLocale(currentLocale);
-  console.log('siteMetadata:', siteMetadata);
 
   const articles = await listAllArticlesByTag(currentLocale, params.slug);
   const sections = await cachedContents('sections', listAllSections);
