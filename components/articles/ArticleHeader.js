@@ -3,9 +3,12 @@ import React, { useEffect } from 'react';
 import PublishDate from './PublishDate.js';
 import MainImage from './MainImage.js';
 import { hasuraLocaliseText, renderAuthors } from '../../lib/utils.js';
-import { localiseText } from '../../lib/utils.js';
 
 export default function ArticleHeader({ article, locale, isAmp, metadata }) {
+  if (!article) {
+    return null;
+  }
+
   let categoryTitle;
   let headline;
   let postUrl;
@@ -24,8 +27,9 @@ export default function ArticleHeader({ article, locale, isAmp, metadata }) {
     );
   }
 
-  if (!article) {
-    return null;
+  let authorPhoto;
+  if (article && article.author_articles) {
+    authorPhoto = article.author_articles[0].author.photoUrl;
   }
 
   let mainImageNode;
@@ -69,21 +73,23 @@ export default function ArticleHeader({ article, locale, isAmp, metadata }) {
           <div className="post__byline">
             <div className="post__author">
               <div className="post__author-avatar">
-                <figure>
-                  <a className="content" href="#">
-                    {isAmp ? (
-                      <amp-img
-                        width={41}
-                        height={41}
-                        src="4ab3c1806d4d17cc6670d111a4bbd8d7.jpg"
-                        alt="author"
-                        layout="responsive"
-                      />
-                    ) : (
-                      <img src="4ab3c1806d4d17cc6670d111a4bbd8d7.jpg" />
-                    )}
-                  </a>
-                </figure>
+                {authorPhoto && (
+                  <figure>
+                    <a className="content" href="#">
+                      {isAmp ? (
+                        <amp-img
+                          width={41}
+                          height={41}
+                          src={authorPhoto}
+                          alt="author"
+                          layout="responsive"
+                        />
+                      ) : (
+                        <img src={authorPhoto} />
+                      )}
+                    </a>
+                  </figure>
+                )}
               </div>
               <div className="post__author-meta">
                 By {renderAuthors(article)}
