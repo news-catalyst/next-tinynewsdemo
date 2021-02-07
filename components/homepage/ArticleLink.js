@@ -2,7 +2,6 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import {
-  localiseText,
   renderDate,
   renderAuthors,
   hasuraLocaliseText,
@@ -12,23 +11,15 @@ export default function ArticleLink({ locale, article, isAmp, showCategory }) {
   let mainImage = null;
   let mainImageNode;
 
-  let headline = localiseText(locale, article.headline);
+  let headline = hasuraLocaliseText(article.article_translations, 'headline');
 
   let categoryTitle;
 
-  if (article.category && article.category.title) {
-    categoryTitle = localiseText(locale, article.category.title);
-  }
-
-  if (typeof categoryTitle !== 'string') {
-    console.log(
-      'category title is not a string:',
-      categoryTitle,
-      typeof categoryTitle
+  if (article.category && article.category.category_translations) {
+    categoryTitle = hasuraLocaliseText(
+      article.category.category_translations,
+      'title'
     );
-  }
-  if (typeof headline !== 'string') {
-    console.log('headline is not a string:', headline, typeof headline);
   }
 
   let articleContent = hasuraLocaliseText(
@@ -58,7 +49,7 @@ export default function ArticleLink({ locale, article, isAmp, showCategory }) {
           )}
         </span>
         <h4 className="asset__title">
-          {article.headline && (
+          {headline && (
             <Link
               href="/articles/[category]/[slug]"
               as={`/articles/${article.category.slug}/${article.slug}`}
@@ -70,7 +61,12 @@ export default function ArticleLink({ locale, article, isAmp, showCategory }) {
         <div className="asset__byline">
           By&nbsp;{renderAuthors(article)}&nbsp;
           <time>
-            <span>{renderDate(article.firstPublishedOn, false)}</span>
+            <span>
+              {renderDate(
+                article.article_translations[0].first_published_at,
+                false
+              )}
+            </span>
           </time>
         </div>
       </div>

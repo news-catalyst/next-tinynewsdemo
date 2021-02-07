@@ -4,13 +4,13 @@ import { cachedContents } from '../lib/cached';
 import { getSiteMetadataForLocale } from '../lib/site_metadata.js';
 import {
   listAllLocales,
-  listAllArticlesBySection,
+  hasuraListAllArticlesBySection,
+  hasuraListAllSections,
   listAllSectionTitles,
-  listAllSections,
   listAllTags,
 } from '../lib/articles.js';
 import { getArticleAds } from '../lib/ads.js';
-import { localiseText } from '../lib/utils.js';
+import { hasuraLocaliseText, localiseText } from '../lib/utils.js';
 import { useAmp } from 'next/amp';
 import ArticleStream from '../components/homepage/ArticleStream';
 
@@ -61,25 +61,53 @@ export async function getStaticProps({ locale, params }) {
 
   const siteMetadata = await getSiteMetadataForLocale(currentLocale);
 
-  const articles = await listAllArticlesBySection(
-    currentLocale,
-    params.category
-  );
-  const sections = await listAllSections();
-  // const sections = await cachedContents('sections', listAllSections);
+  const apiUrl = process.env.HASURA_API_URL;
+  const apiToken = process.env.ORG_SLUG;
+
+  let articles = [];
+  const { errors, data } = await hasuraListAllArticlesBySection({
+    url: apiUrl,
+    orgSlug: apiToken,
+    categorySlug: params.category,
+    localeCode: currentLocale.code,
+  });
+
+  if (errors || !data) {
+    return {
+      notFound: true,
+    };
+    // throw errors;
+  } else {
+    articles = data.articles;
+  }
+
+  let sections = [];
+  const { sectionErrors, sectionData } = await hasuraListAllSections();
+  if (sectionErrors || !sectionData) {
+    return {
+      notFound: true,
+    };
+  } else {
+    sections = sectionData.sections;
+  }
 
   const tags = await cachedContents('tags', listAllTags);
+
   let title;
 
   for (var i = 0; i < sections.length; i++) {
     if (sections[i].slug == params.category) {
-      if (sections[i].title && sections[i].title.values) {
-        title = localiseText(currentLocale, sections[i].title);
+      title = hasuraLocaliseText(sections[i].category_translations, 'title');
+      if (title) {
         break;
       }
     }
   }
+  if (!title) {
+    title = params.category;
+  }
 
+  console.log('title:', title);
   const allAds = await cachedContents('ads', getArticleAds);
   const expandedAds = allAds.filter((ad) => ad.adTypeId === 166);
 
