@@ -48,7 +48,7 @@ export default function ArticleHeader({ article, locale, isAmp, metadata }) {
         mainImage = mainImageNode.children[0];
       }
     } catch (err) {
-      console.error(err);
+      console.log('error finding main image in header: ', err);
     }
   }
 
