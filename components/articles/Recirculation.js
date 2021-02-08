@@ -1,15 +1,16 @@
 import ArticleLink from '../homepage/ArticleLink';
-import { localiseText } from '../../lib/utils.js';
+import { hasuraLocaliseText } from '../../lib/utils.js';
 
 export default function Recirculation({
   articles,
   isAmp,
-  locale,
   siteMetadata,
   section,
 }) {
-  console.log(isAmp);
-  const localisedSection = localiseText(locale, section.title);
+  const localisedSection = hasuraLocaliseText(
+    section.category_translations,
+    'title'
+  );
 
   return (
     <section className="section post__recirculation">
@@ -25,7 +26,6 @@ export default function Recirculation({
                 article={streamArticle}
                 showCategory={false}
                 isAmp={isAmp}
-                locale={locale}
               />
             ))}
         </ul>

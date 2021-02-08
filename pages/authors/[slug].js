@@ -1,5 +1,4 @@
 import Layout from '../../components/Layout.js';
-import ArticleLink from '../../components/homepage/ArticleLink.js';
 import {
   listAllLocales,
   listAllArticlesByAuthor,

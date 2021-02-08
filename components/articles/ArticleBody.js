@@ -4,7 +4,7 @@ import { useAnalytics } from '../../lib/hooks/useAnalytics.js';
 import { renderBody } from '../../lib/utils.js';
 import NewsletterBlock from '../plugins/NewsletterBlock';
 
-export default function ArticleBody({ article, locale, ads, isAmp, metadata }) {
+export default function ArticleBody({ article, ads, isAmp, metadata }) {
   const body = renderBody(article, ads, isAmp);
 
   const { trackEvent } = useAnalytics();
