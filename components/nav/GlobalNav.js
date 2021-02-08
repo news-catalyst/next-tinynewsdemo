@@ -7,7 +7,7 @@ export default function GlobalNav({ metadata, sections }) {
   if (sections) {
     sectionLinks = sections.slice(0, 4).map((section) => (
       <Link key={`navbar-${section.slug}`} href={`/${section.slug}`}>
-        <a>{section.title.values[0].value}</a>
+        <a>{section.title}</a>
       </Link>
     ));
   }

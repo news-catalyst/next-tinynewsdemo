@@ -77,6 +77,7 @@ export async function getStaticProps({ locale, params }) {
   const apiToken = process.env.ORG_SLUG;
 
   let article = {};
+  let sections = [];
   const { errors, data } = await hasuraGetArticleBySlug({
     url: apiUrl,
     orgSlug: apiToken,
@@ -90,9 +91,10 @@ export async function getStaticProps({ locale, params }) {
     // throw errors;
   } else {
     article = data.articles[0];
+    sections = data.categories;
   }
 
-  const sections = await cachedContents('sections', listAllSections);
+  // const sections = await cachedContents('sections', listAllSections);
   const allAds = await cachedContents('ads', getArticleAds);
   const ads = allAds.filter((ad) => ad.adTypeId === 164);
 
@@ -118,6 +120,8 @@ export async function getStaticProps({ locale, params }) {
   }
 
   const siteMetadata = await getSiteMetadataForLocale(currentLocale);
+
+  console.log(article, sections);
 
   return {
     props: {

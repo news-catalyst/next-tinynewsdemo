@@ -93,6 +93,9 @@ export async function getStaticProps({ locale, params }) {
   const apiToken = process.env.ORG_SLUG;
 
   let articles = [];
+  let sections = [];
+  let title;
+
   const { errors, data } = await hasuraListAllArticlesBySection({
     url: apiUrl,
     orgSlug: apiToken,
@@ -107,23 +110,12 @@ export async function getStaticProps({ locale, params }) {
     };
   } else {
     articles = data.articles;
-  }
-
-  let sections = [];
-  let title;
-  const { e, d } = await hasuraListAllSections({
-    url: apiUrl,
-    orgSlug: apiToken,
-  });
-
-  if (e || !d) {
-    console.log('error listing sections:', d, e);
-    return {
-      notFound: true,
-    };
-  } else {
-    sections = d.categories;
+    sections = data.categories;
     for (var i = 0; i < sections.length; i++) {
+      sections[i].title = hasuraLocaliseText(
+        sections[i].category_translations,
+        'title'
+      );
       if (sections[i].slug == params.category) {
         title = hasuraLocaliseText(sections[i].category_translations, 'title');
         if (title) {

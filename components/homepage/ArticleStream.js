@@ -73,7 +73,7 @@ export default function ArticleStream({
           <ul>
             {sections.map((section) => (
               <li key={section.slug}>
-                <a href="#">{section.title.values[0].value}</a>
+                <a href="#">{section.title}</a>
               </li>
             ))}
           </ul>
