@@ -1,9 +1,7 @@
 import { useRouter } from 'next/router';
 import Layout from '../components/Layout.js';
 import { cachedContents } from '../lib/cached';
-import { getSiteMetadataForLocale } from '../lib/site_metadata.js';
 import {
-  listAllLocales,
   hasuraListAllArticlesBySection,
   hasuraListAllSections,
 } from '../lib/articles.js';
@@ -14,7 +12,6 @@ import ArticleStream from '../components/homepage/ArticleStream';
 
 export default function CategoryPage(props) {
   const isAmp = useAmp();
-  console.log('props.articles:', props.articles);
 
   const router = useRouter();
   // If the page is not yet generated, this will be displayed
@@ -27,7 +24,7 @@ export default function CategoryPage(props) {
     <Layout
       meta={props.siteMetadata}
       sections={props.sections}
-      locale={props.currentLocale}
+      locale={props.locale}
     >
       <ArticleStream
         articles={props.articles}
@@ -35,7 +32,7 @@ export default function CategoryPage(props) {
         showCategory={false}
         isAmp={isAmp}
         title={props.title}
-        locale={props.currentLocale}
+        locale={props.locale}
         metadata={props.siteMetadata}
         ads={props.expandedAds}
       />
@@ -81,26 +78,20 @@ export async function getStaticPaths({ locales }) {
 }
 
 export async function getStaticProps({ locale, params }) {
-  const localeMappings = await cachedContents('locales', listAllLocales);
-
-  const currentLocale = localeMappings.find(
-    (localeMap) => localeMap.code === locale
-  );
-
-  const siteMetadata = await getSiteMetadataForLocale(currentLocale);
-
   const apiUrl = process.env.HASURA_API_URL;
   const apiToken = process.env.ORG_SLUG;
 
   let articles = [];
   let sections = [];
+  let tags = [];
+  let siteMetadata;
   let title;
 
   const { errors, data } = await hasuraListAllArticlesBySection({
     url: apiUrl,
     orgSlug: apiToken,
     categorySlug: params.category,
-    localeCode: currentLocale.code,
+    localeCode: locale,
   });
 
   if (errors || !data) {
@@ -111,6 +102,8 @@ export async function getStaticProps({ locale, params }) {
   } else {
     articles = data.articles;
     sections = data.categories;
+    tags = data.tags;
+
     for (var i = 0; i < sections.length; i++) {
       sections[i].title = hasuraLocaliseText(
         sections[i].category_translations,
@@ -123,10 +116,18 @@ export async function getStaticProps({ locale, params }) {
         }
       }
     }
-  }
 
-  // const tags = await cachedContents('tags', listAllTags);
-  const tags = [];
+    for (var i = 0; i < tags.length; i++) {
+      tags[i].title = hasuraLocaliseText(tags[i].tag_translations, 'title');
+    }
+
+    let metadatas = data.site_metadatas;
+    try {
+      siteMetadata = metadatas[0].site_metadata_translations[0].data;
+    } catch (err) {
+      console.log('failed finding site metadata for ', locale, metadatas);
+    }
+  }
 
   if (!title) {
     title = params.category;
@@ -138,7 +139,7 @@ export async function getStaticProps({ locale, params }) {
   return {
     props: {
       articles,
-      currentLocale,
+      locale,
       tags,
       title,
       sections,
