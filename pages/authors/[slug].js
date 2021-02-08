@@ -3,7 +3,7 @@ import {
   listAllLocales,
   hasuraListAllArticlesForAuthor,
   listAllSections,
-  listAllAuthorPaths,
+  hasuraListAllAuthorPaths,
   hasuraGetAuthorBySlug,
 } from '../../lib/articles.js';
 import { getSiteMetadataForLocale } from '../../lib/site_metadata.js';
@@ -38,7 +38,37 @@ export default function AuthorPage({
 }
 
 export async function getStaticPaths({ locales }) {
-  const paths = await listAllAuthorPaths(locales);
+  const apiUrl = process.env.HASURA_API_URL;
+  const apiToken = process.env.ORG_SLUG;
+
+  let paths = [];
+  let authors = [];
+  const { errors, data } = await hasuraListAllAuthorPaths({
+    url: apiUrl,
+    orgSlug: apiToken,
+  });
+
+  if (errors || !data) {
+    console.log('error generating static paths for author page:', errors);
+    return {
+      paths,
+      fallback: true,
+    };
+  } else {
+    authors = data.authors;
+  }
+
+  for (const locale of locales) {
+    authors.map((author) => {
+      paths.push({
+        params: {
+          slug: author.slug,
+        },
+        locale,
+      });
+    });
+  }
+
   return {
     paths,
     fallback: false,
@@ -55,6 +85,22 @@ export async function getStaticProps({ locale, params }) {
     (localeMap) => localeMap.code === locale
   );
 
+  const { err, getAuthorData } = await hasuraGetAuthorBySlug({
+    url: apiUrl,
+    orgSlug: apiToken,
+    authorSlug: params.slug,
+    localeCode: currentLocale.code,
+  });
+  let author = {};
+  if (err || !getAuthorData) {
+    console.log('error getting author by slug:', err, getAuthorData);
+    return {
+      notFound: true,
+    };
+  } else {
+    author = getAuthorData.authors;
+  }
+
   let articles = [];
   const { errors, data } = await hasuraListAllArticlesForAuthor({
     url: apiUrl,
@@ -64,6 +110,7 @@ export async function getStaticProps({ locale, params }) {
   });
 
   if (errors || !data) {
+    console.log('error listing all articles for author:', errors);
     return {
       notFound: true,
     };
@@ -71,21 +118,6 @@ export async function getStaticProps({ locale, params }) {
   } else {
     articles = data.articles;
   }
-  const { authorErrors, authorData } = await hasuraGetAuthorBySlug({
-    url: apiUrl,
-    orgSlug: apiToken,
-    authorSlug: params.slug,
-    localeCode: currentLocale.code,
-  });
-  let author = {};
-  if (authorErrors || !authorData) {
-    return {
-      notFound: true,
-    };
-  } else {
-    author = data.author;
-  }
-
   const sections = await cachedContents('sections', listAllSections);
 
   const siteMetadata = await getSiteMetadataForLocale(currentLocale);
