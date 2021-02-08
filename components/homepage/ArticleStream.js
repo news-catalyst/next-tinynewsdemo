@@ -8,7 +8,6 @@ export default function ArticleStream({
   showCategory,
   isAmp,
   title,
-  locale,
   metadata,
   ads,
 }) {
@@ -20,7 +19,6 @@ export default function ArticleStream({
         key={article.id}
         article={article}
         amp={isAmp}
-        locale={locale}
         showCategory={showCategory}
       />
     );
