@@ -18,18 +18,13 @@ export default function CategoryPage(props) {
   }
 
   return (
-    <Layout
-      meta={props.siteMetadata}
-      sections={props.sections}
-      locale={props.locale}
-    >
+    <Layout meta={props.siteMetadata} sections={props.sections}>
       <ArticleStream
         articles={props.articles}
         sections={props.sections}
         showCategory={false}
         isAmp={isAmp}
         title={props.title}
-        locale={props.locale}
         metadata={props.siteMetadata}
         ads={props.expandedAds}
       />
@@ -136,7 +131,6 @@ export async function getStaticProps({ locale, params }) {
   return {
     props: {
       articles,
-      locale,
       tags,
       title,
       sections,
