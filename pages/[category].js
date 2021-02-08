@@ -6,11 +6,9 @@ import {
   listAllLocales,
   hasuraListAllArticlesBySection,
   hasuraListAllSections,
-  listAllTags,
 } from '../lib/articles.js';
-import { hasuraListAllSectionsByLocale } from '../lib/section.js';
 import { getArticleAds } from '../lib/ads.js';
-import { hasuraLocaliseText, localiseText } from '../lib/utils.js';
+import { hasuraLocaliseText } from '../lib/utils.js';
 import { useAmp } from 'next/amp';
 import ArticleStream from '../components/homepage/ArticleStream';
 
@@ -51,23 +49,22 @@ export async function getStaticPaths({ locales }) {
 
   let paths = [];
   let sections = [];
-  const { sectionErrors, sectionData } = await hasuraListAllSections({
+  const { errors, data } = await hasuraListAllSections({
     url: apiUrl,
     orgSlug: apiToken,
   });
 
-  if (sectionErrors || !sectionData) {
-    console.error(sectionErrors);
+  if (errors || !data) {
     return {
       paths,
       fallback: true,
     };
   } else {
-    sections = sectionData.sections;
+    sections = data.categories;
   }
 
   for (const locale of locales) {
-    sectionsData.categories.map((section) => {
+    sections.map((section) => {
       paths.push({
         params: {
           category: section.slug,
@@ -76,6 +73,7 @@ export async function getStaticPaths({ locales }) {
       });
     });
   }
+
   return {
     paths,
     fallback: true,
@@ -103,47 +101,45 @@ export async function getStaticProps({ locale, params }) {
   });
 
   if (errors || !data) {
+    console.log('error listing articles:', errors);
     return {
       notFound: true,
     };
-    // throw errors;
   } else {
     articles = data.articles;
   }
 
   let sections = [];
-  const { sectionErrors, sectionData } = await hasuraListAllSectionsByLocale({
+  let title;
+  const { e, d } = await hasuraListAllSections({
     url: apiUrl,
     orgSlug: apiToken,
-    localeCode: currentLocale.code,
   });
 
-  if (sectionErrors || !sectionData) {
+  if (e || !d) {
+    console.log('error listing sections:', d, e);
     return {
       notFound: true,
     };
   } else {
-    sections = sectionData.sections;
+    sections = d.categories;
+    for (var i = 0; i < sections.length; i++) {
+      if (sections[i].slug == params.category) {
+        title = hasuraLocaliseText(sections[i].category_translations, 'title');
+        if (title) {
+          break;
+        }
+      }
+    }
   }
 
   // const tags = await cachedContents('tags', listAllTags);
   const tags = [];
 
-  let title;
-
-  for (var i = 0; i < sections.length; i++) {
-    if (sections[i].slug == params.category) {
-      title = hasuraLocaliseText(sections[i].category_translations, 'title');
-      if (title) {
-        break;
-      }
-    }
-  }
   if (!title) {
     title = params.category;
   }
 
-  console.log('title:', title);
   const allAds = await cachedContents('ads', getArticleAds);
   const expandedAds = allAds.filter((ad) => ad.adTypeId === 166);
 
