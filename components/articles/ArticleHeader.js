@@ -1,10 +1,10 @@
 import Link from 'next/link';
-import React, { useEffect } from 'react';
+import React from 'react';
 import PublishDate from './PublishDate.js';
 import MainImage from './MainImage.js';
 import { hasuraLocaliseText, renderAuthors } from '../../lib/utils.js';
 
-export default function ArticleHeader({ article, locale, isAmp, metadata }) {
+export default function ArticleHeader({ article, isAmp, metadata }) {
   if (!article) {
     return null;
   }

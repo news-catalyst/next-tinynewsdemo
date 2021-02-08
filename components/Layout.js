@@ -6,13 +6,9 @@ import { useAmp } from 'next/amp';
 import AmpAnalytics from './amp/AmpAnalytics.js';
 import { hasuraLocaliseText } from '../lib/utils';
 
-export default function Layout({ children, locale, meta, article, sections }) {
+export default function Layout({ children, meta, article, sections }) {
   if (meta === null || meta === undefined) {
     console.log('Layout meta is missing');
-    meta = {};
-  }
-  if (locale === null || locale === undefined) {
-    console.log('Layout locale is missing');
     meta = {};
   }
 
@@ -66,17 +62,17 @@ export default function Layout({ children, locale, meta, article, sections }) {
   }
 
   let tagList = [];
-  // if (article && article.tags) {
-  //   article.tags.map((tag) => {
-  //     tagList.push(
-  //       <meta
-  //         property="article:tag"
-  //         content={localiseText(locale, tag.title)}
-  //         key={tag.slug}
-  //       />
-  //     );
-  //   });
-  // }
+  if (article && article.tags) {
+    article.tags.map((tag) => {
+      tagList.push(
+        <meta
+          property="article:tag"
+          content={hasuraLocaliseText(tag.tag_translations, 'title')}
+          key={tag.slug}
+        />
+      );
+    });
+  }
 
   const isAmp = useAmp();
 
@@ -125,13 +121,14 @@ export default function Layout({ children, locale, meta, article, sections }) {
         />
         <meta property="article:section" content={metaValues.section} />
 
-        {/* {article !== undefined &&
+        {article !== undefined &&
+          article.tags !== undefined &&
           article.tags.map((tag) => (
             <meta
               property="article:tag"
-              content={localiseText(locale, tag.title)}
+              content={hasuraLocaliseText(tag.tag_translations, 'title')}
             />
-          ))} */}
+          ))}
         <meta property="fb:admins" content="Facebook numeric ID" />
 
         {isAmp && (

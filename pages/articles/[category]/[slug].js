@@ -1,14 +1,11 @@
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 import {
-  listAllLocales,
-  hasuraGetArticleBySlug,
   hasuraListAllArticleSlugs,
-  listAllSections,
-  hasuraListAllArticlesBySection,
+  hasuraArticlePage,
 } from '../../../lib/articles.js';
+import { hasuraLocaliseText } from '../../../lib/utils.js';
 import { getArticleAds } from '../../../lib/ads.js';
-import { getSiteMetadataForLocale } from '../../../lib/site_metadata.js';
 import { cachedContents } from '../../../lib/cached';
 import Article from '../../../components/Article.js';
 
@@ -67,22 +64,18 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ locale, params }) {
-  const localeMappings = await cachedContents('locales', listAllLocales);
-
-  const currentLocale = localeMappings.find(
-    (localeMap) => localeMap.code === locale
-  );
-
   const apiUrl = process.env.HASURA_API_URL;
   const apiToken = process.env.ORG_SLUG;
 
   let article = {};
+  let sectionArticles = [];
   let sections = [];
-  const { errors, data } = await hasuraGetArticleBySlug({
+  let siteMetadata;
+  const { errors, data } = await hasuraArticlePage({
     url: apiUrl,
     orgSlug: apiToken,
-    slug: params.slug,
-    localeCode: currentLocale.code,
+    localeCode: locale,
+    categorySlug: params.category,
   });
   if (errors || !data) {
     return {
@@ -90,41 +83,38 @@ export async function getStaticProps({ locale, params }) {
     };
     // throw errors;
   } else {
-    article = data.articles[0];
     sections = data.categories;
+    for (var i = 0; i < sections.length; i++) {
+      sections[i].title = hasuraLocaliseText(
+        sections[i].category_translations,
+        'title'
+      );
+    }
+
+    console.log('sections: ', sections);
+
+    article = data.articles.find((a) => a.slug === params.slug);
+    console.log('found article: ', article);
+
+    sectionArticles = data.articles.filter((a) => a.slug !== params.slug);
+    console.log('section articles: ', sectionArticles);
+
+    let metadatas = data.site_metadatas;
+    try {
+      siteMetadata = metadatas[0].site_metadata_translations[0].data;
+    } catch (err) {
+      console.log('failed finding site metadata for ', locale, metadatas);
+    }
   }
 
   // const sections = await cachedContents('sections', listAllSections);
   const allAds = await cachedContents('ads', getArticleAds);
   const ads = allAds.filter((ad) => ad.adTypeId === 164);
 
-  let sectionArticles = null;
-
-  if (article) {
-    const { errors, data } = await hasuraListAllArticlesBySection({
-      url: apiUrl,
-      orgSlug: apiToken,
-      categorySlug: params.category,
-      localeCode: currentLocale.code,
-    });
-
-    if (errors || !data) {
-      return {
-        notFound: true,
-      };
-      // throw errors;
-    } else {
-      sectionArticles = data.articles;
-    }
-    sectionArticles = sectionArticles.filter((a) => a.slug !== article.slug);
-  }
-
-  const siteMetadata = await getSiteMetadataForLocale(currentLocale);
-
   return {
     props: {
       article,
-      currentLocale,
+      locale,
       sections,
       ads,
       siteMetadata,

@@ -4,7 +4,6 @@ import { hasuraLocaliseText } from '../../lib/utils.js';
 export default function Recirculation({
   articles,
   isAmp,
-  locale,
   siteMetadata,
   section,
 }) {
@@ -27,7 +26,6 @@ export default function Recirculation({
                 article={streamArticle}
                 showCategory={false}
                 isAmp={isAmp}
-                locale={locale}
               />
             ))}
         </ul>
