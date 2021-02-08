@@ -1,10 +1,7 @@
 import { useRouter } from 'next/router';
 import Layout from '../components/Layout.js';
 import { cachedContents } from '../lib/cached';
-import {
-  hasuraListAllArticlesBySection,
-  hasuraListAllSections,
-} from '../lib/articles.js';
+import { hasuraCategoryPage, hasuraListAllSections } from '../lib/articles.js';
 import { getArticleAds } from '../lib/ads.js';
 import { hasuraLocaliseText } from '../lib/utils.js';
 import { useAmp } from 'next/amp';
@@ -87,7 +84,7 @@ export async function getStaticProps({ locale, params }) {
   let siteMetadata;
   let title;
 
-  const { errors, data } = await hasuraListAllArticlesBySection({
+  const { errors, data } = await hasuraCategoryPage({
     url: apiUrl,
     orgSlug: apiToken,
     categorySlug: params.category,
