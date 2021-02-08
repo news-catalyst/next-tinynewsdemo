@@ -6,7 +6,7 @@ import AdminNav from '../../../components/nav/AdminNav';
 import AdminHeader from '../../../components/tinycms/AdminHeader';
 import { hasuraLocaliseText } from '../../../lib/utils';
 import { listAllLocales } from '../../../lib/articles.js';
-import { hasuraListAllSections } from '../../../lib/section.js';
+import { hasuraListAllSectionsByLocale } from '../../../lib/section.js';
 import { cachedContents } from '../../../lib/cached';
 
 export default function Sections({ sections, currentLocale, locales }) {
@@ -69,7 +69,9 @@ export async function getServerSideProps(context) {
     (localeMap) => localeMap.code === context.locale
   );
 
-  const { errors, data } = await hasuraListAllSections(currentLocale.code);
+  const { errors, data } = await hasuraListAllSectionsByLocale(
+    currentLocale.code
+  );
 
   if (errors) {
     console.error(errors);

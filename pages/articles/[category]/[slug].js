@@ -5,7 +5,7 @@ import {
   hasuraGetArticleBySlug,
   hasuraListAllArticleSlugs,
   listAllSections,
-  listAllArticlesBySection,
+  hasuraListAllArticlesBySection,
 } from '../../../lib/articles.js';
 import { getArticleAds } from '../../../lib/ads.js';
 import { getSiteMetadataForLocale } from '../../../lib/site_metadata.js';
@@ -99,10 +99,21 @@ export async function getStaticProps({ locale, params }) {
   let sectionArticles = null;
 
   if (article) {
-    sectionArticles = await listAllArticlesBySection(
-      currentLocale,
-      article.category.slug
-    );
+    const { errors, data } = await hasuraListAllArticlesBySection({
+      url: apiUrl,
+      orgSlug: apiToken,
+      categorySlug: params.category,
+      localeCode: currentLocale.code,
+    });
+
+    if (errors || !data) {
+      return {
+        notFound: true,
+      };
+      // throw errors;
+    } else {
+      sectionArticles = data.articles;
+    }
     sectionArticles = sectionArticles.filter((a) => a.slug !== article.slug);
   }
 

@@ -17,13 +17,14 @@ export default function ArticleFooter({ article, isAmp }) {
     <div className="section post__meta post__meta--bottom">
       <div className="section__container">
         <div className="post__byline">
-          {article.author_articles.map((authorArticle) => (
-            <ArticleFooterAuthor
-              key={authorArticle.author.slug}
-              author={authorArticle.author}
-              isAmp={isAmp}
-            />
-          ))}
+          {article.author_articles &&
+            article.author_articles.map((authorArticle) => (
+              <ArticleFooterAuthor
+                key={authorArticle.author.slug}
+                author={authorArticle.author}
+                isAmp={isAmp}
+              />
+            ))}
         </div>
         <div className="post__tags">
           {tagLinks && <div className="subtitle">Read more:</div>}
