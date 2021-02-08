@@ -7,7 +7,7 @@ import {
   hasuraLocaliseText,
 } from '../../lib/utils.js';
 
-export default function ArticleLink({ locale, article, isAmp, showCategory }) {
+export default function ArticleLink({ article, isAmp, showCategory }) {
   let mainImage = null;
   let mainImageNode;
 

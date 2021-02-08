@@ -1,17 +1,20 @@
 import Link from 'next/link';
+import { hasuraLocaliseText } from '../../lib/utils';
 import ArticleFooterAuthor from './ArticleFooterAuthor';
 
 export default function ArticleFooter({ article, isAmp }) {
   let tagLinks;
-  // if (article.tags) {
-  //   tagLinks = article.tags.map((tag) => (
-  //     <li key={tag.slug}>
-  //       <Link href={`/tags/${tag.slug}`}>
-  //         <a className="is-link tag">{tag.title.values[0].value}</a>
-  //       </Link>
-  //     </li>
-  //   ));
-  // }
+  if (article.tags) {
+    tagLinks = article.tags.map((tag) => (
+      <li key={tag.slug}>
+        <Link href={`/tags/${tag.slug}`}>
+          <a className="is-link tag">
+            {hasuraLocaliseText(tag.tag_translations, 'title')}
+          </a>
+        </Link>
+      </li>
+    ));
+  }
 
   return (
     <div className="section post__meta post__meta--bottom">
