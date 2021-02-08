@@ -46,6 +46,8 @@ export default function ArticleStream({
   };
   let adIndex = 0;
 
+  const renderSections = typeof sections[0].title === 'string';
+
   const articleStream = articles.map((article, i) => {
     const streamArticle = renderArticle(article);
 
@@ -71,11 +73,12 @@ export default function ArticleStream({
             <div className="section__title">Topics We Cover</div>
           </h3>
           <ul>
-            {sections.map((section) => (
-              <li key={section.slug}>
-                <a href="#">{section.title}</a>
-              </li>
-            ))}
+            {renderSections &&
+              sections.map((section) => (
+                <li key={section.slug}>
+                  <a href="#">{section.title}</a>
+                </li>
+              ))}
           </ul>
         </div>
         <div className="block">
