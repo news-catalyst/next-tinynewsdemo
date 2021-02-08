@@ -1,7 +1,13 @@
 import Image from 'next/image';
+import { hasuraLocaliseText } from '../../lib/utils';
 
 export default function MainImage({ article, isAmp }) {
-  const mainImageNode = article.content.find(
+  let articleContent = hasuraLocaliseText(
+    article.article_translations,
+    'content'
+  );
+
+  const mainImageNode = articleContent.find(
     (node) => node.type === 'mainImage'
   );
   let mainImage = null;

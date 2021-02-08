@@ -8,7 +8,7 @@ import Layout from './Layout.js';
 
 export default function Article({
   article,
-  currentLocale,
+  locale,
   sections,
   ads,
   siteMetadata,
@@ -17,17 +17,11 @@ export default function Article({
   const isAmp = useAmp();
 
   return (
-    <Layout
-      meta={siteMetadata}
-      locale={currentLocale}
-      article={article}
-      sections={sections}
-    >
+    <Layout meta={siteMetadata} article={article} sections={sections}>
       <div className="post">
         <ArticleHeader
           article={article}
           isAmp={isAmp}
-          locale={currentLocale}
           metadata={siteMetadata}
         />
         <section className="section post__body rich-text" key="body">
@@ -35,20 +29,14 @@ export default function Article({
             article={article}
             isAmp={isAmp}
             ads={ads}
-            locale={currentLocale}
             metadata={siteMetadata}
           />
-          <ArticleFooter
-            article={article}
-            isAmp={isAmp}
-            locale={currentLocale}
-          />
+          <ArticleFooter article={article} isAmp={isAmp} />
         </section>
         <Comments article={article} isAmp={isAmp} />
         <Recirculation
           articles={sectionArticles}
           isAmp={isAmp}
-          locale={currentLocale}
           siteMetadata={siteMetadata}
           section={article.category}
         />

@@ -1,41 +1,60 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { localiseText, renderDate, renderAuthors } from '../../lib/utils.js';
+import {
+  renderDate,
+  renderAuthors,
+  hasuraLocaliseText,
+} from '../../lib/utils.js';
 
-export default function ArticleLink({ locale, article, isAmp, showCategory }) {
+export default function ArticleLink({ article, isAmp, showCategory }) {
   let mainImage = null;
   let mainImageNode;
 
-  let headline = localiseText(locale, article.headline);
+  let headline = hasuraLocaliseText(article.article_translations, 'headline');
 
   let categoryTitle;
 
-  if (article.category && article.category.title) {
-    categoryTitle = localiseText(locale, article.category.title);
-  }
-
-  if (typeof categoryTitle !== 'string') {
-    console.log(
-      'category title is not a string:',
-      categoryTitle,
-      typeof categoryTitle
+  if (article.category && article.category.category_translations) {
+    categoryTitle = hasuraLocaliseText(
+      article.category.category_translations,
+      'title'
     );
   }
-  if (typeof headline !== 'string') {
-    console.log('headline is not a string:', headline, typeof headline);
-  }
 
-  if (article.content !== null && article.content !== undefined) {
+  let articleContent = hasuraLocaliseText(
+    article.article_translations,
+    'content'
+  );
+  if (
+    articleContent !== null &&
+    articleContent !== undefined &&
+    typeof articleContent !== 'string'
+  ) {
     try {
-      mainImageNode = article.content.find((node) => node.type === 'mainImage');
+      mainImageNode = articleContent.find((node) => node.type === 'mainImage');
     } catch (e) {
-      console.log('error finding main image:', e, article.content);
+      console.log(
+        article.id,
+        headline,
+        'error finding main image:',
+        e,
+        articleContent
+      );
     }
   }
 
   if (mainImageNode) {
     mainImage = mainImageNode.children[0];
+  }
+
+  let firstPublishedAt;
+  if (
+    article.article_translations &&
+    article.article_translations[0] &&
+    article.article_translations[0].first_published_at !== null
+  ) {
+    firstPublishedAt = article.article_translations[0].first_published_at;
   }
 
   return (
@@ -49,7 +68,7 @@ export default function ArticleLink({ locale, article, isAmp, showCategory }) {
           )}
         </span>
         <h4 className="asset__title">
-          {article.headline && (
+          {headline && (
             <Link
               href="/articles/[category]/[slug]"
               as={`/articles/${article.category.slug}/${article.slug}`}
@@ -61,7 +80,7 @@ export default function ArticleLink({ locale, article, isAmp, showCategory }) {
         <div className="asset__byline">
           By&nbsp;{renderAuthors(article)}&nbsp;
           <time>
-            <span>{renderDate(article.firstPublishedOn, false)}</span>
+            <span>{renderDate(firstPublishedAt, false)}</span>
           </time>
         </div>
       </div>
