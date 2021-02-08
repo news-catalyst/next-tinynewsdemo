@@ -26,16 +26,35 @@ export default function ArticleLink({ locale, article, isAmp, showCategory }) {
     article.article_translations,
     'content'
   );
-  if (articleContent !== null && articleContent !== undefined) {
+  if (
+    articleContent !== null &&
+    articleContent !== undefined &&
+    typeof articleContent !== 'string'
+  ) {
     try {
       mainImageNode = articleContent.find((node) => node.type === 'mainImage');
     } catch (e) {
-      console.log('error finding main image:', e, articleContent);
+      console.log(
+        article.id,
+        headline,
+        'error finding main image:',
+        e,
+        articleContent
+      );
     }
   }
 
   if (mainImageNode) {
     mainImage = mainImageNode.children[0];
+  }
+
+  let firstPublishedAt;
+  if (
+    article.article_translations &&
+    article.article_translations[0] &&
+    article.article_translations[0].first_published_at !== null
+  ) {
+    firstPublishedAt = article.article_translations[0].first_published_at;
   }
 
   return (
@@ -61,12 +80,7 @@ export default function ArticleLink({ locale, article, isAmp, showCategory }) {
         <div className="asset__byline">
           By&nbsp;{renderAuthors(article)}&nbsp;
           <time>
-            <span>
-              {renderDate(
-                article.article_translations[0].first_published_at,
-                false
-              )}
-            </span>
+            <span>{renderDate(firstPublishedAt, false)}</span>
           </time>
         </div>
       </div>

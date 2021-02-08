@@ -38,7 +38,11 @@ export default function ArticleHeader({ article, locale, isAmp, metadata }) {
     article.article_translations,
     'content'
   );
-  if (localisedContent !== undefined && localisedContent !== null) {
+  if (
+    localisedContent !== undefined &&
+    localisedContent !== null &&
+    typeof localisedContent !== 'string'
+  ) {
     try {
       mainImageNode = localisedContent.find(
         (node) => node.type === 'mainImage'

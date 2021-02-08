@@ -6,9 +6,9 @@ import {
   listAllLocales,
   hasuraListAllArticlesBySection,
   hasuraListAllSections,
-  listAllSectionTitles,
   listAllTags,
 } from '../lib/articles.js';
+import { hasuraListAllSectionsByLocale } from '../lib/section.js';
 import { getArticleAds } from '../lib/ads.js';
 import { hasuraLocaliseText, localiseText } from '../lib/utils.js';
 import { useAmp } from 'next/amp';
@@ -16,6 +16,7 @@ import ArticleStream from '../components/homepage/ArticleStream';
 
 export default function CategoryPage(props) {
   const isAmp = useAmp();
+  console.log('props.articles:', props.articles);
 
   const router = useRouter();
   // If the page is not yet generated, this will be displayed
@@ -45,7 +46,36 @@ export default function CategoryPage(props) {
 }
 
 export async function getStaticPaths({ locales }) {
-  const paths = await listAllSectionTitles(locales);
+  const apiUrl = process.env.HASURA_API_URL;
+  const apiToken = process.env.ORG_SLUG;
+
+  let paths = [];
+  let sections = [];
+  const { sectionErrors, sectionData } = await hasuraListAllSections({
+    url: apiUrl,
+    orgSlug: apiToken,
+  });
+
+  if (sectionErrors || !sectionData) {
+    console.error(sectionErrors);
+    return {
+      paths,
+      fallback: true,
+    };
+  } else {
+    sections = sectionData.sections;
+  }
+
+  for (const locale of locales) {
+    sectionsData.categories.map((section) => {
+      paths.push({
+        params: {
+          category: section.slug,
+        },
+        locale,
+      });
+    });
+  }
   return {
     paths,
     fallback: true,
@@ -82,7 +112,12 @@ export async function getStaticProps({ locale, params }) {
   }
 
   let sections = [];
-  const { sectionErrors, sectionData } = await hasuraListAllSections();
+  const { sectionErrors, sectionData } = await hasuraListAllSectionsByLocale({
+    url: apiUrl,
+    orgSlug: apiToken,
+    localeCode: currentLocale.code,
+  });
+
   if (sectionErrors || !sectionData) {
     return {
       notFound: true,
@@ -91,7 +126,8 @@ export async function getStaticProps({ locale, params }) {
     sections = sectionData.sections;
   }
 
-  const tags = await cachedContents('tags', listAllTags);
+  // const tags = await cachedContents('tags', listAllTags);
+  const tags = [];
 
   let title;
 
