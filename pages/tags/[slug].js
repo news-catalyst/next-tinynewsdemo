@@ -69,6 +69,13 @@ export async function getStaticProps({ locale, params }) {
     };
   } else {
     tag = data.tags[0];
+
+    if (!tag || tag === undefined) {
+      return {
+        notFound: true,
+      };
+    }
+
     tag.tag_articles.map((tag_article) => {
       articles.push(tag_article.article);
     });
