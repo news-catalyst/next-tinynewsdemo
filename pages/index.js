@@ -1,17 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
-import { getHomepageData } from '../lib/homepage.js';
+import { hasuraHomepage } from '../lib/homepage.js';
 import { cachedContents } from '../lib/cached';
-import {
-  listAllLocales,
-  listAllSections,
-  listMostRecentArticles,
-  getArticleBySlugNoLocale,
-} from '../lib/articles.js';
+import { hasuraGetArticleBySlug } from '../lib/articles.js';
 import { getArticleAds } from '../lib/ads.js';
+import { hasuraLocaliseText } from '../lib/utils.js';
 import Layout from '../components/Layout';
 import ArticleStream from '../components/homepage/ArticleStream';
-import { getSiteMetadataForLocale } from '../lib/site_metadata.js';
 import Placeholder from '../components/homepage/Placeholder';
 import homepageStyles from '../styles/homepage.js';
 
@@ -42,20 +37,22 @@ export default function Home({
   );
   const [mostRecentArticles, setMostRecentArticles] = useState([]);
 
-  let ids = [];
+  let slugs = [];
 
   useEffect(() => {
-    ids.push(featuredArticle.id);
+    slugs.push(featuredArticle.slug);
     if (subFeaturedTopArticle) {
-      ids.push(subFeaturedTopArticle.id);
+      slugs.push(subFeaturedTopArticle.slug);
     }
     if (subFeaturedBottomArticle) {
-      ids.push(subFeaturedBottomArticle.id);
+      slugs.push(subFeaturedBottomArticle.slug);
     }
 
     // filter out any articles from the stream that are already featured using the list of IDs from right above
     setMostRecentArticles(
-      streamArticles.filter((streamArticle) => !ids.includes(streamArticle.id))
+      streamArticles.filter(
+        (streamArticle) => !slugs.includes(streamArticle.slug)
+      )
     );
   }, [hpData]);
 
@@ -63,9 +60,8 @@ export default function Home({
     <div className="homepage">
       <Layout meta={siteMetadata} sections={sections} locale={currentLocale}>
         {!hpData && <Placeholder />}
-        {hpData.layoutComponent === 'BigFeaturedStory' && (
+        {hpData['homepage_layout_schema']['name'] === 'Big Featured Story' && (
           <BigFeaturedStory
-            locale={currentLocale}
             sections={sections}
             featuredArticle={featuredArticle}
             setFeaturedArticle={setFeaturedArticle}
@@ -73,7 +69,8 @@ export default function Home({
             metadata={siteMetadata}
           />
         )}
-        {hpData.layoutComponent === 'LargePackageStoryLead' && (
+        {hpData['homepage_layout_schema']['name'] ===
+          'Large Package Story Lead' && (
           <LargePackageStoryLead
             locale={currentLocale}
             featuredArticle={featuredArticle}
@@ -93,7 +90,6 @@ export default function Home({
           showCategory={true}
           isAmp={false}
           title={siteMetadata.homepageArticleStreamHed}
-          locale={currentLocale}
           metadata={siteMetadata}
           ads={expandedAds}
         />
@@ -106,48 +102,90 @@ export default function Home({
 }
 
 export async function getStaticProps({ locale }) {
-  const localeMappings = await cachedContents('locales', listAllLocales);
+  const apiUrl = process.env.HASURA_API_URL;
+  const apiToken = process.env.ORG_SLUG;
 
-  const currentLocale = localeMappings.find(
-    (localeMap) => localeMap.code === locale
-  );
   //    get selected homepage layout and featured article IDs
-  const hpData = await getHomepageData();
+  const { errors, data } = await hasuraHomepage({
+    url: apiUrl,
+    orgSlug: apiToken,
+    localeCode: locale,
+  });
 
-  let featuredArticleSlug = hpData.articles['featured'];
-  let featured = await getArticleBySlugNoLocale(featuredArticleSlug);
+  let featured = null;
   let topFeatured = null;
   let bottomFeatured = null;
+  let sections = [];
+  let streamArticles = [];
+  let siteMetadata = null;
+  let layoutData = null;
 
-  if (hpData.articles['subfeatured-top']) {
-    topFeatured = await getArticleBySlugNoLocale(
-      hpData.articles['subfeatured-top']
-    );
+  if (errors || !data) {
+    return {
+      notFound: true,
+    };
+    // throw errors;
+  } else {
+    layoutData = data['homepage_layout_datas'][0]['data'];
+    let featuredArticleSlug = layoutData['featured'];
+    featured = await hasuraGetArticleBySlug({
+      url: apiUrl,
+      orgSlug: apiToken,
+      localeCode: locale,
+      slug: featuredArticleSlug,
+    });
+    featured = featured.data.articles[0];
+    let topFeatured = null;
+    let bottomFeatured = null;
+
+    sections = data.categories;
+    for (var i = 0; i < sections.length; i++) {
+      sections[i].title = hasuraLocaliseText(
+        sections[i].category_translations,
+        'title'
+      );
+    }
+
+    if (layoutData['subfeatured-top']) {
+      topFeatured = await hasuraGetArticleBySlug({
+        url: apiUrl,
+        orgSlug: apiToken,
+        localeCode: locale,
+        slug: layoutData['subfeatured-top'],
+      });
+      topFeatured = topFeatured.data.articles[0];
+    }
+    if (layoutData['subfeatured-bottom']) {
+      bottomFeatured = await hasuraGetArticleBySlug({
+        url: apiUrl,
+        orgSlug: apiToken,
+        localeCode: locale,
+        slug: layoutData['subfeatured-bottom'],
+      });
+      bottomFeatured = bottomFeatured.data.articles[0];
+    }
+
+    streamArticles = data.articles;
+    let metadatas = data.site_metadatas;
+    try {
+      siteMetadata = metadatas[0].site_metadata_translations[0].data;
+    } catch (err) {
+      console.log('failed finding site metadata for ', locale, metadatas);
+    }
   }
-  if (hpData.articles['subfeatured-bottom']) {
-    bottomFeatured = await getArticleBySlugNoLocale(
-      hpData.articles['subfeatured-bottom']
-    );
-  }
-
-  const streamArticles = await listMostRecentArticles(currentLocale);
-
-  const sections = await cachedContents('sections', listAllSections);
-
-  const siteMetadata = await getSiteMetadataForLocale(currentLocale);
 
   const allAds = await cachedContents('ads', getArticleAds);
   const expandedAds = allAds.filter((ad) => ad.adTypeId === 166);
 
   return {
     props: {
-      hpData,
+      hpData: data['homepage_layout_datas'][0],
       featured,
       topFeatured,
       bottomFeatured,
       streamArticles,
       sections,
-      currentLocale,
+      locale,
       siteMetadata,
       expandedAds,
     },

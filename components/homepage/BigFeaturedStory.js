@@ -26,10 +26,9 @@ export default function BigFeaturedStory(props) {
                   <div id="featuredArticle">
                     {props.featuredArticle && (
                       <FeaturedArticleLink
-                        key={props.featuredArticle.id}
+                        key={props.featuredArticle.slug}
                         article={props.featuredArticle}
                         amp={props.isAmp}
-                        locale={props.locale}
                       />
                     )}
                   </div>
@@ -48,10 +47,9 @@ export default function BigFeaturedStory(props) {
               )}
               {!props.editable && props.featuredArticle && (
                 <FeaturedArticleLink
-                  key={props.featuredArticle.id}
+                  key={props.featuredArticle.slug}
                   article={props.featuredArticle}
                   amp={props.isAmp}
-                  locale={props.locale}
                 />
               )}
             </div>
