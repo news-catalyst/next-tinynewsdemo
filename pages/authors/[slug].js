@@ -1,12 +1,10 @@
+import { useRouter } from 'next/router';
 import Layout from '../../components/Layout.js';
 import {
-  listAllLocales,
-  listAllArticlesByAuthor,
-  listAllSections,
-  listAllAuthorPaths,
-  getAuthorBySlug,
+  hasuraListAllAuthorPaths,
+  hasuraAuthorPage,
 } from '../../lib/articles.js';
-import { getSiteMetadataForLocale } from '../../lib/site_metadata.js';
+import { hasuraLocaliseText } from '../../lib/utils';
 import { cachedContents } from '../../lib/cached';
 import { getArticleAds } from '../../lib/ads.js';
 import { useAmp } from 'next/amp';
@@ -17,19 +15,29 @@ export default function AuthorPage({
   articles,
   author,
   siteMetadata,
-  currentLocale,
   expandedAds,
 }) {
+  const router = useRouter();
+  // If the page is not yet generated, this will be displayed
+  // initially until getStaticProps() finishes running
+  if (router.isFallback) {
+    return <div>Loading...</div>;
+  }
+
+  let authorName;
+  if (author) {
+    authorName = author.name;
+  }
+
   const isAmp = useAmp();
   return (
-    <Layout meta={siteMetadata} sections={sections} locale={currentLocale}>
+    <Layout meta={siteMetadata} sections={sections}>
       <ArticleStream
         sections={sections}
         articles={articles}
-        title={`Stories by ${author.name}`}
+        title={`Stories by ${authorName}`}
         showCategory={true}
         isAmp={isAmp}
-        locale={currentLocale}
         metadata={siteMetadata}
         ads={expandedAds}
       />
@@ -38,33 +46,96 @@ export default function AuthorPage({
 }
 
 export async function getStaticPaths({ locales }) {
-  const paths = await listAllAuthorPaths(locales);
+  const { errors, data } = await hasuraListAllAuthorPaths();
+  let paths = [];
+  let authors = [];
+  if (errors || !data) {
+    return {
+      paths,
+      fallback: true,
+    };
+  } else {
+    authors = data.authors;
+  }
+
+  authors.map((author) => {
+    author.author_translations.map((translation) => {
+      paths.push({
+        params: {
+          slug: author.slug,
+        },
+        locale: translation.locale_code,
+      });
+    });
+  });
+
   return {
     paths,
-    fallback: false,
+    fallback: true,
   };
 }
 
 export async function getStaticProps({ locale, params }) {
-  const localeMappings = await cachedContents('locales', listAllLocales);
+  const apiUrl = process.env.HASURA_API_URL;
+  const apiToken = process.env.ORG_SLUG;
 
-  const currentLocale = localeMappings.find(
-    (localeMap) => localeMap.code === locale
-  );
-  const articles = await listAllArticlesByAuthor(locale, params.slug);
-  const sections = await cachedContents('sections', listAllSections);
-  const author = await getAuthorBySlug(params.slug);
+  let slug = params.slug;
+  if (slug === undefined) {
+    return {
+      notFound: true,
+    };
+  }
 
-  const siteMetadata = await getSiteMetadataForLocale(currentLocale);
+  let articles = [];
+  let sections = [];
+  let author;
+  let siteMetadata;
+
+  const { errors, data } = await hasuraAuthorPage({
+    url: apiUrl,
+    orgSlug: apiToken,
+    authorSlug: params.slug,
+    localeCode: locale,
+  });
+
+  if (errors || !data) {
+    return {
+      notFound: true,
+    };
+  } else {
+    articles = data.articles;
+    sections = data.categories;
+    author = data.authors[0];
+
+    for (var i = 0; i < sections.length; i++) {
+      sections[i].title = hasuraLocaliseText(
+        sections[i].category_translations,
+        'title'
+      );
+    }
+
+    let metadatas = data.site_metadatas;
+    try {
+      siteMetadata = metadatas[0].site_metadata_translations[0].data;
+    } catch (err) {
+      console.log('failed finding site metadata for ', locale, metadatas);
+    }
+  }
+
   const allAds = await cachedContents('ads', getArticleAds);
   const expandedAds = allAds.filter((ad) => ad.adTypeId === 166);
 
+  if (author === undefined) {
+    return {
+      notFound: true,
+    };
+  }
+
   return {
     props: {
-      articles,
-      currentLocale,
-      author,
       sections,
+      articles,
+      author,
       siteMetadata,
       expandedAds,
     },
