@@ -1,14 +1,31 @@
-import { getArticleBySlug } from '../../lib/articles.js';
+import { hasuraGetArticleBySlug } from '../../lib/articles.js';
 
 export default async (req, res) => {
+  const apiUrl = process.env.HASURA_API_URL;
+  const apiToken = process.env.ORG_SLUG;
+
   // Check the secret and next parameters
   // This secret should only be known to this API route and the CMS
   if (req.query.secret !== process.env.PREVIEW_TOKEN || !req.query.slug) {
     return res.status(401).json({ message: 'Invalid token' });
   }
 
+  let article;
   // Fetch the headless CMS to check if the provided `slug` exists
-  const article = await getArticleBySlug(req.query.locale, req.query.slug);
+  const { errors, data } = await hasuraGetArticleBySlug({
+    url: apiUrl,
+    orgSlug: apiToken,
+    localeCode: req.query.locale,
+    slug: req.query.slug,
+  });
+
+  if (errors || !data || !data.articles) {
+    console.log(errors);
+    return res.status(500).json({ message: 'Error looking up article' });
+  } else {
+    article = data.articles[0];
+    console.log(article.category.slug, 'article: ', article);
+  }
 
   // If the slug doesn't exist prevent preview mode from being enabled
   if (!article) {
