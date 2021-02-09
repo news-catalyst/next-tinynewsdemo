@@ -109,7 +109,6 @@ export async function getStaticProps({ locale, params }) {
   return {
     props: {
       article,
-      locale,
       sections,
       ads,
       siteMetadata,
