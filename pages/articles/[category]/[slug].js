@@ -91,13 +91,8 @@ export async function getStaticProps({ locale, params }) {
       );
     }
 
-    console.log('sections: ', sections);
-
     article = data.articles.find((a) => a.slug === params.slug);
-    console.log('found article: ', article);
-
     sectionArticles = data.articles.filter((a) => a.slug !== params.slug);
-    console.log('section articles: ', sectionArticles);
 
     let metadatas = data.site_metadatas;
     try {
