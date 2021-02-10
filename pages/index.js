@@ -1,17 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
-import { getHomepageData } from '../lib/homepage.js';
+import { hasuraStreamArticles } from '../lib/homepage.js';
 import { cachedContents } from '../lib/cached';
-import {
-  listAllLocales,
-  listAllSections,
-  listMostRecentArticles,
-  getArticleBySlugNoLocale,
-} from '../lib/articles.js';
+import { hasuraGetHomepageEditor } from '../lib/articles.js';
 import { getArticleAds } from '../lib/ads.js';
+import { hasuraLocaliseText } from '../lib/utils.js';
 import Layout from '../components/Layout';
 import ArticleStream from '../components/homepage/ArticleStream';
-import { getSiteMetadataForLocale } from '../lib/site_metadata.js';
 import Placeholder from '../components/homepage/Placeholder';
 import homepageStyles from '../styles/homepage.js';
 
@@ -23,13 +18,13 @@ const LargePackageStoryLead = dynamic(() =>
 );
 
 export default function Home({
-  hpData,
+  selectedLayout,
   featured,
   topFeatured,
   bottomFeatured,
   streamArticles,
   sections,
-  currentLocale,
+  locale,
   siteMetadata,
   expandedAds,
 }) {
@@ -40,32 +35,14 @@ export default function Home({
   const [subFeaturedBottomArticle, setSubFeaturedBottomArticle] = useState(
     bottomFeatured
   );
-  const [mostRecentArticles, setMostRecentArticles] = useState([]);
-
-  let ids = [];
-
-  useEffect(() => {
-    ids.push(featuredArticle.id);
-    if (subFeaturedTopArticle) {
-      ids.push(subFeaturedTopArticle.id);
-    }
-    if (subFeaturedBottomArticle) {
-      ids.push(subFeaturedBottomArticle.id);
-    }
-
-    // filter out any articles from the stream that are already featured using the list of IDs from right above
-    setMostRecentArticles(
-      streamArticles.filter((streamArticle) => !ids.includes(streamArticle.id))
-    );
-  }, [hpData]);
+  const [mostRecentArticles, setMostRecentArticles] = useState(streamArticles);
 
   return (
     <div className="homepage">
-      <Layout meta={siteMetadata} sections={sections} locale={currentLocale}>
-        {!hpData && <Placeholder />}
-        {hpData.layoutComponent === 'BigFeaturedStory' && (
+      <Layout meta={siteMetadata} sections={sections} locale={locale}>
+        {!selectedLayout && <Placeholder />}
+        {selectedLayout.name === 'Big Featured Story' && (
           <BigFeaturedStory
-            locale={currentLocale}
             sections={sections}
             featuredArticle={featuredArticle}
             setFeaturedArticle={setFeaturedArticle}
@@ -73,9 +50,9 @@ export default function Home({
             metadata={siteMetadata}
           />
         )}
-        {hpData.layoutComponent === 'LargePackageStoryLead' && (
+        {selectedLayout.name === 'Large Package Story Lead' && (
           <LargePackageStoryLead
-            locale={currentLocale}
+            locale={locale}
             featuredArticle={featuredArticle}
             setFeaturedArticle={setFeaturedArticle}
             subFeaturedTopArticle={subFeaturedTopArticle}
@@ -93,7 +70,6 @@ export default function Home({
           showCategory={true}
           isAmp={false}
           title={siteMetadata.homepageArticleStreamHed}
-          locale={currentLocale}
           metadata={siteMetadata}
           ads={expandedAds}
         />
@@ -106,48 +82,86 @@ export default function Home({
 }
 
 export async function getStaticProps({ locale }) {
-  const localeMappings = await cachedContents('locales', listAllLocales);
+  const apiUrl = process.env.HASURA_API_URL;
+  const apiToken = process.env.ORG_SLUG;
 
-  const currentLocale = localeMappings.find(
-    (localeMap) => localeMap.code === locale
-  );
-  //    get selected homepage layout and featured article IDs
-  const hpData = await getHomepageData();
-
-  let featuredArticleSlug = hpData.articles['featured'];
-  let featured = await getArticleBySlugNoLocale(featuredArticleSlug);
-  let topFeatured = null;
-  let bottomFeatured = null;
-
-  if (hpData.articles['subfeatured-top']) {
-    topFeatured = await getArticleBySlugNoLocale(
-      hpData.articles['subfeatured-top']
-    );
-  }
-  if (hpData.articles['subfeatured-bottom']) {
-    bottomFeatured = await getArticleBySlugNoLocale(
-      hpData.articles['subfeatured-bottom']
-    );
+  const { errors, data } = await hasuraGetHomepageEditor({
+    url: apiUrl,
+    orgSlug: apiToken,
+    localeCode: locale,
+  });
+  if (errors || !data) {
+    console.error('error getting homepage data:', errors);
+    throw errors;
   }
 
-  const streamArticles = await listMostRecentArticles(currentLocale);
+  const hpData = data.homepage_layout_datas[0];
+  let selectedLayout = hpData.homepage_layout_schema;
 
-  const sections = await cachedContents('sections', listAllSections);
+  let ids = [];
+  let featured = hpData.first_article;
+  ids.push(featured.id);
+  let topFeatured = hpData.second_article;
+  if (topFeatured) {
+    ids.push(topFeatured.id);
+  }
+  let bottomFeatured = hpData.third_article;
+  if (bottomFeatured) {
+    ids.push(bottomFeatured.id);
+  }
+  console.log('ids:', ids);
 
-  const siteMetadata = await getSiteMetadataForLocale(currentLocale);
+  const streamResult = await hasuraStreamArticles({
+    url: apiUrl,
+    orgSlug: apiToken,
+    localeCode: locale,
+    ids: ids,
+  });
+  let streamArticles = [];
+  if (streamResult.errors || !streamResult.data) {
+    console.error(
+      'error getting stream articles:',
+      streamResult.errors,
+      streamResult.data
+    );
+  } else {
+    streamArticles = streamResult.data.articles;
+  }
+  console.log('streamArticles:', streamArticles);
+
+  const tags = data.tags;
+  for (var i = 0; i < tags.length; i++) {
+    tags[i].title = hasuraLocaliseText(tags[i].tag_translations, 'title');
+  }
+
+  const sections = data.categories;
+  for (var i = 0; i < sections.length; i++) {
+    sections[i].title = hasuraLocaliseText(
+      sections[i].category_translations,
+      'title'
+    );
+  }
+
+  let siteMetadata;
+  let metadatas = data.site_metadatas;
+  try {
+    siteMetadata = metadatas[0].site_metadata_translations[0].data;
+  } catch (err) {
+    console.log('failed finding site metadata for ', locale, metadatas);
+  }
 
   const allAds = await cachedContents('ads', getArticleAds);
   const expandedAds = allAds.filter((ad) => ad.adTypeId === 166);
 
   return {
     props: {
-      hpData,
+      selectedLayout,
       featured,
       topFeatured,
       bottomFeatured,
       streamArticles,
       sections,
-      currentLocale,
+      locale,
       siteMetadata,
       expandedAds,
     },
