@@ -1,7 +1,11 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { renderDate, renderAuthors } from '../../lib/utils.js';
+import {
+  renderDate,
+  renderAuthors,
+  hasuraLocaliseText,
+} from '../../lib/utils.js';
 
 export default function FeaturedArticleLink({ article, isAmp }) {
   let mainImage = null;
@@ -10,20 +14,35 @@ export default function FeaturedArticleLink({ article, isAmp }) {
   if (article === null || article === undefined || !article) {
     console.log('FeaturedArticleLink missing article:', article);
   }
-  const translation = article['article_translations'][0];
 
+  let categoryTitle = hasuraLocaliseText(
+    article.category.category_translations,
+    'title'
+  );
+  let headline = hasuraLocaliseText(article.article_translations, 'headline');
+  let searchDescription = hasuraLocaliseText(
+    article.article_translations,
+    'search_description'
+  );
+
+  let firstPublishedOn;
+
+  const translation = article['article_translations'][0];
   try {
-    if (typeof translation.content === 'string') {
-      mainImageNode = JSON.parse(translation.content).find(
-        (node) => node.type === 'mainImage'
-      );
-    } else {
-      mainImageNode = translation.content.find(
-        (node) => node.type === 'mainImage'
-      );
+    if (translation) {
+      firstPublishedOn = translation.first_published_on;
+      if (typeof translation.content === 'string') {
+        mainImageNode = JSON.parse(translation.content).find(
+          (node) => node.type === 'mainImage'
+        );
+      } else {
+        mainImageNode = translation.content.find(
+          (node) => node.type === 'mainImage'
+        );
+      }
     }
   } catch (err) {
-    console.error(err, typeof translation.content);
+    console.error(err, translation);
   }
 
   try {
@@ -40,23 +59,25 @@ export default function FeaturedArticleLink({ article, isAmp }) {
         {article.category && (
           <span className="asset__descriptor">
             <Link href={`/${article.category.slug}`}>
-              <a>{article.category['category_translations'][0].title}</a>
+              <a>{categoryTitle}</a>
             </Link>
           </span>
         )}
         {article.category && (
           <h4 className="asset__title">
             <Link href={`/articles/${article.category.slug}/${article.slug}`}>
-              <a className="featured">{translation.headline}</a>
+              <a className="featured">{headline}</a>
             </Link>
           </h4>
         )}
-        <div className="asset__excerpt">{translation.searchDescription}</div>
+        <div className="asset__excerpt">{searchDescription}</div>
         <div className="asset__byline">
           By&nbsp;{renderAuthors(article)}&nbsp;
-          <time>
-            <span>{renderDate(translation.firstPublishedOn, false)}</span>
-          </time>
+          {firstPublishedOn && (
+            <time>
+              <span>{renderDate(firstPublishedOn, false)}</span>
+            </time>
+          )}
         </div>
       </div>
       {mainImage && (
