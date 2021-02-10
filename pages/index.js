@@ -111,17 +111,21 @@ export async function getStaticProps({ locale }) {
   }
   console.log('ids:', ids);
 
-  const { streamErrors, streamData } = await hasuraStreamArticles({
+  const streamResult = await hasuraStreamArticles({
     url: apiUrl,
     orgSlug: apiToken,
     localeCode: locale,
     ids: ids,
   });
   let streamArticles = [];
-  if (streamErrors || !streamData) {
-    console.error('error getting stream articles:', streamErrors, streamData);
+  if (streamResult.errors || !streamResult.data) {
+    console.error(
+      'error getting stream articles:',
+      streamResult.errors,
+      streamResult.data
+    );
   } else {
-    streamArticles = streamData.articles;
+    streamArticles = streamResult.data.articles;
   }
   console.log('streamArticles:', streamArticles);
 
