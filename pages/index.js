@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
-import { hasuraHomepage } from '../lib/homepage.js';
+import { hasuraStreamArticles } from '../lib/homepage.js';
 import { cachedContents } from '../lib/cached';
-import { hasuraGetArticleBySlug } from '../lib/articles.js';
+import { hasuraGetHomepageEditor } from '../lib/articles.js';
 import { getArticleAds } from '../lib/ads.js';
 import { hasuraLocaliseText } from '../lib/utils.js';
 import Layout from '../components/Layout';
@@ -18,13 +18,13 @@ const LargePackageStoryLead = dynamic(() =>
 );
 
 export default function Home({
-  hpData,
+  selectedLayout,
   featured,
   topFeatured,
   bottomFeatured,
   streamArticles,
   sections,
-  currentLocale,
+  locale,
   siteMetadata,
   expandedAds,
 }) {
@@ -35,32 +35,13 @@ export default function Home({
   const [subFeaturedBottomArticle, setSubFeaturedBottomArticle] = useState(
     bottomFeatured
   );
-  const [mostRecentArticles, setMostRecentArticles] = useState([]);
-
-  let slugs = [];
-
-  useEffect(() => {
-    slugs.push(featuredArticle.slug);
-    if (subFeaturedTopArticle) {
-      slugs.push(subFeaturedTopArticle.slug);
-    }
-    if (subFeaturedBottomArticle) {
-      slugs.push(subFeaturedBottomArticle.slug);
-    }
-
-    // filter out any articles from the stream that are already featured using the list of IDs from right above
-    setMostRecentArticles(
-      streamArticles.filter(
-        (streamArticle) => !slugs.includes(streamArticle.slug)
-      )
-    );
-  }, [hpData]);
+  const [mostRecentArticles, setMostRecentArticles] = useState(streamArticles);
 
   return (
     <div className="homepage">
-      <Layout meta={siteMetadata} sections={sections} locale={currentLocale}>
-        {!hpData && <Placeholder />}
-        {hpData['homepage_layout_schema']['name'] === 'Big Featured Story' && (
+      <Layout meta={siteMetadata} sections={sections} locale={locale}>
+        {!selectedLayout && <Placeholder />}
+        {selectedLayout.name === 'Big Featured Story' && (
           <BigFeaturedStory
             sections={sections}
             featuredArticle={featuredArticle}
@@ -69,10 +50,9 @@ export default function Home({
             metadata={siteMetadata}
           />
         )}
-        {hpData['homepage_layout_schema']['name'] ===
-          'Large Package Story Lead' && (
+        {selectedLayout.name === 'Large Package Story Lead' && (
           <LargePackageStoryLead
-            locale={currentLocale}
+            locale={locale}
             featuredArticle={featuredArticle}
             setFeaturedArticle={setFeaturedArticle}
             subFeaturedTopArticle={subFeaturedTopArticle}
@@ -105,73 +85,65 @@ export async function getStaticProps({ locale }) {
   const apiUrl = process.env.HASURA_API_URL;
   const apiToken = process.env.ORG_SLUG;
 
-  //    get selected homepage layout and featured article IDs
-  const { errors, data } = await hasuraHomepage({
+  const { errors, data } = await hasuraGetHomepageEditor({
     url: apiUrl,
     orgSlug: apiToken,
     localeCode: locale,
   });
-
-  let featured = null;
-  let topFeatured = null;
-  let bottomFeatured = null;
-  let sections = [];
-  let streamArticles = [];
-  let siteMetadata = null;
-  let layoutData = null;
-
   if (errors || !data) {
-    return {
-      notFound: true,
-    };
-    // throw errors;
+    console.error('error getting homepage data:', errors);
+    throw errors;
+  }
+
+  const hpData = data.homepage_layout_datas[0];
+  let selectedLayout = hpData.homepage_layout_schema;
+
+  let ids = [];
+  let featured = hpData.first_article;
+  ids.push(featured.id);
+  let topFeatured = hpData.second_article;
+  if (topFeatured) {
+    ids.push(topFeatured.id);
+  }
+  let bottomFeatured = hpData.third_article;
+  if (bottomFeatured) {
+    ids.push(bottomFeatured.id);
+  }
+  console.log('ids:', ids);
+
+  const { streamErrors, streamData } = await hasuraStreamArticles({
+    url: apiUrl,
+    orgSlug: apiToken,
+    localeCode: locale,
+    ids: ids,
+  });
+  let streamArticles = [];
+  if (streamErrors || !streamData) {
+    console.error('error getting stream articles:', streamErrors, streamData);
   } else {
-    layoutData = data['homepage_layout_datas'][0]['data'];
-    let featuredArticleSlug = layoutData['featured'];
-    featured = await hasuraGetArticleBySlug({
-      url: apiUrl,
-      orgSlug: apiToken,
-      localeCode: locale,
-      slug: featuredArticleSlug,
-    });
-    featured = featured.data.articles[0];
-    let topFeatured = null;
-    let bottomFeatured = null;
+    streamArticles = streamData.articles;
+  }
+  console.log('streamArticles:', streamArticles);
 
-    sections = data.categories;
-    for (var i = 0; i < sections.length; i++) {
-      sections[i].title = hasuraLocaliseText(
-        sections[i].category_translations,
-        'title'
-      );
-    }
+  const tags = data.tags;
+  for (var i = 0; i < tags.length; i++) {
+    tags[i].title = hasuraLocaliseText(tags[i].tag_translations, 'title');
+  }
 
-    if (layoutData['subfeatured-top']) {
-      topFeatured = await hasuraGetArticleBySlug({
-        url: apiUrl,
-        orgSlug: apiToken,
-        localeCode: locale,
-        slug: layoutData['subfeatured-top'],
-      });
-      topFeatured = topFeatured.data.articles[0];
-    }
-    if (layoutData['subfeatured-bottom']) {
-      bottomFeatured = await hasuraGetArticleBySlug({
-        url: apiUrl,
-        orgSlug: apiToken,
-        localeCode: locale,
-        slug: layoutData['subfeatured-bottom'],
-      });
-      bottomFeatured = bottomFeatured.data.articles[0];
-    }
+  const sections = data.categories;
+  for (var i = 0; i < sections.length; i++) {
+    sections[i].title = hasuraLocaliseText(
+      sections[i].category_translations,
+      'title'
+    );
+  }
 
-    streamArticles = data.articles;
-    let metadatas = data.site_metadatas;
-    try {
-      siteMetadata = metadatas[0].site_metadata_translations[0].data;
-    } catch (err) {
-      console.log('failed finding site metadata for ', locale, metadatas);
-    }
+  let siteMetadata;
+  let metadatas = data.site_metadatas;
+  try {
+    siteMetadata = metadatas[0].site_metadata_translations[0].data;
+  } catch (err) {
+    console.log('failed finding site metadata for ', locale, metadatas);
   }
 
   const allAds = await cachedContents('ads', getArticleAds);
@@ -179,7 +151,7 @@ export async function getStaticProps({ locale }) {
 
   return {
     props: {
-      hpData: data['homepage_layout_datas'][0],
+      selectedLayout,
       featured,
       topFeatured,
       bottomFeatured,
