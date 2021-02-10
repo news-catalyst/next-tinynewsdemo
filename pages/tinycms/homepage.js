@@ -1,17 +1,9 @@
 import dynamic from 'next/dynamic';
-import React, { useEffect, useState } from 'react';
-import { cachedContents } from '../../lib/cached';
-import { getSiteMetadataForLocale } from '../../lib/site_metadata.js';
+import React, { useState } from 'react';
+import { hasuraLocaliseText } from '../../lib/utils.js';
 import {
-  getHomepageData,
-  listLayoutSchemas,
-  createHomepageLayout,
-} from '../../lib/homepage.js';
-import {
-  listAllLocales,
-  listAllTags,
-  listAllSections,
-  getHomepageArticles,
+  hasuraGetHomepageEditor,
+  hasuraSaveHomepageLayout,
 } from '../../lib/articles.js';
 import AdminNav from '../../components/nav/AdminNav';
 import Notification from '../../components/tinycms/Notification';
@@ -32,109 +24,74 @@ export default function HomePageEditor({
   hpArticles,
   tags,
   sections,
-  currentLocale,
-  metadata,
+  locale,
+  siteMetadata,
   apiUrl,
   apiToken,
 }) {
   const [notificationMessage, setNotificationMessage] = useState('');
   const [notificationType, setNotificationType] = useState('');
   const [showNotification, setShowNotification] = useState(false);
-  const [selectedLayout, setSelectedLayout] = useState(hpData.layoutSchema);
-  const [featuredArticle, setFeaturedArticle] = useState(
-    hpArticles['featured']
+  const [selectedLayout, setSelectedLayout] = useState(
+    hpData.homepage_layout_schema
   );
-  const [subFeaturedTopArticle, setSubFeaturedTopArticle] = useState(null);
+  const [featuredArticle, setFeaturedArticle] = useState(hpArticles[0]);
+  const [subFeaturedTopArticle, setSubFeaturedTopArticle] = useState(
+    hpArticles[1]
+  );
   const [subFeaturedBottomArticle, setSubFeaturedBottomArticle] = useState(
-    null
+    hpArticles[2]
   );
   const [homepageKey, setHomepageKey] = useState(Math.random());
 
-  useEffect(() => {
-    if (hpData === null) {
-      console.log('setting layout to:', layoutSchemas[0]);
-      setSelectedLayout(layoutSchemas[0]);
-    }
-    console.log('selectedLayout:', selectedLayout);
-    console.log('hpData:', hpData);
-    console.log('hpArticles:', hpArticles);
-
-    if (selectedLayout && selectedLayout.name === 'Big Featured Story') {
-      setFeaturedArticle(hpArticles['featured']);
-      console.log('BFS featuredArticle:', featuredArticle);
-    }
-    if (selectedLayout && selectedLayout.name === 'Large Package Story lead') {
-      setFeaturedArticle(hpArticles['featured']);
-      setSubFeaturedTopArticle(hpArticles['subfeatured-top']);
-      setSubFeaturedBottomArticle(hpArticles['subfeatured-bottom']);
-    }
-  }, [hpData]);
-
   function changeLayout(layout) {
-    console.log('changing layout...', layout);
     setSelectedLayout(layout);
     setHomepageKey(Math.random());
   }
 
-  // NOTE: this should be called after confirming
-  // 1. save a new layout data record in webiny
-  // 2. publish
-  // 3. display success or error message
   async function saveAndPublishHomepage() {
-    console.log(
-      'saving homepage...',
-      selectedLayout,
-      'featuredArticle:',
-      featuredArticle
-    );
-
-    let articlesData;
-    if (selectedLayout.name === 'Big Featured Story') {
-      articlesData = {
-        featured: featuredArticle.slug,
-      };
-    } else if (selectedLayout.name === 'Large Package Story Lead') {
-      articlesData = {};
-      if (featuredArticle) {
-        articlesData.featured = featuredArticle.slug;
-      }
-      if (subFeaturedTopArticle) {
-        articlesData['subfeatured-top'] = subFeaturedTopArticle.slug;
-      }
-      if (subFeaturedBottomArticle) {
-        articlesData['subfeatured-bottom'] = subFeaturedBottomArticle.slug;
-      }
+    let article1 = featuredArticle.id;
+    let article2 = null;
+    if (subFeaturedTopArticle) {
+      article2 = subFeaturedTopArticle.id;
+    }
+    let article3 = null;
+    if (subFeaturedBottomArticle) {
+      article3 = subFeaturedBottomArticle.id;
     }
 
-    console.log('articlesData:', articlesData);
-    const results = await createHomepageLayout(
-      apiUrl,
-      apiToken,
+    console.log(
+      'saving homepage...',
       selectedLayout.id,
-      articlesData
+      'article1:',
+      article1,
+      article2,
+      article3
     );
-    console.log('results:', results);
-    if (
-      results &&
-      results.homepageLayoutDatas &&
-      results.homepageLayoutDatas.createHomepageLayoutData &&
-      results.homepageLayoutDatas.createHomepageLayoutData.data
-    ) {
-      setNotificationMessage('Successfully published homepage!');
-      setNotificationType('success');
-      setShowNotification(true);
-    } else {
-      console.log(results);
+
+    const { errors, data } = await hasuraSaveHomepageLayout({
+      url: apiUrl,
+      orgSlug: apiToken,
+      schemaId: selectedLayout.id,
+      article1: article1,
+      article2: article2,
+      article3: article3,
+    });
+
+    if (errors) {
+      console.log(errors);
       setNotificationMessage(
         'An error occured while trying to create the new layout config:',
-        results
+        errors
       );
       setNotificationType('error');
       setShowNotification(true);
+    } else {
+      console.log('data:', data);
+      setNotificationMessage('Successfully published homepage!');
+      setNotificationType('success');
+      setShowNotification(true);
     }
-
-    // force the page to rerender to display the new homepage
-    // location.reload();
   }
 
   return (
@@ -167,8 +124,8 @@ export default function HomePageEditor({
             articles={hpArticles}
             tags={tags}
             sections={sections}
-            locale={currentLocale}
-            metadata={metadata}
+            locale={locale}
+            metadata={siteMetadata}
           />
         )}
         {selectedLayout &&
@@ -187,8 +144,8 @@ export default function HomePageEditor({
               articles={hpArticles}
               tags={tags}
               sections={sections}
-              locale={currentLocale}
-              metadata={metadata}
+              locale={locale}
+              metadata={siteMetadata}
             />
           )}
       </div>
@@ -202,32 +159,48 @@ export default function HomePageEditor({
   );
 }
 
-export async function getServerSideProps(context) {
-  console.log('locales:', context.locales);
-  console.log('current locale:', context.locale);
+export async function getServerSideProps({ locale }) {
+  const apiUrl = process.env.HASURA_API_URL;
+  const apiToken = process.env.ORG_SLUG;
 
-  const localeMappings = await cachedContents('locales', listAllLocales);
+  const { errors, data } = await hasuraGetHomepageEditor({
+    url: apiUrl,
+    orgSlug: apiToken,
+    localeCode: locale,
+  });
+  if (errors || !data) {
+    console.error('error getting homepage data:', errors);
+    throw errors;
+  }
 
-  const currentLocale = localeMappings.find(
-    (localeMap) => localeMap.code === context.locale
-  );
+  const layoutSchemas = data.homepage_layout_schemas;
+  const hpData = data.homepage_layout_datas[0];
+  const hpArticles = [
+    hpData.first_article,
+    hpData.second_article,
+    hpData.third_article,
+  ];
 
-  const apiUrl = process.env.CONTENT_DELIVERY_API_URL;
-  const apiToken = process.env.CONTENT_DELIVERY_API_ACCESS_TOKEN;
+  const tags = data.tags;
+  for (var i = 0; i < tags.length; i++) {
+    tags[i].title = hasuraLocaliseText(tags[i].tag_translations, 'title');
+  }
 
-  // get all available layout options
-  const layoutSchemas = await listLayoutSchemas();
+  const sections = data.categories;
+  for (var i = 0; i < sections.length; i++) {
+    sections[i].title = hasuraLocaliseText(
+      sections[i].category_translations,
+      'title'
+    );
+  }
 
-  //    get selected homepage layout / data
-  const hpData = await getHomepageData();
-
-  //    look up selected homepage articles
-  const hpArticles = await getHomepageArticles(currentLocale, hpData);
-
-  const metadata = await getSiteMetadataForLocale(currentLocale);
-
-  const tags = await listAllTags();
-  const sections = await listAllSections();
+  let siteMetadata;
+  let metadatas = data.site_metadatas;
+  try {
+    siteMetadata = metadatas[0].site_metadata_translations[0].data;
+  } catch (err) {
+    console.log('failed finding site metadata for ', locale, metadatas);
+  }
 
   return {
     props: {
@@ -236,8 +209,8 @@ export async function getServerSideProps(context) {
       hpArticles,
       tags,
       sections,
-      currentLocale,
-      metadata,
+      locale,
+      siteMetadata,
       apiUrl,
       apiToken,
     },
