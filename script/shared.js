@@ -68,6 +68,45 @@ function hasuraUpsertSection(params) {
     },
   });
 }
+
+const HASURA_LIST_TAGS = `query MyQuery {
+  tags(where: {published: {_eq: true}}) {
+    slug
+    tag_translations {
+      locale_code
+      title
+    }
+  }
+}`;
+
+function hasuraListTags(params) {
+  return fetchGraphQL({
+    url: params['url'],
+    orgSlug: params['orgSlug'],
+    query: HASURA_LIST_TAGS,
+    name: 'MyQuery',
+  });
+}
+
+const HASURA_LIST_SECTIONS = `query MyQuery {
+  categories(where: {published: {_eq: true}}) {
+    slug
+    category_translations {
+      title
+      locale_code
+    }
+  }
+}`;
+
+function hasuraListSections(params) {
+  return fetchGraphQL({
+    url: params['url'],
+    orgSlug: params['orgSlug'],
+    query: HASURA_LIST_SECTIONS,
+    name: 'MyQuery',
+  });
+}
+
 const HASURA_LIST_ORG_LOCALES = `query MyQuery {
   organization_locales {
     locale {
@@ -122,6 +161,8 @@ async function fetchGraphQL(params) {
 
 module.exports = {
   hasuraListLocales,
+  hasuraListSections,
+  hasuraListTags,
   hasuraUpsertHomepageLayout,
   hasuraUpsertMetadata,
   hasuraUpsertSection,
