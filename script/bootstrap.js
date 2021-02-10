@@ -2,126 +2,194 @@
 
 require('dotenv').config({ path: '.env.local' })
 
-const fetch = require('node-fetch');
+const fetch = require("node-fetch");
 
-const gql = require('../lib/graphql/queries');
+const apiUrl = process.env.HASURA_API_URL;
+const apiToken = process.env.ORG_SLUG;
 
-const CONTENT_DELIVERY_API_URL = process.env.CONTENT_DELIVERY_API_URL;
-const CONTENT_DELIVERY_API_ACCESS_TOKEN =
-  process.env.CONTENT_DELIVERY_API_ACCESS_TOKEN;
-
-function createGeneralNewsCategory() {
-  const url = CONTENT_DELIVERY_API_URL;
-
-  let localeOpts = {
-    method: 'POST',
-    headers: {
-      authorization: CONTENT_DELIVERY_API_ACCESS_TOKEN,
-      'Content-Type': 'application/json',
+const HASURA_LIST_ORG_LOCALES = `query MyQuery {
+  organization_locales {
+    locale {
+      code
+    }
+  }
+}`;
+function hasuraListLocales(params) {
+  return fetchGraphQL({
+    url: params['url'],
+    orgSlug: params['orgSlug'],
+    query: HASURA_LIST_ORG_LOCALES,
+    name: 'MyQuery',
+    variables: {
+      locale_code: params['localeCode'],
+      slug: params['slug'],
     },
-    body: JSON.stringify({query: gql.LIST_LOCALES}),
-  };
-
-  let values = [];
-  fetch(url, localeOpts)
-    .then((res) => res.json())
-    .then((responseParsed) => {
-      // console.log(responseParsed)
-      let locales = responseParsed.data.i18n.listI18NLocales.data;
-
-      locales.map(
-        (locale) => {
-          values.push({
-            value: "News",
-            locale: locale.id
-          })
-
-        });
-      })
-    .then((arg) => {
-      const catVars = {
-        data: {
-          slug: "news",
-          title: {
-            values: values
-          }
-        }
-      };
-
-      let opts = {
-        method: 'POST',
-        headers: {
-          authorization: CONTENT_DELIVERY_API_ACCESS_TOKEN,
-          'Content-Type': 'application/json',
-        },
-
-        body: JSON.stringify({
-          query: gql.CREATE_CATEGORY,
-          variables: catVars
-        }),
-      };
-
-      fetch(url, opts)
-        .then((res) => res.json())
-        .then((data) => {
-          console.log("- created general news category in all locales");
-        })
-        .catch(console.error);
-    })
+  });
 }
 
-function createHomepageLayouts() {
-  const url = CONTENT_DELIVERY_API_URL;
-
-  const lpslVars = {
-    data: {
-      name: "Large Package Story Lead",
-      data: "{ \"subfeatured-top\":\"string\", \"subfeatured-bottom\":\"string\", \"featured\":\"string\" }"
+const HASURA_UPSERT_SECTION = `mutation MyMutation($locale_code: String!, $title: String!, $slug: String!, $published: Boolean) {
+  insert_categories(objects: {slug: $slug, category_translations: {data: {locale_code: $locale_code, title: $title}, on_conflict: {constraint: category_translations_locale_code_category_id_key, update_columns: [title]}}, published: $published}, on_conflict: {constraint: categories_organization_id_slug_key, update_columns: [slug, published]}) {
+    returning {
+      id
+      slug
+      published
     }
-  };
+  }
+}`;
+async function fetchGraphQL(params) {
+  let url;
+  let orgSlug;
+  if (!params.hasOwnProperty('url')) {
+    url = HASURA_API_URL;
+  } else {
+    url = params['url'];
+  }
+  if (!params.hasOwnProperty('orgSlug')) {
+    orgSlug = ORG_SLUG;
+  } else {
+    orgSlug = params['orgSlug'];
+  }
+  let operationQuery = params['query'];
+  let operationName = params['name'];
+  let variables = params['variables'];
 
-  const bfsVars = {
-    data: {
-      name: "Big Featured Story",
-      data: "{ \"featured\":\"string\" }"
-    }
-  };
-
-  let opts = {
+  const result = await fetch(url, {
     method: 'POST',
     headers: {
-      authorization: CONTENT_DELIVERY_API_ACCESS_TOKEN,
-      'Content-Type': 'application/json',
+      'TNC-Organization': orgSlug,
     },
-
     body: JSON.stringify({
-      query: gql.CREATE_LAYOUT_SCHEMA,
-      variables: lpslVars
+      query: operationQuery,
+      variables: variables,
+      operationName: operationName,
     }),
-  };
+  });
 
-  fetch(url, opts)
-    .then((res) => res.json())
-    .then((data) => {
-      console.log("- created homepage layout schema: large package story lead")
+  return await result.json();
+}
+function hasuraUpsertSection(params) {
+  return fetchGraphQL({
+    url: params['url'],
+    orgSlug: params['orgSlug'],
+    query: HASURA_UPSERT_SECTION,
+    name: 'MyMutation',
+    variables: {
+      locale_code: params['localeCode'],
+      slug: params['slug'],
+      published: params['published'],
+      title: params['title'],
+    },
+  });
+}
+async function createGeneralNewsCategory() {
+  const localeResult = await hasuraListLocales({
+    url: apiUrl,
+    orgSlug: apiToken,
+  });
+
+  let locales;
+  if (localeResult.errors) {
+    console.error("Error listing locales:", localeResult.errors);
+  } else {
+    locales = localeResult.data.organization_locales;
+  }
+
+  for (var i = 0; i < locales.length; i++) {
+    let locale = locales[i].locale.code;
+    const { errors, data } = await hasuraUpsertSection({
+      url: apiUrl,
+      orgSlug: apiToken,
+      title: "News",
+      slug: "news",
+      localeCode: locale,
+      published: true
     })
-    .catch(console.error);
 
-  opts.body = JSON.stringify({
-      query: gql.CREATE_LAYOUT_SCHEMA,
-      variables: bfsVars
+    if (errors) {
+      console.error("Error creating general news category:", errors);
+    } else {
+      console.log("Created general news category:", locale, data.insert_categories.returning);
+    }
+  }
+}
+
+const HASURA_UPSERT_LAYOUT = `mutation MyMutation($name: String!, $data: jsonb!) {
+  insert_homepage_layout_schemas(objects: {name: $name, data: $data}, on_conflict: {constraint: homepage_layout_schemas_name_organization_id_key, update_columns: [name, data]}) {
+    returning {
+      id
+      name
+    }
+  }
+}`;
+
+function hasuraUpsertHomepageLayout(params) {
+  return fetchGraphQL({
+    url: params['url'],
+    orgSlug: params['orgSlug'],
+    query: HASURA_UPSERT_LAYOUT,
+    name: 'MyMutation',
+    variables: {
+      name: params['name'],
+      data: params['data'],
+    },
+  });
+}
+
+async function createHomepageLayout1() {
+  const { errors, data } = await hasuraUpsertHomepageLayout({
+    url: apiUrl,
+    orgSlug: apiToken,
+    name: "Large Package Story Lead",
+    data: "{ \"subfeatured-top\":\"string\", \"subfeatured-bottom\":\"string\", \"featured\":\"string\" }"
   })
 
-  fetch(url, opts)
-    .then((res) => res.json())
-    .then((data) => {
-      console.log("- created homepage layout schema: big featured story")
-    })
-    .catch(console.error);
+  if (errors) {
+    console.error("Error creating large package story layout:", errors);
+  } else {
+    console.log("Created large package story layout:", data);
+  }
 }
 
-function createMetadata() {
+async function createHomepageLayout2() {
+  const { errors, data } = await hasuraUpsertHomepageLayout({
+    url: apiUrl,
+    orgSlug: apiToken,
+    name: "Big Featured Story",
+    data: "{ \"featured\":\"string\" }"
+  })
 
+  if (errors) {
+    console.error("Error creating big featured story layout:", errors);
+  } else {
+    console.log("Created big featured story layout:", data);
+  }
+}
+
+
+const HASURA_UPSERT_METADATA = `mutation MyMutation($published: Boolean, $data: jsonb, $locale_code: String) {
+  insert_site_metadatas(objects: {published: $published, site_metadata_translations: {data: {data: $data, locale_code: $locale_code}, on_conflict: {constraint: site_metadata_translations_locale_code_site_metadata_id_key, update_columns: data}}}, on_conflict: {constraint: site_metadatas_organization_id_key, update_columns: published}) {
+    returning {
+      id
+      published
+    }
+  }
+}`;
+
+function hasuraUpsertMetadata(params) {
+  return fetchGraphQL({
+    url: params['url'],
+    orgSlug: params['orgSlug'],
+    query: HASURA_UPSERT_METADATA,
+    name: 'MyMutation',
+    variables: {
+      data: params['data'],
+      published: params['published'],
+      locale_code: params['localeCode']
+    },
+  });
+}
+
+async function createMetadata() {
   const data = {
     "shortName": "The New Oaklyn Observer",
     "siteUrl": "https://tinynewsco.org/",
@@ -149,160 +217,40 @@ function createMetadata() {
     "color": "colorone",
   };
 
-  const url = CONTENT_DELIVERY_API_URL;
+  const localeResult = await hasuraListLocales({
+    url: apiUrl,
+    orgSlug: apiToken,
+  });
 
-  let localeOpts = {
-    method: 'POST',
-    headers: {
-      authorization: CONTENT_DELIVERY_API_ACCESS_TOKEN,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({query: gql.LIST_LOCALES}),
-  };
+  let locales;
+  if (localeResult.errors) {
+    console.error("Error listing locales:", localeResult.errors);
+  } else {
+    locales = localeResult.data.organization_locales;
+  }
 
-  fetch(url, localeOpts)
-    .then((res) => res.json())
-    .then((responseParsed) => {
-      // console.log(responseParsed)
-      let locales = responseParsed.data.i18n.listI18NLocales.data;
-
-      let metadataRecords = null;
-      let metadataOpts = {
-        method: 'POST',
-        headers: {
-          authorization: CONTENT_DELIVERY_API_ACCESS_TOKEN,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({query: gql.LIST_METADATA}),
-      };
-
-      fetch(url, metadataOpts)
-        .then((res) => res.json())
-        .then((metadataParsed) => {
-          try {
-            metadataRecords = metadataParsed.data.siteMetadatas.listSiteMetadatas.data;
-          } catch(e) {
-            console.log("error finding records in response: ", e)
-          }
-
-          if (metadataRecords === null || metadataRecords === undefined || metadataRecords.length <= 0) {
-            console.log("- no metadata found, creating...")
-            let metadataVars = [];
-            locales.map((locale) => {
-              metadataVars.push({
-                locale: locale.id,
-                value: JSON.stringify(data)
-              })
-            });
-
-            let variables = {
-              data: {
-                data: {
-                  values: metadataVars
-                },
-                published: true,
-              },
-            };
-
-            let opts = {
-              method: 'POST',
-              headers: {
-                authorization: CONTENT_DELIVERY_API_ACCESS_TOKEN,
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                query: gql.CREATE_METADATA,
-                variables: variables
-              }),
-            };
-
-            fetch(url, opts)
-              .then((res) => res.json())
-              .then((data) => {
-                console.log("... done! created site metadata for all locales");
-              })
-              .catch(console.error);
-
-          } else {
-            console.log("- found metadata, checking for all locales...")
-
-            let updatedMetadataVars = [];
-            let metadataID = metadataRecords[0].id;
-
-            // this should only be true if a locale is missing site metadata, otherwise there's no point in updating it
-            let needsUpdate = false;
-            locales.map((locale) => {
-              let metadata = metadataRecords[0].data.values.find(
-                (value) => value.locale === locale.id
-              );
-
-              if (metadata !== null && metadata !== undefined) {
-                // don't do anything: metadata exists for this locale
-                console.log("- metadata exists for locale: " + locale.code);
-
-                updatedMetadataVars.push(metadata);
-              } else {
-                // update the metadata record to add in this locale
-                console.log("- creating metadata for locale: " + locale.code);
-                needsUpdate = true;
-
-                updatedMetadataVars.push({
-                  locale: locale.id,
-                  value: JSON.stringify(data)
-                })
-              }
-            })
-
-            if (updatedMetadataVars.length > 0 && needsUpdate) {
-              let variables = {
-                id: metadataID,
-                data: {
-                  data: {
-                    values: updatedMetadataVars
-                  },
-                  published: true,
-                },
-              };
-
-              let opts = {
-                method: 'POST',
-                headers: {
-                  authorization: CONTENT_DELIVERY_API_ACCESS_TOKEN,
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                  query: gql.UPDATE_METADATA,
-                  variables: variables
-                }),
-              };
-
-              fetch(url, opts)
-                .then((res) => res.json())
-                .then((data) => {
-                  console.log("... done! updated site metadata for all locales");
-                })
-                .catch(console.error);
-
-            }
-          }
-        })
-        .catch( (err) => {
-          // I think this is the "no metadata whatsoever exists, db is empty" situation?
-          // create metadata (one record) with values for all site locales here.
-          console.log("error listing metadata:");
-          console.error(err);
-        });
-    })
-    .catch( (err) => {
-      console.log("error listing locales:");
-      console.error(err);
+  for (var i = 0; i < locales.length; i++) {
+    let locale = locales[i].locale.code;
+    let result = await hasuraUpsertMetadata({
+      url: apiUrl,
+      orgSlug: apiToken,
+      data: data,
+      published: true,
+      localeCode: locale
     });
 
+    if (result.errors) {
+      console.error("Error creating site metadata:", result.errors);
+    } else {
+      console.log("Successfully created site metadata in locale", locale);
+    }
+  }
 }
 
 async function main() {
   createGeneralNewsCategory();
-  createHomepageLayouts();
+  createHomepageLayout1();
+  createHomepageLayout2();
   createMetadata();
 }
 
