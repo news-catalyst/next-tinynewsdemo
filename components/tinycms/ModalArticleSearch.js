@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { searchArticles } from '../../lib/articles.js';
-import { localiseText } from '../../lib/utils.js';
+import { hasuraSearchArticles } from '../../lib/articles.js';
+import { hasuraLocaliseText } from '../../lib/utils.js';
 
 export default function ModalArticleSearch(props) {
   const [isLoading, setLoading] = useState(false);
@@ -30,14 +30,19 @@ export default function ModalArticleSearch(props) {
     event.preventDefault();
     setLoading(true);
 
-    const results = await searchArticles(
-      props.apiUrl,
-      props.apiToken,
-      searchTerm,
-      props.locale
-    );
+    const { errors, data } = await hasuraSearchArticles({
+      url: props.apiUrl,
+      orgSlug: props.apiToken,
+      localeCode: props.locale,
+      term: searchTerm,
+    });
+
+    if (errors && !data) {
+      console.error(errors);
+    }
+    console.log('data:', data);
     setLoading(false);
-    setSearchResults(results);
+    setSearchResults(data.articles);
   }
 
   return (
@@ -66,7 +71,7 @@ export default function ModalArticleSearch(props) {
           <ul>
             {searchResults.map((result) => (
               <li key={result.id} onClick={() => selectArticle(result)}>
-                {localiseText(props.locale, result.headline)}
+                {hasuraLocaliseText(result.article_translations, 'headline')}
               </li>
             ))}
           </ul>
