@@ -52,11 +52,15 @@ export default function HomePageEditor({
   async function saveAndPublishHomepage() {
     let article1 = featuredArticle.id;
     let article2 = null;
-    if (subFeaturedTopArticle) {
+    let article3 = null;
+
+    if (selectedLayout.name !== 'Big Featured Story' && subFeaturedTopArticle) {
       article2 = subFeaturedTopArticle.id;
     }
-    let article3 = null;
-    if (subFeaturedBottomArticle) {
+    if (
+      selectedLayout.name !== 'Big Featured Story' &&
+      subFeaturedBottomArticle
+    ) {
       article3 = subFeaturedBottomArticle.id;
     }
 

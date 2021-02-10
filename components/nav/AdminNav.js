@@ -13,7 +13,6 @@ export default function AdminNav(props) {
   }, [props.hpData]);
 
   async function switchLayout(layoutData) {
-    console.log('changing layout:', layoutData);
     props.changeLayout(layoutData);
     setCurrentLayoutName(layoutData.name);
   }
