@@ -4,9 +4,8 @@ import AdminLayout from '../../../components/AdminLayout';
 import AdminHeader from '../../../components/tinycms/AdminHeader';
 import AdminNav from '../../../components/nav/AdminNav';
 import Notification from '../../../components/tinycms/Notification';
-import { getTag, updateTag, listAllLocales } from '../../../lib/articles.js';
-import { localiseText } from '../../../lib/utils.js';
-import { cachedContents } from '../../../lib/cached';
+import { hasuraGetTagById, hasuraUpdateTag } from '../../../lib/section.js';
+import { hasuraLocaliseText } from '../../../lib/utils.js';
 
 export default function EditTag({
   apiUrl,
@@ -21,7 +20,6 @@ export default function EditTag({
 
   const [tagId, setTagId] = useState('');
   const [title, setTitle] = useState('');
-  const [i18nTitleValues, setI18nTitleValues] = useState([]);
   const [slug, setSlug] = useState('');
 
   const router = useRouter();
@@ -29,15 +27,9 @@ export default function EditTag({
   useEffect(() => {
     if (tag) {
       setTagId(tag.id);
-      setI18nTitleValues(tag.title.values);
-
-      if (tag.title && tag.title.values) {
-        let title = localiseText(currentLocale, tag.title);
-        setTitle(title);
-      }
-      if (tag.slug) {
-        setSlug(tag.slug);
-      }
+      let title = hasuraLocaliseText(tag.tag_translations, 'title');
+      setTitle(title);
+      setSlug(tag.slug);
     }
   }, []);
 
@@ -49,32 +41,25 @@ export default function EditTag({
   async function handleSubmit(ev) {
     ev.preventDefault();
 
-    let foundTitle = false;
-    i18nTitleValues.map((localValue) => {
-      if (localValue.locale === currentLocale.id) {
-        foundTitle = true;
-        localValue.value = title;
-      }
-    });
-    if (!foundTitle) {
-      i18nTitleValues.push({ value: title, locale: currentLocale.id });
-      setI18nTitleValues(i18nTitleValues);
-    }
+    let published = true;
+    let params = {
+      url: apiUrl,
+      orgSlug: apiToken,
+      id: tagId,
+      localeCode: currentLocale,
+      title: title,
+      published: published,
+      slug: slug,
+    };
+    const { errors, data } = await hasuraUpdateTag(params);
 
-    const response = await updateTag(
-      apiUrl,
-      apiToken,
-      tagId,
-      i18nTitleValues,
-      slug
-    );
-
-    if (response.tags.updateTag.error !== null) {
-      setNotificationMessage(response.tags.updateTag.error);
+    if (errors) {
+      console.log(errors);
+      setNotificationMessage(JSON.stringify(errors));
       setNotificationType('error');
       setShowNotification(true);
     } else {
-      setTagId(response.tags.updateTag.data.id);
+      console.log(data);
       // display success message
       setNotificationMessage('Successfully saved and published the tag!');
       setNotificationType('success');
@@ -160,23 +145,30 @@ export default function EditTag({
 }
 
 export async function getServerSideProps(context) {
-  const localeMappings = await cachedContents('locales', listAllLocales);
+  const apiUrl = process.env.HASURA_API_URL;
+  const apiToken = process.env.ORG_SLUG;
 
-  const currentLocale = localeMappings.find(
-    (localeMap) => localeMap.code === context.locale
-  );
+  let tag = {};
+  let locales;
+  const { errors, data } = await hasuraGetTagById({
+    url: apiUrl,
+    orgSlug: apiToken,
+    id: context.params.id,
+  });
+  if (errors) {
+    throw errors;
+  } else {
+    tag = data.tags_by_pk;
+    locales = data.organization_locales;
+  }
 
-  const apiUrl = process.env.CONTENT_DELIVERY_API_URL;
-  const apiToken = process.env.CONTENT_DELIVERY_API_ACCESS_TOKEN;
-
-  let tag = await getTag(context.params.id);
   return {
     props: {
       apiUrl: apiUrl,
       apiToken: apiToken,
       tag: tag,
-      currentLocale: currentLocale,
-      locales: localeMappings,
+      currentLocale: context.locale,
+      locales: locales,
     },
   };
 }

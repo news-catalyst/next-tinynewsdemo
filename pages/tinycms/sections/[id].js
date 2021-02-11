@@ -1,18 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import AdminLayout from '../../../components/AdminLayout';
 import {
   hasuraGetSectionById,
   deleteSection,
-  updateSection,
   hasuraUpdateSection,
 } from '../../../lib/section';
 import AdminNav from '../../../components/nav/AdminNav';
 import AdminHeader from '../../../components/tinycms/AdminHeader';
 import Notification from '../../../components/tinycms/Notification';
-import { hasuraLocaliseText, localiseText } from '../../../lib/utils';
-import { listAllLocales } from '../../../lib/articles.js';
-import { cachedContents } from '../../../lib/cached';
+import { hasuraLocaliseText } from '../../../lib/utils';
 
 export default function EditSection({
   apiUrl,
@@ -38,23 +35,6 @@ export default function EditSection({
     router.push('/tinycms/sections');
   }
 
-  async function handleDeleteSection(section) {
-    const response = await deleteSection(apiUrl, apiToken, section.id);
-
-    if (response.categories.deleteCategory.error !== null) {
-      setNotificationMessage(response.categories.deleteCategory.error);
-      setNotificationType('error');
-      setShowNotification(true);
-    } else {
-      // display success message
-
-      setNotificationMessage('Successfully deleted the section!');
-      setNotificationType('success');
-      setShowNotification(true);
-      // handleCancel();
-    }
-  }
-
   async function handleSubmit(ev) {
     ev.preventDefault();
 
@@ -63,7 +43,7 @@ export default function EditSection({
       url: apiUrl,
       orgSlug: apiToken,
       id: sectionId,
-      localeCode: currentLocale.code,
+      localeCode: currentLocale,
       title: title,
       published: published,
       slug: slug,
@@ -72,7 +52,7 @@ export default function EditSection({
     console.log(errors);
 
     if (errors) {
-      setNotificationMessage(errors);
+      setNotificationMessage(JSON.stringify(errors));
       setNotificationType('error');
       setShowNotification(true);
     } else {
@@ -168,16 +148,11 @@ export default function EditSection({
 }
 
 export async function getServerSideProps(context) {
-  const localeMappings = await cachedContents('locales', listAllLocales);
-
-  const currentLocale = localeMappings.find(
-    (localeMap) => localeMap.code === context.locale
-  );
-
   const apiUrl = process.env.HASURA_API_URL;
   const apiToken = process.env.ORG_SLUG;
 
   let section = {};
+  let locales;
   const { errors, data } = await hasuraGetSectionById({
     url: apiUrl,
     orgSlug: apiToken,
@@ -187,15 +162,17 @@ export async function getServerSideProps(context) {
     throw errors;
   } else {
     section = data.categories_by_pk;
+    locales = data.organization_locales;
   }
 
+  console.log('section:', section);
   return {
     props: {
       apiUrl: apiUrl,
       apiToken: apiToken,
-      currentLocale,
+      currentLocale: context.locale,
       section: section,
-      locales: localeMappings,
+      locales: locales,
     },
   };
 }
