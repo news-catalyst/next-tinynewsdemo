@@ -61,7 +61,7 @@ export async function getStaticProps({ locale, params }) {
     categorySlug: params.category,
   });
   if (errors || !data) {
-    console.log('error gettig article page:', errors);
+    console.log('error getting article page:', errors);
     return {
       notFound: true,
     };
@@ -86,8 +86,6 @@ export async function getStaticProps({ locale, params }) {
         return new Date(b.updated_at) - new Date(a.updated_at);
       });
       let mostRecentContent = mostRecentContents[0];
-
-      console.log('mostRecentContent:', mostRecentContent.updated_at);
 
       article.article_translations = [mostRecentContent];
     }
