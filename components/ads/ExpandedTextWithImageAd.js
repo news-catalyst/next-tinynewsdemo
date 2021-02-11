@@ -37,7 +37,7 @@ export default function ExpandedTextWithImageAd({ ad, isAmp }) {
           </div>
         </div>
       </div>
-      <AdPixel pixel={ad.pixel} />
+      <AdPixel pixel={ad.pixel} isAmp={isAmp} />
     </div>
   );
 }
