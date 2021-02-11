@@ -5,9 +5,8 @@ import AdminNav from '../../../components/nav/AdminNav';
 import AdminHeader from '../../../components/tinycms/AdminHeader';
 import Notification from '../../../components/tinycms/Notification';
 import Upload from '../../../components/tinycms/Upload';
-import { listAllLocales } from '../../../lib/articles.js';
-import { cachedContents } from '../../../lib/cached';
-import { hasuraCreateAuthor, createAuthor } from '../../../lib/authors';
+import { hasuraListLocales } from '../../../lib/articles.js';
+import { hasuraCreateAuthor } from '../../../lib/authors';
 
 export default function AddAuthor({
   apiUrl,
@@ -218,14 +217,23 @@ export default function AddAuthor({
   );
 }
 export async function getServerSideProps(context) {
-  const localeMappings = await cachedContents('locales', listAllLocales);
-
-  const currentLocale = localeMappings.find(
-    (localeMap) => localeMap.code === context.locale
-  );
-
   const apiUrl = process.env.HASURA_API_URL;
   const apiToken = process.env.ORG_SLUG;
+  const { errors, data } = await hasuraListLocales({
+    url: apiUrl,
+    orgSlug: apiToken,
+  });
+
+  let locales;
+
+  if (errors || !data) {
+    console.log('error listing locales:', errors);
+    return {
+      notFound: true,
+    };
+  } else {
+    locales = data.organization_locales;
+  }
 
   const awsConfig = {
     bucketName: process.env.TNC_AWS_BUCKET_NAME,
@@ -239,8 +247,8 @@ export async function getServerSideProps(context) {
     props: {
       apiUrl: apiUrl,
       apiToken: apiToken,
-      currentLocale: currentLocale,
-      locales: localeMappings,
+      currentLocale: context.locale,
+      locales: locales,
       awsConfig: awsConfig,
     },
   };
