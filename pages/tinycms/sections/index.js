@@ -5,9 +5,7 @@ import AdminLayout from '../../../components/AdminLayout.js';
 import AdminNav from '../../../components/nav/AdminNav';
 import AdminHeader from '../../../components/tinycms/AdminHeader';
 import { hasuraLocaliseText } from '../../../lib/utils';
-import { listAllLocales } from '../../../lib/articles.js';
 import { hasuraListAllSectionsByLocale } from '../../../lib/section.js';
-import { cachedContents } from '../../../lib/cached';
 
 export default function Sections({ sections, currentLocale, locales }) {
   const [message, setMessage] = useState(null);
@@ -63,27 +61,27 @@ export default function Sections({ sections, currentLocale, locales }) {
 }
 
 export async function getServerSideProps(context) {
-  const localeMappings = await cachedContents('locales', listAllLocales);
+  const apiUrl = process.env.HASURA_API_URL;
+  const apiToken = process.env.ORG_SLUG;
 
-  const currentLocale = localeMappings.find(
-    (localeMap) => localeMap.code === context.locale
-  );
-
-  const { errors, data } = await hasuraListAllSectionsByLocale(
-    currentLocale.code
-  );
+  const { errors, data } = await hasuraListAllSectionsByLocale({
+    url: apiUrl,
+    orgSlug: apiToken,
+    localeCode: context.locale,
+  });
 
   if (errors) {
     console.error(errors);
   }
 
   let sections = data.categories;
+  let locales = data.organization_locales;
 
   return {
     props: {
       sections: sections,
-      currentLocale: currentLocale,
-      locales: localeMappings,
+      currentLocale: context.locale,
+      locales: locales,
     },
   };
 }

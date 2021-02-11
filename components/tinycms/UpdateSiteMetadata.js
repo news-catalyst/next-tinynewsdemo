@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { updateSiteMetadata } from '../../lib/site_metadata';
+import { hasuraUpsertMetadata } from '../../lib/site_metadata';
 import Notification from './Notification';
 
 export default function UpdateMetadata(props) {
   const [notificationMessage, setNotificationMessage] = useState('');
   const [notificationType, setNotificationType] = useState('');
   const [showNotification, setShowNotification] = useState(false);
-  const [data, setData] = useState('');
+  const [jsonData, setJsonData] = useState('');
   const [parsedData, setParsedData] = useState({});
   const [editData, setEditData] = useState(false);
 
@@ -23,19 +23,7 @@ export default function UpdateMetadata(props) {
 
   useEffect(() => {
     if (props.metadata) {
-      let localisedData = props.metadata.data.values.find(
-        (item) => item.locale === props.currentLocale.id
-      );
-
-      let parsed = {};
-      if (
-        localisedData &&
-        localisedData.value &&
-        typeof localisedData.value === 'string'
-      ) {
-        parsed = JSON.parse(localisedData.value);
-      }
-
+      let parsed = props.metadata;
       Object.keys(parsed).map((key) => {
         if (typeof parsed[key] !== 'string') {
           parsed[key] = JSON.stringify(parsed[key]);
@@ -43,7 +31,7 @@ export default function UpdateMetadata(props) {
       });
       setParsedData(parsed);
       let formattedJSON = JSON.stringify(parsed, null, 2);
-      setData(formattedJSON);
+      setJsonData(formattedJSON);
     }
   }, []);
 
@@ -55,32 +43,27 @@ export default function UpdateMetadata(props) {
   async function handleSubmit(ev) {
     ev.preventDefault();
 
-    console.log('data:', data);
-    console.log('parsedData:', parsedData);
-
     let parsed = parsedData;
-    if (data && (Object.keys(parsedData).length === 0 || editData)) {
-      console.log('Populating new locale site metadata');
-      parsed = JSON.parse(data);
+    if (jsonData && (Object.keys(parsedData).length === 0 || editData)) {
+      parsed = JSON.parse(jsonData);
       Object.keys(parsed).map((key) => {
         if (typeof parsed[key] !== 'string') {
           parsed[key] = JSON.stringify(parsed[key]);
         }
       });
       setParsedData(parsed);
-      console.log('parsed:', parsedData);
     }
     // return;
-    const response = await updateSiteMetadata(
-      props.apiUrl,
-      props.apiToken,
-      props.metadata,
-      props.currentLocale,
-      parsed
-    );
 
-    if (response.siteMetadatas.updateSiteMetadata.error !== null) {
-      setNotificationMessage(response.siteMetadatas.updateSiteMetadata.error);
+    const { errors, data } = await hasuraUpsertMetadata({
+      url: props.apiUrl,
+      orgSlug: props.apiToken,
+      data: parsed,
+      published: true,
+      localeCode: props.currentLocale,
+    });
+    if (errors) {
+      setNotificationMessage(JSON.stringify(errors));
       setNotificationType('error');
       setShowNotification(true);
     } else {
@@ -106,7 +89,7 @@ export default function UpdateMetadata(props) {
             JSON Data:
           </label>
           <div className="control">
-            <pre>{data}</pre>
+            <pre>{jsonData}</pre>
           </div>
           <a
             href="#"
@@ -127,8 +110,8 @@ export default function UpdateMetadata(props) {
               <textarea
                 className="textarea"
                 name="data"
-                value={data}
-                onChange={(ev) => setData(ev.target.value)}
+                value={jsonData}
+                onChange={(ev) => setJsonData(ev.target.value)}
               />
             </div>
           </div>

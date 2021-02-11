@@ -37,7 +37,6 @@ export async function getStaticPaths({ locales }) {
   const apiToken = process.env.ORG_SLUG;
 
   let paths = [];
-  let sections = [];
   const { errors, data } = await hasuraListAllSections({
     url: apiUrl,
     orgSlug: apiToken,
@@ -48,19 +47,17 @@ export async function getStaticPaths({ locales }) {
       paths,
       fallback: true,
     };
-  } else {
-    sections = data.categories;
   }
 
-  for (const locale of locales) {
-    sections.map((section) => {
+  for (const section of data.categories) {
+    for (const locale of section.category_translations) {
       paths.push({
         params: {
           category: section.slug,
         },
-        locale,
+        locale: locale.locale_code,
       });
-    });
+    }
   }
 
   return {

@@ -1,6 +1,10 @@
 import { useRouter } from 'next/router';
 import Layout from '../../components/Layout.js';
-import { listAllTagPaths, hasuraTagPage } from '../../lib/articles.js';
+import {
+  listAllTagPaths,
+  hasuraTagPage,
+  hasuraListAllTags,
+} from '../../lib/articles.js';
 import { cachedContents } from '../../lib/cached';
 import { getArticleAds } from '../../lib/ads.js';
 import { hasuraLocaliseText } from '../../lib/utils.js';
@@ -40,10 +44,34 @@ export default function TagPage({
 }
 
 export async function getStaticPaths({ locales }) {
-  const paths = await listAllTagPaths(locales);
+  const apiUrl = process.env.HASURA_API_URL;
+  const apiToken = process.env.ORG_SLUG;
+
+  let paths = [];
+  const { errors, data } = await hasuraListAllTags({
+    url: apiUrl,
+    orgSlug: apiToken,
+  });
+
+  if (errors || !data) {
+    return {
+      paths,
+      fallback: true,
+    };
+  }
+  for (const tag of data.tags) {
+    for (const locale of tag.tag_translations) {
+      paths.push({
+        params: {
+          slug: tag.slug,
+        },
+        locale: locale.code,
+      });
+    }
+  }
   return {
     paths,
-    fallback: false,
+    fallback: true,
   };
 }
 

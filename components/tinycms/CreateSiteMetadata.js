@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import Notification from './Notification';
-import { createSiteMetadata, getSiteMetadata } from '../../lib/site_metadata';
+import { hasuraUpsertMetadata } from '../../lib/site_metadata';
 
 export default function AddMetadata(props) {
   const [notificationMessage, setNotificationMessage] = useState('');
   const [notificationType, setNotificationType] = useState('');
   const [showNotification, setShowNotification] = useState(false);
-  const [data, setData] = useState('{}');
+  const [jsonData, setJsonData] = useState('{}');
   const [metadataID, setMetadataID] = useState(null);
 
   const router = useRouter();
@@ -20,26 +20,24 @@ export default function AddMetadata(props) {
   async function handleSubmit(ev) {
     ev.preventDefault();
 
-    const response = await createSiteMetadata(
-      props.apiUrl,
-      props.apiToken,
-      props.currentLocale,
-      data
-    );
-
-    if (response.siteMetadatas.createSiteMetadata.error !== null) {
-      setNotificationMessage(response.siteMetadatas.createSiteMetadata.error);
+    const { errors, data } = await hasuraUpsertMetadata({
+      url: props.apiUrl,
+      orgSlug: props.apiToken,
+      data: JSON.parse(jsonData),
+      published: true,
+      localeCode: props.currentLocale,
+    });
+    if (errors) {
+      setNotificationMessage(JSON.stringify(errors));
       setNotificationType('error');
       setShowNotification(true);
     } else {
+      let id = data.insert_site_metadatas.returning[0].id;
+      setMetadataID(id);
       // display success message
       setNotificationMessage('Successfully saved and published the metadata!');
       setNotificationType('success');
       setShowNotification(true);
-      let id = response.siteMetadatas.createSiteMetadata.data.id;
-      setMetadataID(id);
-      let siteMetadata = await getSiteMetadata(props.apiUrl, props.apiToken);
-      props.setMetadata(siteMetadata);
     }
   }
 
@@ -60,8 +58,8 @@ export default function AddMetadata(props) {
           <textarea
             className="textarea"
             name="data"
-            value={data}
-            onChange={(ev) => setData(ev.target.value)}
+            value={jsonData}
+            onChange={(ev) => setJsonData(ev.target.value)}
           />
         </div>
       </div>

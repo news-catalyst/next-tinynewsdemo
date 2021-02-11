@@ -5,10 +5,8 @@ import AdminLayout from '../../../components/AdminLayout.js';
 import AdminHeader from '../../../components/tinycms/AdminHeader';
 import AdminNav from '../../../components/nav/AdminNav';
 import Notification from '../../../components/tinycms/Notification';
-import { listAllLocales } from '../../../lib/articles.js';
 import { hasuraListAllAuthors } from '../../../lib/authors.js';
 import { hasuraLocaliseText } from '../../../lib/utils.js';
-import { cachedContents } from '../../../lib/cached';
 
 export default function Authors({ authors, currentLocale, locales }) {
   const [notificationMessage, setNotificationMessage] = useState('');
@@ -76,25 +74,20 @@ export default function Authors({ authors, currentLocale, locales }) {
 }
 
 export async function getServerSideProps(context) {
-  const localeMappings = await cachedContents('locales', listAllLocales);
-
-  const currentLocale = localeMappings.find(
-    (localeMap) => localeMap.code === context.locale
-  );
-
-  const { errors, data } = await hasuraListAllAuthors(currentLocale.code);
+  const { errors, data } = await hasuraListAllAuthors(context.locale);
 
   if (errors) {
     console.error(errors);
   }
 
   let authors = data.authors;
+  let locales = data.organization_locales;
 
   return {
     props: {
       authors: authors,
-      currentLocale: currentLocale,
-      locales: localeMappings,
+      currentLocale: context.locale,
+      locales: locales,
     },
   };
 }

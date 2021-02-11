@@ -4,17 +4,15 @@ import AdminLayout from '../../../components/AdminLayout';
 import AdminHeader from '../../../components/tinycms/AdminHeader';
 import AdminNav from '../../../components/nav/AdminNav';
 import Notification from '../../../components/tinycms/Notification';
-import { cachedContents } from '../../../lib/cached';
-import { createTag, listAllLocales } from '../../../lib/articles.js';
+import { hasuraListLocales } from '../../../lib/articles.js';
+import { hasuraCreateTag } from '../../../lib/section';
 
 export default function AddTag({ apiUrl, apiToken, currentLocale, locales }) {
   const [notificationMessage, setNotificationMessage] = useState('');
   const [notificationType, setNotificationType] = useState('');
   const [showNotification, setShowNotification] = useState(false);
 
-  // const [tagId, setTagId] = useState('');
   const [title, setTitle] = useState('');
-  const [i18nTitleValues, setI18nTitleValues] = useState([]);
   const [slug, setSlug] = useState('');
 
   const router = useRouter();
@@ -27,31 +25,28 @@ export default function AddTag({ apiUrl, apiToken, currentLocale, locales }) {
   async function handleSubmit(ev) {
     ev.preventDefault();
 
-    let foundTitle = false;
-    i18nTitleValues.map((localValue) => {
-      if (localValue.locale === currentLocale.id) {
-        foundTitle = true;
-        localValue.value = title;
-      }
-    });
-    if (!foundTitle) {
-      i18nTitleValues.push({ value: title, locale: currentLocale.id });
-      setI18nTitleValues(i18nTitleValues);
-    }
+    let published = true;
+    let params = {
+      url: apiUrl,
+      orgSlug: apiToken,
+      localeCode: currentLocale,
+      title: title,
+      published: published,
+      slug: slug,
+    };
+    console.log('params:', params);
+    const { errors, data } = await hasuraCreateTag(params);
 
-    const response = await createTag(apiUrl, apiToken, i18nTitleValues, slug);
-
-    if (response.tags.createTag.error !== null) {
-      setNotificationMessage(response.tags.createTag.error);
-      setNotificationType('error');
-      setShowNotification(true);
-    } else {
-      // display success message
+    if (data && data.insert_tags_one) {
+      console.log(data.insert_tags_one);
       setNotificationMessage('Successfully saved and published the tag!');
       setNotificationType('success');
       setShowNotification(true);
-
       router.push('/tinycms/tags?action=create');
+    } else if (errors) {
+      setNotificationMessage(JSON.stringify(errors));
+      setNotificationType('error');
+      setShowNotification(true);
     }
   }
 
@@ -123,20 +118,29 @@ export default function AddTag({ apiUrl, apiToken, currentLocale, locales }) {
   );
 }
 export async function getServerSideProps(context) {
-  const localeMappings = await cachedContents('locales', listAllLocales);
+  const apiUrl = process.env.HASURA_API_URL;
+  const apiToken = process.env.ORG_SLUG;
+  const { errors, data } = await hasuraListLocales({
+    url: apiUrl,
+    orgSlug: apiToken,
+  });
 
-  const currentLocale = localeMappings.find(
-    (localeMap) => localeMap.code === context.locale
-  );
+  let locales;
 
-  const apiUrl = process.env.CONTENT_DELIVERY_API_URL;
-  const apiToken = process.env.CONTENT_DELIVERY_API_ACCESS_TOKEN;
+  if (errors || !data) {
+    console.log('error listing locales:', errors);
+    return {
+      notFound: true,
+    };
+  } else {
+    locales = data.organization_locales;
+  }
   return {
     props: {
       apiUrl: apiUrl,
       apiToken: apiToken,
-      currentLocale: currentLocale,
-      locales: localeMappings,
+      currentLocale: context.locale,
+      locales: locales,
     },
   };
 }

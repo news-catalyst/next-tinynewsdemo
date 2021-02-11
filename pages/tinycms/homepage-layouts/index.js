@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { listLayoutSchemas } from '../../../lib/homepage.js';
+import { hasuraListHomepageLayoutSchemas } from '../../../lib/homepage.js';
 import AdminLayout from '../../../components/AdminLayout.js';
 import AdminNav from '../../../components/nav/AdminNav';
 
@@ -53,7 +53,21 @@ export default function HomepageLayouts({ homepageLayouts }) {
 }
 
 export async function getServerSideProps() {
-  let homepageLayouts = await listLayoutSchemas();
+  const apiUrl = process.env.HASURA_API_URL;
+  const apiToken = process.env.ORG_SLUG;
+
+  const { errors, data } = await hasuraListHomepageLayoutSchemas({
+    url: apiUrl,
+    orgSlug: apiToken,
+  });
+
+  let homepageLayouts;
+  if (errors) {
+    throw errors;
+  } else {
+    homepageLayouts = data.homepage_layout_schemas;
+  }
+
   return {
     props: {
       homepageLayouts: homepageLayouts,
