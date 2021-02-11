@@ -5,9 +5,8 @@ import AdminLayout from '../../../components/AdminLayout.js';
 import AdminHeader from '../../../components/tinycms/AdminHeader';
 import AdminNav from '../../../components/nav/AdminNav';
 import Notification from '../../../components/tinycms/Notification';
-import { listAllLocales, listAllTags } from '../../../lib/articles.js';
-import { localiseText } from '../../../lib/utils.js';
-import { cachedContents } from '../../../lib/cached';
+import { hasuraListAllTags } from '../../../lib/articles.js';
+import { hasuraLocaliseText } from '../../../lib/utils.js';
 
 export default function Tags({ tags, currentLocale, locales }) {
   const [notificationMessage, setNotificationMessage] = useState('');
@@ -31,7 +30,7 @@ export default function Tags({ tags, currentLocale, locales }) {
   }, []);
 
   const listItems = tags.map((tag) => {
-    let title = localiseText(currentLocale, tag.title);
+    let title = hasuraLocaliseText(tag.tag_translations, 'title');
 
     return (
       <li key={tag.id}>
@@ -72,18 +71,32 @@ export default function Tags({ tags, currentLocale, locales }) {
 }
 
 export async function getServerSideProps(context) {
-  const localeMappings = await cachedContents('locales', listAllLocales);
+  const apiUrl = process.env.HASURA_API_URL;
+  const apiToken = process.env.ORG_SLUG;
 
-  const currentLocale = localeMappings.find(
-    (localeMap) => localeMap.code === context.locale
-  );
+  let tags;
+  let locales;
 
-  let tags = await listAllTags();
+  const { errors, data } = await hasuraListAllTags({
+    url: apiUrl,
+    orgSlug: apiToken,
+  });
+
+  if (errors || !data) {
+    console.error('error listing tags:', errors);
+    return {
+      notFound: true,
+    };
+  } else {
+    tags = data.tags;
+    locales = data.organization_locales;
+  }
+
   return {
     props: {
       tags: tags,
-      currentLocale: currentLocale,
-      locales: localeMappings,
+      currentLocale: context.locale,
+      locales: locales,
     },
   };
 }
