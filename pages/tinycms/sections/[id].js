@@ -28,8 +28,16 @@ export default function EditSection({
   const [slug, setSlug] = useState(section.slug);
   const [published, setPublished] = useState(section.published);
 
-  console.log('published:', published);
   const router = useRouter();
+
+  function handlePublished(event) {
+    const value =
+      event.target.type === 'checkbox'
+        ? event.target.checked
+        : event.target.value;
+
+    setPublished(value);
+  }
 
   async function handleCancel(ev) {
     ev.preventDefault();
@@ -49,18 +57,15 @@ export default function EditSection({
       slug: slug,
     };
     const { errors, data } = await hasuraUpdateSection(params);
-    console.log(errors);
 
     if (errors) {
       setNotificationMessage(JSON.stringify(errors));
       setNotificationType('error');
       setShowNotification(true);
     } else {
-      console.log(data);
       // display success message
       let message = 'Successfully updated the section!';
-      console.log(published);
-      if (published === 'true') {
+      if (published) {
         message += ' (section is live)';
       } else {
         message += ' (section is unpublished)';
@@ -123,31 +128,15 @@ export default function EditSection({
           </div>
 
           <div className="field">
-            <label className="label" htmlFor="slug">
-              Status
+            <label className="checkbox" htmlFor="slug">
+              <input
+                name="published"
+                type="checkbox"
+                checked={published}
+                onChange={handlePublished}
+              />
+              Published
             </label>
-            <div className="control">
-              <label className="radio">
-                <input
-                  type="radio"
-                  name="published"
-                  checked={published === 'true'}
-                  value={true}
-                  onChange={(ev) => setPublished(ev.target.value)}
-                />
-                Published
-              </label>
-              <label className="radio">
-                <input
-                  type="radio"
-                  name="published"
-                  checked={published === 'false'}
-                  value={false}
-                  onChange={(ev) => setPublished(ev.target.value)}
-                />
-                Unpublished
-              </label>
-            </div>
           </div>
 
           <div className="level">
@@ -200,7 +189,6 @@ export async function getServerSideProps(context) {
     locales = data.organization_locales;
   }
 
-  console.log('section:', section);
   return {
     props: {
       apiUrl: apiUrl,
