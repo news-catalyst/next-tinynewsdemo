@@ -36,7 +36,8 @@ export default function ArticleStream({
           header: ad.heading,
           body: ad.content,
           call: ad.callToAction,
-          url: ad.callToActionUrl,
+          url: ad.resolvedCallToActionURL,
+          pixel: ad.pixel,
         }}
         isAmp={isAmp}
       />
