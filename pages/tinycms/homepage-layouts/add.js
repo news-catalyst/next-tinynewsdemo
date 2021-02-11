@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import AdminLayout from '../../../components/AdminLayout';
 import AdminNav from '../../../components/nav/AdminNav';
 import Notification from '../../../components/tinycms/Notification';
-import { createHomepageLayoutSchema } from '../../../lib/homepage';
+import { hasuraUpsertHomepageLayout } from '../../../lib/homepage';
 
 export default function AddHomepageLayout({ apiUrl, apiToken }) {
   const [notificationMessage, setNotificationMessage] = useState('');
@@ -10,27 +10,25 @@ export default function AddHomepageLayout({ apiUrl, apiToken }) {
   const [showNotification, setShowNotification] = useState(false);
 
   const [name, setName] = useState('');
-  const [data, setData] = useState('');
+  const [jsonData, setJsonData] = useState('');
 
   async function handleSubmit(ev) {
     ev.preventDefault();
 
-    const response = await createHomepageLayoutSchema(
-      apiUrl,
-      apiToken,
-      name,
-      data
-    );
+    const { errors, data } = await hasuraUpsertHomepageLayout({
+      url: apiUrl,
+      orgSlug: apiToken,
+      name: name,
+      data: jsonData,
+    });
 
-    if (
-      response.homepageLayoutSchemas.createHomepageLayoutSchema.error !== null
-    ) {
-      setNotificationMessage(
-        response.homepageLayoutSchemas.createHomepageLayoutSchema.error
-      );
+    if (errors) {
+      console.error('Error creating layout:', errors);
+      setNotificationMessage(JSON.stringify(errors));
       setNotificationType('error');
       setShowNotification(true);
     } else {
+      console.log('Created layout:', data);
       // display success message
       setNotificationMessage(
         'Successfully saved and published the homepage layout!'
@@ -71,16 +69,16 @@ export default function AddHomepageLayout({ apiUrl, apiToken }) {
           </div>
 
           <div className="field">
-            <label className="label" htmlFor="data">
+            <label className="label" htmlFor="jsonData">
               Data
             </label>
             <div className="control">
               <input
                 className="input"
                 type="text"
-                value={data}
-                name="data"
-                onChange={(ev) => setData(ev.target.value)}
+                value={jsonData}
+                name="jsonData"
+                onChange={(ev) => setJsonData(ev.target.value)}
               />
             </div>
           </div>
@@ -100,8 +98,9 @@ export default function AddHomepageLayout({ apiUrl, apiToken }) {
 }
 
 export async function getServerSideProps() {
-  const apiUrl = process.env.CONTENT_DELIVERY_API_URL;
-  const apiToken = process.env.CONTENT_DELIVERY_API_ACCESS_TOKEN;
+  const apiUrl = process.env.HASURA_API_URL;
+  const apiToken = process.env.ORG_SLUG;
+
   return {
     props: {
       apiUrl: apiUrl,
