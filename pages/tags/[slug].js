@@ -1,10 +1,6 @@
 import { useRouter } from 'next/router';
 import Layout from '../../components/Layout.js';
-import {
-  listAllTagPaths,
-  hasuraTagPage,
-  hasuraListAllTags,
-} from '../../lib/articles.js';
+import { hasuraTagPage, hasuraListAllTags } from '../../lib/articles.js';
 import { cachedContents } from '../../lib/cached';
 import { getArticleAds } from '../../lib/ads.js';
 import { hasuraLocaliseText } from '../../lib/utils.js';
