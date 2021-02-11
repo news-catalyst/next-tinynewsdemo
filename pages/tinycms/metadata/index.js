@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { getSiteMetadata } from '../../../lib/site_metadata.js';
-import { listAllLocales } from '../../../lib/articles.js';
-import { cachedContents } from '../../../lib/cached';
+import { hasuraGetMetadataByLocale } from '../../../lib/articles.js';
 import AdminLayout from '../../../components/AdminLayout.js';
 import AdminNav from '../../../components/nav/AdminNav';
 import AdminHeader from '../../../components/tinycms/AdminHeader';
@@ -24,7 +22,7 @@ export default function Metadata({
 
   useEffect(() => {
     if (siteMetadata) {
-      setMetadata(siteMetadata);
+      setMetadata(siteMetadata.site_metadata_translations[0].data);
     }
     if (action && action === 'edit') {
       setMessage('Successfully updated metadata.');
@@ -72,16 +70,24 @@ export default function Metadata({
 }
 
 export async function getServerSideProps(context) {
-  const localeMappings = await cachedContents('locales', listAllLocales);
+  const apiUrl = process.env.HASURA_API_URL;
+  const apiToken = process.env.ORG_SLUG;
 
-  const currentLocale = localeMappings.find(
-    (localeMap) => localeMap.code === context.locale
-  );
+  let siteMetadata;
+  let locales;
 
-  const apiUrl = process.env.CONTENT_DELIVERY_API_URL;
-  const apiToken = process.env.CONTENT_DELIVERY_API_ACCESS_TOKEN;
+  const { errors, data } = await hasuraGetMetadataByLocale({
+    url: apiUrl,
+    orgSlug: apiToken,
+    localeCode: context.locale,
+  });
 
-  let siteMetadata = await getSiteMetadata(apiUrl, apiToken, currentLocale);
+  if (errors) {
+    throw errors;
+  } else {
+    locales = data.organization_locales;
+    siteMetadata = data.site_metadatas[0];
+  }
   if (siteMetadata === undefined) {
     siteMetadata = null;
   }
@@ -89,9 +95,9 @@ export async function getServerSideProps(context) {
     props: {
       apiUrl: apiUrl,
       apiToken: apiToken,
-      currentLocale: currentLocale,
+      currentLocale: context.locale,
       siteMetadata: siteMetadata,
-      locales: localeMappings,
+      locales: locales,
     },
   };
 }
