@@ -12,6 +12,8 @@ export default function Layout({ children, meta, article, sections }) {
     meta = {};
   }
 
+  console.log(sections);
+
   const metaValues = {
     canonical: meta['siteUrl'],
     siteName: meta['shortName'],
