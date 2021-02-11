@@ -1,5 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
+import AdPixel from './AdPixel.js';
 
 export default function ExpandedTextWithImageAd({ ad, isAmp }) {
   return (
@@ -36,6 +37,7 @@ export default function ExpandedTextWithImageAd({ ad, isAmp }) {
           </div>
         </div>
       </div>
+      <AdPixel pixel={ad.pixel} />
     </div>
   );
 }
