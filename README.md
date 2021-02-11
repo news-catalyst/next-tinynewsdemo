@@ -2,6 +2,10 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ## Getting Started
 
+To start up a new tiny news org, set up an environment file (see below) then bootstrap the initial content with `yarn bootstrap`. 
+
+Regular start ups, especially in dev, see the following...
+
 Clear out any old cache files, rebuild the cache and run the development server:
 
 ```bash
@@ -18,12 +22,17 @@ Open [http://localhost:3000](http://localhost:3000) with your browser.
 
 ## Environment Variables
 
-Create a file called `.env.local` and place the following variables, based on your Webiny API, in the file:
+Copy the file `.env.local-template` to a file called `.env.local` and fill in all of the environment variables.
+
+To switch between environments - aka, tiny news organizations - use the `script/run` command:
 
 ```
-CONTENT_DELIVERY_API_URL=<your CMS URL>
-CONTENT_DELIVERY_API_ACCESS_TOKEN=<your access token>
+$ script/run $name
+$ script/run oaklyn
+$ script/run prod
 ```
+
+Note: these commands expect `.env.local-$name` to exist in order to work.
 
 ## Learn More
 
