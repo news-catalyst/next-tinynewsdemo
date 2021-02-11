@@ -7,7 +7,6 @@ const path = require('path');
 const fetch = require('node-fetch');
 
 const shared = require("./shared");
-const gql = require('../lib/graphql/queries');
 
 const apiUrl = process.env.HASURA_API_URL;
 const apiToken = process.env.ORG_SLUG;
