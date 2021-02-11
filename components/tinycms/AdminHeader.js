@@ -7,7 +7,7 @@ export default function AdminHeader(props) {
       <div className="level-left">
         <div className="level-item">
           <h1 className="title">
-            {props.title} ({props.currentLocale.code})
+            {props.title} ({props.currentLocale})
           </h1>
         </div>
       </div>

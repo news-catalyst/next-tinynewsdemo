@@ -4,9 +4,8 @@ import AdminLayout from '../../../components/AdminLayout';
 import AdminNav from '../../../components/nav/AdminNav';
 import AdminHeader from '../../../components/tinycms/AdminHeader';
 import Notification from '../../../components/tinycms/Notification';
+import { hasuraListLocales } from '../../../lib/articles.js';
 import { hasuraCreateSection } from '../../../lib/section';
-import { listAllLocales } from '../../../lib/articles.js';
-import { cachedContents } from '../../../lib/cached';
 
 export default function AddSection({
   apiUrl,
@@ -66,7 +65,7 @@ export default function AddSection({
     let params = {
       url: apiUrl,
       orgSlug: apiToken,
-      localeCode: currentLocale.code,
+      localeCode: currentLocale,
       title: title,
       published: published,
       slug: slug,
@@ -155,21 +154,30 @@ export default function AddSection({
 }
 
 export async function getServerSideProps(context) {
-  const localeMappings = await cachedContents('locales', listAllLocales);
-
-  const currentLocale = localeMappings.find(
-    (localeMap) => localeMap.code === context.locale
-  );
-
   const apiUrl = process.env.HASURA_API_URL;
   const apiToken = process.env.ORG_SLUG;
+  const { errors, data } = await hasuraListLocales({
+    url: apiUrl,
+    orgSlug: apiToken,
+  });
+
+  let locales;
+
+  if (errors || !data) {
+    console.log('error listing locales:', errors);
+    return {
+      notFound: true,
+    };
+  } else {
+    locales = data.organization_locales;
+  }
 
   return {
     props: {
       apiUrl: apiUrl,
       apiToken: apiToken,
-      currentLocale: currentLocale,
-      locales: localeMappings,
+      currentLocale: context.locale,
+      locales: locales,
     },
   };
 }

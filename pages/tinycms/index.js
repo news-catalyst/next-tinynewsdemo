@@ -1,7 +1,6 @@
 import Link from 'next/link';
 import React from 'react';
-import { listAllLocales } from '../../lib/articles.js';
-import { cachedContents } from '../../lib/cached';
+import { hasuraListLocales } from '../../lib/articles.js';
 import AdminLayout from '../../components/AdminLayout.js';
 import AdminNav from '../../components/nav/AdminNav';
 import AdminHeader from '../../components/tinycms/AdminHeader';
@@ -42,16 +41,28 @@ export default function TinyCmsHome(props) {
 }
 
 export async function getServerSideProps(context) {
-  const localeMappings = await cachedContents('locales', listAllLocales);
+  const apiUrl = process.env.HASURA_API_URL;
+  const apiToken = process.env.ORG_SLUG;
+  const { errors, data } = await hasuraListLocales({
+    url: apiUrl,
+    orgSlug: apiToken,
+  });
 
-  const currentLocale = localeMappings.find(
-    (localeMap) => localeMap.code === context.locale
-  );
+  let locales;
+
+  if (errors || !data) {
+    console.log('error listing locales:', errors);
+    return {
+      notFound: true,
+    };
+  } else {
+    locales = data.organization_locales;
+  }
 
   return {
     props: {
-      locales: localeMappings,
-      currentLocale: currentLocale,
+      locales: locales,
+      currentLocale: context.locale,
     },
   };
 }

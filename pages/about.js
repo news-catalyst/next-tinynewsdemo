@@ -1,15 +1,10 @@
 import { useAmp } from 'next/amp';
-import {
-  listAllLocales,
-  hasuraGetPage,
-  listAllSections,
-} from '../lib/articles.js';
-import { cachedContents } from '../lib/cached';
+import { hasuraGetPage } from '../lib/articles.js';
 import { hasuraLocaliseText } from '../lib/utils';
 import Layout from '../components/Layout';
 import { renderBody } from '../lib/utils.js';
 
-export default function About({ page, currentLocale, sections }) {
+export default function About({ page, sections, siteMetadata }) {
   const isAmp = useAmp();
 
   // there will only be one translation returned for a given page + locale
@@ -17,7 +12,7 @@ export default function About({ page, currentLocale, sections }) {
   const body = renderBody(localisedPage, isAmp);
 
   return (
-    <Layout meta={localisedPage} locale={currentLocale} sections={sections}>
+    <Layout meta={siteMetadata} sections={sections}>
       <article className="container">
         <div className="post__title">{localisedPage.headline}</div>
         <section className="section" key="body">
@@ -53,22 +48,18 @@ export default function About({ page, currentLocale, sections }) {
 }
 
 export async function getStaticProps({ locale }) {
-  const localeMappings = await cachedContents('locales', listAllLocales);
-
-  const currentLocale = localeMappings.find(
-    (localeMap) => localeMap.code === locale
-  );
-
   const apiUrl = process.env.HASURA_API_URL;
   const apiToken = process.env.ORG_SLUG;
 
   let page = {};
+  let sections;
+  let siteMetadata = {};
 
   const { errors, data } = await hasuraGetPage({
     url: apiUrl,
     orgSlug: apiToken,
     slug: 'about',
-    localeCode: currentLocale.code,
+    localeCode: locale,
   });
   if (errors || !data) {
     return {
@@ -76,15 +67,23 @@ export async function getStaticProps({ locale }) {
     };
     // throw errors;
   } else {
+    console.log(data);
+    sections = data.categories;
     page = data.pages[0];
+    siteMetadata = data.site_metadatas[0].site_metadata_translations[0].data;
+    for (var i = 0; i < sections.length; i++) {
+      sections[i].title = hasuraLocaliseText(
+        sections[i].category_translations,
+        'title'
+      );
+    }
   }
 
-  const sections = await cachedContents('sections', listAllSections);
   return {
     props: {
       page,
-      currentLocale,
       sections,
+      siteMetadata,
     },
   };
 }

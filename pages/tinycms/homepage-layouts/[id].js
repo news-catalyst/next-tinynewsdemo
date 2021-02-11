@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import AdminLayout from '../../../components/AdminLayout';
-import { getHomepageLayout, updateHomepageLayout } from '../../../lib/homepage';
+import {
+  hasuraGetHomepageLayout,
+  hasuraUpdateHomepageLayout,
+} from '../../../lib/homepage';
 import AdminNav from '../../../components/nav/AdminNav';
 import Notification from '../../../components/tinycms/Notification';
 
@@ -16,15 +19,16 @@ export default function EditHomepageLayout({
   const [homepageLayoutId, setHomepageLayoutId] = useState('');
 
   const [name, setName] = useState('');
-  const [data, setData] = useState('');
+  const [jsonData, setJsonData] = useState('');
 
   useEffect(() => {
     if (homepageLayout) {
       setName(homepageLayout.name);
-      setData(homepageLayout.data);
+      setJsonData(homepageLayout.data);
       setHomepageLayoutId(homepageLayout.id);
     }
   }, []);
+
   const router = useRouter();
 
   async function handleCancel(ev) {
@@ -35,26 +39,20 @@ export default function EditHomepageLayout({
   async function handleSubmit(ev) {
     ev.preventDefault();
 
-    const response = await updateHomepageLayout(
-      apiUrl,
-      apiToken,
-      homepageLayoutId,
-      name,
-      data
-    );
+    const { errors, data } = await hasuraUpdateHomepageLayout({
+      url: apiUrl,
+      orgSlug: apiToken,
+      id: homepageLayoutId,
+      name: name,
+      data: jsonData,
+    });
 
-    if (
-      response.homepageLayoutSchemas.updateHomepageLayoutSchema.error !== null
-    ) {
-      setNotificationMessage(
-        response.homepageLayoutSchemas.updateHomepageLayoutSchema.error
-      );
+    if (errors) {
+      setNotificationMessage(JSON.stringify(errors));
       setNotificationType('error');
       setShowNotification(true);
     } else {
-      setHomepageLayoutId(
-        response.homepageLayoutSchemas.updateHomepageLayoutSchema.data.id
-      );
+      setHomepageLayoutId(data.id);
       // display success message
       setNotificationMessage(
         'Successfully saved and published the homepage layout!'
@@ -103,9 +101,9 @@ export default function EditHomepageLayout({
               <input
                 className="input"
                 type="text"
-                value={data}
-                name="data"
-                onChange={(ev) => setData(ev.target.value)}
+                value={jsonData}
+                name="jsonData"
+                onChange={(ev) => setJsonData(ev.target.value)}
               />
             </div>
           </div>
@@ -136,10 +134,22 @@ export default function EditHomepageLayout({
 }
 
 export async function getServerSideProps(context) {
-  const apiUrl = process.env.CONTENT_DELIVERY_API_URL;
-  const apiToken = process.env.CONTENT_DELIVERY_API_ACCESS_TOKEN;
+  const apiUrl = process.env.HASURA_API_URL;
+  const apiToken = process.env.ORG_SLUG;
 
-  let homepageLayout = await getHomepageLayout(context.params.id);
+  let homepageLayout;
+
+  const { errors, data } = await hasuraGetHomepageLayout({
+    url: apiUrl,
+    orgSlug: apiToken,
+    id: context.params.id,
+  });
+
+  if (errors) {
+    throw errors;
+  } else {
+    homepageLayout = data.homepage_layout_schemas_by_pk;
+  }
   return {
     props: {
       apiUrl: apiUrl,

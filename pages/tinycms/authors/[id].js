@@ -5,10 +5,8 @@ import AdminNav from '../../../components/nav/AdminNav';
 import AdminHeader from '../../../components/tinycms/AdminHeader';
 import Notification from '../../../components/tinycms/Notification';
 import Upload from '../../../components/tinycms/Upload';
-import { listAllLocales } from '../../../lib/articles.js';
 import { hasuraGetAuthorById, hasuraUpdateAuthor } from '../../../lib/authors';
 import { hasuraLocaliseText } from '../../../lib/utils.js';
-import { cachedContents } from '../../../lib/cached';
 
 export default function EditAuthor({
   apiUrl,
@@ -251,12 +249,6 @@ export default function EditAuthor({
 }
 
 export async function getServerSideProps(context) {
-  const localeMappings = await cachedContents('locales', listAllLocales);
-
-  const currentLocale = localeMappings.find(
-    (localeMap) => localeMap.code === context.locale
-  );
-
   const apiUrl = process.env.HASURA_API_URL;
   const apiToken = process.env.ORG_SLUG;
 
@@ -269,6 +261,7 @@ export async function getServerSideProps(context) {
   };
 
   let author = {};
+  let locales;
   const { errors, data } = await hasuraGetAuthorById({
     url: apiUrl,
     orgSlug: apiToken,
@@ -278,6 +271,7 @@ export async function getServerSideProps(context) {
     throw errors;
   } else {
     author = data.authors_by_pk;
+    locales = data.organization_locales;
   }
 
   return {
@@ -285,8 +279,8 @@ export async function getServerSideProps(context) {
       apiUrl: apiUrl,
       apiToken: apiToken,
       author: author,
-      currentLocale: currentLocale,
-      locales: localeMappings,
+      currentLocale: context.locale,
+      locales: locales,
       awsConfig: awsConfig,
     },
   };
