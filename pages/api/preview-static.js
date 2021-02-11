@@ -1,4 +1,4 @@
-import { getAboutPage } from '../../lib/articles.js';
+import { hasuraGetPage } from '../../lib/articles.js';
 
 export default async (req, res) => {
   // Check the secret and next parameters
@@ -8,13 +8,32 @@ export default async (req, res) => {
   }
 
   if (req.query.slug === 'about') {
-    // Fetch the headless CMS to check if the about page data exists
-    // TODO: generalise for all static pages?
-    const aboutData = await getAboutPage();
+    const apiUrl = process.env.HASURA_API_URL;
+    const apiToken = process.env.ORG_SLUG;
 
-    // If the above request fails prevent preview mode from being enabled
-    if (!aboutData) {
+    let page = {};
+    let sections;
+    let siteMetadata = {};
+
+    const { errors, data } = await hasuraGetPage({
+      url: apiUrl,
+      orgSlug: apiToken,
+      slug: 'about',
+      localeCode: locale,
+    });
+    if (errors || !data) {
       return res.status(401).json({ message: 'Invalid slug' });
+      // } else {
+      //   console.log(data);
+      //   sections = data.categories;
+      //   page = data.pages[0];
+      //   siteMetadata = data.site_metadatas[0].site_metadata_translations[0].data;
+      //   for (var i = 0; i < sections.length; i++) {
+      //     sections[i].title = hasuraLocaliseText(
+      //       sections[i].category_translations,
+      //       'title'
+      //     );
+      //   }
     }
   }
 
