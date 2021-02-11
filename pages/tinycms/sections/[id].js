@@ -3,7 +3,6 @@ import { useRouter } from 'next/router';
 import AdminLayout from '../../../components/AdminLayout';
 import {
   hasuraGetSectionById,
-  deleteSection,
   hasuraUpdateSection,
 } from '../../../lib/section';
 import AdminNav from '../../../components/nav/AdminNav';
@@ -27,7 +26,9 @@ export default function EditSection({
     hasuraLocaliseText(section.category_translations, 'title')
   );
   const [slug, setSlug] = useState(section.slug);
+  const [published, setPublished] = useState(section.published);
 
+  console.log('published:', published);
   const router = useRouter();
 
   async function handleCancel(ev) {
@@ -38,7 +39,6 @@ export default function EditSection({
   async function handleSubmit(ev) {
     ev.preventDefault();
 
-    let published = true;
     let params = {
       url: apiUrl,
       orgSlug: apiToken,
@@ -58,7 +58,14 @@ export default function EditSection({
     } else {
       console.log(data);
       // display success message
-      setNotificationMessage('Successfully saved and published the section!');
+      let message = 'Successfully updated the section!';
+      console.log(published);
+      if (published === 'true') {
+        message += ' (section is live)';
+      } else {
+        message += ' (section is unpublished)';
+      }
+      setNotificationMessage(message);
       setNotificationType('success');
       setShowNotification(true);
     }
@@ -112,6 +119,34 @@ export default function EditSection({
                 name="slug"
                 onChange={(ev) => setSlug(ev.target.value)}
               />
+            </div>
+          </div>
+
+          <div className="field">
+            <label className="label" htmlFor="slug">
+              Status
+            </label>
+            <div className="control">
+              <label className="radio">
+                <input
+                  type="radio"
+                  name="published"
+                  checked={published === 'true'}
+                  value={true}
+                  onChange={(ev) => setPublished(ev.target.value)}
+                />
+                Published
+              </label>
+              <label className="radio">
+                <input
+                  type="radio"
+                  name="published"
+                  checked={published === 'false'}
+                  value={false}
+                  onChange={(ev) => setPublished(ev.target.value)}
+                />
+                Unpublished
+              </label>
             </div>
           </div>
 
