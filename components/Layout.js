@@ -6,7 +6,13 @@ import { useAmp } from 'next/amp';
 import AmpAnalytics from './amp/AmpAnalytics.js';
 import { hasuraLocaliseText } from '../lib/utils';
 
-export default function Layout({ children, meta, article, sections }) {
+export default function Layout({
+  children,
+  meta,
+  article,
+  sections,
+  renderNav = true,
+}) {
   if (meta === null || meta === undefined) {
     console.log('Layout meta is missing');
     meta = {};
@@ -143,7 +149,7 @@ export default function Layout({ children, meta, article, sections }) {
         )}
       </Head>
       <div className={meta.theme + ' ' + meta.color}>
-        <GlobalNav metadata={meta} sections={sections} />
+        {renderNav && <GlobalNav metadata={meta} sections={sections} />}
         <main>
           {isAmp && (
             <AmpAnalytics
