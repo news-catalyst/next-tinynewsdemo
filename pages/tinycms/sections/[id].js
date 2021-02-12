@@ -3,7 +3,6 @@ import { useRouter } from 'next/router';
 import AdminLayout from '../../../components/AdminLayout';
 import {
   hasuraGetSectionById,
-  deleteSection,
   hasuraUpdateSection,
 } from '../../../lib/section';
 import AdminNav from '../../../components/nav/AdminNav';
@@ -27,8 +26,18 @@ export default function EditSection({
     hasuraLocaliseText(section.category_translations, 'title')
   );
   const [slug, setSlug] = useState(section.slug);
+  const [published, setPublished] = useState(section.published);
 
   const router = useRouter();
+
+  function handlePublished(event) {
+    const value =
+      event.target.type === 'checkbox'
+        ? event.target.checked
+        : event.target.value;
+
+    setPublished(value);
+  }
 
   async function handleCancel(ev) {
     ev.preventDefault();
@@ -38,7 +47,6 @@ export default function EditSection({
   async function handleSubmit(ev) {
     ev.preventDefault();
 
-    let published = true;
     let params = {
       url: apiUrl,
       orgSlug: apiToken,
@@ -49,16 +57,20 @@ export default function EditSection({
       slug: slug,
     };
     const { errors, data } = await hasuraUpdateSection(params);
-    console.log(errors);
 
     if (errors) {
       setNotificationMessage(JSON.stringify(errors));
       setNotificationType('error');
       setShowNotification(true);
     } else {
-      console.log(data);
       // display success message
-      setNotificationMessage('Successfully saved and published the section!');
+      let message = 'Successfully updated the section!';
+      if (published) {
+        message += ' (section is live)';
+      } else {
+        message += ' (section is unpublished)';
+      }
+      setNotificationMessage(message);
       setNotificationType('success');
       setShowNotification(true);
     }
@@ -115,6 +127,18 @@ export default function EditSection({
             </div>
           </div>
 
+          <div className="field">
+            <label className="checkbox" htmlFor="slug">
+              <input
+                name="published"
+                type="checkbox"
+                checked={published}
+                onChange={handlePublished}
+              />
+              Published
+            </label>
+          </div>
+
           <div className="level">
             <div className="level-left">
               <div className="level-item">
@@ -165,7 +189,6 @@ export async function getServerSideProps(context) {
     locales = data.organization_locales;
   }
 
-  console.log('section:', section);
   return {
     props: {
       apiUrl: apiUrl,
