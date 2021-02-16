@@ -96,6 +96,7 @@ async function createMetadata() {
     "supportCTA": "Donate",
     "theme": "styleone",
     "color": "colorone",
+    "landingPage": true,
   };
 
   const localeResult = await shared.hasuraListLocales({
