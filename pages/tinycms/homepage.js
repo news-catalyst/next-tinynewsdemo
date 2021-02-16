@@ -178,12 +178,18 @@ export async function getServerSideProps({ locale }) {
   }
 
   const layoutSchemas = data.homepage_layout_schemas;
-  const hpData = data.homepage_layout_datas[0];
-  const hpArticles = [
-    hpData.first_article,
-    hpData.second_article,
-    hpData.third_article,
-  ];
+  let hpData = data.homepage_layout_datas[0];
+  let hpArticles = [];
+
+  if (hpData) {
+    hpArticles = [
+      hpData.first_article,
+      hpData.second_article,
+      hpData.third_article,
+    ];
+  } else {
+    hpData = {};
+  }
 
   const tags = data.tags;
   for (var i = 0; i < tags.length; i++) {
