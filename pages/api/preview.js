@@ -1,4 +1,4 @@
-import { hasuraGetArticleBySlug } from '../../lib/articles.js';
+import { hasuraPreviewArticleBySlug } from '../../lib/articles.js';
 
 export default async (req, res) => {
   const apiUrl = process.env.HASURA_API_URL;
@@ -12,7 +12,7 @@ export default async (req, res) => {
 
   let article;
   // Fetch the headless CMS to check if the provided `slug` exists
-  const { errors, data } = await hasuraGetArticleBySlug({
+  const { errors, data } = await hasuraPreviewArticleBySlug({
     url: apiUrl,
     orgSlug: apiToken,
     localeCode: req.query.locale,
