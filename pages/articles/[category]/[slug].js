@@ -76,6 +76,7 @@ export async function getStaticProps({ locale, params }) {
     orgSlug: apiToken,
     localeCode: locale,
     categorySlug: params.category,
+    slug: params.slug,
   });
   if (errors || !data) {
     return {
