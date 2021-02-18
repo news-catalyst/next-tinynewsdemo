@@ -14,21 +14,23 @@ export default function UpdateMetadata(props) {
   const router = useRouter();
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setParsedData((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
+    const { name, value, type, checked } = e.target;
+    if (type === 'checkbox') {
+      setParsedData((prevState) => ({
+        ...prevState,
+        [name]: checked,
+      }));
+    } else {
+      setParsedData((prevState) => ({
+        ...prevState,
+        [name]: value,
+      }));
+    }
   };
 
   useEffect(() => {
     if (props.metadata) {
       let parsed = props.metadata;
-      Object.keys(parsed).map((key) => {
-        if (typeof parsed[key] !== 'string') {
-          parsed[key] = JSON.stringify(parsed[key]);
-        }
-      });
       setParsedData(parsed);
       let formattedJSON = JSON.stringify(parsed, null, 2);
       setJsonData(formattedJSON);
@@ -46,11 +48,6 @@ export default function UpdateMetadata(props) {
     let parsed = parsedData;
     if (jsonData && (Object.keys(parsedData).length === 0 || editData)) {
       parsed = JSON.parse(jsonData);
-      Object.keys(parsed).map((key) => {
-        if (typeof parsed[key] !== 'string') {
-          parsed[key] = JSON.stringify(parsed[key]);
-        }
-      });
       setParsedData(parsed);
     }
     // return;
@@ -118,18 +115,34 @@ export default function UpdateMetadata(props) {
         ))}
       {Object.keys(parsedData).map((key) => (
         <div className="field" key={key}>
-          <label className="label" htmlFor={key}>
-            {key}
-          </label>
-          <div className="control">
-            <input
-              type="text"
-              name={key}
-              className="input"
-              value={parsedData[key]}
-              onChange={handleChange}
-            />
-          </div>
+          {typeof parsedData[key] === 'boolean' ? (
+            <div className="control">
+              <label className="checkbox">
+                <input
+                  type="checkbox"
+                  name={key}
+                  checked={parsedData[key]}
+                  onChange={handleChange}
+                />
+                {' ' + key}
+              </label>
+            </div>
+          ) : (
+            <>
+              <label className="label" htmlFor={key}>
+                {key}
+              </label>
+              <div className="control">
+                <input
+                  type="text"
+                  name={key}
+                  className="input"
+                  value={parsedData[key]}
+                  onChange={handleChange}
+                />
+              </div>
+            </>
+          )}
         </div>
       ))}
 
