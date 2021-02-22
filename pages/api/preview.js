@@ -11,11 +11,12 @@ export default async (req, res) => {
   }
 
   let article;
+  let localeCode = req.query.locale;
   // Fetch the headless CMS to check if the provided `slug` exists
   const { errors, data } = await hasuraPreviewArticleBySlug({
     url: apiUrl,
     orgSlug: apiToken,
-    localeCode: req.query.locale,
+    localeCode: localeCode,
     slug: req.query.slug,
   });
 
@@ -35,16 +36,20 @@ export default async (req, res) => {
   // Enable Preview Mode by setting the cookies
   res.setPreviewData({});
 
-  // Redirect to the path from the fetched post
-  // We don't redirect to req.query.slug as that might lead to open redirect vulnerabilities
+  let articlePath;
 
-  // BUG: this line of code taken from the nextjs docs doesn't work - throws a typeerror: res.redirect is not a function (??)
-  // (https://nextjs.org/docs/advanced-features/preview-mode)
-  // res.redirect(article.slug)
+  if (localeCode) {
+    articlePath =
+      '/' +
+      localeCode +
+      '/preview/' +
+      article.category.slug +
+      '/' +
+      article.slug;
+  } else {
+    articlePath = '/preview/' + article.category.slug + '/' + article.slug;
+  }
 
-  const articlePath = '/preview/' + article.category.slug + '/' + article.slug;
-
-  // this approach to the redirect does work
   res.writeHead(301, {
     Location: articlePath,
   });
