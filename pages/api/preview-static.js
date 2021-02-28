@@ -11,11 +11,13 @@ export default async (req, res) => {
     const apiUrl = process.env.HASURA_API_URL;
     const apiToken = process.env.ORG_SLUG;
 
+    let localeCode = req.query.locale;
+
     const { errors, data } = await hasuraGetPage({
       url: apiUrl,
       orgSlug: apiToken,
       slug: 'about',
-      localeCode: locale,
+      localeCode: localeCode,
     });
     if (errors || !data) {
       return res.status(401).json({ message: 'Invalid slug' });
