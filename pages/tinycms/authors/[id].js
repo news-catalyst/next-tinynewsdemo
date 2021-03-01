@@ -55,6 +55,12 @@ export default function EditAuthor({
     setStaffYesNo(ev.target.value);
   };
 
+  // removes leading @ from twitter handle before storing
+  function updateTwitter(val) {
+    let cleanedUpVal = val.replace(/@/, '');
+    setTwitter(cleanedUpVal);
+  }
+
   async function handleCancel(ev) {
     ev.preventDefault();
     router.push('/tinycms/authors');
@@ -161,14 +167,15 @@ export default function EditAuthor({
             <label className="label" htmlFor="twitter">
               Twitter
             </label>
-            <div className="control">
+            <div className="control has-icons-left">
               <input
                 className="input"
                 type="text"
                 value={twitter}
                 name="twitter"
-                onChange={(ev) => setTwitter(ev.target.value)}
+                onChange={(ev) => updateTwitter(ev.target.value)}
               />
+              <span className="icon is-small is-left">@</span>
             </div>
           </div>
 
