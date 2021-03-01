@@ -47,7 +47,7 @@ export default function AddAuthor({
     let params = {
       url: apiUrl,
       orgSlug: apiToken,
-      localeCode: currentLocale.code,
+      localeCode: currentLocale,
       bio: bio,
       title: title,
       name: name,
