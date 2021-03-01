@@ -16,6 +16,7 @@ export default function EditAuthor({
   locales,
   awsConfig,
 }) {
+  console.log(author);
   const [notificationMessage, setNotificationMessage] = useState('');
   const [notificationType, setNotificationType] = useState('');
   const [showNotification, setShowNotification] = useState(false);
@@ -67,7 +68,7 @@ export default function EditAuthor({
       url: apiUrl,
       orgSlug: apiToken,
       id: authorId,
-      localeCode: currentLocale.code,
+      localeCode: currentLocale,
       bio: bio,
       title: title,
       name: name,
