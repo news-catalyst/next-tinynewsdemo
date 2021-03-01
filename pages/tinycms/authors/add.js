@@ -31,6 +31,13 @@ export default function AddAuthor({
 
   const router = useRouter();
 
+  // removes leading @ from twitter handle before storing
+  function updateTwitter(val) {
+    let cleanedUpVal = val.replace(/@/, '');
+    setTwitter(cleanedUpVal);
+  }
+
+  // slugifies the name and stores slug plus name values
   function updateName(val) {
     setName(val);
     let slugifiedVal = slugify(val);
@@ -137,14 +144,15 @@ export default function AddAuthor({
             <label className="label" htmlFor="twitter">
               Twitter
             </label>
-            <div className="control">
+            <div className="control has-icons-left">
               <input
                 className="input"
                 type="text"
                 value={twitter}
                 name="twitter"
-                onChange={(ev) => setTwitter(ev.target.value)}
+                onChange={(ev) => updateTwitter(ev.target.value)}
               />
+              <span className="icon is-small is-left">@</span>
             </div>
           </div>
 
