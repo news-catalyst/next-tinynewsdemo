@@ -21,11 +21,12 @@ export default function ArticleFooter({ article, isAmp }) {
       <div className="section__container">
         <div className="post__byline">
           {article.author_articles &&
-            article.author_articles.map((authorArticle) => (
+            article.author_articles.map((authorArticle, i) => (
               <ArticleFooterAuthor
                 key={authorArticle.author.slug}
                 author={authorArticle.author}
                 isAmp={isAmp}
+                i={i}
               />
             ))}
         </div>

@@ -1,33 +1,39 @@
 import { renderAuthor } from '../../lib/utils';
 
-export default function ArticleFooterAuthor({ author, isAmp }) {
+export default function ArticleFooterAuthor({ author, isAmp, i }) {
+  let authorPhoto = author.photoUrl;
   return (
     <div className="post__author">
       <div className="post__author-avatar">
-        <figure>
-          <a className="content" href="#">
-            {isAmp ? (
-              <amp-img
-                width={41}
-                height={41}
-                src="4ab3c1806d4d17cc6670d111a4bbd8d7.jpg"
-                alt="author"
-                layout="responsive"
-              />
-            ) : (
-              <img src="4ab3c1806d4d17cc6670d111a4bbd8d7.jpg" />
-            )}
-          </a>
-        </figure>
+        {authorPhoto && (
+          <figure>
+            <a className="content" href={`/authors/${author.slug}`}>
+              {isAmp ? (
+                <amp-img
+                  width={41}
+                  height={41}
+                  src={authorPhoto}
+                  alt="author"
+                  layout="responsive"
+                />
+              ) : (
+                <img src={authorPhoto} />
+              )}
+            </a>
+          </figure>
+        )}
       </div>
+
       <div className="post__author-meta">
         <div className="header">
-          <span className="name">{renderAuthor(author)}</span>
+          <span className="name">{renderAuthor(author, i)}</span>
           <span className="contact">
-            <a href="#">@{author.twitter}</a>
+            <a href={`https://twitter.com/${author.twitter}`}>
+              @{author.twitter}
+            </a>
           </span>
         </div>
-        <p>{author.bio || 'This is a test bio'}</p>
+        <p>{author.bio}</p>
       </div>
     </div>
   );
