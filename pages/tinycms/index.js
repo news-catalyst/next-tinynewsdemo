@@ -4,37 +4,58 @@ import { hasuraListLocales } from '../../lib/articles.js';
 import AdminLayout from '../../components/AdminLayout.js';
 import AdminNav from '../../components/nav/AdminNav';
 import AdminHeader from '../../components/tinycms/AdminHeader';
+import { signIn, signOut, useSession } from 'next-auth/client';
 
 export default function TinyCmsHome(props) {
+  const [session, loading] = useSession();
+
   return (
     <AdminLayout>
       <AdminNav homePageEditor={false} showConfigOptions={true} />
       <div id="page">
-        <AdminHeader
-          locales={props.locales}
-          currentLocale={props.currentLocale}
-          title="tinycms site config"
-        />
-        <ul>
-          <li>
-            <Link href="/tinycms/authors">Authors</Link>
-          </li>
-          <li>
-            <Link href="/tinycms/homepage">Homepage Editor</Link>
-          </li>
-          <li>
-            <Link href="/tinycms/homepage-layouts">Homepage Layouts</Link>
-          </li>
-          <li>
-            <Link href="/tinycms/metadata">Metadata</Link>
-          </li>
-          <li>
-            <Link href="/tinycms/sections">Sections</Link>
-          </li>
-          <li>
-            <Link href="/tinycms/tags">Tags</Link>
-          </li>
-        </ul>
+        {!session && (
+          <>
+            Not signed in <br />
+            <button
+              onClick={() =>
+                signIn('presspass', {
+                  callbackUrl: 'http://localhost:3000/tinycms/',
+                })
+              }
+            >
+              Sign in
+            </button>
+          </>
+        )}
+        {session && (
+          <>
+            <AdminHeader
+              locales={props.locales}
+              currentLocale={props.currentLocale}
+              title="tinycms site config"
+            />
+            <ul>
+              <li>
+                <Link href="/tinycms/authors">Authors</Link>
+              </li>
+              <li>
+                <Link href="/tinycms/homepage">Homepage Editor</Link>
+              </li>
+              <li>
+                <Link href="/tinycms/homepage-layouts">Homepage Layouts</Link>
+              </li>
+              <li>
+                <Link href="/tinycms/metadata">Metadata</Link>
+              </li>
+              <li>
+                <Link href="/tinycms/sections">Sections</Link>
+              </li>
+              <li>
+                <Link href="/tinycms/tags">Tags</Link>
+              </li>
+            </ul>
+          </>
+        )}
       </div>
     </AdminLayout>
   );
