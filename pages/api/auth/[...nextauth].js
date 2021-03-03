@@ -12,24 +12,22 @@ export default NextAuth({
       accessTokenUrl: 'https://server.presspass.dev/openid/token',
       authorizationUrl:
         'https://server.presspass.dev/openid/authorize/?response_type=code',
-      profileUrl: 'https://server.presspass.dev/openid/userinfo',
       clientId: '901292',
       idToken: true,
       params: { grant_type: 'authorization_code' },
+      profileUrl: 'https://server.presspass.dev/openid/userinfo',
       async profile(profile, tokens) {
-        console.log(profile, tokens);
-        return {
-          id: 'presspass',
-        };
-        // You can use the tokens, in case you want to fetch more profile information
-        // For example several OAuth provider does not return e-mail by default.
-        // Depending on your provider, will have tokens like `access_token`, `id_token` and or `refresh_token`
-        // return {
-        //   access_token: tokens.access_token,
-        //   refresh_token: tokens.refresh_token,
-        //   id_token: tokens.id_token,
-        //   token_type: tokens.token_type
-        // }
+        const res = await fetch(
+          'https://server.presspass.dev/openid/userinfo',
+          {
+            headers: {
+              Authorization: `Bearer ${tokens.accessToken}`,
+            },
+          }
+        );
+        const responseData = await res.json();
+        responseData.id = 'presspass';
+        return responseData;
       },
     },
   ],
@@ -65,22 +63,24 @@ export default NextAuth({
   },
 
   callbacks: {
-    async session(session, token) {
-      console.log('session', session);
-      console.log('sessiontoken', token);
+    async signIn(user, account, profile) {
+      let isAllowedToSignIn = false;
+
+      user.organizations.forEach((org) => {
+        if (org.slug === process.env.ORG_SLUG) {
+          isAllowedToSignIn = true;
+        }
+      });
+
+      return isAllowedToSignIn;
+    },
+    session(session, payload) {
+      if (payload.account) session.user = payload.account;
       return session;
     },
-    async jwt(token, user, account, profile, isNewUser) {
-      console.log('jwt callback: ', token, user, account, profile, isNewUser);
+    jwt(token, account, user, userInfo) {
+      if (userInfo) token.account = userInfo;
       return token;
     },
-  },
-  async jwt(token, user, account, profile, isNewUser) {
-    console.log('token', token);
-    console.log('user', user);
-    console.log('account', account);
-    console.log('profile', profile);
-    console.log('isNewUser', isNewUser);
-    return token;
   },
 });
