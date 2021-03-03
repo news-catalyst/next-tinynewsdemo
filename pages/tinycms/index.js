@@ -15,6 +15,7 @@ export default function TinyCmsHome(props) {
           currentLocale={props.currentLocale}
           title="tinycms site config"
         />
+
         <ul>
           <li>
             <Link href="/tinycms/authors">Authors</Link>
