@@ -1,7 +1,10 @@
 import Head from 'next/head';
 import 'bulma/css/bulma.min.css';
+import { signIn, signOut, useSession } from 'next-auth/client';
 
 export default function AdminLayout({ children }) {
+  const [session, loading] = useSession();
+  console.log('session:', session);
   return (
     <>
       <Head>
@@ -12,7 +15,28 @@ export default function AdminLayout({ children }) {
           rel="stylesheet"
         />
       </Head>
-      <main className="container">{children}</main>
+      <main className="container">
+        {!session && (
+          <>
+            Not signed in <br />
+            <button
+              onClick={() =>
+                signIn('presspass', {
+                  callbackUrl: 'http://localhost:3000/tinycms/',
+                })
+              }
+            >
+              Sign in
+            </button>
+          </>
+        )}
+        {session && (
+          <>
+            <button onClick={() => signOut()}>Sign out</button>
+            {children}
+          </>
+        )}
+      </main>
     </>
   );
 }
