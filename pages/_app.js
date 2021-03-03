@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import Router from 'next/router';
 import { useAnalytics } from '../lib/hooks/useAnalytics.js';
+import { Provider } from 'next-auth/client';
 import { useAmp } from 'next/amp';
 
 export function reportWebVitals({ id, name, label, value }) {
@@ -45,9 +46,9 @@ const App = ({ Component, pageProps }) => {
   }, []);
 
   return (
-    <>
+    <Provider session={pageProps.session}>
       <Component {...pageProps} />
-    </>
+    </Provider>
   );
 };
 
