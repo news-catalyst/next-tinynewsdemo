@@ -6,7 +6,7 @@ import AdminHeader from '../../../components/tinycms/AdminHeader';
 import Notification from '../../../components/tinycms/Notification';
 import Upload from '../../../components/tinycms/Upload';
 import { hasuraGetAuthorById, hasuraUpdateAuthor } from '../../../lib/authors';
-import { hasuraLocaliseText } from '../../../lib/utils.js';
+import { hasuraLocaliseText, slugify } from '../../../lib/utils.js';
 
 export default function EditAuthor({
   apiUrl,
@@ -16,7 +16,6 @@ export default function EditAuthor({
   locales,
   awsConfig,
 }) {
-  console.log(author);
   const [notificationMessage, setNotificationMessage] = useState('');
   const [notificationType, setNotificationType] = useState('');
   const [showNotification, setShowNotification] = useState(false);
@@ -56,6 +55,12 @@ export default function EditAuthor({
     setStaffYesNo(ev.target.value);
   };
 
+  // removes leading @ from twitter handle before storing
+  function updateTwitter(val) {
+    let cleanedUpVal = val.replace(/@/, '');
+    setTwitter(cleanedUpVal);
+  }
+
   async function handleCancel(ev) {
     ev.preventDefault();
     router.push('/tinycms/authors');
@@ -64,6 +69,10 @@ export default function EditAuthor({
   async function handleSubmit(ev) {
     let published = true;
     ev.preventDefault();
+
+    let slugifiedName = slugify(name);
+    setSlug(slugifiedName);
+
     let params = {
       url: apiUrl,
       orgSlug: apiToken,
@@ -140,21 +149,6 @@ export default function EditAuthor({
           </div>
 
           <div className="field">
-            <label className="label" htmlFor="slug">
-              Slug
-            </label>
-            <div className="control">
-              <input
-                className="input"
-                type="text"
-                value={slug}
-                name="slug"
-                onChange={(ev) => setSlug(ev.target.value)}
-              />
-            </div>
-          </div>
-
-          <div className="field">
             <label className="label" htmlFor="title">
               Title
             </label>
@@ -173,14 +167,15 @@ export default function EditAuthor({
             <label className="label" htmlFor="twitter">
               Twitter
             </label>
-            <div className="control">
+            <div className="control has-icons-left">
               <input
                 className="input"
                 type="text"
                 value={twitter}
                 name="twitter"
-                onChange={(ev) => setTwitter(ev.target.value)}
+                onChange={(ev) => updateTwitter(ev.target.value)}
               />
+              <span className="icon is-small is-left">@</span>
             </div>
           </div>
 
