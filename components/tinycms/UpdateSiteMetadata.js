@@ -4,6 +4,7 @@ import { hasuraUpsertMetadata } from '../../lib/site_metadata';
 import Notification from './Notification';
 
 export default function UpdateMetadata(props) {
+  const [randomDataKey, setRandomDataKey] = useState(Math.random());
   const [notificationMessage, setNotificationMessage] = useState('');
   const [notificationType, setNotificationType] = useState('');
   const [showNotification, setShowNotification] = useState(false);
@@ -32,6 +33,7 @@ export default function UpdateMetadata(props) {
     if (props.metadata) {
       let parsed = props.metadata;
       setParsedData(parsed);
+      setRandomDataKey(Math.random());
       let formattedJSON = JSON.stringify(parsed, null, 2);
       setJsonData(formattedJSON);
     }
@@ -50,7 +52,6 @@ export default function UpdateMetadata(props) {
       parsed = JSON.parse(jsonData);
       setParsedData(parsed);
     }
-    // return;
 
     const { errors, data } = await hasuraUpsertMetadata({
       url: props.apiUrl,
@@ -68,6 +69,10 @@ export default function UpdateMetadata(props) {
       setNotificationMessage('Successfully saved and published the metadata!');
       setNotificationType('success');
       setShowNotification(true);
+
+      let formattedJSON = JSON.stringify(parsed, null, 2);
+      setJsonData(formattedJSON);
+      setRandomDataKey(Math.random());
     }
   }
 
@@ -85,7 +90,7 @@ export default function UpdateMetadata(props) {
           <label className="label" htmlFor="name">
             JSON Data:
           </label>
-          <div className="control">
+          <div key={randomDataKey} className="control">
             <pre>{jsonData}</pre>
           </div>
           <a

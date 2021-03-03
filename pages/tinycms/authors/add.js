@@ -7,6 +7,7 @@ import Notification from '../../../components/tinycms/Notification';
 import Upload from '../../../components/tinycms/Upload';
 import { hasuraListLocales } from '../../../lib/articles.js';
 import { hasuraCreateAuthor } from '../../../lib/authors';
+import { slugify } from '../../../lib/utils.js';
 
 export default function AddAuthor({
   apiUrl,
@@ -30,9 +31,17 @@ export default function AddAuthor({
 
   const router = useRouter();
 
-  function updateSlug(ev) {
-    let val = ev.target.value;
-    setSlug(val);
+  // removes leading @ from twitter handle before storing
+  function updateTwitter(val) {
+    let cleanedUpVal = val.replace(/@/, '');
+    setTwitter(cleanedUpVal);
+  }
+
+  // slugifies the name and stores slug plus name values
+  function updateName(val) {
+    setName(val);
+    let slugifiedVal = slugify(val);
+    setSlug(slugifiedVal);
 
     setDisplayUpload(true);
   }
@@ -40,7 +49,6 @@ export default function AddAuthor({
   const handleChange = (ev) => setStaff(ev.target.value);
 
   async function handleSubmit(ev) {
-    console.log('handle submit button clicked');
     ev.preventDefault();
 
     let published = true;
@@ -60,7 +68,6 @@ export default function AddAuthor({
     const { errors, data } = await hasuraCreateAuthor(params);
 
     if (data && data.insert_authors_one) {
-      console.log(data.insert_authors_one);
       setNotificationMessage('Successfully saved and published the author!');
       setNotificationType('success');
       setShowNotification(true);
@@ -113,22 +120,7 @@ export default function AddAuthor({
                 type="text"
                 value={name}
                 name="name"
-                onChange={(ev) => setName(ev.target.value)}
-              />
-            </div>
-          </div>
-
-          <div className="field">
-            <label className="label" htmlFor="slug">
-              Slug
-            </label>
-            <div className="control">
-              <input
-                className="input"
-                type="text"
-                value={slug}
-                name="slug"
-                onChange={(ev) => updateSlug(ev)}
+                onChange={(ev) => updateName(ev.target.value)}
               />
             </div>
           </div>
@@ -152,14 +144,15 @@ export default function AddAuthor({
             <label className="label" htmlFor="twitter">
               Twitter
             </label>
-            <div className="control">
+            <div className="control has-icons-left">
               <input
                 className="input"
                 type="text"
                 value={twitter}
                 name="twitter"
-                onChange={(ev) => setTwitter(ev.target.value)}
+                onChange={(ev) => updateTwitter(ev.target.value)}
               />
+              <span className="icon is-small is-left">@</span>
             </div>
           </div>
 
@@ -227,7 +220,6 @@ export async function getServerSideProps(context) {
   let locales;
 
   if (errors || !data) {
-    console.log('error listing locales:', errors);
     return {
       notFound: true,
     };
