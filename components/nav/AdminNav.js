@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { signOut } from 'next-auth/client';
 
 export default function AdminNav(props) {
   const [currentLayoutName, setCurrentLayoutName] = useState('');
@@ -43,45 +44,57 @@ export default function AdminNav(props) {
             tags
           </a>
         </div>
-        {props.homePageEditor && (
-          <div className="navbar-end">
-            <div
-              className={`navbar-item has-dropdown ${
-                showDropdown && 'is-active'
-              }`}
-              onMouseEnter={() => setShowDropdown(true)}
-              onMouseLeave={() => setShowDropdown(false)}
-            >
-              <a className="navbar-link">Change layout</a>
-              <div className="navbar-dropdown is-right">
-                {props.layoutSchemas.map((option) => (
-                  <a
-                    key={option.id}
-                    onClick={() => switchLayout(option)}
-                    className="navbar-item"
-                  >
-                    {option.name}
-                  </a>
-                ))}
-                <div className="navbar-item">
-                  Currently using {currentLayoutName}
-                </div>
-              </div>
-            </div>
-            <div className="navbar-item">
+        <div className="navbar-end">
+          <div className="navbar-item">
+            <div className="control">
               <button
-                className="button is-primary"
-                onClick={() => {
-                  window.confirm(
-                    'Are you sure you want to publish the homepage?'
-                  ) && props.saveAndPublishHomepage();
-                }}
+                className="button is-light is-small"
+                onClick={() => signOut()}
               >
-                Save & Publish
+                Sign out
               </button>
             </div>
           </div>
-        )}
+          {props.homePageEditor && (
+            <>
+              <div
+                className={`navbar-item has-dropdown ${
+                  showDropdown && 'is-active'
+                }`}
+                onMouseEnter={() => setShowDropdown(true)}
+                onMouseLeave={() => setShowDropdown(false)}
+              >
+                <a className="navbar-link">Change layout</a>
+                <div className="navbar-dropdown is-right">
+                  {props.layoutSchemas.map((option) => (
+                    <a
+                      key={option.id}
+                      onClick={() => switchLayout(option)}
+                      className="navbar-item"
+                    >
+                      {option.name}
+                    </a>
+                  ))}
+                  <div className="navbar-item">
+                    Currently using {currentLayoutName}
+                  </div>
+                </div>
+              </div>
+              <div className="navbar-item">
+                <button
+                  className="button is-primary"
+                  onClick={() => {
+                    window.confirm(
+                      'Are you sure you want to publish the homepage?'
+                    ) && props.saveAndPublishHomepage();
+                  }}
+                >
+                  Save & Publish
+                </button>
+              </div>
+            </>
+          )}
+        </div>
       </div>
     </nav>
   );

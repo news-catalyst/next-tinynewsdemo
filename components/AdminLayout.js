@@ -1,10 +1,9 @@
 import Head from 'next/head';
 import 'bulma/css/bulma.min.css';
-import { signIn, signOut, useSession } from 'next-auth/client';
+import { signIn, useSession } from 'next-auth/client';
 
 export default function AdminLayout({ children }) {
   const [session, loading] = useSession();
-  console.log('session:', session);
   return (
     <>
       <Head>
@@ -17,25 +16,30 @@ export default function AdminLayout({ children }) {
       </Head>
       <main className="container">
         {!session && (
-          <>
-            Not signed in <br />
-            <button
-              onClick={() =>
-                signIn('presspass', {
-                  callbackUrl: 'http://localhost:3000/tinycms/',
-                })
-              }
-            >
-              Sign in
-            </button>
-          </>
+          <section
+            className="hero is-fullheight"
+            style={{ minHeight: '100vh' }}
+          >
+            <div className="hero-body" style={{ padding: '3rem 3rem' }}>
+              <p className="title">
+                You must be signed in to view the tinycms.
+              </p>
+              <p className="subtitle">
+                <button
+                  className="button is-link"
+                  onClick={() =>
+                    signIn('presspass', {
+                      callbackUrl: 'http://localhost:3000/tinycms/',
+                    })
+                  }
+                >
+                  Sign in
+                </button>
+              </p>
+            </div>
+          </section>
         )}
-        {session && (
-          <>
-            <button onClick={() => signOut()}>Sign out</button>
-            {children}
-          </>
-        )}
+        {session && <>{children}</>}
       </main>
     </>
   );
