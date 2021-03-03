@@ -3,6 +3,7 @@ import React, { useEffect } from 'react';
 import {
   hasuraListAllArticleSlugs,
   hasuraArticlePage,
+  hasuraCategoryPage,
 } from '../../../lib/articles.js';
 import { hasuraLocaliseText } from '../../../lib/utils.js';
 import { getArticleAds } from '../../../lib/ads.js';
@@ -93,7 +94,18 @@ export async function getStaticProps({ locale, params }) {
     }
 
     article = data.articles.find((a) => a.slug === params.slug);
-    sectionArticles = data.articles.filter((a) => a.slug !== params.slug);
+
+    const sectionResponse = await hasuraCategoryPage({
+      url: apiUrl,
+      orgSlug: apiToken,
+      categorySlug: params.category,
+      localeCode: locale,
+    });
+    if (!sectionResponse.errors && sectionResponse.data) {
+      sectionArticles = sectionResponse.data.articles.filter(
+        (a) => a.slug !== params.slug
+      );
+    }
 
     let metadatas = data.site_metadatas;
     try {
