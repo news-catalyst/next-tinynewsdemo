@@ -17,32 +17,16 @@ export default function StaticPage({ page, sections, siteMetadata }) {
     <Layout meta={siteMetadata} sections={sections}>
       <div className="post">
         <article className="container">
-          <div className="post__title">{localisedPage.headline}</div>
-          <section className="section post__body rich-text" key="body">
-            <div id="articleText" className="section__container">
-              {body}
+          <section key="title" className="section post__header">
+            <div className="section__container">
+              <div className="post__title">{localisedPage.headline}</div>
             </div>
           </section>
-          <section className="section" key="authors">
-            <div className="content">
-              <h1 className="title">Authors</h1>
-              {page.author_pages.map((authorPage) => (
-                <div className="author mb-4" key={authorPage.author.name}>
-                  <h4 className="subtitle is-4">
-                    {authorPage.author.name},{' '}
-                    {hasuraLocaliseText(
-                      authorPage.author.author_translations,
-                      'title'
-                    )}
-                  </h4>
-                  <p className="content is-medium">
-                    {hasuraLocaliseText(
-                      authorPage.author.author_translations,
-                      'bio'
-                    )}
-                  </p>
-                </div>
-              ))}
+          <section className="section post__body rich-text" key="body">
+            <div id="articleText" className="section__container">
+              <div className="post-text">
+                <div>{body}</div>
+              </div>
             </div>
           </section>
         </article>
