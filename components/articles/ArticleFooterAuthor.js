@@ -28,9 +28,11 @@ export default function ArticleFooterAuthor({ author, isAmp, i }) {
         <div className="header">
           <span className="name">{renderAuthor(author, i)}</span>
           <span className="contact">
-            <a href={`https://twitter.com/${author.twitter}`}>
-              @{author.twitter}
-            </a>
+            {author.twitter && (
+              <a href={`https://twitter.com/${author.twitter}`}>
+                @{author.twitter}
+              </a>
+            )}
           </span>
         </div>
         <p>{author.bio}</p>
