@@ -9,7 +9,7 @@ export default function About({ page, sections, siteMetadata }) {
 
   // there will only be one translation returned for a given page + locale
   const localisedPage = page.page_translations[0];
-  const body = renderBody(localisedPage, isAmp);
+  const body = renderBody(page.page_translations, isAmp);
 
   return (
     <Layout meta={siteMetadata} sections={sections}>

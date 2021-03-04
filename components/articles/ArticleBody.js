@@ -5,7 +5,7 @@ import { renderBody } from '../../lib/utils.js';
 import NewsletterBlock from '../plugins/NewsletterBlock';
 
 export default function ArticleBody({ article, ads, isAmp, metadata }) {
-  const body = renderBody(article, ads, isAmp);
+  const body = renderBody(article.article_translations, ads, isAmp);
 
   const { trackEvent } = useAnalytics();
 
