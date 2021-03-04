@@ -4,18 +4,17 @@ import ArticleFooterAuthor from './ArticleFooterAuthor';
 
 export default function ArticleFooter({ article, isAmp }) {
   let tagLinks;
-  if (article.tags) {
-    tagLinks = article.tags.map((tag) => (
-      <li key={tag.slug}>
-        <Link href={`/tags/${tag.slug}`}>
+  if (article.tag_articles) {
+    tagLinks = article.tag_articles.map((tag_article) => (
+      <li key={tag_article.tag.slug}>
+        <Link href={`/tags/${tag_article.tag.slug}`}>
           <a className="is-link tag">
-            {hasuraLocaliseText(tag.tag_translations, 'title')}
+            {hasuraLocaliseText(tag_article.tag.tag_translations, 'title')}
           </a>
         </Link>
       </li>
     ));
   }
-
   return (
     <div className="section post__meta post__meta--bottom">
       <div className="section__container">
