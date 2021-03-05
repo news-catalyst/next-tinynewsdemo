@@ -14,11 +14,8 @@ export default function Layout({
   renderNav = true,
 }) {
   if (meta === null || meta === undefined) {
-    console.log('Layout meta is missing');
     meta = {};
   }
-
-  console.log(sections);
 
   const metaValues = {
     canonical: meta['siteUrl'],
@@ -30,6 +27,9 @@ export default function Layout({
     twitterTitle: meta['twitterTitle'],
     twitterDescription: meta['twitterDescription'],
     coverImage: meta['coverImage'],
+    footerTitle: meta['footerTitle'],
+    footerBylineLink: meta['footerBylineLink'],
+    footerBylineName: meta['footerBylineName'],
   };
   if (article) {
     metaValues.section = hasuraLocaliseText(
@@ -173,7 +173,7 @@ export default function Layout({
           )}
           {children}
         </main>
-        <GlobalFooter />
+        <GlobalFooter metadata={metaValues} />
       </div>
       <style jsx global>
         {globalStyles}
