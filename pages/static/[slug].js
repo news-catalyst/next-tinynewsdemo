@@ -1,17 +1,32 @@
+import { useRouter } from 'next/router';
 import { useAmp } from 'next/amp';
+import React, { useEffect } from 'react';
 import { hasuraGetPage, hasuraListAllPageSlugs } from '../../lib/articles.js';
 import { hasuraLocaliseText } from '../../lib/utils';
 import Layout from '../../components/Layout';
 import { renderBody } from '../../lib/utils.js';
 
 export default function StaticPage({ page, sections, siteMetadata }) {
+  const router = useRouter();
   const isAmp = useAmp();
 
-  // there will only be one translation returned for a given page + locale
-  const localisedPage = page.page_translations[0];
-  console.log('page translations:', page.page_translations);
-  const body = renderBody(page.page_translations, isAmp);
-  console.log('body:', body);
+  if (router.isFallback) {
+    return <div>Loading...</div>;
+  }
+
+  useEffect(() => {
+    if (!page || page === undefined || page === null || page === {}) {
+      router.push('/404');
+    }
+  }, [page]);
+
+  let localisedPage;
+  let body;
+  if (page) {
+    // there will only be one translation returned for a given page + locale
+    localisedPage = page.page_translations[0];
+    body = renderBody(page.page_translations, isAmp);
+  }
 
   return (
     <Layout meta={siteMetadata} sections={sections}>
@@ -73,15 +88,21 @@ export async function getStaticProps({ locale, params }) {
     slug: params.slug,
     localeCode: locale,
   });
+
   if (errors || !data) {
+    console.log('Failed finding page ', params);
+
     return {
       notFound: true,
     };
-    // throw errors;
   } else {
-    console.log(data);
-    sections = data.categories;
+    if (!data.pages || !data.pages[0]) {
+      return {
+        notFound: true,
+      };
+    }
     page = data.pages[0];
+    sections = data.categories;
     siteMetadata = data.site_metadatas[0].site_metadata_translations[0].data;
     for (var i = 0; i < sections.length; i++) {
       sections[i].title = hasuraLocaliseText(
