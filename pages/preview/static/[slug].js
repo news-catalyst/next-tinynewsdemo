@@ -1,16 +1,18 @@
 import { useRouter } from 'next/router';
 import { useAmp } from 'next/amp';
 import React, { useEffect } from 'react';
-import { hasuraGetPage, hasuraListAllPageSlugs } from '../../lib/articles.js';
-import { hasuraLocaliseText } from '../../lib/utils';
-import Layout from '../../components/Layout';
-import { renderBody } from '../../lib/utils.js';
+import {
+  hasuraGetPagePreview,
+  hasuraListAllPageSlugsPreview,
+} from '../../../lib/articles.js';
+import { hasuraLocaliseText } from '../../../lib/utils';
+import Layout from '../../../components/Layout';
+import { renderBody } from '../../../lib/utils.js';
 
 export default function StaticPage({ page, sections, siteMetadata }) {
   const router = useRouter();
   const isAmp = useAmp();
 
-  console.log('static page');
   if (router.isFallback) {
     return <div>Loading...</div>;
   }
@@ -52,7 +54,7 @@ export default function StaticPage({ page, sections, siteMetadata }) {
 }
 
 export async function getStaticPaths() {
-  const { errors, data } = await hasuraListAllPageSlugs();
+  const { errors, data } = await hasuraListAllPageSlugsPreview();
   if (errors) {
     throw errors;
   }
@@ -83,7 +85,7 @@ export async function getStaticProps({ locale, params }) {
   let sections;
   let siteMetadata = {};
 
-  const { errors, data } = await hasuraGetPage({
+  const { errors, data } = await hasuraGetPagePreview({
     url: apiUrl,
     orgSlug: apiToken,
     slug: params.slug,
@@ -103,7 +105,6 @@ export async function getStaticProps({ locale, params }) {
       };
     }
     page = data.pages[0];
-    console.log('page: ', page);
     sections = data.categories;
     siteMetadata = data.site_metadatas[0].site_metadata_translations[0].data;
     for (var i = 0; i < sections.length; i++) {

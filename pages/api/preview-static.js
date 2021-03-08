@@ -7,27 +7,33 @@ export default async (req, res) => {
     return res.status(401).json({ message: 'Invalid token' });
   }
 
-  if (req.query.slug === 'about') {
-    const apiUrl = process.env.HASURA_API_URL;
-    const apiToken = process.env.ORG_SLUG;
+  const apiUrl = process.env.HASURA_API_URL;
+  const apiToken = process.env.ORG_SLUG;
 
-    let localeCode = req.query.locale;
+  let localeCode = req.query.locale;
 
-    const { errors, data } = await hasuraGetPage({
-      url: apiUrl,
-      orgSlug: apiToken,
-      slug: 'about',
-      localeCode: localeCode,
-    });
-    if (errors || !data) {
-      return res.status(401).json({ message: 'Invalid slug' });
-    }
+  const { errors, data } = await hasuraGetPage({
+    url: apiUrl,
+    orgSlug: apiToken,
+    slug: req.query.slug,
+    localeCode: localeCode,
+  });
+  if (errors || !data) {
+    return res.status(401).json({ message: 'Invalid slug' });
   }
 
   // Enable Preview Mode by setting the cookies
   res.setPreviewData({});
 
-  const nextPath = '/' + req.query.slug;
+  let nextPath;
+  if (localeCode) {
+    nextPath = '/' + localeCode;
+  }
+  if (req.query.slug === 'about') {
+    nextPath += '/preview/' + req.query.slug;
+  } else {
+    nextPath += '/preview/static/' + req.query.slug;
+  }
 
   // this approach to the redirect does work
   res.writeHead(301, {
