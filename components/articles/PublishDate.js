@@ -30,7 +30,6 @@ export default function PublishDate({ article }) {
     article.published_article_translations[0] &&
     article.published_article_translations[0].article_translation
   ) {
-    console.log('article published:', article.published_article_translations);
     firstPublishedOn = renderDate(
       article.published_article_translations[0].article_translation
         .first_published_at
