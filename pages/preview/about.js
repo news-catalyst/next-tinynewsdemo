@@ -1,33 +1,15 @@
-import { useRouter } from 'next/router';
 import { useAmp } from 'next/amp';
-import React, { useEffect } from 'react';
-import { hasuraGetPage, hasuraListAllPageSlugs } from '../../lib/articles.js';
+import { hasuraGetPage } from '../../lib/articles.js';
 import { hasuraLocaliseText } from '../../lib/utils';
 import Layout from '../../components/Layout';
 import { renderBody } from '../../lib/utils.js';
 
-export default function StaticPage({ page, sections, siteMetadata }) {
-  const router = useRouter();
+export default function About({ page, sections, siteMetadata }) {
   const isAmp = useAmp();
 
-  console.log('static page');
-  if (router.isFallback) {
-    return <div>Loading...</div>;
-  }
-
-  useEffect(() => {
-    if (!page || page === undefined || page === null || page === {}) {
-      router.push('/404');
-    }
-  }, [page]);
-
-  let localisedPage;
-  let body;
-  if (page) {
-    // there will only be one translation returned for a given page + locale
-    localisedPage = page.page_translations[0];
-    body = renderBody(page.page_translations, isAmp);
-  }
+  // there will only be one translation returned for a given page + locale
+  const localisedPage = page.page_translations[0];
+  const body = renderBody(page.page_translations, isAmp);
 
   return (
     <Layout meta={siteMetadata} sections={sections}>
@@ -45,37 +27,37 @@ export default function StaticPage({ page, sections, siteMetadata }) {
               </div>
             </div>
           </section>
+          <section className="section post__body rich-text" key="body">
+            <div id="articleText" className="section__container" key="authors">
+              <div className="post__title">Authors</div>
+              <div className="post-text">
+                {page.author_pages.map((authorPage) => (
+                  <div className="author mb-4" key={authorPage.author.name}>
+                    <h4 className="subtitle is-4">
+                      {authorPage.author.name},{' '}
+                      {hasuraLocaliseText(
+                        authorPage.author.author_translations,
+                        'title'
+                      )}
+                    </h4>
+                    <p className="content is-medium">
+                      {hasuraLocaliseText(
+                        authorPage.author.author_translations,
+                        'bio'
+                      )}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
         </article>
       </div>
     </Layout>
   );
 }
 
-export async function getStaticPaths() {
-  const { errors, data } = await hasuraListAllPageSlugs();
-  if (errors) {
-    throw errors;
-  }
-
-  let paths = [];
-  for (const page of data.pages) {
-    for (const locale of page.page_translations) {
-      paths.push({
-        params: {
-          slug: '/static/' + page.slug,
-        },
-        locale: locale.locale_code,
-      });
-    }
-  }
-
-  return {
-    paths,
-    fallback: true,
-  };
-}
-
-export async function getStaticProps({ locale, params }) {
+export async function getStaticProps({ locale }) {
   const apiUrl = process.env.HASURA_API_URL;
   const apiToken = process.env.ORG_SLUG;
 
@@ -86,25 +68,18 @@ export async function getStaticProps({ locale, params }) {
   const { errors, data } = await hasuraGetPage({
     url: apiUrl,
     orgSlug: apiToken,
-    slug: params.slug,
+    slug: 'about',
     localeCode: locale,
   });
-
   if (errors || !data) {
-    console.log('Failed finding page ', params);
-
     return {
       notFound: true,
     };
+    // throw errors;
   } else {
-    if (!data.pages || !data.pages[0]) {
-      return {
-        notFound: true,
-      };
-    }
-    page = data.pages[0];
-    console.log('page: ', page);
+    console.log(data);
     sections = data.categories;
+    page = data.pages[0];
     siteMetadata = data.site_metadatas[0].site_metadata_translations[0].data;
     for (var i = 0; i < sections.length; i++) {
       sections[i].title = hasuraLocaliseText(
