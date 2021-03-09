@@ -57,7 +57,15 @@ export default function About({ page, sections, siteMetadata }) {
   );
 }
 
-export async function getStaticProps({ locale }) {
+export async function getStaticProps(context) {
+  let locale = context.locale;
+  let preview = context.preview;
+
+  if (!preview) {
+    return {
+      notFound: true,
+    };
+  }
   const apiUrl = process.env.HASURA_API_URL;
   const apiToken = process.env.ORG_SLUG;
 
