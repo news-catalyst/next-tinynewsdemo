@@ -50,6 +50,7 @@ export default async (req, res) => {
     articlePath = '/preview/' + article.category.slug + '/' + article.slug;
   }
 
+  console.log('article path:', articlePath);
   res.writeHead(301, {
     Location: articlePath,
   });
