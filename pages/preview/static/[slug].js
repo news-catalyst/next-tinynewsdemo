@@ -77,7 +77,16 @@ export async function getStaticPaths() {
   };
 }
 
-export async function getStaticProps({ locale, params }) {
+export async function getStaticProps(context) {
+  let locale = context.locale;
+  let preview = context.preview;
+  let params = context.params;
+
+  if (!preview) {
+    return {
+      notFound: true,
+    };
+  }
   const apiUrl = process.env.HASURA_API_URL;
   const apiToken = process.env.ORG_SLUG;
 

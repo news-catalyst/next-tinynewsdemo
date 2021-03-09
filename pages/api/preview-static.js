@@ -35,9 +35,5 @@ export default async (req, res) => {
     nextPath += '/preview/static/' + req.query.slug;
   }
 
-  // this approach to the redirect does work
-  res.writeHead(301, {
-    Location: nextPath,
-  });
-  res.end();
+  res.redirect(nextPath);
 };
