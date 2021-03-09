@@ -18,7 +18,6 @@ export default function PreviewArticle(props) {
     );
   }
 
-  console.log('PreviewArticle props: ', props);
   return <Article {...props} />;
 }
 
@@ -60,6 +59,7 @@ export async function getStaticProps({ locale, params }) {
     url: apiUrl,
     orgSlug: apiToken,
     localeCode: locale,
+    slug: params.slug,
     categorySlug: params.category,
   });
   if (errors || !data) {
@@ -68,8 +68,6 @@ export async function getStaticProps({ locale, params }) {
       notFound: true,
     };
   } else {
-    console.log('preview article data:', data);
-
     tags = data.tags;
     for (var i = 0; i < tags.length; i++) {
       tags[i].title = hasuraLocaliseText(tags[i].tag_translations, 'title');
