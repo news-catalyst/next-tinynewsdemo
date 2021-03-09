@@ -10,6 +10,7 @@ import Article from '../../../components/Article.js';
 
 export default function PreviewArticle(props) {
   if (!props.article) {
+    console.log('no article prop: ', props);
     return (
       <div>
         <DefaultErrorPage statusCode={404} />
@@ -17,6 +18,7 @@ export default function PreviewArticle(props) {
     );
   }
 
+  console.log('PreviewArticle props: ', props);
   return <Article {...props} />;
 }
 
@@ -65,8 +67,9 @@ export async function getStaticProps({ locale, params }) {
     return {
       notFound: true,
     };
-    // throw errors;
   } else {
+    console.log('preview article data:', data);
+
     tags = data.tags;
     for (var i = 0; i < tags.length; i++) {
       tags[i].title = hasuraLocaliseText(tags[i].tag_translations, 'title');
