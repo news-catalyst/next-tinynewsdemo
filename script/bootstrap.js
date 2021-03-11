@@ -17,34 +17,6 @@ const apiUrl = process.env.HASURA_API_URL;
 const apiToken = process.env.ORG_SLUG;
 const adminSecret = process.env.HASURA_ADMIN_SECRET;
 
-const metadata = {
-  "shortName": "The New Oaklyn Observer",
-  "siteUrl": "https://tinynewsco.org/",
-  "homepageTitle": "The New Oaklyn Observer",
-  "homepageSubtitle": "a new local news initiative",
-  "subscribe": "{\"title\":\"Subscribe\",\"subtitle\":\"Get the latest news from Oaklyn in your inbox.\"}",
-  "footerTitle": "tinynewsco.org",
-  "footerBylineName": "News Catalyst",
-  "footerBylineLink": "https://newscatalyst.org",
-  "labels": "{\"latestNews\":\"Latest News\",\"search\":\"Search\",\"topics\":\"Topics\"}",
-  "nav": "{\"articles\":\"Articles\",\"topics\":\"All Topics\",\"cms\":\"tinycms\"}",
-  "searchTitle": "The Oaklyn Observer",
-  "searchDescription": "Page description",
-  "facebookTitle": "Facebook title",
-  "facebookDescription": "Facebook description",
-  "twitterTitle": "Twitter title",
-  "twitterDescription": "Twitter description",
-  "aboutHed": "Who We Are",
-  "aboutDek": "We’re journalists for Oaklyn. We amplify community voices, share information resources, and investigate systems, not just symptoms.",
-  "aboutCTA": "Learn more",
-  "supportHed": "Support our work",
-  "supportDek": "The Oaklyn Observer exists based on the support of our readers. Chip in today to help us continue serving Oaklyn with quality journalism.",
-  "supportCTA": "Donate",
-  "theme": "styleone",
-  "color": "colorone",
-  "landingPage": true,
-};
-
 let organizationID;
 
 async function setupGoogleDrive(emails) {
@@ -163,7 +135,7 @@ async function setupGoogleDrive(emails) {
   })
 }
 
-async function createOrganization(locales) {
+async function createOrganization(locales, emails) {
   const { errors, data } = await shared.hasuraInsertOrganization({
     url: apiUrl,
     adminSecret: adminSecret,
@@ -172,10 +144,10 @@ async function createOrganization(locales) {
   })
 
   if (errors) {
-    console.error("Error creating record for organization:", errors);
+    console.error("Error creating a record for organization:", errors);
   } else {
     organizationID = data.insert_organizations_one.id;
-    console.log("Created record for organization with ID " + organizationID, data);
+    console.log("Created a record for organization with ID " + organizationID, data);
 
     shared.hasuraListAllLocales({
       url: apiUrl,
@@ -202,7 +174,7 @@ async function createOrganization(locales) {
           localeCode: aLocale.code,
           published: true
         }).then( (res) => {
-          console.log("result creating general news section:", res);
+          console.log("Created the general news section:", res);
           shared.hasuraUpsertHomepageLayout({
             url: apiUrl,
             adminSecret: adminSecret,
@@ -210,7 +182,7 @@ async function createOrganization(locales) {
             name: "Large Package Story Lead",
             data: "{ \"subfeatured-top\":\"string\", \"subfeatured-bottom\":\"string\", \"featured\":\"string\" }"
           }).then ( (res) => {
-            console.log("result creating large package story lead:", res);
+            console.log("Created the Large Package Story Lead homepage layout:", res);
             shared.hasuraUpsertHomepageLayout({
               url: apiUrl,
               adminSecret: adminSecret,
@@ -218,17 +190,7 @@ async function createOrganization(locales) {
               name: "Big Featured Story",
               data: "{ \"featured\":\"string\" }"
             }).then ( (res) => {
-              console.log("result creating big featured story layout:", res);
-
-              shared.hasuraUpsertMetadata({
-                url: apiUrl,
-                adminSecret: adminSecret,
-                organization_id: organizationID,
-                data: metadata,
-                published: true,
-                localeCode: aLocale.code
-              }).then( (res) => console.log("result creating metadata:", res));
-
+              console.log("Created the Big Featured Story homepage layout:", res);
             })
           })
         })
@@ -238,7 +200,11 @@ async function createOrganization(locales) {
         adminSecret: adminSecret,
         orgLocales: orgLocaleObjects
       }).then((res) => {
-        console.log("result:", res);
+        console.log("Setup locales for the organization:", res);
+
+        setupGoogleDrive(emails);
+
+        console.log("Make sure to configure the site metadata in the tinycms once this is done!")
       })
     })
     .catch(console.error);
@@ -253,8 +219,7 @@ program
       console.log("opts.emails: ", opts.emails);
       console.log("opts.locales: ", opts.locales);
 
-      createOrganization(opts.locales);
-      setupGoogleDrive(opts.emails);
+      createOrganization(opts.locales, opts.emails);
     });
 
 program.parse(process.argv);
