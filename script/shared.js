@@ -52,10 +52,11 @@ const HASURA_UPSERT_METADATA = `mutation MyMutation($published: Boolean, $data: 
 function hasuraUpsertMetadata(params) {
   return fetchGraphQL({
     url: params['url'],
-    orgSlug: params['orgSlug'],
+    adminSecret: params['adminSecret'],
     query: HASURA_UPSERT_METADATA,
     name: 'MyMutation',
     variables: {
+      organization_id: params['organization_id'],
       data: params['data'],
       published: params['published'],
       locale_code: params['localeCode']
@@ -63,8 +64,8 @@ function hasuraUpsertMetadata(params) {
   });
 }
 
-const HASURA_UPSERT_LAYOUT = `mutation MyMutation($name: String!, $data: jsonb!) {
-  insert_homepage_layout_schemas(objects: {name: $name, data: $data}, on_conflict: {constraint: homepage_layout_schemas_name_organization_id_key, update_columns: [name, data]}) {
+const HASURA_UPSERT_LAYOUT = `mutation MyMutation($organization_id: Int!, $name: String!, $data: jsonb!) {
+  insert_homepage_layout_schemas(objects: {name: $name, data: $data, organization_id: $organization_id}, on_conflict: {constraint: homepage_layout_schemas_name_organization_id_key, update_columns: [name, data]}) {
     returning {
       id
       name
@@ -75,18 +76,19 @@ const HASURA_UPSERT_LAYOUT = `mutation MyMutation($name: String!, $data: jsonb!)
 function hasuraUpsertHomepageLayout(params) {
   return fetchGraphQL({
     url: params['url'],
-    orgSlug: params['orgSlug'],
+    adminSecret: params['adminSecret'],
     query: HASURA_UPSERT_LAYOUT,
     name: 'MyMutation',
     variables: {
+      organization_id: params['organization_id'],
       name: params['name'],
       data: params['data'],
     },
   });
 }
 
-const HASURA_UPSERT_SECTION = `mutation MyMutation($locale_code: String!, $title: String!, $slug: String!, $published: Boolean) {
-  insert_categories(objects: {slug: $slug, category_translations: {data: {locale_code: $locale_code, title: $title}, on_conflict: {constraint: category_translations_locale_code_category_id_key, update_columns: [title]}}, published: $published}, on_conflict: {constraint: categories_organization_id_slug_key, update_columns: [slug, published]}) {
+const HASURA_UPSERT_SECTION = `mutation MyMutation($organization_id: Int!, $locale_code: String!, $title: String!, $slug: String!, $published: Boolean) {
+  insert_categories(objects: {organization_id: $organization_id, slug: $slug, category_translations: {data: {locale_code: $locale_code, title: $title}, on_conflict: {constraint: category_translations_locale_code_category_id_key, update_columns: [title]}}, published: $published}, on_conflict: {constraint: categories_organization_id_slug_key, update_columns: [slug, published]}) {
     returning {
       id
       slug
@@ -97,10 +99,11 @@ const HASURA_UPSERT_SECTION = `mutation MyMutation($locale_code: String!, $title
 function hasuraUpsertSection(params) {
   return fetchGraphQL({
     url: params['url'],
-    orgSlug: params['orgSlug'],
+    adminSecret: params['adminSecret'],
     query: HASURA_UPSERT_SECTION,
     name: 'MyMutation',
     variables: {
+      organization_id: params['organization_id'],
       locale_code: params['localeCode'],
       slug: params['slug'],
       published: params['published'],
