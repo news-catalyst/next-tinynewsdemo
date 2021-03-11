@@ -6,6 +6,54 @@ const shared = require("./shared");
 
 const apiUrl = process.env.HASURA_API_URL;
 const apiToken = process.env.ORG_SLUG;
+const adminSecret = process.env.HASURA_ADMIN_SECRET;
+
+let organizationID;
+
+async function createOrganization(locales) {
+  const { errors, data } = await shared.hasuraInsertOrganization({
+    url: apiUrl,
+    adminSecret: adminSecret,
+    name: process.env.ORG_NAME,
+    slug: process.env.ORG_SLUG,
+  })
+
+  if (errors) {
+    console.error("Error creating record for organization:", errors);
+  } else {
+    organizationID = data.insert_organizations_one.id;
+    console.log("Created record for organization with ID " + organizationID, data);
+
+    shared.hasuraListAllLocales({
+      url: apiUrl,
+      adminSecret: adminSecret,
+    })
+    .then((res) => {
+      console.log("all locales: ", res)
+      let allLocales = res.data.locales;
+      let orgLocaleObjects = [];
+      console.log("locales:", allLocales)
+      allLocales.forEach( (aLocale) => {
+        let foundLocale = locales.find( l => l === aLocale.code);
+        if (foundLocale)  {
+          orgLocaleObjects.push({
+            locale_id: aLocale.id,
+            organization_id: organizationID
+          })
+        }
+      }) 
+      console.log("orgLocales:", orgLocaleObjects);
+      shared.hasuraInsertOrgLocales({
+        url: apiUrl,
+        adminSecret: adminSecret,
+        orgLocales: orgLocaleObjects
+      }).then((res) => {
+        console.log("result:", res);
+      })
+    })
+    .catch(console.error);
+  }
+}
 
 async function createGeneralNewsCategory() {
   const localeResult = await shared.hasuraListLocales({
@@ -130,10 +178,20 @@ async function createMetadata() {
 }
 
 async function main() {
-  createGeneralNewsCategory();
-  createHomepageLayout1();
-  createHomepageLayout2();
-  createMetadata();
+
+  let locales = process.argv.slice(2);
+  console.log(locales)
+
+  // insert into organizations
+  createOrganization(locales);
+  // insert into organization_locales
+  // setupLocales(locales);
+  // create google drive folder
+
+  // createGeneralNewsCategory();
+  // createHomepageLayout1();
+  // createHomepageLayout2();
+  // createMetadata();
 }
 
 main().catch((error) => console.error(error));
