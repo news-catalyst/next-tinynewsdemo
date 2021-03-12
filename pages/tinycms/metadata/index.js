@@ -5,6 +5,7 @@ import AdminLayout from '../../../components/AdminLayout.js';
 import AdminNav from '../../../components/nav/AdminNav';
 import AdminHeader from '../../../components/tinycms/AdminHeader';
 import UpdateMetadata from '../../../components/tinycms/UpdateSiteMetadata.js';
+import globalStyles from '../../../styles/global.js';
 
 export default function Metadata({
   apiUrl,
@@ -52,6 +53,9 @@ export default function Metadata({
           />
         </section>
       </div>
+      <style jsx global>
+        {globalStyles}
+      </style>
     </AdminLayout>
   );
 }

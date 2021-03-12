@@ -81,7 +81,7 @@ export default function UpdateMetadata(props) {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className={parsedData['color']}>
       {showNotification && (
         <Notification
           message={notificationMessage}
@@ -105,10 +105,12 @@ export default function UpdateMetadata(props) {
 
       <section className="section">
         <div className="container">
-          <h2 className="subtitle">Color scheme and theme preview:</h2>
-          <div className="level">
+          <h2 className="subtitle">
+            Customize your color scheme and typography:
+          </h2>
+          <div className="level pb-3">
             <div className="level-left">
-              <div className="level-item mx-3 pb-3">
+              <div className="level-item">
                 <MetadataSelect
                   label="Color scheme"
                   name="color"
@@ -117,11 +119,9 @@ export default function UpdateMetadata(props) {
                   choices={['colorone', 'colortwo', 'colorthree']}
                 />
               </div>
-            </div>
-            <div className="level-right">
               <div className="level-item">
                 <MetadataSelect
-                  label="Theme"
+                  label="Typography"
                   name="theme"
                   handleChange={handleChange}
                   value={parsedData['theme']}
@@ -134,22 +134,24 @@ export default function UpdateMetadata(props) {
             color={parsedData['color']}
             theme={parsedData['theme']}
           />
+          <MetadataTextInput
+            label="Newsletter headline"
+            name="newsletterHed"
+            handleChange={handleChange}
+            value={parsedData['newsletterHed']}
+          />
+          <MetadataTextInput
+            label="Newsletter dek"
+            name="newsletterDek"
+            handleChange={handleChange}
+            value={parsedData['newsletterDek']}
+          />
+          <h2 className="has-text-weight-bold is-size-2">
+            Newsletter Preview:
+          </h2>
+          <NewsletterBlock metadata={parsedData} />
         </div>
       </section>
-      <h2 className="subtitle">Newsletter Preview:</h2>
-      <NewsletterBlock metadata={parsedData} />
-      <MetadataTextInput
-        label="Newsletter headline"
-        name="newsletterHed"
-        handleChange={handleChange}
-        value={parsedData['newsletterHed']}
-      />
-      <MetadataTextInput
-        label="Newsletter dek"
-        name="newsletterDek"
-        handleChange={handleChange}
-        value={parsedData['newsletterDek']}
-      />
 
       <MetadataTextInput
         label="Navigation"
