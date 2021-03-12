@@ -273,6 +273,19 @@ export default function UpdateMetadata(props) {
         value={parsedData['twitterDescription']}
       />
 
+      <MetadataTextInput
+        label="404 page: title"
+        name="title404"
+        handleChange={handleChange}
+        value={parsedData['title404']}
+      />
+      <MetadataTextInput
+        label="404 page: description"
+        name="description404"
+        handleChange={handleChange}
+        value={parsedData['description404']}
+      />
+
       {!editData && (
         <div className="field">
           <a href="#" className="button" onClick={() => setEditData(true)}>
