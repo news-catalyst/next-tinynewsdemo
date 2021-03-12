@@ -20,8 +20,8 @@ export default function MainImage({ article, isAmp }) {
     <>
       {mainImage && isAmp && (
         <amp-img
-          width={mainImage.width}
-          height={mainImage.height}
+          width={1080}
+          height={(mainImage.height / mainImage.width) * 1080}
           src={mainImage.imageUrl}
           alt={mainImage.imageAlt}
           layout="responsive"
@@ -32,7 +32,7 @@ export default function MainImage({ article, isAmp }) {
         <Image
           src={mainImage.imageUrl}
           width={1080}
-          height={630}
+          height={(mainImage.height / mainImage.width) * 1080}
           alt={mainImage.imageAlt}
           className="image"
         />
