@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import { hasuraUpsertMetadata } from '../../lib/site_metadata';
 import Notification from './Notification';
 import MetadataTextInput from './MetadataTextInput';
+import NewsletterBlock from './../plugins/NewsletterBlock';
 
 export default function UpdateMetadata(props) {
   const [randomDataKey, setRandomDataKey] = useState(Math.random());
@@ -86,40 +87,6 @@ export default function UpdateMetadata(props) {
           notificationType={notificationType}
         />
       )}
-      {!editData && (
-        <div className="field">
-          <label className="label" htmlFor="name">
-            JSON Data:
-          </label>
-          <div key={randomDataKey} className="control">
-            <pre>{jsonData}</pre>
-          </div>
-          <a
-            href="#"
-            className="button is-link"
-            onClick={() => setEditData(true)}
-          >
-            Edit JSON
-          </a>
-        </div>
-      )}
-      {Object.keys(parsedData).length === 0 ||
-        (editData && (
-          <div className="field">
-            <label className="label" htmlFor="name">
-              Data: enter as JSON
-            </label>
-            <div className="control">
-              <textarea
-                className="textarea"
-                name="data"
-                value={jsonData}
-                onChange={(ev) => setJsonData(ev.target.value)}
-              />
-            </div>
-          </div>
-        ))}
-
       <div className="field" key="landingPage">
         <div className="control">
           <label className="checkbox">
@@ -133,6 +100,21 @@ export default function UpdateMetadata(props) {
           </label>
         </div>
       </div>
+
+      <h2 className="subtitle">Newsletter Preview:</h2>
+      <NewsletterBlock metadata={parsedData} />
+      <MetadataTextInput
+        label="Newsletter headline"
+        name="newsletterHed"
+        handleChange={handleChange}
+        value={parsedData['newsletterHed']}
+      />
+      <MetadataTextInput
+        label="Newsletter dek"
+        name="newsletterDek"
+        handleChange={handleChange}
+        value={parsedData['newsletterDek']}
+      />
 
       <MetadataTextInput
         label="Navigation"
@@ -266,6 +248,30 @@ export default function UpdateMetadata(props) {
         handleChange={handleChange}
         value={parsedData['twitterDescription']}
       />
+
+      {!editData && (
+        <div className="field">
+          <a href="#" className="button" onClick={() => setEditData(true)}>
+            Edit JSON
+          </a>
+        </div>
+      )}
+      {Object.keys(parsedData).length === 0 ||
+        (editData && (
+          <div className="field">
+            <label className="label" htmlFor="name">
+              Data: enter as JSON
+            </label>
+            <div className="control">
+              <textarea
+                className="textarea"
+                name="data"
+                value={jsonData}
+                onChange={(ev) => setJsonData(ev.target.value)}
+              />
+            </div>
+          </div>
+        ))}
 
       <div className="field is-grouped">
         <div className="control">
