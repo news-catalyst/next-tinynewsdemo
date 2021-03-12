@@ -3,7 +3,9 @@ import { useRouter } from 'next/router';
 import { hasuraUpsertMetadata } from '../../lib/site_metadata';
 import Notification from './Notification';
 import MetadataTextInput from './MetadataTextInput';
+import MetadataSelect from './MetadataSelect';
 import NewsletterBlock from './../plugins/NewsletterBlock';
+import ColorStylePreview from './ColorStylePreview';
 
 export default function UpdateMetadata(props) {
   const [randomDataKey, setRandomDataKey] = useState(Math.random());
@@ -101,6 +103,39 @@ export default function UpdateMetadata(props) {
         </div>
       </div>
 
+      <section className="section">
+        <div className="container">
+          <h2 className="subtitle">Color scheme and theme preview:</h2>
+          <div className="level">
+            <div className="level-left">
+              <div className="level-item mx-3 pb-3">
+                <MetadataSelect
+                  label="Color scheme"
+                  name="color"
+                  handleChange={handleChange}
+                  value={parsedData['color']}
+                  choices={['colorone', 'colortwo', 'colorthree']}
+                />
+              </div>
+            </div>
+            <div className="level-right">
+              <div className="level-item">
+                <MetadataSelect
+                  label="Theme"
+                  name="theme"
+                  handleChange={handleChange}
+                  value={parsedData['theme']}
+                  choices={['styleone', 'styletwo', 'stylethree', 'stylefour']}
+                />
+              </div>
+            </div>
+          </div>
+          <ColorStylePreview
+            color={parsedData['color']}
+            theme={parsedData['theme']}
+          />
+        </div>
+      </section>
       <h2 className="subtitle">Newsletter Preview:</h2>
       <NewsletterBlock metadata={parsedData} />
       <MetadataTextInput
@@ -122,18 +157,7 @@ export default function UpdateMetadata(props) {
         handleChange={handleChange}
         value={parsedData['nav']}
       />
-      <MetadataTextInput
-        label="Color scheme"
-        name="color"
-        handleChange={handleChange}
-        value={parsedData['color']}
-      />
-      <MetadataTextInput
-        label="Theme"
-        name="theme"
-        handleChange={handleChange}
-        value={parsedData['theme']}
-      />
+
       <MetadataTextInput
         label="Labels"
         name="labels"
