@@ -33,4 +33,5 @@ yarn-error.log*
 .env.local-prod
 .env.local-oaklyn
 cached/*.json
-
+script/credentials.json
+.env.local-*
