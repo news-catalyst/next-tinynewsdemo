@@ -639,11 +639,11 @@ export default css.global`
   }
 
   /* form starting stylings ------------------------------- */
-  .group {
+  .newsletter .group {
     position: relative;
   }
 
-  input {
+  .newsletter input {
     font-size: 18px;
     padding: 10px 10px 10px 5px;
     display: block;
@@ -668,6 +668,13 @@ export default css.global`
     transition: 0.2s ease all;
     -moz-transition: 0.2s ease all;
     -webkit-transition: 0.2s ease all;
+  }
+
+  #page label {
+    position: relative;
+    top: 0;
+    transition: none;
+    left: 0;
   }
 
   /* active state */
@@ -2889,5 +2896,13 @@ export default css.global`
   }
   .stylefour .newsletter label {
     font-size: 1rem;
+  }
+
+  .color-style-preview h2 {
+    font-size: 18px;
+    font-weight: bold;
+  }
+  .color-style-preview img {
+    border: 1px solid black;
   }
 `;
