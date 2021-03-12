@@ -2,6 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { hasuraUpsertMetadata } from '../../lib/site_metadata';
 import Notification from './Notification';
+import MetadataTextInput from './MetadataTextInput';
+import MetadataSelect from './MetadataSelect';
+import NewsletterBlock from './../plugins/NewsletterBlock';
+import ColorStylePreview from './ColorStylePreview';
 
 export default function UpdateMetadata(props) {
   const [randomDataKey, setRandomDataKey] = useState(Math.random());
@@ -77,7 +81,7 @@ export default function UpdateMetadata(props) {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className={parsedData['color']}>
       {showNotification && (
         <Notification
           message={notificationMessage}
@@ -85,19 +89,208 @@ export default function UpdateMetadata(props) {
           notificationType={notificationType}
         />
       )}
+      <div className="field" key="landingPage">
+        <div className="control">
+          <label className="checkbox">
+            <input
+              type="checkbox"
+              name="landingPage"
+              checked={parsedData['landingPage']}
+              onChange={handleChange}
+            />
+            {' Toggle landing page mode'}
+          </label>
+        </div>
+      </div>
+
+      <section className="section">
+        <div className="container">
+          <h2 className="subtitle">
+            Customize your color scheme and typography:
+          </h2>
+          <div className="level pb-3">
+            <div className="level-left">
+              <div className="level-item">
+                <MetadataSelect
+                  label="Color scheme"
+                  name="color"
+                  handleChange={handleChange}
+                  value={parsedData['color']}
+                  choices={['colorone', 'colortwo', 'colorthree']}
+                />
+              </div>
+              <div className="level-item">
+                <MetadataSelect
+                  label="Typography"
+                  name="theme"
+                  handleChange={handleChange}
+                  value={parsedData['theme']}
+                  choices={['styleone', 'styletwo', 'stylethree', 'stylefour']}
+                />
+              </div>
+            </div>
+          </div>
+          <ColorStylePreview
+            color={parsedData['color']}
+            theme={parsedData['theme']}
+          />
+          <MetadataTextInput
+            label="Newsletter headline"
+            name="newsletterHed"
+            handleChange={handleChange}
+            value={parsedData['newsletterHed']}
+          />
+          <MetadataTextInput
+            label="Newsletter dek"
+            name="newsletterDek"
+            handleChange={handleChange}
+            value={parsedData['newsletterDek']}
+          />
+          <h2 className="has-text-weight-bold is-size-2">
+            Newsletter Preview:
+          </h2>
+          <NewsletterBlock metadata={parsedData} />
+        </div>
+      </section>
+
+      <MetadataTextInput
+        label="Navigation"
+        name="nav"
+        handleChange={handleChange}
+        value={parsedData['nav']}
+      />
+
+      <MetadataTextInput
+        label="Labels"
+        name="labels"
+        handleChange={handleChange}
+        value={parsedData['labels']}
+      />
+      <MetadataTextInput
+        label="Site short name"
+        name="shortName"
+        handleChange={handleChange}
+        value={parsedData['shortName']}
+      />
+      <MetadataTextInput
+        label="Site URL"
+        name="siteUrl"
+        handleChange={handleChange}
+        value={parsedData['siteUrl']}
+      />
+      <MetadataTextInput
+        label="About page: CTA button text"
+        name="aboutCTA"
+        handleChange={handleChange}
+        value={parsedData['aboutCTA']}
+      />
+      <MetadataTextInput
+        label="About page: headline"
+        name="aboutHed"
+        handleChange={handleChange}
+        value={parsedData['aboutHed']}
+      />
+      <MetadataTextInput
+        label="About page: dek"
+        name="aboutDek"
+        handleChange={handleChange}
+        value={parsedData['aboutDek']}
+      />
+      <MetadataTextInput
+        label="Subscribe"
+        name="subscribe"
+        handleChange={handleChange}
+        value={parsedData['subscribe']}
+      />
+      <MetadataTextInput
+        label="Support: CTA button text"
+        name="supportCTA"
+        handleChange={handleChange}
+        value={parsedData['supportCTA']}
+      />
+      <MetadataTextInput
+        label="Support: headline"
+        name="supportHed"
+        handleChange={handleChange}
+        value={parsedData['supportHed']}
+      />
+      <MetadataTextInput
+        label="Support: dek"
+        name="supportDek"
+        handleChange={handleChange}
+        value={parsedData['supportDek']}
+      />
+      <MetadataTextInput
+        label="Footer: title"
+        name="footerTitle"
+        handleChange={handleChange}
+        value={parsedData['footerTitle']}
+      />
+      <MetadataTextInput
+        label="Footer: byline name"
+        name="footerBylineName"
+        handleChange={handleChange}
+        value={parsedData['footerBylineName']}
+      />
+      <MetadataTextInput
+        label="Footer: byline link"
+        name="footerBylineLink"
+        handleChange={handleChange}
+        value={parsedData['footerBylineLink']}
+      />
+      <MetadataTextInput
+        label="Search: title"
+        name="searchTitle"
+        handleChange={handleChange}
+        value={parsedData['searchTitle']}
+      />
+      <MetadataTextInput
+        label="Search: description"
+        name="searchDescription"
+        handleChange={handleChange}
+        value={parsedData['searchDescription']}
+      />
+      <MetadataTextInput
+        label="Facebook: title"
+        name="facebookTitle"
+        handleChange={handleChange}
+        value={parsedData['facebookTitle']}
+      />
+      <MetadataTextInput
+        label="Facebook: description"
+        name="facebookDescription"
+        handleChange={handleChange}
+        value={parsedData['facebookDescription']}
+      />
+      <MetadataTextInput
+        label="Twitter: title"
+        name="twitterTitle"
+        handleChange={handleChange}
+        value={parsedData['twitterTitle']}
+      />
+      <MetadataTextInput
+        label="Twitter: description"
+        name="twitterDescription"
+        handleChange={handleChange}
+        value={parsedData['twitterDescription']}
+      />
+
+      <MetadataTextInput
+        label="404 page: title"
+        name="title404"
+        handleChange={handleChange}
+        value={parsedData['title404']}
+      />
+      <MetadataTextInput
+        label="404 page: description"
+        name="description404"
+        handleChange={handleChange}
+        value={parsedData['description404']}
+      />
+
       {!editData && (
         <div className="field">
-          <label className="label" htmlFor="name">
-            JSON Data:
-          </label>
-          <div key={randomDataKey} className="control">
-            <pre>{jsonData}</pre>
-          </div>
-          <a
-            href="#"
-            className="button is-link"
-            onClick={() => setEditData(true)}
-          >
+          <a href="#" className="button" onClick={() => setEditData(true)}>
             Edit JSON
           </a>
         </div>
@@ -118,38 +311,6 @@ export default function UpdateMetadata(props) {
             </div>
           </div>
         ))}
-      {Object.keys(parsedData).map((key) => (
-        <div className="field" key={key}>
-          {typeof parsedData[key] === 'boolean' ? (
-            <div className="control">
-              <label className="checkbox">
-                <input
-                  type="checkbox"
-                  name={key}
-                  checked={parsedData[key]}
-                  onChange={handleChange}
-                />
-                {' ' + key}
-              </label>
-            </div>
-          ) : (
-            <>
-              <label className="label" htmlFor={key}>
-                {key}
-              </label>
-              <div className="control">
-                <input
-                  type="text"
-                  name={key}
-                  className="input"
-                  value={parsedData[key]}
-                  onChange={handleChange}
-                />
-              </div>
-            </>
-          )}
-        </div>
-      ))}
 
       <div className="field is-grouped">
         <div className="control">

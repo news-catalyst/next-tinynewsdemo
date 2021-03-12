@@ -4,8 +4,8 @@ import { hasuraGetMetadataByLocale } from '../../../lib/articles.js';
 import AdminLayout from '../../../components/AdminLayout.js';
 import AdminNav from '../../../components/nav/AdminNav';
 import AdminHeader from '../../../components/tinycms/AdminHeader';
-import CreateMetadata from '../../../components/tinycms/CreateSiteMetadata.js';
 import UpdateMetadata from '../../../components/tinycms/UpdateSiteMetadata.js';
+import globalStyles from '../../../styles/global.js';
 
 export default function Metadata({
   apiUrl,
@@ -44,27 +44,18 @@ export default function Metadata({
         {message && <div className="success">{message}</div>}
 
         <section className="section">
-          {metadata !== undefined && metadata !== null && (
-            <UpdateMetadata
-              apiUrl={apiUrl}
-              apiToken={apiToken}
-              currentLocale={currentLocale}
-              metadata={metadata}
-              setMetadata={setMetadata}
-            />
-          )}
-
-          {(metadata === undefined || metadata === null) && (
-            <CreateMetadata
-              apiUrl={apiUrl}
-              apiToken={apiToken}
-              currentLocale={currentLocale}
-              metadata={metadata}
-              setMetadata={setMetadata}
-            />
-          )}
+          <UpdateMetadata
+            apiUrl={apiUrl}
+            apiToken={apiToken}
+            currentLocale={currentLocale}
+            metadata={metadata}
+            setMetadata={setMetadata}
+          />
         </section>
       </div>
+      <style jsx global>
+        {globalStyles}
+      </style>
     </AdminLayout>
   );
 }
