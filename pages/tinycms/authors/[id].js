@@ -6,7 +6,11 @@ import AdminHeader from '../../../components/tinycms/AdminHeader';
 import Notification from '../../../components/tinycms/Notification';
 import Upload from '../../../components/tinycms/Upload';
 import { hasuraGetAuthorById, hasuraUpdateAuthor } from '../../../lib/authors';
-import { hasuraLocaliseText, slugify } from '../../../lib/utils.js';
+import {
+  hasuraLocaliseText,
+  slugify,
+  validateAuthorName,
+} from '../../../lib/utils.js';
 
 export default function EditAuthor({
   apiUrl,
@@ -19,6 +23,7 @@ export default function EditAuthor({
   const [notificationMessage, setNotificationMessage] = useState('');
   const [notificationType, setNotificationType] = useState('');
   const [showNotification, setShowNotification] = useState(false);
+  const [displayUpload, setDisplayUpload] = useState(true);
 
   const [name, setName] = useState(author.name);
   const [title, setTitle] = useState(
@@ -55,6 +60,28 @@ export default function EditAuthor({
     setStaffYesNo(ev.target.value);
   };
 
+  // slugifies the name and stores slug plus name values
+  function updateName(val) {
+    let nameIsValid = validateAuthorName(val);
+    if (!nameIsValid) {
+      setNotificationMessage(
+        'Please use a real name of an actual person - editorial guidelines prohibit fake bylines: ' +
+          val
+      );
+      setShowNotification(true);
+      setNotificationType('error');
+      setName('');
+      setSlug('');
+      setDisplayUpload(false);
+      return;
+    }
+    setShowNotification(false);
+    setName(val);
+    let slugifiedVal = slugify(val);
+    setSlug(slugifiedVal);
+    setDisplayUpload(true);
+  }
+
   // removes leading @ from twitter handle before storing
   function updateTwitter(val) {
     let cleanedUpVal = val.replace(/@/, '');
@@ -70,8 +97,8 @@ export default function EditAuthor({
     let published = true;
     ev.preventDefault();
 
-    let slugifiedName = slugify(name);
-    setSlug(slugifiedName);
+    // let slugifiedName = slugify(name);
+    // setSlug(slugifiedName);
 
     let params = {
       url: apiUrl,
@@ -123,15 +150,18 @@ export default function EditAuthor({
           id={author.id}
         />
 
-        <Upload
-          awsConfig={awsConfig}
-          slug={slug}
-          bioImage={bioImage}
-          setBioImage={setBioImage}
-          setNotificationMessage={setNotificationMessage}
-          setNotificationType={setNotificationType}
-          setShowNotification={setShowNotification}
-        />
+        {displayUpload && (
+          <Upload
+            awsConfig={awsConfig}
+            slug={slug}
+            bioImage={bioImage}
+            setBioImage={setBioImage}
+            setNotificationMessage={setNotificationMessage}
+            setNotificationType={setNotificationType}
+            setShowNotification={setShowNotification}
+          />
+        )}
+
         <form onSubmit={handleSubmit}>
           <div className="field">
             <label className="label" htmlFor="name">
@@ -143,7 +173,7 @@ export default function EditAuthor({
                 type="text"
                 value={name}
                 name="name"
-                onChange={(ev) => setName(ev.target.value)}
+                onChange={(ev) => updateName(ev.target.value)}
               />
             </div>
           </div>
