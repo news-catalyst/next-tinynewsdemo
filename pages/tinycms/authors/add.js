@@ -7,7 +7,7 @@ import Notification from '../../../components/tinycms/Notification';
 import Upload from '../../../components/tinycms/Upload';
 import { hasuraListLocales } from '../../../lib/articles.js';
 import { hasuraCreateAuthor } from '../../../lib/authors';
-import { slugify } from '../../../lib/utils.js';
+import { validateAuthorName, slugify } from '../../../lib/utils.js';
 
 export default function AddAuthor({
   apiUrl,
@@ -39,6 +39,20 @@ export default function AddAuthor({
 
   // slugifies the name and stores slug plus name values
   function updateName(val) {
+    let nameIsValid = validateAuthorName(val);
+    if (!nameIsValid) {
+      setNotificationMessage(
+        'Please use a real name of an actual person - editorial guidelines prohibit fake bylines: ' +
+          val
+      );
+      setShowNotification(true);
+      setNotificationType('error');
+      setName('');
+      setSlug('');
+      setDisplayUpload(false);
+      return;
+    }
+    setShowNotification(false);
     setName(val);
     let slugifiedVal = slugify(val);
     setSlug(slugifiedVal);
