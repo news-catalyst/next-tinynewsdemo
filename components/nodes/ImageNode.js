@@ -5,8 +5,8 @@ export default function ImageNode({ node, amp }) {
 
   const figure = amp ? (
     <amp-img
-      width={image.width}
-      height={image.height}
+      width={710}
+      height={(image.height / image.width) * 710}
       src={image.imageUrl}
       alt={image.imageAlt}
       layout="responsive"
