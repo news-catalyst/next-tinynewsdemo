@@ -79,7 +79,7 @@ export async function getStaticProps({ locale, params }) {
     categorySlug: params.category,
     slug: params.slug,
   });
-  if (errors || !data) {
+  if (errors || !data || !data.articles || data.articles.length === 0) {
     return {
       notFound: true,
     };
