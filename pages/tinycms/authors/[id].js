@@ -62,20 +62,6 @@ export default function EditAuthor({
 
   // slugifies the name and stores slug plus name values
   function updateName(val) {
-    let nameIsValid = validateAuthorName(val);
-    if (!nameIsValid) {
-      setNotificationMessage(
-        'Please use a real name of an actual person - editorial guidelines prohibit fake bylines: ' +
-          val
-      );
-      setShowNotification(true);
-      setNotificationType('error');
-      setName('');
-      setSlug('');
-      setDisplayUpload(false);
-      return;
-    }
-    setShowNotification(false);
     setName(val);
     let slugifiedVal = slugify(val);
     setSlug(slugifiedVal);
@@ -97,8 +83,19 @@ export default function EditAuthor({
     let published = true;
     ev.preventDefault();
 
-    // let slugifiedName = slugify(name);
-    // setSlug(slugifiedName);
+    let nameIsValid = validateAuthorName(name);
+    if (!nameIsValid) {
+      setNotificationMessage(
+        'Please use a real name of an actual person - editorial guidelines prohibit fake bylines: ' +
+          name
+      );
+      setShowNotification(true);
+      setNotificationType('error');
+      setName('');
+      setSlug('');
+      setDisplayUpload(false);
+      return false;
+    }
 
     let params = {
       url: apiUrl,
