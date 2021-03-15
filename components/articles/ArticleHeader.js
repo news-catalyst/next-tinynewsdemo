@@ -28,7 +28,7 @@ export default function ArticleHeader({ article, isAmp, metadata }) {
   }
 
   let authorPhoto;
-  if (article && article.author_articles) {
+  if (article && article.author_articles && article.author_articles[0]) {
     authorPhoto = article.author_articles[0].author.photoUrl;
   }
 
