@@ -31,7 +31,7 @@ const App = ({ Component, pageProps }) => {
     if (isAmp) {
       return true;
     }
-    init(process.env.GA_TRACKING_ID);
+    init(process.env.NEXT_PUBLIC_GA_TRACKING_ID);
     trackPageViewed();
     const handleRouteChange = (url) => {
       logReadingHistory();
