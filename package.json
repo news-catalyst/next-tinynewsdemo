@@ -49,6 +49,8 @@
     "react-aws-s3": "https://github.com/news-catalyst/react-aws-s3.git",
     "react-dom": "^17.0.1",
     "react-ga": "^3.1.2",
+    "react-google-analytics": "^0.2.0",
+    "react-google-oauth": "^1.0.0",
     "react-intersection-observer": "^8.27.1",
     "react-mailchimp-subscribe": "^2.1.0",
     "react-player": "^2.5.0",
