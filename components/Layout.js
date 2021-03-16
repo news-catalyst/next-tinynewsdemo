@@ -84,7 +84,7 @@ export default function Layout({
 
   const isAmp = useAmp();
 
-  const trackingId = process.env.GA_TRACKING_ID;
+  const trackingId = process.env.NEXT_PUBLIC_GA_TRACKING_ID;
 
   return (
     <>
