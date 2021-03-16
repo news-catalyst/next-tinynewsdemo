@@ -17,13 +17,13 @@ const Report = () => {
                 viewId: process.env.NEXT_PUBLIC_ANALYTICS_VIEW_ID,
                 dateRanges: [
                   {
-                    startDate: '10daysAgo',
+                    startDate: '30daysAgo',
                     endDate: 'today',
                   },
                 ],
                 metrics: [
                   {
-                    expression: 'ga:users',
+                    expression: 'ga:sessions',
                   },
                 ],
                 dimensions: [
@@ -47,7 +47,7 @@ const Report = () => {
         -${dateSting.substring(4, 6)}-${dateSting.substring(6, 8)}`;
         return {
           date: formattedDate,
-          visits: row.metrics[0].values[0],
+          sessions: row.metrics[0].values[0],
         };
       });
       setData(result);
@@ -56,9 +56,15 @@ const Report = () => {
     queryReport();
   }, []);
 
-  return data.map((row) => (
-    <div key={row.date}>{`${row.date}: ${row.visits} visits`}</div> //(3)
+  var rows = data.map((row) => (
+    <div key={row.date}>{`${row.date}: ${row.sessions} sessions`}</div> //(3)
   ));
+  return (
+    <>
+      <h1 className="title">Sessions</h1>
+      {rows}
+    </>
+  );
 };
 
 export default Report;
