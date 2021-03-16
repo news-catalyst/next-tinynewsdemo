@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import AdminLayout from '../../../components/AdminLayout';
 import AdminNav from '../../../components/nav/AdminNav';
+import Report from '../../../components/tinycms/Report';
 
 export default function AnalyticsIndex(props) {
   const [isSignedIn, setIsSignedIn] = useState(false);
@@ -75,11 +76,7 @@ export default function AnalyticsIndex(props) {
     <AdminLayout>
       <AdminNav homePageEditor={false} />
       <div className="analytics">
-        {!isSignedIn ? (
-          <div id="signin-button"></div>
-        ) : (
-          <div>Coming soon...</div>
-        )}
+        {!isSignedIn ? <div id="signin-button"></div> : <Report />}
       </div>
     </AdminLayout>
   );
