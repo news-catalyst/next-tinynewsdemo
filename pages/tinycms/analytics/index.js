@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import AdminLayout from '../../../components/AdminLayout';
 import AdminNav from '../../../components/nav/AdminNav';
-import Report from '../../../components/tinycms/Report';
+import Report from '../../../components/tinycms/analytics/Report';
 
 export default function AnalyticsIndex(props) {
   const [isSignedIn, setIsSignedIn] = useState(false);
@@ -85,7 +85,6 @@ export async function getServerSideProps(context) {
   const clientID = process.env.ANALYTICS_CLIENT_ID;
   const clientSecret = process.env.ANALYTICS_CLIENT_SECRET;
 
-  console.log('clientID: ', clientID);
   return {
     props: {
       clientID: clientID,
