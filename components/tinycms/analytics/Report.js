@@ -12,6 +12,7 @@ const Report = () => {
     process.env.NEXT_PUBLIC_ANALYTICS_VIEW_ID
   );
   const [reportData, setReportData] = useState(INITIAL_STATE);
+  const [frequencyData, setFrequencyData] = useState(INITIAL_STATE);
   const [timeReportData, setTimeReportData] = useState(INITIAL_STATE);
   const [pageViewReportData, setPageViewReportData] = useState(INITIAL_STATE);
   const [geoReportData, setGeoReportData] = useState(INITIAL_STATE);
@@ -126,29 +127,78 @@ const Report = () => {
       values,
     });
   };
+
+  const displayCustomFrequency = (response) => {
+    console.log('custom dimension frequency response: ', response);
+
+    const queryResult = response.result.reports[0].data.rows;
+
+    console.log('custom dimension frequency query result: ', queryResult);
+
+    let labels = [];
+    let values = [];
+
+    queryResult.forEach((row) => {
+      let label = row.dimensions.join(' - ');
+      let value = row.metrics[0].values[0];
+
+      labels.push(label);
+      values.push(value);
+    });
+
+    setFrequencyData({
+      ...frequencyData,
+      labels,
+      values,
+    });
+  };
   useEffect(() => {
-    const sessionMetric = 'ga:sessions';
+    const sessionsMetric = 'ga:sessions';
+    const pageViewsMetric = 'ga:pageviews';
+    const timeMetric = 'ga:avgSessionDuration';
+
     const dimensions = ['ga:date'];
-    getMetricsData(viewID, startDate, endDate, sessionMetric, dimensions)
+    getMetricsData(viewID, startDate, endDate, [sessionsMetric], dimensions)
       .then((resp) => displayResults(resp))
       .catch((error) => console.error(error));
 
-    const timeMetric = 'ga:avgSessionDuration';
-    getMetricsData(viewID, startDate, endDate, timeMetric, dimensions)
+    getMetricsData(viewID, startDate, endDate, [timeMetric], dimensions)
       .then((resp) => displayTimeResults(resp))
       .catch((error) => console.error(error));
 
-    const pvMetric = 'ga:pageviews';
     const pvDimensions = ['ga:pagePath'];
-    const orderBy = { fieldName: 'ga:pageviews', order: 'DESCENDING' };
-    getMetricsData(viewID, startDate, endDate, pvMetric, pvDimensions, orderBy)
+    const orderBy = { fieldName: pageViewsMetric, order: 'DESCENDING' };
+    getMetricsData(
+      viewID,
+      startDate,
+      endDate,
+      [pageViewsMetric],
+      pvDimensions,
+      orderBy
+    )
       .then((resp) => displayPageViews(resp))
       .catch((error) => console.error(error));
 
-    const geoMetric = 'ga:sessions';
     const geoDimensions = ['ga:country', 'ga:region'];
-    getMetricsData(viewID, startDate, endDate, geoMetric, geoDimensions)
+    getMetricsData(
+      viewID,
+      startDate,
+      endDate,
+      [sessionsMetric, pageViewsMetric],
+      geoDimensions
+    )
       .then((resp) => displayGeo(resp))
+      .catch((error) => console.error(error));
+
+    const customDimensionFrequency = ['ga:dimension2'];
+    getMetricsData(
+      viewID,
+      startDate,
+      endDate,
+      [sessionsMetric, pageViewsMetric],
+      customDimensionFrequency
+    )
+      .then((resp) => displayCustomFrequency(resp))
       .catch((error) => console.error(error));
   }, []);
 
