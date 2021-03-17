@@ -50,7 +50,7 @@ const Report = () => {
 
   return (
     <>
-      <h1 className="title">Sessions per day</h1>
+      <h2 className="subtitle">Sessions per day</h2>
 
       <ul>
         <li>Average: {average} sessions</li>

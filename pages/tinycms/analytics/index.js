@@ -76,6 +76,24 @@ export default function AnalyticsIndex(props) {
     <AdminLayout>
       <AdminNav homePageEditor={false} />
       <div className="analytics">
+        <section className="section">
+          <h1 className="title">Analytics Test</h1>
+          <p className="content">
+            This page is using a custom function to get data out of Google
+            Analytics API v4; it's the bare bones, write everything ourselves
+            approach.
+          </p>
+
+          <p className="content">
+            Alternatively, because I'd prefer not to have to write everything
+            from scratch,{' '}
+            <a href="/tinycms/analytics/dashboard">here is a dashboard</a> built
+            using{' '}
+            <a href="https://justinmahar.github.io/react-analytics-charts">
+              react-analytics-charts
+            </a>
+          </p>
+        </section>
         {!isSignedIn ? <div id="signin-button"></div> : <Report />}
       </div>
     </AdminLayout>
