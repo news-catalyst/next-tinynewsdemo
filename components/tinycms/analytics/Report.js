@@ -145,7 +145,7 @@ const Report = () => {
       .then((resp) => displayPageViews(resp))
       .catch((error) => console.error(error));
 
-    const geoMetric = 'ga:pageviews';
+    const geoMetric = 'ga:sessions';
     const geoDimensions = ['ga:country', 'ga:region'];
     getMetricsData(viewID, startDate, endDate, geoMetric, geoDimensions)
       .then((resp) => displayGeo(resp))
@@ -196,13 +196,13 @@ const Report = () => {
       </section>
 
       <section className="section">
-        <h2 className="subtitle">Page views by geographic region</h2>
+        <h2 className="subtitle">Sessions by geographic region</h2>
 
         <ul>
           {geoReportData.labels.map((label, i) => (
             <li>
               {label}: {geoReportData.values[i]}{' '}
-              {pageViewReportData.values[i] === '1' ? 'view' : 'views'}
+              {pageViewReportData.values[i] === '1' ? 'session' : 'sessions'}
             </li>
           ))}
         </ul>
