@@ -14,6 +14,7 @@ const Report = () => {
   const [reportData, setReportData] = useState(INITIAL_STATE);
   const [timeReportData, setTimeReportData] = useState(INITIAL_STATE);
   const [pageViewReportData, setPageViewReportData] = useState(INITIAL_STATE);
+  const [geoReportData, setGeoReportData] = useState(INITIAL_STATE);
   const [startDate, setStartDate] = useState(addDays(new Date(), -30));
   const [endDate, setEndDate] = useState(new Date());
   const [average, setAverage] = useState(0);
@@ -101,6 +102,30 @@ const Report = () => {
     });
   };
 
+  const displayGeo = (response) => {
+    console.log('geo response: ', response);
+
+    const queryResult = response.result.reports[0].data.rows;
+
+    console.log('geo query result: ', queryResult);
+
+    let labels = [];
+    let values = [];
+
+    queryResult.forEach((row) => {
+      let label = row.dimensions.join(' - ');
+      let value = row.metrics[0].values[0];
+
+      labels.push(label);
+      values.push(value);
+    });
+
+    setGeoReportData({
+      ...geoReportData,
+      labels,
+      values,
+    });
+  };
   useEffect(() => {
     const sessionMetric = 'ga:sessions';
     const dimensions = ['ga:date'];
@@ -118,6 +143,12 @@ const Report = () => {
     const orderBy = { fieldName: 'ga:pageviews', order: 'DESCENDING' };
     getMetricsData(viewID, startDate, endDate, pvMetric, pvDimensions, orderBy)
       .then((resp) => displayPageViews(resp))
+      .catch((error) => console.error(error));
+
+    const geoMetric = 'ga:pageviews';
+    const geoDimensions = ['ga:country', 'ga:region'];
+    getMetricsData(viewID, startDate, endDate, geoMetric, geoDimensions)
+      .then((resp) => displayGeo(resp))
       .catch((error) => console.error(error));
   }, []);
 
@@ -158,6 +189,19 @@ const Report = () => {
           {pageViewReportData.labels.map((label, i) => (
             <li>
               {label}: {pageViewReportData.values[i]}{' '}
+              {pageViewReportData.values[i] === '1' ? 'view' : 'views'}
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <section className="section">
+        <h2 className="subtitle">Page views by geographic region</h2>
+
+        <ul>
+          {geoReportData.labels.map((label, i) => (
+            <li>
+              {label}: {geoReportData.values[i]}{' '}
               {pageViewReportData.values[i] === '1' ? 'view' : 'views'}
             </li>
           ))}
