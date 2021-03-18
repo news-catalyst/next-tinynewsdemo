@@ -229,55 +229,87 @@ const Report = () => {
       <section className="section">
         <h2 className="subtitle">Sessions per day</h2>
 
-        <ul>
-          <li>Average: {average} sessions</li>
-
-          {reportData.labels.map((label, i) => (
-            <li>
-              {label}: {reportData.values[i]} sessions
-            </li>
-          ))}
-        </ul>
+        <table className="table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Sessions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {reportData.labels.map((label, i) => (
+              <tr>
+                <td>{label}</td>
+                <td>{reportData.values[i]}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </section>
 
       <section className="section">
         <h2 className="subtitle">Average session duration</h2>
 
-        <ul>
-          <li>Overall: {timeAverage} seconds</li>
+        <p>Overall average: {timeAverage} seconds</p>
 
-          {timeReportData.labels.map((label, i) => (
-            <li>
-              {label}: {timeReportData.values[i]} seconds
-            </li>
-          ))}
-        </ul>
+        <table className="table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Seconds</th>
+            </tr>
+          </thead>
+          <tbody>
+            {timeReportData.labels.map((label, i) => (
+              <tr>
+                <td> {label} </td>
+                <td> {timeReportData.values[i]} </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </section>
 
       <section className="section">
         <h2 className="subtitle">Page views</h2>
 
-        <ul>
-          {pageViewReportData.labels.map((label, i) => (
-            <li>
-              {label}: {pageViewReportData.values[i]}{' '}
-              {pageViewReportData.values[i] === '1' ? 'view' : 'views'}
-            </li>
-          ))}
-        </ul>
+        <table className="table">
+          <thead>
+            <tr>
+              <th>Path</th>
+              <th>Views</th>
+            </tr>
+          </thead>
+          <tbody>
+            {pageViewReportData.labels.map((label, i) => (
+              <tr>
+                <td>{label}</td>
+                <td>{pageViewReportData.values[i]}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </section>
 
       <section className="section">
         <h2 className="subtitle">Sessions by geographic region</h2>
 
-        <ul>
-          {geoReportData.labels.map((label, i) => (
-            <li>
-              {label}: {geoReportData.values[i]}{' '}
-              {pageViewReportData.values[i] === '1' ? 'session' : 'sessions'}
-            </li>
-          ))}
-        </ul>
+        <table className="table">
+          <thead>
+            <tr>
+              <th>Country - Region</th>
+              <th>Sessions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {geoReportData.labels.map((label, i) => (
+              <tr>
+                <td>{label}</td>
+                <td> {geoReportData.values[i]} </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </section>
 
       <section className="section">
@@ -285,53 +317,85 @@ const Report = () => {
           Sessions by audience segment: reading frequency
         </h2>
 
-        <ul>
-          {frequencyData.labels.map((label, i) => (
-            <li>
-              {label}: {frequencyData.values[i]}{' '}
-              {frequencyData.values[i] === '1' ? 'session' : 'sessions'}
-            </li>
-          ))}
-        </ul>
+        <table className="table">
+          <thead>
+            <tr>
+              <th>Number of Articles</th>
+              <th>Sessions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {frequencyData.labels.map((label, i) => (
+              <tr>
+                <td>{label}</td>
+                <td>{frequencyData.values[i]} </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </section>
 
       <section className="section">
         <h2 className="subtitle">Sessions by audience segment: donor</h2>
 
-        <ul>
-          {donorData.labels.map((label, i) => (
-            <li>
-              {label}: {donorData.values[i]}{' '}
-              {donorData.values[i] === '1' ? 'session' : 'sessions'}
-            </li>
-          ))}
-        </ul>
+        <table className="table">
+          <thead>
+            <tr>
+              <th>Donor</th>
+              <th>Sessions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {donorData.labels.map((label, i) => (
+              <tr>
+                <td>{label}</td>
+                <td>{donorData.values[i]}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </section>
 
       <section className="section">
         <h2 className="subtitle">Sessions by audience segment: subscriber</h2>
 
-        <ul>
-          {subscriberData.labels.map((label, i) => (
-            <li>
-              {label}: {subscriberData.values[i]}{' '}
-              {subscriberData.values[i] === '1' ? 'session' : 'sessions'}
-            </li>
-          ))}
-        </ul>
+        <table className="table">
+          <thead>
+            <tr>
+              <th>Subscriber</th>
+              <th>Sessions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {subscriberData.labels.map((label, i) => (
+              <tr>
+                <td>{label}</td>
+                <td>{subscriberData.values[i]}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </section>
 
       <section className="section">
         <h2 className="subtitle">Sessions by referral source</h2>
 
-        <ul>
-          {referralData.labels.map((label, i) => (
-            <li>
-              {label}: {referralData.values[i]}{' '}
-              {referralData.values[i] === '1' ? 'session' : 'sessions'}
-            </li>
-          ))}
-        </ul>
+        <table className="table">
+          <thead>
+            <tr>
+              <th>Subscriber</th>
+              <th>Sessions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {referralData.labels.map((label, i) => (
+              <tr>
+                <td>{label}</td>
+                <td>{referralData.values[i]}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </section>
     </div>
   );
