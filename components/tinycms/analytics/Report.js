@@ -13,6 +13,8 @@ const Report = () => {
   );
   const [reportData, setReportData] = useState(INITIAL_STATE);
   const [frequencyData, setFrequencyData] = useState(INITIAL_STATE);
+  const [donorData, setDonorData] = useState(INITIAL_STATE);
+  const [subscriberData, setSubscriberData] = useState(INITIAL_STATE);
   const [timeReportData, setTimeReportData] = useState(INITIAL_STATE);
   const [pageViewReportData, setPageViewReportData] = useState(INITIAL_STATE);
   const [geoReportData, setGeoReportData] = useState(INITIAL_STATE);
@@ -152,6 +154,56 @@ const Report = () => {
       values,
     });
   };
+
+  const displayCustomDonor = (response) => {
+    console.log('custom dimension donor response: ', response);
+
+    const queryResult = response.result.reports[0].data.rows;
+
+    console.log('custom dimension donor query result: ', queryResult);
+
+    let labels = [];
+    let values = [];
+
+    queryResult.forEach((row) => {
+      let label = row.dimensions.join(' - ');
+      let value = row.metrics[0].values[0];
+
+      labels.push(label);
+      values.push(value);
+    });
+
+    setDonorData({
+      ...donorData,
+      labels,
+      values,
+    });
+  };
+
+  const displayCustomSubscriber = (response) => {
+    console.log('custom dimension subscriber response: ', response);
+
+    const queryResult = response.result.reports[0].data.rows;
+
+    console.log('custom dimension subscriber query result: ', queryResult);
+
+    let labels = [];
+    let values = [];
+
+    queryResult.forEach((row) => {
+      let label = row.dimensions.join(' - ');
+      let value = row.metrics[0].values[0];
+
+      labels.push(label);
+      values.push(value);
+    });
+
+    setSubscriberData({
+      ...subscriberData,
+      labels,
+      values,
+    });
+  };
   useEffect(() => {
     const sessionsMetric = 'ga:sessions';
     const usersMetric = 'ga:users';
@@ -200,6 +252,28 @@ const Report = () => {
       customDimensionFrequency
     )
       .then((resp) => displayCustomFrequency(resp))
+      .catch((error) => console.error(error));
+
+    const customDimensionDonor = ['ga:dimension4'];
+    getMetricsData(
+      viewID,
+      startDate,
+      endDate,
+      [sessionsMetric],
+      customDimensionDonor
+    )
+      .then((resp) => displayCustomDonor(resp))
+      .catch((error) => console.error(error));
+
+    const customDimensionSubscriber = ['ga:dimension5'];
+    getMetricsData(
+      viewID,
+      startDate,
+      endDate,
+      [sessionsMetric],
+      customDimensionSubscriber
+    )
+      .then((resp) => displayCustomSubscriber(resp))
       .catch((error) => console.error(error));
   }, []);
 
@@ -254,6 +328,47 @@ const Report = () => {
             <li>
               {label}: {geoReportData.values[i]}{' '}
               {pageViewReportData.values[i] === '1' ? 'session' : 'sessions'}
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <section className="section">
+        <h2 className="subtitle">
+          Sessions by audience segment: reading frequency
+        </h2>
+
+        <ul>
+          {frequencyData.labels.map((label, i) => (
+            <li>
+              {label}: {frequencyData.values[i]}{' '}
+              {frequencyData.values[i] === '1' ? 'session' : 'sessions'}
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <section className="section">
+        <h2 className="subtitle">Sessions by audience segment: donor</h2>
+
+        <ul>
+          {donorData.labels.map((label, i) => (
+            <li>
+              {label}: {donorData.values[i]}{' '}
+              {donorData.values[i] === '1' ? 'session' : 'sessions'}
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <section className="section">
+        <h2 className="subtitle">Sessions by audience segment: subscriber</h2>
+
+        <ul>
+          {subscriberData.labels.map((label, i) => (
+            <li>
+              {label}: {subscriberData.values[i]}{' '}
+              {subscriberData.values[i] === '1' ? 'session' : 'sessions'}
             </li>
           ))}
         </ul>
