@@ -115,10 +115,11 @@ const Report = () => {
 
     queryResult.forEach((row) => {
       let label = row.dimensions.join(' - ');
-      let value = row.metrics[0].values[0];
+      let pageViewValue = row.metrics[0].values[0];
+      let sessionValue = row.metrics[1].values[0];
 
       labels.push(label);
-      values.push(value);
+      values.push([pageViewValue, sessionValue]);
     });
 
     setData({
@@ -176,7 +177,7 @@ const Report = () => {
       viewID,
       startDate,
       endDate,
-      [sessionsMetric],
+      [pageViewsMetric, sessionsMetric],
       customDimensionFrequency
     )
       .then((resp) =>
@@ -189,7 +190,7 @@ const Report = () => {
       viewID,
       startDate,
       endDate,
-      [sessionsMetric],
+      [pageViewsMetric, sessionsMetric],
       customDimensionDonor
     )
       .then((resp) => displayCustomResults(resp, donorData, setDonorData))
@@ -200,7 +201,7 @@ const Report = () => {
       viewID,
       startDate,
       endDate,
-      [sessionsMetric],
+      [pageViewsMetric, sessionsMetric],
       customDimensionSubscriber
     )
       .then((resp) =>
