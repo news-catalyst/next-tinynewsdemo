@@ -23,33 +23,7 @@ const Report = () => {
   const [average, setAverage] = useState(0);
   const [timeAverage, setTimeAverage] = useState(0);
 
-  // TODO: clean this up, move into separate components
-  const displayResults = (response) => {
-    console.log('response: ', response);
-
-    const queryResult = response.result.reports[0].data.rows;
-    const total = response.result.reports[0].data.totals[0].values[0];
-
-    setAverage(parseInt(total / response.result.reports[0].data.rowCount));
-    console.log('average: ', average);
-
-    let labels = [];
-    let values = [];
-
-    queryResult.forEach((row) => {
-      labels.push(formatDate(row.dimensions[0]));
-      values.push(row.metrics[0].values[0]);
-    });
-
-    console.log('reportData: ', reportData);
-    setReportData({
-      ...reportData,
-      labels,
-      values,
-    });
-  };
-
-  const displayTimeResults = (response) => {
+  const displayTimeResults = (response, initialData, setData) => {
     console.log('session duration response: ', response);
 
     const queryResult = response.result.reports[0].data.rows;
@@ -57,7 +31,6 @@ const Report = () => {
 
     console.log('query result: ', queryResult);
     setTimeAverage(parseInt(total / response.result.reports[0].data.rowCount));
-    console.log('average: ', timeAverage);
 
     let labels = [];
     let values = [];
@@ -70,19 +43,19 @@ const Report = () => {
       values.push(value);
     });
 
-    setTimeReportData({
-      ...timeReportData,
+    setData({
+      ...initialData,
       labels,
       values,
     });
   };
 
-  const displayPageViews = (response) => {
-    console.log('page views response: ', response);
+  const displayResults = (response, initialData, setData) => {
+    console.log('response: ', response);
 
     const queryResult = response.result.reports[0].data.rows;
 
-    console.log('query result: ', queryResult);
+    console.log('response results data: ', queryResult);
 
     let labels = [];
     let values = [];
@@ -98,8 +71,8 @@ const Report = () => {
       values.push(value);
     });
 
-    setPageViewReportData({
-      ...pageViewReportData,
+    setData({
+      ...initialData,
       labels,
       values,
     });
@@ -130,12 +103,12 @@ const Report = () => {
     });
   };
 
-  const displayCustomFrequency = (response) => {
-    console.log('custom dimension frequency response: ', response);
+  const displayCustomResults = (response, initialData, setData) => {
+    console.log('custom dimension response: ', response);
 
     const queryResult = response.result.reports[0].data.rows;
 
-    console.log('custom dimension frequency query result: ', queryResult);
+    console.log('custom dimension result data: ', queryResult);
 
     let labels = [];
     let values = [];
@@ -148,62 +121,13 @@ const Report = () => {
       values.push(value);
     });
 
-    setFrequencyData({
-      ...frequencyData,
+    setData({
+      ...initialData,
       labels,
       values,
     });
   };
 
-  const displayCustomDonor = (response) => {
-    console.log('custom dimension donor response: ', response);
-
-    const queryResult = response.result.reports[0].data.rows;
-
-    console.log('custom dimension donor query result: ', queryResult);
-
-    let labels = [];
-    let values = [];
-
-    queryResult.forEach((row) => {
-      let label = row.dimensions.join(' - ');
-      let value = row.metrics[0].values[0];
-
-      labels.push(label);
-      values.push(value);
-    });
-
-    setDonorData({
-      ...donorData,
-      labels,
-      values,
-    });
-  };
-
-  const displayCustomSubscriber = (response) => {
-    console.log('custom dimension subscriber response: ', response);
-
-    const queryResult = response.result.reports[0].data.rows;
-
-    console.log('custom dimension subscriber query result: ', queryResult);
-
-    let labels = [];
-    let values = [];
-
-    queryResult.forEach((row) => {
-      let label = row.dimensions.join(' - ');
-      let value = row.metrics[0].values[0];
-
-      labels.push(label);
-      values.push(value);
-    });
-
-    setSubscriberData({
-      ...subscriberData,
-      labels,
-      values,
-    });
-  };
   useEffect(() => {
     const sessionsMetric = 'ga:sessions';
     const usersMetric = 'ga:users';
@@ -212,11 +136,13 @@ const Report = () => {
 
     const dimensions = ['ga:date'];
     getMetricsData(viewID, startDate, endDate, [sessionsMetric], dimensions)
-      .then((resp) => displayResults(resp))
+      .then((resp) => displayTimeResults(resp, reportData, setReportData))
       .catch((error) => console.error(error));
 
     getMetricsData(viewID, startDate, endDate, [timeMetric], dimensions)
-      .then((resp) => displayTimeResults(resp))
+      .then((resp) =>
+        displayTimeResults(resp, timeReportData, setTimeReportData)
+      )
       .catch((error) => console.error(error));
 
     const pvDimensions = ['ga:pagePath'];
@@ -229,7 +155,9 @@ const Report = () => {
       pvDimensions,
       orderBy
     )
-      .then((resp) => displayPageViews(resp))
+      .then((resp) =>
+        displayResults(resp, pageViewReportData, setPageViewReportData)
+      )
       .catch((error) => console.error(error));
 
     const geoDimensions = ['ga:country', 'ga:region'];
@@ -251,7 +179,9 @@ const Report = () => {
       [sessionsMetric],
       customDimensionFrequency
     )
-      .then((resp) => displayCustomFrequency(resp))
+      .then((resp) =>
+        displayCustomResults(resp, frequencyData, setFrequencyData)
+      )
       .catch((error) => console.error(error));
 
     const customDimensionDonor = ['ga:dimension4'];
@@ -262,7 +192,7 @@ const Report = () => {
       [sessionsMetric],
       customDimensionDonor
     )
-      .then((resp) => displayCustomDonor(resp))
+      .then((resp) => displayCustomResults(resp, donorData, setDonorData))
       .catch((error) => console.error(error));
 
     const customDimensionSubscriber = ['ga:dimension5'];
@@ -273,7 +203,9 @@ const Report = () => {
       [sessionsMetric],
       customDimensionSubscriber
     )
-      .then((resp) => displayCustomSubscriber(resp))
+      .then((resp) =>
+        displayCustomResults(resp, subscriberData, setSubscriberData)
+      )
       .catch((error) => console.error(error));
   }, []);
 
