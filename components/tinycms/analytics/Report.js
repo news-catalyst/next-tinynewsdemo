@@ -18,6 +18,7 @@ const Report = () => {
   const [timeReportData, setTimeReportData] = useState(INITIAL_STATE);
   const [pageViewReportData, setPageViewReportData] = useState(INITIAL_STATE);
   const [geoReportData, setGeoReportData] = useState(INITIAL_STATE);
+  const [referralData, setReferralData] = useState(INITIAL_STATE);
   const [startDate, setStartDate] = useState(addDays(new Date(), -30));
   const [endDate, setEndDate] = useState(new Date());
   const [average, setAverage] = useState(0);
@@ -208,6 +209,19 @@ const Report = () => {
         displayCustomResults(resp, subscriberData, setSubscriberData)
       )
       .catch((error) => console.error(error));
+
+    const referralDimension = ['ga:source'];
+    getMetricsData(
+      viewID,
+      startDate,
+      endDate,
+      [sessionsMetric],
+      referralDimension
+    )
+      .then((resp) => {
+        displayResults(resp, referralData, setReferralData);
+      })
+      .catch((error) => console.error(error));
   }, []);
 
   return (
@@ -302,6 +316,19 @@ const Report = () => {
             <li>
               {label}: {subscriberData.values[i]}{' '}
               {subscriberData.values[i] === '1' ? 'session' : 'sessions'}
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <section className="section">
+        <h2 className="subtitle">Sessions by referral source</h2>
+
+        <ul>
+          {referralData.labels.map((label, i) => (
+            <li>
+              {label}: {referralData.values[i]}{' '}
+              {referralData.values[i] === '1' ? 'session' : 'sessions'}
             </li>
           ))}
         </ul>
