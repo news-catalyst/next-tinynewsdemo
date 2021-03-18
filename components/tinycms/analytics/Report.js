@@ -154,6 +154,7 @@ const Report = () => {
   };
   useEffect(() => {
     const sessionsMetric = 'ga:sessions';
+    const usersMetric = 'ga:users';
     const pageViewsMetric = 'ga:pageviews';
     const timeMetric = 'ga:avgSessionDuration';
 
@@ -195,7 +196,7 @@ const Report = () => {
       viewID,
       startDate,
       endDate,
-      [sessionsMetric, pageViewsMetric],
+      [sessionsMetric],
       customDimensionFrequency
     )
       .then((resp) => displayCustomFrequency(resp))
