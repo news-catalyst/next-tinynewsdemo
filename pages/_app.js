@@ -37,6 +37,9 @@ const App = ({ Component, pageProps }) => {
       logReadingHistory();
       const readingHistory = summarizeReadingHistory();
       setDimension('dimension2', readingHistory);
+      console.log('tracking dimension2:', readingHistory);
+      // setDimension('dimension4', false); // donor
+      // setDimension('dimension5', true); // subscriber
       trackPageViewed(url);
     };
     Router.events.on('routeChangeComplete', handleRouteChange);
