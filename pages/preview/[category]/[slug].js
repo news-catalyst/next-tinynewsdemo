@@ -93,6 +93,10 @@ export async function getStaticProps(context) {
     article = data.articles.find((a) => a.slug === params.slug);
     if (article && article.article_translations.length > 1) {
       // let mostRecentContent = article.article_translations.map(function(e) { return e.updated_at; }).sort().reverse()[0]
+      console.log(
+        'found more than 1 translation: ',
+        article.article_translations
+      );
       let mostRecentContents = article.article_translations.sort((a, b) => {
         return new Date(b.updated_at) - new Date(a.updated_at);
       });
