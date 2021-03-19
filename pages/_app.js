@@ -21,7 +21,6 @@ export function reportWebVitals({ id, name, label, value }) {
 const App = ({ Component, pageProps }) => {
   const {
     init,
-    trackPageViewed,
     trackPageViewedWithDimension,
     setDimension,
     logReadingHistory,
@@ -33,19 +32,26 @@ const App = ({ Component, pageProps }) => {
       return true;
     }
     init(process.env.NEXT_PUBLIC_GA_TRACKING_ID);
-    trackPageViewed();
+    trackReadingHistoryWithPageView();
     const handleRouteChange = (url) => {
-      logReadingHistory();
-      const readingHistory = summarizeReadingHistory();
-      setDimension('dimension2', readingHistory);
-      console.log('tracking dimension2:', readingHistory);
-      trackPageViewedWithDimension(url, 'dimension2', readingHistory);
+      trackReadingHistoryWithPageView();
     };
     Router.events.on('routeChangeComplete', handleRouteChange);
     return () => {
       Router.events.off('routeChangeComplete', handleRouteChange);
     };
   }, []);
+
+  function trackReadingHistoryWithPageView() {
+    logReadingHistory();
+    const readingHistory = summarizeReadingHistory();
+    setDimension('dimension2', readingHistory);
+    trackPageViewedWithDimension(
+      window.location.pathname + window.location.search,
+      'dimension2',
+      readingHistory
+    );
+  }
 
   return (
     <Provider session={pageProps.session}>
