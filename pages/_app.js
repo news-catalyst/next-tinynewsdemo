@@ -22,6 +22,7 @@ const App = ({ Component, pageProps }) => {
   const {
     init,
     trackPageViewed,
+    trackPageViewedWithDimension,
     setDimension,
     logReadingHistory,
     summarizeReadingHistory,
@@ -38,7 +39,7 @@ const App = ({ Component, pageProps }) => {
       const readingHistory = summarizeReadingHistory();
       setDimension('dimension2', readingHistory);
       console.log('tracking dimension2:', readingHistory);
-      trackPageViewed(url);
+      trackPageViewedWithDimension(url, 'dimension2', readingHistory);
     };
     Router.events.on('routeChangeComplete', handleRouteChange);
     return () => {
