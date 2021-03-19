@@ -33,7 +33,7 @@ const App = ({ Component, pageProps }) => {
     }
     init(process.env.NEXT_PUBLIC_GA_TRACKING_ID);
     trackReadingHistoryWithPageView();
-    const handleRouteChange = (url) => {
+    const handleRouteChange = () => {
       trackReadingHistoryWithPageView();
     };
     Router.events.on('routeChangeComplete', handleRouteChange);
