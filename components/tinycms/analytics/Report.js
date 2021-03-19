@@ -227,47 +227,78 @@ const Report = () => {
   return (
     <div className="container">
       <section className="section">
-        <h2 className="subtitle">Sessions per day</h2>
+        <div className="level">
+          <div className="level-left">
+            <div className="level-item">
+              <div className="content">
+                <p className="subtitle is-5">Sessions per day</p>
 
-        <table className="table">
-          <thead>
-            <tr>
-              <th>Date</th>
-              <th>Sessions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {reportData.labels.map((label, i) => (
-              <tr>
-                <td>{label}</td>
-                <td>{reportData.values[i]}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </section>
+                <table className="table">
+                  <thead>
+                    <tr>
+                      <th>Date</th>
+                      <th>Sessions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {reportData.labels.map((label, i) => (
+                      <tr>
+                        <td>{label}</td>
+                        <td>{reportData.values[i]}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div className="level-item">
+              <div className="content mx-2">
+                <p className="subtitle is-5">Sessions by geographic region</p>
 
-      <section className="section">
-        <h2 className="subtitle">Average session duration</h2>
+                <table className="table">
+                  <thead>
+                    <tr>
+                      <th>Country - Region</th>
+                      <th>Sessions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {geoReportData.labels.map((label, i) => (
+                      <tr>
+                        <td>{label}</td>
+                        <td> {geoReportData.values[i]} </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div className="level-item">
+              <div className="content mx-2">
+                <p className="subtitle is-5">Average session duration</p>
 
-        <p>Overall average: {timeAverage} seconds</p>
+                <p>Overall average: {timeAverage} seconds</p>
 
-        <table className="table">
-          <thead>
-            <tr>
-              <th>Date</th>
-              <th>Seconds</th>
-            </tr>
-          </thead>
-          <tbody>
-            {timeReportData.labels.map((label, i) => (
-              <tr>
-                <td> {label} </td>
-                <td> {timeReportData.values[i]} </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                <table className="table">
+                  <thead>
+                    <tr>
+                      <th>Date</th>
+                      <th>Seconds</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {timeReportData.labels.map((label, i) => (
+                      <tr>
+                        <td> {label} </td>
+                        <td> {timeReportData.values[i]} </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
 
       <section className="section">
@@ -291,26 +322,7 @@ const Report = () => {
         </table>
       </section>
 
-      <section className="section">
-        <h2 className="subtitle">Sessions by geographic region</h2>
-
-        <table className="table">
-          <thead>
-            <tr>
-              <th>Country - Region</th>
-              <th>Sessions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {geoReportData.labels.map((label, i) => (
-              <tr>
-                <td>{label}</td>
-                <td> {geoReportData.values[i]} </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </section>
+      <section className="section"></section>
 
       <section className="section">
         <h2 className="subtitle">
