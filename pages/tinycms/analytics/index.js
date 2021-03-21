@@ -47,7 +47,6 @@ export default function AnalyticsIndex(props) {
   };
 
   const updateSignin = (signedIn) => {
-    //(3)
     setIsSignedIn(signedIn);
     if (!signedIn) {
       renderButton();
@@ -58,17 +57,15 @@ export default function AnalyticsIndex(props) {
     //(2)
     checkSignedIn()
       .then((signedIn) => {
-        console.log('init checking if signed in: ', signedIn);
         updateSignin(signedIn);
       })
       .catch((error) => {
-        console.log('init got an error: ', error);
+        console.log('checkSignedIn error: ', error);
         console.error(error);
       });
   };
 
   useEffect(() => {
-    console.log('loading auth2....');
     window.gapi.load('auth2', init); //(1)
   });
 
@@ -77,22 +74,7 @@ export default function AnalyticsIndex(props) {
       <AdminNav homePageEditor={false} />
       <div className="analytics">
         <section className="section">
-          <h1 className="title">Analytics Test</h1>
-          <p className="content">
-            This page is using a custom function to get data out of Google
-            Analytics API v4; it's the bare bones, write everything ourselves
-            approach.
-          </p>
-
-          <p className="content">
-            Alternatively, because I'd prefer not to have to write everything
-            from scratch,{' '}
-            <a href="/tinycms/analytics/dashboard">here is a dashboard</a> built
-            using{' '}
-            <a href="https://justinmahar.github.io/react-analytics-charts">
-              react-analytics-charts
-            </a>
-          </p>
+          <h1 className="title">Analytics Dashboard v1</h1>
         </section>
         {!isSignedIn ? <div id="signin-button"></div> : <Report />}
       </div>
