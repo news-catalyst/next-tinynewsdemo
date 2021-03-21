@@ -25,12 +25,9 @@ const Report = () => {
   const [timeAverage, setTimeAverage] = useState(0);
 
   const displayTimeResults = (response, initialData, setData) => {
-    console.log('session duration response: ', response);
-
     const queryResult = response.result.reports[0].data.rows;
     const total = response.result.reports[0].data.totals[0].values[0];
 
-    console.log('query result: ', queryResult);
     setTimeAverage(parseInt(total / response.result.reports[0].data.rowCount));
 
     let labels = [];
@@ -52,11 +49,7 @@ const Report = () => {
   };
 
   const displayResults = (response, initialData, setData) => {
-    console.log('response: ', response);
-
     const queryResult = response.result.reports[0].data.rows;
-
-    console.log('response results data: ', queryResult);
 
     let labels = [];
     let values = [];
@@ -80,11 +73,7 @@ const Report = () => {
   };
 
   const displayGeo = (response) => {
-    console.log('geo response: ', response);
-
     const queryResult = response.result.reports[0].data.rows;
-
-    console.log('geo query result: ', queryResult);
 
     let labels = [];
     let values = [];
@@ -116,11 +105,10 @@ const Report = () => {
 
     queryResult.forEach((row) => {
       let label = row.dimensions.join(' - ');
-      let pageViewValue = row.metrics[0].values[0];
-      let sessionValue = row.metrics[1].values[0];
+      let value = row.metrics[0].values[0];
 
       labels.push(label);
-      values.push([pageViewValue, sessionValue]);
+      values.push(value);
     });
 
     setData({
@@ -178,7 +166,7 @@ const Report = () => {
       viewID,
       startDate,
       endDate,
-      [pageViewsMetric, sessionsMetric],
+      [pageViewsMetric],
       customDimensionFrequency
     )
       .then((resp) =>
@@ -191,7 +179,7 @@ const Report = () => {
       viewID,
       startDate,
       endDate,
-      [pageViewsMetric, sessionsMetric],
+      [pageViewsMetric],
       customDimensionDonor
     )
       .then((resp) => displayCustomResults(resp, donorData, setDonorData))
@@ -202,7 +190,7 @@ const Report = () => {
       viewID,
       startDate,
       endDate,
-      [pageViewsMetric, sessionsMetric],
+      [pageViewsMetric],
       customDimensionSubscriber
     )
       .then((resp) =>
@@ -224,80 +212,104 @@ const Report = () => {
       .catch((error) => console.error(error));
   }, []);
 
+  console.log('startDate:', startDate);
   return (
     <div className="container">
       <section className="section">
-        <div className="level">
-          <div className="level-left">
-            <div className="level-item">
-              <div className="content">
-                <p className="subtitle is-5">Sessions per day</p>
+        <p className="content">
+          Data from {startDate.toLocaleDateString()} to{' '}
+          {endDate.toLocaleDateString()}.
+        </p>
+      </section>
+      <section className="section">
+        <div className="content">
+          <p className="subtitle is-5">Sessions per day</p>
 
-                <table className="table">
-                  <thead>
-                    <tr>
-                      <th>Date</th>
-                      <th>Sessions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {reportData.labels.map((label, i) => (
-                      <tr>
-                        <td>{label}</td>
-                        <td>{reportData.values[i]}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-            <div className="level-item">
-              <div className="content mx-2">
-                <p className="subtitle is-5">Sessions by geographic region</p>
+          <table className="table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Sessions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {reportData.labels.map((label, i) => (
+                <tr>
+                  <td>{label}</td>
+                  <td>{reportData.values[i]}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+      <section className="section">
+        <div className="content">
+          <p className="subtitle is-5">Sessions by geographic region</p>
 
-                <table className="table">
-                  <thead>
-                    <tr>
-                      <th>Country - Region</th>
-                      <th>Sessions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {geoReportData.labels.map((label, i) => (
-                      <tr>
-                        <td>{label}</td>
-                        <td> {geoReportData.values[i]} </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-            <div className="level-item">
-              <div className="content mx-2">
-                <p className="subtitle is-5">Average session duration</p>
+          <table className="table">
+            <thead>
+              <tr>
+                <th>Country - Region</th>
+                <th>Sessions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {geoReportData.labels.map((label, i) => (
+                <tr>
+                  <td>{label}</td>
+                  <td> {geoReportData.values[i]} </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+      <section className="section">
+        <div className="content">
+          <p className="subtitle is-5">Average session duration</p>
 
-                <p>Overall average: {timeAverage} seconds</p>
+          <p>Overall average: {timeAverage} seconds</p>
 
-                <table className="table">
-                  <thead>
-                    <tr>
-                      <th>Date</th>
-                      <th>Seconds</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {timeReportData.labels.map((label, i) => (
-                      <tr>
-                        <td> {label} </td>
-                        <td> {timeReportData.values[i]} </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
+          <table className="table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Seconds</th>
+              </tr>
+            </thead>
+            <tbody>
+              {timeReportData.labels.map((label, i) => (
+                <tr>
+                  <td> {label} </td>
+                  <td> {timeReportData.values[i]} </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section className="section">
+        <div className="content">
+          <h2 className="subtitle">Sessions by referral source</h2>
+
+          <table className="table">
+            <thead>
+              <tr>
+                <th>Subscriber</th>
+                <th>Sessions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {referralData.labels.map((label, i) => (
+                <tr>
+                  <td>{label}</td>
+                  <td>{referralData.values[i]}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </section>
 
@@ -326,7 +338,7 @@ const Report = () => {
 
       <section className="section">
         <h2 className="subtitle">
-          Sessions by audience segment: reading frequency
+          Page views by audience segment: reading frequency
         </h2>
 
         <table className="table">
@@ -383,27 +395,6 @@ const Report = () => {
               <tr>
                 <td>{label}</td>
                 <td>{subscriberData.values[i]}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </section>
-
-      <section className="section">
-        <h2 className="subtitle">Sessions by referral source</h2>
-
-        <table className="table">
-          <thead>
-            <tr>
-              <th>Subscriber</th>
-              <th>Sessions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {referralData.labels.map((label, i) => (
-              <tr>
-                <td>{label}</td>
-                <td>{referralData.values[i]}</td>
               </tr>
             ))}
           </tbody>
