@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { addDays } from 'date-fns';
 import AdminLayout from '../../../components/AdminLayout';
 import AdminNav from '../../../components/nav/AdminNav';
 import Report from '../../../components/tinycms/analytics/Report';
@@ -100,7 +101,9 @@ export async function getServerSideProps(context) {
   });
 
   let reports = [];
-  const reportsResponse = await mailchimp.reports.getAllCampaignReports();
+  const reportsResponse = await mailchimp.reports.getAllCampaignReports({
+    since_send_time: addDays(new Date(), -30),
+  });
   console.log('reports:', JSON.stringify(reportsResponse));
   reports = reportsResponse.reports;
 
