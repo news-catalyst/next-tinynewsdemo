@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import AdminLayout from '../../../components/AdminLayout';
 import AdminNav from '../../../components/nav/AdminNav';
 import Report from '../../../components/tinycms/analytics/Report';
+import mailchimp from '@mailchimp/mailchimp_marketing';
 
 export default function AnalyticsIndex(props) {
   const [isSignedIn, setIsSignedIn] = useState(false);
@@ -85,6 +86,18 @@ export async function getServerSideProps(context) {
   const clientID = process.env.ANALYTICS_CLIENT_ID;
   const clientSecret = process.env.ANALYTICS_CLIENT_SECRET;
 
+  mailchimp.setConfig({
+    apiKey: process.env.MAILCHIMP_API_KEY,
+    server: process.env.MAILCHIMP_SERVER_PREFIX,
+  });
+
+  async function run() {
+    console.log('running mailchimp stats');
+    const response = await mailchimp.ping.get();
+    console.log(response);
+  }
+
+  run();
   return {
     props: {
       clientID: clientID,
