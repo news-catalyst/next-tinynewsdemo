@@ -3,8 +3,10 @@ import AdminLayout from '../../../components/AdminLayout';
 import AdminNav from '../../../components/nav/AdminNav';
 import Report from '../../../components/tinycms/analytics/Report';
 import mailchimp from '@mailchimp/mailchimp_marketing';
+import MailchimpReport from '../../../components/tinycms/analytics/MailchimpReport';
 
 export default function AnalyticsIndex(props) {
+  console.log('props:', props);
   const [isSignedIn, setIsSignedIn] = useState(false);
 
   const initAuth = () => {
@@ -77,7 +79,14 @@ export default function AnalyticsIndex(props) {
         <section className="section">
           <h1 className="title">Analytics Dashboard v1</h1>
         </section>
-        {!isSignedIn ? <div id="signin-button"></div> : <Report />}
+        {!isSignedIn ? (
+          <div id="signin-button"></div>
+        ) : (
+          <div>
+            <Report />
+            <MailchimpReport campaigns={props.campaigns} />
+          </div>
+        )}
       </div>
     </AdminLayout>
   );
@@ -91,17 +100,20 @@ export async function getServerSideProps(context) {
     server: process.env.MAILCHIMP_SERVER_PREFIX,
   });
 
-  async function run() {
-    console.log('running mailchimp stats');
-    const response = await mailchimp.ping.get();
-    console.log(response);
+  let campaigns = [];
+  let response = await mailchimp.campaigns.list();
+  if (!response) {
+    return {
+      notFound: true,
+    };
   }
+  campaigns = response.campaigns;
 
-  run();
   return {
     props: {
       clientID: clientID,
       clientSecret: clientSecret,
+      campaigns: campaigns,
     },
   };
 }

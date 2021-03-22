@@ -3,7 +3,7 @@ import { addDays } from 'date-fns';
 import { getMetricsData } from '../../../lib/analytics';
 import { formatDate } from '../../../lib/utils';
 
-const Report = () => {
+const Report = (props) => {
   const INITIAL_STATE = {
     labels: [],
     values: [],
