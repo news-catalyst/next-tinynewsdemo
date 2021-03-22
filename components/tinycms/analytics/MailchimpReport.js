@@ -1,14 +1,12 @@
 import React from 'react';
 
 export default function MailchimpReport(props) {
-  console.log('campaigns:', props.campaigns);
-
   return (
     <div>
-      {props.campaigns.map((campaign) => (
+      {props.reports.map((report) => (
         <section className="section">
           <h2 className="subtitle">
-            Newsletter Campaign: {campaign.settings.subject_line}
+            Newsletter Campaign: {report.campaign_title}
           </h2>
 
           <table className="table is-fullwidth" style={{ width: '100%' }}>
@@ -20,47 +18,47 @@ export default function MailchimpReport(props) {
             </thead>
             <tbody>
               <tr>
-                <td>Campaign title</td>
-                <td>{campaign.settings.title}</td>
-              </tr>
-              <tr>
                 <td>List name</td>
-                <td>{campaign.recipients.list_name}</td>
+                <td>{report.list_name}</td>
               </tr>
               <tr>
-                <td>Campaign status</td>
-                <td>{campaign.status}</td>
+                <td>Emails sent</td>
+                <td>{report.emails_sent}</td>
               </tr>
               <tr>
                 <td>Sent time</td>
                 <td>
-                  {new Date(campaign.send_time).toLocaleDateString()}{' '}
-                  {new Date(campaign.send_time).toLocaleTimeString()}
+                  {new Date(report.send_time).toLocaleDateString()}{' '}
+                  {new Date(report.send_time).toLocaleTimeString()}
                 </td>
               </tr>
               <tr>
-                <td>Emails sent</td>
-                <td>{campaign.emails_sent}</td>
-              </tr>
-              <tr>
-                <td>Opens</td>
-                <td>{campaign.report_summary.opens}</td>
+                <td>Opens (count)</td>
+                <td>{report.opens.opens_total}</td>
               </tr>
               <tr>
                 <td>Unique Opens</td>
-                <td>{campaign.report_summary.unique_opens}</td>
+                <td>{report.opens.unique_opens}</td>
               </tr>
               <tr>
                 <td>Open Rate</td>
-                <td>{campaign.report_summary.open_rate * 100}%</td>
+                <td>{report.opens.open_rate * 100}%</td>
               </tr>
               <tr>
                 <td>Clicks</td>
-                <td>{campaign.report_summary.clicks}</td>
+                <td>{report.clicks.clicks_total}</td>
               </tr>
               <tr>
                 <td>Click Rate</td>
-                <td>{campaign.report_summary.click_rate * 100}%</td>
+                <td>{report.clicks.click_rate * 100}%</td>
+              </tr>
+              <tr>
+                <td>Subscribe Rate</td>
+                <td>{report.list_stats.sub_rate * 100}%</td>
+              </tr>
+              <tr>
+                <td>Unsubscribe Rate</td>
+                <td>{report.list_stats.unsub_rate * 100}%</td>
               </tr>
             </tbody>
           </table>

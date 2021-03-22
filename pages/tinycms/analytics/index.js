@@ -6,7 +6,6 @@ import mailchimp from '@mailchimp/mailchimp_marketing';
 import MailchimpReport from '../../../components/tinycms/analytics/MailchimpReport';
 
 export default function AnalyticsIndex(props) {
-  console.log('props:', props);
   const [isSignedIn, setIsSignedIn] = useState(false);
 
   const initAuth = () => {
@@ -84,7 +83,7 @@ export default function AnalyticsIndex(props) {
         ) : (
           <div>
             <Report />
-            <MailchimpReport campaigns={props.campaigns} />
+            <MailchimpReport reports={props.reports} />
           </div>
         )}
       </div>
@@ -100,20 +99,16 @@ export async function getServerSideProps(context) {
     server: process.env.MAILCHIMP_SERVER_PREFIX,
   });
 
-  let campaigns = [];
-  let response = await mailchimp.campaigns.list();
-  if (!response) {
-    return {
-      notFound: true,
-    };
-  }
-  campaigns = response.campaigns;
+  let reports = [];
+  const reportsResponse = await mailchimp.reports.getAllCampaignReports();
+  console.log('reports:', JSON.stringify(reportsResponse));
+  reports = reportsResponse.reports;
 
   return {
     props: {
       clientID: clientID,
       clientSecret: clientSecret,
-      campaigns: campaigns,
+      reports: reports,
     },
   };
 }
