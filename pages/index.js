@@ -31,6 +31,24 @@ export async function getStaticProps({ locale }) {
     throw errors;
   }
 
+  let siteMetadata;
+  let metadatas = data.site_metadatas;
+  try {
+    siteMetadata = metadatas[0].site_metadata_translations[0].data;
+  } catch (err) {
+    console.log('failed finding site metadata for ', locale, metadatas);
+  }
+
+  if (siteMetadata.landingPage) {
+    return {
+      props: {
+        locale,
+        siteMetadata,
+      },
+      revalidate: 1,
+    };
+  }
+
   const hpData = data.homepage_layout_datas[0];
   let selectedLayout = hpData.homepage_layout_schema;
 
@@ -76,14 +94,6 @@ export async function getStaticProps({ locale }) {
       sections[i].category_translations,
       'title'
     );
-  }
-
-  let siteMetadata;
-  let metadatas = data.site_metadatas;
-  try {
-    siteMetadata = metadatas[0].site_metadata_translations[0].data;
-  } catch (err) {
-    console.log('failed finding site metadata for ', locale, metadatas);
   }
 
   const allAds = await cachedContents('ads', getArticleAds);
