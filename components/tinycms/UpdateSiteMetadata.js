@@ -154,19 +154,6 @@ export default function UpdateMetadata(props) {
       </section>
 
       <MetadataTextInput
-        label="Navigation"
-        name="nav"
-        handleChange={handleChange}
-        value={parsedData['nav']}
-      />
-
-      <MetadataTextInput
-        label="Labels"
-        name="labels"
-        handleChange={handleChange}
-        value={parsedData['labels']}
-      />
-      <MetadataTextInput
         label="Site short name"
         name="shortName"
         handleChange={handleChange}
@@ -195,12 +182,6 @@ export default function UpdateMetadata(props) {
         name="aboutDek"
         handleChange={handleChange}
         value={parsedData['aboutDek']}
-      />
-      <MetadataTextInput
-        label="Subscribe"
-        name="subscribe"
-        handleChange={handleChange}
-        value={parsedData['subscribe']}
       />
       <MetadataTextInput
         label="Support: CTA button text"
