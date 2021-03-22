@@ -1,5 +1,6 @@
 import Head from 'next/head';
 import globalStyles from '../styles/global.js';
+import newsletterStyles from '../styles/newsletter.js';
 import GlobalNav from '../components/nav/GlobalNav';
 import GlobalFooter from './nav/GlobalFooter.js';
 import { useAmp } from 'next/amp';
@@ -177,6 +178,9 @@ export default function Layout({
       </div>
       <style jsx global>
         {globalStyles}
+      </style>
+      <style jsx global>
+        {newsletterStyles}
       </style>
     </>
   );
