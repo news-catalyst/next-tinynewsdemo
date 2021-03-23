@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
 export default function MailchimpReport(props) {
-  console.log('props.reports[0]:', props.reports[0].growth);
   if (!props.reports) console.error('No report passed for mailchimp');
   return (
     <div>

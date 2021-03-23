@@ -110,9 +110,7 @@ export async function getServerSideProps(context) {
   });
   let report = reportsResponse.reports[0];
   let listId = report.list_id;
-  console.log('reports:', JSON.stringify(report));
   let data = await mailchimp.lists.getListGrowthHistory(listId);
-  console.log('growth for list ' + report.list_id + ':', data);
   report['growth'] = data;
   fullReports.push(report);
 
