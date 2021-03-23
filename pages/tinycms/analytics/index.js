@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from 'react';
+import { addDays } from 'date-fns';
+import mailchimp from '@mailchimp/mailchimp_marketing';
 import AdminLayout from '../../../components/AdminLayout';
 import AdminNav from '../../../components/nav/AdminNav';
 import Report from '../../../components/tinycms/analytics/Report';
+import MailchimpReport from '../../../components/tinycms/analytics/MailchimpReport';
 
 export default function AnalyticsIndex(props) {
   const [isSignedIn, setIsSignedIn] = useState(false);
@@ -76,7 +79,18 @@ export default function AnalyticsIndex(props) {
         <section className="section">
           <h1 className="title">Analytics Dashboard v1</h1>
         </section>
-        {!isSignedIn ? <div id="signin-button"></div> : <Report />}
+        {!isSignedIn ? (
+          <div id="signin-button"></div>
+        ) : (
+          <div>
+            <Report />
+            <MailchimpReport
+              mailchimpKey={props.mailchimpKey}
+              mailchimpServer={props.mailchimpServer}
+              reports={props.reports}
+            />
+          </div>
+        )}
       </div>
     </AdminLayout>
   );
@@ -85,10 +99,30 @@ export async function getServerSideProps(context) {
   const clientID = process.env.ANALYTICS_CLIENT_ID;
   const clientSecret = process.env.ANALYTICS_CLIENT_SECRET;
 
+  mailchimp.setConfig({
+    apiKey: process.env.MAILCHIMP_API_KEY,
+    server: process.env.MAILCHIMP_SERVER_PREFIX,
+  });
+
+  let fullReports = [];
+  let reportsResponse = await mailchimp.reports.getAllCampaignReports({
+    since_send_time: addDays(new Date(), -30),
+  });
+  let report = reportsResponse.reports[0];
+  let listId = report.list_id;
+  console.log('reports:', JSON.stringify(report));
+  let data = await mailchimp.lists.getListGrowthHistory(listId);
+  console.log('growth for list ' + report.list_id + ':', data);
+  report['growth'] = data;
+  fullReports.push(report);
+
   return {
     props: {
       clientID: clientID,
       clientSecret: clientSecret,
+      mailchimpKey: process.env.MAILCHIMP_API_KEY,
+      mailchimpServer: process.env.MAILCHIMP_SERVER_PREFIX,
+      reports: fullReports,
     },
   };
 }
