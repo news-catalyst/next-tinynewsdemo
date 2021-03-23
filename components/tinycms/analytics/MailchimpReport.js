@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 export default function MailchimpReport(props) {
+  console.log('props.reports[0]:', props.reports[0].growth);
+  if (!props.reports) console.error('No report passed for mailchimp');
   return (
     <div>
       {props.reports.map((report) => (
@@ -60,6 +62,23 @@ export default function MailchimpReport(props) {
                 <td>Unsubscribe Rate</td>
                 <td>{report.list_stats.unsub_rate * 100}%</td>
               </tr>
+              {report.growth.history.map((month) => (
+                <tr>
+                  <td>Month: {month.month}</td>
+                  <td>
+                    <table>
+                      <tr>
+                        <th>Subscribed</th>
+                        <td>{month.subscribed}</td>
+                      </tr>
+                      <tr>
+                        <th>Unsubscribed</th>
+                        <td>{month.unsubscribed}</td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </section>
