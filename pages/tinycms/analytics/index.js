@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { addDays } from 'date-fns';
+import mailchimp from '@mailchimp/mailchimp_marketing';
 import AdminLayout from '../../../components/AdminLayout';
 import AdminNav from '../../../components/nav/AdminNav';
 import Report from '../../../components/tinycms/analytics/Report';
-import mailchimp from '@mailchimp/mailchimp_marketing';
 import MailchimpReport from '../../../components/tinycms/analytics/MailchimpReport';
 
 export default function AnalyticsIndex(props) {
@@ -84,7 +84,11 @@ export default function AnalyticsIndex(props) {
         ) : (
           <div>
             <Report />
-            <MailchimpReport reports={props.reports} />
+            <MailchimpReport
+              mailchimpKey={props.mailchimpKey}
+              mailchimpServer={props.mailchimpServer}
+              reports={props.reports}
+            />
           </div>
         )}
       </div>
@@ -100,18 +104,25 @@ export async function getServerSideProps(context) {
     server: process.env.MAILCHIMP_SERVER_PREFIX,
   });
 
-  let reports = [];
-  const reportsResponse = await mailchimp.reports.getAllCampaignReports({
+  let fullReports = [];
+  let reportsResponse = await mailchimp.reports.getAllCampaignReports({
     since_send_time: addDays(new Date(), -30),
   });
-  console.log('reports:', JSON.stringify(reportsResponse));
-  reports = reportsResponse.reports;
+  let report = reportsResponse.reports[0];
+  let listId = report.list_id;
+  console.log('reports:', JSON.stringify(report));
+  let data = await mailchimp.lists.getListGrowthHistory(listId);
+  console.log('growth for list ' + report.list_id + ':', data);
+  report['growth'] = data;
+  fullReports.push(report);
 
   return {
     props: {
       clientID: clientID,
       clientSecret: clientSecret,
-      reports: reports,
+      mailchimpKey: process.env.MAILCHIMP_API_KEY,
+      mailchimpServer: process.env.MAILCHIMP_SERVER_PREFIX,
+      reports: fullReports,
     },
   };
 }
