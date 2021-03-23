@@ -21,6 +21,7 @@ const Report = (props) => {
   const [pageViewReportData, setPageViewReportData] = useState(INITIAL_STATE);
   const [geoReportData, setGeoReportData] = useState(INITIAL_STATE);
   const [referralData, setReferralData] = useState(INITIAL_STATE);
+  const [readingDepthData, setReadingDepthData] = useState({});
   const [startDate, setStartDate] = useState(addDays(new Date(), -30));
   const [endDate, setEndDate] = useState(new Date());
   const [average, setAverage] = useState(0);
@@ -96,7 +97,7 @@ const Report = (props) => {
   };
 
   const displayCustomResults = (response, initialData, setData) => {
-    console.log('custom dimension response: ', response);
+    // console.log('custom dimension response: ', response);
 
     const queryResult = response.result.reports[0].data.rows;
 
@@ -119,7 +120,7 @@ const Report = (props) => {
   };
 
   const displayEventResults = (response, initialData, setData) => {
-    console.log('event response: ', response);
+    // console.log('event response: ', response);
     const queryResult = response.result.reports[0].data.rows;
 
     let labels = [];
@@ -141,7 +142,7 @@ const Report = (props) => {
   };
 
   const displaySignupEventResults = (response, initialData, setData) => {
-    console.log('signup response: ', response);
+    // console.log('signup response: ', response);
     const queryResult = response.result.reports[0].data.rows;
 
     let labels = [];
@@ -160,6 +161,26 @@ const Report = (props) => {
       labels,
       values,
     });
+  };
+
+  const displayReadingDepthResults = (response, initialData, setData) => {
+    const queryResult = response.result.reports[0].data.rows;
+    console.log('reading depth: ', queryResult);
+
+    let collectedData = {};
+    queryResult.forEach((row) => {
+      let percentage = row.dimensions[1];
+      let articlePath = row.dimensions[3];
+
+      if (collectedData[articlePath]) {
+        collectedData[articlePath][percentage] = row.metrics[0].values[0];
+      } else {
+        collectedData[articlePath] = {};
+        collectedData[articlePath][percentage] = row.metrics[0].values[0];
+      }
+    });
+
+    setReadingDepthData(collectedData);
   };
 
   useEffect(() => {
@@ -277,6 +298,14 @@ const Report = (props) => {
     })
       .then((resp) => {
         displaySignupEventResults(resp, signupEventsData, setSignupEventsData);
+      })
+      .catch((error) => console.error(error));
+
+    getMetricsData(viewID, startDate, endDate, eventMetrics, eventDimensions, {
+      filters: 'ga:eventCategory==NTG Article Milestone',
+    })
+      .then((resp) => {
+        displayReadingDepthResults(resp, readingDepthData, setReadingDepthData);
       })
       .catch((error) => console.error(error));
   }, []);
@@ -400,6 +429,50 @@ const Report = (props) => {
             ))}
           </tbody>
         </table>
+      </section>
+
+      <section className="section">
+        <div className="content">
+          <p className="subtitle is-5">Reading Depth</p>
+
+          <table className="table is-fullwidth" style={{ width: '100%' }}>
+            <thead>
+              <tr>
+                <th>Article</th>
+                <th>Percentage Read</th>
+              </tr>
+            </thead>
+            <tbody>
+              {Object.keys(readingDepthData).map((articlePath) => (
+                <tr>
+                  <td> {articlePath} </td>
+                  <td>
+                    <table>
+                      <tbody>
+                        <tr>
+                          <th>100%</th>
+                          <td>{readingDepthData[articlePath]['100%']}</td>
+                        </tr>
+                        <tr>
+                          <th>75%</th>
+                          <td>{readingDepthData[articlePath]['75%']}</td>
+                        </tr>
+                        <tr>
+                          <th>50%</th>
+                          <td>{readingDepthData[articlePath]['50%']}</td>
+                        </tr>
+                        <tr>
+                          <th>25%</th>
+                          <td>{readingDepthData[articlePath]['25%']}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </section>
 
       <section className="section"></section>
