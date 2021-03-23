@@ -13,6 +13,7 @@ const Report = (props) => {
   );
   const [reportData, setReportData] = useState(INITIAL_STATE);
   const [eventsData, setEventsData] = useState(INITIAL_STATE);
+  const [signupEventsData, setSignupEventsData] = useState(INITIAL_STATE);
   const [frequencyData, setFrequencyData] = useState(INITIAL_STATE);
   const [donorData, setDonorData] = useState(INITIAL_STATE);
   const [subscriberData, setSubscriberData] = useState(INITIAL_STATE);
@@ -125,7 +126,29 @@ const Report = (props) => {
     let values = [];
 
     queryResult.forEach((row) => {
-      let label = row.dimensions.join(' - ');
+      let label = row.dimensions[3];
+      let value = row.metrics[0].values[0];
+
+      labels.push(label);
+      values.push(value);
+    });
+
+    setData({
+      ...initialData,
+      labels,
+      values,
+    });
+  };
+
+  const displaySignupEventResults = (response, initialData, setData) => {
+    console.log('signup response: ', response);
+    const queryResult = response.result.reports[0].data.rows;
+
+    let labels = [];
+    let values = [];
+
+    queryResult.forEach((row) => {
+      let label = row.dimensions[3];
       let value = row.metrics[0].values[0];
 
       labels.push(label);
@@ -237,12 +260,23 @@ const Report = (props) => {
       'ga:eventCategory',
       'ga:eventAction',
       'ga:eventLabel',
+      'ga:pagePath',
     ];
     getMetricsData(viewID, startDate, endDate, eventMetrics, eventDimensions, {
-      filters: 'ga:eventCategory==NTG Newsletter',
+      filters:
+        'ga:eventCategory==NTG Newsletter;ga:eventAction==Newsletter Modal Impression 1',
     })
       .then((resp) => {
         displayEventResults(resp, eventsData, setEventsData);
+      })
+      .catch((error) => console.error(error));
+
+    getMetricsData(viewID, startDate, endDate, eventMetrics, eventDimensions, {
+      filters:
+        'ga:eventCategory==NTG Newsletter;ga:eventAction==Newsletter Signup',
+    })
+      .then((resp) => {
+        displaySignupEventResults(resp, signupEventsData, setSignupEventsData);
       })
       .catch((error) => console.error(error));
   }, []);
@@ -443,8 +477,8 @@ const Report = (props) => {
         <table className="table is-fullwidth" style={{ width: '100%' }}>
           <thead>
             <tr>
-              <th>Type</th>
-              <th>Hits</th>
+              <th>Location</th>
+              <th>Views</th>
             </tr>
           </thead>
           <tbody>
@@ -452,6 +486,27 @@ const Report = (props) => {
               <tr>
                 <td>{label}</td>
                 <td>{eventsData.values[i]}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </section>
+
+      <section className="section">
+        <h2 className="subtitle">Website Signup Form Submits</h2>
+
+        <table className="table is-fullwidth" style={{ width: '100%' }}>
+          <thead>
+            <tr>
+              <th>Location</th>
+              <th>Signups</th>
+            </tr>
+          </thead>
+          <tbody>
+            {signupEventsData.labels.map((label, i) => (
+              <tr>
+                <td>{label}</td>
+                <td>{signupEventsData.values[i]}</td>
               </tr>
             ))}
           </tbody>
