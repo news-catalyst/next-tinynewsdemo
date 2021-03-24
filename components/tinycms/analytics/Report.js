@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { addDays } from 'date-fns';
 import { getMetricsData } from '../../../lib/analytics';
 import { formatDate } from '../../../lib/utils';
+import NewsletterSignupFormData from './NewsletterSignupFormData';
+import ReadingFrequencyData from './ReadingFrequencyData';
 
 const Report = (props) => {
   const INITIAL_STATE = {
@@ -13,16 +15,13 @@ const Report = (props) => {
   );
   const [reportData, setReportData] = useState(INITIAL_STATE);
   // const [eventsData, setEventsData] = useState(INITIAL_STATE);
-  const [frequencyData, setFrequencyData] = useState(INITIAL_STATE);
   // const [donorData, setDonorData] = useState(INITIAL_STATE);
   const [subscriberData, setSubscriberData] = useState(INITIAL_STATE);
   const [timeReportData, setTimeReportData] = useState(INITIAL_STATE);
   const [pageViewReportData, setPageViewReportData] = useState(INITIAL_STATE);
   const [geoReportData, setGeoReportData] = useState(INITIAL_STATE);
   const [referralData, setReferralData] = useState(INITIAL_STATE);
-  const [signupEventsData, setSignupEventsData] = useState({});
   const [readingDepthData, setReadingDepthData] = useState({});
-  const [sortedNewsletter, setSortedNewsletter] = useState([]);
   const [sortedReadingDepth, setSortedReadingDepth] = useState([]);
   const [readingDepthTableRows, setReadingDepthTableRows] = useState([]);
   const [startDate, setStartDate] = useState(addDays(new Date(), -30));
@@ -120,69 +119,6 @@ const Report = (props) => {
       labels,
       values,
     });
-  };
-
-  const displayEventResults = (response, initialData, setData) => {
-    // console.log('event response: ', response);
-    const queryResult = response.result.reports[0].data.rows;
-
-    let labels = [];
-    let values = [];
-
-    queryResult.forEach((row) => {
-      let label = row.dimensions[3];
-      let value = row.metrics[0].values[0];
-
-      labels.push(label);
-      values.push(value);
-    });
-
-    setData({
-      ...initialData,
-      labels,
-      values,
-    });
-  };
-
-  const displaySignupEventResults = (response, initialData, setData) => {
-    // console.log('signup response: ', response);
-    const queryResult = response.result.reports[0].data.rows;
-    console.log('signupEventResults:', queryResult);
-
-    let collectedData = {};
-    queryResult.forEach((row) => {
-      console.log(row);
-      let articlePath = row.dimensions[3];
-      let eventAction = row.dimensions[1];
-      let value = row.metrics[0].values[0];
-
-      if (collectedData[articlePath]) {
-        collectedData[articlePath][eventAction] = value;
-      } else {
-        collectedData[articlePath] = {};
-        collectedData[articlePath][eventAction] = value;
-      }
-    });
-
-    var sortable = [];
-    Object.keys(collectedData).forEach((key) => {
-      let views = collectedData[key]['Newsletter Modal Impression 1'];
-      let signups = collectedData[key]['Newsletter Signup'];
-      let conversion = 0;
-
-      if (views && signups) {
-        conversion = (signups / views) * 100;
-      }
-      collectedData[key]['conversion'] = Math.round(conversion);
-      sortable.push([key, conversion]);
-    });
-
-    sortable.sort(function (a, b) {
-      return b[1] - a[1];
-    });
-
-    setSortedNewsletter(sortable);
-    setData(collectedData);
   };
 
   let readingDepthRows = [];
@@ -291,19 +227,6 @@ const Report = (props) => {
       .then((resp) => displayGeo(resp))
       .catch((error) => console.error(error));
 
-    const customDimensionFrequency = ['ga:dimension2'];
-    getMetricsData(
-      viewID,
-      startDate,
-      endDate,
-      [pageViewsMetric],
-      customDimensionFrequency
-    )
-      .then((resp) =>
-        displayCustomResults(resp, frequencyData, setFrequencyData)
-      )
-      .catch((error) => console.error(error));
-
     // const customDimensionDonor = ['ga:dimension4'];
     // getMetricsData(
     //   viewID,
@@ -341,29 +264,13 @@ const Report = (props) => {
       })
       .catch((error) => console.error(error));
 
-    const eventMetrics = ['ga:totalEvents'];
-    const eventDimensions = [
+    let eventMetrics = ['ga:totalEvents'];
+    let eventDimensions = [
       'ga:eventCategory',
       'ga:eventAction',
       'ga:eventLabel',
       'ga:pagePath',
     ];
-    // getMetricsData(viewID, startDate, endDate, eventMetrics, eventDimensions, {
-    //   filters:
-    //     'ga:eventCategory==NTG Newsletter;ga:eventAction==Newsletter Modal Impression 1',
-    // })
-    //   .then((resp) => {
-    //     displayEventResults(resp, eventsData, setEventsData);
-    //   })
-    //   .catch((error) => console.error(error));
-
-    getMetricsData(viewID, startDate, endDate, eventMetrics, eventDimensions, {
-      filters: 'ga:eventCategory==NTG Newsletter',
-    })
-      .then((resp) => {
-        displaySignupEventResults(resp, signupEventsData, setSignupEventsData);
-      })
-      .catch((error) => console.error(error));
 
     getMetricsData(viewID, startDate, endDate, eventMetrics, eventDimensions, {
       filters: 'ga:eventCategory==NTG Article Milestone',
@@ -520,29 +427,11 @@ const Report = (props) => {
       </section>
 
       <section className="section"></section>
-
-      <section className="section">
-        <h2 className="subtitle">
-          Page views by audience segment: reading frequency
-        </h2>
-
-        <table className="table is-fullwidth" style={{ width: '100%' }}>
-          <thead>
-            <tr>
-              <th>Number of Articles</th>
-              <th>Sessions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {frequencyData.labels.map((label, i) => (
-              <tr>
-                <td>{label}</td>
-                <td>{frequencyData.values[i]} </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </section>
+      <ReadingFrequencyData
+        viewID={viewID}
+        startDate={startDate}
+        endDate={endDate}
+      />
 
       {/* <section className="section">
         <h2 className="subtitle">Sessions by audience segment: donor</h2>
@@ -588,32 +477,11 @@ const Report = (props) => {
 
       <p className="title is-2">Newsletter Data</p>
 
-      <section className="section">
-        <h2 className="subtitle">Website Signup Form</h2>
-
-        <table className="table is-fullwidth" style={{ width: '100%' }}>
-          <thead>
-            <tr>
-              <th>Location</th>
-              <th>Views</th>
-              <th>Signups</th>
-              <th>Conversion Rate</th>
-            </tr>
-          </thead>
-          <tbody>
-            {sortedNewsletter.map((item) => (
-              <tr>
-                <td>{item[0]}</td>
-                <td>
-                  {signupEventsData[item[0]]['Newsletter Modal Impression 1']}
-                </td>
-                <td>{signupEventsData[item[0]]['Newsletter Signup']}</td>
-                <td>{signupEventsData[item[0]]['conversion']}%</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </section>
+      <NewsletterSignupFormData
+        viewID={viewID}
+        startDate={startDate}
+        endDate={endDate}
+      />
     </div>
   );
 };
