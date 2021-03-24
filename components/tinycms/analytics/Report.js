@@ -12,17 +12,19 @@ const Report = (props) => {
     process.env.NEXT_PUBLIC_ANALYTICS_VIEW_ID
   );
   const [reportData, setReportData] = useState(INITIAL_STATE);
-  const [eventsData, setEventsData] = useState(INITIAL_STATE);
-  const [signupEventsData, setSignupEventsData] = useState(INITIAL_STATE);
+  // const [eventsData, setEventsData] = useState(INITIAL_STATE);
   const [frequencyData, setFrequencyData] = useState(INITIAL_STATE);
-  const [donorData, setDonorData] = useState(INITIAL_STATE);
+  // const [donorData, setDonorData] = useState(INITIAL_STATE);
   const [subscriberData, setSubscriberData] = useState(INITIAL_STATE);
   const [timeReportData, setTimeReportData] = useState(INITIAL_STATE);
   const [pageViewReportData, setPageViewReportData] = useState(INITIAL_STATE);
   const [geoReportData, setGeoReportData] = useState(INITIAL_STATE);
   const [referralData, setReferralData] = useState(INITIAL_STATE);
+  const [signupEventsData, setSignupEventsData] = useState({});
   const [readingDepthData, setReadingDepthData] = useState({});
+  const [sortedNewsletter, setSortedNewsletter] = useState([]);
   const [sortedReadingDepth, setSortedReadingDepth] = useState([]);
+  const [readingDepthTableRows, setReadingDepthTableRows] = useState([]);
   const [startDate, setStartDate] = useState(addDays(new Date(), -30));
   const [endDate, setEndDate] = useState(new Date());
   const [average, setAverage] = useState(0);
@@ -145,28 +147,48 @@ const Report = (props) => {
   const displaySignupEventResults = (response, initialData, setData) => {
     // console.log('signup response: ', response);
     const queryResult = response.result.reports[0].data.rows;
+    console.log('signupEventResults:', queryResult);
 
-    let labels = [];
-    let values = [];
-
+    let collectedData = {};
     queryResult.forEach((row) => {
-      let label = row.dimensions[3];
+      console.log(row);
+      let articlePath = row.dimensions[3];
+      let eventAction = row.dimensions[1];
       let value = row.metrics[0].values[0];
 
-      labels.push(label);
-      values.push(value);
+      if (collectedData[articlePath]) {
+        collectedData[articlePath][eventAction] = value;
+      } else {
+        collectedData[articlePath] = {};
+        collectedData[articlePath][eventAction] = value;
+      }
     });
 
-    setData({
-      ...initialData,
-      labels,
-      values,
+    var sortable = [];
+    Object.keys(collectedData).forEach((key) => {
+      let views = collectedData[key]['Newsletter Modal Impression 1'];
+      let signups = collectedData[key]['Newsletter Signup'];
+      let conversion = 0;
+
+      if (views && signups) {
+        conversion = (signups / views) * 100;
+      }
+      collectedData[key]['conversion'] = Math.round(conversion);
+      sortable.push([key, conversion]);
     });
+
+    sortable.sort(function (a, b) {
+      return b[1] - a[1];
+    });
+
+    setSortedNewsletter(sortable);
+    setData(collectedData);
   };
 
+  let readingDepthRows = [];
   const displayReadingDepthResults = (response, initialData, setData) => {
     const queryResult = response.result.reports[0].data.rows;
-    console.log('reading depth: ', queryResult);
+    // console.log('reading depth: ', queryResult);
 
     let collectedData = {};
     queryResult.forEach((row) => {
@@ -208,9 +230,21 @@ const Report = (props) => {
       return b[1] - a[1];
     });
 
-    console.log('sortable:', sortable);
     setSortedReadingDepth(sortable);
-    console.log('sortedReadingDepth:', sortedReadingDepth);
+    sortedReadingDepth.map((item) => {
+      readingDepthRows.push(
+        <tr>
+          <td>{item[0]}</td>
+          <td>{readingDepthData[item[0]]['25%']}</td>
+          <td>{readingDepthData[item[0]]['50%']}</td>
+          <td>{readingDepthData[item[0]]['75%']}</td>
+          <td>{readingDepthData[item[0]]['100%']}</td>
+          <td>{readingDepthData[item[0]]['readFull']}%</td>
+        </tr>
+      );
+    });
+    console.log('readingDepthRows:', readingDepthRows);
+    setReadingDepthTableRows(readingDepthRows);
     setReadingDepthData(collectedData);
   };
 
@@ -314,18 +348,17 @@ const Report = (props) => {
       'ga:eventLabel',
       'ga:pagePath',
     ];
-    getMetricsData(viewID, startDate, endDate, eventMetrics, eventDimensions, {
-      filters:
-        'ga:eventCategory==NTG Newsletter;ga:eventAction==Newsletter Modal Impression 1',
-    })
-      .then((resp) => {
-        displayEventResults(resp, eventsData, setEventsData);
-      })
-      .catch((error) => console.error(error));
+    // getMetricsData(viewID, startDate, endDate, eventMetrics, eventDimensions, {
+    //   filters:
+    //     'ga:eventCategory==NTG Newsletter;ga:eventAction==Newsletter Modal Impression 1',
+    // })
+    //   .then((resp) => {
+    //     displayEventResults(resp, eventsData, setEventsData);
+    //   })
+    //   .catch((error) => console.error(error));
 
     getMetricsData(viewID, startDate, endDate, eventMetrics, eventDimensions, {
-      filters:
-        'ga:eventCategory==NTG Newsletter;ga:eventAction==Newsletter Signup',
+      filters: 'ga:eventCategory==NTG Newsletter',
     })
       .then((resp) => {
         displaySignupEventResults(resp, signupEventsData, setSignupEventsData);
@@ -470,7 +503,7 @@ const Report = (props) => {
             <thead>
               <tr>
                 <th></th>
-                <th colspan="4">Percentage Read</th>
+                <th colSpan="4">Percentage Read</th>
               </tr>
               <tr>
                 <th>Article</th>
@@ -481,18 +514,7 @@ const Report = (props) => {
                 <th>Read Full</th>
               </tr>
             </thead>
-            <tbody>
-              {sortedReadingDepth.map((item) => (
-                <tr>
-                  <td>{item[0]}</td>
-                  <td>{readingDepthData[item[0]]['25%']}</td>
-                  <td>{readingDepthData[item[0]]['50%']}</td>
-                  <td>{readingDepthData[item[0]]['75%']}</td>
-                  <td>{readingDepthData[item[0]]['100%']}</td>
-                  <td>{readingDepthData[item[0]]['readFull']}%</td>
-                </tr>
-              ))}
-            </tbody>
+            <tbody>{readingDepthTableRows}</tbody>
           </table>
         </div>
       </section>
@@ -522,7 +544,7 @@ const Report = (props) => {
         </table>
       </section>
 
-      <section className="section">
+      {/* <section className="section">
         <h2 className="subtitle">Sessions by audience segment: donor</h2>
 
         <table className="table is-fullwidth" style={{ width: '100%' }}>
@@ -541,9 +563,9 @@ const Report = (props) => {
             ))}
           </tbody>
         </table>
-      </section>
+      </section> */}
 
-      <section className="section">
+      {/* <section className="section">
         <h2 className="subtitle">Sessions by audience segment: subscriber</h2>
 
         <table className="table is-fullwidth" style={{ width: '100%' }}>
@@ -562,46 +584,31 @@ const Report = (props) => {
             ))}
           </tbody>
         </table>
-      </section>
+      </section> */}
 
       <p className="title is-2">Newsletter Data</p>
 
       <section className="section">
-        <h2 className="subtitle">Website Signup Form Impressions</h2>
+        <h2 className="subtitle">Website Signup Form</h2>
 
         <table className="table is-fullwidth" style={{ width: '100%' }}>
           <thead>
             <tr>
               <th>Location</th>
               <th>Views</th>
-            </tr>
-          </thead>
-          <tbody>
-            {eventsData.labels.map((label, i) => (
-              <tr>
-                <td>{label}</td>
-                <td>{eventsData.values[i]}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </section>
-
-      <section className="section">
-        <h2 className="subtitle">Website Signup Form Submits</h2>
-
-        <table className="table is-fullwidth" style={{ width: '100%' }}>
-          <thead>
-            <tr>
-              <th>Location</th>
               <th>Signups</th>
+              <th>Conversion Rate</th>
             </tr>
           </thead>
           <tbody>
-            {signupEventsData.labels.map((label, i) => (
+            {sortedNewsletter.map((item) => (
               <tr>
-                <td>{label}</td>
-                <td>{signupEventsData.values[i]}</td>
+                <td>{item[0]}</td>
+                <td>
+                  {signupEventsData[item[0]]['Newsletter Modal Impression 1']}
+                </td>
+                <td>{signupEventsData[item[0]]['Newsletter Signup']}</td>
+                <td>{signupEventsData[item[0]]['conversion']}%</td>
               </tr>
             ))}
           </tbody>
