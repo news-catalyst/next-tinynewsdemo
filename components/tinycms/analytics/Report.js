@@ -169,14 +169,17 @@ const Report = (props) => {
 
     let collectedData = {};
     queryResult.forEach((row) => {
-      let percentage = row.dimensions[1];
       let articlePath = row.dimensions[3];
 
-      if (collectedData[articlePath]) {
-        collectedData[articlePath][percentage] = row.metrics[0].values[0];
-      } else {
-        collectedData[articlePath] = {};
-        collectedData[articlePath][percentage] = row.metrics[0].values[0];
+      if (articlePath !== '/') {
+        let percentage = row.dimensions[1];
+
+        if (collectedData[articlePath]) {
+          collectedData[articlePath][percentage] = row.metrics[0].values[0];
+        } else {
+          collectedData[articlePath] = {};
+          collectedData[articlePath][percentage] = row.metrics[0].values[0];
+        }
       }
     });
 
@@ -239,29 +242,29 @@ const Report = (props) => {
       )
       .catch((error) => console.error(error));
 
-    const customDimensionDonor = ['ga:dimension4'];
-    getMetricsData(
-      viewID,
-      startDate,
-      endDate,
-      [pageViewsMetric],
-      customDimensionDonor
-    )
-      .then((resp) => displayCustomResults(resp, donorData, setDonorData))
-      .catch((error) => console.error(error));
+    // const customDimensionDonor = ['ga:dimension4'];
+    // getMetricsData(
+    //   viewID,
+    //   startDate,
+    //   endDate,
+    //   [pageViewsMetric],
+    //   customDimensionDonor
+    // )
+    //   .then((resp) => displayCustomResults(resp, donorData, setDonorData))
+    //   .catch((error) => console.error(error));
 
-    const customDimensionSubscriber = ['ga:dimension5'];
-    getMetricsData(
-      viewID,
-      startDate,
-      endDate,
-      [pageViewsMetric],
-      customDimensionSubscriber
-    )
-      .then((resp) =>
-        displayCustomResults(resp, subscriberData, setSubscriberData)
-      )
-      .catch((error) => console.error(error));
+    // const customDimensionSubscriber = ['ga:dimension5'];
+    // getMetricsData(
+    //   viewID,
+    //   startDate,
+    //   endDate,
+    //   [pageViewsMetric],
+    //   customDimensionSubscriber
+    // )
+    //   .then((resp) =>
+    //     displayCustomResults(resp, subscriberData, setSubscriberData)
+    //   )
+    //   .catch((error) => console.error(error));
 
     const referralDimension = ['ga:source'];
     getMetricsData(
@@ -438,36 +441,25 @@ const Report = (props) => {
           <table className="table is-fullwidth" style={{ width: '100%' }}>
             <thead>
               <tr>
+                <th></th>
+                <th colspan="4">Percentage Read</th>
+              </tr>
+              <tr>
                 <th>Article</th>
-                <th>Percentage Read</th>
+                <th>25%</th>
+                <th>50%</th>
+                <th>75%</th>
+                <th>100%</th>
               </tr>
             </thead>
             <tbody>
               {Object.keys(readingDepthData).map((articlePath) => (
                 <tr>
-                  <td> {articlePath} </td>
-                  <td>
-                    <table>
-                      <tbody>
-                        <tr>
-                          <th>100%</th>
-                          <td>{readingDepthData[articlePath]['100%']}</td>
-                        </tr>
-                        <tr>
-                          <th>75%</th>
-                          <td>{readingDepthData[articlePath]['75%']}</td>
-                        </tr>
-                        <tr>
-                          <th>50%</th>
-                          <td>{readingDepthData[articlePath]['50%']}</td>
-                        </tr>
-                        <tr>
-                          <th>25%</th>
-                          <td>{readingDepthData[articlePath]['25%']}</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </td>
+                  <td>{articlePath}</td>
+                  <td>{readingDepthData[articlePath]['25%']}</td>
+                  <td>{readingDepthData[articlePath]['50%']}</td>
+                  <td>{readingDepthData[articlePath]['75%']}</td>
+                  <td>{readingDepthData[articlePath]['100%']}</td>
                 </tr>
               ))}
             </tbody>
