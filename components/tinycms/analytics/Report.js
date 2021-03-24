@@ -9,55 +9,16 @@ import ReadingDepthData from './ReadingDepthData';
 import ReadingFrequencyData from './ReadingFrequencyData';
 import ReferralSource from './ReferralSource';
 import PageViews from './PageViews';
+import CustomDimensions from './CustomDimensions';
 
 const Report = (props) => {
-  const INITIAL_STATE = {
-    labels: [],
-    values: [],
-  };
   const [viewID, setViewID] = useState(
     process.env.NEXT_PUBLIC_ANALYTICS_VIEW_ID
   );
-  // const [eventsData, setEventsData] = useState(INITIAL_STATE);
-  // const [donorData, setDonorData] = useState(INITIAL_STATE);
-  // const [subscriberData, setSubscriberData] = useState(INITIAL_STATE);
   const [startDate, setStartDate] = useState(addDays(new Date(), -30));
   const [endDate, setEndDate] = useState(new Date());
 
-  const displayCustomResults = (response, initialData, setData) => {
-    // console.log('custom dimension response: ', response);
-
-    const queryResult = response.result.reports[0].data.rows;
-
-    let labels = [];
-    let values = [];
-
-    queryResult.forEach((row) => {
-      let label = row.dimensions.join(' - ');
-      let value = row.metrics[0].values[0];
-
-      labels.push(label);
-      values.push(value);
-    });
-
-    setData({
-      ...initialData,
-      labels,
-      values,
-    });
-  };
-
   useEffect(() => {
-    // const customDimensionDonor = ['ga:dimension4'];
-    // getMetricsData(
-    //   viewID,
-    //   startDate,
-    //   endDate,
-    //   [pageViewsMetric],
-    //   customDimensionDonor
-    // )
-    //   .then((resp) => displayCustomResults(resp, donorData, setDonorData))
-    //   .catch((error) => console.error(error));
     // const customDimensionSubscriber = ['ga:dimension5'];
     // getMetricsData(
     //   viewID,
@@ -107,26 +68,14 @@ const Report = (props) => {
         endDate={endDate}
       />
 
-      {/* <section className="section">
-        <h2 className="subtitle">Sessions by audience segment: donor</h2>
-
-        <table className="table is-fullwidth" style={{ width: '100%' }}>
-          <thead>
-            <tr>
-              <th>Donor</th>
-              <th>Sessions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {donorData.labels.map((label, i) => (
-              <tr>
-                <td>{label}</td>
-                <td>{donorData.values[i]}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </section> */}
+      <CustomDimensions
+        viewID={viewID}
+        startDate={startDate}
+        endDate={endDate}
+        metrics={['ga:sessions']}
+        dimensions={['ga:dimension4']}
+        label="Donor"
+      />
 
       {/* <section className="section">
         <h2 className="subtitle">Sessions by audience segment: subscriber</h2>
