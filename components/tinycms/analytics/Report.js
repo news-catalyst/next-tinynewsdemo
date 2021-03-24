@@ -8,6 +8,7 @@ import NewsletterSignupFormData from './NewsletterSignupFormData';
 import ReadingDepthData from './ReadingDepthData';
 import ReadingFrequencyData from './ReadingFrequencyData';
 import ReferralSource from './ReferralSource';
+import PageViews from './PageViews';
 
 const Report = (props) => {
   const INITIAL_STATE = {
@@ -20,33 +21,8 @@ const Report = (props) => {
   // const [eventsData, setEventsData] = useState(INITIAL_STATE);
   // const [donorData, setDonorData] = useState(INITIAL_STATE);
   // const [subscriberData, setSubscriberData] = useState(INITIAL_STATE);
-  const [pageViewReportData, setPageViewReportData] = useState(INITIAL_STATE);
   const [startDate, setStartDate] = useState(addDays(new Date(), -30));
   const [endDate, setEndDate] = useState(new Date());
-
-  const displayResults = (response, initialData, setData) => {
-    const queryResult = response.result.reports[0].data.rows;
-
-    let labels = [];
-    let values = [];
-
-    queryResult.forEach((row) => {
-      let label = row.dimensions[0];
-      if (label === '/') {
-        label += ' (homepage)';
-      }
-      let value = row.metrics[0].values[0];
-
-      labels.push(label);
-      values.push(value);
-    });
-
-    setData({
-      ...initialData,
-      labels,
-      values,
-    });
-  };
 
   const displayCustomResults = (response, initialData, setData) => {
     // console.log('custom dimension response: ', response);
@@ -72,23 +48,6 @@ const Report = (props) => {
   };
 
   useEffect(() => {
-    const pageViewsMetric = 'ga:pageviews';
-
-    const pvDimensions = ['ga:pagePath'];
-    const orderBy = { fieldName: pageViewsMetric, order: 'DESCENDING' };
-    getMetricsData(
-      viewID,
-      startDate,
-      endDate,
-      [pageViewsMetric],
-      pvDimensions,
-      orderBy
-    )
-      .then((resp) =>
-        displayResults(resp, pageViewReportData, setPageViewReportData)
-      )
-      .catch((error) => console.error(error));
-
     // const customDimensionDonor = ['ga:dimension4'];
     // getMetricsData(
     //   viewID,
@@ -99,7 +58,6 @@ const Report = (props) => {
     // )
     //   .then((resp) => displayCustomResults(resp, donorData, setDonorData))
     //   .catch((error) => console.error(error));
-
     // const customDimensionSubscriber = ['ga:dimension5'];
     // getMetricsData(
     //   viewID,
@@ -134,26 +92,8 @@ const Report = (props) => {
 
       <ReferralSource viewID={viewID} startDate={startDate} endDate={endDate} />
 
-      <section className="section">
-        <h2 className="subtitle">Page views</h2>
+      <PageViews viewID={viewID} startDate={startDate} endDate={endDate} />
 
-        <table className="table is-fullwidth" style={{ width: '100%' }}>
-          <thead>
-            <tr>
-              <th>Path</th>
-              <th>Views</th>
-            </tr>
-          </thead>
-          <tbody>
-            {pageViewReportData.labels.map((label, i) => (
-              <tr>
-                <td>{label}</td>
-                <td>{pageViewReportData.values[i]}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </section>
       <ReadingDepthData
         viewID={viewID}
         startDate={startDate}
