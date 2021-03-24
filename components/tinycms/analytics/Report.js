@@ -22,6 +22,7 @@ const Report = (props) => {
   const [geoReportData, setGeoReportData] = useState(INITIAL_STATE);
   const [referralData, setReferralData] = useState(INITIAL_STATE);
   const [readingDepthData, setReadingDepthData] = useState({});
+  const [sortedReadingDepth, setSortedReadingDepth] = useState([]);
   const [startDate, setStartDate] = useState(addDays(new Date(), -30));
   const [endDate, setEndDate] = useState(new Date());
   const [average, setAverage] = useState(0);
@@ -183,6 +184,7 @@ const Report = (props) => {
       }
     });
 
+    var sortable = [];
     Object.keys(collectedData).forEach((path) => {
       let read25 = 0;
       let readFullArticleCount = 0;
@@ -199,8 +201,16 @@ const Report = (props) => {
         readFullArticlePct = (readFullArticleCount / read25) * 100;
       }
       collectedData[path]['readFull'] = Math.round(readFullArticlePct);
+      sortable.push([path, readFullArticlePct]);
     });
 
+    sortable.sort(function (a, b) {
+      return b[1] - a[1];
+    });
+
+    console.log('sortable:', sortable);
+    setSortedReadingDepth(sortable);
+    console.log('sortedReadingDepth:', sortedReadingDepth);
     setReadingDepthData(collectedData);
   };
 
@@ -472,14 +482,14 @@ const Report = (props) => {
               </tr>
             </thead>
             <tbody>
-              {Object.keys(readingDepthData).map((articlePath) => (
+              {sortedReadingDepth.map((item) => (
                 <tr>
-                  <td>{articlePath}</td>
-                  <td>{readingDepthData[articlePath]['25%']}</td>
-                  <td>{readingDepthData[articlePath]['50%']}</td>
-                  <td>{readingDepthData[articlePath]['75%']}</td>
-                  <td>{readingDepthData[articlePath]['100%']}</td>
-                  <td>{readingDepthData[articlePath]['readFull']}%</td>
+                  <td>{item[0]}</td>
+                  <td>{readingDepthData[item[0]]['25%']}</td>
+                  <td>{readingDepthData[item[0]]['50%']}</td>
+                  <td>{readingDepthData[item[0]]['75%']}</td>
+                  <td>{readingDepthData[item[0]]['100%']}</td>
+                  <td>{readingDepthData[item[0]]['readFull']}%</td>
                 </tr>
               ))}
             </tbody>
