@@ -62,12 +62,12 @@ const NewsletterSignupFormData = (props) => {
 
         let sortedRows = [];
         setSortedNewsletter(sortable);
-        sortedNewsletter.map((item) => {
+        sortedNewsletter.map((item, i) => {
           // console.log("item:", item)
           if (item && item[0]) {
             // console.log("item:", item, collectedData[item[0]])
             sortedRows.push(
-              <tr>
+              <tr key={`newsletter-signup-row-${i}`}>
                 <td>{item[0]}</td>
                 <td>
                   {collectedData[item[0]]['Newsletter Modal Impression 1']}

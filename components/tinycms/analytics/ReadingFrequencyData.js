@@ -52,7 +52,7 @@ const ReadingFrequencyData = (props) => {
         </thead>
         <tbody>
           {frequencyData.labels.map((label, i) => (
-            <tr>
+            <tr key={i}>
               <td>{label}</td>
               <td>{frequencyData.values[i]} </td>
             </tr>
