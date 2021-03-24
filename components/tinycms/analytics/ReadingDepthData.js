@@ -69,16 +69,16 @@ const ReadingDepthData = (props) => {
           return b[1] - a[1];
         });
 
-        sortable.map((item) => {
-          if (item && item[0] && readingDepthData[item[0]]) {
+        sortable.map((item, i) => {
+          if (item && item[0] && collectedData[item[0]]) {
             readingDepthRows.push(
-              <tr>
+              <tr key={`reading-depth-row-${i}`}>
                 <td>{item[0]}</td>
-                <td>{readingDepthData[item[0]]['25%']}</td>
-                <td>{readingDepthData[item[0]]['50%']}</td>
-                <td>{readingDepthData[item[0]]['75%']}</td>
-                <td>{readingDepthData[item[0]]['100%']}</td>
-                <td>{readingDepthData[item[0]]['readFull']}%</td>
+                <td>{collectedData[item[0]]['25%']}</td>
+                <td>{collectedData[item[0]]['50%']}</td>
+                <td>{collectedData[item[0]]['75%']}</td>
+                <td>{collectedData[item[0]]['100%']}</td>
+                <td>{collectedData[item[0]]['readFull']}%</td>
               </tr>
             );
           } else {
@@ -87,6 +87,7 @@ const ReadingDepthData = (props) => {
             console.log('collectedData:', collectedData);
           }
         });
+        setReadingDepthTableRows(readingDepthRows);
       })
       .catch((error) => console.error(error));
   }, []);

@@ -5,7 +5,7 @@ export default function MailchimpReport(props) {
   return (
     <div>
       {props.reports.map((report) => (
-        <section className="section">
+        <section className="section" key={`mailchimp-report-${report.id}`}>
           <h2 className="subtitle">
             Newsletter Campaign: {report.campaign_title}
           </h2>
@@ -62,18 +62,20 @@ export default function MailchimpReport(props) {
                 <td>{report.list_stats.unsub_rate * 100}%</td>
               </tr>
               {report.growth.history.map((month) => (
-                <tr>
+                <tr key={`report-growth-row-${month.month}`}>
                   <td>Month: {month.month}</td>
                   <td>
                     <table>
-                      <tr>
-                        <th>Subscribed</th>
-                        <td>{month.subscribed}</td>
-                      </tr>
-                      <tr>
-                        <th>Unsubscribed</th>
-                        <td>{month.unsubscribed}</td>
-                      </tr>
+                      <tbody>
+                        <tr>
+                          <th>Subscribed</th>
+                          <td>{month.subscribed}</td>
+                        </tr>
+                        <tr>
+                          <th>Unsubscribed</th>
+                          <td>{month.unsubscribed}</td>
+                        </tr>
+                      </tbody>
                     </table>
                   </td>
                 </tr>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { addDays } from 'date-fns';
 import { getMetricsData } from '../../../lib/analytics';
-import { formatDate } from '../../../lib/utils';
+import AverageSessionDuration from './AverageSessionDuration';
 import DailySessions from './DailySessions';
 import GeoSessions from './GeoSessions';
 import NewsletterSignupFormData from './NewsletterSignupFormData';
@@ -16,42 +16,14 @@ const Report = (props) => {
   const [viewID, setViewID] = useState(
     process.env.NEXT_PUBLIC_ANALYTICS_VIEW_ID
   );
-  const dimensions = ['ga:date'];
   const sessionsMetric = 'ga:sessions';
   // const [eventsData, setEventsData] = useState(INITIAL_STATE);
   // const [donorData, setDonorData] = useState(INITIAL_STATE);
   // const [subscriberData, setSubscriberData] = useState(INITIAL_STATE);
-  const [timeReportData, setTimeReportData] = useState(INITIAL_STATE);
   const [pageViewReportData, setPageViewReportData] = useState(INITIAL_STATE);
   const [referralData, setReferralData] = useState(INITIAL_STATE);
   const [startDate, setStartDate] = useState(addDays(new Date(), -30));
   const [endDate, setEndDate] = useState(new Date());
-  const [average, setAverage] = useState(0);
-  const [timeAverage, setTimeAverage] = useState(0);
-
-  const displayTimeResults = (response, initialData, setData) => {
-    const queryResult = response.result.reports[0].data.rows;
-    const total = response.result.reports[0].data.totals[0].values[0];
-
-    setTimeAverage(parseInt(total / response.result.reports[0].data.rowCount));
-
-    let labels = [];
-    let values = [];
-
-    queryResult.forEach((row) => {
-      let formattedDate = formatDate(row.dimensions[0]);
-      let value = row.metrics[0].values[0];
-
-      labels.push(formattedDate);
-      values.push(value);
-    });
-
-    setData({
-      ...initialData,
-      labels,
-      values,
-    });
-  };
 
   const displayResults = (response, initialData, setData) => {
     const queryResult = response.result.reports[0].data.rows;
@@ -102,13 +74,6 @@ const Report = (props) => {
 
   useEffect(() => {
     const pageViewsMetric = 'ga:pageviews';
-    const timeMetric = 'ga:avgSessionDuration';
-
-    getMetricsData(viewID, startDate, endDate, [timeMetric], dimensions)
-      .then((resp) =>
-        displayTimeResults(resp, timeReportData, setTimeReportData)
-      )
-      .catch((error) => console.error(error));
 
     const pvDimensions = ['ga:pagePath'];
     const orderBy = { fieldName: pageViewsMetric, order: 'DESCENDING' };
@@ -172,38 +137,14 @@ const Report = (props) => {
         </p>
       </section>
 
-      <DailySessions
-        setTimeAverage={setTimeAverage}
+      <DailySessions viewID={viewID} startDate={startDate} endDate={endDate} />
+
+      <GeoSessions viewID={viewID} startDate={startDate} endDate={endDate} />
+      <AverageSessionDuration
         viewID={viewID}
         startDate={startDate}
         endDate={endDate}
       />
-
-      <GeoSessions viewID={viewID} startDate={startDate} endDate={endDate} />
-      <section className="section">
-        <div className="content">
-          <p className="subtitle is-5">Average session duration</p>
-
-          <p>Overall average: {timeAverage} seconds</p>
-
-          <table className="table is-fullwidth" style={{ width: '100%' }}>
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>Seconds</th>
-              </tr>
-            </thead>
-            <tbody>
-              {timeReportData.labels.map((label, i) => (
-                <tr>
-                  <td> {label} </td>
-                  <td> {timeReportData.values[i]} </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </section>
 
       <section className="section">
         <div className="content">

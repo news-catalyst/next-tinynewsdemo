@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { getMetricsData } from '../../../lib/analytics';
 
-const DailySessions = (props) => {
+const GeoSessions = (props) => {
   const INITIAL_STATE = {
     labels: [],
     values: [],
@@ -57,7 +57,7 @@ const DailySessions = (props) => {
           </thead>
           <tbody>
             {geoReportData.labels.map((label, i) => (
-              <tr>
+              <tr key={`geo-report-row-${i}`}>
                 <td>{label}</td>
                 <td> {geoReportData.values[i]} </td>
               </tr>
@@ -69,4 +69,4 @@ const DailySessions = (props) => {
   );
 };
 
-export default DailySessions;
+export default GeoSessions;
