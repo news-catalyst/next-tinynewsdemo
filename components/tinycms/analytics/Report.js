@@ -3,6 +3,7 @@ import { addDays } from 'date-fns';
 import { getMetricsData } from '../../../lib/analytics';
 import { formatDate } from '../../../lib/utils';
 import DailySessions from './DailySessions';
+import GeoSessions from './GeoSessions';
 import NewsletterSignupFormData from './NewsletterSignupFormData';
 import ReadingDepthData from './ReadingDepthData';
 import ReadingFrequencyData from './ReadingFrequencyData';
@@ -22,7 +23,6 @@ const Report = (props) => {
   // const [subscriberData, setSubscriberData] = useState(INITIAL_STATE);
   const [timeReportData, setTimeReportData] = useState(INITIAL_STATE);
   const [pageViewReportData, setPageViewReportData] = useState(INITIAL_STATE);
-  const [geoReportData, setGeoReportData] = useState(INITIAL_STATE);
   const [referralData, setReferralData] = useState(INITIAL_STATE);
   const [startDate, setStartDate] = useState(addDays(new Date(), -30));
   const [endDate, setEndDate] = useState(new Date());
@@ -77,27 +77,6 @@ const Report = (props) => {
     });
   };
 
-  const displayGeo = (response) => {
-    const queryResult = response.result.reports[0].data.rows;
-
-    let labels = [];
-    let values = [];
-
-    queryResult.forEach((row) => {
-      let label = row.dimensions.join(' - ');
-      let value = row.metrics[0].values[0];
-
-      labels.push(label);
-      values.push(value);
-    });
-
-    setGeoReportData({
-      ...geoReportData,
-      labels,
-      values,
-    });
-  };
-
   const displayCustomResults = (response, initialData, setData) => {
     // console.log('custom dimension response: ', response);
 
@@ -144,17 +123,6 @@ const Report = (props) => {
       .then((resp) =>
         displayResults(resp, pageViewReportData, setPageViewReportData)
       )
-      .catch((error) => console.error(error));
-
-    const geoDimensions = ['ga:country', 'ga:region'];
-    getMetricsData(
-      viewID,
-      startDate,
-      endDate,
-      [sessionsMetric, pageViewsMetric],
-      geoDimensions
-    )
-      .then((resp) => displayGeo(resp))
       .catch((error) => console.error(error));
 
     // const customDimensionDonor = ['ga:dimension4'];
@@ -211,28 +179,7 @@ const Report = (props) => {
         endDate={endDate}
       />
 
-      <section className="section">
-        <div className="content">
-          <p className="subtitle is-5">Sessions by geographic region</p>
-
-          <table className="table is-fullwidth" style={{ width: '100%' }}>
-            <thead>
-              <tr>
-                <th>Country - Region</th>
-                <th>Sessions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {geoReportData.labels.map((label, i) => (
-                <tr>
-                  <td>{label}</td>
-                  <td> {geoReportData.values[i]} </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </section>
+      <GeoSessions viewID={viewID} startDate={startDate} endDate={endDate} />
       <section className="section">
         <div className="content">
           <p className="subtitle is-5">Average session duration</p>
