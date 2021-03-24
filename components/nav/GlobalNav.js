@@ -14,7 +14,8 @@ export default function GlobalNav({ metadata, sections }) {
 
   let title;
   if (metadata) {
-    title = metadata['homepageTitle'];
+    console.log(metadata);
+    title = metadata['shortName'];
   }
 
   return (
