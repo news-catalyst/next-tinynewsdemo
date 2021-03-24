@@ -7,32 +7,35 @@ const ReadingFrequencyData = (props) => {
     values: [],
   };
   const [frequencyData, setFrequencyData] = useState(INITIAL_STATE);
-  const pageViewsMetric = 'ga:pageviews';
 
-  const customDimensionFrequency = ['ga:dimension2'];
-  getMetricsData(
-    props.viewID,
-    props.startDate,
-    props.endDate,
-    [pageViewsMetric],
-    customDimensionFrequency
-  )
-    .then((response) => {
-      const queryResult = response.result.reports[0].data.rows;
+  useEffect(() => {
+    const pageViewsMetric = 'ga:pageviews';
 
-      let labels = [];
-      let values = [];
+    const customDimensionFrequency = ['ga:dimension2'];
+    getMetricsData(
+      props.viewID,
+      props.startDate,
+      props.endDate,
+      [pageViewsMetric],
+      customDimensionFrequency
+    )
+      .then((response) => {
+        const queryResult = response.result.reports[0].data.rows;
 
-      queryResult.forEach((row) => {
-        let label = row.dimensions.join(' - ');
-        let value = row.metrics[0].values[0];
+        let labels = [];
+        let values = [];
 
-        labels.push(label);
-        values.push(value);
-      });
-      setFrequencyData({ ...frequencyData, labels, values });
-    })
-    .catch((error) => console.error(error));
+        queryResult.forEach((row) => {
+          let label = row.dimensions.join(' - ');
+          let value = row.metrics[0].values[0];
+
+          labels.push(label);
+          values.push(value);
+        });
+        setFrequencyData({ ...frequencyData, labels, values });
+      })
+      .catch((error) => console.error(error));
+  }, []);
 
   return (
     <section className="section">
