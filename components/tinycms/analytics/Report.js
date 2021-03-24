@@ -7,6 +7,7 @@ import GeoSessions from './GeoSessions';
 import NewsletterSignupFormData from './NewsletterSignupFormData';
 import ReadingDepthData from './ReadingDepthData';
 import ReadingFrequencyData from './ReadingFrequencyData';
+import ReferralSource from './ReferralSource';
 
 const Report = (props) => {
   const INITIAL_STATE = {
@@ -16,12 +17,10 @@ const Report = (props) => {
   const [viewID, setViewID] = useState(
     process.env.NEXT_PUBLIC_ANALYTICS_VIEW_ID
   );
-  const sessionsMetric = 'ga:sessions';
   // const [eventsData, setEventsData] = useState(INITIAL_STATE);
   // const [donorData, setDonorData] = useState(INITIAL_STATE);
   // const [subscriberData, setSubscriberData] = useState(INITIAL_STATE);
   const [pageViewReportData, setPageViewReportData] = useState(INITIAL_STATE);
-  const [referralData, setReferralData] = useState(INITIAL_STATE);
   const [startDate, setStartDate] = useState(addDays(new Date(), -30));
   const [endDate, setEndDate] = useState(new Date());
 
@@ -113,19 +112,6 @@ const Report = (props) => {
     //     displayCustomResults(resp, subscriberData, setSubscriberData)
     //   )
     //   .catch((error) => console.error(error));
-
-    const referralDimension = ['ga:source'];
-    getMetricsData(
-      viewID,
-      startDate,
-      endDate,
-      [sessionsMetric],
-      referralDimension
-    )
-      .then((resp) => {
-        displayResults(resp, referralData, setReferralData);
-      })
-      .catch((error) => console.error(error));
   }, []);
 
   return (
@@ -146,28 +132,7 @@ const Report = (props) => {
         endDate={endDate}
       />
 
-      <section className="section">
-        <div className="content">
-          <h2 className="subtitle">Sessions by referral source</h2>
-
-          <table className="table is-fullwidth" style={{ width: '100%' }}>
-            <thead>
-              <tr>
-                <th>Subscriber</th>
-                <th>Sessions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {referralData.labels.map((label, i) => (
-                <tr>
-                  <td>{label}</td>
-                  <td>{referralData.values[i]}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </section>
+      <ReferralSource viewID={viewID} startDate={startDate} endDate={endDate} />
 
       <section className="section">
         <h2 className="subtitle">Page views</h2>
