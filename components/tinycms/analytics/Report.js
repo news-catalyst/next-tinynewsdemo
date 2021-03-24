@@ -173,14 +173,32 @@ const Report = (props) => {
 
       if (articlePath !== '/') {
         let percentage = row.dimensions[1];
-
+        let count = row.metrics[0].values[0];
         if (collectedData[articlePath]) {
-          collectedData[articlePath][percentage] = row.metrics[0].values[0];
+          collectedData[articlePath][percentage] = count;
         } else {
           collectedData[articlePath] = {};
-          collectedData[articlePath][percentage] = row.metrics[0].values[0];
+          collectedData[articlePath][percentage] = count;
         }
       }
+    });
+
+    Object.keys(collectedData).forEach((path) => {
+      let read25 = 0;
+      let readFullArticleCount = 0;
+      Object.keys(collectedData[path]).forEach((pct) => {
+        if (pct === '25%') {
+          read25 = collectedData[path][pct];
+        }
+        if (pct === '100%') {
+          readFullArticleCount = collectedData[path][pct];
+        }
+      });
+      let readFullArticlePct = 0;
+      if (read25 > 0) {
+        readFullArticlePct = (readFullArticleCount / read25) * 100;
+      }
+      collectedData[path]['readFull'] = Math.round(readFullArticlePct);
     });
 
     setReadingDepthData(collectedData);
@@ -450,6 +468,7 @@ const Report = (props) => {
                 <th>50%</th>
                 <th>75%</th>
                 <th>100%</th>
+                <th>Read Full</th>
               </tr>
             </thead>
             <tbody>
@@ -460,6 +479,7 @@ const Report = (props) => {
                   <td>{readingDepthData[articlePath]['50%']}</td>
                   <td>{readingDepthData[articlePath]['75%']}</td>
                   <td>{readingDepthData[articlePath]['100%']}</td>
+                  <td>{readingDepthData[articlePath]['readFull']}%</td>
                 </tr>
               ))}
             </tbody>
