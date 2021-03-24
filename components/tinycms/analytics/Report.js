@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { addDays } from 'date-fns';
 import { getMetricsData } from '../../../lib/analytics';
 import { formatDate } from '../../../lib/utils';
+import DailySessions from './DailySessions';
 import NewsletterSignupFormData from './NewsletterSignupFormData';
 import ReadingDepthData from './ReadingDepthData';
 import ReadingFrequencyData from './ReadingFrequencyData';
@@ -14,10 +15,11 @@ const Report = (props) => {
   const [viewID, setViewID] = useState(
     process.env.NEXT_PUBLIC_ANALYTICS_VIEW_ID
   );
-  const [reportData, setReportData] = useState(INITIAL_STATE);
+  const dimensions = ['ga:date'];
+  const sessionsMetric = 'ga:sessions';
   // const [eventsData, setEventsData] = useState(INITIAL_STATE);
   // const [donorData, setDonorData] = useState(INITIAL_STATE);
-  const [subscriberData, setSubscriberData] = useState(INITIAL_STATE);
+  // const [subscriberData, setSubscriberData] = useState(INITIAL_STATE);
   const [timeReportData, setTimeReportData] = useState(INITIAL_STATE);
   const [pageViewReportData, setPageViewReportData] = useState(INITIAL_STATE);
   const [geoReportData, setGeoReportData] = useState(INITIAL_STATE);
@@ -120,15 +122,8 @@ const Report = (props) => {
   };
 
   useEffect(() => {
-    const sessionsMetric = 'ga:sessions';
-    const usersMetric = 'ga:users';
     const pageViewsMetric = 'ga:pageviews';
     const timeMetric = 'ga:avgSessionDuration';
-
-    const dimensions = ['ga:date'];
-    getMetricsData(viewID, startDate, endDate, [sessionsMetric], dimensions)
-      .then((resp) => displayTimeResults(resp, reportData, setReportData))
-      .catch((error) => console.error(error));
 
     getMetricsData(viewID, startDate, endDate, [timeMetric], dimensions)
       .then((resp) =>
@@ -198,14 +193,6 @@ const Report = (props) => {
         displayResults(resp, referralData, setReferralData);
       })
       .catch((error) => console.error(error));
-
-    let eventMetrics = ['ga:totalEvents'];
-    let eventDimensions = [
-      'ga:eventCategory',
-      'ga:eventAction',
-      'ga:eventLabel',
-      'ga:pagePath',
-    ];
   }, []);
 
   return (
@@ -216,28 +203,14 @@ const Report = (props) => {
           {endDate.toLocaleDateString()}.
         </p>
       </section>
-      <section className="section">
-        <div className="content">
-          <p className="subtitle is-5">Sessions per day</p>
 
-          <table className="table is-fullwidth" style={{ width: '100%' }}>
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>Sessions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {reportData.labels.map((label, i) => (
-                <tr>
-                  <td>{label}</td>
-                  <td>{reportData.values[i]}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </section>
+      <DailySessions
+        setTimeAverage={setTimeAverage}
+        viewID={viewID}
+        startDate={startDate}
+        endDate={endDate}
+      />
+
       <section className="section">
         <div className="content">
           <p className="subtitle is-5">Sessions by geographic region</p>
