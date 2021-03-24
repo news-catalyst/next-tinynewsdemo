@@ -1,3 +1,5 @@
+require('dotenv').config({ path: '.env.local' })
+
 module.exports = {
   images: {
     domains: [
@@ -8,7 +10,7 @@ module.exports = {
     ],
   },
   i18n: {
-    locales: ['en-US', 'es'],
-    defaultLocale: 'en-US'
+    locales: process.env.LOCALES.split(','),
+    defaultLocale: 'en-US',
   }
 }
