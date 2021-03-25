@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 import { addDays } from 'date-fns';
 import NewsletterSignupFormData from './NewsletterSignupFormData';
-import ReadingDepthData from './ReadingDepthData';
 import ReadingFrequencyData from './ReadingFrequencyData';
-import PageViews from './PageViews';
 import CustomDimensions from './CustomDimensions';
 
 const Report = (props) => {
@@ -22,14 +20,6 @@ const Report = (props) => {
         </p>
       </section>
 
-      <PageViews viewID={viewID} startDate={startDate} endDate={endDate} />
-
-      <ReadingDepthData
-        viewID={viewID}
-        startDate={startDate}
-        endDate={endDate}
-      />
-
       <section className="section"></section>
       <ReadingFrequencyData
         viewID={viewID}
@@ -45,27 +35,6 @@ const Report = (props) => {
         dimensions={['ga:dimension4']}
         label="Donor"
       />
-
-      {/* <section className="section">
-        <h2 className="subtitle">Sessions by audience segment: subscriber</h2>
-
-        <table className="table is-fullwidth" style={{ width: '100%' }}>
-          <thead>
-            <tr>
-              <th>Subscriber</th>
-              <th>Sessions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {subscriberData.labels.map((label, i) => (
-              <tr>
-                <td>{label}</td>
-                <td>{subscriberData.values[i]}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </section> */}
 
       <p className="title is-2">Newsletter Data</p>
 
