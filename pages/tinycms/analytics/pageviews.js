@@ -5,6 +5,7 @@ import AdminLayout from '../../../components/AdminLayout';
 import AdminNav from '../../../components/nav/AdminNav';
 import PageViews from '../../../components/tinycms/analytics/PageViews';
 import ReadingDepthData from '../../../components/tinycms/analytics/ReadingDepthData';
+import ReadingFrequencyData from '../../../components/tinycms/analytics/ReadingFrequencyData';
 
 export default function PageViewsPage(props) {
   const [isSignedIn, setIsSignedIn] = useState(false);
@@ -83,7 +84,9 @@ export default function PageViewsPage(props) {
       <AdminNav homePageEditor={false} />
       <div className="analytics">
         <section className="section">
-          <h1 className="title">Analytics Dashboard v1: Page Views</h1>
+          <h1 className="title">
+            Analytics Dashboard v1: Page Views & Reading
+          </h1>
         </section>
         {!isSignedIn ? (
           <div id="signin-button"></div>
@@ -104,6 +107,12 @@ export default function PageViewsPage(props) {
               />
 
               <ReadingDepthData
+                viewID={viewID}
+                startDate={startDate}
+                endDate={endDate}
+              />
+
+              <ReadingFrequencyData
                 viewID={viewID}
                 startDate={startDate}
                 endDate={endDate}

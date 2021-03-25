@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { addDays } from 'date-fns';
-import ReadingFrequencyData from './ReadingFrequencyData';
 import CustomDimensions from './CustomDimensions';
 
 const Report = (props) => {
@@ -20,12 +19,6 @@ const Report = (props) => {
       </section>
 
       <section className="section"></section>
-      <ReadingFrequencyData
-        viewID={viewID}
-        startDate={startDate}
-        endDate={endDate}
-      />
-
       <CustomDimensions
         viewID={viewID}
         startDate={startDate}
