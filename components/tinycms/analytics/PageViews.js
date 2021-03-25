@@ -8,6 +8,8 @@ const PageViews = (props) => {
   };
   const [pageViewReportData, setPageViewReportData] = useState(INITIAL_STATE);
 
+  let pv = {};
+
   useEffect(() => {
     const pageViewsMetric = 'ga:pageviews';
     const pvDimensions = ['ga:pagePath'];
@@ -29,13 +31,19 @@ const PageViews = (props) => {
 
         queryResult.forEach((row) => {
           let label = row.dimensions[0];
-          if (label === '/') {
-            label += ' (homepage)';
-          }
-          let value = row.metrics[0].values[0];
 
-          labels.push(label);
-          values.push(value);
+          if (!/tinycms/.test(label)) {
+            console.log('skip tinycms');
+
+            if (label === '/') {
+              label += ' (homepage)';
+            }
+            let value = row.metrics[0].values[0];
+
+            labels.push(label);
+            values.push(value);
+            pv[label] = value;
+          }
         });
 
         setPageViewReportData({
@@ -43,6 +51,7 @@ const PageViews = (props) => {
           labels,
           values,
         });
+        props.setPageViews(pv);
       })
       .catch((error) => console.error(error));
   }, []);
