@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { addDays } from 'date-fns';
-import CustomDimensions from './CustomDimensions';
 
 const Report = (props) => {
   const [viewID, setViewID] = useState(
@@ -19,14 +18,6 @@ const Report = (props) => {
       </section>
 
       <section className="section"></section>
-      <CustomDimensions
-        viewID={viewID}
-        startDate={startDate}
-        endDate={endDate}
-        metrics={['ga:sessions']}
-        dimensions={['ga:dimension4']}
-        label="Donor"
-      />
     </div>
   );
 };

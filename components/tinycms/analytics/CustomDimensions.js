@@ -56,12 +56,18 @@ const CustomDimensions = (props) => {
           </tr>
         </thead>
         <tbody>
-          {data.labels.map((label, i) => (
+          {data.labels.length > 0 &&
+            data.labels.map((label, i) => (
+              <tr>
+                <td>{label}</td>
+                <td>{data.values[i]}</td>
+              </tr>
+            ))}
+          {data.labels.length === 0 && (
             <tr>
-              <td>{label}</td>
-              <td>{data.values[i]}</td>
+              <td colSpan="2">No data found</td>
             </tr>
-          ))}
+          )}
         </tbody>
       </table>
     </section>
