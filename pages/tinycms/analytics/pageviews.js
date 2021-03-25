@@ -8,6 +8,7 @@ import ReadingDepthData from '../../../components/tinycms/analytics/ReadingDepth
 import ReadingFrequencyData from '../../../components/tinycms/analytics/ReadingFrequencyData';
 
 export default function PageViewsPage(props) {
+  const [pageViews, setPageViews] = useState({});
   const [isSignedIn, setIsSignedIn] = useState(false);
 
   const [viewID, setViewID] = useState(
@@ -104,12 +105,15 @@ export default function PageViewsPage(props) {
                 viewID={viewID}
                 startDate={startDate}
                 endDate={endDate}
+                setPageViews={setPageViews}
+                pageViews={pageViews}
               />
 
               <ReadingDepthData
                 viewID={viewID}
                 startDate={startDate}
                 endDate={endDate}
+                pageViews={pageViews}
               />
 
               <ReadingFrequencyData
