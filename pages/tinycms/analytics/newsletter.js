@@ -3,9 +3,17 @@ import { addDays } from 'date-fns';
 import mailchimp from '@mailchimp/mailchimp_marketing';
 import AdminLayout from '../../../components/AdminLayout';
 import AdminNav from '../../../components/nav/AdminNav';
+import NewsletterSignupFormData from '../../../components/tinycms/analytics/NewsletterSignupFormData';
+import MailchimpReport from '../../../components/tinycms/analytics/MailchimpReport';
 
-export default function AnalyticsIndex(props) {
+export default function NewsletterOverview(props) {
   const [isSignedIn, setIsSignedIn] = useState(false);
+
+  const [viewID, setViewID] = useState(
+    process.env.NEXT_PUBLIC_ANALYTICS_VIEW_ID
+  );
+  const [startDate, setStartDate] = useState(addDays(new Date(), -30));
+  const [endDate, setEndDate] = useState(new Date());
 
   const initAuth = () => {
     return window.gapi.auth2.init({
@@ -75,28 +83,34 @@ export default function AnalyticsIndex(props) {
       <AdminNav homePageEditor={false} />
       <div className="analytics">
         <section className="section">
-          <h1 className="title">Analytics Dashboard v1</h1>
+          <h1 className="title">
+            Analytics Dashboard v1: Newsletters Overview
+          </h1>
         </section>
         {!isSignedIn ? (
           <div id="signin-button"></div>
         ) : (
           <div>
-            <ul>
-              <li>
-                <a href="/tinycms/analytics/sessions">Sessions Overview</a>
-              </li>
-              <li>
-                <a href="/tinycms/analytics/newsletter">Newsletters Overview</a>
-              </li>
-              <li>
-                <a href="/tinycms/analytics/pageviews">
-                  Page Views & Reading Overview
-                </a>
-              </li>
-              <li>
-                <a href="/tinycms/analytics/audience">Audience Overview</a>
-              </li>
-            </ul>
+            <div className="container">
+              <section className="section">
+                <p className="content">
+                  Data from {startDate.toLocaleDateString()} to{' '}
+                  {endDate.toLocaleDateString()}.
+                </p>
+              </section>
+
+              <NewsletterSignupFormData
+                viewID={viewID}
+                startDate={startDate}
+                endDate={endDate}
+              />
+
+              <MailchimpReport
+                mailchimpKey={props.mailchimpKey}
+                mailchimpServer={props.mailchimpServer}
+                reports={props.reports}
+              />
+            </div>
           </div>
         )}
       </div>
@@ -107,10 +121,28 @@ export async function getServerSideProps(context) {
   const clientID = process.env.ANALYTICS_CLIENT_ID;
   const clientSecret = process.env.ANALYTICS_CLIENT_SECRET;
 
+  mailchimp.setConfig({
+    apiKey: process.env.MAILCHIMP_API_KEY,
+    server: process.env.MAILCHIMP_SERVER_PREFIX,
+  });
+
+  let fullReports = [];
+  let reportsResponse = await mailchimp.reports.getAllCampaignReports({
+    since_send_time: addDays(new Date(), -30),
+  });
+  let report = reportsResponse.reports[0];
+  let listId = report.list_id;
+  let data = await mailchimp.lists.getListGrowthHistory(listId);
+  report['growth'] = data;
+  fullReports.push(report);
+
   return {
     props: {
       clientID: clientID,
       clientSecret: clientSecret,
+      mailchimpKey: process.env.MAILCHIMP_API_KEY,
+      mailchimpServer: process.env.MAILCHIMP_SERVER_PREFIX,
+      reports: fullReports,
     },
   };
 }
