@@ -46,7 +46,7 @@ const GeoSessions = (props) => {
   return (
     <section className="section">
       <div className="content">
-        <p className="subtitle is-5">Sessions by geographic region</p>
+        <h2 className="subtitle">Sessions by geographic region</h2>
 
         <table className="table is-fullwidth" style={{ width: '100%' }}>
           <thead>

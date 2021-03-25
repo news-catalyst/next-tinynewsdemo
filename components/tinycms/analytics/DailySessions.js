@@ -49,7 +49,7 @@ const DailySessions = (props) => {
   return (
     <section className="section">
       <div className="content">
-        <p className="subtitle is-5">Sessions per day</p>
+        <h2 className="subtitle">Sessions per day</h2>
 
         <table className="table is-fullwidth" style={{ width: '100%' }}>
           <thead>
