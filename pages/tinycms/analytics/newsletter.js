@@ -3,11 +3,17 @@ import { addDays } from 'date-fns';
 import mailchimp from '@mailchimp/mailchimp_marketing';
 import AdminLayout from '../../../components/AdminLayout';
 import AdminNav from '../../../components/nav/AdminNav';
-import Report from '../../../components/tinycms/analytics/Report';
+import NewsletterSignupFormData from '../../../components/tinycms/analytics/NewsletterSignupFormData';
 import MailchimpReport from '../../../components/tinycms/analytics/MailchimpReport';
 
-export default function AnalyticsIndex(props) {
+export default function NewsletterOverview(props) {
   const [isSignedIn, setIsSignedIn] = useState(false);
+
+  const [viewID, setViewID] = useState(
+    process.env.NEXT_PUBLIC_ANALYTICS_VIEW_ID
+  );
+  const [startDate, setStartDate] = useState(addDays(new Date(), -30));
+  const [endDate, setEndDate] = useState(new Date());
 
   const initAuth = () => {
     return window.gapi.auth2.init({
@@ -77,13 +83,34 @@ export default function AnalyticsIndex(props) {
       <AdminNav homePageEditor={false} />
       <div className="analytics">
         <section className="section">
-          <h1 className="title">Analytics Dashboard v1</h1>
+          <h1 className="title">
+            Analytics Dashboard v1: Newsletters Overview
+          </h1>
         </section>
         {!isSignedIn ? (
           <div id="signin-button"></div>
         ) : (
           <div>
-            <Report />
+            <div className="container">
+              <section className="section">
+                <p className="content">
+                  Data from {startDate.toLocaleDateString()} to{' '}
+                  {endDate.toLocaleDateString()}.
+                </p>
+              </section>
+
+              <NewsletterSignupFormData
+                viewID={viewID}
+                startDate={startDate}
+                endDate={endDate}
+              />
+
+              <MailchimpReport
+                mailchimpKey={props.mailchimpKey}
+                mailchimpServer={props.mailchimpServer}
+                reports={props.reports}
+              />
+            </div>
           </div>
         )}
       </div>

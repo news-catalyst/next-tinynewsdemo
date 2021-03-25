@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { getMetricsData } from '../../../lib/analytics';
 
 const NewsletterSignupFormData = (props) => {
-  const [sortedNewsletter, setSortedNewsletter] = useState([]);
   const [sortedNewsletterRows, setSortedNewsletterRows] = useState([]);
 
   useEffect(() => {
@@ -61,8 +60,7 @@ const NewsletterSignupFormData = (props) => {
         });
 
         let sortedRows = [];
-        setSortedNewsletter(sortable);
-        sortedNewsletter.map((item, i) => {
+        sortable.map((item, i) => {
           // console.log("item:", item)
           if (item && item[0]) {
             // console.log("item:", item, collectedData[item[0]])

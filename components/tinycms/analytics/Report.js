@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { addDays } from 'date-fns';
-import NewsletterSignupFormData from './NewsletterSignupFormData';
 import ReadingFrequencyData from './ReadingFrequencyData';
 import CustomDimensions from './CustomDimensions';
 
@@ -34,14 +33,6 @@ const Report = (props) => {
         metrics={['ga:sessions']}
         dimensions={['ga:dimension4']}
         label="Donor"
-      />
-
-      <p className="title is-2">Newsletter Data</p>
-
-      <NewsletterSignupFormData
-        viewID={viewID}
-        startDate={startDate}
-        endDate={endDate}
       />
     </div>
   );
