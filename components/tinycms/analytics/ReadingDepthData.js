@@ -57,12 +57,20 @@ const ReadingDepthData = (props) => {
               readFullArticleCount = collectedData[path][pct];
             }
           });
-          let readFullArticlePct = 0;
-          if (read25 > 0) {
-            readFullArticlePct = (readFullArticleCount / read25) * 100;
+
+          let conversion = 0;
+          let pageViews = 0;
+          if (
+            props.pageViews &&
+            props.pageViews[path] &&
+            props.pageViews[path] > 0
+          ) {
+            conversion = (readFullArticleCount / props.pageViews[path]) * 100;
+            pageViews = props.pageViews[path];
           }
-          collectedData[path]['readFull'] = Math.round(readFullArticlePct);
-          sortable.push([path, readFullArticlePct]);
+          collectedData[path]['pageViews'] = pageViews;
+          collectedData[path]['conversion'] = Math.round(conversion);
+          sortable.push([path, conversion]);
         });
 
         sortable.sort(function (a, b) {
@@ -78,7 +86,8 @@ const ReadingDepthData = (props) => {
                 <td>{collectedData[item[0]]['50%']}</td>
                 <td>{collectedData[item[0]]['75%']}</td>
                 <td>{collectedData[item[0]]['100%']}</td>
-                <td>{collectedData[item[0]]['readFull']}%</td>
+                <td>{collectedData[item[0]]['pageViews']}</td>
+                <td>{collectedData[item[0]]['conversion']}%</td>
               </tr>
             );
           } else {
@@ -90,7 +99,7 @@ const ReadingDepthData = (props) => {
         setReadingDepthTableRows(readingDepthRows);
       })
       .catch((error) => console.error(error));
-  }, []);
+  }, [props.pageViews]);
 
   return (
     <section className="section">
@@ -109,7 +118,8 @@ const ReadingDepthData = (props) => {
               <th>50%</th>
               <th>75%</th>
               <th>100%</th>
-              <th>Read Full</th>
+              <th>Page Views</th>
+              <th>Read Entire Article</th>
             </tr>
           </thead>
           <tbody>{readingDepthTableRows}</tbody>
