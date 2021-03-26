@@ -3,6 +3,7 @@ import { getMetricsData } from '../../../lib/analytics';
 
 const NewsletterSignupFormData = (props) => {
   const [sortedNewsletterRows, setSortedNewsletterRows] = useState([]);
+  const [frequencySignups, setFrequencySignups] = useState([]);
 
   useEffect(() => {
     let eventMetrics = ['ga:totalEvents'];
@@ -11,8 +12,39 @@ const NewsletterSignupFormData = (props) => {
       'ga:eventAction',
       'ga:eventLabel',
       'ga:pagePath',
-      'ga:dimension2',
     ];
+    getMetricsData(
+      props.viewID,
+      props.startDate,
+      props.endDate,
+      eventMetrics,
+      ['ga:eventCategory', 'ga:eventAction', 'ga:eventLabel', 'ga:dimension2'],
+      {
+        filters:
+          'ga:eventCategory==NTG Newsletter;ga:eventAction==Newsletter Signup',
+      }
+    ).then((resp) => {
+      const queryResult = resp.result.reports[0].data.rows;
+      console.log('dimension2 results:', queryResult);
+      let collectedData = {};
+      queryResult.forEach((row) => {
+        let frequency = row.dimensions[3];
+        let signupCount = row.metrics[0].values[0];
+        collectedData[frequency] = signupCount;
+      });
+      var sortable = [];
+      Object.keys(collectedData).forEach((key) => {
+        let signups = collectedData[key];
+        sortable.push([key, signups]);
+      });
+
+      sortable.sort(function (a, b) {
+        return b[1] - a[1];
+      });
+
+      setFrequencySignups(sortable);
+    });
+
     getMetricsData(
       props.viewID,
       props.startDate,
@@ -84,21 +116,43 @@ const NewsletterSignupFormData = (props) => {
   }, []);
 
   return (
-    <section className="section">
-      <h2 className="subtitle">Website Signup Form</h2>
+    <>
+      <section className="section">
+        <h2 className="subtitle">Website Signup Form</h2>
 
-      <table className="table is-fullwidth" style={{ width: '100%' }}>
-        <thead>
-          <tr>
-            <th>Location</th>
-            <th>Views</th>
-            <th>Signups</th>
-            <th>Conversion Rate</th>
-          </tr>
-        </thead>
-        <tbody>{sortedNewsletterRows}</tbody>
-      </table>
-    </section>
+        <table className="table is-fullwidth" style={{ width: '100%' }}>
+          <thead>
+            <tr>
+              <th>Location</th>
+              <th>Views</th>
+              <th>Signups</th>
+              <th>Conversion Rate</th>
+            </tr>
+          </thead>
+          <tbody>{sortedNewsletterRows}</tbody>
+        </table>
+      </section>
+      <section className="section">
+        <h2 className="subtitle">Signups by Reading Frequency</h2>
+
+        <table className="table is-fullwidth" style={{ width: '100%' }}>
+          <thead>
+            <tr>
+              <th>Articles Read</th>
+              <th>Signups</th>
+            </tr>
+          </thead>
+          <tbody>
+            {frequencySignups.map((item, i) => (
+              <tr key={`frequency-signup-row-${i}`}>
+                <td>{item[0]}</td>
+                <td>{item[1]}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </section>
+    </>
   );
 };
 export default NewsletterSignupFormData;
