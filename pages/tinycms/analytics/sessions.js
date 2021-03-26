@@ -99,7 +99,6 @@ export default function SessionsOverview(props) {
                   Data from {startDate.toLocaleDateString()} to{' '}
                   {endDate.toLocaleDateString()}.
                 </p>
-
                 <DatePicker
                   selected={startDate}
                   onChange={(date) => setStartDate(date)}
@@ -107,6 +106,7 @@ export default function SessionsOverview(props) {
                   startDate={startDate}
                   endDate={endDate}
                 />
+                <br />
                 <DatePicker
                   selected={endDate}
                   onChange={(date) => setEndDate(date)}
