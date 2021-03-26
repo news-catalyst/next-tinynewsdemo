@@ -7,6 +7,8 @@ import AverageSessionDuration from '../../../components/tinycms/analytics/Averag
 import DailySessions from '../../../components/tinycms/analytics/DailySessions';
 import GeoSessions from '../../../components/tinycms/analytics/GeoSessions';
 import ReferralSource from '../../../components/tinycms/analytics/ReferralSource';
+import DatePicker from 'react-datepicker';
+import dateStyles from '../../../styles/datepicker';
 
 export default function SessionsOverview(props) {
   const [isSignedIn, setIsSignedIn] = useState(false);
@@ -97,6 +99,22 @@ export default function SessionsOverview(props) {
                   Data from {startDate.toLocaleDateString()} to{' '}
                   {endDate.toLocaleDateString()}.
                 </p>
+
+                <DatePicker
+                  selected={startDate}
+                  onChange={(date) => setStartDate(date)}
+                  selectsStart
+                  startDate={startDate}
+                  endDate={endDate}
+                />
+                <DatePicker
+                  selected={endDate}
+                  onChange={(date) => setEndDate(date)}
+                  selectsEnd
+                  startDate={startDate}
+                  endDate={endDate}
+                  minDate={startDate}
+                />
               </section>
 
               <DailySessions
@@ -125,6 +143,9 @@ export default function SessionsOverview(props) {
           </div>
         )}
       </div>
+      <style jsx global>
+        {dateStyles}
+      </style>
     </AdminLayout>
   );
 }
