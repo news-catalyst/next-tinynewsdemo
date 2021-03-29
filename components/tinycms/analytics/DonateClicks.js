@@ -2,9 +2,51 @@ import React, { useState, useEffect } from 'react';
 import { getMetricsData } from '../../../lib/analytics';
 
 const DonateClicks = (props) => {
+  const [pageViews, setPageViews] = useState({});
   const [donateTableRows, setDonateTableRows] = useState([]);
 
+  let pv = {};
+
   useEffect(() => {
+    const pageViewsMetric = 'ga:pageviews';
+    const pvDimensions = ['ga:pagePath'];
+    const orderBy = { fieldName: pageViewsMetric, order: 'DESCENDING' };
+
+    getMetricsData(
+      props.viewID,
+      props.startDate,
+      props.endDate,
+      [pageViewsMetric],
+      pvDimensions,
+      orderBy
+    )
+      .then((response) => {
+        const queryResult = response.result.reports[0].data.rows;
+
+        let labels = [];
+        let values = [];
+
+        if (queryResult) {
+          queryResult.forEach((row) => {
+            let label = row.dimensions[0];
+
+            if (!/tinycms/.test(label)) {
+              if (label === '/') {
+                label += ' (homepage)';
+              }
+              let value = row.metrics[0].values[0];
+
+              labels.push(label);
+              values.push(value);
+              pv[label] = value;
+            }
+          });
+        }
+
+        setPageViews(pv);
+      })
+      .catch((error) => console.error(error));
+
     let eventMetrics = ['ga:totalEvents'];
     let eventDimensions = [
       'ga:eventCategory',
@@ -26,7 +68,6 @@ const DonateClicks = (props) => {
     )
       .then((response) => {
         const queryResult = response.result.reports[0].data.rows;
-        console.log('GA result: ', queryResult);
 
         let collectedData = {};
         queryResult.forEach((row) => {
@@ -36,34 +77,56 @@ const DonateClicks = (props) => {
           let articlePath = row.dimensions[3];
 
           if (articlePath !== '/') {
+            let conversion = 0;
+            let pvCount = 0;
             let count = row.metrics[0].values[0];
-            console.log(
-              articlePath,
-              'cat:',
-              category,
-              'act:',
-              action,
-              'lab:',
-              label,
-              count
-            );
-            if (collectedData[articlePath]) {
-              collectedData[articlePath][label] = count;
+            if (
+              pageViews &&
+              pageViews[articlePath] &&
+              pageViews[articlePath] > 0
+            ) {
+              pvCount = pageViews[articlePath];
+              conversion = Math.round((count / pvCount) * 100);
+            }
+            if (
+              collectedData[articlePath] &&
+              collectedData[articlePath][label]
+            ) {
+              collectedData[articlePath][label]['count'] = count;
+              collectedData[articlePath][label]['conversion'] = conversion;
+              collectedData[articlePath][label]['pageViews'] = pvCount;
             } else {
               collectedData[articlePath] = {};
-              collectedData[articlePath][label] = count;
+              collectedData[articlePath][label] = {};
+              collectedData[articlePath][label]['count'] = count;
+              collectedData[articlePath][label]['conversion'] = conversion;
+              collectedData[articlePath][label]['pageViews'] = pvCount;
             }
           }
         });
 
-        Object.keys(collectedData).map((key, i) => {
+        var sortable = [];
+        Object.keys(collectedData).forEach((key) => {
+          Object.keys(collectedData[key]).forEach((subKey) => {
+            sortable.push([key, collectedData[key][subKey]['conversion']]);
+          });
+        });
+
+        sortable.sort(function (a, b) {
+          return b[1] - a[1];
+        });
+
+        sortable.map((item, i) => {
+          let key = item[0];
           donateRows.push(
             <tr key={`donate-row-${i}`}>
               <td>{key}</td>
               {Object.keys(collectedData[key]).map((subKey, i) => (
                 <>
                   <td>{subKey}</td>
-                  <td>{collectedData[key][subKey]}</td>
+                  <td>{collectedData[key][subKey]['count']}</td>
+                  <td>{collectedData[key][subKey]['pageViews']}</td>
+                  <td>{collectedData[key][subKey]['conversion']}</td>
                 </>
               ))}
             </tr>
@@ -90,6 +153,8 @@ const DonateClicks = (props) => {
               <th>Article</th>
               <th>Label</th>
               <th>Clicks</th>
+              <th>Article Page Views</th>
+              <th>Conversion</th>
             </tr>
           </thead>
           <tbody>{donateTableRows}</tbody>
