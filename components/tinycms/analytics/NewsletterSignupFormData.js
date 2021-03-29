@@ -113,12 +113,17 @@ const NewsletterSignupFormData = (props) => {
         setSortedNewsletterRows(sortedRows);
       })
       .catch((error) => console.error(error));
-  }, []);
+  }, [props.startDate, props.endDate]);
 
   return (
     <>
       <section className="section">
         <h2 className="subtitle">Website Signup Form</h2>
+
+        <p className="content">
+          {props.startDate.format('dddd, MMMM Do YYYY')} -{' '}
+          {props.endDate.format('dddd, MMMM Do YYYY')}
+        </p>
 
         <table className="table is-fullwidth" style={{ width: '100%' }}>
           <thead>
@@ -132,8 +137,14 @@ const NewsletterSignupFormData = (props) => {
           <tbody>{sortedNewsletterRows}</tbody>
         </table>
       </section>
+
       <section className="section">
         <h2 className="subtitle">Signups by Reading Frequency</h2>
+
+        <p className="content">
+          {props.startDate.format('dddd, MMMM Do YYYY')} -{' '}
+          {props.endDate.format('dddd, MMMM Do YYYY')}
+        </p>
 
         <table className="table is-fullwidth" style={{ width: '100%' }}>
           <thead>

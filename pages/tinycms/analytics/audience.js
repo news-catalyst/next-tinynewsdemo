@@ -4,6 +4,9 @@ import mailchimp from '@mailchimp/mailchimp_marketing';
 import AdminLayout from '../../../components/AdminLayout';
 import AdminNav from '../../../components/nav/AdminNav';
 import CustomDimensions from '../../../components/tinycms/analytics/CustomDimensions';
+import moment from 'moment';
+import DateRangePickerWrapper from '../../../components/tinycms/analytics/DateRangePickerWrapper';
+import datePickerStyles from '../../../styles/datepicker.js';
 
 export default function Audience(props) {
   const [isSignedIn, setIsSignedIn] = useState(false);
@@ -11,8 +14,14 @@ export default function Audience(props) {
   const [viewID, setViewID] = useState(
     process.env.NEXT_PUBLIC_ANALYTICS_VIEW_ID
   );
-  const [startDate, setStartDate] = useState(addDays(new Date(), -30));
-  const [endDate, setEndDate] = useState(new Date());
+  const [startDate, setStartDate] = useState(moment().subtract(30, 'days'));
+  const [endDate, setEndDate] = useState(moment());
+  const [focusedInput, setFocusedInput] = useState('startDate');
+
+  const setDates = (sd, ed) => {
+    setStartDate(sd);
+    setEndDate(ed);
+  };
 
   const initAuth = () => {
     return window.gapi.auth2.init({
@@ -90,10 +99,13 @@ export default function Audience(props) {
           <div>
             <div className="container">
               <section className="section">
-                <p className="content">
-                  Data from {startDate.toLocaleDateString()} to{' '}
-                  {endDate.toLocaleDateString()}.
-                </p>
+                <DateRangePickerWrapper
+                  startDate={startDate}
+                  endDate={endDate}
+                  setDates={setDates}
+                  focusedInput={focusedInput}
+                  setFocusedInput={setFocusedInput}
+                />
               </section>
 
               <CustomDimensions
@@ -117,6 +129,9 @@ export default function Audience(props) {
           </div>
         )}
       </div>
+      <style jsx global>
+        {datePickerStyles}
+      </style>
     </AdminLayout>
   );
 }
