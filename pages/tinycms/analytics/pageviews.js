@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { addDays } from 'date-fns';
-import mailchimp from '@mailchimp/mailchimp_marketing';
 import AdminLayout from '../../../components/AdminLayout';
 import AdminNav from '../../../components/nav/AdminNav';
 import PageViews from '../../../components/tinycms/analytics/PageViews';
