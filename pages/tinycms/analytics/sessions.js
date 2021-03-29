@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import moment from 'moment';
 import AdminLayout from '../../../components/AdminLayout';
 import AdminNav from '../../../components/nav/AdminNav';
+import moment from 'moment';
 import DateRangePickerWrapper from '../../../components/tinycms/analytics/DateRangePickerWrapper';
 import datePickerStyles from '../../../styles/datepicker.js';
 import AverageSessionDuration from '../../../components/tinycms/analytics/AverageSessionDuration';
