@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
+import Donate from './Donate';
 
 export default function GlobalNav({ metadata, sections }) {
   let sectionLinks;
@@ -14,7 +15,6 @@ export default function GlobalNav({ metadata, sections }) {
 
   let title;
   if (metadata) {
-    console.log(metadata);
     title = metadata['shortName'];
   }
 
@@ -27,7 +27,7 @@ export default function GlobalNav({ metadata, sections }) {
           </a>
         </Link>
         <nav>{sectionLinks}</nav>
-        <button className="site__cta">{metadata.supportCTA}</button>
+        <Donate label={metadata.supportCTA} url={metadata.supportURL} />
       </div>
     </header>
   );
