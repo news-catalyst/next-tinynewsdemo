@@ -5,6 +5,7 @@ const Donate = ({ label, url }) => {
   const { trackEvent } = useAnalytics();
 
   const trackClick = () => {
+    console.log('click');
     trackEvent({
       action: 'Clicked',
       category: 'Donate',
@@ -13,8 +14,10 @@ const Donate = ({ label, url }) => {
     });
   };
   return (
-    <Link href={url} onClick={trackClick}>
-      <a className="site__cta button">{label}</a>
+    <Link href={url}>
+      <a className="site__cta button" onClick={trackClick}>
+        {label}
+      </a>
     </Link>
   );
 };
