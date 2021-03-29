@@ -15,8 +15,6 @@ const StyledWrapper = styled.div`
 `;
 
 export default function DateRangePickerWrapper(props) {
-  // const DateRangePickerWrapper = (props) => (
-  console.log('props:', props);
   return (
     <StyledWrapper>
       <DateRangePicker
@@ -36,5 +34,3 @@ export default function DateRangePickerWrapper(props) {
     </StyledWrapper>
   );
 }
-
-// export default DateRangePickerWrapper;
