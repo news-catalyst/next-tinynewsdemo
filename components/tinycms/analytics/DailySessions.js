@@ -44,12 +44,16 @@ const DailySessions = (props) => {
         });
       })
       .catch((error) => console.error(error));
-  }, []);
+  }, [props.startDate, props.endDate]);
 
   return (
     <section className="section">
       <div className="content">
         <h2 className="subtitle">Sessions per day</h2>
+        <p className="content">
+          {props.startDate.format('dddd, MMMM Do YYYY')} -{' '}
+          {props.endDate.format('dddd, MMMM Do YYYY')}
+        </p>
 
         <table className="table is-fullwidth" style={{ width: '100%' }}>
           <thead>

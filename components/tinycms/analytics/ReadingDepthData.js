@@ -99,12 +99,17 @@ const ReadingDepthData = (props) => {
         setReadingDepthTableRows(readingDepthRows);
       })
       .catch((error) => console.error(error));
-  }, [props.pageViews]);
+  }, [props.pageViews, props.startDate, props.endDate]);
 
   return (
     <section className="section">
       <div className="content">
         <p className="subtitle is-5">Reading Depth</p>
+
+        <p className="content">
+          {props.startDate.format('dddd, MMMM Do YYYY')} -{' '}
+          {props.endDate.format('dddd, MMMM Do YYYY')}
+        </p>
 
         <table className="table is-fullwidth" style={{ width: '100%' }}>
           <thead>

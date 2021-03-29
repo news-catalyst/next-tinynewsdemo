@@ -23,11 +23,9 @@ const AverageSessionDuration = (props) => {
     )
       .then((response) => {
         const queryResult = response.result.reports[0].data.rows;
-        const total = response.result.reports[0].data.totals[0].values[0];
+        const rowCount = response.result.reports[0].data.rowCount;
 
-        setTimeAverage(
-          parseInt(total / response.result.reports[0].data.rowCount)
-        );
+        let total = 0;
 
         let labels = [];
         let values = [];
@@ -35,10 +33,13 @@ const AverageSessionDuration = (props) => {
         queryResult.forEach((row) => {
           let formattedDate = formatDate(row.dimensions[0]);
           let value = row.metrics[0].values[0];
+          total += parseInt(value);
 
           labels.push(formattedDate);
           values.push(value);
         });
+
+        setTimeAverage(parseInt(total / rowCount));
 
         setTimeReportData({
           ...timeReportData,
@@ -47,14 +48,18 @@ const AverageSessionDuration = (props) => {
         });
       })
       .catch((error) => console.error(error));
-  }, []);
+  }, [props.startDate, props.endDate]);
 
   return (
     <section className="section">
       <div className="content">
         <h2 className="subtitle">Average session duration</h2>
 
-        <p>Overall average: {props.timeAverage} seconds</p>
+        <p>Overall average: {timeAverage} seconds</p>
+        <p className="content">
+          {props.startDate.format('dddd, MMMM Do YYYY')} -{' '}
+          {props.endDate.format('dddd, MMMM Do YYYY')}
+        </p>
 
         <table className="table is-fullwidth" style={{ width: '100%' }}>
           <thead>
@@ -67,7 +72,7 @@ const AverageSessionDuration = (props) => {
             {timeReportData.labels.map((label, i) => (
               <tr key={`time-report-${i}`}>
                 <td> {label} </td>
-                <td> {timeReportData.values[i]} </td>
+                <td> {Math.round(timeReportData.values[i])} </td>
               </tr>
             ))}
           </tbody>

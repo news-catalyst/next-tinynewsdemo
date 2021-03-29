@@ -29,22 +29,24 @@ const PageViews = (props) => {
         let labels = [];
         let values = [];
 
-        queryResult.forEach((row) => {
-          let label = row.dimensions[0];
+        if (queryResult) {
+          queryResult.forEach((row) => {
+            let label = row.dimensions[0];
 
-          if (!/tinycms/.test(label)) {
-            console.log('skip tinycms');
+            if (!/tinycms/.test(label)) {
+              console.log('skip tinycms');
 
-            if (label === '/') {
-              label += ' (homepage)';
+              if (label === '/') {
+                label += ' (homepage)';
+              }
+              let value = row.metrics[0].values[0];
+
+              labels.push(label);
+              values.push(value);
+              pv[label] = value;
             }
-            let value = row.metrics[0].values[0];
-
-            labels.push(label);
-            values.push(value);
-            pv[label] = value;
-          }
-        });
+          });
+        }
 
         setPageViewReportData({
           ...pageViewReportData,
@@ -54,11 +56,15 @@ const PageViews = (props) => {
         props.setPageViews(pv);
       })
       .catch((error) => console.error(error));
-  }, []);
+  }, [props.startDate, props.endDate]);
 
   return (
     <section className="section">
       <h2 className="subtitle">Page views</h2>
+      <p className="content">
+        {props.startDate.format('dddd, MMMM Do YYYY')} -{' '}
+        {props.endDate.format('dddd, MMMM Do YYYY')}
+      </p>
 
       <table className="table is-fullwidth" style={{ width: '100%' }}>
         <thead>

@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { addDays } from 'date-fns';
-import mailchimp from '@mailchimp/mailchimp_marketing';
 import AdminLayout from '../../../components/AdminLayout';
 import AdminNav from '../../../components/nav/AdminNav';
+import moment from 'moment';
+import DateRangePickerWrapper from '../../../components/tinycms/analytics/DateRangePickerWrapper';
+import datePickerStyles from '../../../styles/datepicker.js';
 import AverageSessionDuration from '../../../components/tinycms/analytics/AverageSessionDuration';
 import DailySessions from '../../../components/tinycms/analytics/DailySessions';
 import GeoSessions from '../../../components/tinycms/analytics/GeoSessions';
@@ -14,9 +15,15 @@ export default function SessionsOverview(props) {
   const [viewID, setViewID] = useState(
     process.env.NEXT_PUBLIC_ANALYTICS_VIEW_ID
   );
-  const [startDate, setStartDate] = useState(addDays(new Date(), -30));
-  const [endDate, setEndDate] = useState(new Date());
 
+  const [startDate, setStartDate] = useState(moment().subtract(30, 'days'));
+  const [endDate, setEndDate] = useState(moment());
+  const [focusedInput, setFocusedInput] = useState('startDate');
+
+  const setDates = (sd, ed) => {
+    setStartDate(sd);
+    setEndDate(ed);
+  };
   const initAuth = () => {
     return window.gapi.auth2.init({
       client_id: props.clientID, //paste your client ID here
@@ -93,10 +100,13 @@ export default function SessionsOverview(props) {
           <div>
             <div className="container">
               <section className="section">
-                <p className="content">
-                  Data from {startDate.toLocaleDateString()} to{' '}
-                  {endDate.toLocaleDateString()}.
-                </p>
+                <DateRangePickerWrapper
+                  startDate={startDate}
+                  endDate={endDate}
+                  setDates={setDates}
+                  focusedInput={focusedInput}
+                  setFocusedInput={setFocusedInput}
+                />
               </section>
 
               <DailySessions
@@ -110,6 +120,7 @@ export default function SessionsOverview(props) {
                 startDate={startDate}
                 endDate={endDate}
               />
+
               <AverageSessionDuration
                 viewID={viewID}
                 startDate={startDate}
@@ -125,6 +136,9 @@ export default function SessionsOverview(props) {
           </div>
         )}
       </div>
+      <style jsx global>
+        {datePickerStyles}
+      </style>
     </AdminLayout>
   );
 }
@@ -132,28 +146,10 @@ export async function getServerSideProps(context) {
   const clientID = process.env.ANALYTICS_CLIENT_ID;
   const clientSecret = process.env.ANALYTICS_CLIENT_SECRET;
 
-  mailchimp.setConfig({
-    apiKey: process.env.MAILCHIMP_API_KEY,
-    server: process.env.MAILCHIMP_SERVER_PREFIX,
-  });
-
-  let fullReports = [];
-  let reportsResponse = await mailchimp.reports.getAllCampaignReports({
-    since_send_time: addDays(new Date(), -30),
-  });
-  let report = reportsResponse.reports[0];
-  let listId = report.list_id;
-  let data = await mailchimp.lists.getListGrowthHistory(listId);
-  report['growth'] = data;
-  fullReports.push(report);
-
   return {
     props: {
       clientID: clientID,
       clientSecret: clientSecret,
-      mailchimpKey: process.env.MAILCHIMP_API_KEY,
-      mailchimpServer: process.env.MAILCHIMP_SERVER_PREFIX,
-      reports: fullReports,
     },
   };
 }
