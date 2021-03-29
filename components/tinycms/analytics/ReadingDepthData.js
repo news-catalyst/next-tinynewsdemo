@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { getMetricsData } from '../../../lib/analytics';
 
 const ReadingDepthData = (props) => {
-  const [readingDepthData, setReadingDepthData] = useState({});
   const [readingDepthTableRows, setReadingDepthTableRows] = useState([]);
 
   useEffect(() => {
