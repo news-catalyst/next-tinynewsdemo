@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { addDays } from 'date-fns';
+import moment from 'moment';
 import mailchimp from '@mailchimp/mailchimp_marketing';
 import AdminLayout from '../../../components/AdminLayout';
 import AdminNav from '../../../components/nav/AdminNav';
 import CustomDimensions from '../../../components/tinycms/analytics/CustomDimensions';
-import moment from 'moment';
 import DateRangePickerWrapper from '../../../components/tinycms/analytics/DateRangePickerWrapper';
 import datePickerStyles from '../../../styles/datepicker.js';
+import DonateClicks from '../../../components/tinycms/analytics/DonateClicks';
 
 export default function Audience(props) {
   const [isSignedIn, setIsSignedIn] = useState(false);
@@ -107,6 +108,12 @@ export default function Audience(props) {
                   setFocusedInput={setFocusedInput}
                 />
               </section>
+
+              <DonateClicks
+                viewID={viewID}
+                startDate={startDate}
+                endDate={endDate}
+              />
 
               <CustomDimensions
                 viewID={viewID}
