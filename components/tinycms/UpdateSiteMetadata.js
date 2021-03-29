@@ -190,6 +190,12 @@ export default function UpdateMetadata(props) {
         value={parsedData['supportCTA']}
       />
       <MetadataTextInput
+        label="Support: CTA button link url"
+        name="supportURL"
+        handleChange={handleChange}
+        value={parsedData['supportURL']}
+      />
+      <MetadataTextInput
         label="Support: headline"
         name="supportHed"
         handleChange={handleChange}
