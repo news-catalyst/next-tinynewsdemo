@@ -63,7 +63,6 @@ export async function getStaticProps({ locale }) {
   if (bottomFeatured) {
     ids.push(bottomFeatured.id);
   }
-  console.log('ids:', ids);
 
   const streamResult = await hasuraStreamArticles({
     url: apiUrl,
@@ -81,7 +80,6 @@ export async function getStaticProps({ locale }) {
   } else {
     streamArticles = streamResult.data.articles;
   }
-  console.log('streamArticles:', streamArticles);
 
   const tags = data.tags;
   for (var i = 0; i < tags.length; i++) {
