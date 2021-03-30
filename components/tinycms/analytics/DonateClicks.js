@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { getMetricsData } from '../../../lib/analytics';
 
 const DonateClicks = (props) => {
-  const [pageViews, setPageViews] = useState({});
   const [donateTableRows, setDonateTableRows] = useState([]);
 
   let pv = {};
@@ -43,96 +42,92 @@ const DonateClicks = (props) => {
           });
         }
 
-        setPageViews(pv);
-      })
-      .catch((error) => console.error(error));
+        // setPageViews(pv);
 
-    let eventMetrics = ['ga:totalEvents'];
-    let eventDimensions = [
-      'ga:eventCategory',
-      'ga:eventAction',
-      'ga:eventLabel',
-      'ga:pagePath',
-    ];
+        let eventMetrics = ['ga:totalEvents'];
+        let eventDimensions = [
+          'ga:eventCategory',
+          'ga:eventAction',
+          'ga:eventLabel',
+          'ga:pagePath',
+        ];
 
-    let donateRows = [];
-    getMetricsData(
-      props.viewID,
-      props.startDate,
-      props.endDate,
-      eventMetrics,
-      eventDimensions,
-      {
-        filters: 'ga:eventCategory==Donate',
-      }
-    )
-      .then((response) => {
-        const queryResult = response.result.reports[0].data.rows;
-
-        let collectedData = {};
-        queryResult.forEach((row) => {
-          let category = row.dimensions[0];
-          let action = row.dimensions[1];
-          let label = row.dimensions[2];
-          let articlePath = row.dimensions[3];
-
-          if (articlePath !== '/') {
-            let conversion = 0;
-            let pvCount = 0;
-            let count = row.metrics[0].values[0];
-            if (
-              pageViews &&
-              pageViews[articlePath] &&
-              pageViews[articlePath] > 0
-            ) {
-              pvCount = pageViews[articlePath];
-              conversion = Math.round((count / pvCount) * 100);
-            }
-            if (
-              collectedData[articlePath] &&
-              collectedData[articlePath][label]
-            ) {
-              collectedData[articlePath][label]['count'] = count;
-              collectedData[articlePath][label]['conversion'] = conversion;
-              collectedData[articlePath][label]['pageViews'] = pvCount;
-            } else {
-              collectedData[articlePath] = {};
-              collectedData[articlePath][label] = {};
-              collectedData[articlePath][label]['count'] = count;
-              collectedData[articlePath][label]['conversion'] = conversion;
-              collectedData[articlePath][label]['pageViews'] = pvCount;
-            }
+        let donateRows = [];
+        getMetricsData(
+          props.viewID,
+          props.startDate,
+          props.endDate,
+          eventMetrics,
+          eventDimensions,
+          {
+            filters: 'ga:eventCategory==Donate',
           }
-        });
+        )
+          .then((response) => {
+            const queryResult = response.result.reports[0].data.rows;
 
-        var sortable = [];
-        Object.keys(collectedData).forEach((key) => {
-          Object.keys(collectedData[key]).forEach((subKey) => {
-            sortable.push([key, collectedData[key][subKey]['conversion']]);
-          });
-        });
+            let collectedData = {};
+            queryResult.forEach((row) => {
+              let category = row.dimensions[0];
+              let action = row.dimensions[1];
+              let label = row.dimensions[2];
+              let articlePath = row.dimensions[3];
 
-        sortable.sort(function (a, b) {
-          return b[1] - a[1];
-        });
+              if (articlePath !== '/') {
+                let conversion = 0;
+                let pvCount = 0;
+                let count = row.metrics[0].values[0];
+                if (pv && pv[articlePath] && pv[articlePath] > 0) {
+                  pvCount = pv[articlePath];
+                  conversion = Math.round((count / pvCount) * 100);
+                }
+                if (
+                  collectedData[articlePath] &&
+                  collectedData[articlePath][label]
+                ) {
+                  collectedData[articlePath][label]['count'] = count;
+                  collectedData[articlePath][label]['conversion'] = conversion;
+                  collectedData[articlePath][label]['pageViews'] = pvCount;
+                } else {
+                  collectedData[articlePath] = {};
+                  collectedData[articlePath][label] = {};
+                  collectedData[articlePath][label]['count'] = count;
+                  collectedData[articlePath][label]['conversion'] = conversion;
+                  collectedData[articlePath][label]['pageViews'] = pvCount;
+                }
+              }
+            });
 
-        sortable.map((item, i) => {
-          let key = item[0];
-          donateRows.push(
-            <tr key={`donate-row-${i}`}>
-              <td>{key}</td>
-              {Object.keys(collectedData[key]).map((subKey, i) => (
-                <>
-                  <td>{subKey}</td>
-                  <td>{collectedData[key][subKey]['count']}</td>
-                  <td>{collectedData[key][subKey]['pageViews']}</td>
-                  <td>{collectedData[key][subKey]['conversion']}</td>
-                </>
-              ))}
-            </tr>
-          );
-        });
-        setDonateTableRows(donateRows);
+            var sortable = [];
+            Object.keys(collectedData).forEach((key) => {
+              Object.keys(collectedData[key]).forEach((subKey) => {
+                sortable.push([key, collectedData[key][subKey]['conversion']]);
+              });
+            });
+
+            sortable.sort(function (a, b) {
+              return b[1] - a[1];
+            });
+
+            sortable.map((item, i) => {
+              let key = item[0];
+              donateRows.push(
+                <tr key={`donate-row-${i}`}>
+                  <td>{key}</td>
+                  {Object.keys(collectedData[key]).map((subKey, i) => (
+                    <>
+                      <td>{subKey}</td>
+                      <td>{collectedData[key][subKey]['count']}</td>
+                      <td>{collectedData[key][subKey]['pageViews']}</td>
+                      <td>{collectedData[key][subKey]['conversion']}%</td>
+                    </>
+                  ))}
+                </tr>
+              );
+            });
+            setDonateTableRows(donateRows);
+          })
+          .catch((error) => console.error(error));
       })
       .catch((error) => console.error(error));
   }, [props.startDate, props.endDate]);
