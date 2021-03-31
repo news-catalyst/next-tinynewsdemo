@@ -52,7 +52,7 @@ const ReadingFrequencyData = (props) => {
         <thead>
           <tr>
             <th>Number of Articles</th>
-            <th>Sessions</th>
+            <th>Views</th>
           </tr>
         </thead>
         <tbody>

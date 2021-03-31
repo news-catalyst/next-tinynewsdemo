@@ -7,6 +7,9 @@ export default function Recirculation({
   siteMetadata,
   section,
 }) {
+  if (articles === null || articles === undefined || articles.length <= 0) {
+    return null;
+  }
   const localisedSection = hasuraLocaliseText(
     section.category_translations,
     'title'

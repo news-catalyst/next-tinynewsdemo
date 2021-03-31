@@ -25,22 +25,74 @@ export default function AdminNav(props) {
       </div>
       <div className="navbar-menu">
         <div className="navbar-start">
-          <a className="navbar-item" href="/tinycms/homepage">
+          <a
+            className={
+              /\/tinycms\/analytics/.test(document.location.pathname)
+                ? 'navbar-item is-tab is-active'
+                : 'navbar-item'
+            }
+            href="/tinycms/analytics"
+          >
+            analytics
+          </a>
+          <a
+            className={
+              /\/tinycms\/homepage/.test(document.location.pathname)
+                ? 'navbar-item is-tab is-active'
+                : 'navbar-item'
+            }
+            href="/tinycms/homepage"
+          >
             homepage editor
           </a>
-          <a className="navbar-item" href="/tinycms/homepage-layouts">
+          <a
+            className={
+              /\/tinycms\/homepage-layouts/.test(document.location.pathname)
+                ? 'navbar-item is-tab is-active'
+                : 'navbar-item'
+            }
+            href="/tinycms/homepage-layouts"
+          >
             homepage layouts
           </a>
-          <a className="navbar-item" href="/tinycms/authors">
+          <a
+            className={
+              /\/tinycms\/authors/.test(document.location.pathname)
+                ? 'navbar-item is-tab is-active'
+                : 'navbar-item'
+            }
+            href="/tinycms/authors"
+          >
             authors
           </a>
-          <a className="navbar-item" href="/tinycms/metadata">
+          <a
+            className={
+              /\/tinycms\/metadata/.test(document.location.pathname)
+                ? 'navbar-item is-tab is-active'
+                : 'navbar-item'
+            }
+            href="/tinycms/metadata"
+          >
             metadata
           </a>
-          <a className="navbar-item" href="/tinycms/sections">
+          <a
+            className={
+              /\/tinycms\/sections/.test(document.location.pathname)
+                ? 'navbar-item is-tab is-active'
+                : 'navbar-item'
+            }
+            href="/tinycms/sections"
+          >
             sections
           </a>
-          <a className="navbar-item" href="/tinycms/tags">
+          <a
+            className={
+              /\/tinycms\/tags/.test(document.location.pathname)
+                ? 'navbar-item is-tab is-active'
+                : 'navbar-item'
+            }
+            href="/tinycms/tags"
+          >
             tags
           </a>
         </div>
