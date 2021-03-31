@@ -9,7 +9,7 @@
     "bootstrap": "node script/bootstrap.js",
     "build": "next build",
     "build:rss": "node script/generate-rss.js",
-    "postbuild": "next-sitemap",
+    "postbuild": "next-sitemap && node script/generate-rss.js",
     "start": "next start",
     "export": "next build && next export",
     "purgecss": "purgecss --css styles/bulma.css --content pages/** components/** --output ./purge.css",
