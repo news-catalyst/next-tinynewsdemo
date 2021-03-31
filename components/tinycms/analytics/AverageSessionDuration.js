@@ -51,7 +51,7 @@ const AverageSessionDuration = (props) => {
   }, [props.startDate, props.endDate]);
 
   return (
-    <section className="section">
+    <section className="section" id="time">
       <div className="content">
         <h2 className="subtitle">Average session duration</h2>
 

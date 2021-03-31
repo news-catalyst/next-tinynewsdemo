@@ -47,7 +47,7 @@ const DailySessions = (props) => {
   }, [props.startDate, props.endDate]);
 
   return (
-    <section className="section">
+    <section className="section" id="daily">
       <div className="content">
         <h2 className="subtitle">Sessions per day</h2>
         <p className="content">

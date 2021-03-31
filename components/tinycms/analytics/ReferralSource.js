@@ -46,7 +46,7 @@ const ReferralSource = (props) => {
   }, [props.startDate, props.endDate]);
 
   return (
-    <section className="section">
+    <section className="section" id="referral">
       <div className="content">
         <h2 className="subtitle">Sessions by referral source</h2>
 

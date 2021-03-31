@@ -44,7 +44,7 @@ const GeoSessions = (props) => {
   }, [props.startDate, props.endDate]);
 
   return (
-    <section className="section">
+    <section className="section" id="geo">
       <div className="content">
         <h2 className="subtitle">Sessions by geographic region</h2>
 
