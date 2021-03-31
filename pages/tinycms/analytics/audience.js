@@ -17,7 +17,7 @@ export default function Audience(props) {
   );
   const [startDate, setStartDate] = useState(moment().subtract(30, 'days'));
   const [endDate, setEndDate] = useState(moment());
-  const [focusedInput, setFocusedInput] = useState('startDate');
+  const [focusedInput, setFocusedInput] = useState(null);
 
   const setDates = (sd, ed) => {
     setStartDate(sd);
