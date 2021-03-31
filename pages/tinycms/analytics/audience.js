@@ -91,15 +91,13 @@ export default function Audience(props) {
     <AdminLayout>
       <AdminNav homePageEditor={false} />
       <div className="analytics">
-        <section className="section">
-          <h1 className="title">Analytics Dashboard v1: Audience Overview</h1>
-        </section>
         {!isSignedIn ? (
           <div id="signin-button"></div>
         ) : (
           <div>
             <div className="container">
               <section className="section">
+                <h1 className="title">Audience Overview</h1>
                 <DateRangePickerWrapper
                   startDate={startDate}
                   endDate={endDate}
