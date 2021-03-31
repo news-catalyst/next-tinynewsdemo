@@ -120,7 +120,7 @@ export default function AnalyticsIndex(props) {
               </div>
 
               <div className="column">
-                <AnalyticsSidebar headline="About this Data">
+                <AnalyticsSidebar title="About this Data">
                   <p className="content">
                     tinycms analytics data is meant to reveal insights about how
                     your audience is - or is not - interacting with your
