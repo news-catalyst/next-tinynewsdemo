@@ -1,5 +1,6 @@
 import Head from 'next/head';
 import 'bulma/css/bulma.min.css';
+import styles from '../styles/bulma.js';
 import { signIn, useSession } from 'next-auth/client';
 
 export default function AdminLayout({ children }) {
@@ -42,6 +43,9 @@ export default function AdminLayout({ children }) {
         )}
         {session && <>{children}</>}
       </main>
+      <style jsx global>
+        {styles}
+      </style>
     </>
   );
 }
