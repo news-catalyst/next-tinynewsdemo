@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import Link from 'next/link';
 import AdminLayout from '../../../components/AdminLayout';
 import AdminNav from '../../../components/nav/AdminNav';
 import AnalyticsSidebar from '../../../components/tinycms/analytics/AnalyticsSidebar';
@@ -109,10 +110,26 @@ export default function AnalyticsIndex(props) {
                     <li>
                       <a href="/tinycms/analytics/sessions">Sessions</a>
                       <ul>
-                        <li>Daily</li>
-                        <li>Regional</li>
-                        <li>Referral Sources</li>
-                        <li>Time Spent</li>
+                        <li>
+                          <Link href="/tinycms/analytics/sessions#daily">
+                            <a>Daily</a>
+                          </Link>
+                        </li>
+                        <li>
+                          <Link href="/tinycms/analytics/sessions#geo">
+                            <a>Regional</a>
+                          </Link>
+                        </li>
+                        <li>
+                          <Link href="/tinycms/analytics/sessions#referral">
+                            <a>Referral Sources</a>
+                          </Link>
+                        </li>
+                        <li>
+                          <Link href="/tinycms/analytics/sessions#time">
+                            <a>Time Spent</a>
+                          </Link>
+                        </li>
                       </ul>
                     </li>
                   </ul>
