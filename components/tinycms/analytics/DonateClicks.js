@@ -3,14 +3,57 @@ import { getMetricsData } from '../../../lib/analytics';
 
 const DonateClicks = (props) => {
   const [donateTableRows, setDonateTableRows] = useState([]);
+  const [donationsFrequencyData, setDonationsFrequencyData] = useState([]);
 
   useEffect(() => {
+    const pageViewsMetric = 'ga:pageviews';
+    const pvDimensions = ['ga:pagePath'];
+    const orderBy = { fieldName: pageViewsMetric, order: 'DESCENDING' };
+
+    getMetricsData(
+      props.viewID,
+      props.startDate,
+      props.endDate,
+      [pageViewsMetric],
+      pvDimensions,
+      orderBy
+    )
+      .then((response) => {
+        const queryResult = response.result.reports[0].data.rows;
+
+        let labels = [];
+        let values = [];
+
+        if (queryResult) {
+          queryResult.forEach((row) => {
+            let label = row.dimensions[0];
+
+            if (label === '/') {
+              label += ' (homepage)';
+            }
+            let value = row.metrics[0].values[0];
+
+            labels.push(label);
+            values.push(value);
+            pv[label] = value;
+          });
+        }
+
+        setPageViews(pv);
+      })
+      .catch((error) => console.error(error));
     let eventMetrics = ['ga:totalEvents'];
     let eventDimensions = [
       'ga:eventCategory',
       'ga:eventAction',
       'ga:eventLabel',
       'ga:pagePath',
+    ];
+    let donationReadingFrequencyDim = [
+      'ga:eventCategory',
+      'ga:eventAction',
+      'ga:eventLabel',
+      'ga:dimension2',
     ];
 
     let donateRows = [];
@@ -35,43 +78,96 @@ const DonateClicks = (props) => {
           let label = row.dimensions[2];
           let articlePath = row.dimensions[3];
 
-          if (articlePath !== '/') {
-            let count = row.metrics[0].values[0];
-            console.log(
-              articlePath,
-              'cat:',
-              category,
-              'act:',
-              action,
-              'lab:',
-              label,
-              count
-            );
-            if (collectedData[articlePath]) {
-              collectedData[articlePath][label] = count;
+          let conversion = 0;
+          let pvCount = 0;
+          let count = parseInt(row.metrics[0].values[0]);
+          if (
+            pageViews &&
+            pageViews[articlePath] &&
+            pageViews[articlePath] > 0
+          ) {
+            pvCount = pageViews[articlePath];
+            conversion = Math.round((count / pvCount) * 100);
+          }
+          if (collectedData[articlePath]) {
+            if (collectedData[articlePath]['count']) {
+              collectedData[articlePath]['count'] += count;
             } else {
-              collectedData[articlePath] = {};
-              collectedData[articlePath][label] = count;
+              collectedData[articlePath]['count'] = count;
             }
+            collectedData[articlePath]['conversion'] = conversion;
+            collectedData[articlePath]['pageViews'] = pvCount;
+          } else {
+            collectedData[articlePath] = {};
+            collectedData[articlePath]['count'] = count;
+            collectedData[articlePath]['conversion'] = conversion;
+            collectedData[articlePath]['pageViews'] = pvCount;
           }
         });
 
-        Object.keys(collectedData).map((key, i) => {
+        var sortable = [];
+        Object.keys(collectedData).forEach((key) => {
+          sortable.push([key, collectedData[key]['conversion']]);
+        });
+
+        sortable.sort(function (a, b) {
+          return b[1] - a[1];
+        });
+
+        sortable.map((item, i) => {
+          let key = item[0];
           donateRows.push(
             <tr key={`donate-row-${i}`}>
               <td>{key}</td>
-              {Object.keys(collectedData[key]).map((subKey, i) => (
-                <>
-                  <td>{subKey}</td>
-                  <td>{collectedData[key][subKey]}</td>
-                </>
-              ))}
+              <td>{collectedData[key]['count']}</td>
+              <td>{collectedData[key]['pageViews']}</td>
+              <td>{collectedData[key]['conversion']}</td>
             </tr>
           );
         });
         setDonateTableRows(donateRows);
       })
       .catch((error) => console.error(error));
+
+    // get metrics for reading frequency + donation
+    getMetricsData(
+      props.viewID,
+      props.startDate,
+      props.endDate,
+      eventMetrics,
+      donationReadingFrequencyDim,
+      {
+        filters: 'ga:eventCategory==Donate',
+      }
+    ).then((response) => {
+      const queryResult = response.result.reports[0].data.rows;
+
+      let donationsByFrequency = {};
+      queryResult.forEach((row) => {
+        let category = row.dimensions[0];
+        let action = row.dimensions[1];
+        let label = row.dimensions[2];
+        let frequency = row.dimensions[3];
+        let count = parseInt(row.metrics[0].values[0]);
+
+        if (donationsByFrequency[frequency]) {
+          donationsByFrequency[frequency] += count;
+        } else {
+          donationsByFrequency[frequency] = count;
+        }
+      });
+
+      let donationsFrequencyRows = [];
+      Object.keys(donationsByFrequency).map((key, i) => {
+        donationsFrequencyRows.push(
+          <tr key={`donate-row-${i}`}>
+            <td>{key}</td>
+            <td>{donationsByFrequency[key]}</td>
+          </tr>
+        );
+      });
+      setDonationsFrequencyData(donationsFrequencyRows);
+    });
   }, [props.startDate, props.endDate]);
 
   return (
@@ -88,11 +184,20 @@ const DonateClicks = (props) => {
           <thead>
             <tr>
               <th>Article</th>
-              <th>Label</th>
               <th>Clicks</th>
             </tr>
           </thead>
           <tbody>{donateTableRows}</tbody>
+        </table>
+
+        <table className="table is-fullwidth" style={{ width: '100%' }}>
+          <thead>
+            <tr>
+              <th>Reading Frequency</th>
+              <th>Clicks</th>
+            </tr>
+          </thead>
+          <tbody>{donationsFrequencyData}</tbody>
         </table>
       </div>
     </section>

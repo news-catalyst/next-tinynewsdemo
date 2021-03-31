@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { addDays } from 'date-fns';
-import mailchimp from '@mailchimp/mailchimp_marketing';
 import AdminLayout from '../../../components/AdminLayout';
 import AdminNav from '../../../components/nav/AdminNav';
 
@@ -74,30 +72,101 @@ export default function AnalyticsIndex(props) {
     <AdminLayout>
       <AdminNav homePageEditor={false} />
       <div className="analytics">
-        <section className="section">
-          <h1 className="title">Analytics Dashboard v1</h1>
-        </section>
         {!isSignedIn ? (
           <div id="signin-button"></div>
         ) : (
-          <div>
-            <ul>
-              <li>
-                <a href="/tinycms/analytics/sessions">Sessions Overview</a>
-              </li>
-              <li>
-                <a href="/tinycms/analytics/newsletter">Newsletters Overview</a>
-              </li>
-              <li>
-                <a href="/tinycms/analytics/pageviews">
-                  Page Views & Reading Overview
-                </a>
-              </li>
-              <li>
-                <a href="/tinycms/analytics/audience">Audience Overview</a>
-              </li>
-            </ul>
-          </div>
+          <section className="section">
+            <h1 className="title">Analytics</h1>
+
+            <div className="columns">
+              <div className="column">
+                <aside className="menu">
+                  <p className="menu-label">Sections:</p>
+                  <ul className="menu-list">
+                    <li>
+                      <a href="/tinycms/analytics/audience">Audience</a>
+                      <ul>
+                        <li>Donations</li>
+                        <li>Subscriptions</li>
+                      </ul>
+                    </li>
+                    <li>
+                      <a href="/tinycms/analytics/newsletter">Newsletters</a>
+                      <ul>
+                        <li>Signup Stats</li>
+                        <li>Mailchimp Campaigns</li>
+                      </ul>
+                    </li>
+                    <li>
+                      <a href="/tinycms/analytics/pageviews">Page Views</a>
+                      <ul>
+                        <li>Page Views</li>
+                        <li>Reading Depth</li>
+                        <li>Reading Frequency</li>
+                      </ul>
+                    </li>
+                    <li>
+                      <a href="/tinycms/analytics/sessions">Sessions</a>
+                      <ul>
+                        <li>Daily</li>
+                        <li>Regional</li>
+                        <li>Referral Sources</li>
+                        <li>Time Spent</li>
+                      </ul>
+                    </li>
+                  </ul>
+                </aside>
+              </div>
+
+              <div className="column">
+                <article className="message">
+                  <div className="message-header">
+                    <p>About this Data</p>
+                    <button className="delete" aria-label="delete"></button>
+                  </div>
+                  <div className="message-body">
+                    <p className="content">
+                      tinycms analytics data is meant to reveal insights about
+                      how your audience is - or is not - interacting with your
+                      published content.
+                    </p>
+                    <p className="content">
+                      Information related to donate button clicks, page views,
+                      reading behavior and sessions come from Google Analytics.
+                      This site is configured for GA as follows:
+                      <ul>
+                        <li>
+                          <b>Tracking ID:</b>{' '}
+                          {process.env.NEXT_PUBLIC_GA_TRACKING_ID}
+                        </li>
+                        <li>
+                          <b>View ID:</b>{' '}
+                          {process.env.NEXT_PUBLIC_ANALYTICS_VIEW_ID}
+                        </li>
+                      </ul>
+                    </p>
+                    <p className="content">
+                      Information on newsletter subscriptions come from
+                      Mailchimp. This site is configured for Mailchimp with a
+                      subscribe URL of:{' '}
+                      <pre>
+                        {process.env.NEXT_PUBLIC_MAILCHIMP_SUBSCRIBE_URL}
+                      </pre>
+                    </p>
+                    <p className="content">
+                      For a deeper dive on understanding your audience and
+                      measuring the impact of your reporting, News Catalyst
+                      recommends checking out{' '}
+                      <a href="https://source.opennews.org/articles/memberkit-upgrade-your-analytics/">
+                        MemberKit
+                      </a>
+                      .
+                    </p>
+                  </div>
+                </article>
+              </div>
+            </div>
+          </section>
         )}
       </div>
     </AdminLayout>

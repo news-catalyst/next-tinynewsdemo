@@ -9,9 +9,6 @@ const StyledWrapper = styled.div`
     overflow: hidden;
     justify-content: space-around;
   }
-  .DateInput {
-    width: 30%;
-  }
 `;
 
 export default function DateRangePickerWrapper(props) {

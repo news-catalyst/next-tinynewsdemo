@@ -18,7 +18,7 @@ export default function SessionsOverview(props) {
 
   const [startDate, setStartDate] = useState(moment().subtract(30, 'days'));
   const [endDate, setEndDate] = useState(moment());
-  const [focusedInput, setFocusedInput] = useState('startDate');
+  const [focusedInput, setFocusedInput] = useState(null);
 
   const setDates = (sd, ed) => {
     setStartDate(sd);
@@ -91,15 +91,13 @@ export default function SessionsOverview(props) {
     <AdminLayout>
       <AdminNav homePageEditor={false} />
       <div className="analytics">
-        <section className="section">
-          <h1 className="title">Analytics Dashboard v1: Sessions Overview</h1>
-        </section>
         {!isSignedIn ? (
           <div id="signin-button"></div>
         ) : (
           <div>
             <div className="container">
               <section className="section">
+                <h1 className="title">Sessions Overview</h1>
                 <DateRangePickerWrapper
                   startDate={startDate}
                   endDate={endDate}
