@@ -105,13 +105,17 @@ function generate(locale) {
       const searchDescription = article.article_translations[0].search_description;
       let pubDate = getPubDate(article);
 
+      if (!article.article_translations) {
+        return;
+      }
+
+      let articleTranslation = article.article_translations[0];
       let authors;
       if (
-        article.article_translations &&
-        article.article_translations[0] &&
-        article.article_translations[0].custom_byline
+        articleTranslation &&
+        articleTranslation.custom_byline
       ) {
-        authors = article.article_translations[0].custom_byline;
+        authors = articleTranslation.custom_byline;
       }
 
       if (article.author_articles) {
@@ -122,14 +126,39 @@ function generate(locale) {
         authors = authorList.join(', ');
       }
 
-      feed.item({
+      let mainImageNode;
+      let mainImage = null;
+      let localisedContent = articleTranslation.content;
+      if (
+        localisedContent !== undefined &&
+        localisedContent !== null &&
+        typeof localisedContent !== 'string'
+      ) {
+        try {
+          mainImageNode = localisedContent.find(
+            (node) => node.type === 'mainImage'
+          );
+    
+          if (mainImageNode) {
+            mainImage = mainImageNode.children[0];
+          }
+        } catch (err) {
+          console.log('error finding main image: ', err);
+        }
+      }
+
+      let feedOptions = {
         title: headline,
         guid: articleHref,
         url: articleHref,
         date: pubDate,
         description: searchDescription,
         author: authors,
-      });
+      }
+      if (mainImageNode) {
+        feedOptions["enclosure"] = { 'url'  : mainImage.imageUrl }
+      }
+      feed.item(feedOptions);
     })
 
     const rss = feed.xml({ indent: true });
