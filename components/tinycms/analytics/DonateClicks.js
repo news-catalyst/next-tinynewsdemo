@@ -2,11 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { getMetricsData } from '../../../lib/analytics';
 
 const DonateClicks = (props) => {
-  const [pageViews, setPageViews] = useState({});
   const [donateTableRows, setDonateTableRows] = useState([]);
   const [donationsFrequencyData, setDonationsFrequencyData] = useState([]);
-
-  let pv = {};
 
   useEffect(() => {
     const pageViewsMetric = 'ga:pageviews';
@@ -45,7 +42,6 @@ const DonateClicks = (props) => {
         setPageViews(pv);
       })
       .catch((error) => console.error(error));
-
     let eventMetrics = ['ga:totalEvents'];
     let eventDimensions = [
       'ga:eventCategory',
@@ -73,6 +69,7 @@ const DonateClicks = (props) => {
     )
       .then((response) => {
         const queryResult = response.result.reports[0].data.rows;
+        console.log('GA result: ', queryResult);
 
         let collectedData = {};
         queryResult.forEach((row) => {
@@ -188,8 +185,6 @@ const DonateClicks = (props) => {
             <tr>
               <th>Article</th>
               <th>Clicks</th>
-              <th>Article Page Views</th>
-              <th>Conversion</th>
             </tr>
           </thead>
           <tbody>{donateTableRows}</tbody>
