@@ -8,6 +8,7 @@ import MailchimpReport from '../../../components/tinycms/analytics/MailchimpRepo
 import moment from 'moment';
 import DateRangePickerWrapper from '../../../components/tinycms/analytics/DateRangePickerWrapper';
 import datePickerStyles from '../../../styles/datepicker.js';
+import AnalyticsSidebar from '../../../components/tinycms/analytics/AnalyticsSidebar';
 
 export default function NewsletterOverview(props) {
   const [isSignedIn, setIsSignedIn] = useState(false);
@@ -97,14 +98,24 @@ export default function NewsletterOverview(props) {
           <div>
             <div className="container">
               <section className="section">
-                <h1 className="title">Newsletter Overview</h1>
-                <DateRangePickerWrapper
-                  startDate={startDate}
-                  endDate={endDate}
-                  setDates={setDates}
-                  focusedInput={focusedInput}
-                  setFocusedInput={setFocusedInput}
-                />
+                <div className="columns">
+                  <div className="column">
+                    <h1 className="title">Newsletter Overview</h1>
+                    <DateRangePickerWrapper
+                      startDate={startDate}
+                      endDate={endDate}
+                      setDates={setDates}
+                      focusedInput={focusedInput}
+                      setFocusedInput={setFocusedInput}
+                    />
+                  </div>
+
+                  <div className="column">
+                    <AnalyticsSidebar title="About this Data">
+                      <p>tk</p>
+                    </AnalyticsSidebar>
+                  </div>
+                </div>
               </section>
 
               <NewsletterSignupFormData
