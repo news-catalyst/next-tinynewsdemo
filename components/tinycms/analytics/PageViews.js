@@ -34,8 +34,6 @@ const PageViews = (props) => {
             let label = row.dimensions[0];
 
             if (!/tinycms/.test(label)) {
-              console.log('skip tinycms');
-
               if (label === '/') {
                 label += ' (homepage)';
               }

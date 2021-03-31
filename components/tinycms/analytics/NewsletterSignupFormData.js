@@ -60,8 +60,6 @@ const NewsletterSignupFormData = (props) => {
 
         let collectedData = {};
         queryResult.forEach((row) => {
-          console.log('row:', row);
-
           let articlePath = row.dimensions[3];
           let eventAction = row.dimensions[1];
           let value = row.metrics[0].values[0];
