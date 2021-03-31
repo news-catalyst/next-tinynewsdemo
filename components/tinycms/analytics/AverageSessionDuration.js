@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { getMetricsData } from '../../../lib/analytics';
 import { formatDate } from '../../../lib/utils';
 
 const AverageSessionDuration = (props) => {
+  const timeRef = useRef();
   const INITIAL_STATE = {
     labels: [],
     values: [],
@@ -46,12 +47,18 @@ const AverageSessionDuration = (props) => {
           labels,
           values,
         });
+
+        if (window.location.hash && window.location.hash === '#time') {
+          if (timeRef) {
+            timeRef.current.scrollIntoView({ behavior: 'smooth' });
+          }
+        }
       })
       .catch((error) => console.error(error));
   }, [props.startDate, props.endDate]);
 
   return (
-    <section className="section" id="time">
+    <section className="section" id="time" ref={timeRef}>
       <div className="content">
         <h2 className="subtitle">Average session duration</h2>
 
