@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { getMetricsData } from '../../../lib/analytics';
 
 const DonateClicks = (props) => {
+  const donationsRef = useRef();
   const [pageViews, setPageViews] = useState({});
   const [donateTableRows, setDonateTableRows] = useState([]);
   const [donationsFrequencyData, setDonationsFrequencyData] = useState([]);
@@ -127,18 +128,18 @@ const DonateClicks = (props) => {
               );
             });
             setDonateTableRows(donateRows);
+
+            if (window.location.hash && window.location.hash === '#donations') {
+              if (donationsRef) {
+                donationsRef.current.scrollIntoView({ behavior: 'smooth' });
+              }
+            }
           })
           .catch((error) => console.error(error));
       })
       .catch((error) => console.error(error));
 
     let eventMetrics = ['ga:totalEvents'];
-    let eventDimensions = [
-      'ga:eventCategory',
-      'ga:eventAction',
-      'ga:eventLabel',
-      'ga:pagePath',
-    ];
     let donationReadingFrequencyDim = [
       'ga:eventCategory',
       'ga:eventAction',
@@ -161,9 +162,6 @@ const DonateClicks = (props) => {
 
       let donationsByFrequency = {};
       queryResult.forEach((row) => {
-        let category = row.dimensions[0];
-        let action = row.dimensions[1];
-        let label = row.dimensions[2];
         let frequency = row.dimensions[3];
         let count = parseInt(row.metrics[0].values[0]);
 
@@ -188,7 +186,7 @@ const DonateClicks = (props) => {
   }, [props.startDate, props.endDate]);
 
   return (
-    <section className="section">
+    <section className="section" id="donations" ref={donationsRef}>
       <div className="content">
         <p className="subtitle is-5">Donate Button Clicks</p>
 

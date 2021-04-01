@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { getMetricsData } from '../../../lib/analytics';
 
 const NewsletterSignupFormData = (props) => {
+  const signupRef = useRef();
+
   const [sortedNewsletterRows, setSortedNewsletterRows] = useState([]);
   const [frequencySignups, setFrequencySignups] = useState([]);
 
@@ -111,13 +113,18 @@ const NewsletterSignupFormData = (props) => {
           }
         });
         setSortedNewsletterRows(sortedRows);
+        if (window.location.hash && window.location.hash === '#signups') {
+          if (signupRef) {
+            signupRef.current.scrollIntoView({ behavior: 'smooth' });
+          }
+        }
       })
       .catch((error) => console.error(error));
   }, [props.startDate, props.endDate]);
 
   return (
     <>
-      <section className="section">
+      <section className="section" id="signups" ref={signupRef}>
         <h2 className="subtitle">Website Signup Form</h2>
 
         <p className="content">

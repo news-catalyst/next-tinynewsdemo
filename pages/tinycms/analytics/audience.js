@@ -8,6 +8,7 @@ import CustomDimensions from '../../../components/tinycms/analytics/CustomDimens
 import DateRangePickerWrapper from '../../../components/tinycms/analytics/DateRangePickerWrapper';
 import datePickerStyles from '../../../styles/datepicker.js';
 import DonateClicks from '../../../components/tinycms/analytics/DonateClicks';
+import AnalyticsSidebar from '../../../components/tinycms/analytics/AnalyticsSidebar';
 
 export default function Audience(props) {
   const [isSignedIn, setIsSignedIn] = useState(false);
@@ -97,14 +98,24 @@ export default function Audience(props) {
           <div>
             <div className="container">
               <section className="section">
-                <h1 className="title">Audience Overview</h1>
-                <DateRangePickerWrapper
-                  startDate={startDate}
-                  endDate={endDate}
-                  setDates={setDates}
-                  focusedInput={focusedInput}
-                  setFocusedInput={setFocusedInput}
-                />
+                <div className="columns">
+                  <div className="column">
+                    <h1 className="title">Audience Overview</h1>
+                    <DateRangePickerWrapper
+                      startDate={startDate}
+                      endDate={endDate}
+                      setDates={setDates}
+                      focusedInput={focusedInput}
+                      setFocusedInput={setFocusedInput}
+                    />
+                  </div>
+
+                  <div className="column">
+                    <AnalyticsSidebar title="About this Data">
+                      <p>tk</p>
+                    </AnalyticsSidebar>
+                  </div>
+                </div>
               </section>
 
               <DonateClicks

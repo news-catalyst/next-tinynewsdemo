@@ -7,6 +7,7 @@ import ReadingFrequencyData from '../../../components/tinycms/analytics/ReadingF
 import moment from 'moment';
 import DateRangePickerWrapper from '../../../components/tinycms/analytics/DateRangePickerWrapper';
 import datePickerStyles from '../../../styles/datepicker.js';
+import AnalyticsSidebar from '../../../components/tinycms/analytics/AnalyticsSidebar';
 
 export default function PageViewsPage(props) {
   const [pageViews, setPageViews] = useState({});
@@ -97,14 +98,24 @@ export default function PageViewsPage(props) {
           <div>
             <div className="container">
               <section className="section">
-                <h1 className="title">Page Views</h1>
-                <DateRangePickerWrapper
-                  startDate={startDate}
-                  endDate={endDate}
-                  setDates={setDates}
-                  focusedInput={focusedInput}
-                  setFocusedInput={setFocusedInput}
-                />
+                <div className="columns">
+                  <div className="column">
+                    <h1 className="title">Page Views</h1>
+                    <DateRangePickerWrapper
+                      startDate={startDate}
+                      endDate={endDate}
+                      setDates={setDates}
+                      focusedInput={focusedInput}
+                      setFocusedInput={setFocusedInput}
+                    />
+                  </div>
+
+                  <div className="column">
+                    <AnalyticsSidebar title="About this Data">
+                      <p>tk</p>
+                    </AnalyticsSidebar>
+                  </div>
+                </div>
               </section>
 
               <PageViews

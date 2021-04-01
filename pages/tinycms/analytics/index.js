@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
+import Link from 'next/link';
 import AdminLayout from '../../../components/AdminLayout';
 import AdminNav from '../../../components/nav/AdminNav';
+import AnalyticsSidebar from '../../../components/tinycms/analytics/AnalyticsSidebar';
 
 export default function AnalyticsIndex(props) {
   const [isSignedIn, setIsSignedIn] = useState(false);
@@ -86,32 +88,76 @@ export default function AnalyticsIndex(props) {
                     <li>
                       <a href="/tinycms/analytics/audience">Audience</a>
                       <ul>
-                        <li>Donations</li>
-                        <li>Subscriptions</li>
+                        <li>
+                          <Link href="/tinycms/analytics/audience#donations">
+                            <a>Donations</a>
+                          </Link>
+                        </li>
+                        <li>
+                          <Link href="/tinycms/analytics/audience#subscriptions">
+                            <a>Subscriptions</a>
+                          </Link>
+                        </li>
                       </ul>
                     </li>
                     <li>
                       <a href="/tinycms/analytics/newsletter">Newsletters</a>
                       <ul>
-                        <li>Signup Stats</li>
-                        <li>Mailchimp Campaigns</li>
+                        <li>
+                          <Link href="/tinycms/analytics/newsletter#signups">
+                            <a>Signup Stats</a>
+                          </Link>
+                        </li>
+                        <li>
+                          <Link href="/tinycms/analytics/newsletter#campaigns">
+                            <a>Mailchimp Campaigns</a>
+                          </Link>
+                        </li>
                       </ul>
                     </li>
                     <li>
                       <a href="/tinycms/analytics/pageviews">Page Views</a>
                       <ul>
-                        <li>Page Views</li>
-                        <li>Reading Depth</li>
-                        <li>Reading Frequency</li>
+                        <li>
+                          <Link href="/tinycms/analytics/pageviews#pageviews">
+                            <a>Page Views</a>
+                          </Link>
+                        </li>
+                        <li>
+                          <Link href="/tinycms/analytics/pageviews#depth">
+                            <a>Reading Depth</a>
+                          </Link>
+                        </li>
+                        <li>
+                          <Link href="/tinycms/analytics/pageviews#frequency">
+                            <a>Reading Frequency</a>
+                          </Link>
+                        </li>
                       </ul>
                     </li>
                     <li>
                       <a href="/tinycms/analytics/sessions">Sessions</a>
                       <ul>
-                        <li>Daily</li>
-                        <li>Regional</li>
-                        <li>Referral Sources</li>
-                        <li>Time Spent</li>
+                        <li>
+                          <Link href="/tinycms/analytics/sessions#daily">
+                            <a>Daily</a>
+                          </Link>
+                        </li>
+                        <li>
+                          <Link href="/tinycms/analytics/sessions#geo">
+                            <a>Regional</a>
+                          </Link>
+                        </li>
+                        <li>
+                          <Link href="/tinycms/analytics/sessions#referral">
+                            <a>Referral Sources</a>
+                          </Link>
+                        </li>
+                        <li>
+                          <Link href="/tinycms/analytics/sessions#time">
+                            <a>Time Spent</a>
+                          </Link>
+                        </li>
                       </ul>
                     </li>
                   </ul>
@@ -119,51 +165,51 @@ export default function AnalyticsIndex(props) {
               </div>
 
               <div className="column">
-                <article className="message">
-                  <div className="message-header">
-                    <p>About this Data</p>
-                    <button className="delete" aria-label="delete"></button>
-                  </div>
-                  <div className="message-body">
-                    <p className="content">
-                      tinycms analytics data is meant to reveal insights about
-                      how your audience is - or is not - interacting with your
-                      published content.
-                    </p>
-                    <p className="content">
-                      Information related to donate button clicks, page views,
-                      reading behavior and sessions come from Google Analytics.
-                      This site is configured for GA as follows:
-                      <ul>
-                        <li>
-                          <b>Tracking ID:</b>{' '}
-                          {process.env.NEXT_PUBLIC_GA_TRACKING_ID}
-                        </li>
-                        <li>
-                          <b>View ID:</b>{' '}
-                          {process.env.NEXT_PUBLIC_ANALYTICS_VIEW_ID}
-                        </li>
-                      </ul>
-                    </p>
-                    <p className="content">
-                      Information on newsletter subscriptions come from
-                      Mailchimp. This site is configured for Mailchimp with a
-                      subscribe URL of:{' '}
-                      <pre>
-                        {process.env.NEXT_PUBLIC_MAILCHIMP_SUBSCRIBE_URL}
-                      </pre>
-                    </p>
-                    <p className="content">
-                      For a deeper dive on understanding your audience and
-                      measuring the impact of your reporting, News Catalyst
-                      recommends checking out{' '}
-                      <a href="https://source.opennews.org/articles/memberkit-upgrade-your-analytics/">
-                        MemberKit
-                      </a>
-                      .
-                    </p>
-                  </div>
-                </article>
+                <AnalyticsSidebar title="About this Data">
+                  <p className="content">
+                    tinycms analytics data is meant to reveal insights about how
+                    your audience is - or is not - interacting with your
+                    published content.
+                  </p>
+                  <p className="content">
+                    Information related to donate button clicks, page views,
+                    reading behavior and sessions come from{' '}
+                    <a href="https://analytics.google.com/">Google Analytics</a>
+                    . This site is configured for GA as follows:
+                  </p>
+
+                  <ul className="content">
+                    <li>
+                      <b>Tracking ID:</b>{' '}
+                      <code>{process.env.NEXT_PUBLIC_GA_TRACKING_ID}</code>
+                    </li>
+                    <li>
+                      <b>View ID:</b>{' '}
+                      <code>{process.env.NEXT_PUBLIC_ANALYTICS_VIEW_ID}</code>
+                    </li>
+                  </ul>
+
+                  <p className="content">
+                    Information on newsletter subscriptions come from{' '}
+                    <a href="https://mailchimp.com/">Mailchimp</a>. This site is
+                    configured for Mailchimp with a <b>subscribe URL</b>
+                    of:
+                  </p>
+                  <p className="content">
+                    <code>
+                      {process.env.NEXT_PUBLIC_MAILCHIMP_SUBSCRIBE_URL}
+                    </code>
+                  </p>
+                  <p className="content">
+                    For a deeper dive on understanding your audience and
+                    measuring the impact of your reporting, News Catalyst
+                    recommends checking out{' '}
+                    <a href="https://source.opennews.org/articles/memberkit-upgrade-your-analytics/">
+                      MemberKit
+                    </a>
+                    .
+                  </p>
+                </AnalyticsSidebar>
               </div>
             </div>
           </section>
