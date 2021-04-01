@@ -1,9 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 
 export default function MailchimpReport(props) {
+  const campaignsRef = useRef();
+  useEffect(() => {
+    if (window.location.hash && window.location.hash === '#campaigns') {
+      if (campaignsRef) {
+        campaignsRef.current.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  }, [props.reports]);
+
   if (!props.reports) console.error('No report passed for mailchimp');
   return (
-    <div>
+    <div id="campaigns" ref={campaignsRef}>
       {props.reports.map((report) => (
         <section className="section" key={`mailchimp-report-${report.id}`}>
           <h2 className="subtitle">

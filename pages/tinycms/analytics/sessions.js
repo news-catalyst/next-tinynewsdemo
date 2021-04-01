@@ -8,6 +8,7 @@ import AverageSessionDuration from '../../../components/tinycms/analytics/Averag
 import DailySessions from '../../../components/tinycms/analytics/DailySessions';
 import GeoSessions from '../../../components/tinycms/analytics/GeoSessions';
 import ReferralSource from '../../../components/tinycms/analytics/ReferralSource';
+import AnalyticsSidebar from '../../../components/tinycms/analytics/AnalyticsSidebar';
 
 export default function SessionsOverview(props) {
   const [isSignedIn, setIsSignedIn] = useState(false);
@@ -97,14 +98,24 @@ export default function SessionsOverview(props) {
           <div>
             <div className="container">
               <section className="section">
-                <h1 className="title">Sessions Overview</h1>
-                <DateRangePickerWrapper
-                  startDate={startDate}
-                  endDate={endDate}
-                  setDates={setDates}
-                  focusedInput={focusedInput}
-                  setFocusedInput={setFocusedInput}
-                />
+                <div className="columns">
+                  <div className="column">
+                    <h1 className="title">Sessions Overview</h1>
+                    <DateRangePickerWrapper
+                      startDate={startDate}
+                      endDate={endDate}
+                      setDates={setDates}
+                      focusedInput={focusedInput}
+                      setFocusedInput={setFocusedInput}
+                    />
+                  </div>
+
+                  <div className="column">
+                    <AnalyticsSidebar title="About this Data">
+                      <p>tk</p>
+                    </AnalyticsSidebar>
+                  </div>
+                </div>
               </section>
 
               <DailySessions

@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { getMetricsData } from '../../../lib/analytics';
 import { formatDate } from '../../../lib/utils';
 
 const DailySessions = (props) => {
+  const dailyRef = useRef();
+
   const INITIAL_STATE = {
     labels: [],
     values: [],
@@ -42,12 +44,18 @@ const DailySessions = (props) => {
           labels,
           values,
         });
+
+        if (window.location.hash && window.location.hash === '#daily') {
+          if (dailyRef) {
+            dailyRef.current.scrollIntoView({ behavior: 'smooth' });
+          }
+        }
       })
       .catch((error) => console.error(error));
   }, [props.startDate, props.endDate]);
 
   return (
-    <section className="section">
+    <section className="section" id="daily" ref={dailyRef}>
       <div className="content">
         <h2 className="subtitle">Sessions per day</h2>
         <p className="content">

@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { getMetricsData } from '../../../lib/analytics';
 
 const ReferralSource = (props) => {
+  const referralRef = useRef();
+
   const INITIAL_STATE = {
     labels: [],
     values: [],
@@ -41,12 +43,18 @@ const ReferralSource = (props) => {
           labels,
           values,
         });
+
+        if (window.location.hash && window.location.hash === '#referral') {
+          if (referralRef) {
+            referralRef.current.scrollIntoView({ behavior: 'smooth' });
+          }
+        }
       })
       .catch((error) => console.error(error));
   }, [props.startDate, props.endDate]);
 
   return (
-    <section className="section">
+    <section className="section" id="referral" ref={referralRef}>
       <div className="content">
         <h2 className="subtitle">Sessions by referral source</h2>
 

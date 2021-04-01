@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { getMetricsData } from '../../../lib/analytics';
 
 const GeoSessions = (props) => {
+  const geoRef = useRef();
+
   const INITIAL_STATE = {
     labels: [],
     values: [],
@@ -39,12 +41,17 @@ const GeoSessions = (props) => {
           labels,
           values,
         });
+        if (window.location.hash && window.location.hash === '#geo') {
+          if (geoRef) {
+            geoRef.current.scrollIntoView({ behavior: 'smooth' });
+          }
+        }
       })
       .catch((error) => console.error(error));
   }, [props.startDate, props.endDate]);
 
   return (
-    <section className="section">
+    <section className="section" id="geo" ref={geoRef}>
       <div className="content">
         <h2 className="subtitle">Sessions by geographic region</h2>
 
