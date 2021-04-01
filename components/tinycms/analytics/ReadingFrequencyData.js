@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { getMetricsData } from '../../../lib/analytics';
 
 const ReadingFrequencyData = (props) => {
+  const frequencyRef = useRef();
   const INITIAL_STATE = {
     labels: [],
     values: [],
@@ -33,12 +34,17 @@ const ReadingFrequencyData = (props) => {
           values.push(value);
         });
         setFrequencyData({ ...frequencyData, labels, values });
+        if (window.location.hash && window.location.hash === '#frequency') {
+          if (frequencyRef) {
+            frequencyRef.current.scrollIntoView({ behavior: 'smooth' });
+          }
+        }
       })
       .catch((error) => console.error(error));
   }, [props.startDate, props.endDate]);
 
   return (
-    <section className="section">
+    <section className="section" id="frequency" ref={frequencyRef}>
       <h2 className="subtitle">
         Page views by audience segment: reading frequency
       </h2>

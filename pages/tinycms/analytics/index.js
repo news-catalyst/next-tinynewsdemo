@@ -118,9 +118,21 @@ export default function AnalyticsIndex(props) {
                     <li>
                       <a href="/tinycms/analytics/pageviews">Page Views</a>
                       <ul>
-                        <li>Page Views</li>
-                        <li>Reading Depth</li>
-                        <li>Reading Frequency</li>
+                        <li>
+                          <Link href="/tinycms/analytics/pageviews#pageviews">
+                            <a>Page Views</a>
+                          </Link>
+                        </li>
+                        <li>
+                          <Link href="/tinycms/analytics/pageviews#depth">
+                            <a>Reading Depth</a>
+                          </Link>
+                        </li>
+                        <li>
+                          <Link href="/tinycms/analytics/pageviews#frequency">
+                            <a>Reading Frequency</a>
+                          </Link>
+                        </li>
                       </ul>
                     </li>
                     <li>

@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { getMetricsData } from '../../../lib/analytics';
 
 const ReadingDepthData = (props) => {
+  const depthRef = useRef();
   const [readingDepthTableRows, setReadingDepthTableRows] = useState([]);
 
   useEffect(() => {
@@ -96,12 +97,18 @@ const ReadingDepthData = (props) => {
           }
         });
         setReadingDepthTableRows(readingDepthRows);
+
+        if (window.location.hash && window.location.hash === '#depth') {
+          if (depthRef) {
+            depthRef.current.scrollIntoView({ behavior: 'smooth' });
+          }
+        }
       })
       .catch((error) => console.error(error));
   }, [props.pageViews, props.startDate, props.endDate]);
 
   return (
-    <section className="section">
+    <section className="section" id="depth" ref={depthRef}>
       <div className="content">
         <p className="subtitle is-5">Reading Depth</p>
 

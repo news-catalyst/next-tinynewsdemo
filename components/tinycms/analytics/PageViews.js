@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { getMetricsData } from '../../../lib/analytics';
 
 const PageViews = (props) => {
+  const pageviewsRef = useRef();
   const INITIAL_STATE = {
     labels: [],
     values: [],
@@ -54,12 +55,18 @@ const PageViews = (props) => {
           values,
         });
         props.setPageViews(pv);
+
+        if (window.location.hash && window.location.hash === '#pageviews') {
+          if (pageviewsRef) {
+            pageviewsRef.current.scrollIntoView({ behavior: 'smooth' });
+          }
+        }
       })
       .catch((error) => console.error(error));
   }, [props.startDate, props.endDate]);
 
   return (
-    <section className="section">
+    <section className="section" id="pageviews" ref={pageviewsRef}>
       <h2 className="subtitle">Page views</h2>
       <p className="content">
         {props.startDate.format('dddd, MMMM Do YYYY')} -{' '}
