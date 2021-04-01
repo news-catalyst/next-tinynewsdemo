@@ -173,24 +173,32 @@ export default function AnalyticsIndex(props) {
                   </p>
                   <p className="content">
                     Information related to donate button clicks, page views,
-                    reading behavior and sessions come from Google Analytics.
-                    This site is configured for GA as follows:
-                    <ul>
-                      <li>
-                        <b>Tracking ID:</b>{' '}
-                        {process.env.NEXT_PUBLIC_GA_TRACKING_ID}
-                      </li>
-                      <li>
-                        <b>View ID:</b>{' '}
-                        {process.env.NEXT_PUBLIC_ANALYTICS_VIEW_ID}
-                      </li>
-                    </ul>
+                    reading behavior and sessions come from{' '}
+                    <a href="https://analytics.google.com/">Google Analytics</a>
+                    . This site is configured for GA as follows:
+                  </p>
+
+                  <ul className="content">
+                    <li>
+                      <b>Tracking ID:</b>{' '}
+                      <code>{process.env.NEXT_PUBLIC_GA_TRACKING_ID}</code>
+                    </li>
+                    <li>
+                      <b>View ID:</b>{' '}
+                      <code>{process.env.NEXT_PUBLIC_ANALYTICS_VIEW_ID}</code>
+                    </li>
+                  </ul>
+
+                  <p className="content">
+                    Information on newsletter subscriptions come from{' '}
+                    <a href="https://mailchimp.com/">Mailchimp</a>. This site is
+                    configured for Mailchimp with a <b>subscribe URL</b>
+                    of:
                   </p>
                   <p className="content">
-                    Information on newsletter subscriptions come from Mailchimp.
-                    This site is configured for Mailchimp with a subscribe URL
-                    of:{' '}
-                    <pre>{process.env.NEXT_PUBLIC_MAILCHIMP_SUBSCRIBE_URL}</pre>
+                    <code>
+                      {process.env.NEXT_PUBLIC_MAILCHIMP_SUBSCRIBE_URL}
+                    </code>
                   </p>
                   <p className="content">
                     For a deeper dive on understanding your audience and
