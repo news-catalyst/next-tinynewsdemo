@@ -6,7 +6,11 @@ export default function DonationBlock({ metadata, wrap = true }) {
       <h4>{metadata.donateBlockHed}</h4>
       <p>{metadata.donateBlockDek}</p>
       <br />
-      <Donate label={metadata.supportCTA} url={metadata.supportURL} />
+      <Donate
+        style={{ backgroundColor: '#fff', color: '#000' }}
+        label={metadata.supportCTA}
+        url={metadata.supportURL}
+      />
     </div>
   );
 
