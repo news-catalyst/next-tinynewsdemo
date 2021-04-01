@@ -45,7 +45,7 @@ const ReadingFrequencyData = (props) => {
 
   return (
     <section className="section" id="frequency" ref={frequencyRef}>
-      <h2 className="subtitle">
+      <h2 className="title is-4">
         Page views by audience segment: reading frequency
       </h2>
 

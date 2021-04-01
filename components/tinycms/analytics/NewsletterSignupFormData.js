@@ -125,7 +125,7 @@ const NewsletterSignupFormData = (props) => {
   return (
     <>
       <section className="section" id="signups" ref={signupRef}>
-        <h2 className="subtitle">Website Signup Form</h2>
+        <h2 className="title is-4">Website Signup Form</h2>
 
         <p className="content">
           {props.startDate.format('dddd, MMMM Do YYYY')} -{' '}
@@ -146,7 +146,7 @@ const NewsletterSignupFormData = (props) => {
       </section>
 
       <section className="section">
-        <h2 className="subtitle">Signups by Reading Frequency</h2>
+        <h2 className="title is-4">Signups by Reading Frequency</h2>
 
         <p className="content">
           {props.startDate.format('dddd, MMMM Do YYYY')} -{' '}
