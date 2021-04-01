@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useScrollPercentage } from 'react-scroll-percentage';
 import { useAnalytics } from '../../lib/hooks/useAnalytics.js';
 import { renderBody } from '../../lib/utils.js';
+import DonationBlock from '../plugins/DonationBlock';
 import NewsletterBlock from '../plugins/NewsletterBlock';
 
 export default function ArticleBody({ article, ads, isAmp, metadata }) {
@@ -9,6 +10,9 @@ export default function ArticleBody({ article, ads, isAmp, metadata }) {
 
   const { trackEvent } = useAnalytics();
 
+  const [randomBlockNumber, setRandomBlockNumber] = useState(
+    Math.floor(Math.random() * 2)
+  );
   const [ref, percentage] = useScrollPercentage();
   const [oneQuarterReached, setOneQuarterReached] = useState(false);
   const [oneHalfReached, setOneHalfReached] = useState(false);
@@ -67,11 +71,16 @@ export default function ArticleBody({ article, ads, isAmp, metadata }) {
         <div className="post-text">
           <div>{body}</div>
         </div>
-        <NewsletterBlock
-          metadata={metadata}
-          headline={article.headline}
-          wrap={false}
-        />
+        {randomBlockNumber === 0 && (
+          <NewsletterBlock
+            metadata={metadata}
+            headline={article.headline}
+            wrap={false}
+          />
+        )}
+        {randomBlockNumber === 1 && (
+          <DonationBlock metadata={metadata} wrap={false} />
+        )}
       </div>
     </section>
   );
