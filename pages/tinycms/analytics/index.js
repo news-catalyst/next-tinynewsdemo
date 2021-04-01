@@ -88,15 +88,31 @@ export default function AnalyticsIndex(props) {
                     <li>
                       <a href="/tinycms/analytics/audience">Audience</a>
                       <ul>
-                        <li>Donations</li>
-                        <li>Subscriptions</li>
+                        <li>
+                          <Link href="/tinycms/analytics/audience#donations">
+                            <a>Donations</a>
+                          </Link>
+                        </li>
+                        <li>
+                          <Link href="/tinycms/analytics/audience#subscriptions">
+                            <a>Subscriptions</a>
+                          </Link>
+                        </li>
                       </ul>
                     </li>
                     <li>
                       <a href="/tinycms/analytics/newsletter">Newsletters</a>
                       <ul>
-                        <li>Signup Stats</li>
-                        <li>Mailchimp Campaigns</li>
+                        <li>
+                          <Link href="/tinycms/analytics/newsletter#signups">
+                            <a>Signup Stats</a>
+                          </Link>
+                        </li>
+                        <li>
+                          <Link href="/tinycms/analytics/newsletter#campaigns">
+                            <a>Mailchimp Campaigns</a>
+                          </Link>
+                        </li>
                       </ul>
                     </li>
                     <li>

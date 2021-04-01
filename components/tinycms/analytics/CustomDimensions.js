@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { getMetricsData } from '../../../lib/analytics';
 
 const CustomDimensions = (props) => {
+  const subscriptionsRef = useRef();
   const INITIAL_STATE = {
     labels: [],
     values: [],
@@ -40,12 +41,18 @@ const CustomDimensions = (props) => {
           labels,
           values,
         });
+
+        if (window.location.hash && window.location.hash === '#subscriptions') {
+          if (subscriptionsRef) {
+            subscriptionsRef.current.scrollIntoView({ behavior: 'smooth' });
+          }
+        }
       })
       .catch((error) => console.error(error));
   }, [props.startDate, props.endDate]);
 
   return (
-    <section className="section">
+    <section className="section" id="subscriptions" ref={subscriptionsRef}>
       <h2 className="subtitle">Sessions by audience segment: {props.label}</h2>
 
       <p className="content">
