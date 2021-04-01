@@ -1960,6 +1960,11 @@ export default css.global`
     color: #fff;
   }
 
+  .colorone .donation .button,
+    background-color: #fff;
+    color: #000;
+  }
+
   .colorone .ad-wrapper .button {
     font-weight: 700;
   }

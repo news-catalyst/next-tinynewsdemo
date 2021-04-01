@@ -275,6 +275,20 @@ export default function UpdateMetadata(props) {
         value={parsedData['description404']}
       />
 
+      <MetadataTextInput
+        label="Donation Block: Headline"
+        name="donateBlockHed"
+        handleChange={handleChange}
+        value={parsedData['donateBlockHed']}
+      />
+
+      <MetadataTextInput
+        label="Donation Block: Deck"
+        name="donateBlockDek"
+        handleChange={handleChange}
+        value={parsedData['donateBlockDek']}
+      />
+
       {!editData && (
         <div className="field">
           <a href="#" className="button" onClick={() => setEditData(true)}>
