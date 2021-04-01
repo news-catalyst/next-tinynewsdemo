@@ -188,7 +188,7 @@ const DonateClicks = (props) => {
   return (
     <section className="section" id="donations" ref={donationsRef}>
       <div className="content">
-        <p className="subtitle is-5">Donate Button Clicks</p>
+        <p className="title is-4">Donate Button Clicks</p>
 
         <p className="content">
           {props.startDate.format('dddd, MMMM Do YYYY')} -{' '}

@@ -8,6 +8,7 @@ import MailchimpReport from '../../../components/tinycms/analytics/MailchimpRepo
 import moment from 'moment';
 import DateRangePickerWrapper from '../../../components/tinycms/analytics/DateRangePickerWrapper';
 import datePickerStyles from '../../../styles/datepicker.js';
+import AnalyticsNav from '../../../components/tinycms/analytics/AnalyticsNav';
 import AnalyticsSidebar from '../../../components/tinycms/analytics/AnalyticsSidebar';
 
 export default function NewsletterOverview(props) {
@@ -99,8 +100,16 @@ export default function NewsletterOverview(props) {
             <div className="container">
               <section className="section">
                 <div className="columns">
-                  <div className="column">
+                  <div className="column is-one-quarter">
+                    <AnalyticsNav />
+                  </div>
+
+                  <div className="column is-three-quarters">
                     <h1 className="title">Newsletter Overview</h1>
+                    <AnalyticsSidebar title="About this Data">
+                      <p>tk</p>
+                    </AnalyticsSidebar>
+
                     <DateRangePickerWrapper
                       startDate={startDate}
                       endDate={endDate}
@@ -108,27 +117,21 @@ export default function NewsletterOverview(props) {
                       focusedInput={focusedInput}
                       setFocusedInput={setFocusedInput}
                     />
-                  </div>
 
-                  <div className="column">
-                    <AnalyticsSidebar title="About this Data">
-                      <p>tk</p>
-                    </AnalyticsSidebar>
+                    <NewsletterSignupFormData
+                      viewID={viewID}
+                      startDate={startDate}
+                      endDate={endDate}
+                    />
+
+                    <MailchimpReport
+                      mailchimpKey={props.mailchimpKey}
+                      mailchimpServer={props.mailchimpServer}
+                      reports={props.reports}
+                    />
                   </div>
                 </div>
               </section>
-
-              <NewsletterSignupFormData
-                viewID={viewID}
-                startDate={startDate}
-                endDate={endDate}
-              />
-
-              <MailchimpReport
-                mailchimpKey={props.mailchimpKey}
-                mailchimpServer={props.mailchimpServer}
-                reports={props.reports}
-              />
             </div>
           </div>
         )}
