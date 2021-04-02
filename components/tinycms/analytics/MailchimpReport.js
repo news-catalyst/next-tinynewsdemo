@@ -15,7 +15,7 @@ export default function MailchimpReport(props) {
     <div id="campaigns" ref={campaignsRef}>
       {props.reports.map((report) => (
         <section className="section" key={`mailchimp-report-${report.id}`}>
-          <h2 className="subtitle">
+          <h2 className="title is-4">
             Newsletter Campaign: {report.campaign_title}
           </h2>
 

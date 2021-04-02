@@ -8,6 +8,7 @@ import CustomDimensions from '../../../components/tinycms/analytics/CustomDimens
 import DateRangePickerWrapper from '../../../components/tinycms/analytics/DateRangePickerWrapper';
 import datePickerStyles from '../../../styles/datepicker.js';
 import DonateClicks from '../../../components/tinycms/analytics/DonateClicks';
+import AnalyticsNav from '../../../components/tinycms/analytics/AnalyticsNav';
 import AnalyticsSidebar from '../../../components/tinycms/analytics/AnalyticsSidebar';
 
 export default function Audience(props) {
@@ -91,6 +92,7 @@ export default function Audience(props) {
   return (
     <AdminLayout>
       <AdminNav homePageEditor={false} />
+
       <div className="analytics">
         {!isSignedIn ? (
           <div id="signin-button"></div>
@@ -99,8 +101,30 @@ export default function Audience(props) {
             <div className="container">
               <section className="section">
                 <div className="columns">
-                  <div className="column">
+                  <div className="column is-one-quarter">
+                    <AnalyticsNav />
+                  </div>
+
+                  <div className="column is-three-quarters">
                     <h1 className="title">Audience Overview</h1>
+
+                    <AnalyticsSidebar title="About this Data">
+                      <p className="content">
+                        Donate button clicks are measured using Google Analytics
+                        event tracking.
+                      </p>
+                      <p className="content">
+                        Reading frequency is tracked through a custom dimension
+                        in Google Analytics, and compared against donation
+                        activity via the article path.
+                      </p>
+                      <p className="content">
+                        Sessions by audience segment are all measured using
+                        Google Analytics custom dimensions and are currently
+                        TBD.
+                      </p>
+                    </AnalyticsSidebar>
+
                     <DateRangePickerWrapper
                       startDate={startDate}
                       endDate={endDate}
@@ -108,39 +132,33 @@ export default function Audience(props) {
                       focusedInput={focusedInput}
                       setFocusedInput={setFocusedInput}
                     />
-                  </div>
 
-                  <div className="column">
-                    <AnalyticsSidebar title="About this Data">
-                      <p>tk</p>
-                    </AnalyticsSidebar>
+                    <DonateClicks
+                      viewID={viewID}
+                      startDate={startDate}
+                      endDate={endDate}
+                    />
+
+                    <CustomDimensions
+                      viewID={viewID}
+                      startDate={startDate}
+                      endDate={endDate}
+                      metrics={['ga:sessions']}
+                      dimensions={['ga:dimension4']}
+                      label="Donor"
+                    />
+
+                    <CustomDimensions
+                      viewID={viewID}
+                      startDate={startDate}
+                      endDate={endDate}
+                      metrics={['ga:sessions']}
+                      dimensions={['ga:dimension5']}
+                      label="Subscriber"
+                    />
                   </div>
                 </div>
               </section>
-
-              <DonateClicks
-                viewID={viewID}
-                startDate={startDate}
-                endDate={endDate}
-              />
-
-              <CustomDimensions
-                viewID={viewID}
-                startDate={startDate}
-                endDate={endDate}
-                metrics={['ga:sessions']}
-                dimensions={['ga:dimension4']}
-                label="Donor"
-              />
-
-              <CustomDimensions
-                viewID={viewID}
-                startDate={startDate}
-                endDate={endDate}
-                metrics={['ga:sessions']}
-                dimensions={['ga:dimension5']}
-                label="Subscriber"
-              />
             </div>
           </div>
         )}

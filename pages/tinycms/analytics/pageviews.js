@@ -8,6 +8,7 @@ import moment from 'moment';
 import DateRangePickerWrapper from '../../../components/tinycms/analytics/DateRangePickerWrapper';
 import datePickerStyles from '../../../styles/datepicker.js';
 import AnalyticsSidebar from '../../../components/tinycms/analytics/AnalyticsSidebar';
+import AnalyticsNav from '../../../components/tinycms/analytics/AnalyticsNav';
 
 export default function PageViewsPage(props) {
   const [pageViews, setPageViews] = useState({});
@@ -99,45 +100,50 @@ export default function PageViewsPage(props) {
             <div className="container">
               <section className="section">
                 <div className="columns">
-                  <div className="column">
-                    <h1 className="title">Page Views</h1>
-                    <DateRangePickerWrapper
-                      startDate={startDate}
-                      endDate={endDate}
-                      setDates={setDates}
-                      focusedInput={focusedInput}
-                      setFocusedInput={setFocusedInput}
-                    />
-                  </div>
+                  <div className="columns">
+                    <div className="column is-one-quarter">
+                      <AnalyticsNav />
+                    </div>
 
-                  <div className="column">
-                    <AnalyticsSidebar title="About this Data">
-                      <p>tk</p>
-                    </AnalyticsSidebar>
+                    <div className="column is-three-quarters">
+                      <h1 className="title">Page Views</h1>
+
+                      <AnalyticsSidebar title="About this Data">
+                        <p>tk</p>
+                      </AnalyticsSidebar>
+
+                      <DateRangePickerWrapper
+                        startDate={startDate}
+                        endDate={endDate}
+                        setDates={setDates}
+                        focusedInput={focusedInput}
+                        setFocusedInput={setFocusedInput}
+                      />
+
+                      <PageViews
+                        viewID={viewID}
+                        startDate={startDate}
+                        endDate={endDate}
+                        setPageViews={setPageViews}
+                        pageViews={pageViews}
+                      />
+
+                      <ReadingDepthData
+                        viewID={viewID}
+                        startDate={startDate}
+                        endDate={endDate}
+                        pageViews={pageViews}
+                      />
+
+                      <ReadingFrequencyData
+                        viewID={viewID}
+                        startDate={startDate}
+                        endDate={endDate}
+                      />
+                    </div>
                   </div>
                 </div>
               </section>
-
-              <PageViews
-                viewID={viewID}
-                startDate={startDate}
-                endDate={endDate}
-                setPageViews={setPageViews}
-                pageViews={pageViews}
-              />
-
-              <ReadingDepthData
-                viewID={viewID}
-                startDate={startDate}
-                endDate={endDate}
-                pageViews={pageViews}
-              />
-
-              <ReadingFrequencyData
-                viewID={viewID}
-                startDate={startDate}
-                endDate={endDate}
-              />
             </div>
           </div>
         )}

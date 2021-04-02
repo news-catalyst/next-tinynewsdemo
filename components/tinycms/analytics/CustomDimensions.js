@@ -53,7 +53,9 @@ const CustomDimensions = (props) => {
 
   return (
     <section className="section" id="subscriptions" ref={subscriptionsRef}>
-      <h2 className="subtitle">Sessions by audience segment: {props.label}</h2>
+      <h2 className="title is-4">
+        Sessions by audience segment: {props.label}
+      </h2>
 
       <p className="content">
         {props.startDate.format('dddd, MMMM Do YYYY')} -{' '}

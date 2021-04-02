@@ -110,7 +110,7 @@ const ReadingDepthData = (props) => {
   return (
     <section className="section" id="depth" ref={depthRef}>
       <div className="content">
-        <p className="subtitle is-5">Reading Depth</p>
+        <p className="title is-4">Reading Depth</p>
 
         <p className="content">
           {props.startDate.format('dddd, MMMM Do YYYY')} -{' '}
