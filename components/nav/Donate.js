@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { useAnalytics } from '../../lib/hooks/useAnalytics.js';
 
-const Donate = ({ label, url }) => {
+const Donate = ({ label, style, url }) => {
   const { trackEvent } = useAnalytics();
 
   const trackClick = () => {
@@ -15,7 +15,7 @@ const Donate = ({ label, url }) => {
   };
   return (
     <Link href={url}>
-      <a className="site__cta button" onClick={trackClick}>
+      <a style={style} className="site__cta button donate" onClick={trackClick}>
         {label}
       </a>
     </Link>
