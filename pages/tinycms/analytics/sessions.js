@@ -9,6 +9,7 @@ import DailySessions from '../../../components/tinycms/analytics/DailySessions';
 import GeoSessions from '../../../components/tinycms/analytics/GeoSessions';
 import ReferralSource from '../../../components/tinycms/analytics/ReferralSource';
 import AnalyticsSidebar from '../../../components/tinycms/analytics/AnalyticsSidebar';
+import AnalyticsNav from '../../../components/tinycms/analytics/AnalyticsNav';
 
 export default function SessionsOverview(props) {
   const [isSignedIn, setIsSignedIn] = useState(false);
@@ -99,8 +100,17 @@ export default function SessionsOverview(props) {
             <div className="container">
               <section className="section">
                 <div className="columns">
-                  <div className="column">
+                  <div className="column is-one-quarter">
+                    <AnalyticsNav />
+                  </div>
+
+                  <div className="column is-three-quarters">
                     <h1 className="title">Sessions Overview</h1>
+
+                    <AnalyticsSidebar title="About this Data">
+                      <p>tk</p>
+                    </AnalyticsSidebar>
+
                     <DateRangePickerWrapper
                       startDate={startDate}
                       endDate={endDate}
@@ -108,39 +118,33 @@ export default function SessionsOverview(props) {
                       focusedInput={focusedInput}
                       setFocusedInput={setFocusedInput}
                     />
-                  </div>
 
-                  <div className="column">
-                    <AnalyticsSidebar title="About this Data">
-                      <p>tk</p>
-                    </AnalyticsSidebar>
+                    <DailySessions
+                      viewID={viewID}
+                      startDate={startDate}
+                      endDate={endDate}
+                    />
+
+                    <GeoSessions
+                      viewID={viewID}
+                      startDate={startDate}
+                      endDate={endDate}
+                    />
+
+                    <AverageSessionDuration
+                      viewID={viewID}
+                      startDate={startDate}
+                      endDate={endDate}
+                    />
+
+                    <ReferralSource
+                      viewID={viewID}
+                      startDate={startDate}
+                      endDate={endDate}
+                    />
                   </div>
                 </div>
               </section>
-
-              <DailySessions
-                viewID={viewID}
-                startDate={startDate}
-                endDate={endDate}
-              />
-
-              <GeoSessions
-                viewID={viewID}
-                startDate={startDate}
-                endDate={endDate}
-              />
-
-              <AverageSessionDuration
-                viewID={viewID}
-                startDate={startDate}
-                endDate={endDate}
-              />
-
-              <ReferralSource
-                viewID={viewID}
-                startDate={startDate}
-                endDate={endDate}
-              />
             </div>
           </div>
         )}

@@ -67,7 +67,7 @@ const PageViews = (props) => {
 
   return (
     <section className="section" id="pageviews" ref={pageviewsRef}>
-      <h2 className="subtitle">Page views</h2>
+      <h2 className="title is-4">Page views</h2>
       <p className="content">
         {props.startDate.format('dddd, MMMM Do YYYY')} -{' '}
         {props.endDate.format('dddd, MMMM Do YYYY')}
