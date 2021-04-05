@@ -35,6 +35,7 @@
     "bulma": "^0.9.0",
     "chart.js": "^2.9.4",
     "commander": "^7.1.0",
+    "cookie": "^0.3.1",
     "date-fns": "^2.14.0",
     "dotenv": "^8.2.0",
     "fetch-cookie": "^0.10.1",
@@ -52,8 +53,9 @@
     "purgecss": "^2.3.0",
     "react": "^16.14.0",
     "react-analytics-charts": "^1.2.12",
-    "react-aws-s3": "news-catalyst/react-aws-s3",
+    "react-aws-s3": "git@github.com:news-catalyst/react-aws-s3.git#ec79457d3d353a51d93bda6f9ac35cc3767b8045",
     "react-chartjs-2": "^2.11.1",
+    "react-cookie": "^4.0.3",
     "react-datepicker": "^3.6.0",
     "react-dates": "^21.8.0",
     "react-dom": "^16.14.0",
@@ -70,6 +72,7 @@
     "sass": "^1.26.9",
     "styled-component": "^2.8.0",
     "styled-components": "^5.2.1",
+    "universal-cookie": "^4.0.4",
     "web-vitals": "^0.2.3"
   },
   "devDependencies": {

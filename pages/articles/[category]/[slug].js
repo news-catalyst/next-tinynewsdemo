@@ -5,7 +5,10 @@ import {
   hasuraArticlePage,
   hasuraCategoryPage,
 } from '../../../lib/articles.js';
-import { hasuraLocaliseText } from '../../../lib/utils.js';
+import {
+  hasuraLocaliseText,
+  trackMailChimpParams,
+} from '../../../lib/utils.js';
 import { getArticleAds } from '../../../lib/ads.js';
 import { cachedContents } from '../../../lib/cached';
 import Article from '../../../components/Article.js';
@@ -25,6 +28,10 @@ export default function ArticlePage(props) {
   useEffect(() => {
     if (!props.article) {
       router.push('/404');
+    }
+    // mailchimp newsletter tracking
+    if (router.query) {
+      trackMailChimpParams(router.query);
     }
   }, [props.article]);
 
