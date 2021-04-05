@@ -1,14 +1,12 @@
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
+import { useAnalytics } from '../../../lib/hooks/useAnalytics.js';
 import {
   hasuraListAllArticleSlugs,
   hasuraArticlePage,
   hasuraCategoryPage,
 } from '../../../lib/articles.js';
-import {
-  hasuraLocaliseText,
-  trackMailChimpParams,
-} from '../../../lib/utils.js';
+import { hasuraLocaliseText } from '../../../lib/utils.js';
 import { getArticleAds } from '../../../lib/ads.js';
 import { cachedContents } from '../../../lib/cached';
 import Article from '../../../components/Article.js';
@@ -17,6 +15,7 @@ export const config = { amp: 'hybrid' };
 
 export default function ArticlePage(props) {
   const router = useRouter();
+  const { trackMailChimpParams } = useAnalytics();
 
   // If the page is not yet generated, this will be displayed
   // initially until getStaticProps() finishes running
@@ -29,10 +28,7 @@ export default function ArticlePage(props) {
     if (!props.article) {
       router.push('/404');
     }
-    // mailchimp newsletter tracking
-    if (router.query) {
-      trackMailChimpParams(router.query);
-    }
+    trackMailChimpParams(router.query);
   }, [props.article]);
 
   // trying to fix build errors...
