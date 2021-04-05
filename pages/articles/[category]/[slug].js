@@ -15,7 +15,11 @@ export const config = { amp: 'hybrid' };
 
 export default function ArticlePage(props) {
   const router = useRouter();
-  const { trackMailChimpParams } = useAnalytics();
+  const {
+    setDimension,
+    trackPageViewedWithDimension,
+    trackMailChimpParams,
+  } = useAnalytics();
 
   // If the page is not yet generated, this will be displayed
   // initially until getStaticProps() finishes running
@@ -28,7 +32,16 @@ export default function ArticlePage(props) {
     if (!props.article) {
       router.push('/404');
     }
-    trackMailChimpParams(router.query);
+    let isSubscriber = trackMailChimpParams();
+    if (isSubscriber) {
+      console.log('setting dimension5 to true in GA');
+      setDimension('dimension5', true);
+      trackPageViewedWithDimension(
+        window.location.pathname + window.location.search,
+        'dimension5',
+        true
+      );
+    }
   }, [props.article]);
 
   // trying to fix build errors...

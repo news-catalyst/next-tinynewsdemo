@@ -1,4 +1,3 @@
-import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 import { useAnalytics } from '../lib/hooks/useAnalytics.js';
 import { hasuraStreamArticles } from '../lib/homepage.js';
@@ -10,10 +9,21 @@ import Homepage from '../components/Homepage';
 import LandingPage from '../components/LandingPage';
 
 export default function Home(props) {
-  const router = useRouter();
-  const { trackMailChimpParams } = useAnalytics();
+  const {
+    setDimension,
+    trackPageViewedWithDimension,
+    trackMailChimpParams,
+  } = useAnalytics();
   useEffect(() => {
-    trackMailChimpParams(router.query);
+    let isSubscriber = trackMailChimpParams();
+    if (isSubscriber) {
+      setDimension('dimension5', true);
+      trackPageViewedWithDimension(
+        window.location.pathname + window.location.search,
+        'dimension5',
+        true
+      );
+    }
   }, []);
 
   const component = props.siteMetadata.landingPage ? (
