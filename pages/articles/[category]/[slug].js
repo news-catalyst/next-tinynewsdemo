@@ -1,6 +1,5 @@
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
-import { useAnalytics } from '../../../lib/hooks/useAnalytics.js';
 import {
   hasuraListAllArticleSlugs,
   hasuraArticlePage,
@@ -15,11 +14,6 @@ export const config = { amp: 'hybrid' };
 
 export default function ArticlePage(props) {
   const router = useRouter();
-  const {
-    setDimension,
-    trackPageViewedWithDimension,
-    trackMailChimpParams,
-  } = useAnalytics();
 
   // If the page is not yet generated, this will be displayed
   // initially until getStaticProps() finishes running
@@ -31,16 +25,6 @@ export default function ArticlePage(props) {
   useEffect(() => {
     if (!props.article) {
       router.push('/404');
-    }
-    let isSubscriber = trackMailChimpParams();
-    if (isSubscriber) {
-      console.log('setting dimension5 to true in GA');
-      setDimension('dimension5', true);
-      trackPageViewedWithDimension(
-        window.location.pathname + window.location.search,
-        'dimension5',
-        true
-      );
     }
   }, [props.article]);
 

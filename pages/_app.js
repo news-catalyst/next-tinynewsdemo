@@ -33,6 +33,7 @@ const App = ({ Component, pageProps }) => {
     }
     init(process.env.NEXT_PUBLIC_GA_TRACKING_ID);
     trackReadingHistoryWithPageView();
+    trackNewsletterVisits();
     const handleRouteChange = () => {
       trackReadingHistoryWithPageView();
     };
@@ -42,6 +43,18 @@ const App = ({ Component, pageProps }) => {
     };
   }, []);
 
+  function trackNewsletterVisits() {
+    const { trackMailChimpParams } = useAnalytics();
+    let isSubscriber = trackMailChimpParams();
+    if (isSubscriber) {
+      setDimension('dimension5', true);
+      trackPageViewedWithDimension(
+        window.location.pathname + window.location.search,
+        'dimension5',
+        true
+      );
+    }
+  }
   function trackReadingHistoryWithPageView() {
     logReadingHistory();
     const readingHistory = summarizeReadingHistory();
