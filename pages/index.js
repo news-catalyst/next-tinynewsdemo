@@ -1,20 +1,19 @@
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
+import { useAnalytics } from '../lib/hooks/useAnalytics.js';
 import { hasuraStreamArticles } from '../lib/homepage.js';
 import { cachedContents } from '../lib/cached';
 import { hasuraGetHomepageEditor } from '../lib/articles.js';
 import { getArticleAds } from '../lib/ads.js';
-import { hasuraLocaliseText, trackMailChimpParams } from '../lib/utils.js';
+import { hasuraLocaliseText } from '../lib/utils.js';
 import Homepage from '../components/Homepage';
 import LandingPage from '../components/LandingPage';
 
 export default function Home(props) {
   const router = useRouter();
+  const { trackMailChimpParams } = useAnalytics();
   useEffect(() => {
-    // mailchimp newsletter tracking
-    if (router.query) {
-      trackMailChimpParams(router.query);
-    }
+    trackMailChimpParams(router.query);
   }, []);
 
   const component = props.siteMetadata.landingPage ? (
