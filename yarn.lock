@@ -8790,10 +8790,9 @@ react-analytics-charts@^1.2.12:
   dependencies:
     react-use-analytics-api "^1.4.15"
 
-"react-aws-s3@git@github.com:news-catalyst/react-aws-s3.git#master":
-  version "1.5.0"
-  resolved "https://registry.yarnpkg.com/react-aws-s3/-/react-aws-s3-1.5.0.tgz#bcc212014e50103d2d9ef974a4244ff539792ead"
-  integrity sha512-ib8JvNFlWaQyFfXvDXNeQCsGsHAHJswQgtA1MbpIU5sCSXZVeqoRVlvexyzjPjJGy8KDnbyYEB9PQ2Rw96g8Ug==
+"react-aws-s3@git+ssh://git@github.com/news-catalyst/react-aws-s3.git":
+  version "1.3.0"
+  resolved "git+ssh://git@github.com/news-catalyst/react-aws-s3.git#ec79457d3d353a51d93bda6f9ac35cc3767b8045"
   dependencies:
     crypto-js "^3.1.9-1"
     short-uuid "^3.1.0"
