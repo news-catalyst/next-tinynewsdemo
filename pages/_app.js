@@ -21,7 +21,7 @@ export function reportWebVitals({ id, name, label, value }) {
 const App = ({ Component, pageProps }) => {
   const {
     init,
-    trackPageViewedWithDimension,
+    trackPageViewedWithDimensions,
     setDimension,
     logReadingHistory,
     summarizeReadingHistory,
@@ -32,9 +32,30 @@ const App = ({ Component, pageProps }) => {
       return true;
     }
     init(process.env.NEXT_PUBLIC_GA_TRACKING_ID);
-    trackReadingHistoryWithPageView();
+    let readingDimensionsData = trackReadingHistoryWithPageView();
+    let newsletterDimensionsData = trackNewsletterVisits();
+    let dimensionsData = {
+      ...readingDimensionsData,
+      ...newsletterDimensionsData,
+    };
+    let pagePath = window.location.pathname + window.location.search;
+    console.log(
+      'tracking page view',
+      pagePath,
+      'with custom dimensions:',
+      dimensionsData
+    );
+    trackPageViewedWithDimensions(pagePath, dimensionsData);
+
     const handleRouteChange = () => {
-      trackReadingHistoryWithPageView();
+      let routeChangeData = trackReadingHistoryWithPageView();
+      console.log(
+        'tracking page view for route change',
+        pagePath,
+        'with custom dimensions:',
+        routeChangeData
+      );
+      trackPageViewedWithDimensions(pagePath, routeChangeData);
     };
     Router.events.on('routeChangeComplete', handleRouteChange);
     return () => {
@@ -42,15 +63,25 @@ const App = ({ Component, pageProps }) => {
     };
   }, []);
 
+  function trackNewsletterVisits() {
+    const { trackMailChimpParams } = useAnalytics();
+    let isSubscriber = trackMailChimpParams();
+    if (isSubscriber) {
+      setDimension('dimension5', true);
+      return {
+        dimension5: true,
+      };
+    } else {
+      return {};
+    }
+  }
   function trackReadingHistoryWithPageView() {
     logReadingHistory();
     const readingHistory = summarizeReadingHistory();
     setDimension('dimension2', readingHistory);
-    trackPageViewedWithDimension(
-      window.location.pathname + window.location.search,
-      'dimension2',
-      readingHistory
-    );
+    return {
+      dimension2: readingHistory,
+    };
   }
 
   return (
