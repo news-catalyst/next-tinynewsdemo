@@ -9,6 +9,7 @@ import { renderBody } from '../lib/utils.js';
 export default function ThankYou({ referrer, page, sections, siteMetadata }) {
   const isAmp = useAmp();
 
+  // sets a cookie if request comes from monkeypod.io marking this browser as a donor
   const { checkReferrer } = useAnalytics();
   checkReferrer(referrer);
 
@@ -59,13 +60,11 @@ export async function getServerSideProps(context) {
     data.pages.length <= 0 ||
     !data.pages[0]
   ) {
-    console.log('no matching page data found');
     return {
       notFound: true,
     };
     // throw errors;
   } else {
-    console.log('thank you data:', data);
     sections = data.categories;
     page = data.pages[0];
     siteMetadata = data.site_metadatas[0].site_metadata_translations[0].data;
