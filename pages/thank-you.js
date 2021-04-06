@@ -1,12 +1,16 @@
 import { useAmp } from 'next/amp';
 import { hasuraGetPage } from '../lib/articles.js';
+import { useAnalytics } from '../lib/hooks/useAnalytics.js';
 import { hasuraLocaliseText } from '../lib/utils';
 import Layout from '../components/Layout';
 import NewsletterBlock from '../components/plugins/NewsletterBlock';
 import { renderBody } from '../lib/utils.js';
 
-export default function ThankYou({ page, sections, siteMetadata }) {
+export default function ThankYou({ referrer, page, sections, siteMetadata }) {
   const isAmp = useAmp();
+
+  const { checkReferrer } = useAnalytics();
+  checkReferrer(referrer);
 
   // there will only be one translation returned for a given page + locale
   const localisedPage = page.page_translations[0];
@@ -33,11 +37,10 @@ export default function ThankYou({ page, sections, siteMetadata }) {
   );
 }
 
-export async function getStaticProps({ locale }) {
+export async function getServerSideProps(context) {
+  const referrer = context.req.headers['referer'];
   const apiUrl = process.env.HASURA_API_URL;
   const apiToken = process.env.ORG_SLUG;
-
-  console.log('loading data for thank you page');
 
   let page = {};
   let sections;
@@ -47,7 +50,7 @@ export async function getStaticProps({ locale }) {
     url: apiUrl,
     orgSlug: apiToken,
     slug: 'thank-you',
-    localeCode: locale,
+    localeCode: context.locale,
   });
   if (
     errors ||
@@ -76,6 +79,7 @@ export async function getStaticProps({ locale }) {
 
   return {
     props: {
+      referrer,
       page,
       sections,
       siteMetadata,
