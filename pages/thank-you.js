@@ -10,8 +10,17 @@ export default function ThankYou({ referrer, page, sections, siteMetadata }) {
   const isAmp = useAmp();
 
   // sets a cookie if request comes from monkeypod.io marking this browser as a donor
-  const { checkReferrer } = useAnalytics();
-  checkReferrer(referrer);
+  const { checkReferrer, trackEvent } = useAnalytics();
+  // this will return true if the request came from monkeypod, false otherwise
+  let isDonor = checkReferrer(referrer);
+  if (isDonor) {
+    trackEvent({
+      action: 'submit',
+      category: 'NTG membership',
+      label: 'success',
+      non_interaction: false,
+    });
+  }
 
   // there will only be one translation returned for a given page + locale
   const localisedPage = page.page_translations[0];
