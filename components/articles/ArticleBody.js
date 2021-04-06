@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
 import { useScrollPercentage } from 'react-scroll-percentage';
 import { useAnalytics } from '../../lib/hooks/useAnalytics.js';

@@ -1,9 +1,9 @@
+import React from 'react';
 import { hasuraStreamArticles } from '../lib/homepage.js';
 import { cachedContents } from '../lib/cached';
 import { hasuraGetHomepageEditor } from '../lib/articles.js';
 import { getArticleAds } from '../lib/ads.js';
 import { hasuraLocaliseText } from '../lib/utils.js';
-
 import Homepage from '../components/Homepage';
 import LandingPage from '../components/LandingPage';
 
