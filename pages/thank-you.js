@@ -87,7 +87,7 @@ export async function getServerSideProps(context) {
 
   return {
     props: {
-      referrer,
+      referrer: referrer || '',
       page,
       sections,
       siteMetadata,
