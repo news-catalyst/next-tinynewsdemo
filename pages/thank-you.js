@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useAmp } from 'next/amp';
 import { hasuraGetPage } from '../lib/articles.js';
 import { useAnalytics } from '../lib/hooks/useAnalytics.js';
@@ -14,12 +15,14 @@ export default function ThankYou({ referrer, page, sections, siteMetadata }) {
   // this will return true if the request came from monkeypod, false otherwise
   let isDonor = checkReferrer(referrer);
   if (isDonor) {
-    trackEvent({
-      action: 'submit',
-      category: 'NTG membership',
-      label: 'success',
-      non_interaction: false,
-    });
+    setTimeout(() => {
+      trackEvent({
+        action: 'submit',
+        category: 'NTG membership',
+        label: 'success',
+        non_interaction: false,
+      });
+    }, 100);
   }
 
   // there will only be one translation returned for a given page + locale
