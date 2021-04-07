@@ -25,6 +25,7 @@ const App = ({ Component, pageProps }) => {
     setDimension,
     logReadingHistory,
     summarizeReadingHistory,
+    donorStatusFromCookie,
   } = useAnalytics();
   const isAmp = useAmp();
   useEffect(() => {
@@ -34,10 +35,18 @@ const App = ({ Component, pageProps }) => {
     init(process.env.NEXT_PUBLIC_GA_TRACKING_ID);
     let readingDimensionsData = trackReadingHistoryWithPageView();
     let newsletterDimensionsData = trackNewsletterVisits();
+
     let dimensionsData = {
       ...readingDimensionsData,
       ...newsletterDimensionsData,
     };
+
+    let donorStatus = donorStatusFromCookie();
+    if (donorStatus) {
+      setDimension('dimension4', true);
+      dimensionsData['dimension4'] = true;
+    }
+
     let pagePath = window.location.pathname + window.location.search;
     console.log(
       'tracking page view',
