@@ -43,6 +43,7 @@ const App = ({ Component, pageProps }) => {
 
     let donorStatus = donorStatusFromCookie();
     if (donorStatus) {
+      setDimension('dimension4', true);
       dimensionsData['dimension4'] = true;
     }
 
