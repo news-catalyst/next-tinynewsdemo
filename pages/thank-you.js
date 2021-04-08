@@ -64,20 +64,19 @@ export async function getServerSideProps(context) {
     slug: 'thank-you',
     localeCode: context.locale,
   });
-  if (
-    errors ||
-    !data ||
-    !data.pages ||
-    data.pages.length <= 0 ||
-    !data.pages[0]
-  ) {
+  if (errors || !data) {
     return {
       notFound: true,
     };
     // throw errors;
   } else {
+    if (!data.page_slug_versions || !data.page_slug_versions[0]) {
+      return {
+        notFound: true,
+      };
+    }
+    page = data.page_slug_versions[0].page;
     sections = data.categories;
-    page = data.pages[0];
     siteMetadata = data.site_metadatas[0].site_metadata_translations[0].data;
     for (var i = 0; i < sections.length; i++) {
       sections[i].title = hasuraLocaliseText(

@@ -79,7 +79,12 @@ export async function getStaticProps({ locale, params }) {
     categorySlug: params.category,
     slug: params.slug,
   });
-  if (errors || !data || !data.articles || data.articles.length === 0) {
+  if (
+    errors ||
+    !data ||
+    !data.article_slug_versions ||
+    data.article_slug_versions.length === 0
+  ) {
     return {
       notFound: true,
     };
@@ -93,7 +98,8 @@ export async function getStaticProps({ locale, params }) {
       );
     }
 
-    article = data.articles.find((a) => a.slug === params.slug);
+    article = data.article_slug_versions[0].article;
+    // article = data.articles.find((a) => a.slug === params.slug);
 
     const sectionResponse = await hasuraCategoryPage({
       url: apiUrl,
