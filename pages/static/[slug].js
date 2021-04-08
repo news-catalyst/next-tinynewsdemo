@@ -4,7 +4,7 @@ import React, { useEffect } from 'react';
 import { hasuraGetPage, hasuraListAllPageSlugs } from '../../lib/articles.js';
 import { hasuraLocaliseText } from '../../lib/utils';
 import Layout from '../../components/Layout';
-import { renderBody } from '../../lib/utils.js';
+import { generatePageUrl, renderBody } from '../../lib/utils.js';
 
 export default function StaticPage({ page, sections, siteMetadata }) {
   const router = useRouter();
@@ -18,6 +18,9 @@ export default function StaticPage({ page, sections, siteMetadata }) {
     if (!page || page === undefined || page === null || page === {}) {
       router.push('/404');
     }
+    // this is used for the canonical link tag in the Layout component
+    let canonicalPageUrl = generatePageUrl(window.location.href, page);
+    siteMetadata['canonicalUrl'] = canonicalPageUrl;
   }, [page]);
 
   let localisedPage;
