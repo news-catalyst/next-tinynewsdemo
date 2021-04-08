@@ -3,8 +3,10 @@ import ArticleBody from './articles/ArticleBody';
 import Comments from './articles/Comments';
 import ArticleFooter from './articles/ArticleFooter';
 import Recirculation from './articles/Recirculation';
+import { generateArticleUrl } from '../lib/utils.js';
 import { useAmp } from 'next/amp';
 import Layout from './Layout.js';
+import { useEffect } from 'react';
 
 export default function Article({
   article,
@@ -15,6 +17,12 @@ export default function Article({
   sectionArticles,
 }) {
   const isAmp = useAmp();
+
+  useEffect(() => {
+    // this is used for the canonical link tag in the Layout component
+    let canonicalArticleUrl = generateArticleUrl(window.location.href, article);
+    siteMetadata['canonicalUrl'] = canonicalArticleUrl;
+  }, []);
 
   return (
     <Layout meta={siteMetadata} article={article} sections={sections}>
