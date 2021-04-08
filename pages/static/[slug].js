@@ -10,7 +10,6 @@ export default function StaticPage({ page, sections, siteMetadata }) {
   const router = useRouter();
   const isAmp = useAmp();
 
-  console.log('static page');
   if (router.isFallback) {
     return <div>Loading...</div>;
   }
@@ -97,13 +96,12 @@ export async function getStaticProps({ locale, params }) {
       notFound: true,
     };
   } else {
-    if (!data.pages || !data.pages[0]) {
+    if (!data.page_slug_versions || !data.page_slug_versions[0]) {
       return {
         notFound: true,
       };
     }
-    page = data.pages[0];
-    console.log('page: ', page);
+    page = data.page_slug_versions[0].page;
     sections = data.categories;
     siteMetadata = data.site_metadatas[0].site_metadata_translations[0].data;
     for (var i = 0; i < sections.length; i++) {
