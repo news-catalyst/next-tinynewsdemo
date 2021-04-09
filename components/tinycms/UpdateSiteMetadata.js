@@ -37,7 +37,9 @@ export default function UpdateMetadata(props) {
   useEffect(() => {
     if (props.metadata) {
       let parsed = props.metadata;
+      console.log('props.metadata:', props.metadata);
       setParsedData(parsed);
+      console.log('parsedData donation options:', parsed['donationOptions']);
       setRandomDataKey(Math.random());
       let formattedJSON = JSON.stringify(parsed, null, 2);
       setJsonData(formattedJSON);
@@ -53,11 +55,14 @@ export default function UpdateMetadata(props) {
     ev.preventDefault();
 
     let parsed = parsedData;
+
+    console.log('parsedData:', parsedData);
     if (jsonData && (Object.keys(parsedData).length === 0 || editData)) {
       parsed = JSON.parse(jsonData);
       setParsedData(parsed);
     }
 
+    console.log('parsedData:', parsed);
     const { errors, data } = await hasuraUpsertMetadata({
       url: props.apiUrl,
       orgSlug: props.apiToken,
