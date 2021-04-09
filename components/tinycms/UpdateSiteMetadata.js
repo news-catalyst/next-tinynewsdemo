@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import { hasuraUpsertMetadata } from '../../lib/site_metadata';
 import Notification from './Notification';
 import MetadataTextInput from './MetadataTextInput';
+import MetadataTextArea from './MetadataTextArea';
 import MetadataSelect from './MetadataSelect';
 import NewsletterBlock from './../plugins/NewsletterBlock';
 import ColorStylePreview from './ColorStylePreview';
@@ -287,6 +288,13 @@ export default function UpdateMetadata(props) {
         name="donateBlockDek"
         handleChange={handleChange}
         value={parsedData['donateBlockDek']}
+      />
+
+      <MetadataTextArea
+        label="Donation Options"
+        name="donationOptions"
+        handleChange={handleChange}
+        value={parsedData['donationOptions']}
       />
 
       {!editData && (
