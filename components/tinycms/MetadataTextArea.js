@@ -1,6 +1,7 @@
 import React from 'react';
 
 export default function MetadataTextArea(props) {
+  console.log('textarea props:', props);
   return (
     <div className="field" key={props.name}>
       <label className="label" htmlFor={props.name}>
@@ -11,9 +12,8 @@ export default function MetadataTextArea(props) {
           name={props.name}
           className="textarea"
           onChange={props.handleChange}
-        >
-          {props.value}
-        </textarea>
+          value={props.value}
+        />
       </div>
     </div>
   );
