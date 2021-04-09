@@ -5,7 +5,6 @@ const Donate = ({ label, style, url }) => {
   const { trackEvent } = useAnalytics();
 
   const trackClick = () => {
-    console.log('click');
     trackEvent({
       action: 'Clicked',
       category: 'Donate',
