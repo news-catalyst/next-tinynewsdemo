@@ -19,7 +19,7 @@ export default function Layout({
   }
 
   const metaValues = {
-    canonical: meta['siteUrl'],
+    canonical: meta['canonicalUrl'] || meta['siteUrl'],
     siteName: meta['shortName'],
     searchTitle: meta['searchTitle'],
     searchDescription: meta['searchDescription'],
