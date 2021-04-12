@@ -5188,7 +5188,7 @@ export default css.global`
     position: relative;
   }
 
-  .card-header:first-child,
+  .-header:first-child,
   .card-content:first-child,
   .card-footer:first-child {
     border-top-left-radius: 0.25rem;
