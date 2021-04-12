@@ -4,6 +4,7 @@ import { hasuraLocaliseText } from '../lib/utils';
 import Layout from '../components/Layout';
 import { renderBody } from '../lib/utils.js';
 import DonationOptionsBlock from '../components/plugins/DonationOptionsBlock.js';
+import donateStyles from '../styles/bulma.js';
 
 export default function Donate({ page, sections, siteMetadata }) {
   const isAmp = useAmp();
@@ -31,6 +32,9 @@ export default function Donate({ page, sections, siteMetadata }) {
           </section>
         </article>
       </div>
+      <style jsx global>
+        {donateStyles}
+      </style>
     </Layout>
   );
 }
