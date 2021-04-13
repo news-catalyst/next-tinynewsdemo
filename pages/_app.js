@@ -3,6 +3,7 @@ import Router from 'next/router';
 import { useAnalytics } from '../lib/hooks/useAnalytics.js';
 import { Provider } from 'next-auth/client';
 import { useAmp } from 'next/amp';
+import GlobalStyles from './../components/GlobalStyles';
 
 export function reportWebVitals({ id, name, label, value }) {
   const { trackEvent } = useAnalytics();
@@ -95,6 +96,7 @@ const App = ({ Component, pageProps }) => {
 
   return (
     <Provider session={pageProps.session}>
+      <GlobalStyles />
       <Component {...pageProps} />
     </Provider>
   );
