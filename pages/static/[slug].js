@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router';
 import { useAmp } from 'next/amp';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { hasuraGetPage, hasuraListAllPageSlugs } from '../../lib/articles.js';
 import { hasuraLocaliseText } from '../../lib/utils';
 import Layout from '../../components/Layout';
@@ -14,14 +14,14 @@ export default function StaticPage({ page, sections, siteMetadata }) {
     return <div>Loading...</div>;
   }
 
-  useEffect(() => {
-    if (!page || page === undefined || page === null || page === {}) {
-      router.push('/404');
-    }
-    // this is used for the canonical link tag in the Layout component
-    let canonicalPageUrl = generatePageUrl(window.location.href, page);
-    siteMetadata['canonicalUrl'] = canonicalPageUrl;
-  }, [page]);
+  let baseUrl = process.env.NEXT_PUBLIC_SITE_URL || siteMetadata['siteUrl'];
+  // this is used for the canonical link tag in the Layout component
+  let canonicalPageUrl = generatePageUrl(baseUrl, page);
+  siteMetadata['canonicalUrl'] = canonicalPageUrl;
+
+  if (!page || page === undefined || page === null || page === {}) {
+    router.push('/404');
+  }
 
   let localisedPage;
   let body;
