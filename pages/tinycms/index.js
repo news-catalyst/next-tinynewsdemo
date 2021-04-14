@@ -6,7 +6,7 @@ import AdminNav from '../../components/nav/AdminNav';
 import AdminHeader from '../../components/tinycms/AdminHeader';
 import tw from 'twin.macro';
 
-const CardsContainer = tw.section`min-h-screen flex items-center justify-center px-4 bg-white grid grid-cols-2 gap-2`;
+const CardsContainer = tw.section`flex items-center justify-center p-4 bg-white grid grid-cols-2 gap-2`;
 const Card = tw.div`max-w-lg w-full rounded-lg shadow-lg p-4 flex flex-row`;
 const CardIcon = tw.div`lg:w-1/5 h-auto`;
 const CardContentContainer = tw.div`lg:w-4/5 p-2`;
