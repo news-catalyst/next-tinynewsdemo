@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import { hasuraGetMetadataByLocale } from '../../../lib/articles.js';
 import AdminLayout from '../../../components/AdminLayout.js';
 import AdminNav from '../../../components/nav/AdminNav';
-import AdminHeader from '../../../components/tinycms/AdminHeader';
+import SiteInfoSettings from '../../../components/tinycms/SiteInfoSettings';
 import UpdateMetadata from '../../../components/tinycms/UpdateSiteMetadata.js';
 import tw from 'twin.macro';
 
@@ -13,7 +13,6 @@ const SidebarHeading = tw.h1`font-bold`;
 const LightSidebar = tw.div`bg-gray-100 text-black p-2`;
 const MainContent = tw.div`w-full lg:w-1/2 px-2`;
 const SettingsContainer = tw.div`min-w-0 w-full flex-auto lg:static lg:max-h-full lg:overflow-visible p-2`;
-const SettingsHeader = tw.h1`text-4xl font-normal leading-normal mt-0 mb-2 text-black`;
 
 export default function Settings({
   apiUrl,
@@ -59,7 +58,7 @@ export default function Settings({
         </Sidebar>
         <MainContent>
           <SettingsContainer>
-            <SettingsHeader>Site Information</SettingsHeader>
+            <SiteInfoSettings />
           </SettingsContainer>
         </MainContent>
       </Container>
