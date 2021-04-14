@@ -3,11 +3,15 @@ import tw from 'twin.macro';
 import Link from 'next/link';
 import { signOut } from 'next-auth/client';
 
-const NavBar = tw.nav`flex items-center flex-wrap p-3`;
-const Brand = tw.span`text-xl text-black font-bold tracking-wide`;
+// const NavBar = tw.nav`flex items-center flex-wrap p-3`;
+const NavBar = tw.header`flex h-32 items-center bg-white`;
+const NavBarContainer = tw.div`w-full container-md mx-auto px-6`;
+const NavBarInnerContainer = tw.div`flex justify-between flex-col md:flex-row`;
 
-const NavItemsDiv = tw.div`hidden w-full lg:inline-flex lg:flex-grow lg:w-auto`;
-const NavItem = tw.a`lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-black items-center justify-center`;
+const BrandContainer = tw.div`w-full md:w-1/5 text-center md:text-left font-bold`;
+
+const NavItemsDiv = tw.div`flex justify-center items-center w-full md:w-3/5`;
+const NavItem = tw.a`mx-4`;
 const SignoutButton = tw.a`hidden md:flex w-full md:w-auto px-4 py-2 text-right bg-blue-900 hover:bg-blue-500 text-white md:rounded`;
 
 const DropdownContainer = tw.div`relative inline-block text-left`;
@@ -34,85 +38,86 @@ export default function NewAdminNav(props) {
   return (
     <div>
       <NavBar>
-        <Link href="/tinycms">
-          <Brand>
-            <a href="/tinycms">TinyCMS</a>
-          </Brand>
-        </Link>
-        <NavItemsDiv>
-          <Link href="/tinycms/analytics">
-            <NavItem>analytics</NavItem>
-          </Link>
-          <Link href="/tinycms/homepage">
-            <NavItem>homepage editor</NavItem>
-          </Link>
-          <Link href="/tinycms/homepage-layouts">
-            <NavItem>layouts</NavItem>
-          </Link>
-          <Link href="/tinycms/authors">
-            <NavItem>authors</NavItem>
-          </Link>
-          <Link href="/tinycms/metadata">
-            <NavItem>metadata</NavItem>
-          </Link>
-          <Link href="/tinycms/sections">
-            <NavItem>sections</NavItem>
-          </Link>
-          <Link href="/tinycms/tags">
-            <NavItem>tags</NavItem>
-          </Link>
+        <NavBarContainer>
+          <NavBarInnerContainer>
+            <BrandContainer>
+              <Link href="/tinycms">
+                <a href="/tinycms">TinyCMS</a>
+              </Link>
+            </BrandContainer>
+            <NavItemsDiv>
+              <Link href="/tinycms/analytics">
+                <NavItem>Analytics</NavItem>
+              </Link>
+              <Link href="/tinycms/homepage">
+                <NavItem>Homepage Editor</NavItem>
+              </Link>
+              <Link href="/tinycms/authors">
+                <NavItem>Authors</NavItem>
+              </Link>
+              <Link href="/tinycms/metadata">
+                <NavItem>Settings</NavItem>
+              </Link>
+              <Link href="/tinycms/sections">
+                <NavItem>Sections</NavItem>
+              </Link>
+              <Link href="/tinycms/tags">
+                <NavItem>Tags</NavItem>
+              </Link>
 
-          {props.homePageEditor && (
-            <>
-              <DropdownContainer>
-                <div>
-                  <DropdownButtonToggle
-                    type="button"
-                    id="options-menu"
-                    aria-expanded="true"
-                    aria-haspopup="true"
-                  >
-                    Options
-                    <svg
-                      className="-mr-1 ml-2 h-5 w-5"
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                      aria-hidden="true"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                  </DropdownButtonToggle>
-                </div>
-                <DropdownMenu
-                  role="menu"
-                  aria-orientation="vertical"
-                  aria-labelledby="options-menu"
-                >
-                  <div className="py-1" role="none">
-                    {props.layoutSchemas.map((option) => (
-                      <DropdownItem
-                        role="menuitem"
-                        key={option.id}
-                        onClick={() => switchLayout(option)}
+              {/* {props.homePageEditor && (
+                <>
+                  <DropdownContainer>
+                    <div>
+                      <DropdownButtonToggle
+                        type="button"
+                        id="options-menu"
+                        aria-expanded="true"
+                        aria-haspopup="true"
                       >
-                        {option.name}
-                      </DropdownItem>
-                    ))}
-                  </div>
-                </DropdownMenu>
-              </DropdownContainer>
+                        Options
+                        <svg
+                          className="-mr-1 ml-2 h-5 w-5"
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 20 20"
+                          fill="currentColor"
+                          aria-hidden="true"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                      </DropdownButtonToggle>
+                    </div>
+                    <DropdownMenu
+                      role="menu"
+                      aria-orientation="vertical"
+                      aria-labelledby="options-menu"
+                    >
+                      <div className="py-1" role="none">
+                        <NavItem>Currently using {currentLayoutName}</NavItem>
+                        {props.layoutSchemas.map((option) => (
+                          <DropdownItem
+                            role="menuitem"
+                            key={option.id}
+                            onClick={() => switchLayout(option)}
+                          >
+                            {option.name}
+                          </DropdownItem>
+                        ))}
+                      </div>
+                    </DropdownMenu>
+                  </DropdownContainer>
 
-              <NavItem>Currently using {currentLayoutName}</NavItem>
-            </>
-          )}
+                </>
+              )} */}
 
-          <SignoutButton onClick={() => signOut()}>Sign out</SignoutButton>
-        </NavItemsDiv>
+              <SignoutButton onClick={() => signOut()}>Sign out</SignoutButton>
+            </NavItemsDiv>
+          </NavBarInnerContainer>
+        </NavBarContainer>
       </NavBar>
     </div>
   );
