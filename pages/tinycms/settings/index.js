@@ -5,7 +5,15 @@ import AdminLayout from '../../../components/AdminLayout.js';
 import AdminNav from '../../../components/nav/AdminNav';
 import AdminHeader from '../../../components/tinycms/AdminHeader';
 import UpdateMetadata from '../../../components/tinycms/UpdateSiteMetadata.js';
-import newsletterStyles from '../../../styles/newsletter.js';
+import tw from 'twin.macro';
+
+const Container = tw.div`flex flex-wrap -mx-2 mb-8`;
+const Sidebar = tw.div`w-full md:w-1/5 lg:w-1/5 px-2 mb-4`;
+const SidebarHeading = tw.h1`font-bold`;
+const LightSidebar = tw.div`bg-gray-100 text-black p-2`;
+const MainContent = tw.div`w-full lg:w-1/2 px-2`;
+const SettingsContainer = tw.div`min-w-0 w-full flex-auto lg:static lg:max-h-full lg:overflow-visible p-2`;
+const SettingsHeader = tw.h1`text-4xl font-normal leading-normal mt-0 mb-2 text-black`;
 
 export default function Settings({
   apiUrl,
@@ -35,27 +43,26 @@ export default function Settings({
   return (
     <AdminLayout>
       <AdminNav homePageEditor={false} showConfigOptions={true} />
-      <div id="page">
-        <AdminHeader
-          locales={locales}
-          currentLocale={currentLocale}
-          title="Site Metadata"
-        />
-        {message && <div className="success">{message}</div>}
 
-        <section className="section">
-          <UpdateMetadata
-            apiUrl={apiUrl}
-            apiToken={apiToken}
-            currentLocale={currentLocale}
-            metadata={metadata}
-            setMetadata={setMetadata}
-          />
-        </section>
-      </div>
-      <style jsx global>
-        {newsletterStyles}
-      </style>
+      <Container>
+        <Sidebar>
+          <LightSidebar>
+            <SidebarHeading>Navigation</SidebarHeading>
+            <ul>
+              <li>Site Information</li>
+              <li>Design</li>
+              <li>Newsletter Block</li>
+              <li>Membership Block</li>
+              <li>SEO/Social</li>
+            </ul>
+          </LightSidebar>
+        </Sidebar>
+        <MainContent>
+          <SettingsContainer>
+            <SettingsHeader>Site Information</SettingsHeader>
+          </SettingsContainer>
+        </MainContent>
+      </Container>
     </AdminLayout>
   );
 }

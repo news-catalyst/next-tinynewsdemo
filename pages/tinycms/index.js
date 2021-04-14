@@ -3,7 +3,6 @@ import React from 'react';
 import { hasuraListLocales } from '../../lib/articles.js';
 import AdminLayout from '../../components/AdminLayout.js';
 import AdminNav from '../../components/nav/AdminNav';
-import AdminHeader from '../../components/tinycms/AdminHeader';
 import tw from 'twin.macro';
 
 const CardsContainer = tw.section`min-h-screen flex items-center justify-center px-4 bg-white grid grid-cols-2 gap-2`;

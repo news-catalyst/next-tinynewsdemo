@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { signOut } from 'next-auth/client';
 
 // const NavBar = tw.nav`flex items-center flex-wrap p-3`;
-const NavBar = tw.header`flex h-32 items-center bg-white`;
+const NavBar = tw.header`flex h-32 items-center bg-gray-100`;
 const NavBarContainer = tw.div`w-full container-md mx-auto px-6`;
 const NavBarInnerContainer = tw.div`flex justify-between flex-col md:flex-row`;
 
