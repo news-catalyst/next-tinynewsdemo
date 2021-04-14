@@ -18,12 +18,6 @@ export default function TinyCmsHome(props) {
     <AdminLayout>
       <AdminNav homePageEditor={false} showConfigOptions={true} />
       <div id="page">
-        <AdminHeader
-          locales={props.locales}
-          currentLocale={props.currentLocale}
-          title="tinycms site config"
-        />
-
         <CardsContainer>
           <Card>
             <CardIcon>
