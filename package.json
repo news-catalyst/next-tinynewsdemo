@@ -71,12 +71,15 @@
     "rss": "^1.2.2",
     "sass": "^1.26.9",
     "styled-component": "^2.8.0",
-    "styled-components": "^5.2.1",
+    "styled-components": "^5.2.3",
     "universal-cookie": "^4.0.4",
     "web-vitals": "^0.2.3"
   },
   "devDependencies": {
+    "autoprefixer": "^10.2.5",
     "babel-eslint": "^10.1.0",
+    "babel-plugin-macros": "^3.0.1",
+    "babel-plugin-styled-components": "^1.12.0",
     "eslint": "^7.4.0",
     "eslint-config-prettier": "^6.11.0",
     "eslint-loader": "^4.0.2",
@@ -87,6 +90,10 @@
     "husky": "^4.2.5",
     "lint-staged": "^10.2.11",
     "next-sitemap": "^1.5.10",
-    "prettier": "2.0.5"
+    "postcss": "^8.2.10",
+    "prettier": "2.0.5",
+    "react-is": "^17.0.2",
+    "tailwindcss": "^2.1.1",
+    "twin.macro": "^2.3.2"
   }
 }
