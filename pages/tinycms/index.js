@@ -4,6 +4,9 @@ import { hasuraListLocales } from '../../lib/articles.js';
 import AdminLayout from '../../components/AdminLayout.js';
 import AdminNav from '../../components/nav/AdminNav';
 import AdminHeader from '../../components/tinycms/AdminHeader';
+import tw from 'twin.macro';
+
+const ListItem = tw.li`px-4`;
 
 export default function TinyCmsHome(props) {
   return (
@@ -17,24 +20,24 @@ export default function TinyCmsHome(props) {
         />
 
         <ul>
-          <li>
+          <ListItem>
             <Link href="/tinycms/authors">Authors</Link>
-          </li>
-          <li>
+          </ListItem>
+          <ListItem>
             <Link href="/tinycms/homepage">Homepage Editor</Link>
-          </li>
-          <li>
+          </ListItem>
+          <ListItem>
             <Link href="/tinycms/homepage-layouts">Homepage Layouts</Link>
-          </li>
-          <li>
+          </ListItem>
+          <ListItem>
             <Link href="/tinycms/metadata">Metadata</Link>
-          </li>
-          <li>
+          </ListItem>
+          <ListItem>
             <Link href="/tinycms/sections">Sections</Link>
-          </li>
-          <li>
+          </ListItem>
+          <ListItem>
             <Link href="/tinycms/tags">Tags</Link>
-          </li>
+          </ListItem>
         </ul>
       </div>
     </AdminLayout>
