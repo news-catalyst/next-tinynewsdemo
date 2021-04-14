@@ -7,7 +7,7 @@ import AdminHeader from '../../../components/tinycms/AdminHeader';
 import UpdateMetadata from '../../../components/tinycms/UpdateSiteMetadata.js';
 import newsletterStyles from '../../../styles/newsletter.js';
 
-export default function Metadata({
+export default function Settings({
   apiUrl,
   apiToken,
   currentLocale,

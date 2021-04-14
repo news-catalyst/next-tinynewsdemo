@@ -93,8 +93,8 @@ export default function TinyCmsHome(props) {
             </CardIcon>
             <CardContentContainer>
               <CardHeader>
-                <Link href="/tinycms/metadata">
-                  <a href="/tinycms/metadata">Settings</a>
+                <Link href="/tinycms/settings">
+                  <a href="/tinycms/settings">Settings</a>
                 </Link>
               </CardHeader>
               <CardContent>

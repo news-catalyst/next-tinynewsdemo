@@ -55,7 +55,7 @@ export default function NewAdminNav(props) {
               <Link href="/tinycms/authors">
                 <NavItem>Authors</NavItem>
               </Link>
-              <Link href="/tinycms/metadata">
+              <Link href="/tinycms/settings">
                 <NavItem>Settings</NavItem>
               </Link>
               <Link href="/tinycms/sections">
