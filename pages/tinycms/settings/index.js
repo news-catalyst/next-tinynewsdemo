@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
+import tw from 'twin.macro';
 import { hasuraGetMetadataByLocale } from '../../../lib/articles.js';
 import AdminLayout from '../../../components/AdminLayout.js';
 import AdminNav from '../../../components/nav/AdminNav';
 import SiteInfoSettings from '../../../components/tinycms/SiteInfoSettings';
+import newsletterStyles from '../../../styles/newsletter.js';
 import { hasuraUpsertMetadata } from '../../../lib/site_metadata';
 import Notification from '../../../components/tinycms/Notification';
-import tw from 'twin.macro';
+import { SingleDatePicker } from 'react-dates';
 
 const Container = tw.div`flex flex-wrap -mx-2 mb-8`;
 const Sidebar = tw.div`h-full h-screen bg-gray-100 md:w-1/5 lg:w-1/5 px-2 mb-4`;
@@ -39,6 +41,7 @@ export default function Settings({
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
+
     if (type === 'checkbox') {
       setParsedData((prevState) => ({
         ...prevState,
@@ -144,18 +147,16 @@ export default function Settings({
             )}
             <SettingsContainer>
               <SiteInfoSettings
-                shortName={parsedData['shortName']}
-                siteUrl={parsedData['siteUrl']}
-                color={parsedData['color']}
-                primaryColor={parsedData['primaryColor']}
-                secondaryColor={parsedData['secondaryColor']}
-                theme={parsedData['theme']}
                 handleChange={handleChange}
+                parsedData={parsedData}
               />
             </SettingsContainer>
           </form>
         </MainContent>
       </Container>
+      <style jsx global>
+        {newsletterStyles}
+      </style>
     </AdminLayout>
   );
 }
