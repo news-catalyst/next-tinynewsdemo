@@ -5,6 +5,7 @@ import NewsletterBlock from '../plugins/NewsletterBlock';
 
 const SettingsHeader = tw.h1`text-4xl font-bold leading-normal mt-0 mb-2 text-black`;
 const SiteInfoFieldsContainer = tw.div`grid grid-cols-3 gap-4`;
+const SeoContainer = tw.div``;
 const DesignContainer = tw.div`grid grid-cols-2 gap-4`;
 const MembershipContainer = tw.div`grid grid-cols-3 gap-8`;
 const NewsletterContainer = tw.div`grid grid-cols-3 gap-8`;
@@ -115,6 +116,25 @@ const ColorThreeSecondaryBox = styled.div(
 );
 
 export default function SiteInfoSettings(props) {
+  const [searchTitle, setSearchTitle] = useState(
+    props.parsedData['searchTitle']
+  );
+  const [searchDescription, setSearchDescription] = useState(
+    props.parsedData['searchDescription']
+  );
+  const [facebookTitle, setFacebookTitle] = useState(
+    props.parsedData['facebookTitle']
+  );
+  const [facebookDescription, setFacebookDescription] = useState(
+    props.parsedData['facebookDescription']
+  );
+  const [twitterTitle, setTwitterTitle] = useState(
+    props.parsedData['twitterTitle']
+  );
+  const [twitterDescription, setTwitterDescription] = useState(
+    props.parsedData['twitterDescription']
+  );
+
   const [shortName, setShortName] = useState(props.parsedData['shortName']);
   const [siteUrl, setSiteUrl] = useState(props.parsedData['siteUrl']);
   const [color, setColor] = useState(props.parsedData['color']);
@@ -139,6 +159,13 @@ export default function SiteInfoSettings(props) {
   );
 
   useEffect(() => {
+    setSearchTitle(props.parsedData['searchTitle']);
+    setSearchDescription(props.parsedData['searchDescription']);
+    setFacebookTitle(props.parsedData['facebookTitle']);
+    setFacebookDescription(props.parsedData['facebookDescription']);
+    setTwitterTitle(props.parsedData['twitterTitle']);
+    setTwitterDescription(props.parsedData['twitterDescription']);
+
     setShortName(props.parsedData['shortName']);
     setSiteUrl(props.parsedData['siteUrl']);
     setColor(props.parsedData['color']);
@@ -156,7 +183,7 @@ export default function SiteInfoSettings(props) {
       <SettingsHeader>Site Information</SettingsHeader>
 
       <SiteInfoFieldsContainer>
-        <label for="shortName">
+        <label htmlFor="shortName">
           <span tw="mt-1 font-bold">Site name</span>
           <input
             type="text"
@@ -165,7 +192,7 @@ export default function SiteInfoSettings(props) {
             onChange={props.handleChange}
           />
         </label>
-        <label for="siteUrl">
+        <label htmlFor="siteUrl">
           <span tw="mt-1 font-bold">Site URL</span>
           <input
             type="text"
@@ -174,7 +201,7 @@ export default function SiteInfoSettings(props) {
             onChange={props.handleChange}
           />
         </label>
-        <label for="logo">
+        <label htmlFor="logo">
           <span tw="mt-1 font-bold">Logo</span>
           <input type="file" name="logo" onChange={props.handleChange} />
         </label>
@@ -309,7 +336,7 @@ export default function SiteInfoSettings(props) {
               />
               <div tw="grid grid-cols-1">
                 <span>Custom</span>
-                <label for="primaryColor">
+                <label htmlFor="primaryColor">
                   <input
                     type="text"
                     name="primaryColor"
@@ -337,7 +364,7 @@ export default function SiteInfoSettings(props) {
         </SettingsHeader>
 
         <div tw="col-span-2">
-          <label for="heading">
+          <label htmlFor="heading">
             <span tw="w-full mt-1 font-bold">Heading</span>
             <input
               tw="w-full"
@@ -347,7 +374,7 @@ export default function SiteInfoSettings(props) {
               onChange={props.handleChange}
             />
           </label>
-          <label for="description">
+          <label htmlFor="description">
             <span tw="mt-1 font-bold">Description</span>
             <input
               tw="w-full"
@@ -371,7 +398,7 @@ export default function SiteInfoSettings(props) {
         </SettingsHeader>
 
         <div tw="col-span-2">
-          <label for="heading">
+          <label htmlFor="heading">
             <span tw="w-full mt-1 font-bold">Heading</span>
             <input
               tw="w-full"
@@ -381,7 +408,7 @@ export default function SiteInfoSettings(props) {
               onChange={props.handleChange}
             />
           </label>
-          <label for="description">
+          <label htmlFor="description">
             <span tw="mt-1 font-bold">Description</span>
             <input
               tw="w-full"
@@ -398,6 +425,84 @@ export default function SiteInfoSettings(props) {
           <MembershipBlock metadata={props.parsedData} />
         </div>
       </MembershipContainer>
+      <SeoContainer>
+        <SettingsHeader tw="col-span-3 mt-5">
+          SEO and Social Metadata
+        </SettingsHeader>
+
+        <div tw="mt-2">
+          <label htmlFor="searchTitle">
+            <span tw="mt-1 font-bold">Search title</span>
+            <input
+              tw="w-full rounded-md border-solid border-gray-300"
+              type="text"
+              name="searchTitle"
+              value={searchTitle}
+              onChange={props.handleChange}
+            />
+          </label>
+        </div>
+        <div tw="mt-2">
+          <label htmlFor="searchDescription">
+            <span tw="mt-1 font-bold">Search description</span>
+            <input
+              tw="w-full"
+              type="text"
+              name="searchDescription"
+              value={searchDescription}
+              onChange={props.handleChange}
+            />
+          </label>
+        </div>
+        <div tw="mt-2">
+          <label htmlFor="facebookTitle">
+            <span tw="mt-1 font-bold">Facebook title</span>
+            <input
+              tw="w-full"
+              type="text"
+              name="facebookTitle"
+              value={facebookTitle}
+              onChange={props.handleChange}
+            />
+          </label>
+        </div>
+        <div tw="mt-2">
+          <label htmlFor="facebookDescription">
+            <span tw="mt-1 font-bold">Facebook description</span>
+            <input
+              tw="w-full"
+              type="text"
+              name="facebookDescription"
+              value={facebookDescription}
+              onChange={props.handleChange}
+            />
+          </label>
+        </div>
+        <div tw="mt-2">
+          <label htmlFor="twitterTitle">
+            <span tw="mt-1 font-bold">Twitter title</span>
+            <input
+              tw="w-full"
+              type="text"
+              name="twitterTitle"
+              value={twitterTitle}
+              onChange={props.handleChange}
+            />
+          </label>
+        </div>
+        <div tw="mt-2">
+          <label htmlFor="twitterDescription">
+            <span tw="mt-1 font-bold">Twitter description</span>
+            <input
+              tw="w-full"
+              type="text"
+              name="twitterDescription"
+              value={twitterDescription}
+              onChange={props.handleChange}
+            />
+          </label>
+        </div>
+      </SeoContainer>
     </div>
   );
 }
