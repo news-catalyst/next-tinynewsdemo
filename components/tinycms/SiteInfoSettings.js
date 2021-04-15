@@ -259,6 +259,34 @@ export default function SiteInfoSettings(props) {
                 <ColorLabel>Secondary</ColorLabel>
               </ColorContainer>
             </label>
+            <label>
+              <ColorRadioFloat
+                type="radio"
+                name="color"
+                value="custom"
+                checked={props.color === 'custom'}
+                onChange={props.handleChange}
+              />
+              <div tw="grid grid-cols-1">
+                <span>Custom</span>
+                <label for="primaryColor">
+                  <input
+                    type="text"
+                    name="primaryColor"
+                    placeholder="Primary color (use hex code)"
+                    value={props.primaryColor}
+                    onChange={props.handleChange}
+                  />
+                  <input
+                    type="text"
+                    name="secondaryColor"
+                    placeholder="Secondary color (use hex code)"
+                    value={props.secondaryColor}
+                    onChange={props.handleChange}
+                  />
+                </label>
+              </div>
+            </label>
           </SingleColumnContainer>
         </div>
       </DesignContainer>
