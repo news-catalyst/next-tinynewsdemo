@@ -116,12 +116,12 @@ export default function SiteInfoSettings(props) {
       <SettingsHeader>Site Information</SettingsHeader>
 
       <SiteInfoFieldsContainer>
-        <label for="siteName">
+        <label for="shortName">
           <span tw="mt-1 font-bold">Site name</span>
           <input
             type="text"
-            name="siteName"
-            value={props.siteName}
+            name="shortName"
+            value={props.shortName}
             onChange={props.handleChange}
           />
         </label>
