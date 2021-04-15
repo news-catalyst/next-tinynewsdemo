@@ -4,7 +4,8 @@ import { hasuraGetMetadataByLocale } from '../../../lib/articles.js';
 import AdminLayout from '../../../components/AdminLayout.js';
 import AdminNav from '../../../components/nav/AdminNav';
 import SiteInfoSettings from '../../../components/tinycms/SiteInfoSettings';
-import UpdateMetadata from '../../../components/tinycms/UpdateSiteMetadata.js';
+import { hasuraUpsertMetadata } from '../../../lib/site_metadata';
+import Notification from '../../../components/tinycms/Notification';
 import tw from 'twin.macro';
 
 const Container = tw.div`flex flex-wrap -mx-2 mb-8`;
@@ -25,6 +26,9 @@ export default function Settings({
 }) {
   const [message, setMessage] = useState(null);
   const [metadata, setMetadata] = useState(null);
+  const [notificationMessage, setNotificationMessage] = useState('');
+  const [notificationType, setNotificationType] = useState('');
+  const [showNotification, setShowNotification] = useState(false);
   const [jsonData, setJsonData] = useState('');
   const [parsedData, setParsedData] = useState({});
   const [editData, setEditData] = useState(false);
@@ -51,7 +55,6 @@ export default function Settings({
     if (siteMetadata) {
       let md = siteMetadata.site_metadata_translations[0].data;
       setMetadata(md);
-      console.log('metadata:', md);
       let parsed = md;
       setParsedData(parsed);
       setRandomDataKey(Math.random());
@@ -76,19 +79,19 @@ export default function Settings({
 
     let parsed = parsedData;
 
-    console.log('parsedData:', parsedData);
     if (jsonData && (Object.keys(parsedData).length === 0 || editData)) {
       parsed = JSON.parse(jsonData);
       setParsedData(parsed);
     }
 
     console.log('parsedData:', parsed);
+
     const { errors, data } = await hasuraUpsertMetadata({
-      url: props.apiUrl,
-      orgSlug: props.apiToken,
+      url: apiUrl,
+      orgSlug: apiToken,
       data: parsed,
       published: true,
-      localeCode: props.currentLocale,
+      localeCode: currentLocale,
     });
     if (errors) {
       setNotificationMessage(JSON.stringify(errors));
@@ -121,15 +124,22 @@ export default function Settings({
               <li>SEO/Social</li>
             </ul>
             <SaveContainer>
-              <SaveButton>Save</SaveButton>
+              <SaveButton onClick={handleSubmit}>Save</SaveButton>
             </SaveContainer>
           </LightSidebar>
         </Sidebar>
         <MainContent>
           <form onSubmit={handleSubmit} className={parsedData['color']}>
+            {showNotification && (
+              <Notification
+                message={notificationMessage}
+                setShowNotification={setShowNotification}
+                notificationType={notificationType}
+              />
+            )}
             <SettingsContainer>
               <SiteInfoSettings
-                siteName={parsedData['shortName']}
+                shortName={parsedData['shortName']}
                 siteUrl={parsedData['siteUrl']}
                 color={parsedData['color']}
                 theme={parsedData['theme']}
