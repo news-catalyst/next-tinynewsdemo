@@ -44,6 +44,11 @@ export default function Settings({
         ...prevState,
         [name]: checked,
       }));
+    } else if (type === 'radio') {
+      setParsedData((prevState) => ({
+        ...prevState,
+        [name]: value,
+      }));
     } else {
       setParsedData((prevState) => ({
         ...prevState,

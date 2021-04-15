@@ -148,6 +148,7 @@ export default function SiteInfoSettings(props) {
             <label>
               <input
                 type="radio"
+                name="theme"
                 value="styleone"
                 checked={props.theme === 'styleone'}
                 onChange={props.handleChange}
@@ -163,6 +164,7 @@ export default function SiteInfoSettings(props) {
             <label>
               <input
                 type="radio"
+                name="theme"
                 value="styletwo"
                 checked={props.theme === 'styletwo'}
                 onChange={props.handleChange}
@@ -179,6 +181,7 @@ export default function SiteInfoSettings(props) {
               <input
                 type="radio"
                 value="stylethree"
+                name="theme"
                 checked={props.theme === 'stylethree'}
                 onChange={props.handleChange}
               />
@@ -193,6 +196,7 @@ export default function SiteInfoSettings(props) {
             <label>
               <input
                 type="radio"
+                name="theme"
                 value="stylefour"
                 checked={props.theme === 'stylefour'}
                 onChange={props.handleChange}
@@ -213,6 +217,7 @@ export default function SiteInfoSettings(props) {
             <label>
               <ColorRadioFloat
                 type="radio"
+                name="color"
                 value="colorone"
                 checked={props.color === 'colorone'}
                 onChange={props.handleChange}
@@ -227,6 +232,7 @@ export default function SiteInfoSettings(props) {
             <label>
               <ColorRadioFloat
                 type="radio"
+                name="color"
                 value="colortwo"
                 checked={props.color === 'colortwo'}
                 onChange={props.handleChange}
@@ -241,6 +247,7 @@ export default function SiteInfoSettings(props) {
             <label>
               <ColorRadioFloat
                 type="radio"
+                name="color"
                 value="colorthree"
                 checked={props.color === 'colorthree'}
                 onChange={props.handleChange}
