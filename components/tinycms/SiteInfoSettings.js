@@ -115,6 +115,10 @@ const ColorThreeSecondaryBox = styled.div(
   `
 );
 
+const Input = styled.input`
+  ${tw`px-3 py-3 placeholder-gray-300 text-gray-600 relative bg-white bg-white rounded text-sm border-0 shadow outline-none focus:outline-none focus:ring w-full`}
+`;
+
 export default function SiteInfoSettings(props) {
   const [searchTitle, setSearchTitle] = useState(
     props.parsedData['searchTitle']
@@ -176,7 +180,7 @@ export default function SiteInfoSettings(props) {
     setMembershipHed(props.parsedData['membershipHed']);
     setNewsletterDek(props.parsedData['newsletterDek']);
     setNewsletterHed(props.parsedData['newsletterHed']);
-  }, [props.parsedData, window.location]);
+  }, [props.parsedData]);
 
   return (
     <div tw="space-x-4 space-y-4">
@@ -185,7 +189,7 @@ export default function SiteInfoSettings(props) {
       <SiteInfoFieldsContainer>
         <label htmlFor="shortName">
           <span tw="mt-1 font-bold">Site name</span>
-          <input
+          <Input
             type="text"
             name="shortName"
             value={shortName}
@@ -194,7 +198,7 @@ export default function SiteInfoSettings(props) {
         </label>
         <label htmlFor="siteUrl">
           <span tw="mt-1 font-bold">Site URL</span>
-          <input
+          <Input
             type="text"
             name="siteUrl"
             value={siteUrl}
@@ -203,7 +207,7 @@ export default function SiteInfoSettings(props) {
         </label>
         <label htmlFor="logo">
           <span tw="mt-1 font-bold">Logo</span>
-          <input type="file" name="logo" onChange={props.handleChange} />
+          <Input type="file" name="logo" onChange={props.handleChange} />
         </label>
       </SiteInfoFieldsContainer>
 
@@ -337,14 +341,14 @@ export default function SiteInfoSettings(props) {
               <div tw="grid grid-cols-1">
                 <span>Custom</span>
                 <label htmlFor="primaryColor">
-                  <input
+                  <Input
                     type="text"
                     name="primaryColor"
                     placeholder="Primary color (use hex code)"
                     value={primaryColor}
                     onChange={props.handleChange}
                   />
-                  <input
+                  <Input
                     type="text"
                     name="secondaryColor"
                     placeholder="Secondary color (use hex code)"
@@ -366,8 +370,7 @@ export default function SiteInfoSettings(props) {
         <div tw="col-span-2">
           <label htmlFor="heading">
             <span tw="w-full mt-1 font-bold">Heading</span>
-            <input
-              tw="w-full"
+            <Input
               type="text"
               name="newsletterHed"
               value={newsletterHed}
@@ -376,8 +379,7 @@ export default function SiteInfoSettings(props) {
           </label>
           <label htmlFor="description">
             <span tw="mt-1 font-bold">Description</span>
-            <input
-              tw="w-full"
+            <Input
               type="text"
               name="newsletterDek"
               value={newsletterDek}
@@ -400,8 +402,7 @@ export default function SiteInfoSettings(props) {
         <div tw="col-span-2">
           <label htmlFor="heading">
             <span tw="w-full mt-1 font-bold">Heading</span>
-            <input
-              tw="w-full"
+            <Input
               type="text"
               name="membershipHed"
               value={membershipHed}
@@ -410,8 +411,7 @@ export default function SiteInfoSettings(props) {
           </label>
           <label htmlFor="description">
             <span tw="mt-1 font-bold">Description</span>
-            <input
-              tw="w-full"
+            <Input
               type="text"
               name="membershipDek"
               value={membershipDek}
