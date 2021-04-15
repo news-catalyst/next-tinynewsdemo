@@ -67,27 +67,22 @@ export default function Settings({
   useEffect(() => {
     if (window.location.hash && window.location.hash === '#siteInfo') {
       if (siteInfoRef) {
-        console.log('scrolling to siteInfo');
         siteInfoRef.current.scrollIntoView({ behavior: 'smooth' });
       }
     } else if (window.location.hash && window.location.hash === '#design') {
       if (designRef) {
-        console.log('scrolling to design');
         designRef.current.scrollIntoView({ behavior: 'smooth' });
       }
     } else if (window.location.hash && window.location.hash === '#newsletter') {
       if (newsletterRef) {
-        console.log('scrolling to newsletter');
         newsletterRef.current.scrollIntoView({ behavior: 'smooth' });
       }
     } else if (window.location.hash && window.location.hash === '#membership') {
       if (membershipRef) {
-        console.log('scrolling to membership');
         membershipRef.current.scrollIntoView({ behavior: 'smooth' });
       }
     } else if (window.location.hash && window.location.hash === '#seo') {
       if (seoRef) {
-        console.log('scrolling to seo');
         seoRef.current.scrollIntoView({ behavior: 'smooth' });
       }
     }
