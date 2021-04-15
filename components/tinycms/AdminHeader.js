@@ -1,24 +1,21 @@
 import React from 'react';
 import LocaleSwitcher from './LocaleSwitcher';
+import tw from 'twin.macro';
 
 export default function AdminHeader(props) {
   return (
-    <div>
-      <div className="level-left">
-        <div className="level-item">
-          <h1 className="title">
-            {props.title} ({props.currentLocale})
-          </h1>
-        </div>
+    <div tw="block pt-8 mx-auto grid flex justify-center grid-cols-2 gap-4">
+      <div tw="mr-8">
+        <span tw="text-xl font-bold">
+          {props.title} ({props.currentLocale})
+        </span>
       </div>
-      <div className="level-right">
-        <div className="level-item">
-          <LocaleSwitcher
-            locales={props.locales}
-            currentLocale={props.currentLocale}
-            id={props.id}
-          />
-        </div>
+      <div tw="ml-8">
+        <LocaleSwitcher
+          locales={props.locales}
+          currentLocale={props.currentLocale}
+          id={props.id}
+        />
       </div>
     </div>
   );
