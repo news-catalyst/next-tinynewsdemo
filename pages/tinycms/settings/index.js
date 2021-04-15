@@ -8,11 +8,13 @@ import UpdateMetadata from '../../../components/tinycms/UpdateSiteMetadata.js';
 import tw from 'twin.macro';
 
 const Container = tw.div`flex flex-wrap -mx-2 mb-8`;
-const Sidebar = tw.div`w-full md:w-1/5 lg:w-1/5 px-2 mb-4`;
+const Sidebar = tw.div`h-full h-screen bg-gray-100 md:w-1/5 lg:w-1/5 px-2 mb-4`;
 const SidebarHeading = tw.h1`font-bold`;
 const LightSidebar = tw.div`bg-gray-100 text-black p-2`;
 const MainContent = tw.div`w-full lg:w-1/2 px-2`;
 const SettingsContainer = tw.div`min-w-0 w-full flex-auto lg:static lg:max-h-full lg:overflow-visible p-2`;
+const SaveContainer = tw.div`absolute bottom-0 h-16 w-16`;
+const SaveButton = tw.button`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded align-bottom`;
 
 export default function Settings({
   apiUrl,
@@ -23,13 +25,38 @@ export default function Settings({
 }) {
   const [message, setMessage] = useState(null);
   const [metadata, setMetadata] = useState(null);
+  const [jsonData, setJsonData] = useState('');
+  const [parsedData, setParsedData] = useState({});
+  const [editData, setEditData] = useState(false);
+  const [randomDataKey, setRandomDataKey] = useState(Math.random());
 
   const router = useRouter();
   const { action } = router.query;
 
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    if (type === 'checkbox') {
+      setParsedData((prevState) => ({
+        ...prevState,
+        [name]: checked,
+      }));
+    } else {
+      setParsedData((prevState) => ({
+        ...prevState,
+        [name]: value,
+      }));
+    }
+  };
   useEffect(() => {
     if (siteMetadata) {
-      setMetadata(siteMetadata.site_metadata_translations[0].data);
+      let md = siteMetadata.site_metadata_translations[0].data;
+      setMetadata(md);
+      console.log('metadata:', md);
+      let parsed = md;
+      setParsedData(parsed);
+      setRandomDataKey(Math.random());
+      let formattedJSON = JSON.stringify(parsed, null, 2);
+      setJsonData(formattedJSON);
     }
     if (action && action === 'edit') {
       setMessage('Successfully updated metadata.');
@@ -39,6 +66,45 @@ export default function Settings({
     }
   }, []);
 
+  async function handleCancel(ev) {
+    ev.preventDefault();
+    router.push('/tinycms/config');
+  }
+
+  async function handleSubmit(ev) {
+    ev.preventDefault();
+
+    let parsed = parsedData;
+
+    console.log('parsedData:', parsedData);
+    if (jsonData && (Object.keys(parsedData).length === 0 || editData)) {
+      parsed = JSON.parse(jsonData);
+      setParsedData(parsed);
+    }
+
+    console.log('parsedData:', parsed);
+    const { errors, data } = await hasuraUpsertMetadata({
+      url: props.apiUrl,
+      orgSlug: props.apiToken,
+      data: parsed,
+      published: true,
+      localeCode: props.currentLocale,
+    });
+    if (errors) {
+      setNotificationMessage(JSON.stringify(errors));
+      setNotificationType('error');
+      setShowNotification(true);
+    } else {
+      // display success message
+      setNotificationMessage('Successfully saved and published the metadata!');
+      setNotificationType('success');
+      setShowNotification(true);
+
+      let formattedJSON = JSON.stringify(parsed, null, 2);
+      setJsonData(formattedJSON);
+      setRandomDataKey(Math.random());
+    }
+  }
   return (
     <AdminLayout>
       <AdminNav homePageEditor={false} showConfigOptions={true} />
@@ -54,12 +120,23 @@ export default function Settings({
               <li>Membership Block</li>
               <li>SEO/Social</li>
             </ul>
+            <SaveContainer>
+              <SaveButton>Save</SaveButton>
+            </SaveContainer>
           </LightSidebar>
         </Sidebar>
         <MainContent>
-          <SettingsContainer>
-            <SiteInfoSettings />
-          </SettingsContainer>
+          <form onSubmit={handleSubmit} className={parsedData['color']}>
+            <SettingsContainer>
+              <SiteInfoSettings
+                siteName={parsedData['shortName']}
+                siteUrl={parsedData['siteUrl']}
+                color={parsedData['color']}
+                theme={parsedData['theme']}
+                handleChange={handleChange}
+              />
+            </SettingsContainer>
+          </form>
         </MainContent>
       </Container>
     </AdminLayout>
