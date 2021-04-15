@@ -176,11 +176,11 @@ export default function SiteInfoSettings(props) {
     setMembershipHed(props.parsedData['membershipHed']);
     setNewsletterDek(props.parsedData['newsletterDek']);
     setNewsletterHed(props.parsedData['newsletterHed']);
-  }, [props.parsedData]);
+  }, [props.parsedData, window.location]);
 
   return (
     <div tw="space-x-4 space-y-4">
-      <SettingsHeader>Site Information</SettingsHeader>
+      <SettingsHeader ref={props.siteInfoRef}>Site Information</SettingsHeader>
 
       <SiteInfoFieldsContainer>
         <label htmlFor="shortName">
@@ -207,7 +207,7 @@ export default function SiteInfoSettings(props) {
         </label>
       </SiteInfoFieldsContainer>
 
-      <SettingsHeader>Design</SettingsHeader>
+      <SettingsHeader ref={props.designRef}>Design</SettingsHeader>
       <DesignContainer>
         <div>
           <DesignHeader>Typography</DesignHeader>
@@ -358,7 +358,7 @@ export default function SiteInfoSettings(props) {
         </div>
       </DesignContainer>
 
-      <NewsletterContainer>
+      <NewsletterContainer ref={props.newsletterRef}>
         <SettingsHeader tw="col-span-3 mt-5">
           Newsletter promotion block
         </SettingsHeader>
@@ -392,7 +392,7 @@ export default function SiteInfoSettings(props) {
         </div>
       </NewsletterContainer>
 
-      <MembershipContainer>
+      <MembershipContainer ref={props.membershipRef}>
         <SettingsHeader tw="col-span-3 mt-5">
           Membership promotion block
         </SettingsHeader>
@@ -425,7 +425,8 @@ export default function SiteInfoSettings(props) {
           <MembershipBlock metadata={props.parsedData} />
         </div>
       </MembershipContainer>
-      <SeoContainer>
+
+      <SeoContainer ref={props.seoRef}>
         <SettingsHeader tw="col-span-3 mt-5">
           SEO and Social Metadata
         </SettingsHeader>
