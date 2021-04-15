@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import tw, { css, styled } from 'twin.macro';
+import MembershipBlock from '../plugins/MembershipBlock';
 import NewsletterBlock from '../plugins/NewsletterBlock';
 
 const SettingsHeader = tw.h1`text-4xl font-bold leading-normal mt-0 mb-2 text-black`;
 const SiteInfoFieldsContainer = tw.div`grid grid-cols-3 gap-4`;
 const DesignContainer = tw.div`grid grid-cols-2 gap-4`;
+const MembershipContainer = tw.div`grid grid-cols-3 gap-8`;
 const NewsletterContainer = tw.div`grid grid-cols-3 gap-8`;
 const DesignHeader = tw.h1`text-2xl font-bold leading-normal mt-0 mb-2 text-black`;
 const SingleColumnContainer = tw.div`grid grid-cols-1 gap-4`;
@@ -123,6 +125,12 @@ export default function SiteInfoSettings(props) {
     props.parsedData['secondaryColor']
   );
   const [theme, setTheme] = useState(props.parsedData['theme']);
+  const [membershipHed, setMembershipHed] = useState(
+    props.parsedData['membershipHed']
+  );
+  const [membershipDek, setMembershipDek] = useState(
+    props.parsedData['membershipDek']
+  );
   const [newsletterHed, setNewsletterHed] = useState(
     props.parsedData['newsletterHed']
   );
@@ -137,6 +145,8 @@ export default function SiteInfoSettings(props) {
     setTheme(props.parsedData['theme']);
     setPrimaryColor(props.parsedData['primaryColor']);
     setSecondaryColor(props.parsedData['secondaryColor']);
+    setMembershipDek(props.parsedData['membershipDek']);
+    setMembershipHed(props.parsedData['membershipHed']);
     setNewsletterDek(props.parsedData['newsletterDek']);
     setNewsletterHed(props.parsedData['newsletterHed']);
   }, [props.parsedData]);
@@ -354,6 +364,40 @@ export default function SiteInfoSettings(props) {
           <NewsletterBlock metadata={props.parsedData} />
         </div>
       </NewsletterContainer>
+
+      <MembershipContainer>
+        <SettingsHeader tw="col-span-3 mt-5">
+          Membership promotion block
+        </SettingsHeader>
+
+        <div tw="col-span-2">
+          <label for="heading">
+            <span tw="w-full mt-1 font-bold">Heading</span>
+            <input
+              tw="w-full"
+              type="text"
+              name="membershipHed"
+              value={membershipHed}
+              onChange={props.handleChange}
+            />
+          </label>
+          <label for="description">
+            <span tw="mt-1 font-bold">Description</span>
+            <input
+              tw="w-full"
+              type="text"
+              name="membershipDek"
+              value={membershipDek}
+              onChange={props.handleChange}
+            />
+          </label>
+        </div>
+        <div tw="col-span-1">
+          <span tw="mt-1 font-bold">Preview</span>
+
+          <MembershipBlock metadata={props.parsedData} />
+        </div>
+      </MembershipContainer>
     </div>
   );
 }
