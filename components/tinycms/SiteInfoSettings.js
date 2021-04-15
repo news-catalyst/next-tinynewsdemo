@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import tw, { css, styled } from 'twin.macro';
+import NewsletterBlock from '../plugins/NewsletterBlock';
 
 const SettingsHeader = tw.h1`text-4xl font-bold leading-normal mt-0 mb-2 text-black`;
 const SiteInfoFieldsContainer = tw.div`grid grid-cols-3 gap-4`;
 const DesignContainer = tw.div`grid grid-cols-2 gap-4`;
+const NewsletterContainer = tw.div`grid grid-cols-3 gap-8`;
 const DesignHeader = tw.h1`text-2xl font-bold leading-normal mt-0 mb-2 text-black`;
 const SingleColumnContainer = tw.div`grid grid-cols-1 gap-4`;
 const StyleOneHead = styled.span`
@@ -111,6 +113,34 @@ const ColorThreeSecondaryBox = styled.div(
 );
 
 export default function SiteInfoSettings(props) {
+  const [shortName, setShortName] = useState(props.parsedData['shortName']);
+  const [siteUrl, setSiteUrl] = useState(props.parsedData['siteUrl']);
+  const [color, setColor] = useState(props.parsedData['color']);
+  const [primaryColor, setPrimaryColor] = useState(
+    props.parsedData['primaryColor']
+  );
+  const [secondaryColor, setSecondaryColor] = useState(
+    props.parsedData['secondaryColor']
+  );
+  const [theme, setTheme] = useState(props.parsedData['theme']);
+  const [newsletterHed, setNewsletterHed] = useState(
+    props.parsedData['newsletterHed']
+  );
+  const [newsletterDek, setNewsletterDek] = useState(
+    props.parsedData['newsletterDek']
+  );
+
+  useEffect(() => {
+    setShortName(props.parsedData['shortName']);
+    setSiteUrl(props.parsedData['siteUrl']);
+    setColor(props.parsedData['color']);
+    setTheme(props.parsedData['theme']);
+    setPrimaryColor(props.parsedData['primaryColor']);
+    setSecondaryColor(props.parsedData['secondaryColor']);
+    setNewsletterDek(props.parsedData['newsletterDek']);
+    setNewsletterHed(props.parsedData['newsletterHed']);
+  }, [props.parsedData]);
+
   return (
     <div tw="space-x-4 space-y-4">
       <SettingsHeader>Site Information</SettingsHeader>
@@ -121,7 +151,7 @@ export default function SiteInfoSettings(props) {
           <input
             type="text"
             name="shortName"
-            value={props.shortName}
+            value={shortName}
             onChange={props.handleChange}
           />
         </label>
@@ -130,7 +160,7 @@ export default function SiteInfoSettings(props) {
           <input
             type="text"
             name="siteUrl"
-            value={props.siteUrl}
+            value={siteUrl}
             onChange={props.handleChange}
           />
         </label>
@@ -150,7 +180,7 @@ export default function SiteInfoSettings(props) {
                 type="radio"
                 name="theme"
                 value="styleone"
-                checked={props.theme === 'styleone'}
+                checked={theme === 'styleone'}
                 onChange={props.handleChange}
               />
               <StyleOneHead tw="p-2 mt-1 font-bold">
@@ -166,7 +196,7 @@ export default function SiteInfoSettings(props) {
                 type="radio"
                 name="theme"
                 value="styletwo"
-                checked={props.theme === 'styletwo'}
+                checked={theme === 'styletwo'}
                 onChange={props.handleChange}
               />
               <StyleTwoHead tw="p-2 mt-1 font-bold">
@@ -182,7 +212,7 @@ export default function SiteInfoSettings(props) {
                 type="radio"
                 value="stylethree"
                 name="theme"
-                checked={props.theme === 'stylethree'}
+                checked={theme === 'stylethree'}
                 onChange={props.handleChange}
               />
               <StyleThreeHead tw="p-2 mt-1 font-bold">
@@ -198,7 +228,7 @@ export default function SiteInfoSettings(props) {
                 type="radio"
                 name="theme"
                 value="stylefour"
-                checked={props.theme === 'stylefour'}
+                checked={theme === 'stylefour'}
                 onChange={props.handleChange}
               />
               <StyleFourHead tw="p-2 mt-1 font-bold">
@@ -219,7 +249,7 @@ export default function SiteInfoSettings(props) {
                 type="radio"
                 name="color"
                 value="colorone"
-                checked={props.color === 'colorone'}
+                checked={color === 'colorone'}
                 onChange={props.handleChange}
               />
               <ColorContainer>
@@ -234,7 +264,7 @@ export default function SiteInfoSettings(props) {
                 type="radio"
                 name="color"
                 value="colortwo"
-                checked={props.color === 'colortwo'}
+                checked={color === 'colortwo'}
                 onChange={props.handleChange}
               />
               <ColorContainer>
@@ -249,7 +279,7 @@ export default function SiteInfoSettings(props) {
                 type="radio"
                 name="color"
                 value="colorthree"
-                checked={props.color === 'colorthree'}
+                checked={color === 'colorthree'}
                 onChange={props.handleChange}
               />
               <ColorContainer>
@@ -264,7 +294,7 @@ export default function SiteInfoSettings(props) {
                 type="radio"
                 name="color"
                 value="custom"
-                checked={props.color === 'custom'}
+                checked={color === 'custom'}
                 onChange={props.handleChange}
               />
               <div tw="grid grid-cols-1">
@@ -274,14 +304,14 @@ export default function SiteInfoSettings(props) {
                     type="text"
                     name="primaryColor"
                     placeholder="Primary color (use hex code)"
-                    value={props.primaryColor}
+                    value={primaryColor}
                     onChange={props.handleChange}
                   />
                   <input
                     type="text"
                     name="secondaryColor"
                     placeholder="Secondary color (use hex code)"
-                    value={props.secondaryColor}
+                    value={secondaryColor}
                     onChange={props.handleChange}
                   />
                 </label>
@@ -290,6 +320,40 @@ export default function SiteInfoSettings(props) {
           </SingleColumnContainer>
         </div>
       </DesignContainer>
+
+      <NewsletterContainer>
+        <SettingsHeader tw="col-span-3 mt-5">
+          Newsletter promotion block
+        </SettingsHeader>
+
+        <div tw="col-span-2">
+          <label for="heading">
+            <span tw="w-full mt-1 font-bold">Heading</span>
+            <input
+              tw="w-full"
+              type="text"
+              name="newsletterHed"
+              value={newsletterHed}
+              onChange={props.handleChange}
+            />
+          </label>
+          <label for="description">
+            <span tw="mt-1 font-bold">Description</span>
+            <input
+              tw="w-full"
+              type="text"
+              name="newsletterDek"
+              value={newsletterDek}
+              onChange={props.handleChange}
+            />
+          </label>
+        </div>
+        <div tw="col-span-1">
+          <span tw="mt-1 font-bold">Preview</span>
+
+          <NewsletterBlock metadata={props.parsedData} />
+        </div>
+      </NewsletterContainer>
     </div>
   );
 }
