@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import tw from 'twin.macro';
 import { hasuraGetMetadataByLocale } from '../../../lib/articles.js';
@@ -8,7 +9,6 @@ import SiteInfoSettings from '../../../components/tinycms/SiteInfoSettings';
 import newsletterStyles from '../../../styles/newsletter.js';
 import { hasuraUpsertMetadata } from '../../../lib/site_metadata';
 import Notification from '../../../components/tinycms/Notification';
-import { SingleDatePicker } from 'react-dates';
 
 const Container = tw.div`flex flex-wrap -mx-2 mb-8`;
 const Sidebar = tw.div`h-full h-screen bg-gray-100 md:w-1/5 lg:w-1/5 px-2 mb-4`;
@@ -26,6 +26,11 @@ export default function Settings({
   siteMetadata,
   locales,
 }) {
+  const siteInfoRef = useRef();
+  const designRef = useRef();
+  const newsletterRef = useRef();
+  const membershipRef = useRef();
+  const seoRef = useRef();
   const [message, setMessage] = useState(null);
   const [metadata, setMetadata] = useState(null);
   const [notificationMessage, setNotificationMessage] = useState('');
@@ -60,6 +65,32 @@ export default function Settings({
     }
   };
   useEffect(() => {
+    if (window.location.hash && window.location.hash === '#siteInfo') {
+      if (siteInfoRef) {
+        console.log('scrolling to siteInfo');
+        siteInfoRef.current.scrollIntoView({ behavior: 'smooth' });
+      }
+    } else if (window.location.hash && window.location.hash === '#design') {
+      if (designRef) {
+        console.log('scrolling to design');
+        designRef.current.scrollIntoView({ behavior: 'smooth' });
+      }
+    } else if (window.location.hash && window.location.hash === '#newsletter') {
+      if (newsletterRef) {
+        console.log('scrolling to newsletter');
+        newsletterRef.current.scrollIntoView({ behavior: 'smooth' });
+      }
+    } else if (window.location.hash && window.location.hash === '#membership') {
+      if (membershipRef) {
+        console.log('scrolling to membership');
+        membershipRef.current.scrollIntoView({ behavior: 'smooth' });
+      }
+    } else if (window.location.hash && window.location.hash === '#seo') {
+      if (seoRef) {
+        console.log('scrolling to seo');
+        seoRef.current.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
     if (siteMetadata) {
       let md = siteMetadata.site_metadata_translations[0].data;
       setMetadata(md);
@@ -125,11 +156,31 @@ export default function Settings({
           <LightSidebar>
             <SidebarHeading>Navigation</SidebarHeading>
             <ul>
-              <li>Site Information</li>
-              <li>Design</li>
-              <li>Newsletter Block</li>
-              <li>Membership Block</li>
-              <li>SEO/Social</li>
+              <li>
+                <Link href="/tinycms/settings#siteInfo">
+                  <a href="/tinycms/settings#siteInfo">Site Information</a>
+                </Link>
+              </li>
+              <li>
+                <Link href="/tinycms/settings#design">
+                  <a href="/tinycms/settings#design">Design</a>
+                </Link>
+              </li>
+              <li>
+                <Link href="/tinycms/settings#newsletter">
+                  <a href="/tinycms/settings#newsletter">Newsletter Block</a>
+                </Link>
+              </li>
+              <li>
+                <Link href="/tinycms/settings#membership">
+                  <a href="/tinycms/settings#membership">Membership Block</a>
+                </Link>
+              </li>
+              <li>
+                <Link href="/tinycms/settings#seo">
+                  <a href="/tinycms/settings#seo">SEO/Social</a>
+                </Link>
+              </li>
             </ul>
             <SaveContainer>
               <SaveButton onClick={handleSubmit}>Save</SaveButton>
@@ -147,6 +198,11 @@ export default function Settings({
             )}
             <SettingsContainer>
               <SiteInfoSettings
+                siteInfoRef={siteInfoRef}
+                seoRef={seoRef}
+                newsletterRef={newsletterRef}
+                membershipRef={membershipRef}
+                designRef={designRef}
                 handleChange={handleChange}
                 parsedData={parsedData}
               />
