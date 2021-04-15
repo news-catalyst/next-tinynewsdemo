@@ -147,6 +147,8 @@ export default function Settings({
                 shortName={parsedData['shortName']}
                 siteUrl={parsedData['siteUrl']}
                 color={parsedData['color']}
+                primaryColor={parsedData['primaryColor']}
+                secondaryColor={parsedData['secondaryColor']}
                 theme={parsedData['theme']}
                 handleChange={handleChange}
               />
