@@ -40,6 +40,11 @@ export default function AddAuthor({
 
   const router = useRouter();
 
+  async function handleCancel(ev) {
+    ev.preventDefault();
+    router.push('/tinycms/authors');
+  }
+
   // removes leading @ from twitter handle before storing
   function updateTwitter(val) {
     let cleanedUpVal = val.replace(/@/, '');
@@ -198,7 +203,7 @@ export default function AddAuthor({
 
           <div tw="grid grid-cols-4 gap-24 mt-4">
             <SubmitButton type="submit" value="Submit" />
-            <CancelButton>Cancel</CancelButton>
+            <CancelButton onClick={handleCancel}>Cancel</CancelButton>
           </div>
         </form>
       </div>
