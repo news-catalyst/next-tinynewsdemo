@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import tw from 'twin.macro';
 import AdminLayout from '../../../components/AdminLayout.js';
-import LocaleSwitcher from '../../../components/tinycms/LocaleSwitcher';
 import AdminNav from '../../../components/nav/AdminNav';
 import Notification from '../../../components/tinycms/Notification';
 import { hasuraListAllAuthors } from '../../../lib/authors.js';
@@ -64,7 +63,9 @@ export default function Authors({ authors, currentLocale, locales }) {
 
     return (
       <TableRow key={author.id}>
-        <TableCell>{author.name}</TableCell>
+        <TableCell>
+          <Link href={`/tinycms/authors/${author.id}`}>{author.name}</Link>
+        </TableCell>
         <TableCell tw="content-center">{staff}</TableCell>
         <TableCell>{title}</TableCell>
         <TableCell>{author.twitter}</TableCell>
@@ -84,6 +85,12 @@ export default function Authors({ authors, currentLocale, locales }) {
         />
       )}
       <div tw="container mx-auto">
+        <div tw="px-10 pt-5">
+          <h1 tw="inline-block text-3xl font-extrabold text-gray-900 tracking-tight">
+            Authors
+          </h1>
+        </div>
+
         <div tw="flex pt-8 justify-end">
           <Link href="/tinycms/authors/add">
             <AddAuthorButton>Add Author</AddAuthorButton>
