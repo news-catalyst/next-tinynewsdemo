@@ -1,5 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
+import tw from 'twin.macro';
 import { getMetricsData } from '../../../lib/analytics';
+
+const SubHeaderContainer = tw.div`pt-10 pb-5`;
+const SubHeader = tw.h1`inline-block text-xl font-extrabold text-gray-900 tracking-tight`;
 
 const CustomDimensions = (props) => {
   const subscriptionsRef = useRef();
@@ -52,38 +56,46 @@ const CustomDimensions = (props) => {
   }, [props.startDate, props.endDate]);
 
   return (
-    <section className="section" id="subscriptions" ref={subscriptionsRef}>
-      <h2 className="title is-4">
-        Sessions by audience segment: {props.label}
-      </h2>
-
-      <p className="content">
+    <>
+      <SubHeaderContainer ref={subscriptionsRef}>
+        <SubHeader>Sessions by audience segment: {props.label}</SubHeader>
+      </SubHeaderContainer>
+      <p tw="p-2">
         {props.startDate.format('dddd, MMMM Do YYYY')} -{' '}
         {props.endDate.format('dddd, MMMM Do YYYY')}
       </p>
-      <table className="table is-fullwidth" style={{ width: '100%' }}>
+      <table tw="w-full table-auto">
         <thead>
           <tr>
-            <th>{props.label}</th>
-            <th>Sessions</th>
+            <th tw="px-4">{props.label}</th>
+            <th tw="px-4">Sessions</th>
           </tr>
         </thead>
         <tbody>
           {data.labels.length > 0 &&
             data.labels.map((label, i) => (
               <tr>
-                <td>{label}</td>
-                <td>{data.values[i]}</td>
+                <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                  {label}
+                </td>
+                <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                  {data.values[i]}
+                </td>
               </tr>
             ))}
           {data.labels.length === 0 && (
             <tr>
-              <td colSpan="2">No data found</td>
+              <td
+                colSpan="2"
+                tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium"
+              >
+                No data found
+              </td>
             </tr>
           )}
         </tbody>
       </table>
-    </section>
+    </>
   );
 };
 

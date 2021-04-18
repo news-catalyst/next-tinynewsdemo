@@ -13,7 +13,7 @@ const StyledWrapper = styled.div`
 
 export default function DateRangePickerWrapper(props) {
   return (
-    <StyledWrapper>
+    <StyledWrapper tw="flex justify-end pt-8">
       <DateRangePicker
         isOutsideRange={() => false}
         startDateId="startDate"
