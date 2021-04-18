@@ -11,6 +11,8 @@ const SidebarHeading = tw.h1`font-bold`;
 const LightSidebar = tw.div`bg-gray-100 text-black p-2`;
 const MainContent = tw.div`w-full lg:w-1/2 px-2`;
 const SettingsContainer = tw.div`min-w-0 w-full flex-auto lg:static lg:max-h-full lg:overflow-visible p-2`;
+const HeaderContainer = tw.div`pt-5 pb-10`;
+const Header = tw.h1`inline-block text-3xl font-extrabold text-gray-900 tracking-tight`;
 
 export default function AnalyticsIndex(props) {
   const [isSignedIn, setIsSignedIn] = useState(false);
@@ -93,21 +95,23 @@ export default function AnalyticsIndex(props) {
             <div id="signin-button"></div>
           ) : (
             <SettingsContainer>
-              <h1 className="title">Analytics</h1>
+              <HeaderContainer>
+                <Header>Analytics</Header>
+              </HeaderContainer>
               <AnalyticsSidebar title="About this Data">
-                <p className="content">
+                <p tw="p-2">
                   tinycms analytics data is meant to reveal insights about how
                   your audience is - or is not - interacting with your published
                   content.
                 </p>
-                <p className="content">
+                <p tw="p-2">
                   Information related to donate button clicks, page views,
                   reading behavior and sessions come from{' '}
                   <a href="https://analytics.google.com/">Google Analytics</a>.
                   This site is configured for GA as follows:
                 </p>
 
-                <ul className="content">
+                <ul tw="p-2">
                   <li>
                     <b>Tracking ID:</b>{' '}
                     <code>{process.env.NEXT_PUBLIC_GA_TRACKING_ID}</code>
@@ -118,16 +122,16 @@ export default function AnalyticsIndex(props) {
                   </li>
                 </ul>
 
-                <p className="content">
+                <p tw="p-2">
                   Information on newsletter subscriptions come from{' '}
                   <a href="https://mailchimp.com/">Mailchimp</a>. This site is
                   configured for Mailchimp with a <b>subscribe URL</b>
                   of:
                 </p>
-                <p className="content">
+                <p tw="p-2">
                   <code>{process.env.NEXT_PUBLIC_MAILCHIMP_SUBSCRIBE_URL}</code>
                 </p>
-                <p className="content">
+                <p tw="p-2">
                   For a deeper dive on understanding your audience and measuring
                   the impact of your reporting, News Catalyst recommends
                   checking out{' '}
