@@ -8,7 +8,6 @@ export default function DonationOptionsBlock({ metadata, wrap = true }) {
   let parsedOptions = [];
   try {
     parsedOptions = JSON.parse(metadata.donationOptions);
-    console.log('donationOptions:', parsedOptions);
   } catch (e) {
     console.error(e);
   }

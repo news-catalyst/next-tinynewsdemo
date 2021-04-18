@@ -90,10 +90,6 @@ const ReadingDepthData = (props) => {
                 <td>{collectedData[item[0]]['conversion']}%</td>
               </tr>
             );
-          } else {
-            console.log('readingDepthRows:', readingDepthRows);
-            console.log('sortable:', sortable);
-            console.log('collectedData:', collectedData);
           }
         });
         setReadingDepthTableRows(readingDepthRows);
