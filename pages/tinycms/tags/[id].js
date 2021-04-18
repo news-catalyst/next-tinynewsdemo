@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import tw, { css, styled } from 'twin.macro';
 import { useRouter } from 'next/router';
 import AdminLayout from '../../../components/AdminLayout';
-import AdminHeader from '../../../components/tinycms/AdminHeader';
 import AdminNav from '../../../components/nav/AdminNav';
 import Notification from '../../../components/tinycms/Notification';
 import { hasuraGetTagById, hasuraUpdateTag } from '../../../lib/section.js';
