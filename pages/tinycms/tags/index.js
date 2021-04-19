@@ -54,7 +54,12 @@ export default function Tags({ tags, currentLocale, locales }) {
 
   return (
     <AdminLayout>
-      <AdminNav homePageEditor={false} showConfigOptions={true} />
+      <AdminNav
+        currentLocale={currentLocale}
+        locales={locales}
+        homePageEditor={false}
+        showConfigOptions={true}
+      />
       {showNotification && (
         <Notification
           message={notificationMessage}

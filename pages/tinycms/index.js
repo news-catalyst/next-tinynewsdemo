@@ -64,7 +64,12 @@ const cardContent = [
 export default function TinyCmsHome(props) {
   return (
     <AdminLayout>
-      <AdminNav homePageEditor={false} showConfigOptions={true} />
+      <AdminNav
+        currentLocale={props.currentLocale}
+        locales={props.locales}
+        homePageEditor={false}
+        showConfigOptions={true}
+      />
       <div id="page">
         <CardsContainer>
           {cardContent.map((card) => (

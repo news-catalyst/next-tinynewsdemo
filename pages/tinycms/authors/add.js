@@ -108,7 +108,12 @@ export default function AddAuthor({
 
   return (
     <AdminLayout>
-      <AdminNav homePageEditor={false} showConfigOptions={true} />
+      <AdminNav
+        currentLocale={currentLocale}
+        locales={locales}
+        homePageEditor={false}
+        showConfigOptions={true}
+      />
 
       {showNotification && (
         <Notification

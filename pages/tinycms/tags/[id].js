@@ -76,7 +76,12 @@ export default function EditTag({
 
   return (
     <AdminLayout>
-      <AdminNav homePageEditor={false} />
+      <AdminNav
+        currentLocale={currentLocale}
+        locales={locales}
+        homePageEditor={false}
+        showConfigOptions={true}
+      />
 
       {showNotification && (
         <Notification
