@@ -1,5 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
+import tw from 'twin.macro';
 import { getMetricsData } from '../../../lib/analytics';
+
+const SubHeaderContainer = tw.div`pt-10 pb-5`;
+const SubHeader = tw.h1`inline-block text-xl font-extrabold text-gray-900 tracking-tight`;
 
 const ReadingDepthData = (props) => {
   const depthRef = useRef();
@@ -81,13 +85,27 @@ const ReadingDepthData = (props) => {
           if (item && item[0] && collectedData[item[0]]) {
             readingDepthRows.push(
               <tr key={`reading-depth-row-${i}`}>
-                <td>{item[0]}</td>
-                <td>{collectedData[item[0]]['25%']}</td>
-                <td>{collectedData[item[0]]['50%']}</td>
-                <td>{collectedData[item[0]]['75%']}</td>
-                <td>{collectedData[item[0]]['100%']}</td>
-                <td>{collectedData[item[0]]['pageViews']}</td>
-                <td>{collectedData[item[0]]['conversion']}%</td>
+                <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                  {item[0]}
+                </td>
+                <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                  {collectedData[item[0]]['25%']}
+                </td>
+                <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                  {collectedData[item[0]]['50%']}
+                </td>
+                <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                  {collectedData[item[0]]['75%']}
+                </td>
+                <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                  {collectedData[item[0]]['100%']}
+                </td>
+                <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                  {collectedData[item[0]]['pageViews']}
+                </td>
+                <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                  {collectedData[item[0]]['conversion']}%
+                </td>
               </tr>
             );
           }
@@ -104,35 +122,34 @@ const ReadingDepthData = (props) => {
   }, [props.pageViews, props.startDate, props.endDate]);
 
   return (
-    <section className="section" id="depth" ref={depthRef}>
-      <div className="content">
-        <p className="title is-4">Reading Depth</p>
+    <>
+      <SubHeaderContainer ref={depthRef}>
+        <SubHeader>Reading Depth</SubHeader>
+      </SubHeaderContainer>
+      <p tw="p-2">
+        {props.startDate.format('dddd, MMMM Do YYYY')} -{' '}
+        {props.endDate.format('dddd, MMMM Do YYYY')}
+      </p>
 
-        <p className="content">
-          {props.startDate.format('dddd, MMMM Do YYYY')} -{' '}
-          {props.endDate.format('dddd, MMMM Do YYYY')}
-        </p>
-
-        <table className="table is-fullwidth" style={{ width: '100%' }}>
-          <thead>
-            <tr>
-              <th></th>
-              <th colSpan="4">Percentage Read</th>
-            </tr>
-            <tr>
-              <th>Article</th>
-              <th>25%</th>
-              <th>50%</th>
-              <th>75%</th>
-              <th>100%</th>
-              <th>Page Views</th>
-              <th>Read Entire Article</th>
-            </tr>
-          </thead>
-          <tbody>{readingDepthTableRows}</tbody>
-        </table>
-      </div>
-    </section>
+      <table tw="w-full table-auto">
+        <thead>
+          <tr>
+            <th></th>
+            <th colSpan="4">Percentage Read</th>
+          </tr>
+          <tr>
+            <th tw="px-4">Article</th>
+            <th tw="px-4">25%</th>
+            <th tw="px-4">50%</th>
+            <th tw="px-4">75%</th>
+            <th tw="px-4">100%</th>
+            <th tw="px-4">Page Views</th>
+            <th tw="px-4">Read Entire Article</th>
+          </tr>
+        </thead>
+        <tbody>{readingDepthTableRows}</tbody>
+      </table>
+    </>
   );
 };
 
