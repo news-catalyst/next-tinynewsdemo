@@ -49,7 +49,12 @@ export default function Sections({ sections, currentLocale, locales }) {
 
   return (
     <AdminLayout>
-      <AdminNav homePageEditor={false} showConfigOptions={true} />
+      <AdminNav
+        currentLocale={currentLocale}
+        locales={locales}
+        homePageEditor={false}
+        showConfigOptions={true}
+      />
       <div tw="container mx-auto">
         <div tw="px-10 pt-5">
           <h1 tw="inline-block text-3xl font-extrabold text-gray-900 tracking-tight">
