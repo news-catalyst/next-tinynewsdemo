@@ -1,5 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
+import tw from 'twin.macro';
 import { getMetricsData } from '../../../lib/analytics';
+
+const SubHeaderContainer = tw.div`pt-3 pb-5`;
+const SubHeader = tw.h1`inline-block text-xl font-extrabold text-gray-900 tracking-tight`;
 
 const NewsletterSignupFormData = (props) => {
   const signupRef = useRef();
@@ -100,12 +104,18 @@ const NewsletterSignupFormData = (props) => {
             // console.log("item:", item, collectedData[item[0]])
             sortedRows.push(
               <tr key={`newsletter-signup-row-${i}`}>
-                <td>{item[0]}</td>
-                <td>
+                <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                  {item[0]}
+                </td>
+                <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
                   {collectedData[item[0]]['Newsletter Modal Impression 1']}
                 </td>
-                <td>{collectedData[item[0]]['Newsletter Signup']}</td>
-                <td>{collectedData[item[0]]['conversion']}%</td>
+                <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                  {collectedData[item[0]]['Newsletter Signup']}
+                </td>
+                <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                  {collectedData[item[0]]['conversion']}
+                </td>
               </tr>
             );
           } else {
@@ -124,52 +134,55 @@ const NewsletterSignupFormData = (props) => {
 
   return (
     <>
-      <section className="section" id="signups" ref={signupRef}>
-        <h2 className="title is-4">Website Signup Form</h2>
+      <SubHeaderContainer>
+        <SubHeader>Website Signup Form</SubHeader>
+      </SubHeaderContainer>
+      <p tw="p-2">
+        {props.startDate.format('dddd, MMMM Do YYYY')} -{' '}
+        {props.endDate.format('dddd, MMMM Do YYYY')}
+      </p>
 
-        <p className="content">
-          {props.startDate.format('dddd, MMMM Do YYYY')} -{' '}
-          {props.endDate.format('dddd, MMMM Do YYYY')}
-        </p>
+      <table tw="w-full table-auto">
+        <thead>
+          <tr>
+            <th tw="p-4">Location</th>
+            <th tw="p-4">Views</th>
+            <th tw="p-4">Signups</th>
+            <th tw="p-4">Conversion Rate</th>
+          </tr>
+        </thead>
+        <tbody>{sortedNewsletterRows}</tbody>
+      </table>
 
-        <table className="table is-fullwidth" style={{ width: '100%' }}>
-          <thead>
-            <tr>
-              <th>Location</th>
-              <th>Views</th>
-              <th>Signups</th>
-              <th>Conversion Rate</th>
+      <SubHeaderContainer>
+        <SubHeader>Signups by Reading Frequency</SubHeader>
+      </SubHeaderContainer>
+
+      <p tw="p-2">
+        {props.startDate.format('dddd, MMMM Do YYYY')} -{' '}
+        {props.endDate.format('dddd, MMMM Do YYYY')}
+      </p>
+
+      <table tw="w-full table-auto">
+        <thead>
+          <tr>
+            <th tw="px-4">Articles Read</th>
+            <th tw="px-4">Signups</th>
+          </tr>
+        </thead>
+        <tbody>
+          {frequencySignups.map((item, i) => (
+            <tr key={`frequency-signup-row-${i}`}>
+              <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                {item[0]}
+              </td>
+              <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                {item[1]}
+              </td>
             </tr>
-          </thead>
-          <tbody>{sortedNewsletterRows}</tbody>
-        </table>
-      </section>
-
-      <section className="section">
-        <h2 className="title is-4">Signups by Reading Frequency</h2>
-
-        <p className="content">
-          {props.startDate.format('dddd, MMMM Do YYYY')} -{' '}
-          {props.endDate.format('dddd, MMMM Do YYYY')}
-        </p>
-
-        <table className="table is-fullwidth" style={{ width: '100%' }}>
-          <thead>
-            <tr>
-              <th>Articles Read</th>
-              <th>Signups</th>
-            </tr>
-          </thead>
-          <tbody>
-            {frequencySignups.map((item, i) => (
-              <tr key={`frequency-signup-row-${i}`}>
-                <td>{item[0]}</td>
-                <td>{item[1]}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </section>
+          ))}
+        </tbody>
+      </table>
     </>
   );
 };
