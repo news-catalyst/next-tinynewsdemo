@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from 'react';
+import tw from 'twin.macro';
 import FeaturedArticleLink from './FeaturedArticleLink.js';
 import FeaturedSidebar from './FeaturedSidebar';
 import ModalArticleSearch from '../tinycms/ModalArticleSearch';
+
+const ChangeArticleButton = tw.button`hidden md:flex w-full md:w-auto px-4 py-2 text-right bg-blue-900 hover:bg-blue-500 text-white md:rounded`;
 
 export default function BigFeaturedStory(props) {
   const [isModalActive, setModal] = useState(false);
@@ -32,8 +35,7 @@ export default function BigFeaturedStory(props) {
                       />
                     )}
                   </div>
-                  <button
-                    className="button is-info"
+                  <ChangeArticleButton
                     onClick={() => setModal(true)}
                     style={{
                       position: 'absolute',
@@ -42,7 +44,7 @@ export default function BigFeaturedStory(props) {
                     }}
                   >
                     Change Featured Article
-                  </button>
+                  </ChangeArticleButton>
                 </div>
               )}
               {!props.editable && props.featuredArticle && (
