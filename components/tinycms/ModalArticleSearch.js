@@ -9,7 +9,9 @@ export default function ModalArticleSearch(props) {
 
   useEffect(() => {
     console.log(
-      'ModalArticleSearch useEffect props.featuredArticle:',
+      'ModalArticleSearch useEffect props.isActive',
+      props.isActive,
+      'props.featuredArticle:',
       props.featuredArticle
     );
     // props.setFeaturedArticle(props.articles['featured']);

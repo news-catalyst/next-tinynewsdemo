@@ -19,6 +19,7 @@ const MainContent = tw.div`w-full lg:w-2/3 px-2`;
 const SettingsContainer = tw.div`min-w-0 w-full flex-auto lg:static lg:max-h-full lg:overflow-visible p-2`;
 const HeaderContainer = tw.div`pt-5 pb-10`;
 const Header = tw.h1`inline-block text-3xl font-extrabold text-gray-900 tracking-tight`;
+
 export default function PageViewsPage(props) {
   const [pageViews, setPageViews] = useState({});
   const [isSignedIn, setIsSignedIn] = useState(false);
