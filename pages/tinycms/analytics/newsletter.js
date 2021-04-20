@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import tw from 'twin.macro';
 import { addDays } from 'date-fns';
 import mailchimp from '@mailchimp/mailchimp_marketing';
 import AdminLayout from '../../../components/AdminLayout';
@@ -10,6 +11,15 @@ import DateRangePickerWrapper from '../../../components/tinycms/analytics/DateRa
 import datePickerStyles from '../../../styles/datepicker.js';
 import AnalyticsNav from '../../../components/tinycms/analytics/AnalyticsNav';
 import AnalyticsSidebar from '../../../components/tinycms/analytics/AnalyticsSidebar';
+
+const Container = tw.div`flex flex-wrap -mx-2 mb-8`;
+const Sidebar = tw.div`h-full h-screen bg-gray-100 md:w-1/5 lg:w-1/5 px-2 mb-4`;
+const SidebarHeading = tw.h1`font-bold`;
+const LightSidebar = tw.div`bg-gray-100 text-black p-2`;
+const MainContent = tw.div`w-full lg:w-2/3 px-2`;
+const SettingsContainer = tw.div`min-w-0 w-full flex-auto lg:static lg:max-h-full lg:overflow-visible p-2`;
+const HeaderContainer = tw.div`pt-5 pb-10`;
+const Header = tw.h1`inline-block text-3xl font-extrabold text-gray-900 tracking-tight`;
 
 export default function NewsletterOverview(props) {
   const [isSignedIn, setIsSignedIn] = useState(false);
@@ -92,53 +102,51 @@ export default function NewsletterOverview(props) {
   return (
     <AdminLayout>
       <AdminNav homePageEditor={false} />
-      <div className="analytics">
-        {!isSignedIn ? (
-          <div id="signin-button"></div>
-        ) : (
-          <div>
-            <div className="container">
-              <section className="section">
-                <div className="columns">
-                  <div className="column is-one-quarter">
-                    <AnalyticsNav />
-                  </div>
+      <Container>
+        <Sidebar>
+          <LightSidebar>
+            <SidebarHeading>Navigation</SidebarHeading>
+            <AnalyticsNav />
+          </LightSidebar>
+        </Sidebar>
+        <MainContent>
+          {!isSignedIn ? (
+            <div id="signin-button"></div>
+          ) : (
+            <SettingsContainer>
+              <HeaderContainer>
+                <Header>Analytics: Newsletter Overview</Header>
+              </HeaderContainer>
+              <AnalyticsSidebar title="About this Data">
+                <p tw="p-2">tk</p>
+              </AnalyticsSidebar>
 
-                  <div className="column is-three-quarters">
-                    <h1 className="title">Newsletter Overview</h1>
-                    <AnalyticsSidebar title="About this Data">
-                      <p>tk</p>
-                    </AnalyticsSidebar>
+              <DateRangePickerWrapper
+                startDate={startDate}
+                endDate={endDate}
+                setDates={setDates}
+                focusedInput={focusedInput}
+                setFocusedInput={setFocusedInput}
+              />
 
-                    <DateRangePickerWrapper
-                      startDate={startDate}
-                      endDate={endDate}
-                      setDates={setDates}
-                      focusedInput={focusedInput}
-                      setFocusedInput={setFocusedInput}
-                    />
+              <NewsletterSignupFormData
+                viewID={viewID}
+                startDate={startDate}
+                endDate={endDate}
+              />
 
-                    <NewsletterSignupFormData
-                      viewID={viewID}
-                      startDate={startDate}
-                      endDate={endDate}
-                    />
-
-                    <MailchimpReport
-                      mailchimpKey={props.mailchimpKey}
-                      mailchimpServer={props.mailchimpServer}
-                      reports={props.reports}
-                    />
-                  </div>
-                </div>
-              </section>
-            </div>
-          </div>
-        )}
-      </div>
-      <style jsx global>
-        {datePickerStyles}
-      </style>
+              <MailchimpReport
+                mailchimpKey={props.mailchimpKey}
+                mailchimpServer={props.mailchimpServer}
+                reports={props.reports}
+              />
+            </SettingsContainer>
+          )}
+        </MainContent>
+        <style jsx global>
+          {datePickerStyles}
+        </style>
+      </Container>
     </AdminLayout>
   );
 }

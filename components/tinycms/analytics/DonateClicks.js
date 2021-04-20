@@ -1,5 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
+import tw from 'twin.macro';
 import { getMetricsData } from '../../../lib/analytics';
+
+const SubHeaderContainer = tw.div`pt-3 pb-5`;
+const SubHeader = tw.h1`inline-block text-xl font-extrabold text-gray-900 tracking-tight`;
 
 const DonateClicks = (props) => {
   const donationsRef = useRef();
@@ -115,13 +119,23 @@ const DonateClicks = (props) => {
               let key = item[0];
               donateRows.push(
                 <tr key={`donate-row-${i}`}>
-                  <td>{key}</td>
+                  <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                    {key}
+                  </td>
                   {Object.keys(collectedData[key]).map((subKey, i) => (
                     <>
-                      <td>{subKey}</td>
-                      <td>{collectedData[key][subKey]['count']}</td>
-                      <td>{collectedData[key][subKey]['pageViews']}</td>
-                      <td>{collectedData[key][subKey]['conversion']}%</td>
+                      <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                        {subKey}
+                      </td>
+                      <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                        {collectedData[key][subKey]['count']}
+                      </td>
+                      <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                        {collectedData[key][subKey]['pageViews']}
+                      </td>
+                      <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                        {collectedData[key][subKey]['conversion']}%
+                      </td>
                     </>
                   ))}
                 </tr>
@@ -176,8 +190,12 @@ const DonateClicks = (props) => {
       Object.keys(donationsByFrequency).map((key, i) => {
         donationsFrequencyRows.push(
           <tr key={`donate-row-${i}`}>
-            <td>{key}</td>
-            <td>{donationsByFrequency[key]}</td>
+            <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+              {key}
+            </td>
+            <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+              {donationsByFrequency[key]}
+            </td>
           </tr>
         );
       });
@@ -186,38 +204,38 @@ const DonateClicks = (props) => {
   }, [props.startDate, props.endDate]);
 
   return (
-    <section className="section" id="donations" ref={donationsRef}>
-      <div className="content">
-        <p className="title is-4">Donate Button Clicks</p>
+    <>
+      <SubHeaderContainer>
+        <SubHeader>Donate Button Clicks</SubHeader>
+      </SubHeaderContainer>
+      <p tw="p-2">
+        {props.startDate.format('dddd, MMMM Do YYYY')} -{' '}
+        {props.endDate.format('dddd, MMMM Do YYYY')}
+      </p>
 
-        <p className="content">
-          {props.startDate.format('dddd, MMMM Do YYYY')} -{' '}
-          {props.endDate.format('dddd, MMMM Do YYYY')}
-        </p>
+      <table tw="w-full table-auto">
+        <thead>
+          <tr>
+            <th tw="px-4">Article</th>
+            <th tw="px-4">Label</th>
+            <th tw="px-4">Clicks</th>
+            <th tw="px-4">Views</th>
+            <th tw="px-4">Conversion</th>
+          </tr>
+        </thead>
+        <tbody>{donateTableRows}</tbody>
+      </table>
 
-        <table className="table is-fullwidth" style={{ width: '100%' }}>
-          <thead>
-            <tr>
-              <th>Article</th>
-              <th>Clicks</th>
-              <th>Article Page Views</th>
-              <th>Conversion</th>
-            </tr>
-          </thead>
-          <tbody>{donateTableRows}</tbody>
-        </table>
-
-        <table className="table is-fullwidth" style={{ width: '100%' }}>
-          <thead>
-            <tr>
-              <th>Reading Frequency</th>
-              <th>Clicks</th>
-            </tr>
-          </thead>
-          <tbody>{donationsFrequencyData}</tbody>
-        </table>
-      </div>
-    </section>
+      <table tw="pt-10 mt-10 w-full table-auto">
+        <thead>
+          <tr>
+            <th tw="px-4">Reading Frequency</th>
+            <th tw="px-4">Clicks</th>
+          </tr>
+        </thead>
+        <tbody>{donationsFrequencyData}</tbody>
+      </table>
+    </>
   );
 };
 

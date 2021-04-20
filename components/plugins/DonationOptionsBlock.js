@@ -5,8 +5,12 @@ export default function DonationOptionsBlock({ metadata, wrap = true }) {
     return null;
   }
 
-  let parsedOptions = JSON.parse(metadata.donationOptions);
-  console.log('donationOptions:', parsedOptions);
+  let parsedOptions = [];
+  try {
+    parsedOptions = JSON.parse(metadata.donationOptions);
+  } catch (e) {
+    console.error(e);
+  }
 
   const block = parsedOptions.map((option, i) => (
     <div className="column is-one-third is-centered">

@@ -1,5 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
+import tw from 'twin.macro';
 import { getMetricsData } from '../../../lib/analytics';
+
+const SubHeaderContainer = tw.div`pt-3 pb-5`;
+const SubHeader = tw.h1`inline-block text-xl font-extrabold text-gray-900 tracking-tight`;
 
 const PageViews = (props) => {
   const pageviewsRef = useRef();
@@ -66,30 +70,36 @@ const PageViews = (props) => {
   }, [props.startDate, props.endDate]);
 
   return (
-    <section className="section" id="pageviews" ref={pageviewsRef}>
-      <h2 className="title is-4">Page views</h2>
-      <p className="content">
+    <>
+      <SubHeaderContainer>
+        <SubHeader>Page Views</SubHeader>
+      </SubHeaderContainer>
+      <p tw="p-2">
         {props.startDate.format('dddd, MMMM Do YYYY')} -{' '}
         {props.endDate.format('dddd, MMMM Do YYYY')}
       </p>
 
-      <table className="table is-fullwidth" style={{ width: '100%' }}>
+      <table tw="w-full table-auto">
         <thead>
           <tr>
-            <th>Path</th>
-            <th>Views</th>
+            <th tw="px-4">Path</th>
+            <th tw="px-4">Views</th>
           </tr>
         </thead>
         <tbody>
           {pageViewReportData.labels.map((label, i) => (
             <tr key={`page-view-row-${i}`}>
-              <td>{label}</td>
-              <td>{pageViewReportData.values[i]}</td>
+              <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                {label}
+              </td>
+              <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                {pageViewReportData.values[i]}
+              </td>
             </tr>
           ))}
         </tbody>
       </table>
-    </section>
+    </>
   );
 };
 
