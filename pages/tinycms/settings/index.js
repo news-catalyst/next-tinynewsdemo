@@ -10,11 +10,12 @@ import newsletterStyles from '../../../styles/newsletter.js';
 import { hasuraUpsertMetadata } from '../../../lib/site_metadata';
 import Notification from '../../../components/tinycms/Notification';
 
-const Container = tw.div`flex flex-wrap -mx-2 mb-8`;
-const Sidebar = tw.div`h-full h-screen bg-gray-100 md:w-1/5 lg:w-1/5 px-2 mb-4`;
+const Container = tw.div`flex flex-wrap -mx-2`;
+const Sidebar = tw.div`sticky top-0 h-full h-screen bg-gray-100 md:w-1/5 lg:w-1/5 px-2`;
 const SidebarHeading = tw.h1`font-bold`;
 const LightSidebar = tw.div`bg-gray-100 text-black p-2`;
-const MainContent = tw.div`w-full lg:w-1/2 px-2`;
+const SidebarContent = tw.div`mt-6 ml-2`;
+const MainContent = tw.div`w-full lg:w-3/4 px-4 py-4`;
 const SettingsContainer = tw.div`min-w-0 w-full flex-auto lg:static lg:max-h-full lg:overflow-visible p-2`;
 const SaveContainer = tw.div`absolute bottom-0 h-16 w-16`;
 const SaveButton = tw.button`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded align-bottom`;
@@ -154,37 +155,39 @@ export default function Settings({
       <Container>
         <Sidebar>
           <LightSidebar>
-            <SidebarHeading>Navigation</SidebarHeading>
-            <ul>
-              <li>
-                <Link href="/tinycms/settings#siteInfo">
-                  <a href="/tinycms/settings#siteInfo">Site Information</a>
-                </Link>
-              </li>
-              <li>
-                <Link href="/tinycms/settings#design">
-                  <a href="/tinycms/settings#design">Design</a>
-                </Link>
-              </li>
-              <li>
-                <Link href="/tinycms/settings#newsletter">
-                  <a href="/tinycms/settings#newsletter">Newsletter Block</a>
-                </Link>
-              </li>
-              <li>
-                <Link href="/tinycms/settings#membership">
-                  <a href="/tinycms/settings#membership">Membership Block</a>
-                </Link>
-              </li>
-              <li>
-                <Link href="/tinycms/settings#seo">
-                  <a href="/tinycms/settings#seo">SEO/Social</a>
-                </Link>
-              </li>
-            </ul>
-            <SaveContainer>
-              <SaveButton onClick={handleSubmit}>Save</SaveButton>
-            </SaveContainer>
+            <SidebarContent>
+              <SidebarHeading>Navigation</SidebarHeading>
+              <ul tw="ml-6">
+                <li>
+                  <Link href="/tinycms/settings#siteInfo">
+                    <a href="/tinycms/settings#siteInfo">Site Information</a>
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/tinycms/settings#design">
+                    <a href="/tinycms/settings#design">Design</a>
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/tinycms/settings#newsletter">
+                    <a href="/tinycms/settings#newsletter">Newsletter Block</a>
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/tinycms/settings#membership">
+                    <a href="/tinycms/settings#membership">Membership Block</a>
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/tinycms/settings#seo">
+                    <a href="/tinycms/settings#seo">SEO/Social</a>
+                  </Link>
+                </li>
+              </ul>
+              <SaveContainer>
+                <SaveButton onClick={handleSubmit}>Save</SaveButton>
+              </SaveContainer>
+            </SidebarContent>
           </LightSidebar>
         </Sidebar>
         <MainContent>

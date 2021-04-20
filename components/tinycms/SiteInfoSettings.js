@@ -7,8 +7,8 @@ const SettingsHeader = tw.h1`text-4xl font-bold leading-normal mt-0 mb-2 text-bl
 const SiteInfoFieldsContainer = tw.div`grid grid-cols-3 gap-4`;
 const SeoContainer = tw.div``;
 const DesignContainer = tw.div`grid grid-cols-2 gap-4`;
-const MembershipContainer = tw.div`grid grid-cols-3 gap-8`;
-const NewsletterContainer = tw.div`grid grid-cols-3 gap-8`;
+const MembershipContainer = tw.div`grid grid-cols-2 gap-8`;
+const NewsletterContainer = tw.div`grid grid-cols-2 gap-8`;
 const DesignHeader = tw.h1`text-2xl font-bold leading-normal mt-0 mb-2 text-black`;
 const SingleColumnContainer = tw.div`grid grid-cols-1 gap-4`;
 const StyleOneHead = styled.span`
@@ -116,7 +116,7 @@ const ColorThreeSecondaryBox = styled.div(
 );
 
 const Input = styled.input`
-  ${tw`px-3 py-3 placeholder-gray-300 text-gray-600 relative bg-white bg-white rounded text-sm border-0 shadow outline-none focus:outline-none focus:ring w-full`}
+  ${tw`px-3 py-3 mb-4 placeholder-gray-300 text-gray-600 relative bg-white bg-white rounded text-sm border-0 shadow outline-none focus:outline-none focus:ring w-full`}
 `;
 
 export default function SiteInfoSettings(props) {
@@ -183,8 +183,10 @@ export default function SiteInfoSettings(props) {
   }, [props.parsedData]);
 
   return (
-    <div tw="space-x-4 space-y-4">
-      <SettingsHeader ref={props.siteInfoRef}>Site Information</SettingsHeader>
+    <div tw="space-x-4 space-y-8">
+      <SettingsHeader ref={props.siteInfoRef} id="siteInfo">
+        Site Information
+      </SettingsHeader>
 
       <SiteInfoFieldsContainer>
         <label htmlFor="shortName">
@@ -211,7 +213,9 @@ export default function SiteInfoSettings(props) {
         </label>
       </SiteInfoFieldsContainer>
 
-      <SettingsHeader ref={props.designRef}>Design</SettingsHeader>
+      <SettingsHeader ref={props.designRef} id="design">
+        Design
+      </SettingsHeader>
       <DesignContainer>
         <div>
           <DesignHeader>Typography</DesignHeader>
@@ -362,7 +366,7 @@ export default function SiteInfoSettings(props) {
         </div>
       </DesignContainer>
 
-      <NewsletterContainer ref={props.newsletterRef}>
+      <NewsletterContainer ref={props.newsletterRef} id="newsletter">
         <SettingsHeader tw="col-span-3 mt-5">
           Newsletter promotion block
         </SettingsHeader>
@@ -394,7 +398,7 @@ export default function SiteInfoSettings(props) {
         </div>
       </NewsletterContainer>
 
-      <MembershipContainer ref={props.membershipRef}>
+      <MembershipContainer ref={props.membershipRef} id="membership">
         <SettingsHeader tw="col-span-3 mt-5">
           Membership promotion block
         </SettingsHeader>
@@ -427,14 +431,14 @@ export default function SiteInfoSettings(props) {
       </MembershipContainer>
 
       <SeoContainer ref={props.seoRef}>
-        <SettingsHeader tw="col-span-3 mt-5">
+        <SettingsHeader tw="col-span-3 mt-5" id="seo">
           SEO and Social Metadata
         </SettingsHeader>
 
         <div tw="mt-2">
           <label htmlFor="searchTitle">
             <span tw="mt-1 font-bold">Search title</span>
-            <input
+            <Input
               tw="w-full rounded-md border-solid border-gray-300"
               type="text"
               name="searchTitle"
@@ -446,7 +450,7 @@ export default function SiteInfoSettings(props) {
         <div tw="mt-2">
           <label htmlFor="searchDescription">
             <span tw="mt-1 font-bold">Search description</span>
-            <input
+            <Input
               tw="w-full"
               type="text"
               name="searchDescription"
@@ -458,7 +462,7 @@ export default function SiteInfoSettings(props) {
         <div tw="mt-2">
           <label htmlFor="facebookTitle">
             <span tw="mt-1 font-bold">Facebook title</span>
-            <input
+            <Input
               tw="w-full"
               type="text"
               name="facebookTitle"
@@ -470,7 +474,7 @@ export default function SiteInfoSettings(props) {
         <div tw="mt-2">
           <label htmlFor="facebookDescription">
             <span tw="mt-1 font-bold">Facebook description</span>
-            <input
+            <Input
               tw="w-full"
               type="text"
               name="facebookDescription"
@@ -482,7 +486,7 @@ export default function SiteInfoSettings(props) {
         <div tw="mt-2">
           <label htmlFor="twitterTitle">
             <span tw="mt-1 font-bold">Twitter title</span>
-            <input
+            <Input
               tw="w-full"
               type="text"
               name="twitterTitle"
@@ -494,7 +498,7 @@ export default function SiteInfoSettings(props) {
         <div tw="mt-2">
           <label htmlFor="twitterDescription">
             <span tw="mt-1 font-bold">Twitter description</span>
-            <input
+            <Input
               tw="w-full"
               type="text"
               name="twitterDescription"
