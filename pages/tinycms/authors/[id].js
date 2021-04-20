@@ -13,13 +13,13 @@ import {
 } from '../../../lib/utils.js';
 
 const Input = styled.input`
-  ${tw`px-3 py-3 placeholder-gray-300 text-gray-600 relative bg-white bg-white rounded text-sm border-0 shadow outline-none focus:outline-none focus:ring w-full`}
+  ${tw`px-3 py-3 mb-3 placeholder-gray-300 text-gray-600 relative bg-white bg-white rounded text-sm border-0 shadow outline-none focus:outline-none focus:ring w-full`}
 `;
 const TextArea = styled.textarea`
   ${tw`px-3 py-3 placeholder-gray-300 text-gray-600 relative bg-white bg-white rounded text-sm border-0 shadow outline-none focus:outline-none focus:ring w-full`}
 `;
-const SubmitButton = tw.input`hidden md:flex w-full md:w-auto px-4 py-2 text-right bg-green-700 hover:bg-green-500 text-white md:rounded`;
-const CancelButton = tw.button`hidden md:flex w-full md:w-auto px-4 py-2 text-right bg-gray-600 hover:bg-gray-300 text-white md:rounded`;
+const SubmitButton = tw.input`hidden md:flex w-full px-4 py-2 text-left bg-blue-700 hover:bg-blue-500 text-white md:rounded`;
+const CancelButton = tw.button`hidden md:flex w-full px-4 py-2 bg-gray-600 hover:bg-gray-500 text-white md:rounded`;
 
 export default function EditAuthor({
   apiUrl,
@@ -160,18 +160,6 @@ export default function EditAuthor({
           </h1>
         </div>
 
-        {displayUpload && (
-          <Upload
-            awsConfig={awsConfig}
-            slug={slug}
-            bioImage={bioImage}
-            setBioImage={setBioImage}
-            setNotificationMessage={setNotificationMessage}
-            setNotificationType={setNotificationType}
-            setShowNotification={setShowNotification}
-          />
-        )}
-
         <form onSubmit={handleSubmit}>
           <label htmlFor="name">
             <span tw="block font-medium text-gray-700">Name</span>
@@ -237,6 +225,23 @@ export default function EditAuthor({
               <span tw="font-medium text-gray-700">Not Staff</span>
             </label>
           </div>
+
+          {displayUpload && (
+            <div tw="mt-3 mb-6">
+              <label tw="mt-3">
+                <span tw="block font-medium text-gray-700 block">Avatar</span>
+                <Upload
+                  awsConfig={awsConfig}
+                  slug={slug}
+                  bioImage={bioImage}
+                  setBioImage={setBioImage}
+                  setNotificationMessage={setNotificationMessage}
+                  setNotificationType={setNotificationType}
+                  setShowNotification={setShowNotification}
+                />
+              </label>
+            </div>
+          )}
 
           <div tw="grid grid-cols-4 gap-24 mt-4">
             <SubmitButton type="submit" value="Submit" />
