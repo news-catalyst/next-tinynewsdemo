@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import S3 from 'react-aws-s3';
+import tw from 'twin.macro';
 
+const UploadButton = tw.input`hidden md:flex w-full md:w-auto px-4 py-2 text-right bg-blue-700 hover:bg-blue-500 text-white md:rounded`;
 export default function Upload(props) {
   const fileInput = useRef();
   const [imageSrc, setImageSrc] = useState(props.bioImage);
@@ -43,38 +45,11 @@ export default function Upload(props) {
 
   return (
     <>
-      <article className="media">
-        <figure className="media-left">
-          <p
-            className="image is-128x128"
-            style={{ height: '128px', width: '128px' }}
-          >
-            <img src={imageSrc} key={randomKey} />
-          </p>
-        </figure>
-        <div className="media-content">
-          <div className="content">
-            <form className="upload-steps" onSubmit={handleClick}>
-              <div className="file">
-                <label className="file-label">
-                  <input className="file-input" type="file" ref={fileInput} />
-                  <span className="file-cta">
-                    <span className="file-icon">
-                      <i className="fas fa-upload"></i>
-                    </span>
-                    <span className="file-label">Choose a file…</span>
-                  </span>
-                </label>
-              </div>
-              <div className="field">
-                <p className="control">
-                  <button type="submit">Upload</button>
-                </p>
-              </div>
-            </form>
-          </div>
-        </div>
-      </article>
+      <img src={imageSrc} key={randomKey} />
+      <form className="upload-steps" onSubmit={handleClick}>
+        <input className="file-input" type="file" ref={fileInput} />
+        <UploadButton type="submit" value="Upload" />
+      </form>
     </>
   );
 }

@@ -69,6 +69,7 @@ export async function getStaticPaths({ locales }) {
     });
   });
 
+  console.log('AUTHORS GETSTATICPATHS:', paths);
   return {
     paths,
     fallback: true,

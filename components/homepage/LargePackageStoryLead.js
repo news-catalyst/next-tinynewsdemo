@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from 'react';
+import tw from 'twin.macro';
 import FeaturedArticleLink from './FeaturedArticleLink';
 import ModalArticleSearch from '../tinycms/ModalArticleSearch';
 import FeaturedSidebar from './FeaturedSidebar';
+
+const ChangeArticleButton = tw.button`hidden md:flex w-full md:w-auto px-4 py-2 text-right bg-blue-900 hover:bg-blue-500 text-white md:rounded`;
 
 export default function LargePackageStoryLead(props) {
   const [isFeaturedModalActive, setFeaturedModal] = useState(false);
@@ -14,32 +17,6 @@ export default function LargePackageStoryLead(props) {
         <div className="section__container">
           <div className="block">
             <div className="asset">
-              {props.editable && (
-                <div style={{ position: 'relative' }}>
-                  <ModalArticleSearch
-                    apiUrl={props.apiUrl}
-                    apiToken={props.apiToken}
-                    isActive={isFeaturedModalActive}
-                    setModal={setFeaturedModal}
-                    featuredArticle={props.featuredArticle}
-                    setFeaturedArticle={props.setFeaturedArticle}
-                    key="featuredArticleModal"
-                    locale={props.locale}
-                  />
-
-                  <button
-                    className="button is-info"
-                    onClick={() => setFeaturedModal(true)}
-                    style={{
-                      position: 'absolute',
-                      bottom: 0,
-                      left: 0,
-                    }}
-                  >
-                    Change Main Featured Article
-                  </button>
-                </div>
-              )}
               {props.featuredArticle && (
                 <FeaturedArticleLink
                   locale={props.locale}
@@ -49,35 +26,27 @@ export default function LargePackageStoryLead(props) {
                 />
               )}
             </div>
+            {props.editable && (
+              <div>
+                <ModalArticleSearch
+                  apiUrl={props.apiUrl}
+                  apiToken={props.apiToken}
+                  isActive={isFeaturedModalActive}
+                  setModal={setFeaturedModal}
+                  featuredArticle={props.featuredArticle}
+                  setFeaturedArticle={props.setFeaturedArticle}
+                  key="featuredArticleModal"
+                  locale={props.locale}
+                />
+
+                <ChangeArticleButton onClick={() => setFeaturedModal(true)}>
+                  Change Main Featured Article
+                </ChangeArticleButton>
+              </div>
+            )}
           </div>
           <div className="block">
             <div className="asset">
-              {props.editable && (
-                <div style={{ position: 'relative' }}>
-                  <ModalArticleSearch
-                    apiUrl={props.apiUrl}
-                    apiToken={props.apiToken}
-                    isActive={isTopModalActive}
-                    setModal={setTopModal}
-                    featuredArticle={props.subFeaturedTopArticle}
-                    setFeaturedArticle={props.setSubFeaturedTopArticle}
-                    key="featuredTopArticleModal"
-                    locale={props.locale}
-                  />
-
-                  <button
-                    className="button is-info"
-                    onClick={() => setTopModal(true)}
-                    style={{
-                      position: 'absolute',
-                      bottom: 0,
-                      left: 0,
-                    }}
-                  >
-                    Change Top Subfeatured Article
-                  </button>
-                </div>
-              )}
               {props.subFeaturedTopArticle && (
                 <FeaturedArticleLink
                   key={props.subFeaturedTopArticle.id}
@@ -87,35 +56,27 @@ export default function LargePackageStoryLead(props) {
                 />
               )}
             </div>
+            {props.editable && (
+              <div>
+                <ModalArticleSearch
+                  apiUrl={props.apiUrl}
+                  apiToken={props.apiToken}
+                  isActive={isTopModalActive}
+                  setModal={setTopModal}
+                  featuredArticle={props.subFeaturedTopArticle}
+                  setFeaturedArticle={props.setSubFeaturedTopArticle}
+                  key="featuredTopArticleModal"
+                  locale={props.locale}
+                />
+
+                <ChangeArticleButton onClick={() => setTopModal(true)}>
+                  Change Top Subfeatured Article
+                </ChangeArticleButton>
+              </div>
+            )}
           </div>
           <div className="block">
             <div className="asset">
-              {props.editable && (
-                <div style={{ position: 'relative' }}>
-                  <ModalArticleSearch
-                    apiUrl={props.apiUrl}
-                    apiToken={props.apiToken}
-                    isActive={isBottomModalActive}
-                    setModal={setBottomModal}
-                    featuredArticle={props.subFeaturedBottomArticle}
-                    setFeaturedArticle={props.setSubFeaturedBottomArticle}
-                    key="featuredBottomArticleModal"
-                    locale={props.locale}
-                  />
-
-                  <button
-                    className="button is-info"
-                    onClick={() => setBottomModal(true)}
-                    style={{
-                      position: 'absolute',
-                      bottom: 0,
-                      left: 0,
-                    }}
-                  >
-                    Change Bottom Subfeatured Article
-                  </button>
-                </div>
-              )}
               {props.subFeaturedBottomArticle && (
                 <FeaturedArticleLink
                   key={props.subFeaturedBottomArticle.id}
@@ -125,6 +86,24 @@ export default function LargePackageStoryLead(props) {
                 />
               )}
             </div>
+            {props.editable && (
+              <div>
+                <ModalArticleSearch
+                  apiUrl={props.apiUrl}
+                  apiToken={props.apiToken}
+                  isActive={isBottomModalActive}
+                  setModal={setBottomModal}
+                  featuredArticle={props.subFeaturedBottomArticle}
+                  setFeaturedArticle={props.setSubFeaturedBottomArticle}
+                  key="featuredBottomArticleModal"
+                  locale={props.locale}
+                />
+
+                <ChangeArticleButton onClick={() => setBottomModal(true)}>
+                  Change Bottom Subfeatured Article
+                </ChangeArticleButton>
+              </div>
+            )}
           </div>
         </div>
       </section>

@@ -2,11 +2,19 @@ import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import AdminLayout from '../../../components/AdminLayout.js';
-import AdminHeader from '../../../components/tinycms/AdminHeader';
 import AdminNav from '../../../components/nav/AdminNav';
+import tw from 'twin.macro';
 import Notification from '../../../components/tinycms/Notification';
 import { hasuraListAllTags } from '../../../lib/articles.js';
 import { hasuraLocaliseText } from '../../../lib/utils.js';
+
+const Table = tw.table`table-auto w-full`;
+const TableHead = tw.thead``;
+const TableBody = tw.tbody``;
+const TableRow = tw.tr``;
+const TableHeader = tw.th`px-4 py-2`;
+const TableCell = tw.td`border px-4 py-2`;
+const AddTagButton = tw.a`hidden md:flex w-full md:w-auto px-4 py-2 text-right bg-blue-900 hover:bg-blue-500 text-white md:rounded`;
 
 export default function Tags({ tags, currentLocale, locales }) {
   const [notificationMessage, setNotificationMessage] = useState('');
@@ -33,18 +41,25 @@ export default function Tags({ tags, currentLocale, locales }) {
     let title = hasuraLocaliseText(tag.tag_translations, 'title');
 
     return (
-      <li key={tag.id}>
-        <Link key={`${tag.id}-link`} href={`/tinycms/tags/${tag.id}`}>
-          <a>{title}</a>
-        </Link>{' '}
-        ({tag.slug})
-      </li>
+      <TableRow key={tag.id}>
+        <TableCell>
+          <Link key={`${tag.id}-link`} href={`/tinycms/tags/${tag.id}`}>
+            <a>{title}</a>
+          </Link>
+        </TableCell>
+        <TableCell>{tag.slug}</TableCell>
+      </TableRow>
     );
   });
 
   return (
     <AdminLayout>
-      <AdminNav homePageEditor={false} showConfigOptions={true} />
+      <AdminNav
+        currentLocale={currentLocale}
+        locales={locales}
+        homePageEditor={false}
+        showConfigOptions={true}
+      />
       {showNotification && (
         <Notification
           message={notificationMessage}
@@ -52,19 +67,34 @@ export default function Tags({ tags, currentLocale, locales }) {
           notificationType={notificationType}
         />
       )}
-      <div id="page">
-        <AdminHeader
-          locales={locales}
-          currentLocale={currentLocale}
-          title="Tags"
-        />
+      <div tw="container mx-auto min-w-0 flex-auto px-4 sm:px-6 xl:px-8 pt-10 pb-24 lg:pb-16">
+        <div tw="pt-5 pb-10">
+          <h1 tw="inline-block text-3xl font-extrabold text-gray-900 tracking-tight">
+            Tags
+          </h1>
+        </div>
 
-        <ul>{listItems}</ul>
-        <section className="section">
+        <div tw="flex pt-8 justify-end">
           <Link href="/tinycms/tags/add">
-            <button className="button">Add Tag</button>
+            <AddTagButton>Add Tag</AddTagButton>
           </Link>
-        </section>
+        </div>
+
+        <Table tw="mb-10">
+          <TableHead>
+            <TableRow>
+              <TableHeader>Name</TableHeader>
+              <TableHeader>Slug</TableHeader>
+            </TableRow>
+          </TableHead>
+          <TableBody>{listItems}</TableBody>
+        </Table>
+
+        <div tw="flex pt-8 justify-end">
+          <Link href="/tinycms/tags/add">
+            <AddTagButton>Add Tag</AddTagButton>
+          </Link>
+        </div>
       </div>
     </AdminLayout>
   );

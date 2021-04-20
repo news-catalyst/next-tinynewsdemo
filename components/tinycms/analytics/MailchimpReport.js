@@ -1,4 +1,8 @@
 import React, { useEffect, useRef } from 'react';
+import tw from 'twin.macro';
+
+const SubHeaderContainer = tw.div`pt-3 pb-5`;
+const SubHeader = tw.h1`inline-block text-xl font-extrabold text-gray-900 tracking-tight`;
 
 export default function MailchimpReport(props) {
   const campaignsRef = useRef();
@@ -12,68 +16,108 @@ export default function MailchimpReport(props) {
 
   if (!props.reports) console.error('No report passed for mailchimp');
   return (
-    <div id="campaigns" ref={campaignsRef}>
+    <div ref={campaignsRef}>
       {props.reports.map((report) => (
-        <section className="section" key={`mailchimp-report-${report.id}`}>
-          <h2 className="title is-4">
-            Newsletter Campaign: {report.campaign_title}
-          </h2>
+        <>
+          <SubHeaderContainer>
+            <SubHeader>Newsletter Campaign: {report.campaign_title}</SubHeader>
+          </SubHeaderContainer>
 
-          <table className="table is-fullwidth" style={{ width: '100%' }}>
+          <table tw="w-full table-auto">
             <thead>
               <tr>
-                <th>Metric</th>
-                <th>Value</th>
+                <th tw="px-4">Metric</th>
+                <th tw="px-4">Value</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td>List name</td>
-                <td>{report.list_name}</td>
+                <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                  List name
+                </td>
+                <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                  {report.list_name}
+                </td>
               </tr>
               <tr>
-                <td>Emails sent</td>
-                <td>{report.emails_sent}</td>
+                <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                  Emails sent
+                </td>
+                <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                  {report.emails_sent}
+                </td>
               </tr>
               <tr>
-                <td>Sent time</td>
-                <td>
+                <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                  Sent time
+                </td>
+                <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
                   {new Date(report.send_time).toLocaleDateString()}{' '}
                   {new Date(report.send_time).toLocaleTimeString()}
                 </td>
               </tr>
               <tr>
-                <td>Opens (count)</td>
-                <td>{report.opens.opens_total}</td>
+                <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                  Opens (count)
+                </td>
+                <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                  {report.opens.opens_total}
+                </td>
               </tr>
               <tr>
-                <td>Unique Opens</td>
-                <td>{report.opens.unique_opens}</td>
+                <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                  Unique Opens
+                </td>
+                <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                  {report.opens.unique_opens}
+                </td>
               </tr>
               <tr>
-                <td>Open Rate</td>
-                <td>{report.opens.open_rate * 100}%</td>
+                <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                  Open Rate
+                </td>
+                <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                  {report.opens.open_rate * 100}%
+                </td>
               </tr>
               <tr>
-                <td>Clicks</td>
-                <td>{report.clicks.clicks_total}</td>
+                <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                  Clicks
+                </td>
+                <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                  {report.clicks.clicks_total}
+                </td>
               </tr>
               <tr>
-                <td>Click Rate</td>
-                <td>{report.clicks.click_rate * 100}%</td>
+                <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                  Click Rate
+                </td>
+                <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                  {report.clicks.click_rate * 100}%
+                </td>
               </tr>
               <tr>
-                <td>Subscribe Rate</td>
-                <td>{report.list_stats.sub_rate * 100}%</td>
+                <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                  Subscribe Rate
+                </td>
+                <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                  {report.list_stats.sub_rate * 100}%
+                </td>
               </tr>
               <tr>
-                <td>Unsubscribe Rate</td>
-                <td>{report.list_stats.unsub_rate * 100}%</td>
+                <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                  Unsubscribe Rate
+                </td>
+                <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                  {report.list_stats.unsub_rate * 100}%
+                </td>
               </tr>
               {report.growth.history.map((month) => (
                 <tr key={`report-growth-row-${month.month}`}>
-                  <td>Month: {month.month}</td>
-                  <td>
+                  <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                    Month: {month.month}
+                  </td>
+                  <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
                     <table>
                       <tbody>
                         <tr>
@@ -91,7 +135,7 @@ export default function MailchimpReport(props) {
               ))}
             </tbody>
           </table>
-        </section>
+        </>
       ))}
     </div>
   );

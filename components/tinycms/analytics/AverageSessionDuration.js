@@ -1,6 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
+import tw from 'twin.macro';
 import { getMetricsData } from '../../../lib/analytics';
 import { formatDate } from '../../../lib/utils';
+
+const SubHeaderContainer = tw.div`pt-10 pb-5`;
+const SubHeader = tw.h1`inline-block text-xl font-extrabold text-gray-900 tracking-tight`;
 
 const AverageSessionDuration = (props) => {
   const timeRef = useRef();
@@ -58,34 +62,38 @@ const AverageSessionDuration = (props) => {
   }, [props.startDate, props.endDate]);
 
   return (
-    <section className="section" id="time" ref={timeRef}>
-      <div className="content">
-        <h2 className="subtitle">Average session duration</h2>
+    <>
+      <SubHeaderContainer ref={timeRef}>
+        <SubHeader>Average Session Duration</SubHeader>
+      </SubHeaderContainer>
+      <p tw="p-2">
+        {props.startDate.format('dddd, MMMM Do YYYY')} -{' '}
+        {props.endDate.format('dddd, MMMM Do YYYY')}
+      </p>
 
-        <p>Overall average: {timeAverage} seconds</p>
-        <p className="content">
-          {props.startDate.format('dddd, MMMM Do YYYY')} -{' '}
-          {props.endDate.format('dddd, MMMM Do YYYY')}
-        </p>
+      <p>Overall average: {timeAverage} seconds</p>
 
-        <table className="table is-fullwidth" style={{ width: '100%' }}>
-          <thead>
-            <tr>
-              <th>Date</th>
-              <th>Seconds</th>
+      <table tw="w-full table-auto">
+        <thead>
+          <tr>
+            <th tw="px-4">Date</th>
+            <th tw="px-4">Seconds</th>
+          </tr>
+        </thead>
+        <tbody>
+          {timeReportData.labels.map((label, i) => (
+            <tr key={`time-report-${i}`}>
+              <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                {label}
+              </td>
+              <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                {Math.round(timeReportData.values[i])}
+              </td>
             </tr>
-          </thead>
-          <tbody>
-            {timeReportData.labels.map((label, i) => (
-              <tr key={`time-report-${i}`}>
-                <td> {label} </td>
-                <td> {Math.round(timeReportData.values[i])} </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </section>
+          ))}
+        </tbody>
+      </table>
+    </>
   );
 };
 

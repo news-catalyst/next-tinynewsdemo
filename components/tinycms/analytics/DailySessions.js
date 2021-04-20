@@ -1,6 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
+import tw from 'twin.macro';
 import { getMetricsData } from '../../../lib/analytics';
 import { formatDate } from '../../../lib/utils';
+
+const SubHeaderContainer = tw.div`pt-10 pb-5`;
+const SubHeader = tw.h1`inline-block text-xl font-extrabold text-gray-900 tracking-tight`;
 
 const DailySessions = (props) => {
   const dailyRef = useRef();
@@ -55,32 +59,36 @@ const DailySessions = (props) => {
   }, [props.startDate, props.endDate]);
 
   return (
-    <section className="section" id="daily" ref={dailyRef}>
-      <div className="content">
-        <h2 className="subtitle">Sessions per day</h2>
-        <p className="content">
-          {props.startDate.format('dddd, MMMM Do YYYY')} -{' '}
-          {props.endDate.format('dddd, MMMM Do YYYY')}
-        </p>
+    <>
+      <SubHeaderContainer ref={dailyRef}>
+        <SubHeader>Sessions per day</SubHeader>
+      </SubHeaderContainer>
+      <p tw="p-2">
+        {props.startDate.format('dddd, MMMM Do YYYY')} -{' '}
+        {props.endDate.format('dddd, MMMM Do YYYY')}
+      </p>
 
-        <table className="table is-fullwidth" style={{ width: '100%' }}>
-          <thead>
-            <tr>
-              <th>Date</th>
-              <th>Sessions</th>
+      <table tw="w-full table-auto">
+        <thead>
+          <tr>
+            <th tw="px-4">Date</th>
+            <th tw="px-4">Sessions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {reportData.labels.map((label, i) => (
+            <tr key={`daily-sessions-row-${i}`}>
+              <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                {label}
+              </td>
+              <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                {reportData.values[i]}
+              </td>
             </tr>
-          </thead>
-          <tbody>
-            {reportData.labels.map((label, i) => (
-              <tr key={`daily-sessions-row-${i}`}>
-                <td>{label}</td>
-                <td>{reportData.values[i]}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </section>
+          ))}
+        </tbody>
+      </table>
+    </>
   );
 };
 
