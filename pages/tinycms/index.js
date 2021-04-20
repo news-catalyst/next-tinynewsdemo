@@ -13,8 +13,10 @@ import {
   TagIcon,
 } from '@heroicons/react/solid';
 
-const CardsContainer = tw.section`flex items-center justify-center p-4 bg-white grid grid-cols-2 gap-2`;
-const Card = tw.div`max-w-lg w-full rounded-lg shadow-lg p-4 flex flex-row`;
+const Content = tw.div`max-w-6xl my-16 mx-auto`;
+const Header = tw.h1`text-3xl font-bold text-center`;
+const CardsContainer = tw.section`flex items-center justify-center p-4 bg-white grid grid-cols-2 gap-2 mx-auto`;
+const Card = tw.div`max-w-lg w-full rounded-lg shadow-lg p-4 flex flex-row bg-gray-100 my-4`;
 const CardIcon = tw.div`lg:w-1/5 h-auto text-blue-700 mr-4`;
 const CardContentContainer = tw.div`lg:w-4/5 p-2`;
 const CardHeader = tw.h3`font-semibold text-lg tracking-wide`;
@@ -71,21 +73,24 @@ export default function TinyCmsHome(props) {
         showConfigOptions={true}
       />
       <div id="page">
-        <CardsContainer>
-          {cardContent.map((card) => (
-            <Link href={card.href} key={card.title}>
-              <a>
-                <Card>
-                  <CardIcon>{card.icon}</CardIcon>
-                  <CardContentContainer>
-                    <CardHeader>{card.title}</CardHeader>
-                    <CardContent>{card.description}</CardContent>
-                  </CardContentContainer>
-                </Card>
-              </a>
-            </Link>
-          ))}
-        </CardsContainer>
+        <Content>
+          <Header>Welcome to the TinyCMS!</Header>
+          <CardsContainer>
+            {cardContent.map((card) => (
+              <Link href={card.href} key={card.title}>
+                <a>
+                  <Card>
+                    <CardIcon>{card.icon}</CardIcon>
+                    <CardContentContainer>
+                      <CardHeader>{card.title}</CardHeader>
+                      <CardContent>{card.description}</CardContent>
+                    </CardContentContainer>
+                  </Card>
+                </a>
+              </Link>
+            ))}
+          </CardsContainer>
+        </Content>
       </div>
     </AdminLayout>
   );
