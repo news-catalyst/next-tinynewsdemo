@@ -9,8 +9,6 @@ import donateStyles from '../styles/bulma.js';
 export default function Donate({ page, sections, siteMetadata }) {
   const isAmp = useAmp();
 
-  console.log('siteMetadata:', siteMetadata);
-
   // there will only be one translation returned for a given page + locale
   const localisedPage = page.page_translations[0];
   const body = renderBody(page.page_translations, isAmp);

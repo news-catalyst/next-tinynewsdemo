@@ -26,8 +26,10 @@ export default function GlobalNav({ metadata, sections }) {
             <h1 className="site__logo">{title}</h1>
           </a>
         </Link>
-        <nav>{sectionLinks}</nav>
-        <Donate label={metadata.supportCTA} url={metadata.supportURL} />
+        <nav>
+          {sectionLinks}
+          <Donate metadata={metadata} />
+        </nav>
       </div>
     </header>
   );
