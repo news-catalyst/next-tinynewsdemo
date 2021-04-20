@@ -15,8 +15,8 @@ const Input = styled.input`
 const TextArea = styled.textarea`
   ${tw`px-3 py-3 placeholder-gray-300 text-gray-600 relative bg-white bg-white rounded text-sm border-0 shadow outline-none focus:outline-none focus:ring w-full`}
 `;
-const SubmitButton = tw.input`hidden md:flex w-full md:w-auto px-4 py-2 text-right bg-green-700 hover:bg-green-500 text-white md:rounded`;
-const CancelButton = tw.button`hidden md:flex w-full md:w-auto px-4 py-2 text-right bg-gray-600 hover:bg-gray-300 text-white md:rounded`;
+const SubmitButton = tw.input`hidden md:flex w-full md:w-auto px-4 py-2 text-left bg-green-700 hover:bg-green-500 text-white md:rounded`;
+const CancelButton = tw.button`hidden md:flex w-full md:w-auto px-4 py-2 bg-gray-600 hover:bg-gray-300 text-white md:rounded`;
 
 export default function AddAuthor({
   apiUrl,
