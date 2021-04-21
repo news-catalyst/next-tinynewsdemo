@@ -1,17 +1,24 @@
+import tw from 'twin.macro';
 import NewsletterBlock from '../plugins/NewsletterBlock';
 import ArticleLink from './ArticleLink';
 import ExpandedTextWithImageAd from '../ads/ExpandedTextWithImageAd';
 
+const SectionLayout = tw.section`flex mb-8`;
+const SectionContainer = tw.div`md:grid md:grid-cols-packageLayoutTablet lg:grid-cols-packageLayoutDesktop flex flex-row flex-wrap grid-rows-1 w-full px-5 mx-auto max-w-7xl`;
+const Block = tw.div`w-full`;
+const BlockHead = tw.h3`flex items-end flex-row flex-nowrap mb-4 text-2xl mb-6 font-bold`;
+const BlockList = tw.ul`list-outside`;
+const NewsletterContainer = tw.div`md:border-l md:border-gray-200 md:ml-8 md:pl-8 w-full`;
+
 export default function ArticleStream({
   articles,
-  sections,
   showCategory,
   isAmp,
   title,
   metadata,
   ads,
 }) {
-  const AD_PLACEMENT_INDEX = 1;
+  const AD_PLACEMENT_INDEX = 3;
 
   const renderArticle = function (article) {
     return (
@@ -45,8 +52,6 @@ export default function ArticleStream({
   };
   let adIndex = 0;
 
-  const renderSections = typeof sections[0].title === 'string';
-
   const articleStream = articles.map((article, i) => {
     const streamArticle = renderArticle(article);
 
@@ -55,7 +60,7 @@ export default function ArticleStream({
       adIndex++;
       return (
         <>
-          <li className="asset">{ad}</li>
+          {ad}
           {streamArticle}
         </>
       );
@@ -65,29 +70,16 @@ export default function ArticleStream({
   });
 
   return (
-    <section className="section section-layout__3">
-      <div className="section__container">
-        <div className="block">
-          <h3 className="block__head">
-            <div className="section__title">Topics We Cover</div>
-          </h3>
-          <ul>
-            {renderSections &&
-              sections.map((section) => (
-                <li key={section.slug}>
-                  <a href="#">{section.title}</a>
-                </li>
-              ))}
-          </ul>
-        </div>
-        <div className="block">
-          <h3 className="block__head">
-            <div className="section__title">{title}</div>
-          </h3>
-          <ul className="block__list">{articleStream}</ul>
-        </div>
-        <NewsletterBlock metadata={metadata} headline={'Home'} />
-      </div>
-    </section>
+    <SectionLayout>
+      <SectionContainer>
+        <Block>
+          <BlockHead>{title}</BlockHead>
+          <BlockList>{articleStream}</BlockList>
+        </Block>
+        <NewsletterContainer>
+          <NewsletterBlock metadata={metadata} headline={'Home'} />
+        </NewsletterContainer>
+      </SectionContainer>
+    </SectionLayout>
   );
 }

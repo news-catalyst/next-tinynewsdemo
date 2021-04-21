@@ -1,11 +1,12 @@
 import Head from 'next/head';
-import globalStyles from '../styles/global.js';
-import newsletterStyles from '../styles/newsletter.js';
 import GlobalNav from '../components/nav/GlobalNav';
 import GlobalFooter from './nav/GlobalFooter.js';
 import { useAmp } from 'next/amp';
 import AmpAnalytics from './amp/AmpAnalytics.js';
 import { hasuraLocaliseText } from '../lib/utils';
+import tw from 'twin.macro';
+
+const Main = tw.main`pt-8 pb-24`;
 
 export default function Layout({
   children,
@@ -134,6 +135,7 @@ export default function Layout({
           article.tags !== undefined &&
           article.tags.map((tag) => (
             <meta
+              key={hasuraLocaliseText(tag.tag_translations, 'title')}
               property="article:tag"
               content={hasuraLocaliseText(tag.tag_translations, 'title')}
             />
@@ -151,7 +153,7 @@ export default function Layout({
       </Head>
       <div className={meta.theme + ' ' + meta.color}>
         {renderNav && <GlobalNav metadata={meta} sections={sections} />}
-        <main>
+        <Main>
           {isAmp && (
             <AmpAnalytics
               type="googleanalytics"
@@ -173,15 +175,9 @@ export default function Layout({
             />
           )}
           {children}
-        </main>
+        </Main>
         <GlobalFooter metadata={metaValues} />
       </div>
-      <style jsx global>
-        {globalStyles}
-      </style>
-      <style jsx global>
-        {newsletterStyles}
-      </style>
     </>
   );
 }
