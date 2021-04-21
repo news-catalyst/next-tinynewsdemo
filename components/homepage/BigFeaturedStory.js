@@ -7,7 +7,7 @@ import ModalArticleSearch from '../tinycms/ModalArticleSearch';
 const SectionLayout = tw.section`flex mb-8`;
 const SectionContainer = tw.div`px-5 max-w-7xl mx-auto flex flex-row flex-wrap w-full`;
 const Block = tw.div`flex w-full`;
-const Asset = tw.div`flex flex-row`;
+const Asset = tw.div`flex md:flex-row flex-col-reverse`;
 const AssetMetaContainer = tw.div`relative w-full`;
 const AssetThumbnailContainer = tw.div``;
 

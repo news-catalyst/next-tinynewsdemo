@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState } from 'react';
 import tw from 'twin.macro';
 import FeaturedArticleMeta from './FeaturedArticleMeta.js';
 import FeaturedArticleThumbnail from './FeaturedArticleThumbnail.js';
 import ModalArticleSearch from '../tinycms/ModalArticleSearch';
+import { useMediaQuery } from '../../lib/hooks/useMediaQuery.js';
 
 const ChangeArticleButton = tw.button`hidden md:flex w-full md:w-auto px-4 py-2 text-right bg-blue-900 hover:bg-blue-500 text-white md:rounded`;
 const SectionLayout = tw.section`flex mb-8`;
@@ -18,32 +19,6 @@ const RightBottomAsset = tw(
 )`lg:border-l border-gray-200 lg:pl-2 lg:pt-4 border-b-0`;
 const AssetMetaContainer = tw.div`flex-1 relative w-full`;
 const AssetThumbnailContainer = tw.div`md:max-w-1/2`;
-
-const useMediaQuery = (width) => {
-  const [targetReached, setTargetReached] = useState(false);
-
-  const updateTarget = useCallback((e) => {
-    if (e.matches) {
-      setTargetReached(true);
-    } else {
-      setTargetReached(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    const media = window.matchMedia(`(min-width: ${width}px)`);
-    media.addEventListener('change', (e) => updateTarget(e));
-
-    // Check on mount (callback is not called until a change occurs)
-    if (media.matches) {
-      setTargetReached(true);
-    }
-
-    return () => media.removeEventListener('change', (e) => updateTarget(e));
-  }, []);
-
-  return targetReached;
-};
 
 const gridStyles = {
   desktop: {
