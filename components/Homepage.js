@@ -5,11 +5,11 @@ const BigFeaturedStory = dynamic(() => import(`./homepage/BigFeaturedStory`));
 const LargePackageStoryLead = dynamic(() =>
   import(`./homepage/LargePackageStoryLead`)
 );
+import HomepagePromoBar from './homepage/HomepagePromoBar';
 
 import Layout from './Layout';
 import ArticleStream from './homepage/ArticleStream';
 import Placeholder from './homepage/Placeholder';
-import homepageStyles from '../styles/homepage.js';
 
 export default function Homepage({
   selectedLayout,
@@ -58,19 +58,17 @@ export default function Homepage({
             metadata={siteMetadata}
           />
         )}
+        <HomepagePromoBar metadata={siteMetadata} />
         <ArticleStream
           articles={mostRecentArticles}
           sections={sections}
           showCategory={true}
           isAmp={false}
-          title={siteMetadata.homepageArticleStreamHed}
+          title={'Recent Stories'}
           metadata={siteMetadata}
           ads={expandedAds}
         />
       </Layout>
-      <style jsx global>
-        {homepageStyles}
-      </style>
     </div>
   );
 }

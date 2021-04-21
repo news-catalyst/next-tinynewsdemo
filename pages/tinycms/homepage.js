@@ -153,6 +153,11 @@ export default function HomePageEditor({
             />
           )}
       </div>
+      <input
+        type="submit"
+        value="Save Homepage"
+        onClick={saveAndPublishHomepage}
+      />
       <style jsx global>
         {globalStyles}
       </style>
