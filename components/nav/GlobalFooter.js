@@ -1,3 +1,7 @@
+import tw from 'twin.macro';
+
+const Footer = tw.footer`flex items-center justify-center bg-gray-200 h-40 text-xs uppercase`;
+
 export default function GlobalFooter(props) {
   let title;
   let bylineLink;
@@ -8,12 +12,12 @@ export default function GlobalFooter(props) {
     byline = props.metadata['footerBylineName'];
   }
   return (
-    <footer className="tbd">
-      <div className="section__container">
+    <Footer>
+      <div>
         <p>
           <strong>{title}</strong> by <a href={bylineLink}>{byline}</a>.
         </p>
       </div>
-    </footer>
+    </Footer>
   );
 }

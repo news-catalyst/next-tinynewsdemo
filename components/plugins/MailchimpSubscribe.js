@@ -1,7 +1,13 @@
 import { useEffect } from 'react';
+import tw from 'twin.macro';
 import MailchimpSubscribe from 'react-mailchimp-subscribe';
 import { useAnalytics } from '../../lib/hooks/useAnalytics.js';
 import { useInView } from 'react-intersection-observer';
+
+const Group = tw.div`relative`;
+const Input = tw.input`block w-full border-b border-gray-500 bg-transparent`;
+const Bar = tw.div``;
+const Submit = tw.input`block bg-black absolute text-white cursor-pointer rounded-full font-bold leading-4 w-8 h-8 pl-2 right-2 z-10`;
 
 // you can get this url from the embed code form action
 const url = process.env.NEXT_PUBLIC_MAILCHIMP_SUBSCRIBE_URL;
@@ -30,16 +36,31 @@ const CustomForm = ({ status, message, onValidated }) => {
           dangerouslySetInnerHTML={{ __html: message }}
         />
       )}
-      <div className="group">
-        <input
+      <Group>
+        <Input
           ref={(node) => (email = node)}
           type="email"
           placeholder="Your email"
           className="input"
+          style={{
+            borderTop: 'none',
+            borderLeft: 'none',
+            borderRight: 'none',
+          }}
         />
         <span className="bar"></span>
-        <input type="submit" onClick={submit} className="submit" value="→" />
-      </div>
+        <Submit
+          type="submit"
+          onClick={submit}
+          value="→"
+          style={{
+            bottom: '0.3125rem',
+            paddingTop: '0.375rem',
+            fontSize: '18px',
+            padding: '10px 10px 10px 5px',
+          }}
+        />
+      </Group>
     </div>
   );
 };

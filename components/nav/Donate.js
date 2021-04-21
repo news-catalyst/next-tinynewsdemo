@@ -1,7 +1,10 @@
 import Link from 'next/link';
 import { useAnalytics } from '../../lib/hooks/useAnalytics.js';
+import tw from 'twin.macro';
 
-const Donate = ({ label, style, url }) => {
+const DonateLink = tw.a`items-center bg-black text-white flex font-bold leading-4 pt-0.5 px-5 ml-5 order-2 lg:ml-0 lg:order-none`;
+
+const Donate = ({ label, url }) => {
   const { trackEvent } = useAnalytics();
 
   const trackClick = () => {
@@ -14,9 +17,15 @@ const Donate = ({ label, style, url }) => {
   };
   return (
     <Link href={url}>
-      <a style={style} className="site__cta button donate" onClick={trackClick}>
+      <DonateLink
+        style={{
+          minHeight: '2.375rem',
+        }}
+        className="site__cta button donate"
+        onClick={trackClick}
+      >
         {label}
-      </a>
+      </DonateLink>
     </Link>
   );
 };

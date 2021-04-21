@@ -1,11 +1,21 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import tw from 'twin.macro';
 import {
   renderDate,
   renderAuthors,
   hasuraLocaliseText,
 } from '../../lib/utils.js';
+
+const Asset = tw.li`border-b border-gray-200 items-start content-start flex flex-row flex-nowrap mb-6 pb-6`;
+const AssetMetaContainer = tw.div`flex-1 w-full relative`;
+const AssetDescriptor = tw.span`block leading-4 mb-2`;
+const AssetDescriptorLink = tw.a`font-bold text-xs text-black`;
+const AssetTitle = tw.h4`font-bold text-xl leading-5 tracking-tight`;
+const AssetByline = tw.div`text-xs mt-3 flex flex-row flex-wrap items-baseline`;
+const AssetTime = tw.time`text-gray-500 block mb-4`;
+const AssetThumbnail = tw.figure`ml-5 order-2 w-1/3`;
 
 export default function ArticleLink({ article, isAmp, showCategory }) {
   let mainImage = null;
@@ -58,16 +68,16 @@ export default function ArticleLink({ article, isAmp, showCategory }) {
   }
 
   return (
-    <li className="asset">
-      <div className="asset__meta-container">
-        <span className="asset__descriptor">
+    <Asset>
+      <AssetMetaContainer>
+        <AssetDescriptor>
           {article.category && showCategory && (
             <Link key={categoryTitle} href={`/${article.category.slug}`}>
-              <a>{categoryTitle}</a>
+              <AssetDescriptorLink>{categoryTitle}</AssetDescriptorLink>
             </Link>
           )}
-        </span>
-        <h4 className="asset__title">
+        </AssetDescriptor>
+        <AssetTitle>
           {headline && (
             <Link
               href="/articles/[category]/[slug]"
@@ -76,20 +86,20 @@ export default function ArticleLink({ article, isAmp, showCategory }) {
               <a>{headline}</a>
             </Link>
           )}
-        </h4>
-        <div className="asset__byline">
+        </AssetTitle>
+        <AssetByline>
           By&nbsp;{renderAuthors(article)}&nbsp;
-          <time>
+          <AssetTime>
             <span>{renderDate(firstPublishedAt, false)}</span>
-          </time>
-        </div>
-      </div>
+          </AssetTime>
+        </AssetByline>
+      </AssetMetaContainer>
       {mainImage && (
-        <figure className="asset__thumbnail">
+        <AssetThumbnail>
           {isAmp ? (
             <amp-img
               width={mainImage.width}
-              height={mainImage.height}
+              height={(mainImage.height / mainImage.width) * 400}
               src={mainImage.imageUrl}
               alt={mainImage.imageAlt}
               layout="responsive"
@@ -98,13 +108,13 @@ export default function ArticleLink({ article, isAmp, showCategory }) {
             <Image
               src={mainImage.imageUrl}
               width={400}
-              height={234}
+              height={(mainImage.height / mainImage.width) * 400}
               alt={mainImage.imageAlt}
               className="image"
             />
           )}
-        </figure>
+        </AssetThumbnail>
       )}
-    </li>
+    </Asset>
   );
 }
