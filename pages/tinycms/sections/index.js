@@ -65,7 +65,7 @@ export default function Sections({ sections, currentLocale, locales }) {
         {message && <div className="success">{message}</div>}
 
         <div tw="flex pt-8 justify-end">
-          <Link href="/tinycms/authors/add">
+          <Link href="/tinycms/sections/add">
             <AddSectionButton>Add Section</AddSectionButton>
           </Link>
         </div>
