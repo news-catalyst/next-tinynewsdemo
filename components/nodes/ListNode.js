@@ -1,63 +1,67 @@
-// import ListItemNode from './ListItemNode.js';
+import tw from 'twin.macro';
 import TextNode from './TextNode.js';
+
+const UnorderedList = tw.ul`mb-4 list-outside list-disc`;
+const OrderedList = tw.ol`mb-4 list-outside list-decimal`;
+const ListItem = tw.li`mb-1 pl-2 ml-2`;
 
 export default function ListNode({ node }) {
   let items = [];
   node.items.map(function (item) {
     if (item.nestingLevel === 1) {
       items.push(
-        <li key={item.index} style={{ listStyle: 'none' }}>
-          <ul>
-            <li>
+        <ListItem key={item.index} style={{ listStyle: 'none' }}>
+          <UnorderedList>
+            <ListItem>
               <TextNode node={item} />
-            </li>
-          </ul>
-        </li>
+            </ListItem>
+          </UnorderedList>
+        </ListItem>
       );
     } else if (item.nestingLevel === 2) {
       items.push(
-        <li key={item.index} style={{ listStyle: 'none' }}>
-          <ul>
-            <li style={{ listStyle: 'none' }}>
-              <ul>
-                <li>
+        <ListItem key={item.index} style={{ listStyle: 'none' }}>
+          <UnorderedList>
+            <ListItem style={{ listStyle: 'none' }}>
+              <UnorderedList>
+                <ListItem>
                   <TextNode node={item} />
-                </li>
-              </ul>
-            </li>
-          </ul>
-        </li>
+                </ListItem>
+              </UnorderedList>
+            </ListItem>
+          </UnorderedList>
+        </ListItem>
       );
     } else if (item.nestingLevel === 3) {
       items.push(
-        <li key={item.index} style={{ listStyle: 'none' }}>
-          <ul>
-            <li style={{ listStyle: 'none' }}>
-              <ul>
-                <li style={{ listStyle: 'none' }}>
-                  <ul>
-                    <li>
+        <ListItem key={item.index} style={{ listStyle: 'none' }}>
+          <UnorderedList>
+            <ListItem style={{ listStyle: 'none' }}>
+              <UnorderedList>
+                <ListItem style={{ listStyle: 'none' }}>
+                  <UnorderedList>
+                    <ListItem>
                       <TextNode node={item} />
-                    </li>
-                  </ul>
-                </li>
-              </ul>
-            </li>
-          </ul>
-        </li>
+                    </ListItem>
+                  </UnorderedList>
+                </ListItem>
+              </UnorderedList>
+            </ListItem>
+          </UnorderedList>
+        </ListItem>
       );
     } else {
       items.push(
-        <li key={item.index}>
+        <ListItem key={item.index}>
           <TextNode node={item} />
-        </li>
+        </ListItem>
       );
     }
   });
 
   if (node.listType === 'NUMBER') {
-    return <ol>{items}</ol>;
+    return <OrderedList>{items}</OrderedList>;
   } else {
-    return <ul>{items}</ul>;
+    return <UnorderedList>{items}</UnorderedList>;
   }
 }

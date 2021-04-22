@@ -1,19 +1,24 @@
-import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
 import { useScrollPercentage } from 'react-scroll-percentage';
+import tw from 'twin.macro';
 import { useAnalytics } from '../../lib/hooks/useAnalytics.js';
 import { renderBody } from '../../lib/utils.js';
 import DonationBlock from '../plugins/DonationBlock';
 import NewsletterBlock from '../plugins/NewsletterBlock';
+
+const ArticleBodyWrapper = tw.section`mb-4`;
+const SectionContainer = tw.div`w-full px-5 items-center flex flex-col flex-nowrap mx-auto max-w-7xl`;
+const PostText = tw.div`flex mt-1 pt-8 mb-12 w-full mx-auto`;
+const PostTextContainer = tw.div`max-w-prose w-full mx-auto`;
+const BlockWrapper = tw.div`max-w-prose w-full`;
+
+const randomBlockNumber = Math.floor(Math.random() * 2);
 
 export default function ArticleBody({ article, ads, isAmp, metadata }) {
   const body = renderBody(article.article_translations, ads, isAmp);
 
   const { trackEvent } = useAnalytics();
 
-  const [randomBlockNumber, setRandomBlockNumber] = useState(
-    Math.floor(Math.random() * 2)
-  );
   const [ref, percentage] = useScrollPercentage();
   const [oneQuarterReached, setOneQuarterReached] = useState(false);
   const [oneHalfReached, setOneHalfReached] = useState(false);
@@ -67,22 +72,24 @@ export default function ArticleBody({ article, ads, isAmp, metadata }) {
   }, [percentage]);
 
   return (
-    <section className="section post__body rich-text" key="body">
-      <div id="articleText" className="section__container" ref={ref}>
-        <div className="post-text">
-          <div>{body}</div>
-        </div>
-        {randomBlockNumber === 0 && (
-          <NewsletterBlock
-            metadata={metadata}
-            headline={article.headline}
-            wrap={false}
-          />
-        )}
-        {randomBlockNumber === 1 && (
-          <DonationBlock metadata={metadata} wrap={false} />
-        )}
-      </div>
-    </section>
+    <ArticleBodyWrapper>
+      <SectionContainer ref={ref}>
+        <PostText>
+          <PostTextContainer>{body}</PostTextContainer>
+        </PostText>
+        <BlockWrapper>
+          {randomBlockNumber === 0 && (
+            <NewsletterBlock
+              metadata={metadata}
+              headline={article.headline}
+              wrap={false}
+            />
+          )}
+          {randomBlockNumber === 1 && (
+            <DonationBlock metadata={metadata} wrap={false} />
+          )}
+        </BlockWrapper>
+      </SectionContainer>
+    </ArticleBodyWrapper>
   );
 }
