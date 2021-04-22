@@ -144,7 +144,7 @@ async function createOrganization(locales, emails) {
   })
 
   if (errors) {
-    console.error("Error creating a record for organization:", errors);
+    console.error("Error creating a record for organization with name " + process.env.ORG_NAME + ":", errors);
   } else {
     organizationID = data.insert_organizations_one.id;
     console.log("Created a record for organization with ID " + organizationID, data);
@@ -165,16 +165,52 @@ async function createOrganization(locales, emails) {
             organization_id: organizationID
           })
         }
-        shared.hasuraUpsertSection({
+        shared.hasuraInsertSections({
           url: apiUrl,
           adminSecret: adminSecret,
-          organization_id: organizationID,
-          title: "News",
-          slug: "news",
-          localeCode: aLocale.code,
-          published: true
+          objects: [
+            {
+              organization_id: organizationID,
+              title: "News",
+              slug: "news",
+              published: true,
+              category_translations: {
+                data: {
+                  locale_code: aLocale.code,
+                  title: "News"
+                }, 
+                on_conflict: {constraint: "category_translations_locale_code_category_id_key", update_columns: "title"}
+              }
+            },
+            {
+              organization_id: organizationID,
+              title: "Politics",
+              slug: "politics",
+              published: false,
+              category_translations: {
+                data: {
+                  locale_code: aLocale.code,
+                  title: "Politics"
+                }, 
+                on_conflict: {constraint: "category_translations_locale_code_category_id_key", update_columns: "title"}
+              }
+            },
+            {
+              organization_id: organizationID,
+              title: "COVID-19",
+              slug: "covid-19",
+              published: false,
+              category_translations: {
+                data: {
+                  locale_code: aLocale.code,
+                  title: "COVID-19"
+                }, 
+                on_conflict: {constraint: "category_translations_locale_code_category_id_key", update_columns: "title"}
+              }
+            },
+          ]
         }).then( (res) => {
-          console.log("Created the general news section:", res);
+          console.log("Created the default sections:", res);
           shared.hasuraUpsertHomepageLayout({
             url: apiUrl,
             adminSecret: adminSecret,
@@ -212,8 +248,8 @@ async function createOrganization(locales, emails) {
 }
 
 program
-    .option('-l, --locales [locales...]', 'specify supported locales')
-    .option('-e, --emails [emails...]', 'specify emails for org members (needed for google drive)')
+    .requiredOption('-l, --locales [locales...]', 'specify supported locales')
+    .requiredOption('-e, --emails [emails...]', 'specify emails for org members (needed for google drive)')
     .description("sets up a new organization in Hasura and Google Drive")
     .action( (opts) => {
       console.log("opts.emails: ", opts.emails);
