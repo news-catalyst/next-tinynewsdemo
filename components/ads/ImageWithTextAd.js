@@ -4,8 +4,8 @@ import tw from 'twin.macro';
 import AdPixel from './AdPixel.js';
 
 const AdWrapper = tw.div`px-8 border-b border-t border-gray-200 my-8 pt-2 pb-6`;
-const AdBrandP = tw.div`text-gray-500 text-sm pt-1 mb-4 text-center`;
-const ContentWrapper = tw.div`flex flex-row flex-wrap items-center`;
+const AdBrandP = tw.div`text-gray-500 text-xs md:text-sm pt-1 mb-4 text-center`;
+const ContentWrapper = tw.div`flex flex-row flex-wrap md:items-center items-start`;
 const AdImgContainer = tw.div`w-1/3 overflow-hidden relative`;
 const AdContentContainer = tw.div`pl-6 flex-1`;
 const AdHeader = tw.h3`text-xl font-bold leading-tight mb-2`;

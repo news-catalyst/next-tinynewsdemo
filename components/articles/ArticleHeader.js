@@ -5,11 +5,12 @@ import tw from 'twin.macro';
 import PublishDate from './PublishDate.js';
 import MainImage from './MainImage.js';
 import { hasuraLocaliseText, renderAuthors } from '../../lib/utils.js';
+import { useMediaQuery } from '../../lib/hooks/useMediaQuery.js';
 
 const SectionContainer = tw.div`flex mx-auto max-w-5xl px-4 items-center flex-col flex-nowrap`;
 const ArticleDescriptor = tw.div`w-full mb-2 text-sm font-bold`;
-const ArticleTitle = tw.h1`text-5xl leading-none mb-3 font-bold w-full`;
-const ArticleDek = tw.p`text-2xl leading-tight mb-3`;
+const ArticleTitle = tw.h1`text-4xl lg:text-5xl leading-none mb-3 font-bold w-full`;
+const ArticleDek = tw.p`text-xl lg:text-2xl leading-tight mb-3`;
 const ArticleFeaturedMedia = tw.div`flex flex-col flex-nowrap items-center w-full`;
 const FeaturedMediaFigure = tw.figure`flex flex-row flex-wrap mb-5 pb-3 w-full border-b border-gray-200`;
 const FeaturedMediaWrapper = tw.div`w-full`;
@@ -19,15 +20,25 @@ const ArticleByline = tw.div`border-b border-gray-200 mb-1 pb-5 w-full flex flex
 const ArticleAuthor = tw.div`flex flex-row flex-nowrap items-center`;
 const ArticleAuthorAvatar = tw.div`overflow-hidden relative w-full rounded-full h-12 w-12 mr-2`;
 const ArticleAuthorMeta = tw.div`text-base`;
-const ArticleCommentCounter = tw.div`bg-center left-20 h-20 pt-3 absolute text-center mt-20 w-20`;
-const CommentCounterNumber = tw.span`block font-bold text-xl leading-none`;
-const CommentCounterLabel = tw.span`text-xs leading-none`;
-const ArticleShareTop = tw.div`flex flex-row flex-nowrap items-center`;
-const ArticleShareWrapper = tw.ul`flex flex-row flex-nowrap items-center`;
+const ArticleCommentCounter = tw.div`bg-no-repeat h-11 pl-6 inline-flex items-center`;
+const CommentCounterNumber = tw.span`font-bold leading-none`;
+const CommentCounterLabel = tw.span`leading-none ml-1`;
+const ArticleShareTop = tw.div`inline-flex flex-row flex-nowrap items-center`;
+const ArticleShareWrapper = tw.ul`inline-flex flex-row flex-nowrap items-center`;
 const ShareItem = tw.li`mr-2`;
-const ShareButton = tw.span`bg-no-repeat bg-center border-gray-200 border flex items-center justify-center w-10 h-10 overflow-hidden rounded-full`;
+const ShareButton = tw.span`bg-no-repeat bg-center border-gray-200 border inline-flex flex items-center justify-center w-10 h-10 pl-6 overflow-hidden rounded-full leading-none text-sm`;
+
+const desktopCommentBackground = {
+  backgroundImage:
+    "url(\"data:image/svg+xml,%3Csvg width='80' height='74' viewBox='0 0 80 74' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M13.8333 56.9367V56.4367H13.3333H0.5V0.833374H79.5V56.4367H36.6667H36.5059L36.3753 56.5304L13.8333 72.693V56.9367Z' stroke='%23D8D8D8'/%3E%3C/svg%3E%0A\")",
+  backgroundSize: '5rem 5rem',
+};
+
+const mobileCommentBackground = {};
 
 export default function ArticleHeader({ article, isAmp, metadata }) {
+  const isDesktop = useMediaQuery(1024);
+
   if (!article) {
     return null;
   }
@@ -133,8 +144,9 @@ export default function ArticleHeader({ article, isAmp, metadata }) {
           <ArticleCommentCounter
             style={{
               backgroundImage:
-                "url(\"data:image/svg+xml,%3Csvg width='80' height='74' viewBox='0 0 80 74' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M13.8333 56.9367V56.4367H13.3333H0.5V0.833374H79.5V56.4367H36.6667H36.5059L36.3753 56.5304L13.8333 72.693V56.9367Z' stroke='%23D8D8D8'/%3E%3C/svg%3E%0A\")",
-              backgroundSize: '5rem 5rem',
+                "url(\"data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M3.83333 15.4373V14.9373H3.33333H0.5V0.5H19.5V14.9373H9.16667H8.99435L8.85862 15.0434L3.83333 18.9741V15.4373Z' fill='black' stroke='black'/%3E%3C/svg%3E%0A\")",
+              backgroundPosition: 'left 1rem',
+              backgroundSize: '0.9375rem 0.9375rem',
             }}
           >
             <CommentCounterNumber>52</CommentCounterNumber>
