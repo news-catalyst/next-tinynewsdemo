@@ -1,3 +1,10 @@
+import tw from 'twin.macro';
+
+const Paragraph = tw.p`text-lg mb-5 leading-relaxed`;
+const H2 = tw.h2`font-bold text-2xl leading-tight mt-10 mb-4`;
+const H3 = tw.h3`font-bold text-xl leading-tight mt-10 mb-4`;
+const Anchor = tw.a`text-black cursor-pointer border-b border-blue-500`;
+
 export default function TextNode({ node }) {
   const processChild = function (child, nextChild) {
     let supportedPunctuation = [',', '.', '?', '!', ';', ':'];
@@ -32,9 +39,9 @@ export default function TextNode({ node }) {
 
     if (child.link) {
       text = (
-        <a key={child.link} href={child.link}>
+        <Anchor key={child.link} href={child.link}>
           {text}
-        </a>
+        </Anchor>
       );
     }
 
@@ -49,15 +56,15 @@ export default function TextNode({ node }) {
   if (node.style == 'TITLE') {
     wrapper = <h1>{children}</h1>;
   } else if (node.style == 'SUBTITLE') {
-    wrapper = <h2>{children}</h2>;
+    wrapper = <H2>{children}</H2>;
   } else if (node.style == 'HEADING_1') {
     wrapper = <h1>{children}</h1>;
   } else if (node.style == 'HEADING_2') {
-    wrapper = <h2>{children}</h2>;
+    wrapper = <H2>{children}</H2>;
   } else if (node.style == 'HEADING_3') {
-    wrapper = <h3>{children}</h3>;
+    wrapper = <H3>{children}</H3>;
   } else if (node.style == 'NORMAL_TEXT') {
-    wrapper = <p>{children}</p>;
+    wrapper = <Paragraph>{children}</Paragraph>;
   } else {
     wrapper = <>{children}</>;
   }

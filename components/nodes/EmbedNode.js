@@ -1,5 +1,8 @@
+import tw from 'twin.macro';
 import { TwitterTweetEmbed } from 'react-twitter-embed';
 import ReactPlayer from 'react-player/lazy';
+
+const EmbedWrapper = tw.div`mb-5`;
 
 export default function EmbedNode({ node, amp }) {
   /* eslint-disable no-case-declarations */
@@ -42,5 +45,5 @@ export default function EmbedNode({ node, amp }) {
   }
 
   /* eslint-enable no-case-declarations */
-  return el;
+  return <EmbedWrapper>{el}</EmbedWrapper>;
 }
