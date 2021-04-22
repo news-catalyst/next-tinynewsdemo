@@ -1,4 +1,8 @@
 import Image from 'next/image';
+import tw from 'twin.macro';
+
+const Figure = tw.figure`my-4`;
+const Figcaption = tw.figcaption`text-gray-500 text-sm pt-1`;
 
 export default function ImageNode({ node, amp }) {
   const image = node.children[0];
@@ -12,15 +16,15 @@ export default function ImageNode({ node, amp }) {
       layout="responsive"
     />
   ) : (
-    <figure className="image" key="image.imageUrl">
+    <Figure key={image.imageUrl}>
       <Image
         src={image.imageUrl}
         alt={image.imageAlt}
         width={710}
         height={(image.height / image.width) * 710}
       />
-      <figcaption>{image.imageAlt}</figcaption>
-    </figure>
+      <Figcaption>{image.imageAlt}</Figcaption>
+    </Figure>
   );
 
   if (node.link) {
