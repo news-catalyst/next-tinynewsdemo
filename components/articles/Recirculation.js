@@ -1,5 +1,11 @@
+import tw from 'twin.macro';
 import ArticleLink from '../homepage/ArticleLink';
 import { hasuraLocaliseText } from '../../lib/utils.js';
+
+const RecirculationSection = tw.section`border-t border-gray-200 pt-12`;
+const RecirculationContainer = tw.div`flex flex-col flex-nowrap max-w-5xl w-full mx-auto px-5`;
+const RecirculationTitle = tw.h3`text-3xl mb-6 font-bold self-end w-full`;
+const RecirculationList = tw.ul`w-full self-end list-outside`;
 
 export default function Recirculation({
   articles,
@@ -16,12 +22,12 @@ export default function Recirculation({
   );
 
   return (
-    <section className="section post__recirculation">
-      <div className="section__container">
-        <h3 className="section__title">
+    <RecirculationSection>
+      <RecirculationContainer>
+        <RecirculationTitle>
           More in {localisedSection} from {siteMetadata.shortName}
-        </h3>
-        <ul className="block__list">
+        </RecirculationTitle>
+        <RecirculationList>
           {articles &&
             articles.map((streamArticle) => (
               <ArticleLink
@@ -31,8 +37,8 @@ export default function Recirculation({
                 isAmp={isAmp}
               />
             ))}
-        </ul>
-      </div>
-    </section>
+        </RecirculationList>
+      </RecirculationContainer>
+    </RecirculationSection>
   );
 }

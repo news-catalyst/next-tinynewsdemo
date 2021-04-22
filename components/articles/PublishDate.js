@@ -1,4 +1,7 @@
 import { renderDate } from '../../lib/utils.js';
+import tw from 'twin.macro';
+
+const ArticlePublishDate = tw.time`text-sm text-gray-500 block mb-4 text-left w-full`;
 
 export default function PublishDate({ article }) {
   let firstPublishedOn = null;
@@ -41,15 +44,15 @@ export default function PublishDate({ article }) {
   }
   return (
     <>
-      <time key="datelines">
+      <ArticlePublishDate>
         {firstPublishedOn !== null && <span>{firstPublishedOn}</span>}
         {lastPublishedOn !== null && (
           <span>
-            <em>Updated</em>&nbsp;
+            &nbsp;—&nbsp;<em>Updated</em>&nbsp;
             {lastPublishedOn}
           </span>
         )}
-      </time>
+      </ArticlePublishDate>
     </>
   );
 }
