@@ -1,8 +1,13 @@
 import Head from 'next/head';
+import tw from 'twin.macro';
 import { signIn, useSession } from 'next-auth/client';
+
+const SignInButton = tw.a`hidden md:flex w-full md:w-auto px-4 py-2 text-right bg-blue-900 hover:bg-blue-500 text-white md:rounded`;
 
 export default function AdminLayout({ children }) {
   const [session, loading] = useSession();
+  console.log('AdminLayout session:', session);
+
   return (
     <>
       <Head>
@@ -15,31 +20,37 @@ export default function AdminLayout({ children }) {
         <script src="https://apis.google.com/js/client:platform.js"></script>
       </Head>
       <main className="container">
-        {false && (
-          <section
-            className="hero is-fullheight"
-            style={{ minHeight: '100vh' }}
-          >
-            <div className="hero-body" style={{ padding: '3rem 3rem' }}>
-              <p className="title">
-                You must be signed in to view the tinycms.
-              </p>
-              <p className="subtitle">
-                <button
-                  className="button is-link"
-                  onClick={() =>
-                    signIn('presspass', {
-                      callbackUrl: 'http://localhost:3000/tinycms/',
-                    })
-                  }
-                >
-                  Sign in
-                </button>
-              </p>
+        {!session && (
+          <section tw="bg-gray-200 text-gray-900 relative">
+            <div tw="min-h-screen bg-right-top bg-cover flex">
+              <div tw="relative container mx-auto p-4 flex items-center z-10">
+                <div>
+                  <div tw="content float-left py-4 px-5 my-5">
+                    <div tw="mb-3 text-2xl md:text-4xl">TinyCMS</div>
+                    <div tw="leading-normal hidden sm:block">
+                      You must be signed in to use these tools.
+                    </div>
+                  </div>
+                  <div tw="clear-left px-5">
+                    <div tw="flex justify-center items-center block sm:inline-block no-underline">
+                      <SignInButton
+                        className="button is-link"
+                        onClick={() =>
+                          signIn('presspass', {
+                            callbackUrl: 'http://localhost:3000/tinycms/',
+                          })
+                        }
+                      >
+                        Sign in
+                      </SignInButton>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </section>
         )}
-        {true && <>{children}</>}
+        {session && <>{children}</>}
       </main>
     </>
   );
