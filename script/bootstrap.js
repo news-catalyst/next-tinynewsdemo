@@ -3,6 +3,8 @@
 const { program } = require('commander');
 program.version('0.0.1');
 
+const fs = require('fs');
+
 const { google } = require("googleapis");
 const credentials = require("./credentials.json");
 const scopes = ["https://www.googleapis.com/auth/drive"];
@@ -135,7 +137,33 @@ async function setupGoogleDrive(emails) {
   })
 }
 
+// sets up env LOCALES for use in next.config.js
+function configureNext(locales) {
+  const currentEnv = require('dotenv').config({ path: '.env.local' })
+
+  if (currentEnv.error) {
+    throw currentEnv.error
+  }
+  
+  let previousLocales = currentEnv.parsed['LOCALES'].split(',');
+  currentEnv.parsed['LOCALES'] = arrayUnique(locales.concat(previousLocales)).join(',');
+
+  var stream = fs.createWriteStream(".new.env.local", {flags:'a'});
+  Object.keys(currentEnv.parsed).map((key) =>{
+    stream.write(`${key}=${currentEnv.parsed[key]}` + "\n");
+  })
+  stream.end();
+
+  fs.rename('.new.env.local', '.env.local', function (err) {
+    if (err) throw err
+    console.log('Successfully configured env with locales: ', currentEnv.parsed['LOCALES']);
+  })
+}
+
 async function createOrganization(locales, emails) {
+
+  configureNext(locales);
+
   const { errors, data } = await shared.hasuraInsertOrganization({
     url: apiUrl,
     adminSecret: adminSecret,
@@ -245,6 +273,18 @@ async function createOrganization(locales, emails) {
     })
     .catch(console.error);
   }
+}
+
+function arrayUnique(array) {
+  var a = array.concat();
+  for(var i=0; i<a.length; ++i) {
+      for(var j=i+1; j<a.length; ++j) {
+          if(a[i] === a[j])
+              a.splice(j--, 1);
+      }
+  }
+
+  return a;
 }
 
 program
