@@ -3,13 +3,13 @@ import Link from 'next/link';
 import Donate from './Donate';
 import tw from 'twin.macro';
 
-export default function GlobalNav({ metadata, sections }) {
-  const NavContainer = tw.header`border-b border-gray-200 flex w-full`;
-  const NavInnerContainer = tw.div`lg:p-5 flex flex-wrap flex-row mx-auto max-w-7xl w-full justify-items-start pt-5`;
-  const NavHeader = tw.h1`text-4xl leading-none font-bold ml-4 lg:ml-0 flex-1 order-1`;
-  const RightNav = tw.nav`lg:text-right lg:flex-1 flex flex-row flex-nowrap mt-5 order-3 lg:order-none overflow-y-hidden overflow-x-scroll w-full flex-grow border-t border-gray-200 lg:border-t-0 lg:w-auto lg:block lg:mt-0`;
-  const SectionLink = tw.a`lg:items-center lg:mr-8 lg:pt-2 inline-flex items-end h-full py-2 px-5 lg:pb-0 lg:px-0`;
+const NavContainer = tw.header`border-b border-gray-200 flex w-full`;
+const NavInnerContainer = tw.div`lg:p-5 flex flex-wrap flex-row mx-auto max-w-7xl w-full justify-items-start pt-5`;
+const NavHeader = tw.h1`text-4xl leading-none font-bold ml-4 lg:ml-0 flex-1 order-1`;
+const RightNav = tw.nav`lg:text-right lg:flex-1 flex flex-row flex-nowrap mt-5 order-3 lg:order-none overflow-y-hidden overflow-x-scroll w-full flex-grow border-t border-gray-200 lg:border-t-0 lg:w-auto lg:block lg:mt-0`;
+const SectionLink = tw.a`lg:items-center lg:mr-8 lg:pt-2 inline-flex items-end h-full py-2 px-5 lg:pb-0 lg:px-0`;
 
+export default function GlobalNav({ metadata, sections }) {
   let sectionLinks;
 
   if (sections && typeof sections[0].title === 'string') {

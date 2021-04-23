@@ -1,15 +1,20 @@
 import { useAmp } from 'next/amp';
+import tw from 'twin.macro';
 import { hasuraGetPage } from '../lib/articles.js';
 import { hasuraLocaliseText } from '../lib/utils';
 import Layout from '../components/Layout';
 import { renderBody } from '../lib/utils.js';
 import DonationOptionsBlock from '../components/plugins/DonationOptionsBlock.js';
-import donateStyles from '../styles/bulma.js';
+import {
+  ArticleTitle,
+  PostTextContainer,
+  PostText,
+} from '../components/common/CommonStyles.js';
+
+const SectionContainer = tw.div`flex flex-col flex-nowrap items-center px-5 mx-auto max-w-7xl w-full`;
 
 export default function Donate({ page, sections, siteMetadata }) {
   const isAmp = useAmp();
-
-  console.log('siteMetadata:', siteMetadata);
 
   // there will only be one translation returned for a given page + locale
   const localisedPage = page.page_translations[0];
@@ -17,24 +22,15 @@ export default function Donate({ page, sections, siteMetadata }) {
 
   return (
     <Layout meta={siteMetadata} sections={sections}>
-      <div className="post">
+      <SectionContainer>
         <article className="container">
-          <section key="title" className="section post__header">
-            <div className="section__container">
-              <div className="post__title">{localisedPage.headline}</div>
-              <div className="post__dek">{body}</div>
-            </div>
-          </section>
-          <section className="section post__body rich-text" key="body">
-            <div id="articleText" className="section__container">
-              <DonationOptionsBlock metadata={siteMetadata} wrap={true} />
-            </div>
-          </section>
+          <ArticleTitle tw="text-center">{localisedPage.headline}</ArticleTitle>
+          <PostText>
+            <PostTextContainer>{body}</PostTextContainer>
+          </PostText>
+          <DonationOptionsBlock metadata={siteMetadata} wrap={true} />
         </article>
-      </div>
-      <style jsx global>
-        {donateStyles}
-      </style>
+      </SectionContainer>
     </Layout>
   );
 }
