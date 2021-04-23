@@ -1,5 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
 import tw from 'twin.macro';
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from 'recharts';
 import { getMetricsData } from '../../../lib/analytics';
 import { formatDate } from '../../../lib/utils';
 
@@ -14,6 +24,7 @@ const DailySessions = (props) => {
     values: [],
   };
   const [reportData, setReportData] = useState(INITIAL_STATE);
+  const [chartData, setChartData] = useState([]);
   const [average, setAverage] = useState(0);
 
   useEffect(() => {
@@ -35,10 +46,17 @@ const DailySessions = (props) => {
 
         let labels = [];
         let values = [];
+        let chartValues = [];
 
         queryResult.forEach((row) => {
           let formattedDate = formatDate(row.dimensions[0]);
           let value = row.metrics[0].values[0];
+
+          let lineDataPoint = {
+            name: formattedDate,
+            sessions: parseInt(value),
+          };
+          chartValues.push(lineDataPoint);
 
           labels.push(formattedDate);
           values.push(value);
@@ -48,6 +66,7 @@ const DailySessions = (props) => {
           labels,
           values,
         });
+        setChartData(chartValues);
 
         if (window.location.hash && window.location.hash === '#daily') {
           if (dailyRef) {
@@ -68,26 +87,14 @@ const DailySessions = (props) => {
         {props.endDate.format('dddd, MMMM Do YYYY')}
       </p>
 
-      <table tw="w-full table-auto">
-        <thead>
-          <tr>
-            <th tw="px-4">Date</th>
-            <th tw="px-4">Sessions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {reportData.labels.map((label, i) => (
-            <tr key={`daily-sessions-row-${i}`}>
-              <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-                {label}
-              </td>
-              <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-                {reportData.values[i]}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <LineChart width={740} height={400} data={chartData}>
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey="name" />
+        <YAxis type="number" domain={[0, 'dataMax']} />
+        <Tooltip />
+        <Legend />
+        <Line type="monotone" dataKey="sessions" stroke="#8884d8" />
+      </LineChart>
     </>
   );
 };
