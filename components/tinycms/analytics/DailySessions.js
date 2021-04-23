@@ -8,7 +8,6 @@ import {
   CartesianGrid,
   Tooltip,
   Legend,
-  ResponsiveContainer,
 } from 'recharts';
 import { getMetricsData } from '../../../lib/analytics';
 import { formatDate } from '../../../lib/utils';
