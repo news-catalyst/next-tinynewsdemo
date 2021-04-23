@@ -17,8 +17,8 @@ export default function MailchimpReport(props) {
   if (!props.reports) console.error('No report passed for mailchimp');
   return (
     <div ref={campaignsRef}>
-      {props.reports.map((report) => (
-        <>
+      {props.reports.map((report, i) => (
+        <div key={`report-${i}`}>
           <SubHeaderContainer>
             <SubHeader>Newsletter Campaign: {report.campaign_title}</SubHeader>
           </SubHeaderContainer>
@@ -135,7 +135,7 @@ export default function MailchimpReport(props) {
               ))}
             </tbody>
           </table>
-        </>
+        </div>
       ))}
     </div>
   );
