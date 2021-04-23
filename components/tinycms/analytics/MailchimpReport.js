@@ -17,8 +17,8 @@ export default function MailchimpReport(props) {
   if (!props.reports) console.error('No report passed for mailchimp');
   return (
     <div ref={campaignsRef}>
-      {props.reports.map((report) => (
-        <>
+      {props.reports.map((report, i) => (
+        <div key={`report-${i}`}>
           <SubHeaderContainer>
             <SubHeader>Newsletter Campaign: {report.campaign_title}</SubHeader>
           </SubHeaderContainer>
@@ -77,7 +77,7 @@ export default function MailchimpReport(props) {
                   Open Rate
                 </td>
                 <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-                  {report.opens.open_rate * 100}%
+                  {Math.round(report.opens.open_rate * 100)}%
                 </td>
               </tr>
               <tr>
@@ -93,7 +93,7 @@ export default function MailchimpReport(props) {
                   Click Rate
                 </td>
                 <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-                  {report.clicks.click_rate * 100}%
+                  {Math.round(report.clicks.click_rate * 100)}%
                 </td>
               </tr>
               <tr>
@@ -101,7 +101,7 @@ export default function MailchimpReport(props) {
                   Subscribe Rate
                 </td>
                 <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-                  {report.list_stats.sub_rate * 100}%
+                  {Math.round(report.list_stats.sub_rate * 100)}%
                 </td>
               </tr>
               <tr>
@@ -109,7 +109,7 @@ export default function MailchimpReport(props) {
                   Unsubscribe Rate
                 </td>
                 <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-                  {report.list_stats.unsub_rate * 100}%
+                  {Math.round(report.list_stats.unsub_rate * 100)}%
                 </td>
               </tr>
               {report.growth.history.map((month) => (
@@ -135,7 +135,7 @@ export default function MailchimpReport(props) {
               ))}
             </tbody>
           </table>
-        </>
+        </div>
       ))}
     </div>
   );

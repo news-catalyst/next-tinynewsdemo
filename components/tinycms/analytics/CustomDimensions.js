@@ -74,7 +74,7 @@ const CustomDimensions = (props) => {
         <tbody>
           {data.labels.length > 0 &&
             data.labels.map((label, i) => (
-              <tr>
+              <tr key={`label-row-${i}`}>
                 <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
                   {label}
                 </td>

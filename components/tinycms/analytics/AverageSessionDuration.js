@@ -1,10 +1,30 @@
 import React, { useState, useEffect, useRef } from 'react';
 import tw from 'twin.macro';
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+} from 'recharts';
 import { getMetricsData } from '../../../lib/analytics';
 import { formatDate } from '../../../lib/utils';
 
 const SubHeaderContainer = tw.div`pt-10 pb-5`;
 const SubHeader = tw.h1`inline-block text-xl font-extrabold text-gray-900 tracking-tight`;
+
+// const CustomTooltip = ({ active, payload, label }) => {
+//   if (active && payload && payload.length) {
+//     return (
+//       <div className="custom-tooltip">
+//         <p className="label">{`${label} : ${payload[0].value} seconds`}</p>
+//       </div>
+//     );
+//   }
+//   return null;
+// };
 
 const AverageSessionDuration = (props) => {
   const timeRef = useRef();
@@ -14,6 +34,7 @@ const AverageSessionDuration = (props) => {
   };
   const [timeReportData, setTimeReportData] = useState(INITIAL_STATE);
   const [timeAverage, setTimeAverage] = useState(0);
+  const [chartData, setChartData] = useState([]);
 
   useEffect(() => {
     const dimensions = ['ga:date'];
@@ -34,6 +55,7 @@ const AverageSessionDuration = (props) => {
 
         let labels = [];
         let values = [];
+        let chartValues = [];
 
         queryResult.forEach((row) => {
           let formattedDate = formatDate(row.dimensions[0]);
@@ -42,6 +64,12 @@ const AverageSessionDuration = (props) => {
 
           labels.push(formattedDate);
           values.push(value);
+
+          let lineDataPoint = {
+            name: formattedDate,
+            duration: parseInt(value),
+          };
+          chartValues.push(lineDataPoint);
         });
 
         setTimeAverage(parseInt(total / rowCount));
@@ -51,6 +79,8 @@ const AverageSessionDuration = (props) => {
           labels,
           values,
         });
+
+        setChartData(chartValues);
 
         if (window.location.hash && window.location.hash === '#time') {
           if (timeRef) {
@@ -73,26 +103,19 @@ const AverageSessionDuration = (props) => {
 
       <p>Overall average: {timeAverage} seconds</p>
 
-      <table tw="w-full table-auto">
-        <thead>
-          <tr>
-            <th tw="px-4">Date</th>
-            <th tw="px-4">Seconds</th>
-          </tr>
-        </thead>
-        <tbody>
-          {timeReportData.labels.map((label, i) => (
-            <tr key={`time-report-${i}`}>
-              <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-                {label}
-              </td>
-              <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-                {Math.round(timeReportData.values[i])}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <LineChart width={740} height={400} data={chartData}>
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey="name" />
+        <YAxis type="number" domain={[0, 'dataMax']} />
+        <Tooltip />
+        <Legend />
+        <Line
+          type="monotone"
+          dataKey="duration"
+          stroke="#8884d8"
+          isAnimationActive={false}
+        />
+      </LineChart>
     </>
   );
 };
