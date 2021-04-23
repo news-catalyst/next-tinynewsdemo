@@ -118,7 +118,7 @@ const DonateClicks = (props) => {
             sortable.map((item, i) => {
               let key = item[0];
               donateRows.push(
-                <tr key={`donate-row-${i}`}>
+                <tr key={`donate-table-row-${i}`}>
                   <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
                     {key}
                   </td>
@@ -189,7 +189,7 @@ const DonateClicks = (props) => {
       let donationsFrequencyRows = [];
       Object.keys(donationsByFrequency).map((key, i) => {
         donationsFrequencyRows.push(
-          <tr key={`donate-row-${i}`}>
+          <tr key={`donate-reading-frequency-row-${i}`}>
             <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
               {key}
             </td>
