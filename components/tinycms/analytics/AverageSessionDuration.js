@@ -109,7 +109,12 @@ const AverageSessionDuration = (props) => {
         <YAxis type="number" domain={[0, 'dataMax']} />
         <Tooltip />
         <Legend />
-        <Line type="monotone" dataKey="duration" stroke="#8884d8" />
+        <Line
+          type="monotone"
+          dataKey="duration"
+          stroke="#8884d8"
+          isAnimationActive={false}
+        />
       </LineChart>
     </>
   );
