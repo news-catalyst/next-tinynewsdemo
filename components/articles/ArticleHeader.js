@@ -6,10 +6,10 @@ import PublishDate from './PublishDate.js';
 import MainImage from './MainImage.js';
 import { hasuraLocaliseText, renderAuthors } from '../../lib/utils.js';
 import { useMediaQuery } from '../../lib/hooks/useMediaQuery.js';
+import { ArticleTitle } from '../common/CommonStyles.js';
 
 const SectionContainer = tw.div`flex mx-auto max-w-5xl px-4 items-center flex-col flex-nowrap`;
 const ArticleDescriptor = tw.div`w-full mb-2 text-sm font-bold`;
-const ArticleTitle = tw.h1`text-4xl lg:text-5xl leading-none mb-3 font-bold w-full`;
 const ArticleDek = tw.p`text-xl lg:text-2xl leading-tight mb-3`;
 const ArticleFeaturedMedia = tw.div`flex flex-col flex-nowrap items-center w-full`;
 const FeaturedMediaFigure = tw.figure`flex flex-row flex-wrap mb-5 pb-3 w-full border-b border-gray-200`;
