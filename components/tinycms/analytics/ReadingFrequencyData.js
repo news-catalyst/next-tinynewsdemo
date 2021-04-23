@@ -36,17 +36,18 @@ const ReadingFrequencyData = (props) => {
 
         var sortable = [];
         queryResult.forEach((row) => {
+          let postsRange = row.dimensions[0].split(' ')[0];
           let label = row.dimensions.join(' - ');
           let value = row.metrics[0].values[0];
 
           labels.push(label);
           values.push(value);
-          sortable.push([value, label]);
+          sortable.push([value, label, parseInt(postsRange)]);
         });
         setFrequencyData({ ...frequencyData, labels, values });
 
         sortable.sort(function (a, b) {
-          return b[0] - a[0];
+          return a[2] - b[2];
         });
 
         sortable.map((item, i) => {
