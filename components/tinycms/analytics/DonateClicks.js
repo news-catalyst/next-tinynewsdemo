@@ -117,26 +117,39 @@ const DonateClicks = (props) => {
 
             sortable.map((item, i) => {
               let key = item[0];
+              let uniqueRowKey = `donate-table-row-${i}`;
               donateRows.push(
-                <tr key={`donate-table-row-${i}`}>
+                <tr key={uniqueRowKey}>
                   <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
                     {key}
                   </td>
                   {Object.keys(collectedData[key]).map((subKey, i) => (
-                    <>
-                      <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                    <React.Fragment key={`table-row-${subKey}-${i}`}>
+                      <td
+                        key={`donate-cell-subkey-${i}`}
+                        tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium"
+                      >
                         {subKey}
                       </td>
-                      <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                      <td
+                        key={`donate-cell-count-${i}`}
+                        tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium"
+                      >
                         {collectedData[key][subKey]['count']}
                       </td>
-                      <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                      <td
+                        key={`donate-cell-pageviews-${i}`}
+                        tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium"
+                      >
                         {collectedData[key][subKey]['pageViews']}
                       </td>
-                      <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                      <td
+                        key={`donate-cell-conversion-${i}`}
+                        tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium"
+                      >
                         {collectedData[key][subKey]['conversion']}%
                       </td>
-                    </>
+                    </React.Fragment>
                   ))}
                 </tr>
               );
@@ -215,7 +228,7 @@ const DonateClicks = (props) => {
 
       <table tw="w-full table-auto">
         <thead>
-          <tr>
+          <tr key="header-row">
             <th tw="px-4">Article</th>
             <th tw="px-4">Label</th>
             <th tw="px-4">Clicks</th>
