@@ -64,7 +64,7 @@ export async function getStaticPaths() {
     for (const locale of page.page_translations) {
       paths.push({
         params: {
-          slug: '/static/' + page.slug,
+          slug: page.slug,
         },
         locale: locale.locale_code,
       });
