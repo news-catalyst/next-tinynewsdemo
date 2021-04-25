@@ -64,7 +64,7 @@ export async function getStaticPaths() {
     for (const locale of page.page_translations) {
       paths.push({
         params: {
-          slug: '/static/' + page.slug,
+          slug: page.slug,
         },
         locale: locale.locale_code,
       });
@@ -100,10 +100,12 @@ export async function getStaticProps({ locale, params }) {
     };
   } else {
     if (!data.page_slug_versions || !data.page_slug_versions[0]) {
+      console.log('No page slug versions found', data);
       return {
         notFound: true,
       };
     }
+
     page = data.page_slug_versions[0].page;
     sections = data.categories;
     siteMetadata = data.site_metadatas[0].site_metadata_translations[0].data;
