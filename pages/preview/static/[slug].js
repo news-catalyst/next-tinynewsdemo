@@ -6,7 +6,7 @@ import {
   hasuraListAllPageSlugsPreview,
 } from '../../../lib/articles.js';
 import { hasuraLocaliseText } from '../../../lib/utils';
-import StaticPage from '../../components/StaticPage';
+import StaticPage from '../../../components/StaticPage';
 
 export default function Static({ page, sections, siteMetadata }) {
   const router = useRouter();
