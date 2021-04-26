@@ -39,7 +39,9 @@ export default function ThankYou({ referrer, page, sections, siteMetadata }) {
   return (
     <Layout meta={siteMetadata} sections={sections}>
       <SectionContainer>
-        <ArticleTitle tw="text-center">{localisedPage.headline}</ArticleTitle>
+        <ArticleTitle meta={siteMetadata} tw="text-center">
+          {localisedPage.headline}
+        </ArticleTitle>
         <PostText>
           <PostTextContainer>{body}</PostTextContainer>
         </PostText>
