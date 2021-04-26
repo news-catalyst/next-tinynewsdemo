@@ -6,10 +6,9 @@ import {
   hasuraListAllPageSlugsPreview,
 } from '../../../lib/articles.js';
 import { hasuraLocaliseText } from '../../../lib/utils';
-import Layout from '../../../components/Layout';
-import { renderBody } from '../../../lib/utils.js';
+import StaticPage from '../../components/StaticPage';
 
-export default function StaticPage({ page, sections, siteMetadata }) {
+export default function Static({ page, sections, siteMetadata }) {
   const router = useRouter();
   const isAmp = useAmp();
 
@@ -23,33 +22,13 @@ export default function StaticPage({ page, sections, siteMetadata }) {
     }
   }, [page]);
 
-  let localisedPage;
-  let body;
-  if (page) {
-    // there will only be one translation returned for a given page + locale
-    localisedPage = page.page_translations[0];
-    body = renderBody(page.page_translations, isAmp);
-  }
-
   return (
-    <Layout meta={siteMetadata} sections={sections}>
-      <div className="post">
-        <article className="container">
-          <section key="title" className="section post__header">
-            <div className="section__container">
-              <div className="post__title">{localisedPage.headline}</div>
-            </div>
-          </section>
-          <section className="section post__body rich-text" key="body">
-            <div id="articleText" className="section__container">
-              <div className="post-text">
-                <div>{body}</div>
-              </div>
-            </div>
-          </section>
-        </article>
-      </div>
-    </Layout>
+    <StaticPage
+      isAmp={isAmp}
+      page={page}
+      sections={sections}
+      siteMetadata={siteMetadata}
+    />
   );
 }
 

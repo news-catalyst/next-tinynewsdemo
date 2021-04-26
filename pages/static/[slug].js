@@ -3,10 +3,9 @@ import { useAmp } from 'next/amp';
 import React from 'react';
 import { hasuraGetPage, hasuraListAllPageSlugs } from '../../lib/articles.js';
 import { hasuraLocaliseText } from '../../lib/utils';
-import Layout from '../../components/Layout';
-import { generatePageUrl, renderBody } from '../../lib/utils.js';
+import StaticPage from '../../components/StaticPage';
 
-export default function StaticPage({ page, sections, siteMetadata }) {
+export default function Static({ page, sections, siteMetadata }) {
   const router = useRouter();
   const isAmp = useAmp();
 
@@ -14,42 +13,17 @@ export default function StaticPage({ page, sections, siteMetadata }) {
     return <div>Loading...</div>;
   }
 
-  let baseUrl = process.env.NEXT_PUBLIC_SITE_URL || siteMetadata['siteUrl'];
-  // this is used for the canonical link tag in the Layout component
-  let canonicalPageUrl = generatePageUrl(baseUrl, page);
-  siteMetadata['canonicalUrl'] = canonicalPageUrl;
-
   if (!page || page === undefined || page === null || page === {}) {
     router.push('/404');
   }
 
-  let localisedPage;
-  let body;
-  if (page) {
-    // there will only be one translation returned for a given page + locale
-    localisedPage = page.page_translations[0];
-    body = renderBody(page.page_translations, isAmp);
-  }
-
   return (
-    <Layout meta={siteMetadata} sections={sections}>
-      <div className="post">
-        <article className="container">
-          <section key="title" className="section post__header">
-            <div className="section__container">
-              <div className="post__title">{localisedPage.headline}</div>
-            </div>
-          </section>
-          <section className="section post__body rich-text" key="body">
-            <div id="articleText" className="section__container">
-              <div className="post-text">
-                <div>{body}</div>
-              </div>
-            </div>
-          </section>
-        </article>
-      </div>
-    </Layout>
+    <StaticPage
+      isAmp={isAmp}
+      page={page}
+      sections={sections}
+      siteMetadata={siteMetadata}
+    />
   );
 }
 
