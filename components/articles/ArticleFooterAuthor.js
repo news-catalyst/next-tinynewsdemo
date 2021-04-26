@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import tw, { styled } from 'twin.macro';
 import { renderAuthor } from '../../lib/utils';
+import Typography from '../common/Typography';
 
 const AuthorWrapper = styled.div(({ last }) => [
   tw`mr-6 mb-5 flex flex-row flex-nowrap items-center`,
@@ -8,11 +9,20 @@ const AuthorWrapper = styled.div(({ last }) => [
 ]);
 
 const AuthorAvatar = tw.div`h-16 w-16 mb-5 overflow-hidden relative rounded-full`;
-const AuthorMeta = tw.div`flex flex-col flex-nowrap flex-grow ml-3 pb-5`;
+const AuthorMeta = styled.div(({ meta }) => ({
+  ...tw`flex flex-col flex-nowrap flex-grow ml-3 pb-5`,
+  fontFamily: Typography[meta.theme].ArticleMetaTop,
+}));
 const AuthorNameWrapper = tw.span`text-base`;
 const AuthorContact = tw.a`text-xs font-normal cursor-pointer bg-no-repeat ml-2 pl-4`;
 
-export default function ArticleFooterAuthor({ author, isAmp, i, last }) {
+export default function ArticleFooterAuthor({
+  author,
+  isAmp,
+  i,
+  last,
+  metadata,
+}) {
   let authorPhoto = author.photoUrl;
   return (
     <AuthorWrapper last={last}>
@@ -36,7 +46,7 @@ export default function ArticleFooterAuthor({ author, isAmp, i, last }) {
         </AuthorAvatar>
       )}
 
-      <AuthorMeta>
+      <AuthorMeta meta={metadata}>
         <div className="header">
           <AuthorNameWrapper>{renderAuthor(author, i)}</AuthorNameWrapper>
           <span className="contact">

@@ -29,7 +29,9 @@ export default function AboutPage({
       <article className="container">
         <SectionContainer>
           <div key="title" className="section post__header">
-            <ArticleTitle>{localisedPage.headline}</ArticleTitle>
+            <ArticleTitle meta={siteMetadata}>
+              {localisedPage.headline}
+            </ArticleTitle>
           </div>
           <div className="section post__body rich-text" key="body">
             <PostText>

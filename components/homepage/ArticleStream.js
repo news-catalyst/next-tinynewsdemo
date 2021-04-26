@@ -27,6 +27,7 @@ export default function ArticleStream({
         article={article}
         amp={isAmp}
         showCategory={showCategory}
+        metadata={metadata}
       />
     );
   };
