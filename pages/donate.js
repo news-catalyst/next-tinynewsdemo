@@ -24,7 +24,9 @@ export default function Donate({ page, sections, siteMetadata }) {
     <Layout meta={siteMetadata} sections={sections}>
       <SectionContainer>
         <article className="container">
-          <ArticleTitle tw="text-center">{localisedPage.headline}</ArticleTitle>
+          <ArticleTitle meta={siteMetadata} tw="text-center">
+            {localisedPage.headline}
+          </ArticleTitle>
           <PostText>
             <PostTextContainer>{body}</PostTextContainer>
           </PostText>

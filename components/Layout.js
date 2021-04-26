@@ -4,9 +4,17 @@ import GlobalFooter from './nav/GlobalFooter.js';
 import { useAmp } from 'next/amp';
 import AmpAnalytics from './amp/AmpAnalytics.js';
 import { hasuraLocaliseText } from '../lib/utils';
-import tw from 'twin.macro';
+import tw, { styled } from 'twin.macro';
 
 const Main = tw.main`pt-8 pb-24`;
+const ThemeWrapper = styled.div(({ meta }) => ({
+  '--headingFont': meta.headingFont,
+  '--bodyFont': meta.bodyFont,
+  fontFamily: meta.bodyFont,
+  'h1,h2,h3,h4,h5,h6': {
+    'font-family': meta.headingFont,
+  },
+}));
 
 export default function Layout({
   children,
@@ -142,6 +150,33 @@ export default function Layout({
           ))}
         <meta property="fb:admins" content="Facebook numeric ID" />
 
+        <link rel="preconnect" href="https://fonts.gstatic.com" />
+
+        {meta.theme === 'styleone' && (
+          <link
+            href="https://fonts.googleapis.com/css2?family=Domine:wght@400;700&family=Libre+Franklin:ital,wght@0,400;0,700;1,400;1,700&display=swap"
+            rel="stylesheet"
+          />
+        )}
+        {meta.theme === 'styletwo' && (
+          <link
+            href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,400;0,700;1,400;1,700&family=Source+Serif+Pro:ital,wght@0,400;0,700;1,400;1,700&display=swap"
+            rel="stylesheet"
+          />
+        )}
+        {meta.theme === 'stylethree' && (
+          <link
+            href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,400;0,700;1,400;1,700&family=Roboto:ital,wght@0,400;0,700;1,400;1,700&display=swap"
+            rel="stylesheet"
+          />
+        )}
+        {meta.theme === 'stylefour' && (
+          <link
+            href="https://fonts.googleapis.com/css2?family=Arbutus+Slab&family=Mulish:ital,wght@0,400;0,700;1,400;1,700&display=swap"
+            rel="stylesheet"
+          />
+        )}
+
         {isAmp && (
           <script
             async
@@ -151,7 +186,7 @@ export default function Layout({
           />
         )}
       </Head>
-      <div className={meta.theme + ' ' + meta.color}>
+      <ThemeWrapper meta={meta}>
         {renderNav && <GlobalNav metadata={meta} sections={sections} />}
         <Main>
           {isAmp && (
@@ -177,7 +212,7 @@ export default function Layout({
           {children}
         </Main>
         <GlobalFooter metadata={metaValues} />
-      </div>
+      </ThemeWrapper>
     </>
   );
 }
