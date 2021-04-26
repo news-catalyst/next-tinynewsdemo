@@ -1,6 +1,10 @@
-import tw from 'twin.macro';
+import tw, { styled } from 'twin.macro';
+import Typography from './Typography';
 
-export const ArticleTitle = tw.h1`text-4xl lg:text-5xl leading-none mb-3 font-bold w-full`;
+export const ArticleTitle = styled.h1(({ meta }) => ({
+  ...tw`text-4xl lg:text-5xl leading-none mb-3 font-bold w-full`,
+  fontFamily: Typography[meta.theme].ArticleTitle,
+}));
 export const PostText = tw.div`flex mt-1 pt-8 mb-12 w-full mx-auto`;
 export const PostTextContainer = tw.div`max-w-prose w-full mx-auto`;
 export const Paragraph = tw.p`text-lg mb-5 leading-relaxed`;

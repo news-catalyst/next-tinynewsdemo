@@ -36,7 +36,11 @@ export default function Article({
             ads={ads}
             metadata={siteMetadata}
           />
-          <ArticleFooter article={article} isAmp={isAmp} />
+          <ArticleFooter
+            article={article}
+            isAmp={isAmp}
+            metadata={siteMetadata}
+          />
         </section>
         <Comments article={article} isAmp={isAmp} />
         <Recirculation
