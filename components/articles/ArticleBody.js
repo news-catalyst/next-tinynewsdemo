@@ -5,11 +5,10 @@ import { useAnalytics } from '../../lib/hooks/useAnalytics.js';
 import { renderBody } from '../../lib/utils.js';
 import DonationBlock from '../plugins/DonationBlock';
 import NewsletterBlock from '../plugins/NewsletterBlock';
+import { PostTextContainer, PostText } from '../common/CommonStyles.js';
 
 const ArticleBodyWrapper = tw.section`mb-4`;
 const SectionContainer = tw.div`w-full px-5 items-center flex flex-col flex-nowrap mx-auto max-w-7xl`;
-const PostText = tw.div`flex mt-1 pt-8 mb-12 w-full mx-auto`;
-const PostTextContainer = tw.div`max-w-prose w-full mx-auto`;
 const BlockWrapper = tw.div`max-w-prose w-full`;
 
 const randomBlockNumber = Math.floor(Math.random() * 2);
