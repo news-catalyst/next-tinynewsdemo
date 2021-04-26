@@ -1,23 +1,38 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import tw from 'twin.macro';
+import tw, { styled } from 'twin.macro';
 import {
   renderDate,
   renderAuthors,
   hasuraLocaliseText,
 } from '../../lib/utils.js';
+import Typography from '../common/Typography';
 
 const Asset = tw.li`border-b border-gray-200 items-start content-start flex flex-row flex-nowrap mb-6 pb-6`;
 const AssetMetaContainer = tw.div`flex-1 w-full relative`;
 const AssetDescriptor = tw.span`block leading-4 mb-2`;
-const AssetDescriptorLink = tw.a`font-bold text-xs text-black`;
-const AssetTitle = tw.h4`font-bold text-xl leading-5 tracking-tight`;
-const AssetByline = tw.div`text-xs mt-3 flex flex-row flex-wrap items-baseline`;
+const AssetDescriptorLink = styled.a(({ meta }) => ({
+  ...tw`font-bold text-xs text-black`,
+  fontFamily: Typography[meta.theme].ArticleDescriptor,
+}));
+const AssetTitle = styled.h4(({ meta }) => ({
+  ...tw`font-bold text-xl leading-5 tracking-tight`,
+  fontFamily: Typography[meta.theme].ArticleTitle,
+}));
+const AssetByline = styled.div(({ meta }) => ({
+  ...tw`text-xs mt-3 flex flex-row flex-wrap items-baseline`,
+  fontFamily: Typography[meta.theme].ArticleMetaTop,
+}));
 const AssetTime = tw.time`text-gray-500 block mb-4`;
 const AssetThumbnail = tw.figure`ml-5 order-2 w-1/3`;
 
-export default function ArticleLink({ article, isAmp, showCategory }) {
+export default function ArticleLink({
+  article,
+  isAmp,
+  showCategory,
+  metadata,
+}) {
   let mainImage = null;
   let mainImageNode;
 
@@ -66,18 +81,21 @@ export default function ArticleLink({ article, isAmp, showCategory }) {
   ) {
     firstPublishedAt = article.article_translations[0].first_published_at;
   }
+  console.log(metadata);
 
   return (
     <Asset>
       <AssetMetaContainer>
-        <AssetDescriptor>
+        <AssetDescriptor meta={metadata}>
           {article.category && showCategory && (
             <Link key={categoryTitle} href={`/${article.category.slug}`}>
-              <AssetDescriptorLink>{categoryTitle}</AssetDescriptorLink>
+              <AssetDescriptorLink meta={metadata}>
+                {categoryTitle}
+              </AssetDescriptorLink>
             </Link>
           )}
         </AssetDescriptor>
-        <AssetTitle>
+        <AssetTitle meta={metadata}>
           {headline && (
             <Link
               href="/articles/[category]/[slug]"
@@ -87,7 +105,7 @@ export default function ArticleLink({ article, isAmp, showCategory }) {
             </Link>
           )}
         </AssetTitle>
-        <AssetByline>
+        <AssetByline meta={metadata}>
           By&nbsp;{renderAuthors(article)}&nbsp;
           <AssetTime>
             <span>{renderDate(firstPublishedAt, false)}</span>

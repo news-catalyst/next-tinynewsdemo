@@ -1,9 +1,13 @@
 import { renderDate } from '../../lib/utils.js';
-import tw from 'twin.macro';
+import tw, { styled } from 'twin.macro';
+import Typography from '../common/Typography';
 
-const ArticlePublishDate = tw.time`text-sm text-gray-500 block mb-4 text-left w-full`;
+const ArticlePublishDate = styled.time(({ meta }) => ({
+  ...tw`text-sm text-gray-500 block mb-4 text-left w-full`,
+  fontFamily: Typography[meta.theme].PublishDate,
+}));
 
-export default function PublishDate({ article }) {
+export default function PublishDate({ article, meta }) {
   let firstPublishedOn = null;
   let lastPublishedOn = null;
   if (
@@ -44,7 +48,7 @@ export default function PublishDate({ article }) {
   }
   return (
     <>
-      <ArticlePublishDate>
+      <ArticlePublishDate meta={meta}>
         {firstPublishedOn !== null && <span>{firstPublishedOn}</span>}
         {lastPublishedOn !== null && (
           <span>

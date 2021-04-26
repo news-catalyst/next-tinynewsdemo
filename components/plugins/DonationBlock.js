@@ -10,6 +10,7 @@ export default function DonationBlock({ metadata, wrap = true }) {
         style={{ backgroundColor: '#fff', color: '#000' }}
         label={metadata.supportCTA}
         url={metadata.supportURL}
+        metadata={metadata}
       />
     </div>
   );
