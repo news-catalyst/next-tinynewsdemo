@@ -7,10 +7,10 @@ import { determineTextColor } from '../../lib/utils';
 import Colors from '../common/Colors';
 
 const Group = tw.div`relative`;
-const Input = tw.input`block w-full border-b border-gray-500 bg-black! opacity-20`;
+const Input = tw.input`block w-full border-b border-gray-500 bg-black opacity-20`;
 const Bar = tw.div``;
 const Submit = styled.input(({ meta }) => ({
-  ...tw`block absolute cursor-pointer rounded-full font-bold leading-none w-8 h-8 pl-2 right-2 z-10 p-0!`,
+  ...tw`block absolute cursor-pointer rounded-full font-bold leading-none w-8 h-8 pl-2 right-2 z-10`,
   backgroundColor:
     meta.color === 'custom'
       ? determineTextColor(meta.primaryColor)
