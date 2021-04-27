@@ -8,13 +8,15 @@ import {
   hasuraLocaliseText,
 } from '../../lib/utils.js';
 import Typography from '../common/Typography';
+import Colors from '../common/Colors';
 
 const Asset = tw.li`border-b border-gray-200 items-start content-start flex flex-row flex-nowrap mb-6 pb-6`;
 const AssetMetaContainer = tw.div`flex-1 w-full relative`;
 const AssetDescriptor = tw.span`block leading-4 mb-2`;
 const AssetDescriptorLink = styled.a(({ meta }) => ({
-  ...tw`font-bold text-xs text-black`,
+  ...tw`font-bold text-xs`,
   fontFamily: Typography[meta.theme].ArticleDescriptor,
+  color: Colors[meta.color].DescriptorColor,
 }));
 const AssetTitle = styled.h4(({ meta }) => ({
   ...tw`font-bold text-xl leading-5 tracking-tight`,

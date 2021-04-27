@@ -7,11 +7,13 @@ import MainImage from './MainImage.js';
 import { hasuraLocaliseText, renderAuthors } from '../../lib/utils.js';
 import { ArticleTitle } from '../common/CommonStyles.js';
 import Typography from '../common/Typography';
+import Colors from '../common/Colors';
 
 const SectionContainer = tw.div`flex mx-auto max-w-5xl px-4 items-center flex-col flex-nowrap`;
 const ArticleDescriptor = styled.span(({ meta }) => ({
   ...tw`w-full mb-2 text-sm font-bold`,
   fontFamily: Typography[meta.theme].ArticleDescriptor,
+  color: Colors[meta.color].DescriptorColor,
 }));
 const ArticleDek = styled.p(({ meta }) => ({
   ...tw`text-xl lg:text-2xl leading-tight mb-3`,
