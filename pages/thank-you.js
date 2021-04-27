@@ -1,10 +1,18 @@
 import { useAmp } from 'next/amp';
+import tw from 'twin.macro';
 import { hasuraGetPage } from '../lib/articles.js';
 import { useAnalytics } from '../lib/hooks/useAnalytics.js';
 import { hasuraLocaliseText } from '../lib/utils';
 import Layout from '../components/Layout';
 import NewsletterBlock from '../components/plugins/NewsletterBlock';
 import { renderBody } from '../lib/utils.js';
+import {
+  ArticleTitle,
+  PostTextContainer,
+  PostText,
+} from '../components/common/CommonStyles.js';
+
+const SectionContainer = tw.div`flex flex-col flex-nowrap items-center px-5 mx-auto max-w-7xl w-full`;
 
 export default function ThankYou({ referrer, page, sections, siteMetadata }) {
   const isAmp = useAmp();
@@ -30,21 +38,19 @@ export default function ThankYou({ referrer, page, sections, siteMetadata }) {
 
   return (
     <Layout meta={siteMetadata} sections={sections}>
-      <div className="post">
-        <section key="title" className="section post__header">
-          <div className="section__container">
-            <div className="post__title">{localisedPage.headline}</div>
-            <div className="post__dek">{body}</div>
-            <section className="section post__body rich-text" key="body">
-              <NewsletterBlock
-                metadata={siteMetadata}
-                headline={localisedPage.headline}
-                wrap={false}
-              />
-            </section>
-          </div>
-        </section>
-      </div>
+      <SectionContainer>
+        <ArticleTitle meta={siteMetadata} tw="text-center">
+          {localisedPage.headline}
+        </ArticleTitle>
+        <PostText>
+          <PostTextContainer>{body}</PostTextContainer>
+        </PostText>
+        <NewsletterBlock
+          metadata={siteMetadata}
+          headline={localisedPage.headline}
+          wrap={false}
+        />
+      </SectionContainer>
     </Layout>
   );
 }

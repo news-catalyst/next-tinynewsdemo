@@ -1,9 +1,13 @@
 import Link from 'next/link';
-import tw from 'twin.macro';
+import tw, { styled } from 'twin.macro';
 import { hasuraLocaliseText } from '../../lib/utils';
 import ArticleFooterAuthor from './ArticleFooterAuthor';
+import Typography from '../common/Typography';
 
-const ArticleMetaBottom = tw.section`flex flex-col flex-nowrap justify-between`;
+const ArticleMetaBottom = styled.section(({ meta }) => ({
+  ...tw`flex flex-col flex-nowrap justify-between`,
+  fontFamily: Typography[meta.theme].ArticleMetaTop,
+}));
 const SectionContainer = tw.div`flex mx-auto flex-col flex-nowrap items-center px-5 max-w-7xl w-full`;
 const ArticleByline = tw.div`max-w-prose w-full flex flex-col flex-nowrap border-t border-b border-gray-200 mb-4 pt-6`;
 const ArticleTags = tw.div`max-w-prose w-full flex flex-row flex-nowrap mb-8`;
@@ -12,7 +16,7 @@ const TagsList = tw.ul`flex flex-row flex-wrap pb-6 mb-2 list-outside w-full`;
 const TagsListItem = tw.li`mb-4 ml-4`;
 const TagsListLink = tw.a`text-gray-700 uppercase text-xs bg-gray-200 rounded flex justify-center p-3 cursor-pointer hover:bg-blue-500 hover:text-white`;
 
-export default function ArticleFooter({ article, isAmp }) {
+export default function ArticleFooter({ article, isAmp, metadata }) {
   let tagLinks;
   if (article.tag_articles) {
     tagLinks = article.tag_articles.map((tag_article) => (
@@ -26,7 +30,7 @@ export default function ArticleFooter({ article, isAmp }) {
     ));
   }
   return (
-    <ArticleMetaBottom>
+    <ArticleMetaBottom meta={metadata}>
       <SectionContainer>
         <ArticleByline>
           {article.author_articles &&
@@ -37,6 +41,7 @@ export default function ArticleFooter({ article, isAmp }) {
                 isAmp={isAmp}
                 i={i}
                 last={i === article.author_articles.length - 1}
+                metadata={metadata}
               />
             ))}
         </ArticleByline>

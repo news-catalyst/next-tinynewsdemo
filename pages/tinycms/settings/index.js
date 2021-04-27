@@ -20,6 +20,25 @@ const SettingsContainer = tw.div`min-w-0 w-full flex-auto lg:static lg:max-h-ful
 const SaveContainer = tw.div`absolute bottom-0 h-16 w-16`;
 const SaveButton = tw.button`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded align-bottom`;
 
+const typographyOptions = {
+  styleone: {
+    headingFont: 'Libre Franklin',
+    bodyFont: 'Domine',
+  },
+  styletwo: {
+    headingFont: 'Source Serif Pro',
+    bodyFont: 'Source Sans Pro',
+  },
+  stylethree: {
+    headingFont: 'Roboto Condensed',
+    bodyFont: 'Roboto',
+  },
+  stylefour: {
+    headingFont: 'Arbutus Slab',
+    bodyFont: 'Mulish',
+  },
+};
+
 export default function Settings({
   apiUrl,
   apiToken,
@@ -62,6 +81,15 @@ export default function Settings({
       setParsedData((prevState) => ({
         ...prevState,
         [name]: value,
+      }));
+    }
+
+    // select typography
+    if (name === 'theme') {
+      setParsedData((prevState) => ({
+        ...prevState,
+        headingFont: typographyOptions[value].headingFont,
+        bodyFont: typographyOptions[value].bodyFont,
       }));
     }
   };

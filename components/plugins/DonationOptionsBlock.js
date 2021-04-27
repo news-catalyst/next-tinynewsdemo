@@ -1,4 +1,15 @@
+import tw from 'twin.macro';
 import { generateMonkeypodUrl } from '../../lib/utils';
+
+const OptionsBlockContainer = tw.div`md:grid md:grid-cols-3 md:gap-4`;
+const Card = tw.div`rounded overflow-hidden shadow-lg w-full border-gray-200 border my-8 md:my-0`;
+const CardHeader = tw.header`border-b border-gray-200 pb-4 mb-4`;
+const CardHeading = tw.h4`text-2xl leading-none font-bold text-center px-8 pt-4`;
+const CardContent = tw.div`p-8`;
+const CardDonationAmount = tw.h5`text-4xl font-bold text-center leading-none mb-4`;
+const CardDonationDescription = tw.p`text-lg`;
+const CardFooter = tw.footer`border-t border-gray-200 mt-4`;
+const DonateFooterLink = tw.a`items-center justify-center flex text-blue-500 font-bold w-full hover:bg-blue-500 hover:text-white py-4`;
 
 export default function DonationOptionsBlock({ metadata, wrap = true }) {
   if (metadata.donationOptions === '' || metadata.donationOptions === null) {
@@ -13,29 +24,25 @@ export default function DonationOptionsBlock({ metadata, wrap = true }) {
   }
 
   const block = parsedOptions.map((option, i) => (
-    <div className="column is-one-third is-centered">
-      <div className="card" key={`donate-option-${i}`}>
-        <header className="card-header">
-          <h2 className="card-header-title is-centered">{option.name}</h2>
-        </header>
-        <div className="card-content">
-          <div className="content">
-            <h3 className="title">${option.amount}</h3>
-
-            <p className="content">Monthly subscription amount.</p>
-          </div>
+    <Card key={`donate-option-${i}`}>
+      <CardHeader>
+        <CardHeading>{option.name}</CardHeading>
+      </CardHeader>
+      <CardContent>
+        <div className="content">
+          <CardDonationAmount>${option.amount}</CardDonationAmount>
+          <CardDonationDescription>
+            Monthly subscription amount.
+          </CardDonationDescription>
         </div>
-        <footer className="card-footer">
-          <a
-            className="card-footer-item"
-            href={generateMonkeypodUrl(option.uuid)}
-          >
-            Donate
-          </a>
-        </footer>
-      </div>
-    </div>
+      </CardContent>
+      <CardFooter>
+        <DonateFooterLink href={generateMonkeypodUrl(option.uuid)}>
+          Donate
+        </DonateFooterLink>
+      </CardFooter>
+    </Card>
   ));
 
-  return wrap ? <div className="columns">{block}</div> : block;
+  return wrap ? <OptionsBlockContainer>{block}</OptionsBlockContainer> : block;
 }
