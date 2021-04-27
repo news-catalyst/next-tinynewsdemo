@@ -6,7 +6,6 @@ import {
 } from '../../lib/utils.js';
 import tw, { styled } from 'twin.macro';
 import Typography from '../common/Typography';
-import Colors from '../common/Colors';
 
 const fontSizes = {
   xs: '0.75rem',
@@ -30,7 +29,6 @@ const AssetDescriptorLink = styled.a(({ big, meta }) => ({
   fontSize: big ? fontSizes['sm'] : fontSizes['xs'],
   lineHeight: big ? lineHeights['sm'] : lineHeights['xs'],
   fontFamily: Typography[meta.theme].ArticleDescriptor,
-  color: Colors[meta.color].DescriptorColor,
 }));
 
 const AssetExcerpt = styled.p(({ big, meta }) => ({

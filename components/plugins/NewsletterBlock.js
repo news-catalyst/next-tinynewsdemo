@@ -1,11 +1,18 @@
 import tw, { styled } from 'twin.macro';
 import MailchimpSubscribe from './MailchimpSubscribe';
 import Colors from '../common/Colors';
+import { determineTextColor } from '../../lib/utils';
 
 const NewsletterWrapper = styled.div(({ meta }) => ({
   ...tw`bg-gray-200 mb-8 pt-7 px-4 pb-8 md:sticky md:top-10`,
-  backgroundColor: Colors[meta.color].PromoBlockBackground,
-  color: Colors[meta.color].PromoBlockText,
+  backgroundColor:
+    meta.color === 'custom'
+      ? meta.primaryColor
+      : Colors[meta.color].PromoBlockBackground,
+  color:
+    meta.color === 'custom'
+      ? determineTextColor(meta.primaryColor)
+      : Colors[meta.color].PromoBlockText,
 }));
 
 const NewsletterHed = tw.h4`text-2xl font-bold tracking-tight leading-5 mb-2`;

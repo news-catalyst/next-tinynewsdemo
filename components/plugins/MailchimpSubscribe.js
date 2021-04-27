@@ -3,6 +3,7 @@ import tw, { styled } from 'twin.macro';
 import MailchimpSubscribe from 'react-mailchimp-subscribe';
 import { useAnalytics } from '../../lib/hooks/useAnalytics.js';
 import { useInView } from 'react-intersection-observer';
+import { determineTextColor } from '../../lib/utils';
 import Colors from '../common/Colors';
 
 const Group = tw.div`relative`;
@@ -10,8 +11,14 @@ const Input = tw.input`block w-full border-b border-gray-500 bg-black! opacity-2
 const Bar = tw.div``;
 const Submit = styled.input(({ meta }) => ({
   ...tw`block absolute cursor-pointer rounded-full font-bold leading-none w-8 h-8 pl-2 right-2 z-10 p-0!`,
-  backgroundColor: Colors[meta.color].PromoBlockCTABackground,
-  color: Colors[meta.color].PromoBlockCTAText,
+  backgroundColor:
+    meta.color === 'custom'
+      ? determineTextColor(meta.primaryColor)
+      : Colors[meta.color].PromoBlockCTABackground,
+  color:
+    meta.color === 'custom'
+      ? meta.primaryColor
+      : Colors[meta.color].PromoBlockCTAText,
 }));
 
 // you can get this url from the embed code form action
