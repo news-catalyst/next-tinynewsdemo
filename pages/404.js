@@ -57,7 +57,6 @@ export async function getStaticProps({ locale }) {
     console.log('an error occurred');
     throw errors;
   } else {
-    console.log(data);
     sections = data.categories;
     siteMetadata = data.site_metadatas[0].site_metadata_translations[0].data;
     for (var i = 0; i < sections.length; i++) {

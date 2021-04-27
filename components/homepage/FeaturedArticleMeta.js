@@ -5,29 +5,54 @@ import {
   hasuraLocaliseText,
 } from '../../lib/utils.js';
 import tw, { styled } from 'twin.macro';
+import Typography from '../common/Typography';
 
-const AssetDescriptor = tw.span`block leading-4 mb-2 font-bold`;
-const AssetDescriptorLink = styled.a(({ big }) => [
-  tw`text-black cursor-pointer`,
-  big ? tw`text-sm` : tw`text-xs`,
-]);
+const fontSizes = {
+  xs: '0.75rem',
+  sm: '0.875rem',
+  base: '1rem',
+  lg: '1.125rem',
+  fourxl: '2.25rem',
+};
 
-const AssetExcerpt = styled.p(({ big }) => [
-  tw`leading-6 text-gray-700 mt-3`,
-  big ? tw`text-lg` : tw`text-sm`,
-]);
+const lineHeights = {
+  xs: '1rem',
+  sm: '1.25rem',
+  base: '1.5rem',
+  lg: '1.75rem',
+  fourxl: '2.5rem',
+};
 
-const AssetByline = styled.p(({ big }) => [
-  tw`mt-3 flex flex-row flex-wrap items-baseline`,
-  big ? tw`text-base` : tw`text-xs`,
-]);
+const AssetDescriptor = tw.h5`block leading-4 mb-2 font-bold`;
+const AssetDescriptorLink = styled.a(({ big, meta }) => ({
+  ...tw`text-black cursor-pointer`,
+  fontSize: big ? fontSizes['sm'] : fontSizes['xs'],
+  lineHeight: big ? lineHeights['sm'] : lineHeights['xs'],
+  fontFamily: Typography[meta.theme].ArticleDescriptor,
+}));
 
-const AssetTitle = styled.h4(({ big }) => [
-  tw`font-bold tracking-tight leading-6`,
-  big ? tw`text-4xl` : tw`text-lg`,
-]);
+const AssetExcerpt = styled.p(({ big, meta }) => ({
+  ...tw`leading-6 text-gray-700 mt-3`,
+  fontSize: big ? fontSizes['lg'] : fontSizes['sm'],
+  lineHeight: big ? lineHeights['lg'] : lineHeights['sm'],
+  fontFamily: Typography[meta.theme].ArticleDek,
+}));
 
-export default function FeaturedArticleMeta({ article, big }) {
+const AssetByline = styled.p(({ big, meta }) => ({
+  ...tw`mt-3 flex flex-row flex-wrap items-baseline`,
+  fontSize: big ? fontSizes['base'] : fontSizes['xs'],
+  lineHeight: big ? lineHeights['base'] : lineHeights['xs'],
+  fontFamily: Typography[meta.theme].ArticleMetaTop,
+}));
+
+const AssetTitle = styled.h4(({ big, meta }) => ({
+  ...tw`font-bold tracking-tight leading-6`,
+  fontSize: big ? fontSizes['fourxl'] : fontSizes['lg'],
+  lineHeight: big ? lineHeights['fourxl'] : lineHeights['lg'],
+  fontFamily: Typography[meta.theme].ArticleTitle,
+}));
+
+export default function FeaturedArticleMeta({ article, big, metadata }) {
   if (article === null || article === undefined || !article) {
     console.log('FeaturedArticleMeta missing article:', article);
   }
@@ -58,19 +83,23 @@ export default function FeaturedArticleMeta({ article, big }) {
       {article.category && (
         <AssetDescriptor>
           <Link href={`/${article.category.slug}`}>
-            <AssetDescriptorLink>{categoryTitle}</AssetDescriptorLink>
+            <AssetDescriptorLink big={big} meta={metadata}>
+              {categoryTitle}
+            </AssetDescriptorLink>
           </Link>
         </AssetDescriptor>
       )}
       {article.category && (
-        <AssetTitle big={big}>
+        <AssetTitle big={big} meta={metadata}>
           <Link href={`/articles/${article.category.slug}/${article.slug}`}>
             <a className="featured">{headline}</a>
           </Link>
         </AssetTitle>
       )}
-      <AssetExcerpt big={big}>{searchDescription}</AssetExcerpt>
-      <AssetByline big={big}>
+      <AssetExcerpt big={big} meta={metadata}>
+        {searchDescription}
+      </AssetExcerpt>
+      <AssetByline big={big} meta={metadata}>
         By&nbsp;{renderAuthors(article)}&nbsp;
         {firstPublishedOn && (
           <time>

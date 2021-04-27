@@ -35,6 +35,7 @@ export default function Recirculation({
                 article={streamArticle}
                 showCategory={false}
                 isAmp={isAmp}
+                metadata={siteMetadata}
               />
             ))}
         </RecirculationList>

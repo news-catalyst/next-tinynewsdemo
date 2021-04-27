@@ -1,9 +1,5 @@
 import tw from 'twin.macro';
-
-const Paragraph = tw.p`text-lg mb-5 leading-relaxed`;
-const H2 = tw.h2`font-bold text-2xl leading-tight mt-10 mb-4`;
-const H3 = tw.h3`font-bold text-xl leading-tight mt-10 mb-4`;
-const Anchor = tw.a`text-black cursor-pointer border-b border-blue-500`;
+import { Paragraph, H1, H2, H3, Anchor } from '../common/CommonStyles';
 
 export default function TextNode({ node }) {
   const processChild = function (child, nextChild) {
@@ -54,11 +50,11 @@ export default function TextNode({ node }) {
   let wrapper = null;
 
   if (node.style == 'TITLE') {
-    wrapper = <h1>{children}</h1>;
+    wrapper = <H1>{children}</H1>;
   } else if (node.style == 'SUBTITLE') {
     wrapper = <H2>{children}</H2>;
   } else if (node.style == 'HEADING_1') {
-    wrapper = <h1>{children}</h1>;
+    wrapper = <H1>{children}</H1>;
   } else if (node.style == 'HEADING_2') {
     wrapper = <H2>{children}</H2>;
   } else if (node.style == 'HEADING_3') {

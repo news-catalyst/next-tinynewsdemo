@@ -1,21 +1,30 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import React from 'react';
-import tw from 'twin.macro';
+import tw, { styled } from 'twin.macro';
 import PublishDate from './PublishDate.js';
 import MainImage from './MainImage.js';
 import { hasuraLocaliseText, renderAuthors } from '../../lib/utils.js';
-import { useMediaQuery } from '../../lib/hooks/useMediaQuery.js';
+import { ArticleTitle } from '../common/CommonStyles.js';
+import Typography from '../common/Typography';
 
 const SectionContainer = tw.div`flex mx-auto max-w-5xl px-4 items-center flex-col flex-nowrap`;
-const ArticleDescriptor = tw.div`w-full mb-2 text-sm font-bold`;
-const ArticleTitle = tw.h1`text-4xl lg:text-5xl leading-none mb-3 font-bold w-full`;
-const ArticleDek = tw.p`text-xl lg:text-2xl leading-tight mb-3`;
+const ArticleDescriptor = styled.span(({ meta }) => ({
+  ...tw`w-full mb-2 text-sm font-bold`,
+  fontFamily: Typography[meta.theme].ArticleDescriptor,
+}));
+const ArticleDek = styled.p(({ meta }) => ({
+  ...tw`text-xl lg:text-2xl leading-tight mb-3`,
+  fontFamily: Typography[meta.theme].ArticleDek,
+}));
 const ArticleFeaturedMedia = tw.div`flex flex-col flex-nowrap items-center w-full`;
 const FeaturedMediaFigure = tw.figure`flex flex-row flex-wrap mb-5 pb-3 w-full border-b border-gray-200`;
 const FeaturedMediaWrapper = tw.div`w-full`;
 const FeaturedMediaCaption = tw.figcaption`text-sm text-gray-700 pt-1 inline-block`;
-const ArticleMetaTop = tw.div`flex flex-row flex-wrap lg:flex-nowrap justify-between w-full`;
+const ArticleMetaTop = styled.div(({ meta }) => ({
+  ...tw`flex flex-row flex-wrap lg:flex-nowrap justify-between w-full`,
+  fontFamily: Typography[meta.theme].ArticleMetaTop,
+}));
 const ArticleByline = tw.div`border-b border-gray-200 mb-1 pb-5 w-full flex flex-row flex-wrap lg:border-b-0`;
 const ArticleAuthor = tw.div`flex flex-row flex-nowrap items-center`;
 const ArticleAuthorAvatar = tw.div`overflow-hidden relative w-full rounded-full h-12 w-12 mr-2`;
@@ -28,17 +37,7 @@ const ArticleShareWrapper = tw.ul`inline-flex flex-row flex-nowrap items-center`
 const ShareItem = tw.li`mr-2`;
 const ShareButton = tw.span`bg-no-repeat bg-center border-gray-200 border inline-flex flex items-center justify-center w-10 h-10 pl-6 overflow-hidden rounded-full leading-none text-sm`;
 
-const desktopCommentBackground = {
-  backgroundImage:
-    "url(\"data:image/svg+xml,%3Csvg width='80' height='74' viewBox='0 0 80 74' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M13.8333 56.9367V56.4367H13.3333H0.5V0.833374H79.5V56.4367H36.6667H36.5059L36.3753 56.5304L13.8333 72.693V56.9367Z' stroke='%23D8D8D8'/%3E%3C/svg%3E%0A\")",
-  backgroundSize: '5rem 5rem',
-};
-
-const mobileCommentBackground = {};
-
 export default function ArticleHeader({ article, isAmp, metadata }) {
-  const isDesktop = useMediaQuery(1024);
-
   if (!article) {
     return null;
   }
@@ -93,14 +92,14 @@ export default function ArticleHeader({ article, isAmp, metadata }) {
   return (
     <section key="title" className="section post__header">
       <SectionContainer>
-        <ArticleDescriptor>
+        <ArticleDescriptor meta={metadata}>
           <Link key={categoryTitle} href={`/${article.category.slug}`}>
             <a>{categoryTitle}</a>
           </Link>
         </ArticleDescriptor>
-        <ArticleTitle>{headline}</ArticleTitle>
-        <ArticleDek>{searchDescription}</ArticleDek>
-        <PublishDate article={article} />
+        <ArticleTitle meta={metadata}>{headline}</ArticleTitle>
+        <ArticleDek meta={metadata}>{searchDescription}</ArticleDek>
+        <PublishDate article={article} meta={metadata} />
         <ArticleFeaturedMedia>
           <FeaturedMediaFigure>
             <FeaturedMediaWrapper>
@@ -111,7 +110,7 @@ export default function ArticleHeader({ article, isAmp, metadata }) {
             </FeaturedMediaCaption>
           </FeaturedMediaFigure>
         </ArticleFeaturedMedia>
-        <ArticleMetaTop>
+        <ArticleMetaTop meta={metadata}>
           <ArticleByline>
             <ArticleAuthor>
               <ArticleAuthorAvatar>

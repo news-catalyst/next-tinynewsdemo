@@ -27,6 +27,7 @@ export default function BigFeaturedStory(props) {
           key={props.featuredArticle.slug}
           article={props.featuredArticle}
           big={true}
+          metadata={props.metadata}
         />
       </AssetMetaContainer>
       <AssetThumbnailContainer

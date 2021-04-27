@@ -1,10 +1,14 @@
 import Link from 'next/link';
 import { useAnalytics } from '../../lib/hooks/useAnalytics.js';
-import tw from 'twin.macro';
+import tw, { styled } from 'twin.macro';
+import Typography from '../common/Typography';
 
-const DonateLink = tw.a`items-center bg-black text-white flex font-bold leading-4 pt-0.5 px-5 ml-5 order-2 lg:ml-0 lg:order-none`;
+const DonateLink = styled.a(({ meta }) => ({
+  ...tw`items-center bg-black text-white flex font-bold leading-4 pt-0.5 px-5 ml-5 order-2 lg:ml-0 lg:order-none`,
+  fontFamily: Typography[meta.theme].DonateLink,
+}));
 
-const Donate = ({ label, url }) => {
+const Donate = ({ label, url, metadata }) => {
   const { trackEvent } = useAnalytics();
 
   const trackClick = () => {
@@ -23,6 +27,7 @@ const Donate = ({ label, url }) => {
         }}
         className="site__cta button donate"
         onClick={trackClick}
+        meta={metadata}
       >
         {label}
       </DonateLink>
