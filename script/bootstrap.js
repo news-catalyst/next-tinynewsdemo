@@ -256,8 +256,7 @@ program
       console.log("opts.emails: ", opts.emails);
       console.log("opts.locales: ", opts.locales);
 
-      // createOrganization(opts.locales, opts.emails);
-
+      createOrganization(opts.locales, opts.emails);
       vercel.createProject();
     });
 
