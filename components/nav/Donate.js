@@ -1,14 +1,21 @@
 import Link from 'next/link';
 import { useAnalytics } from '../../lib/hooks/useAnalytics.js';
 import tw, { styled } from 'twin.macro';
+import { determineTextColor } from '../../lib/utils';
 import Typography from '../common/Typography';
 import Colors from '../common/Colors';
 
 const DonateLink = styled.a(({ meta }) => ({
   ...tw`items-center flex font-bold leading-none px-5 ml-5 order-2 lg:ml-0 lg:order-none`,
   fontFamily: Typography[meta.theme].DonateLink,
-  color: Colors[meta.color].CTAText,
-  backgroundColor: Colors[meta.color].CTABackground,
+  backgroundColor:
+    meta.color === 'custom'
+      ? meta.primaryColor
+      : Colors[meta.color].CTABackground,
+  color:
+    meta.color === 'custom'
+      ? determineTextColor(meta.primaryColor)
+      : Colors[meta.color].CTAText,
 }));
 
 const Donate = ({ label, url, metadata }) => {

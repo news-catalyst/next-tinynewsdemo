@@ -2,18 +2,25 @@ import Link from 'next/link';
 import tw, { styled } from 'twin.macro';
 import Typography from '../common/Typography';
 import Colors from '../common/Colors';
+import { determineTextColor } from '../../lib/utils';
 
 const SectionLayout = styled.section(({ meta }) => ({
   ...tw`pt-8 px-5 mb-16`,
-  backgroundColor: Colors[meta.color].HomepagePromoBackground,
-  color: Colors[meta.color].HomepagePromoText,
+  backgroundColor:
+    meta.color === 'custom'
+      ? meta.secondaryColor
+      : Colors[meta.color].HomepagePromoBackground,
+  color:
+    meta.color === 'custom'
+      ? determineTextColor(meta.secondaryColor)
+      : Colors[meta.color].HomepagePromoText,
 }));
 
 const SectionContainer = tw.div`px-5 flex flex-row flex-wrap mx-auto w-full max-w-7xl`;
 const Block = tw.div`w-full md:w-1/2 mb-8`;
 const LeftBlock = tw(
   Block
-)`border-b md:border-r md:border-b-0 pb-8 mb-8 md:pb-0 md:mb-0 border-gray-200 md:pr-4`;
+)`border-b md:border-r md:border-b-0 pb-8 mb-8 md:pb-0 border-gray-200 md:pr-4`;
 const RightBlock = tw(Block)`md:pl-4`;
 const BlockHeader = styled.h2(({ meta }) => ({
   ...tw`text-xl font-bold mb-5`,
@@ -26,13 +33,22 @@ const BlockDek = styled.p(({ meta }) => ({
 const BlockCTA = styled.a(({ meta }) => ({
   ...tw`text-base font-bold cursor-pointer`,
   fontFamily: Typography[meta.theme].HomepagePromoBlockCTA,
-  color: Colors[meta.color].CTABackground,
+  color:
+    meta.color === 'custom'
+      ? meta.primaryColor
+      : Colors[meta.color].CTABackground,
 }));
 const DonateBlockCTA = styled.a(({ meta }) => ({
   ...tw`inline-flex text-base font-bold cursor-pointer items-center px-5`,
   fontFamily: Typography[meta.theme].HomepagePromoBlockCTA,
-  color: Colors[meta.color].CTAText,
-  backgroundColor: Colors[meta.color].CTABackground,
+  color:
+    meta.color === 'custom'
+      ? determineTextColor(meta.primaryColor)
+      : Colors[meta.color].CTAText,
+  backgroundColor:
+    meta.color === 'custom'
+      ? meta.primaryColor
+      : Colors[meta.color].CTABackground,
 }));
 
 export default function HomepagePromoBar({ metadata }) {
