@@ -1,18 +1,23 @@
 import { useEffect } from 'react';
-import tw from 'twin.macro';
+import tw, { styled } from 'twin.macro';
 import MailchimpSubscribe from 'react-mailchimp-subscribe';
 import { useAnalytics } from '../../lib/hooks/useAnalytics.js';
 import { useInView } from 'react-intersection-observer';
+import Colors from '../common/Colors';
 
 const Group = tw.div`relative`;
-const Input = tw.input`block w-full border-b border-gray-500 bg-transparent`;
+const Input = tw.input`block w-full border-b border-gray-500 bg-black! opacity-20`;
 const Bar = tw.div``;
-const Submit = tw.input`block bg-black absolute text-white cursor-pointer rounded-full font-bold leading-4 w-8 h-8 pl-2 right-2 z-10`;
+const Submit = styled.input(({ meta }) => ({
+  ...tw`block absolute cursor-pointer rounded-full font-bold leading-none w-8 h-8 pl-2 right-2 z-10 p-0!`,
+  backgroundColor: Colors[meta.color].PromoBlockCTABackground,
+  color: Colors[meta.color].PromoBlockCTAText,
+}));
 
 // you can get this url from the embed code form action
 const url = process.env.NEXT_PUBLIC_MAILCHIMP_SUBSCRIBE_URL;
 
-const CustomForm = ({ status, message, onValidated }) => {
+const CustomForm = ({ status, message, onValidated, metadata }) => {
   let email, name;
   const submit = () =>
     email &&
@@ -59,13 +64,14 @@ const CustomForm = ({ status, message, onValidated }) => {
             fontSize: '18px',
             padding: '10px 10px 10px 5px',
           }}
+          meta={metadata}
         />
       </Group>
     </div>
   );
 };
 
-const Newsletter = ({ articleTitle }) => {
+const Newsletter = ({ articleTitle, metadata }) => {
   const { trackEvent } = useAnalytics();
   const [ref, inView] = useInView({ triggerOnce: true });
   useEffect(() => {
@@ -96,6 +102,7 @@ const Newsletter = ({ articleTitle }) => {
                 non_interaction: false,
               });
             }}
+            metadata={metadata}
           />
         )}
       />
