@@ -9,7 +9,7 @@ import { PostTextContainer, PostText } from '../common/CommonStyles.js';
 
 const ArticleBodyWrapper = tw.section`mb-4`;
 const SectionContainer = tw.div`w-full px-5 items-center flex flex-col flex-nowrap mx-auto max-w-7xl`;
-const BlockWrapper = tw.div`max-w-prose w-full`;
+const BlockWrapper = tw.div`max-w-2xl w-full`;
 
 const randomBlockNumber = Math.floor(Math.random() * 2);
 
