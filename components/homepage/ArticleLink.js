@@ -13,7 +13,7 @@ const Asset = tw.li`border-b border-gray-200 items-start content-start flex flex
 const AssetMetaContainer = tw.div`flex-1 w-full relative`;
 const AssetDescriptor = tw.span`block leading-4 mb-2`;
 const AssetDescriptorLink = styled.a(({ meta }) => ({
-  ...tw`font-bold text-xs text-black`,
+  ...tw`font-bold text-xs`,
   fontFamily: Typography[meta.theme].ArticleDescriptor,
 }));
 const AssetTitle = styled.h4(({ meta }) => ({
