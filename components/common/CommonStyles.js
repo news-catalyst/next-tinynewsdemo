@@ -6,7 +6,7 @@ export const ArticleTitle = styled.h1(({ meta }) => ({
   fontFamily: Typography[meta.theme].ArticleTitle,
 }));
 export const PostText = tw.div`flex mt-1 pt-8 mb-12 w-full mx-auto`;
-export const PostTextContainer = tw.div`max-w-prose w-full mx-auto`;
+export const PostTextContainer = tw.div`max-w-2xl w-full mx-auto`;
 export const Paragraph = tw.p`text-lg mb-5 leading-relaxed`;
 export const H1 = tw.h1`font-bold text-3xl lg:text-4xl leading-tight mt-10 mb-4`;
 export const H2 = tw.h2`font-bold text-2xl leading-tight mt-10 mb-4`;
