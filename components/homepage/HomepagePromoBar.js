@@ -17,11 +17,14 @@ const SectionLayout = styled.section(({ meta }) => ({
 }));
 
 const SectionContainer = tw.div`px-5 flex flex-row flex-wrap mx-auto w-full max-w-7xl`;
-const Block = tw.div`w-full md:w-1/2 mb-8`;
+const Block = styled.div(() => ({
+  ...tw`w-full md:w-1/2 mb-8`,
+  padding: '0 calc(100% / 6 * 0.25)',
+}));
 const LeftBlock = tw(
   Block
 )`border-b md:border-r md:border-b-0 pb-8 mb-8 md:pb-0 border-gray-200 md:pr-4`;
-const RightBlock = tw(Block)`md:pl-4`;
+const RightBlock = tw(Block)``;
 const BlockHeader = styled.h2(({ meta }) => ({
   ...tw`text-xl font-bold mb-5`,
   fontFamily: Typography[meta.theme].HomepagePromoBlockHeader,
