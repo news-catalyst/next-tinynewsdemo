@@ -6,6 +6,32 @@ const BASE_URL = "https://api.vercel.com/v6";
 const ORG_NAME= process.env.ORG_SLUG;
 const GIT_REPO = process.env.GIT_REPO;
 
+async function getProjects() {
+  let requestHeaders = {
+    "Authorization": `Bearer ${TOKEN}`,
+    "Content-Type": "application/json"
+  }
+
+  let teamsUrl = "https://api.vercel.com/v1/teams";
+  let teamsResult = await fetch(teamsUrl, {
+    method: "GET",
+    headers: requestHeaders,
+  })
+  let teamsData = await teamsResult.json();
+  let ncTeam = teamsData.teams.find((data) => data.slug === 'news-catalyst');
+
+  let teamId = ncTeam.id;
+  console.log("news catalyst team id: ", teamId)
+
+  let url = "https://api.vercel.com/v4/projects/?teamId=" + teamId;
+  let result = await fetch(url, {
+    method: "GET",
+    headers: requestHeaders,
+  })
+  let projectsData = await result.json();
+  projectsData.projects.map((project) => console.log(project));
+}
+
 async function createProject() {
 
   let projectId;
@@ -30,16 +56,16 @@ async function createProject() {
 
   let url = BASE_URL + "/projects?teamId=" + teamId;
 
-  console.log("creating vercel project with name:", ORG_NAME)
+  console.log("Creating Vercel project with name:", ORG_NAME)
 
   let requestBody = JSON.stringify({
-        name: ORG_NAME,
-        gitRepository: {
-          type: 'github',
-          repo: GIT_REPO,
-        }
-      });
-      console.log(requestBody);
+    name: ORG_NAME,
+    gitRepository: {
+      type: 'github',
+      repo: GIT_REPO,
+    }
+  });
+
   try {
     const response = await fetch(url, {
       method: 'POST',
@@ -48,7 +74,6 @@ async function createProject() {
     });
 
     const data = await response.json();
-    console.log(" - vercel create project result:", data);
 
     if (data && data.error) {
       console.error("[" + data.error.code + "] Unable to create Vercel project because: " + data.error.message);
@@ -58,7 +83,7 @@ async function createProject() {
 
       projectId = data.id;
 
-      let projectUrl = BASE_URL + "/projects/" + projectId + "?teamId=" + teamId;
+      let projectUrl = BASE_URL + "/projects/" + projectId + "/?teamId=" + teamId;
       const updateResponse = await fetch(projectUrl, {
         method: 'PATCH',
         headers: requestHeaders,
@@ -70,14 +95,18 @@ async function createProject() {
       });
       const updateResponseData = await updateResponse.json();
       if (updateResponseData.error) {
-        console.error("Failed configuring the project for nextjs with a custom build command: ", updateResponseData.error);
+        console.error("Failed configuring the project for nextjs with a custom build command: ", updateResponseData.error, projectUrl);
       }
-      let envUrl = projectUrl + "/env?teamId=" + teamId;
+
+      let envUrl = "https://api.vercel.com/v7/projects/" + projectId + "/env/?teamId=" + teamId;
 
       const currentEnv = require('dotenv').config({ path: '.env.local' });
       let envData = currentEnv.parsed;
 
-      const envRequestPromises = Object.keys(envData).map(key => fetch(envUrl, {
+      let results = [];
+      let envSuccess = true;
+      for(const key of Object.keys(envData)) {
+        const result = await fetch(envUrl, {
           method: 'POST',
           headers: requestHeaders,
           body: JSON.stringify({
@@ -89,13 +118,22 @@ async function createProject() {
               "preview"
             ]
           })
-        })
-      );
-      
-      const envResults = await Promise.all(envRequestPromises);
-
+        });
+        if (!result.ok) {
+          envSuccess = false;
+          result.json().then((data) => console.log(" - failed creating env var:", key, data));
+        } else {
+          console.log(" - configured env var:", key)
+        }
+        results.push(result);
+      }
       console.log();
-      console.log("Done! The project is configured and all environment variables from .env.local are setup. To deploy, push to the master branch on github");
+      console.log("✅ Done! The project is created in Vercel. To deploy, push to the master branch on github");
+      if (envSuccess) {
+        console.log("✅ All env vars are configured in Vercel from .env.local btw");
+      } else {
+        console.error("🤬 Unfortunately we ran into a problem configuring the env vars, though. Either try this again or set them yourself in the web admin.")
+      }
     }
   } catch (error) {
     console.log("error creating project in vercel:", error);
@@ -103,5 +141,6 @@ async function createProject() {
 }
 
 module.exports = {
-  createProject
+  createProject,
+  getProjects
 }
