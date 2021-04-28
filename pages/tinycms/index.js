@@ -39,7 +39,7 @@ const cardContent = [
   {
     title: 'Settings',
     description: 'Customize the look, feel and language of your website.',
-    href: '/tinycms/metadata',
+    href: '/tinycms/settings',
     icon: <CogIcon />,
   },
   {
