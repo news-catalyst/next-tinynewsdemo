@@ -34,6 +34,9 @@ const PageViews = (props) => {
               if (/\?/.test(label)) {
                 label = label.split('?')[0];
               }
+              if (/\/en-US\//.test(label)) {
+                label = label.replace('/en-US', '');
+              }
               let value = parseInt(row.metrics[0].values[0]);
 
               if (pv[label]) {
