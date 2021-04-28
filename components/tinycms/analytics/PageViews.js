@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import tw from 'twin.macro';
 import { getMetricsData } from '../../../lib/analytics';
 
@@ -7,11 +7,6 @@ const SubHeader = tw.h1`inline-block text-xl font-extrabold text-gray-900 tracki
 
 const PageViews = (props) => {
   const pageviewsRef = useRef();
-  const INITIAL_STATE = {
-    labels: [],
-    values: [],
-  };
-  const [pageViewReportData, setPageViewReportData] = useState(INITIAL_STATE);
 
   let pv = {};
 
@@ -31,33 +26,28 @@ const PageViews = (props) => {
       .then((response) => {
         const queryResult = response.result.reports[0].data.rows;
 
-        let labels = [];
-        let values = [];
-
         if (queryResult) {
           queryResult.forEach((row) => {
             let label = row.dimensions[0];
 
             if (!/tinycms/.test(label)) {
-              console.log('skip tinycms');
-
-              if (label === '/') {
-                label += ' (homepage)';
+              if (/\?/.test(label)) {
+                label = label.split('?')[0];
               }
-              let value = row.metrics[0].values[0];
+              if (/\/en-US\//.test(label)) {
+                label = label.replace('/en-US', '');
+              }
+              let value = parseInt(row.metrics[0].values[0]);
 
-              labels.push(label);
-              values.push(value);
-              pv[label] = value;
+              if (pv[label]) {
+                pv[label] += value;
+              } else {
+                pv[label] = value;
+              }
             }
           });
         }
 
-        setPageViewReportData({
-          ...pageViewReportData,
-          labels,
-          values,
-        });
         props.setPageViews(pv);
 
         if (window.location.hash && window.location.hash === '#pageviews') {
@@ -87,13 +77,13 @@ const PageViews = (props) => {
           </tr>
         </thead>
         <tbody>
-          {pageViewReportData.labels.map((label, i) => (
+          {Object.keys(props.pageViews).map((label, i) => (
             <tr key={`page-view-row-${i}`}>
               <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
                 {label}
               </td>
               <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-                {pageViewReportData.values[i]}
+                {props.pageViews[label]}
               </td>
             </tr>
           ))}
