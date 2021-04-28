@@ -6,7 +6,6 @@ const SignInButton = tw.a`hidden md:flex w-full md:w-auto px-4 py-2 text-right b
 
 export default function AdminLayout({ children }) {
   const [session, loading] = useSession();
-  console.log('AdminLayout session:', session);
 
   return (
     <>
