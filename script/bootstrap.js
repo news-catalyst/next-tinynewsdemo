@@ -10,6 +10,7 @@ const auth = new google.auth.JWT(credentials.client_email, null, credentials.pri
 const drive = google.drive({ version: "v3", auth });
 
 const shared = require("./shared");
+const vercel = require("./vercel");
 
 require('dotenv').config({ path: '.env.local' })
 
@@ -256,6 +257,7 @@ program
       console.log("opts.locales: ", opts.locales);
 
       createOrganization(opts.locales, opts.emails);
+      vercel.createProject();
     });
 
 program.parse(process.argv);
