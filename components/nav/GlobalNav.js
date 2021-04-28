@@ -38,11 +38,7 @@ export default function GlobalNav({ metadata, sections }) {
           </a>
         </Link>
         <RightNav>{sectionLinks}</RightNav>
-        <Donate
-          label={metadata.supportCTA}
-          url={metadata.supportURL}
-          metadata={metadata}
-        />
+        <Donate label={metadata.supportCTA} metadata={metadata} />
       </NavInnerContainer>
     </NavContainer>
   );
