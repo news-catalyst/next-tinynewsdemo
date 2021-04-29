@@ -8,6 +8,7 @@ import AnalyticsNav from '../../../components/tinycms/analytics/AnalyticsNav';
 import AnalyticsSidebar from '../../../components/tinycms/analytics/AnalyticsSidebar';
 import YesterdaysSessions from '../../../components/tinycms/analytics/YesterdaysSessions';
 import YesterdaysNewsletter from '../../../components/tinycms/analytics/YesterdaysNewsletter';
+import YesterdaysTopTen from '../../../components/tinycms/analytics/YesterdaysTopTen';
 
 const Container = tw.div`flex flex-wrap -mx-2 mb-8`;
 const Sidebar = tw.div`h-full h-screen bg-gray-100 md:w-1/5 lg:w-1/5 px-2 mb-4`;
@@ -108,6 +109,7 @@ export default function AnalyticsIndex(props) {
               <AnalyticsSidebar title="Yesterday">
                 <YesterdaysSessions viewID={viewID} />
                 <YesterdaysNewsletter subscriberCount={props.newSubscribers} />
+                <YesterdaysTopTen viewID={viewID} />
               </AnalyticsSidebar>
               <AnalyticsSidebar title="About this Data">
                 <p tw="p-2">
