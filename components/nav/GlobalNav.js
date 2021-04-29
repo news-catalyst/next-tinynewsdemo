@@ -19,7 +19,9 @@ export default function GlobalNav({ metadata, sections }) {
   if (sections && typeof sections[0].title === 'string') {
     sectionLinks = sections.slice(0, 4).map((section) => (
       <Link key={`navbar-${section.slug}`} href={`/${section.slug}`}>
-        <SectionLink meta={metadata}>{section.title}</SectionLink>
+        <SectionLink href={`/${section.slug}`} meta={metadata}>
+          {section.title}
+        </SectionLink>
       </Link>
     ));
   }
@@ -38,11 +40,7 @@ export default function GlobalNav({ metadata, sections }) {
           </a>
         </Link>
         <RightNav>{sectionLinks}</RightNav>
-        <Donate
-          label={metadata.supportCTA}
-          url={metadata.supportURL}
-          metadata={metadata}
-        />
+        <Donate label={metadata.supportCTA} metadata={metadata} />
       </NavInnerContainer>
     </NavContainer>
   );
