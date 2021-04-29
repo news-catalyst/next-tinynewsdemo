@@ -18,7 +18,7 @@ const DonateLink = styled.a(({ meta }) => ({
       : Colors[meta.color].CTAText,
 }));
 
-const Donate = ({ label, url, metadata }) => {
+const Donate = ({ label, metadata }) => {
   const { trackEvent } = useAnalytics();
 
   const trackClick = () => {
@@ -30,7 +30,7 @@ const Donate = ({ label, url, metadata }) => {
     });
   };
   return (
-    <Link href={url}>
+    <Link href="/donate">
       <DonateLink
         style={{
           minHeight: '2.375rem',
@@ -38,6 +38,7 @@ const Donate = ({ label, url, metadata }) => {
         className="site__cta button donate"
         onClick={trackClick}
         meta={metadata}
+        href="/donate"
       >
         {label}
       </DonateLink>
