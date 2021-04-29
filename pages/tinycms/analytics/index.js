@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import tw from 'twin.macro';
+import mailchimp from '@mailchimp/mailchimp_marketing';
+import { addDays } from 'date-fns';
 import AdminLayout from '../../../components/AdminLayout';
 import AdminNav from '../../../components/nav/AdminNav';
 import AnalyticsNav from '../../../components/tinycms/analytics/AnalyticsNav';
 import AnalyticsSidebar from '../../../components/tinycms/analytics/AnalyticsSidebar';
+import YesterdaysSessions from '../../../components/tinycms/analytics/YesterdaysSessions';
+import YesterdaysNewsletter from '../../../components/tinycms/analytics/YesterdaysNewsletter';
 
 const Container = tw.div`flex flex-wrap -mx-2 mb-8`;
 const Sidebar = tw.div`h-full h-screen bg-gray-100 md:w-1/5 lg:w-1/5 px-2 mb-4`;
@@ -16,6 +20,9 @@ const Header = tw.h1`inline-block text-3xl font-extrabold text-gray-900 tracking
 
 export default function AnalyticsIndex(props) {
   const [isSignedIn, setIsSignedIn] = useState(false);
+  const [viewID, setViewID] = useState(
+    process.env.NEXT_PUBLIC_ANALYTICS_VIEW_ID
+  );
 
   const initAuth = () => {
     return window.gapi.auth2.init({
@@ -98,6 +105,10 @@ export default function AnalyticsIndex(props) {
               <HeaderContainer>
                 <Header>Analytics</Header>
               </HeaderContainer>
+              <AnalyticsSidebar title="Yesterday">
+                <YesterdaysSessions viewID={viewID} />
+                <YesterdaysNewsletter subscriberCount={props.newSubscribers} />
+              </AnalyticsSidebar>
               <AnalyticsSidebar title="About this Data">
                 <p tw="p-2">
                   tinycms analytics data is meant to reveal insights about how
@@ -151,11 +162,40 @@ export default function AnalyticsIndex(props) {
 export async function getServerSideProps(context) {
   const clientID = process.env.ANALYTICS_CLIENT_ID;
   const clientSecret = process.env.ANALYTICS_CLIENT_SECRET;
+  const mailchimpApiKey = process.env.MAILCHIMP_API_KEY;
+  const mailchimpServer = process.env.MAILCHIMP_SERVER_PREFIX;
+
+  // I tried doing this call in the component's useEffect, but Mailchimp's API
+  // throws a CORS error when I try that :(
+  mailchimp.setConfig({
+    apiKey: mailchimpApiKey,
+    server: mailchimpServer,
+  });
+
+  // tally the number of subscribers for all lists in the last 24 hours
+  // so far in our example setup there is only one list, and I'm not sure if
+  // we'll be dealing with multiple lists, so I thought I'd iterate just in case.
+  let newSubscribers = 0;
+  let sinceDate = addDays(new Date(), -1); // yesterday
+  mailchimp.lists.getAllLists().then((response) => {
+    response.lists.map((list) => {
+      mailchimp.lists
+        .getListMembersInfo(list.id, {
+          status: 'subscribed',
+          sinceTimestampOpt: sinceDate,
+        })
+        .then((res) => {
+          newSubscribers += res.total_items;
+        })
+        .catch((error) => console.error(error.message));
+    });
+  });
 
   return {
     props: {
       clientID: clientID,
       clientSecret: clientSecret,
+      newSubscribers: newSubscribers,
     },
   };
 }
