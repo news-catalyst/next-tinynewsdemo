@@ -6,9 +6,9 @@ import AdminLayout from '../../../components/AdminLayout';
 import AdminNav from '../../../components/nav/AdminNav';
 import AnalyticsNav from '../../../components/tinycms/analytics/AnalyticsNav';
 import AnalyticsSidebar from '../../../components/tinycms/analytics/AnalyticsSidebar';
-import YesterdaysSessions from '../../../components/tinycms/analytics/YesterdaysSessions';
-import YesterdaysNewsletter from '../../../components/tinycms/analytics/YesterdaysNewsletter';
 import YesterdaysTopTen from '../../../components/tinycms/analytics/YesterdaysTopTen';
+import { getMetricsData } from '../../../lib/analytics';
+import moment from 'moment';
 
 const Container = tw.div`flex flex-wrap -mx-2 mb-8`;
 const Sidebar = tw.div`h-full h-screen bg-gray-100 md:w-1/5 lg:w-1/5 px-2 mb-4`;
@@ -20,6 +20,10 @@ const HeaderContainer = tw.div`pt-5 pb-10`;
 const Header = tw.h1`inline-block text-3xl font-extrabold text-gray-900 tracking-tight`;
 
 export default function AnalyticsIndex(props) {
+  const [startDate, setStartDate] = useState(moment().subtract(1, 'days'));
+  const [endDate, setEndDate] = useState(moment());
+  const [sessionCount, setSessionCount] = useState(null);
+
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [viewID, setViewID] = useState(
     process.env.NEXT_PUBLIC_ANALYTICS_VIEW_ID
@@ -85,6 +89,20 @@ export default function AnalyticsIndex(props) {
   };
 
   useEffect(() => {
+    const sessionsMetric = 'ga:sessions';
+    const dimensions = ['ga:date'];
+
+    getMetricsData(viewID, startDate, endDate, [sessionsMetric], dimensions)
+      .then((response) => {
+        const queryResult = response.result.reports[0].data.rows;
+
+        // should be one row returned
+        queryResult.forEach((row) => {
+          let value = row.metrics[0].values[0];
+          setSessionCount(value);
+        });
+      })
+      .catch((error) => console.error(error));
     window.gapi.load('auth2', init); //(1)
   });
 
@@ -107,8 +125,26 @@ export default function AnalyticsIndex(props) {
                 <Header>Analytics</Header>
               </HeaderContainer>
               <AnalyticsSidebar title="Yesterday">
-                <YesterdaysSessions viewID={viewID} />
-                <YesterdaysNewsletter subscriberCount={props.newSubscribers} />
+                <table tw="w-full table-auto">
+                  <tbody>
+                    <tr>
+                      <th tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                        Sessions
+                      </th>
+                      <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                        {sessionCount}
+                      </td>
+                    </tr>
+                    <tr>
+                      <th tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                        New Subscribers
+                      </th>
+                      <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                        {props.newSubscribers}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
                 <YesterdaysTopTen viewID={viewID} />
               </AnalyticsSidebar>
               <AnalyticsSidebar title="About this Data">
