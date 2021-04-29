@@ -89,22 +89,25 @@ export default function AnalyticsIndex(props) {
   };
 
   useEffect(() => {
-    const sessionsMetric = 'ga:sessions';
-    const dimensions = ['ga:date'];
-
-    getMetricsData(viewID, startDate, endDate, [sessionsMetric], dimensions)
-      .then((response) => {
-        const queryResult = response.result.reports[0].data.rows;
-
-        // should be one row returned
-        queryResult.forEach((row) => {
-          let value = row.metrics[0].values[0];
-          setSessionCount(value);
-        });
-      })
-      .catch((error) => console.error(error));
     window.gapi.load('auth2', init); //(1)
-  });
+
+    if (isSignedIn) {
+      const sessionsMetric = 'ga:sessions';
+      const dimensions = ['ga:date'];
+
+      getMetricsData(viewID, startDate, endDate, [sessionsMetric], dimensions)
+        .then((response) => {
+          const queryResult = response.result.reports[0].data.rows;
+
+          // should be one row returned
+          queryResult.forEach((row) => {
+            let value = row.metrics[0].values[0];
+            setSessionCount(value);
+          });
+        })
+        .catch((error) => console.error(error));
+    }
+  }, [isSignedIn]);
 
   return (
     <AdminLayout>
