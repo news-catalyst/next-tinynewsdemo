@@ -1,56 +1,44 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import tw from 'twin.macro';
 import { parsePageViews } from '../../../lib/utils';
 import { getMetricsData } from '../../../lib/analytics';
+import moment from 'moment';
 
-const SubHeaderContainer = tw.div`pt-3 pb-5`;
+const SubHeaderContainer = tw.div`pt-10 pb-5`;
 const SubHeader = tw.h1`inline-block text-xl font-extrabold text-gray-900 tracking-tight`;
 
-const PageViews = (props) => {
-  const pageviewsRef = useRef();
+const YesterdaysTopTen = (props) => {
+  const [startDate, setStartDate] = useState(moment().subtract(1, 'days'));
+  const [endDate, setEndDate] = useState(moment());
+  const [pageViews, setPageViews] = useState({});
 
   let pv = {};
 
   useEffect(() => {
     const pageViewsMetric = 'ga:pageviews';
     const pvDimensions = ['ga:pagePath'];
-    const orderBy = { fieldName: pageViewsMetric, order: 'DESCENDING' };
 
     getMetricsData(
       props.viewID,
-      props.startDate,
-      props.endDate,
+      startDate,
+      endDate,
       [pageViewsMetric],
-      pvDimensions,
-      orderBy
+      pvDimensions
     )
       .then((response) => {
         const queryResult = response.result.reports[0].data.rows;
 
-        if (queryResult) {
-          pv = parsePageViews(queryResult);
-        }
-
-        props.setPageViews(pv);
-
-        if (window.location.hash && window.location.hash === '#pageviews') {
-          if (pageviewsRef) {
-            pageviewsRef.current.scrollIntoView({ behavior: 'smooth' });
-          }
-        }
+        pv = parsePageViews(queryResult);
+        setPageViews(pv);
       })
       .catch((error) => console.error(error));
-  }, [props.startDate, props.endDate]);
+  }, [startDate, endDate]);
 
   return (
     <>
       <SubHeaderContainer>
-        <SubHeader>Page Views</SubHeader>
+        <SubHeader>Top 10 Stories Overall</SubHeader>
       </SubHeaderContainer>
-      <p tw="p-2">
-        {props.startDate.format('dddd, MMMM Do YYYY')} -{' '}
-        {props.endDate.format('dddd, MMMM Do YYYY')}
-      </p>
 
       <table tw="w-full table-auto">
         <thead>
@@ -60,13 +48,13 @@ const PageViews = (props) => {
           </tr>
         </thead>
         <tbody>
-          {Object.keys(props.pageViews).map((label, i) => (
+          {Object.keys(pageViews).map((label, i) => (
             <tr key={`page-view-row-${i}`}>
               <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
                 {label}
               </td>
               <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-                {props.pageViews[label]}
+                {pageViews[label]}
               </td>
             </tr>
           ))}
@@ -76,4 +64,4 @@ const PageViews = (props) => {
   );
 };
 
-export default PageViews;
+export default YesterdaysTopTen;
