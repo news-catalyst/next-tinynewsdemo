@@ -6,6 +6,8 @@ import AdminLayout from '../../../components/AdminLayout';
 import AdminNav from '../../../components/nav/AdminNav';
 import AnalyticsNav from '../../../components/tinycms/analytics/AnalyticsNav';
 import AnalyticsSidebar from '../../../components/tinycms/analytics/AnalyticsSidebar';
+import YesterdaysDonorViews from '../../../components/tinycms/analytics/YesterdaysDonorViews';
+import YesterdaysSubscriberViews from '../../../components/tinycms/analytics/YesterdaysSubscriberViews';
 import YesterdaysTopTen from '../../../components/tinycms/analytics/YesterdaysTopTen';
 import { getMetricsData } from '../../../lib/analytics';
 import moment from 'moment';
@@ -20,7 +22,7 @@ const HeaderContainer = tw.div`pt-5 pb-10`;
 const Header = tw.h1`inline-block text-3xl font-extrabold text-gray-900 tracking-tight`;
 
 export default function AnalyticsIndex(props) {
-  const [startDate, setStartDate] = useState(moment().subtract(1, 'days'));
+  const [startDate, setStartDate] = useState(moment().subtract(90, 'days'));
   const [endDate, setEndDate] = useState(moment());
   const [sessionCount, setSessionCount] = useState(null);
 
@@ -149,6 +151,8 @@ export default function AnalyticsIndex(props) {
                   </tbody>
                 </table>
                 <YesterdaysTopTen viewID={viewID} />
+                <YesterdaysDonorViews viewID={viewID} />
+                <YesterdaysSubscriberViews viewID={viewID} />
               </AnalyticsSidebar>
               <AnalyticsSidebar title="About this Data">
                 <p tw="p-2">
