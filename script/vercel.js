@@ -74,7 +74,7 @@ async function createProject(name, slug) {
     const data = await response.json();
 
     if (data && data.error) {
-      console.error("[" + data.error.code + "] Unable to create Vercel project because: " + data.error.message);
+      console.error("[" + data.error.code + "] Unable to create Vercel project '" + name + "' because: " + data.error.message);
     } else {
       domain = data.alias[0].domain;
       console.log("Created Vercel project for " + name);
