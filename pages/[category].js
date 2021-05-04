@@ -49,14 +49,18 @@ export async function getStaticPaths({ locales }) {
     };
   }
 
+  const siteLocales = process.env.LOCALES.split(',');
+
   for (const section of data.categories) {
     for (const locale of section.category_translations) {
-      paths.push({
-        params: {
-          category: section.slug,
-        },
-        locale: locale.locale_code,
-      });
+      if (siteLocales.indexOf(locale) >= 0) {
+        paths.push({
+          params: {
+            category: section.slug,
+          },
+          locale: locale.locale_code,
+        });
+      }
     }
   }
 
