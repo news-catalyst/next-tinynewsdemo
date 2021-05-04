@@ -144,7 +144,7 @@ function configureNext(name, slug, locales) {
   if (currentEnv.error) {
     throw currentEnv.error
   }
-  
+
   // set these to the new organization values
   currentEnv.parsed['ORG_NAME'] = name;
   currentEnv.parsed['ORG_SLUG'] = slug;
@@ -217,7 +217,7 @@ async function createOrganization(opts) {
                 data: {
                   locale_code: aLocale.code,
                   title: "News"
-                }, 
+                },
                 on_conflict: {constraint: "category_translations_locale_code_category_id_key", update_columns: "title"}
               }
             },
@@ -230,7 +230,7 @@ async function createOrganization(opts) {
                 data: {
                   locale_code: aLocale.code,
                   title: "Politics"
-                }, 
+                },
                 on_conflict: {constraint: "category_translations_locale_code_category_id_key", update_columns: "title"}
               }
             },
@@ -243,7 +243,7 @@ async function createOrganization(opts) {
                 data: {
                   locale_code: aLocale.code,
                   title: "COVID-19"
-                }, 
+                },
                 on_conflict: {constraint: "category_translations_locale_code_category_id_key", update_columns: "title"}
               }
             },
@@ -269,7 +269,7 @@ async function createOrganization(opts) {
             })
           })
         })
-      }) 
+      })
       shared.hasuraInsertOrgLocales({
         url: apiUrl,
         adminSecret: adminSecret,
@@ -278,17 +278,14 @@ async function createOrganization(opts) {
         console.log("Setup locales for the organization:", res);
 
         let siteMetadata = {
-          "nav": "{\"articles\":\"Articles\",\"topics\":\"All Topics\",\"cms\":\"tinycms\"}",
           "color": "colorone",
           "theme": "styleone",
-          "labels": "{\"latestNews\":\"Latest News\",\"search\":\"Search\",\"topics\":\"Topics\"}",
           "siteUrl": "https://tinynewsco.org/",
           "aboutCTA": "Learn more",
           "aboutDek": `About the ${name} TK`,
           "aboutHed": "Who We Are",
           "bodyFont": "Source Sans Pro",
           "shortName": name,
-          "subscribe": "{\"title\":\"Subscribe\",\"subtitle\":\"Get the latest news in your inbox.\"}",
           "supportCTA": "Donate",
           "supportDek": `${name} exists based on the support of our readers. Chip in today to help us continue delivering quality journalism.`,
           "supportHed": "Support our work",
@@ -311,7 +308,6 @@ async function createOrganization(opts) {
           "donationOptions": "[{\n\"uuid\": \"92f77857-eea6-4035-ae86-e9781e2627b2\",\n\"amount\": 5,\n\"name\": \"Member\"\n},\n{\n\"uuid\": \"92f778a9-3187-4fe5-9d6b-a3041f126456\",\n\"amount\": 10,\n\"name\": \"Supporter\"\n},\n{\n\"uuid\": \"92f77888-d1cc-4491-8080-780f0b109320\",\n\"amount\": 20,\n\"name\": \"Superuser\"\n}]",
           "footerBylineLink": "https://newscatalyst.org",
           "footerBylineName": "News Catalyst",
-          "homepageSubtitle": "a new local news initiative",
           "searchDescription": "Page description",
           "twitterDescription": "Twitter description",
           "facebookDescription": "Facebook description"
