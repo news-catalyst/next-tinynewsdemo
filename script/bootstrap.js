@@ -22,8 +22,7 @@ const adminSecret = process.env.HASURA_ADMIN_SECRET;
 
 let organizationID;
 
-async function setupGoogleDrive(emails) {
-  let org = process.env.ORG_SLUG;
+async function setupGoogleDrive(org, emails) {
   let topLevelFolderId = process.env.DRIVE_PARENT_FOLDER_ID;
   drive.files.get({fileId: topLevelFolderId, supportsAllDrives: true, fields: "id,name,webViewLink"}, (err, res) => {
     if (err) throw err;
@@ -138,14 +137,20 @@ async function setupGoogleDrive(emails) {
   })
 }
 
-// sets up env LOCALES for use in next.config.js
-function configureNext(locales) {
+// sets up org-specific ENV values
+function configureNext(name, slug, locales) {
   const currentEnv = require('dotenv').config({ path: '.env.local' })
 
   if (currentEnv.error) {
     throw currentEnv.error
   }
   
+  // set these to the new organization values
+  currentEnv.parsed['ORG_NAME'] = name;
+  currentEnv.parsed['ORG_SLUG'] = slug;
+  currentEnv.parsed['TNC_AWS_DIR_NAME'] = slug;
+  currentEnv.parsed['TNC_AWS_BUCKET_NAME'] = `tnc-uploads-${slug}`;
+
   let previousLocales = currentEnv.parsed['LOCALES'].split(',');
   currentEnv.parsed['LOCALES'] = arrayUnique(locales.concat(previousLocales)).join(',');
 
@@ -155,25 +160,30 @@ function configureNext(locales) {
   })
   stream.end();
 
-  fs.rename('.new.env.local', '.env.local', function (err) {
+  let newEnvFilename = `.env.local-${slug}`
+  fs.rename('.new.env.local', newEnvFilename, function (err) {
     if (err) throw err
-    console.log('Successfully configured env with locales: ', currentEnv.parsed['LOCALES']);
+    console.log(`Successfully configured env in ${newEnvFilename} with:\n`, JSON.stringify(currentEnv));
   })
 }
 
-async function createOrganization(locales, emails) {
+async function createOrganization(opts) {
+  let name = opts.name;
+  let slug = opts.slug;
+  let emails = opts.emails;
+  let locales = opts.locales;
 
-  configureNext(locales);
+  configureNext(name, slug, locales);
 
   const { errors, data } = await shared.hasuraInsertOrganization({
     url: apiUrl,
     adminSecret: adminSecret,
-    name: process.env.ORG_NAME,
-    slug: process.env.ORG_SLUG,
+    name: name,
+    slug: slug,
   })
 
   if (errors) {
-    console.error("Error creating a record for organization with name " + process.env.ORG_NAME + ":", errors);
+    console.error("Error creating a record for organization with name '" + name + "':", errors);
   } else {
     organizationID = data.insert_organizations_one.id;
     console.log("Created a record for organization with ID " + organizationID, data);
@@ -267,7 +277,7 @@ async function createOrganization(locales, emails) {
       }).then((res) => {
         console.log("Setup locales for the organization:", res);
 
-        setupGoogleDrive(emails);
+        setupGoogleDrive(slug, emails);
 
         console.log("Make sure to configure the site metadata in the tinycms once this is done!")
       })
@@ -289,15 +299,19 @@ function arrayUnique(array) {
 }
 
 program
+    .requiredOption('-n, --name <name>', 'the name of the new organization')
+    .requiredOption('-s, --slug <slug>', 'a short (A-Za-z0-9_) slug for the organization')
     .requiredOption('-l, --locales [locales...]', 'specify supported locales')
     .requiredOption('-e, --emails [emails...]', 'specify emails for org members (needed for google drive)')
     .description("sets up a new organization in Hasura and Google Drive")
     .action( (opts) => {
+      console.log("opts.name: ", opts.name);
+      console.log("opts.slug: ", opts.slug);
       console.log("opts.emails: ", opts.emails);
       console.log("opts.locales: ", opts.locales);
 
-      createOrganization(opts.locales, opts.emails);
-      vercel.createProject();
+      createOrganization(opts);
+      vercel.createProject(opts.name, opts.slug);
     });
 
 program.parse(process.argv);

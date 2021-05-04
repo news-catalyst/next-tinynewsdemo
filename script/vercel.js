@@ -3,7 +3,6 @@ require('dotenv').config({ path: '.env.local' })
 
 const TOKEN = process.env.VERCEL_TOKEN;
 const BASE_URL = "https://api.vercel.com/v6";
-const ORG_NAME= process.env.ORG_SLUG;
 const GIT_REPO = process.env.GIT_REPO;
 
 async function getProjects() {
@@ -32,11 +31,10 @@ async function getProjects() {
   projectsData.projects.map((project) => console.log(project));
 }
 
-async function createProject() {
+async function createProject(name, slug) {
 
   let projectId;
   let domain;
-
 
   let requestHeaders = {
     "Authorization": `Bearer ${TOKEN}`,
@@ -56,10 +54,10 @@ async function createProject() {
 
   let url = BASE_URL + "/projects?teamId=" + teamId;
 
-  console.log("Creating Vercel project with name:", ORG_NAME)
+  console.log("Creating Vercel project with name:", name)
 
   let requestBody = JSON.stringify({
-    name: ORG_NAME,
+    name: name,
     gitRepository: {
       type: 'github',
       repo: GIT_REPO,
@@ -79,7 +77,7 @@ async function createProject() {
       console.error("[" + data.error.code + "] Unable to create Vercel project because: " + data.error.message);
     } else {
       domain = data.alias[0].domain;
-      console.log("Created Vercel project for " + ORG_NAME);
+      console.log("Created Vercel project for " + name);
 
       projectId = data.id;
 
@@ -99,8 +97,8 @@ async function createProject() {
       }
 
       let envUrl = "https://api.vercel.com/v7/projects/" + projectId + "/env/?teamId=" + teamId;
-
-      const currentEnv = require('dotenv').config({ path: '.env.local' });
+      let envFilename = `.env.local-${slug}`
+      const currentEnv = require('dotenv').config({ path: envFilename });
       let envData = currentEnv.parsed;
 
       let results = [];
