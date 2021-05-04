@@ -199,6 +199,29 @@ function hasuraListLocales(params) {
   });
 }
 
+const HASURA_LIST_ORGANIZATIONS = `query MyQuery {
+  organizations {
+    created_at
+    id
+    name
+    slug
+    organization_locales {
+      locale {
+        code
+      }
+    }
+  }
+}`;
+
+function hasuraListOrganizations(params) {
+  return fetchGraphQL({
+    url: params['url'],
+    adminSecret: params['adminSecret'],
+    query: HASURA_LIST_ORGANIZATIONS,
+    name: 'MyQuery',
+  });
+}
+
 async function fetchGraphQL(params) {
   let url;
   let orgSlug;
@@ -248,6 +271,7 @@ module.exports = {
   hasuraInsertOrgLocales,
   hasuraListAllLocales,
   hasuraListLocales,
+  hasuraListOrganizations,
   hasuraListSections,
   hasuraListTags,
   hasuraUpsertHomepageLayout,
