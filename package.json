@@ -7,6 +7,7 @@
     "clear": "node script/clear.js",
     "populate": "node script/populate.js",
     "bootstrap": "node script/bootstrap.js",
+    "status": "node script/status.js",
     "build": "next build",
     "build:rss": "node script/generate-rss.js",
     "postbuild": "next-sitemap && node script/generate-rss.js",
