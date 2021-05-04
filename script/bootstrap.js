@@ -144,7 +144,7 @@ function configureNext(name, slug, locales) {
   if (currentEnv.error) {
     throw currentEnv.error
   }
-  
+
   // set these to the new organization values
   currentEnv.parsed['ORG_NAME'] = name;
   currentEnv.parsed['ORG_SLUG'] = slug;
@@ -217,7 +217,7 @@ async function createOrganization(opts) {
                 data: {
                   locale_code: aLocale.code,
                   title: "News"
-                }, 
+                },
                 on_conflict: {constraint: "category_translations_locale_code_category_id_key", update_columns: "title"}
               }
             },
@@ -230,7 +230,7 @@ async function createOrganization(opts) {
                 data: {
                   locale_code: aLocale.code,
                   title: "Politics"
-                }, 
+                },
                 on_conflict: {constraint: "category_translations_locale_code_category_id_key", update_columns: "title"}
               }
             },
@@ -243,7 +243,7 @@ async function createOrganization(opts) {
                 data: {
                   locale_code: aLocale.code,
                   title: "COVID-19"
-                }, 
+                },
                 on_conflict: {constraint: "category_translations_locale_code_category_id_key", update_columns: "title"}
               }
             },
@@ -269,7 +269,7 @@ async function createOrganization(opts) {
             })
           })
         })
-      }) 
+      })
       shared.hasuraInsertOrgLocales({
         url: apiUrl,
         adminSecret: adminSecret,
@@ -277,9 +277,58 @@ async function createOrganization(opts) {
       }).then((res) => {
         console.log("Setup locales for the organization:", res);
 
+        let siteMetadata = {
+          "color": "colorone",
+          "theme": "styleone",
+          "siteUrl": "https://tinynewsco.org/",
+          "aboutCTA": "Learn more",
+          "aboutDek": `About the ${name} TK`,
+          "aboutHed": "Who We Are",
+          "bodyFont": "Source Sans Pro",
+          "shortName": name,
+          "supportCTA": "Donate",
+          "supportDek": `${name} exists based on the support of our readers. Chip in today to help us continue delivering quality journalism.`,
+          "supportHed": "Support our work",
+          "supportURL": "https://tiny-news-collective.monkeypod.io/give/support-the-oaklyn-observer?secret=84fc2987ea6e8f11b8f4f8aca8b749d7",
+          "footerTitle": "tinynewsco.org",
+          "headingFont": "Source Serif Pro",
+          "landingPage": false,
+          "searchTitle": name,
+          "primaryColor": "#de7a00",
+          "twitterTitle": "Twitter title",
+          "facebookTitle": "Facebook title",
+          "homepageTitle": name,
+          "membershipDek": "Support great journalism by becoming a member for a low monthly price.",
+          "membershipHed": "Become a member",
+          "newsletterDek": `Get the latest headlines from ${name} right in your inbox.`,
+          "newsletterHed": "Sign up for our newsletter",
+          "donateBlockDek": "Support our local journalism with a monthly pledge.",
+          "donateBlockHed": "Donate",
+          "secondaryColor": "#002c57",
+          "donationOptions": "[{\n\"uuid\": \"92f77857-eea6-4035-ae86-e9781e2627b2\",\n\"amount\": 5,\n\"name\": \"Member\"\n},\n{\n\"uuid\": \"92f778a9-3187-4fe5-9d6b-a3041f126456\",\n\"amount\": 10,\n\"name\": \"Supporter\"\n},\n{\n\"uuid\": \"92f77888-d1cc-4491-8080-780f0b109320\",\n\"amount\": 20,\n\"name\": \"Superuser\"\n}]",
+          "footerBylineLink": "https://newscatalyst.org",
+          "footerBylineName": "News Catalyst",
+          "searchDescription": "Page description",
+          "twitterDescription": "Twitter description",
+          "facebookDescription": "Facebook description"
+        };
+
+        allLocales.map( (locale) => {
+          shared.hasuraUpsertMetadata({
+            url: apiUrl,
+            adminSecret: adminSecret,
+            organization_id: organizationID,
+            data: siteMetadata,
+            locale_code: locale.code,
+            published: true,
+          }).then( (res) => {
+            console.log("created site metadata for " + name + " in locale " + locale.code);
+          })
+        })
+
         setupGoogleDrive(slug, emails);
 
-        console.log("Make sure to configure the site metadata in the tinycms once this is done!")
+        console.log("Make sure to review settings in the tinycms once this is done!")
       })
     })
     .catch(console.error);
