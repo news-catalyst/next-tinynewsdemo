@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
+import { CheckIcon, XIcon } from '@heroicons/react/solid';
 import AdminLayout from '../../../components/AdminLayout.js';
 import AdminNav from '../../../components/nav/AdminNav';
 import tw from 'twin.macro';
@@ -31,6 +32,7 @@ export default function Sections({ sections, currentLocale, locales }) {
   }, []);
 
   const listItems = sections.map((section) => {
+    console.log('section:', section);
     let title = hasuraLocaliseText(section.category_translations, 'title');
     return (
       <TableRow key={section.id}>
@@ -43,6 +45,9 @@ export default function Sections({ sections, currentLocale, locales }) {
           </Link>
         </TableCell>
         <TableCell>{section.slug}</TableCell>
+        <TableCell>
+          {section.published ? <CheckIcon tw="w-4" /> : <XIcon tw="w-4" />}
+        </TableCell>
       </TableRow>
     );
   });
@@ -75,6 +80,7 @@ export default function Sections({ sections, currentLocale, locales }) {
             <TableRow>
               <TableHeader>Name</TableHeader>
               <TableHeader>Slug</TableHeader>
+              <TableHeader>Published?</TableHeader>
             </TableRow>
           </TableHead>
           <TableBody>{listItems}</TableBody>
