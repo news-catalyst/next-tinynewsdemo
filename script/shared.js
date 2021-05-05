@@ -40,8 +40,8 @@ function hasuraInsertOrgLocales(params) {
   });
 }
 
-const HASURA_UPSERT_METADATA = `mutation MyMutation($published: Boolean, $data: jsonb, $locale_code: String) {
-  insert_site_metadatas(objects: {published: $published, site_metadata_translations: {data: {data: $data, locale_code: $locale_code}, on_conflict: {constraint: site_metadata_translations_locale_code_site_metadata_id_key, update_columns: data}}}, on_conflict: {constraint: site_metadatas_organization_id_key, update_columns: published}) {
+const HASURA_UPSERT_METADATA = `mutation MyMutation($published: Boolean, $data: jsonb, $locale_code: String, $organization_id: Int!) {
+  insert_site_metadatas(objects: {organization_id: $organization_id, published: $published, site_metadata_translations: {data: {data: $data, locale_code: $locale_code}, on_conflict: {constraint: site_metadata_translations_locale_code_site_metadata_id_key, update_columns: data}}}, on_conflict: {constraint: site_metadatas_organization_id_key, update_columns: published}) {
     returning {
       id
       published
@@ -59,7 +59,43 @@ function hasuraUpsertMetadata(params) {
       organization_id: params['organization_id'],
       data: params['data'],
       published: params['published'],
-      locale_code: params['localeCode']
+      locale_code: params['locale_code']
+    },
+  });
+}
+
+const HASURA_REMOVE_ORGANIZATION = `mutation MyMutation($slug: String!) {
+    delete_organization_locales(where: {organization: {slug: {_eq: $slug}}}) {
+      affected_rows
+    }
+    delete_category_translations(where: {category: {organization: {slug: {_eq: $slug}}}}) {
+      affected_rows
+    }
+    delete_categories(where: {organization: {slug: {_eq: $slug}}}) {
+      affected_rows
+    }
+    delete_site_metadata_translations(where: {site_metadata: {organization: {slug: {_eq: $slug}}}}) {
+      affected_rows
+    }
+    delete_site_metadatas(where: {organization: {slug: {_eq: $slug}}}) {
+      affected_rows
+    }
+    delete_homepage_layout_schemas(where: {organization: {slug: {_eq: $slug}}}) {
+      affected_rows
+    }
+    delete_organizations(where: {slug: {_eq: $slug}}) {
+      affected_rows
+    }  
+}`;
+
+function hasuraRemoveOrganization(params) {
+  return fetchGraphQL({
+    url: params['url'],
+    adminSecret: params['adminSecret'],
+    query: HASURA_REMOVE_ORGANIZATION,
+    name: 'MyMutation',
+    variables: {
+      slug: params['slug'],
     },
   });
 }
@@ -199,6 +235,29 @@ function hasuraListLocales(params) {
   });
 }
 
+const HASURA_LIST_ORGANIZATIONS = `query MyQuery {
+  organizations {
+    created_at
+    id
+    name
+    slug
+    organization_locales {
+      locale {
+        code
+      }
+    }
+  }
+}`;
+
+function hasuraListOrganizations(params) {
+  return fetchGraphQL({
+    url: params['url'],
+    adminSecret: params['adminSecret'],
+    query: HASURA_LIST_ORGANIZATIONS,
+    name: 'MyQuery',
+  });
+}
+
 async function fetchGraphQL(params) {
   let url;
   let orgSlug;
@@ -248,11 +307,13 @@ module.exports = {
   hasuraInsertOrgLocales,
   hasuraListAllLocales,
   hasuraListLocales,
+  hasuraListOrganizations,
   hasuraListSections,
   hasuraListTags,
   hasuraUpsertHomepageLayout,
   hasuraUpsertMetadata,
   hasuraInsertSections,
   hasuraUpsertSection,
+  hasuraRemoveOrganization,
   fetchGraphQL
 }

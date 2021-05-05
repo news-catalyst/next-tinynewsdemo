@@ -22,8 +22,7 @@ const adminSecret = process.env.HASURA_ADMIN_SECRET;
 
 let organizationID;
 
-async function setupGoogleDrive(emails) {
-  let org = process.env.ORG_SLUG;
+async function setupGoogleDrive(org, emails) {
   let topLevelFolderId = process.env.DRIVE_PARENT_FOLDER_ID;
   drive.files.get({fileId: topLevelFolderId, supportsAllDrives: true, fields: "id,name,webViewLink"}, (err, res) => {
     if (err) throw err;
@@ -138,14 +137,20 @@ async function setupGoogleDrive(emails) {
   })
 }
 
-// sets up env LOCALES for use in next.config.js
-function configureNext(locales) {
+// sets up org-specific ENV values
+function configureNext(name, slug, locales) {
   const currentEnv = require('dotenv').config({ path: '.env.local' })
 
   if (currentEnv.error) {
     throw currentEnv.error
   }
-  
+
+  // set these to the new organization values
+  currentEnv.parsed['ORG_NAME'] = name;
+  currentEnv.parsed['ORG_SLUG'] = slug;
+  currentEnv.parsed['TNC_AWS_DIR_NAME'] = slug;
+  currentEnv.parsed['TNC_AWS_BUCKET_NAME'] = `tnc-uploads-${slug}`;
+
   let previousLocales = currentEnv.parsed['LOCALES'].split(',');
   currentEnv.parsed['LOCALES'] = arrayUnique(locales.concat(previousLocales)).join(',');
 
@@ -155,25 +160,30 @@ function configureNext(locales) {
   })
   stream.end();
 
-  fs.rename('.new.env.local', '.env.local', function (err) {
+  let newEnvFilename = `.env.local-${slug}`
+  fs.rename('.new.env.local', newEnvFilename, function (err) {
     if (err) throw err
-    console.log('Successfully configured env with locales: ', currentEnv.parsed['LOCALES']);
+    console.log(`Successfully configured env in ${newEnvFilename} with:\n`, JSON.stringify(currentEnv));
   })
 }
 
-async function createOrganization(locales, emails) {
+async function createOrganization(opts) {
+  let name = opts.name;
+  let slug = opts.slug;
+  let emails = opts.emails;
+  let locales = opts.locales;
 
-  configureNext(locales);
+  configureNext(name, slug, locales);
 
   const { errors, data } = await shared.hasuraInsertOrganization({
     url: apiUrl,
     adminSecret: adminSecret,
-    name: process.env.ORG_NAME,
-    slug: process.env.ORG_SLUG,
+    name: name,
+    slug: slug,
   })
 
   if (errors) {
-    console.error("Error creating a record for organization with name " + process.env.ORG_NAME + ":", errors);
+    console.error("Error creating a record for organization with name '" + name + "':", errors);
   } else {
     organizationID = data.insert_organizations_one.id;
     console.log("Created a record for organization with ID " + organizationID, data);
@@ -207,7 +217,7 @@ async function createOrganization(locales, emails) {
                 data: {
                   locale_code: aLocale.code,
                   title: "News"
-                }, 
+                },
                 on_conflict: {constraint: "category_translations_locale_code_category_id_key", update_columns: "title"}
               }
             },
@@ -220,7 +230,7 @@ async function createOrganization(locales, emails) {
                 data: {
                   locale_code: aLocale.code,
                   title: "Politics"
-                }, 
+                },
                 on_conflict: {constraint: "category_translations_locale_code_category_id_key", update_columns: "title"}
               }
             },
@@ -233,7 +243,7 @@ async function createOrganization(locales, emails) {
                 data: {
                   locale_code: aLocale.code,
                   title: "COVID-19"
-                }, 
+                },
                 on_conflict: {constraint: "category_translations_locale_code_category_id_key", update_columns: "title"}
               }
             },
@@ -259,7 +269,7 @@ async function createOrganization(locales, emails) {
             })
           })
         })
-      }) 
+      })
       shared.hasuraInsertOrgLocales({
         url: apiUrl,
         adminSecret: adminSecret,
@@ -267,9 +277,58 @@ async function createOrganization(locales, emails) {
       }).then((res) => {
         console.log("Setup locales for the organization:", res);
 
-        setupGoogleDrive(emails);
+        let siteMetadata = {
+          "color": "colorone",
+          "theme": "styleone",
+          "siteUrl": "https://tinynewsco.org/",
+          "aboutCTA": "Learn more",
+          "aboutDek": `About the ${name} TK`,
+          "aboutHed": "Who We Are",
+          "bodyFont": "Source Sans Pro",
+          "shortName": name,
+          "supportCTA": "Donate",
+          "supportDek": `${name} exists based on the support of our readers. Chip in today to help us continue delivering quality journalism.`,
+          "supportHed": "Support our work",
+          "supportURL": "https://tiny-news-collective.monkeypod.io/give/support-the-oaklyn-observer?secret=84fc2987ea6e8f11b8f4f8aca8b749d7",
+          "footerTitle": "tinynewsco.org",
+          "headingFont": "Source Serif Pro",
+          "landingPage": false,
+          "searchTitle": name,
+          "primaryColor": "#de7a00",
+          "twitterTitle": "Twitter title",
+          "facebookTitle": "Facebook title",
+          "homepageTitle": name,
+          "membershipDek": "Support great journalism by becoming a member for a low monthly price.",
+          "membershipHed": "Become a member",
+          "newsletterDek": `Get the latest headlines from ${name} right in your inbox.`,
+          "newsletterHed": "Sign up for our newsletter",
+          "donateBlockDek": "Support our local journalism with a monthly pledge.",
+          "donateBlockHed": "Donate",
+          "secondaryColor": "#002c57",
+          "donationOptions": "[{\n\"uuid\": \"92f77857-eea6-4035-ae86-e9781e2627b2\",\n\"amount\": 5,\n\"name\": \"Member\"\n},\n{\n\"uuid\": \"92f778a9-3187-4fe5-9d6b-a3041f126456\",\n\"amount\": 10,\n\"name\": \"Supporter\"\n},\n{\n\"uuid\": \"92f77888-d1cc-4491-8080-780f0b109320\",\n\"amount\": 20,\n\"name\": \"Superuser\"\n}]",
+          "footerBylineLink": "https://newscatalyst.org",
+          "footerBylineName": "News Catalyst",
+          "searchDescription": "Page description",
+          "twitterDescription": "Twitter description",
+          "facebookDescription": "Facebook description"
+        };
 
-        console.log("Make sure to configure the site metadata in the tinycms once this is done!")
+        locales.map( (locale) => {
+          shared.hasuraUpsertMetadata({
+            url: apiUrl,
+            adminSecret: adminSecret,
+            organization_id: organizationID,
+            data: siteMetadata,
+            locale_code: locale,
+            published: true,
+          }).then( (res) => {
+            console.log("created site metadata for " + name + " in locale " + locale);
+          })
+        })
+
+        setupGoogleDrive(slug, emails);
+
+        console.log("Make sure to review settings in the tinycms once this is done!")
       })
     })
     .catch(console.error);
@@ -289,15 +348,19 @@ function arrayUnique(array) {
 }
 
 program
+    .requiredOption('-n, --name <name>', 'the name of the new organization')
+    .requiredOption('-s, --slug <slug>', 'a short (A-Za-z0-9_) slug for the organization')
     .requiredOption('-l, --locales [locales...]', 'specify supported locales')
     .requiredOption('-e, --emails [emails...]', 'specify emails for org members (needed for google drive)')
     .description("sets up a new organization in Hasura and Google Drive")
     .action( (opts) => {
+      console.log("opts.name: ", opts.name);
+      console.log("opts.slug: ", opts.slug);
       console.log("opts.emails: ", opts.emails);
       console.log("opts.locales: ", opts.locales);
 
-      createOrganization(opts.locales, opts.emails);
-      vercel.createProject();
+      createOrganization(opts);
+      vercel.createProject(opts.name, opts.slug);
     });
 
 program.parse(process.argv);
