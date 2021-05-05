@@ -8,11 +8,12 @@ import Homepage from '../components/Homepage';
 import LandingPage from '../components/LandingPage';
 
 export default function Home(props) {
-  const component = props.siteMetadata.landingPage ? (
-    <LandingPage {...props} />
-  ) : (
-    <Homepage {...props} />
-  );
+  const component =
+    props.siteMetadata.landingPage || !props.selectedLayout ? (
+      <LandingPage {...props} />
+    ) : (
+      <Homepage {...props} />
+    );
 
   return component;
 }
@@ -50,18 +51,25 @@ export async function getStaticProps({ locale }) {
   }
 
   const hpData = data.homepage_layout_datas[0];
-  let selectedLayout = hpData.homepage_layout_schema;
 
   let ids = [];
-  let featured = hpData.first_article;
-  ids.push(featured.id);
-  let topFeatured = hpData.second_article;
-  if (topFeatured) {
-    ids.push(topFeatured.id);
-  }
-  let bottomFeatured = hpData.third_article;
-  if (bottomFeatured) {
-    ids.push(bottomFeatured.id);
+  let selectedLayout = null;
+  let featured = null;
+  let topFeatured = null;
+  let bottomFeatured = null;
+
+  if (hpData) {
+    selectedLayout = hpData.homepage_layout_schema;
+    featured = hpData.first_article;
+    ids.push(featured.id);
+    topFeatured = hpData.second_article;
+    if (topFeatured) {
+      ids.push(topFeatured.id);
+    }
+    bottomFeatured = hpData.third_article;
+    if (bottomFeatured) {
+      ids.push(bottomFeatured.id);
+    }
   }
 
   const streamResult = await hasuraStreamArticles({
