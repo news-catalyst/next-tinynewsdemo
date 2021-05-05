@@ -313,16 +313,16 @@ async function createOrganization(opts) {
           "facebookDescription": "Facebook description"
         };
 
-        allLocales.map( (locale) => {
+        locales.map( (locale) => {
           shared.hasuraUpsertMetadata({
             url: apiUrl,
             adminSecret: adminSecret,
             organization_id: organizationID,
             data: siteMetadata,
-            locale_code: locale.code,
+            locale_code: locale,
             published: true,
           }).then( (res) => {
-            console.log("created site metadata for " + name + " in locale " + locale.code);
+            console.log("created site metadata for " + name + " in locale " + locale);
           })
         })
 

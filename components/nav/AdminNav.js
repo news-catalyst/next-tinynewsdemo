@@ -31,9 +31,16 @@ export default function NewAdminNav(props) {
       props.hpData &&
       props.hpData.homepage_layout_schema
     ) {
+      console.log(
+        'is homepage editor AND has hp data/schema',
+        props.homePageEditor,
+        props.hpData
+      );
       setCurrentLayoutName(props.hpData.homepage_layout_schema.name);
     } else if (props.homePageEditor) {
-      setCurrentLayoutName(props.homepage_layout_schema.name);
+      console.log('is homepage editor AND missing hp data/schema', props);
+    } else {
+      console.log('AdminNav props:', props);
     }
   }, [props.hpData]);
 
