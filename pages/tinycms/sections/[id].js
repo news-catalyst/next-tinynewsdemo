@@ -65,9 +65,9 @@ export default function EditSection({
       // display success message
       let message = 'The section is updated.';
       if (published) {
-        message += ' (section is live)';
+        message += ' (section appears in nav)';
       } else {
-        message += ' (section is unpublished)';
+        message += ' (section is hidden in nav)';
       }
       setNotificationMessage(message);
       setNotificationType('success');
@@ -112,7 +112,7 @@ export default function EditSection({
             name="published"
             checked={published}
             onChange={handlePublished}
-            label="Published"
+            label="Show in nav"
           />
 
           <TinySubmitCancelButtons destURL="/tinycms/sections" />
