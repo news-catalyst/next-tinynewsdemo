@@ -32,6 +32,7 @@ export async function getStaticProps({ locale }) {
     throw errors;
   }
 
+  console.log('hp data:', data);
   let siteMetadata;
   let metadatas = data.site_metadatas;
   try {
