@@ -6,8 +6,13 @@ import { getArticleAds } from '../lib/ads.js';
 import { hasuraLocaliseText } from '../lib/utils.js';
 import Homepage from '../components/Homepage';
 import LandingPage from '../components/LandingPage';
+import CurriculumHomepage from '../components/curriculum/CurriculumHomepage';
 
 export default function Home(props) {
+  if (props.siteMetadata.shortName === 'Tiny News Collective Curriculum') {
+    return <CurriculumHomepage {...props} />;
+  }
+
   const component =
     props.siteMetadata.landingPage || !props.selectedLayout ? (
       <LandingPage {...props} />
