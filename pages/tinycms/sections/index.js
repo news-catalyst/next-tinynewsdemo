@@ -80,7 +80,7 @@ export default function Sections({ sections, currentLocale, locales }) {
             <TableRow>
               <TableHeader>Name</TableHeader>
               <TableHeader>Slug</TableHeader>
-              <TableHeader>Published?</TableHeader>
+              <TableHeader>Show in nav?</TableHeader>
             </TableRow>
           </TableHead>
           <TableBody>{listItems}</TableBody>
