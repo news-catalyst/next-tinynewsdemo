@@ -64,6 +64,36 @@ function hasuraUpsertMetadata(params) {
   });
 }
 
+const HASURA_REMOVE_ORGANIZATION = `mutation MyMutation($slug: String!) {
+  delete_organization_locales(where: {organization: {slug: {_eq: $slug}}}) {
+    affected_rows
+  }
+  delete_category_translations(where: {category: {organization: {slug: {_eq: $slug}}}}) {
+    affected_rows
+  }
+  delete_categories(where: {organization: {slug: {_eq: $slug}}}) {
+    affected_rows
+  }
+	delete_homepage_layout_schemas(where: {organization: {slug: {_eq: $slug}}}) {
+    affected_rows
+  }
+  delete_organizations(where: {slug: {_eq: $slug}}) {
+    affected_rows
+  }
+}`;
+
+function hasuraRemoveOrganization(params) {
+  return fetchGraphQL({
+    url: params['url'],
+    adminSecret: params['adminSecret'],
+    query: HASURA_REMOVE_ORGANIZATION,
+    name: 'MyMutation',
+    variables: {
+      slug: params['slug'],
+    },
+  });
+}
+
 const HASURA_UPSERT_LAYOUT = `mutation MyMutation($organization_id: Int!, $name: String!, $data: jsonb!) {
   insert_homepage_layout_schemas(objects: {name: $name, data: $data, organization_id: $organization_id}, on_conflict: {constraint: homepage_layout_schemas_name_organization_id_key, update_columns: [name, data]}) {
     returning {
@@ -278,5 +308,6 @@ module.exports = {
   hasuraUpsertMetadata,
   hasuraInsertSections,
   hasuraUpsertSection,
+  hasuraRemoveOrganization,
   fetchGraphQL
 }
