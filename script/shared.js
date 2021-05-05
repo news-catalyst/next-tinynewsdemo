@@ -65,21 +65,27 @@ function hasuraUpsertMetadata(params) {
 }
 
 const HASURA_REMOVE_ORGANIZATION = `mutation MyMutation($slug: String!) {
-  delete_organization_locales(where: {organization: {slug: {_eq: $slug}}}) {
-    affected_rows
-  }
-  delete_category_translations(where: {category: {organization: {slug: {_eq: $slug}}}}) {
-    affected_rows
-  }
-  delete_categories(where: {organization: {slug: {_eq: $slug}}}) {
-    affected_rows
-  }
-	delete_homepage_layout_schemas(where: {organization: {slug: {_eq: $slug}}}) {
-    affected_rows
-  }
-  delete_organizations(where: {slug: {_eq: $slug}}) {
-    affected_rows
-  }
+    delete_organization_locales(where: {organization: {slug: {_eq: $slug}}}) {
+      affected_rows
+    }
+    delete_category_translations(where: {category: {organization: {slug: {_eq: $slug}}}}) {
+      affected_rows
+    }
+    delete_categories(where: {organization: {slug: {_eq: $slug}}}) {
+      affected_rows
+    }
+    delete_site_metadata_translations(where: {site_metadata: {organization: {slug: {_eq: $slug}}}}) {
+      affected_rows
+    }
+    delete_site_metadatas(where: {organization: {slug: {_eq: $slug}}}) {
+      affected_rows
+    }
+    delete_homepage_layout_schemas(where: {organization: {slug: {_eq: $slug}}}) {
+      affected_rows
+    }
+    delete_organizations(where: {slug: {_eq: $slug}}) {
+      affected_rows
+    }  
 }`;
 
 function hasuraRemoveOrganization(params) {
