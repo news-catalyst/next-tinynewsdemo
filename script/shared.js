@@ -258,6 +258,31 @@ function hasuraListOrganizations(params) {
   });
 }
 
+const HASURA_INSERT_PAGE_VIEW_DATA = `mutation MyMutation($count: Int!, $date: timestamptz!, $path: String!) {
+  insert_ga_page_views_one(object: {count: $count, date: $date, path: $path}) {
+    updated_at
+    id
+    path
+    created_at
+    count
+    date
+    organization_id
+  }
+}`;
+
+function hasuraInsertPageView(params) {
+  return fetchGraphQL({
+    url: params['url'],
+    orgSlug: params['orgSlug'],
+    query: HASURA_INSERT_PAGE_VIEW_DATA,
+    name: 'MyMutation',
+    variables: {
+      count: params['count'],
+      date: params['date'],
+      path: params['path'],
+    },
+  })
+}
 async function fetchGraphQL(params) {
   let url;
   let orgSlug;
@@ -284,11 +309,6 @@ async function fetchGraphQL(params) {
   let operationName = params['name'];
   let variables = params['variables'];
 
-  // console.log(JSON.stringify({
-  //   query: operationQuery,
-  //   variables: variables,
-  //   operationName: operationName}))
-
   const result = await fetch(url, {
     method: 'POST',
     headers: requestHeaders,
@@ -305,6 +325,7 @@ async function fetchGraphQL(params) {
 module.exports = {
   hasuraInsertOrganization,
   hasuraInsertOrgLocales,
+  hasuraInsertPageView,
   hasuraListAllLocales,
   hasuraListLocales,
   hasuraListOrganizations,
