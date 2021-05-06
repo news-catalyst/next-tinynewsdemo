@@ -130,7 +130,7 @@ export default function AddSection({
             name="published"
             checked={published}
             onChange={handlePublished}
-            label="Published"
+            label="Show in nav"
           />
 
           <TinySubmitCancelButtons destURL="/tinycms/sections" />
