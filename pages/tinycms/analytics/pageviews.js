@@ -133,6 +133,8 @@ export default function PageViewsPage(props) {
                 viewID={viewID}
                 startDate={startDate}
                 endDate={endDate}
+                apiUrl={props.apiUrl}
+                apiToken={props.apiToken}
                 setPageViews={setPageViews}
                 pageViews={pageViews}
               />
@@ -162,9 +164,13 @@ export default function PageViewsPage(props) {
 export async function getServerSideProps(context) {
   const clientID = process.env.ANALYTICS_CLIENT_ID;
   const clientSecret = process.env.ANALYTICS_CLIENT_SECRET;
+  const apiUrl = process.env.HASURA_API_URL;
+  const apiToken = process.env.ORG_SLUG;
 
   return {
     props: {
+      apiUrl,
+      apiToken,
       clientID: clientID,
       clientSecret: clientSecret,
     },
