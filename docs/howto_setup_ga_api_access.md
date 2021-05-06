@@ -9,3 +9,8 @@
   ```
 5. add the overall GA Account ID to the env: `GA_ACCOUNT_ID=XX`
 6. run ` yarn bootstrap -e EMAIL -l en-US -n "The ORG NAME" -s SLUG -u https://DOMAIN.vercel.app` to setup the new org with GA
+
+## setting up for GA data loading into hasura
+
+1. enable the reporting (v4) API in the project: https://console.cloud.google.com/flows/enableapi?apiid=analyticsreporting.googleapis.com&credential=client_key
+2. click through credentials: https://console.cloud.google.com/apis/credentials/wizard?api=analyticsreporting.googleapis.com&project=webiny-sidebar-publishing (choose to use the existing creds)
