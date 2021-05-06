@@ -18,12 +18,58 @@ const apiToken = process.env.ORG_SLUG;
 
 const shared = require("./shared");
 
+async function getSessions(startDate, endDate) {
+  analyticsreporting.reports.batchGet( {
+    requestBody: {
+      reportRequests: [
+      {
+        viewId: googleAnalyticsViewID,
+        dateRanges:[
+          {
+            startDate: startDate,
+            endDate: endDate
+          }],
+        metrics:[
+          {
+            expression: "ga:sessions"
+          }],
+        dimensions: [
+          {
+            name: "ga:date"
+          }]
+      }]
+    }
+  } )
+  .then((response) => {
+    let reports = response.data.reports;
 
-// let organizationID;
+    console.log("sessions data from", startDate, "to", endDate);
+    // console.log(JSON.stringify(reports))
+    let data = reports[0].data;
+
+    if (data && data.rows) {
+      data.rows.map( (row) => {
+        let sessionDate = row.dimensions[0];
+        let value = row.metrics[0].values[0];
+
+        shared.hasuraInsertSession({
+          url: apiUrl,
+          orgSlug: apiToken,
+          count: value,
+          date: sessionDate,
+        }).then ( (res) => {
+          console.log(" + session ", sessionDate, value);
+        })
+        .catch((e) => console.error("[GA] Error inserting session data into hasura:", e ));
+      });
+    } else {
+      console.error("[GA] no session data found between", startDate, "and", endDate);
+    }
+  })
+  .catch((e) => console.error("[GA] Error getting sessions:", e ));
+}
 
 async function getPageViews(startDate, endDate) {
-  // console.log(analyticsreporting);
-
   analyticsreporting.reports.batchGet( {
     requestBody: {
       reportRequests: [
@@ -64,7 +110,7 @@ async function getPageViews(startDate, endDate) {
           date: endDate,
           path: path,
         }).then ( (res) => {
-          console.log(" + ", path, value);
+          console.log(" + pageview ", path, value);
         })
         .catch((e) => console.error("[GA] Error inserting page view data into hasura:", e ));
       });
@@ -82,6 +128,7 @@ program
     .description("loads metrics data from google analytics into hasura")
     .action( (opts) => {
       getPageViews(opts.startDate, opts.endDate);
+      getSessions(opts.startDate, opts.endDate);
     });
 
 program.parse(process.argv);
