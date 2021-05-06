@@ -7,9 +7,10 @@ const fs = require('fs');
 
 const { google } = require("googleapis");
 const credentials = require("./credentials.json");
-const scopes = ["https://www.googleapis.com/auth/drive"];
+const scopes = ["https://www.googleapis.com/auth/drive", "https://www.googleapis.com/auth/analytics", "https://www.googleapis.com/auth/analytics.edit"];
 const auth = new google.auth.JWT(credentials.client_email, null, credentials.private_key, scopes);
 const drive = google.drive({ version: "v3", auth });
+const analytics = google.analytics({version: "v3", auth})
 
 const shared = require("./shared");
 const vercel = require("./vercel");
@@ -20,7 +21,54 @@ const apiUrl = process.env.HASURA_API_URL;
 const apiToken = process.env.ORG_SLUG;
 const adminSecret = process.env.HASURA_ADMIN_SECRET;
 
+const googleAnalyticsAccountID = process.env.GA_ACCOUNT_ID;
+
 let organizationID;
+
+async function setupGoogleAnalytics(name, url) {
+  analytics.management.webproperties.insert(
+    {
+      accountId: googleAnalyticsAccountID,
+      resource: {
+        websiteUrl: url,
+        name: name,
+      }
+  })
+  .then((response) => {
+    let propertyId = response.data.id;
+    console.log(`[GA] Created property with ID ${propertyId} for ${response.data.name} on domain ${response.data.websiteUrl}`);
+
+    // create the view (aka profile)
+    analytics.management.profiles.insert(
+      {
+        accountId: googleAnalyticsAccountID,
+        webPropertyId: propertyId,
+        resource: {
+          name: `${name} website`,
+          botFilteringEnabled: true,
+        }
+    })
+    .then( (res) => {
+      console.log(`[GA] Created view with ID ${res.data.id}`);
+      console.log(`[GA] Current status of accounts:`);
+      analytics.management.webproperties.list({'accountId': googleAnalyticsAccountID})
+      .then((response) => {
+        if (response.data.items && response.data.items.length) {
+          response.data.items.map( (item) => {
+            console.log(`[GA] * ${item.id}: ${item.name} (${item.profileCount} profiles)` )
+          })
+        } else {
+          console.error("No properties found in GA Account:", googleAnalyticsAccountID);
+        }
+      })
+      .catch((e) => console.error("[GA] Error listing accounts:", e ));
+
+    })
+    .catch((e) => console.error("[GA] Error creating view:", e ));
+  })
+  .catch((e) => console.error("[GA] Error creating property:", e ));
+
+}
 
 async function setupGoogleDrive(org, emails) {
   let topLevelFolderId = process.env.DRIVE_PARENT_FOLDER_ID;
@@ -172,6 +220,7 @@ async function createOrganization(opts) {
   let slug = opts.slug;
   let emails = opts.emails;
   let locales = opts.locales;
+  let url = opts.url;
 
   configureNext(name, slug, locales);
 
@@ -327,6 +376,7 @@ async function createOrganization(opts) {
         })
 
         setupGoogleDrive(slug, emails);
+        setupGoogleAnalytics(name, url);
 
         console.log("Make sure to review settings in the tinycms once this is done!")
       })
@@ -352,6 +402,7 @@ program
     .requiredOption('-s, --slug <slug>', 'a short (A-Za-z0-9_) slug for the organization')
     .requiredOption('-l, --locales [locales...]', 'specify supported locales')
     .requiredOption('-e, --emails [emails...]', 'specify emails for org members (needed for google drive)')
+    .requiredOption('-u, --url <url>', 'specify the url on vercel, used for GA property setup')
     .description("sets up a new organization in Hasura and Google Drive")
     .action( (opts) => {
       console.log("opts.name: ", opts.name);
