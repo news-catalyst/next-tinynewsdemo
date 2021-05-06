@@ -283,6 +283,31 @@ function hasuraInsertPageView(params) {
     },
   })
 }
+
+const HASURA_INSERT_SESSION_DATA = `mutation MyMutation($count: Int!, $date: date!) {
+  insert_ga_sessions_one(object: {count: $count, date: $date}) {
+    updated_at
+    id
+    created_at
+    count
+    date
+    organization_id
+  }
+}`;
+
+function hasuraInsertSession(params) {
+  return fetchGraphQL({
+    url: params['url'],
+    orgSlug: params['orgSlug'],
+    query: HASURA_INSERT_SESSION_DATA,
+    name: 'MyMutation',
+    variables: {
+      count: params['count'],
+      date: params['date'],
+    },
+  })
+}
+
 async function fetchGraphQL(params) {
   let url;
   let orgSlug;
@@ -326,6 +351,7 @@ module.exports = {
   hasuraInsertOrganization,
   hasuraInsertOrgLocales,
   hasuraInsertPageView,
+  hasuraInsertSession,
   hasuraListAllLocales,
   hasuraListLocales,
   hasuraListOrganizations,
