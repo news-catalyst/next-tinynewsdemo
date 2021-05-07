@@ -18,6 +18,64 @@ const apiToken = process.env.ORG_SLUG;
 
 const shared = require("./shared");
 
+async function getReferralSessions(startDate, endDate) {
+  analyticsreporting.reports.batchGet( {
+    requestBody: {
+      reportRequests: [
+      {
+        viewId: googleAnalyticsViewID,
+        dateRanges:[
+          {
+            startDate: startDate,
+            endDate: endDate
+          }],
+        metrics:[
+          {
+            expression: "ga:sessions"
+          },
+        ],
+        dimensions: [
+          {
+            name: "ga:source"
+          }
+        ]
+      }]
+    }
+  } )
+  .then((response) => {
+    let reports = response.data.reports;
+
+    console.log("referral sessions data from", startDate, "to", endDate);
+    // console.log(JSON.stringify(reports))
+    let data = reports[0].data;
+
+    if (data && data.rows) {
+      data.rows.map( (row) => {
+        let source = row.dimensions[0];
+        let value = row.metrics[0].values[0];
+
+        shared.hasuraInsertReferralSession({
+          url: apiUrl,
+          orgSlug: apiToken,
+          count: value,
+          source: source,
+          date: startDate,
+        }).then ( (res) => {
+          if (res.errors) {
+            console.error("[GA] error inserting referral session data: ", res.errors);
+          } else {
+            console.log(" + referral session ", source, value, startDate);
+          }
+        })
+        .catch((e) => console.error("[GA] Error inserting referral session data into hasura:", e ));
+      });
+    } else {
+      console.error("[GA] no referral session data found between", startDate, "and", endDate);
+    }
+  })
+  .catch((e) => console.error("[GA] Error getting referral sessions:", e ));
+}
+
 async function getGeoSessions(startDate, endDate) {
   analyticsreporting.reports.batchGet( {
     requestBody: {
@@ -62,7 +120,7 @@ async function getGeoSessions(startDate, endDate) {
           orgSlug: apiToken,
           count: value,
           region: region,
-          date: endDate,
+          date: startDate,
         }).then ( (res) => {
           if (res.errors) {
             console.error("[GA] error inserting geo session data: ", res.errors);
@@ -119,7 +177,11 @@ async function getSessions(startDate, endDate) {
           count: value,
           date: sessionDate,
         }).then ( (res) => {
+          if (res.errors) {
+            console.error("[GA] error inserting session data: ", sessionDate, value, JSON.stringify(row), res.errors);
+          } else {
           console.log(" + session ", sessionDate, value);
+          }
         })
         .catch((e) => console.error("[GA] Error inserting session data into hasura:", e ));
       });
@@ -168,10 +230,14 @@ async function getPageViews(startDate, endDate) {
           url: apiUrl,
           orgSlug: apiToken,
           count: value,
-          date: endDate,
+          date: startDate,
           path: path,
         }).then ( (res) => {
-          console.log(" + pageview ", path, value);
+          if (res.errors) {
+            console.error("[GA] error inserting pageview data: ", res.errors);
+          } else {
+            console.log(" + pageview ", path, value);
+          }
         })
         .catch((e) => console.error("[GA] Error inserting page view data into hasura:", e ));
       });
@@ -191,6 +257,7 @@ program
       getPageViews(opts.startDate, opts.endDate);
       getSessions(opts.startDate, opts.endDate);
       getGeoSessions(opts.startDate, opts.endDate);
+      getReferralSessions(opts.startDate, opts.endDate);
     });
 
 program.parse(process.argv);
