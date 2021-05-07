@@ -258,7 +258,7 @@ function hasuraListOrganizations(params) {
   });
 }
 
-const HASURA_INSERT_PAGE_VIEW_DATA = `mutation MyMutation($count: Int!, $date: timestamptz!, $path: String!) {
+const HASURA_INSERT_PAGE_VIEW_DATA = `mutation MyMutation($count: Int!, $date: date!, $path: String!) {
   insert_ga_page_views_one(object: {count: $count, date: $date, path: $path}) {
     updated_at
     id
@@ -280,6 +280,32 @@ function hasuraInsertPageView(params) {
       count: params['count'],
       date: params['date'],
       path: params['path'],
+    },
+  })
+}
+
+const HASURA_INSERT_REFERRAL_SESSION_DATA = `mutation MyMutation($count: Int!, $date: date!, $source: String!) {
+  insert_ga_referral_sessions_one(object: {source: $source, count: $count, date: $date}) {
+    updated_at
+    id
+    created_at
+    source
+    count
+    date
+    organization_id
+  }
+}`;
+
+function hasuraInsertReferralSession(params) {
+  return fetchGraphQL({
+    url: params['url'],
+    orgSlug: params['orgSlug'],
+    query: HASURA_INSERT_REFERRAL_SESSION_DATA,
+    name: 'MyMutation',
+    variables: {
+      count: params['count'],
+      source: params['source'],
+      date: params['date'],
     },
   })
 }
@@ -379,6 +405,7 @@ module.exports = {
   hasuraInsertPageView,
   hasuraInsertSession,
   hasuraInsertGeoSession,
+  hasuraInsertReferralSession,
   hasuraListAllLocales,
   hasuraListLocales,
   hasuraListOrganizations,
