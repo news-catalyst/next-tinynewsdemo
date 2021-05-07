@@ -64,7 +64,11 @@ async function getGeoSessions(startDate, endDate) {
           region: region,
           date: endDate,
         }).then ( (res) => {
-          console.log(" + geo session ", region, value, endDate);
+          if (res.errors) {
+            console.error("[GA] error inserting geo session data: ", res.errors);
+          } else {
+            console.log(" + geo session ", region, value, endDate);
+          }
         })
         .catch((e) => console.error("[GA] Error inserting geo session data into hasura:", e ));
       });
