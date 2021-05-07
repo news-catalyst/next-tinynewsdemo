@@ -96,6 +96,7 @@ export default function SessionsOverview(props) {
   };
 
   useEffect(() => {
+    console.log('props:', props);
     window.gapi.load('auth2', init); //(1)
   });
 
@@ -134,6 +135,8 @@ export default function SessionsOverview(props) {
                 viewID={viewID}
                 startDate={startDate}
                 endDate={endDate}
+                apiUrl={props.apiUrl}
+                apiToken={props.apiToken}
               />
 
               <GeoSessions
@@ -166,9 +169,13 @@ export default function SessionsOverview(props) {
 export async function getServerSideProps(context) {
   const clientID = process.env.ANALYTICS_CLIENT_ID;
   const clientSecret = process.env.ANALYTICS_CLIENT_SECRET;
+  const apiUrl = process.env.HASURA_API_URL;
+  const apiToken = process.env.ORG_SLUG;
 
   return {
     props: {
+      apiUrl: apiUrl,
+      apiToken: apiToken,
       clientID: clientID,
       clientSecret: clientSecret,
     },
