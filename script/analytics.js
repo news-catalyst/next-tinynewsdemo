@@ -18,6 +18,63 @@ const apiToken = process.env.ORG_SLUG;
 
 const shared = require("./shared");
 
+async function getGeoSessions(startDate, endDate) {
+  analyticsreporting.reports.batchGet( {
+    requestBody: {
+      reportRequests: [
+      {
+        viewId: googleAnalyticsViewID,
+        dateRanges:[
+          {
+            startDate: startDate,
+            endDate: endDate
+          }],
+        metrics:[
+          {
+            expression: "ga:sessions"
+          },
+        ],
+        dimensions: [
+          {
+            name: "ga:country"
+          },
+          {
+            name: "ga:region"
+          }
+        ]
+      }]
+    }
+  } )
+  .then((response) => {
+    let reports = response.data.reports;
+
+    console.log("geo sessions data from", startDate, "to", endDate);
+    // console.log(JSON.stringify(reports))
+    let data = reports[0].data;
+
+    if (data && data.rows) {
+      data.rows.map( (row) => {
+        let region = row.dimensions.join(" - ");
+        let value = row.metrics[0].values[0];
+
+        shared.hasuraInsertGeoSession({
+          url: apiUrl,
+          orgSlug: apiToken,
+          count: value,
+          region: region,
+          date: endDate,
+        }).then ( (res) => {
+          console.log(" + geo session ", region, value, endDate);
+        })
+        .catch((e) => console.error("[GA] Error inserting geo session data into hasura:", e ));
+      });
+    } else {
+      console.error("[GA] no geo session data found between", startDate, "and", endDate);
+    }
+  })
+  .catch((e) => console.error("[GA] Error getting geo sessions:", e ));
+}
+
 async function getSessions(startDate, endDate) {
   analyticsreporting.reports.batchGet( {
     requestBody: {
@@ -129,6 +186,7 @@ program
     .action( (opts) => {
       getPageViews(opts.startDate, opts.endDate);
       getSessions(opts.startDate, opts.endDate);
+      getGeoSessions(opts.startDate, opts.endDate);
     });
 
 program.parse(process.argv);

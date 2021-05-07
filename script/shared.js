@@ -284,6 +284,32 @@ function hasuraInsertPageView(params) {
   })
 }
 
+const HASURA_INSERT_GEO_SESSION_DATA = `mutation MyMutation($count: Int!, $date: date!, $region: String!) {
+  insert_ga_geo_sessions_one(object: {region: $region, count: $count, date: $date}) {
+    updated_at
+    id
+    created_at
+    region
+    count
+    date
+    organization_id
+  }
+}`;
+
+function hasuraInsertGeoSession(params) {
+  return fetchGraphQL({
+    url: params['url'],
+    orgSlug: params['orgSlug'],
+    query: HASURA_INSERT_GEO_SESSION_DATA,
+    name: 'MyMutation',
+    variables: {
+      count: params['count'],
+      region: params['region'],
+      date: params['date'],
+    },
+  })
+}
+
 const HASURA_INSERT_SESSION_DATA = `mutation MyMutation($count: Int!, $date: date!) {
   insert_ga_sessions_one(object: {count: $count, date: $date}) {
     updated_at
@@ -352,6 +378,7 @@ module.exports = {
   hasuraInsertOrgLocales,
   hasuraInsertPageView,
   hasuraInsertSession,
+  hasuraInsertGeoSession,
   hasuraListAllLocales,
   hasuraListLocales,
   hasuraListOrganizations,
