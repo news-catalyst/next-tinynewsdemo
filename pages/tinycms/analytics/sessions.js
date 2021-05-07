@@ -157,6 +157,8 @@ export default function SessionsOverview(props) {
                 viewID={viewID}
                 startDate={startDate}
                 endDate={endDate}
+                apiUrl={props.apiUrl}
+                apiToken={props.apiToken}
               />
             </SettingsContainer>
           )}
