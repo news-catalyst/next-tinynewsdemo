@@ -360,6 +360,30 @@ function hasuraInsertSession(params) {
   })
 }
 
+const HASURA_INSERT_SESSION_DURATION_DATA = `mutation MyMutation($seconds: float8!, $date: date!) {
+  insert_ga_session_duration_one(object: {seconds: $seconds, date: $date}) {
+    updated_at
+    id
+    created_at
+    seconds
+    date
+    organization_id
+  }
+}`;
+
+function hasuraInsertSessionDuration(params) {
+  return fetchGraphQL({
+    url: params['url'],
+    orgSlug: params['orgSlug'],
+    query: HASURA_INSERT_SESSION_DURATION_DATA,
+    name: 'MyMutation',
+    variables: {
+      seconds: params['seconds'],
+      date: params['date'],
+    },
+  })
+}
+
 async function fetchGraphQL(params) {
   let url;
   let orgSlug;
@@ -404,6 +428,7 @@ module.exports = {
   hasuraInsertOrgLocales,
   hasuraInsertPageView,
   hasuraInsertSession,
+  hasuraInsertSessionDuration,
   hasuraInsertGeoSession,
   hasuraInsertReferralSession,
   hasuraListAllLocales,

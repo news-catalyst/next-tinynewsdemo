@@ -18,6 +18,63 @@ const apiToken = process.env.ORG_SLUG;
 
 const shared = require("./shared");
 
+async function getSessionDuration(startDate, endDate) {
+  analyticsreporting.reports.batchGet( {
+    requestBody: {
+      reportRequests: [
+      {
+        viewId: googleAnalyticsViewID,
+        dateRanges:[
+          {
+            startDate: startDate,
+            endDate: endDate
+          }],
+        metrics:[
+          {
+            expression: "ga:avgSessionDuration"
+          },
+        ],
+        dimensions: [
+          {
+            name: "ga:date"
+          }
+        ]
+      }]
+    }
+  } )
+  .then((response) => {
+    let reports = response.data.reports;
+
+    console.log("session duration data from", startDate, "to", endDate);
+    // console.log(JSON.stringify(reports))
+    let data = reports[0].data;
+
+    if (data && data.rows) {
+      data.rows.map( (row) => {
+        let date = row.dimensions[0];
+        let value = row.metrics[0].values[0];
+
+        shared.hasuraInsertSessionDuration({
+          url: apiUrl,
+          orgSlug: apiToken,
+          seconds: value,
+          date: date,
+        }).then ( (res) => {
+          if (res.errors) {
+            console.error("[GA] error inserting session duration data: ", res.errors);
+          } else {
+            console.log(" + session duration", date, value);
+          }
+        })
+        .catch((e) => console.error("[GA] Error inserting session duration data into hasura:", e ));
+      });
+    } else {
+      console.error("[GA] no session duration data found between", startDate, "and", endDate);
+    }
+  })
+  .catch((e) => console.error("[GA] Error getting session duration data:", e ));
+}
+
 async function getReferralSessions(startDate, endDate) {
   analyticsreporting.reports.batchGet( {
     requestBody: {
@@ -254,10 +311,11 @@ program
     .requiredOption('-e, --endDate <endDate>', 'end date YYYY-MM-DD')
     .description("loads metrics data from google analytics into hasura")
     .action( (opts) => {
-      getPageViews(opts.startDate, opts.endDate);
-      getSessions(opts.startDate, opts.endDate);
-      getGeoSessions(opts.startDate, opts.endDate);
-      getReferralSessions(opts.startDate, opts.endDate);
+      // getPageViews(opts.startDate, opts.endDate);
+      // getSessions(opts.startDate, opts.endDate);
+      // getGeoSessions(opts.startDate, opts.endDate);
+      // getReferralSessions(opts.startDate, opts.endDate);
+      getSessionDuration(opts.startDate, opts.endDate);
     });
 
 program.parse(process.argv);
