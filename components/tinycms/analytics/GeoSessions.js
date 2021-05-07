@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import tw from 'twin.macro';
-import { getMetricsData } from '../../../lib/analytics';
+import { hasuraGetGeoSessions } from '../../../lib/analytics';
 
 const SubHeaderContainer = tw.div`pt-10 pb-5`;
 const SubHeader = tw.h1`inline-block text-xl font-extrabold text-gray-900 tracking-tight`;
@@ -8,50 +8,43 @@ const SubHeader = tw.h1`inline-block text-xl font-extrabold text-gray-900 tracki
 const GeoSessions = (props) => {
   const geoRef = useRef();
 
-  const INITIAL_STATE = {
-    labels: [],
-    values: [],
-  };
-  const [geoReportData, setGeoReportData] = useState(INITIAL_STATE);
+  const [geoSessions, setGeoSessions] = useState([]);
+  const [totalGeoSessions, setTotalGeoSessions] = useState({});
 
   useEffect(() => {
-    const pageViewsMetric = 'ga:pageviews';
-    const sessionsMetric = 'ga:sessions';
-    const geoDimensions = ['ga:country', 'ga:region'];
+    let sessionParams = {
+      url: props.apiUrl,
+      orgSlug: props.apiToken,
+      startDate: props.startDate.format('YYYY-MM-DD'),
+      endDate: props.endDate.format('YYYY-MM-DD'),
+    };
 
-    getMetricsData(
-      props.viewID,
-      props.startDate,
-      props.endDate,
-      [sessionsMetric, pageViewsMetric],
-      geoDimensions
-    )
-      .then((response) => {
-        const queryResult = response.result.reports[0].data.rows;
+    const fetchGeoSessions = async () => {
+      const { errors, data } = await hasuraGetGeoSessions(sessionParams);
 
-        let labels = [];
-        let values = [];
+      if (errors && !data) {
+        console.error(errors);
+      }
 
-        queryResult.forEach((row) => {
-          let label = row.dimensions.join(' - ');
-          let value = row.metrics[0].values[0];
-
-          labels.push(label);
-          values.push(value);
-        });
-
-        setGeoReportData({
-          ...geoReportData,
-          labels,
-          values,
-        });
-        if (window.location.hash && window.location.hash === '#geo') {
-          if (geoRef) {
-            geoRef.current.scrollIntoView({ behavior: 'smooth' });
-          }
+      setGeoSessions(data.ga_geo_sessions);
+      let tgs = {};
+      data.ga_geo_sessions.map((session) => {
+        if (tgs[session.region]) {
+          tgs[session.region] += parseInt(session.count);
+        } else {
+          tgs[session.region] = parseInt(session.count);
         }
-      })
-      .catch((error) => console.error(error));
+      });
+      setTotalGeoSessions(tgs);
+    };
+
+    fetchGeoSessions();
+
+    if (window.location.hash && window.location.hash === '#geo') {
+      if (geoRef) {
+        geoRef.current.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
   }, [props.startDate, props.endDate]);
 
   return (
@@ -72,14 +65,13 @@ const GeoSessions = (props) => {
           </tr>
         </thead>
         <tbody>
-          {geoReportData.labels.map((label, i) => (
+          {Object.keys(totalGeoSessions).map((region, i) => (
             <tr key={`geo-report-row-${i}`}>
               <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-                {label}
+                {region}
               </td>
               <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-                {' '}
-                {geoReportData.values[i]}{' '}
+                {totalGeoSessions[region]}
               </td>
             </tr>
           ))}
