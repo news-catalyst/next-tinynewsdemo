@@ -9,8 +9,7 @@ import {
   Tooltip,
   Legend,
 } from 'recharts';
-import { getMetricsData } from '../../../lib/analytics';
-import { formatDate } from '../../../lib/utils';
+import { hasuraGetSessions } from '../../../lib/analytics';
 
 const SubHeaderContainer = tw.div`pt-10 pb-5`;
 const SubHeader = tw.h1`inline-block text-xl font-extrabold text-gray-900 tracking-tight`;
@@ -18,62 +17,39 @@ const SubHeader = tw.h1`inline-block text-xl font-extrabold text-gray-900 tracki
 const DailySessions = (props) => {
   const dailyRef = useRef();
 
-  const INITIAL_STATE = {
-    labels: [],
-    values: [],
-  };
-  const [reportData, setReportData] = useState(INITIAL_STATE);
   const [chartData, setChartData] = useState([]);
-  const [average, setAverage] = useState(0);
 
   useEffect(() => {
-    const sessionsMetric = 'ga:sessions';
-    const dimensions = ['ga:date'];
+    let sessionParams = {
+      url: props.apiUrl,
+      orgSlug: props.apiToken,
+      startDate: props.startDate.format('YYYY-MM-DD'),
+      endDate: props.endDate.format('YYYY-MM-DD'),
+    };
+    const fetchSessions = async () => {
+      const { errors, data } = await hasuraGetSessions(sessionParams);
+      let chartValues = [];
 
-    getMetricsData(
-      props.viewID,
-      props.startDate,
-      props.endDate,
-      [sessionsMetric],
-      dimensions
-    )
-      .then((response) => {
-        const queryResult = response.result.reports[0].data.rows;
-        const total = response.result.reports[0].data.totals[0].values[0];
+      if (errors && !data) {
+        console.error(errors);
+      }
+      data.ga_sessions.map((pv) => {
+        let lineDataPoint = {
+          name: pv.date,
+          sessions: parseInt(pv.count),
+        };
+        chartValues.push(lineDataPoint);
+      });
+      setChartData(chartValues);
+    };
+    fetchSessions();
 
-        setAverage(parseInt(total / response.result.reports[0].data.rowCount));
-
-        let labels = [];
-        let values = [];
-        let chartValues = [];
-
-        queryResult.forEach((row) => {
-          let formattedDate = formatDate(row.dimensions[0]);
-          let value = row.metrics[0].values[0];
-
-          let lineDataPoint = {
-            name: formattedDate,
-            sessions: parseInt(value),
-          };
-          chartValues.push(lineDataPoint);
-
-          labels.push(formattedDate);
-          values.push(value);
-        });
-        setReportData({
-          ...reportData,
-          labels,
-          values,
-        });
-        setChartData(chartValues);
-
-        if (window.location.hash && window.location.hash === '#daily') {
-          if (dailyRef) {
-            dailyRef.current.scrollIntoView({ behavior: 'smooth' });
-          }
-        }
-      })
-      .catch((error) => console.error(error));
+    console.log(chartData);
+    if (window.location.hash && window.location.hash === '#daily') {
+      if (dailyRef) {
+        dailyRef.current.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
   }, [props.startDate, props.endDate]);
 
   return (
