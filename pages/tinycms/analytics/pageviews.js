@@ -144,6 +144,8 @@ export default function PageViewsPage(props) {
                 startDate={startDate}
                 endDate={endDate}
                 pageViews={pageViews}
+                apiUrl={props.apiUrl}
+                apiToken={props.apiToken}
               />
 
               <ReadingFrequencyData
