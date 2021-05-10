@@ -361,6 +361,123 @@ async function getPageViews(startDate, endDate) {
   .catch((e) => console.error("[GA] Error getting page views:", e ));
 }
 
+async function getSubscriberDimension(startDate, endDate) {
+  analyticsreporting.reports.batchGet( {
+    requestBody: {
+      reportRequests: [
+      {
+        viewId: googleAnalyticsViewID,
+        dateRanges:[
+          {
+            startDate: startDate,
+            endDate: endDate
+          }],
+        metrics:[
+          {
+            expression: "ga:sessions"
+          },
+        ],
+        dimensions: [
+          { name: 'ga:dimension5'},
+        ],
+      }]
+    }
+  } )
+  .then((response) => {
+    let reports = response.data.reports;
+
+    console.log("subscriber data from", startDate, "to", endDate);
+    let data = reports[0].data;
+
+    if (data && data.rows) {
+      data.rows.map( (row) => {
+        let isSubscriber = parseInt(row.dimensions[0]);
+        if (isSubscriber) {
+          let count = row.metrics[0].values[0];
+          shared.hasuraInsertCustomDimension({
+            url: apiUrl,
+            orgSlug: apiToken,
+            date: startDate,
+            label: 'isSubscriber',
+            dimension: 'dimension5',
+            count: count,
+          }).then ( (res) => {
+            if (res.errors) {
+              console.error("[GA] error inserting subscriber data: ", res.errors);
+            } else {
+              console.log(" + subscriber", startDate, count);
+            }
+          })
+          .catch((e) => console.error("[GA] Error inserting subscriber data into hasura:", e ));
+        }
+      })
+    } else {
+      console.error("[GA] no subscriber data found between", startDate, "and", endDate);
+    }
+  })
+  .catch((e) => console.error("[GA] Error getting subscriber data:", e ));
+}
+
+async function getDonorDimension(startDate, endDate) {
+  analyticsreporting.reports.batchGet( {
+    requestBody: {
+      reportRequests: [
+      {
+        viewId: googleAnalyticsViewID,
+        dateRanges:[
+          {
+            startDate: startDate,
+            endDate: endDate
+          }],
+        metrics:[
+          {
+            expression: "ga:sessions"
+          },
+        ],
+        dimensions: [
+          { name: 'ga:dimension4'},
+        ],
+      }]
+    }
+  } )
+  .then((response) => {
+    let reports = response.data.reports;
+
+    console.log("donor data from", startDate, "to", endDate);
+    // console.log(JSON.stringify(reports))
+    let data = reports[0].data;
+
+    if (data && data.rows) {
+      data.rows.map( (row) => {
+        let isDonor = parseInt(row.dimensions[0]);
+        if (isDonor) {
+          let count = row.metrics[0].values[0];
+          shared.hasuraInsertCustomDimension({
+            url: apiUrl,
+            orgSlug: apiToken,
+            date: startDate,
+            label: 'isDonor',
+            dimension: 'dimension4',
+            count: count,
+          }).then ( (res) => {
+            if (res.errors) {
+              console.error("[GA] error inserting donor data: ", res.errors);
+            } else {
+              console.log(" + donor", startDate, count);
+            }
+          })
+          .catch((e) => console.error("[GA] Error inserting donor data into hasura:", e ));
+
+        }
+
+      })
+    } else {
+      console.error("[GA] no donor data found between", startDate, "and", endDate);
+    }
+  })
+  .catch((e) => console.error("[GA] Error getting donor data:", e ));
+}
+
 async function getReadingDepth(startDate, endDate) {
   analyticsreporting.reports.batchGet( {
     requestBody: {
@@ -456,6 +573,8 @@ program
     .requiredOption('-e, --endDate <endDate>', 'end date YYYY-MM-DD')
     .description("loads metrics data from google analytics into hasura")
     .action( (opts) => {
+      getSubscriberDimension(opts.startDate, opts.endDate);
+      getDonorDimension(opts.startDate, opts.endDate);
       getReadingFrequency(opts.startDate, opts.endDate);
       getReadingDepth(opts.startDate, opts.endDate);
       getPageViews(opts.startDate, opts.endDate);

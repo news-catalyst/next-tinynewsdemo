@@ -385,6 +385,34 @@ function hasuraInsertSessionDuration(params) {
   })
 }
 
+const HASURA_INSERT_CUSTOM_DIMENSION_DATA = `mutation MyMutation($count: Int!, $date: date!, $dimension: String!, $label: String!) {
+  insert_ga_custom_dimensions_one(object: {count: $count, date: $date, dimension: $dimension, label: $label}) {
+    count
+    created_at
+    date
+    dimension
+    id
+    label
+    organization_id
+    updated_at
+  }
+}`
+
+function hasuraInsertCustomDimension(params) {
+  return fetchGraphQL({
+    url: params['url'],
+    orgSlug: params['orgSlug'],
+    query: HASURA_INSERT_CUSTOM_DIMENSION_DATA,
+    name: 'MyMutation',
+    variables: {
+      count: params['count'],
+      date: params['date'],
+      dimension: params['dimension'],
+      label: params['label'],
+    },
+  })
+}
+
 const HASURA_INSERT_READING_FREQUENCY_DATA = `mutation MyMutation($category: String!, $count: Int!, $date: date!) {
   insert_ga_reading_frequency_one(object: {count: $count, category: $category, date: $date}) {
     id
@@ -529,6 +557,7 @@ module.exports = {
   hasuraGetReadingDepth,
   hasuraInsertReadingDepth,
   hasuraInsertReadingFrequency,
+  hasuraInsertCustomDimension,
   hasuraListAllLocales,
   hasuraListLocales,
   hasuraListOrganizations,
