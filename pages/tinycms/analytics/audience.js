@@ -152,18 +152,20 @@ export default function Audience(props) {
                 viewID={viewID}
                 startDate={startDate}
                 endDate={endDate}
-                metrics={['ga:sessions']}
-                dimensions={['ga:dimension4']}
+                dimension="dimension4"
                 label="Donor"
+                apiUrl={props.apiUrl}
+                apiToken={props.apiToken}
               />
 
               <CustomDimensions
                 viewID={viewID}
                 startDate={startDate}
                 endDate={endDate}
-                metrics={['ga:sessions']}
-                dimensions={['ga:dimension5']}
+                dimension="dimension5"
                 label="Subscriber"
+                apiUrl={props.apiUrl}
+                apiToken={props.apiToken}
               />
             </SettingsContainer>
           )}
@@ -178,6 +180,8 @@ export default function Audience(props) {
 export async function getServerSideProps(context) {
   const clientID = process.env.ANALYTICS_CLIENT_ID;
   const clientSecret = process.env.ANALYTICS_CLIENT_SECRET;
+  const apiUrl = process.env.HASURA_API_URL;
+  const apiToken = process.env.ORG_SLUG;
 
   mailchimp.setConfig({
     apiKey: process.env.MAILCHIMP_API_KEY,
@@ -196,6 +200,8 @@ export async function getServerSideProps(context) {
 
   return {
     props: {
+      apiUrl,
+      apiToken,
       clientID: clientID,
       clientSecret: clientSecret,
       mailchimpKey: process.env.MAILCHIMP_API_KEY,
