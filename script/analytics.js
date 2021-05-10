@@ -457,12 +457,12 @@ program
     .description("loads metrics data from google analytics into hasura")
     .action( (opts) => {
       getReadingFrequency(opts.startDate, opts.endDate);
-      // getReadingDepth(opts.startDate, opts.endDate);
-      // getPageViews(opts.startDate, opts.endDate);
-      // getSessions(opts.startDate, opts.endDate);
-      // getGeoSessions(opts.startDate, opts.endDate);
-      // getReferralSessions(opts.startDate, opts.endDate);
-      // getSessionDuration(opts.startDate, opts.endDate);
+      getReadingDepth(opts.startDate, opts.endDate);
+      getPageViews(opts.startDate, opts.endDate);
+      getSessions(opts.startDate, opts.endDate);
+      getGeoSessions(opts.startDate, opts.endDate);
+      getReferralSessions(opts.startDate, opts.endDate);
+      getSessionDuration(opts.startDate, opts.endDate);
     });
 
 program.parse(process.argv);
