@@ -385,6 +385,32 @@ function hasuraInsertSessionDuration(params) {
   })
 }
 
+const HASURA_INSERT_READING_FREQUENCY_DATA = `mutation MyMutation($category: String!, $count: Int!, $date: date!) {
+  insert_ga_reading_frequency_one(object: {count: $count, category: $category, date: $date}) {
+    id
+    updated_at
+    organization_id
+    date
+    created_at
+    category
+    count
+  }
+}`;
+
+function hasuraInsertReadingFrequency(params) {
+  return fetchGraphQL({
+    url: params['url'],
+    orgSlug: params['orgSlug'],
+    query: HASURA_INSERT_READING_FREQUENCY_DATA,
+    name: 'MyMutation',
+    variables: {
+      category: params['category'],
+      count: params['count'],
+      date: params['date'],
+    },
+  })
+}
+
 const HASURA_INSERT_READING_DEPTH_DATA = `mutation MyMutation($date: date!, $path: String!, $read_100: float8!, $read_25: float8!, $read_50: float8!, $read_75: float8!) {
   insert_ga_reading_depth_one(object: {path: $path, date: $date, read_25: $read_25, read_50: $read_50, read_75: $read_75, read_100: $read_100}) {
     id
@@ -502,6 +528,7 @@ module.exports = {
   hasuraInsertReferralSession,
   hasuraGetReadingDepth,
   hasuraInsertReadingDepth,
+  hasuraInsertReadingFrequency,
   hasuraListAllLocales,
   hasuraListLocales,
   hasuraListOrganizations,
