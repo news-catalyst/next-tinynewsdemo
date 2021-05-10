@@ -305,17 +305,107 @@ async function getPageViews(startDate, endDate) {
   .catch((e) => console.error("[GA] Error getting page views:", e ));
 }
 
+async function getReadingDepth(startDate, endDate) {
+  analyticsreporting.reports.batchGet( {
+    requestBody: {
+      reportRequests: [
+      {
+        viewId: googleAnalyticsViewID,
+        dateRanges:[
+          {
+            startDate: startDate,
+            endDate: endDate
+          }],
+        metrics:[
+          {
+            expression: "ga:totalEvents"
+          },
+        ],
+        dimensions: [
+          { name: 'ga:eventAction'},
+          { name: 'ga:eventCategory'},
+          { name: 'ga:eventLabel'},
+          { name: 'ga:pagePath'},
+        ],
+        filtersExpression: 'ga:eventCategory==NTG Article Milestone',
+      }]
+    }
+  } )
+  .then((response) => {
+    let reports = response.data.reports;
+
+    console.log("reading depth data from", startDate, "to", endDate);
+    // console.log(JSON.stringify(reports))
+    let data = reports[0].data;
+
+    if (data && data.rows) {
+      let collectedData = {};
+      data.rows.map( (row) => {
+        let articlePath = shared.sanitizePath(row.dimensions[3]);
+
+        if (articlePath !== '/') {
+          let percentage = row.dimensions[0];
+          let label = `read_${percentage.replace('%', '')}`;
+          let count = parseInt(row.metrics[0].values[0]);
+
+          // console.log(`* ${articlePath} ${label} ${count}`)
+          if (!collectedData[articlePath]) {
+            collectedData[articlePath] = {};
+          }
+          if (!collectedData[articlePath][label]) {
+            collectedData[articlePath][label] = count;
+          } else {
+            collectedData[articlePath][label] += count;
+          }
+
+          collectedData[articlePath]['date'] = startDate;
+        }
+      });
+      // console.log("collectedData:", collectedData);
+      Object.keys(collectedData).map((path) => {
+        let cd = collectedData[path];
+        let read25 = cd['read_25'] || 0;
+        let read50 = cd['read_50'] || 0;
+        let read75 = cd['read_75'] || 0;
+        let read100 = cd['read_100'] || 0;
+        shared.hasuraInsertReadingDepth({
+          url: apiUrl,
+          orgSlug: apiToken,
+          date: cd['date'],
+          path: path,
+          read_25: read25,
+          read_50: read50,
+          read_75: read75,
+          read_100: read100,
+        }).then ( (res) => {
+          if (res.errors) {
+            console.error("[GA] error inserting reading depth data: ", res.errors);
+          } else {
+            console.log(" + reading depth", cd['date'], path);
+          }
+        })
+        .catch((e) => console.error("[GA] Error inserting reading depth data into hasura:", e ));
+
+      })
+    } else {
+      console.error("[GA] no reading depth data found between", startDate, "and", endDate);
+    }
+  })
+  .catch((e) => console.error("[GA] Error getting session duration data:", e ));
+}
+
 program
     // .requiredOption('-v, --view <viewId>', 'view id for the property profile in GA')
     .requiredOption('-s, --startDate <startDate>', 'start date YYYY-MM-DD')
     .requiredOption('-e, --endDate <endDate>', 'end date YYYY-MM-DD')
     .description("loads metrics data from google analytics into hasura")
     .action( (opts) => {
+      getReadingDepth(opts.startDate, opts.endDate);
       // getPageViews(opts.startDate, opts.endDate);
       // getSessions(opts.startDate, opts.endDate);
       // getGeoSessions(opts.startDate, opts.endDate);
       // getReferralSessions(opts.startDate, opts.endDate);
-      getSessionDuration(opts.startDate, opts.endDate);
+      // getSessionDuration(opts.startDate, opts.endDate);
     });
 
 program.parse(process.argv);

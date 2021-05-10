@@ -1,3 +1,4 @@
+const { replace } = require("formik");
 const fetch = require("node-fetch");
 
 const INSERT_ORGANIZATION_MUTATION = `mutation MyMutation($slug: String = "", $name: String = "") {
@@ -384,6 +385,64 @@ function hasuraInsertSessionDuration(params) {
   })
 }
 
+const HASURA_INSERT_READING_DEPTH_DATA = `mutation MyMutation($date: date!, $path: String!, $read_100: float8!, $read_25: float8!, $read_50: float8!, $read_75: float8!) {
+  insert_ga_reading_depth_one(object: {path: $path, date: $date, read_25: $read_25, read_50: $read_50, read_75: $read_75, read_100: $read_100}) {
+    id
+    date
+    organization_id
+    path
+    read_100
+    read_25
+    read_50
+    read_75
+    updated_at
+    created_at
+  }
+}`;
+
+const HASURA_GET_READING_DEPTH_DATA = `query MyQuery($path: String_comparison_exp, $date: date_comparison_exp) {
+  ga_reading_depth(where: {path: $path, date: $date}) {
+    date
+    id
+    organization_id
+    path
+    read_100
+    read_25
+    read_50
+    read_75
+  }
+}`;
+
+function hasuraGetReadingDepth(params) {
+  return fetchGraphQL({
+    url: params['url'],
+    orgSlug: params['orgSlug'],
+    query: HASURA_GET_READING_DEPTH_DATA,
+    name: 'MyQuery',
+    variables: {
+      path: params['path'],
+      date: params['date'],
+    },
+  })
+}
+
+function hasuraInsertReadingDepth(params) {
+  return fetchGraphQL({
+    url: params['url'],
+    orgSlug: params['orgSlug'],
+    query: HASURA_INSERT_READING_DEPTH_DATA,
+    name: 'MyMutation',
+    variables: {
+      date: params['date'],
+      path: params['path'],
+      read_25: params['read_25'],
+      read_50: params['read_50'],
+      read_75: params['read_75'],
+      read_100: params['read_100'],
+    },
+  })
+}
+
 async function fetchGraphQL(params) {
   let url;
   let orgSlug;
@@ -423,6 +482,16 @@ async function fetchGraphQL(params) {
   return await result.json();
 }
 
+function sanitizePath(path) {
+  if (/\?/.test(path)) {
+    path = path.split('?')[0];
+  }
+  if (/\/en-US\//.test(path)) {
+    path = path.replace('/en-US', '');
+  }
+  return path;
+}
+
 module.exports = {
   hasuraInsertOrganization,
   hasuraInsertOrgLocales,
@@ -431,6 +500,8 @@ module.exports = {
   hasuraInsertSessionDuration,
   hasuraInsertGeoSession,
   hasuraInsertReferralSession,
+  hasuraGetReadingDepth,
+  hasuraInsertReadingDepth,
   hasuraListAllLocales,
   hasuraListLocales,
   hasuraListOrganizations,
@@ -441,5 +512,6 @@ module.exports = {
   hasuraInsertSections,
   hasuraUpsertSection,
   hasuraRemoveOrganization,
-  fetchGraphQL
+  fetchGraphQL,
+  sanitizePath
 }
