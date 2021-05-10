@@ -1,58 +1,39 @@
 import React, { useState, useEffect, useRef } from 'react';
 import tw from 'twin.macro';
-import { getMetricsData } from '../../../lib/analytics';
+import { hasuraGetCustomDimension } from '../../../lib/analytics';
 
 const SubHeaderContainer = tw.div`pt-10 pb-5`;
 const SubHeader = tw.h1`inline-block text-xl font-extrabold text-gray-900 tracking-tight`;
 
 const CustomDimensions = (props) => {
   const subscriptionsRef = useRef();
-  const INITIAL_STATE = {
-    labels: [],
-    values: [],
-  };
-  const [data, setData] = useState(INITIAL_STATE);
+  const [customDims, setCustomDims] = useState([]);
 
   useEffect(() => {
-    getMetricsData(
-      props.viewID,
-      props.startDate,
-      props.endDate,
-      props.metrics,
-      props.dimensions
-    )
-      .then((response) => {
-        const queryResult = response.result.reports[0].data.rows;
+    let params = {
+      url: props.apiUrl,
+      orgSlug: props.apiToken,
+      startDate: props.startDate.format('YYYY-MM-DD'),
+      endDate: props.endDate.format('YYYY-MM-DD'),
+      dimension: props.dimension,
+    };
+    const fetchCustomDimension = async () => {
+      const { errors, data } = await hasuraGetCustomDimension(params);
 
-        if (!queryResult) {
-          console.error('No results found for ' + props.dimensions);
-          return;
-        }
+      if (errors && !data) {
+        console.error(errors);
+      }
 
-        let labels = [];
-        let values = [];
+      console.log('data:', data);
+      setCustomDims(data.ga_custom_dimensions);
+    };
+    fetchCustomDimension();
 
-        queryResult.forEach((row) => {
-          let label = row.dimensions.join(' - ');
-          let value = row.metrics[0].values[0];
-
-          labels.push(label);
-          values.push(value);
-        });
-
-        setData({
-          ...data,
-          labels,
-          values,
-        });
-
-        if (window.location.hash && window.location.hash === '#subscriptions') {
-          if (subscriptionsRef) {
-            subscriptionsRef.current.scrollIntoView({ behavior: 'smooth' });
-          }
-        }
-      })
-      .catch((error) => console.error(error));
+    if (window.location.hash && window.location.hash === '#subscriptions') {
+      if (subscriptionsRef) {
+        subscriptionsRef.current.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
   }, [props.startDate, props.endDate]);
 
   return (
@@ -72,18 +53,18 @@ const CustomDimensions = (props) => {
           </tr>
         </thead>
         <tbody>
-          {data.labels.length > 0 &&
-            data.labels.map((label, i) => (
+          {customDims.length > 0 &&
+            customDims.map((item, i) => (
               <tr key={`label-row-${i}`}>
                 <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-                  {label}
+                  {item.date}
                 </td>
                 <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-                  {data.values[i]}
+                  {item.count}
                 </td>
               </tr>
             ))}
-          {data.labels.length === 0 && (
+          {customDims.length === 0 && (
             <tr>
               <td
                 colSpan="2"
