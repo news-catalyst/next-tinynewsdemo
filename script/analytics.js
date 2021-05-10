@@ -249,6 +249,62 @@ async function getSessions(startDate, endDate) {
   .catch((e) => console.error("[GA] Error getting sessions:", e ));
 }
 
+async function getReadingFrequency(startDate, endDate) {
+  analyticsreporting.reports.batchGet( {
+    requestBody: {
+      reportRequests: [
+      {
+        viewId: googleAnalyticsViewID,
+        dateRanges:[
+          {
+            startDate: startDate,
+            endDate: endDate
+          }],
+        metrics:[
+          {
+            expression: "ga:pageviews"
+          }],
+        dimensions: [
+          {
+            name: "ga:dimension2"
+          }]
+      }]
+    }
+  } )
+  .then((response) => {
+    let reports = response.data.reports;
+
+    console.log("reading frequency data from", startDate, "to", endDate);
+    // console.log(JSON.stringify(reports))
+    let data = reports[0].data;
+
+    if (data && data.rows) {
+      data.rows.map( (row) => {
+        let category = row.dimensions.join(' - ');
+        let count = row.metrics[0].values[0];
+
+        shared.hasuraInsertReadingFrequency({
+          url: apiUrl,
+          orgSlug: apiToken,
+          count: count,
+          date: startDate,
+          category: category,
+        }).then ( (res) => {
+          if (res.errors) {
+            console.error("[GA] error inserting reading frequency data: ", res.errors);
+          } else {
+            console.log(" + reading frequency ", category, count);
+          }
+        })
+        .catch((e) => console.error("[GA] Error inserting reading frequency data into hasura:", e ));
+      });
+    } else {
+      console.error("[GA] no reading frequency data found between", startDate, "and", endDate);
+    }
+  })
+  .catch((e) => console.error("[GA] Error getting reading frequency:", e ));
+}
+
 async function getPageViews(startDate, endDate) {
   analyticsreporting.reports.batchGet( {
     requestBody: {
@@ -400,7 +456,8 @@ program
     .requiredOption('-e, --endDate <endDate>', 'end date YYYY-MM-DD')
     .description("loads metrics data from google analytics into hasura")
     .action( (opts) => {
-      getReadingDepth(opts.startDate, opts.endDate);
+      getReadingFrequency(opts.startDate, opts.endDate);
+      // getReadingDepth(opts.startDate, opts.endDate);
       // getPageViews(opts.startDate, opts.endDate);
       // getSessions(opts.startDate, opts.endDate);
       // getGeoSessions(opts.startDate, opts.endDate);
