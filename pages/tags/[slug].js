@@ -120,7 +120,7 @@ export async function getStaticProps({ locale, params }) {
     }
   }
 
-  const allAds = await cachedContents('ads', getArticleAds);
+  const allAds = (await cachedContents('ads', getArticleAds)) || [];
   const expandedAds = allAds.filter((ad) => ad.adTypeId === 166);
 
   return {
