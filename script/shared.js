@@ -1,6 +1,34 @@
 const { replace } = require("formik");
 const fetch = require("node-fetch");
 
+const INSERT_DATA_IMPORT = `mutation MyMutation($notes: String, $end_date: date, $start_date: date, $table_name: String) {
+  insert_ga_data_imports_one(object: {end_date: $end_date, notes: $notes, start_date: $start_date, table_name: $table_name}) {
+    id
+    notes
+    end_date
+    created_at
+    organization_id
+    start_date
+    table_name
+    updated_at
+  }
+}`;
+
+function hasuraInsertDataImport(params) {
+  return fetchGraphQL({
+    url: params['url'],
+    orgSlug: params['orgSlug'],
+    query: INSERT_DATA_IMPORT,
+    name: 'MyMutation',
+    variables: {
+      notes: params['notes'],
+      end_date: params['end_date'],
+      start_date: params['start_date'],
+      table_name: params['table_name'],
+    },
+  });
+}
+
 const INSERT_ORGANIZATION_MUTATION = `mutation MyMutation($slug: String = "", $name: String = "") {
   insert_organizations_one(object: {name: $name, slug: $slug}) {
     id
@@ -595,6 +623,7 @@ module.exports = {
   hasuraUpsertHomepageLayout,
   hasuraUpsertMetadata,
   hasuraInsertSections,
+  hasuraInsertDataImport,
   hasuraUpsertSection,
   hasuraRemoveOrganization,
   fetchGraphQL,

@@ -43,6 +43,8 @@ async function getSessionDuration(startDate, endDate) {
     }
   } )
   .then((response) => {
+    let successfulRun = true;
+
     let reports = response.data.reports;
 
     console.log("session duration data from", startDate, "to", endDate);
@@ -62,12 +64,26 @@ async function getSessionDuration(startDate, endDate) {
         }).then ( (res) => {
           if (res.errors) {
             console.error("[GA] error inserting session duration data: ", res.errors);
+            successfulRun = false;
           } else {
             console.log(" + session duration", date, value);
           }
         })
-        .catch((e) => console.error("[GA] Error inserting session duration data into hasura:", e ));
+        .catch((e) => {
+          console.error("[GA] Error inserting session duration data into hasura:", e )
+          successfulRun = false;
+        });
       });
+      shared.hasuraInsertDataImport({
+        url: apiUrl,
+        orgSlug: apiToken,
+        table_name: "ga_session_duration",
+        start_date: startDate,
+        end_date: endDate,
+      }).then( (res) => {
+        console.log("[GA] updated data audits table:", res);
+      })
+      .catch( (e) => console.error("[GA] Error updating data audits table:", e, res));
     } else {
       console.error("[GA] no session duration data found between", startDate, "and", endDate);
     }
@@ -701,16 +717,16 @@ program
     .requiredOption('-e, --endDate <endDate>', 'end date YYYY-MM-DD')
     .description("loads metrics data from google analytics into hasura")
     .action( (opts) => {
-      getNewsletterImpressions(opts.startDate, opts.endDate);
-      getNewsletterDimension(opts.startDate, opts.endDate);
-      getSubscriberDimension(opts.startDate, opts.endDate);
-      getDonorDimension(opts.startDate, opts.endDate);
-      getReadingFrequency(opts.startDate, opts.endDate);
-      getReadingDepth(opts.startDate, opts.endDate);
-      getPageViews(opts.startDate, opts.endDate);
-      getSessions(opts.startDate, opts.endDate);
-      getGeoSessions(opts.startDate, opts.endDate);
-      getReferralSessions(opts.startDate, opts.endDate);
+      // getNewsletterImpressions(opts.startDate, opts.endDate);
+      // getNewsletterDimension(opts.startDate, opts.endDate);
+      // getSubscriberDimension(opts.startDate, opts.endDate);
+      // getDonorDimension(opts.startDate, opts.endDate);
+      // getReadingFrequency(opts.startDate, opts.endDate);
+      // getReadingDepth(opts.startDate, opts.endDate);
+      // getPageViews(opts.startDate, opts.endDate);
+      // getSessions(opts.startDate, opts.endDate);
+      // getGeoSessions(opts.startDate, opts.endDate);
+      // getReferralSessions(opts.startDate, opts.endDate);
       getSessionDuration(opts.startDate, opts.endDate);
     });
 
