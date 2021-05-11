@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from 'react';
+import useSWR from 'swr';
 import tw from 'twin.macro';
 import AdminLayout from '../../../components/AdminLayout';
 import AdminNav from '../../../components/nav/AdminNav';
 import AnalyticsNav from '../../../components/tinycms/analytics/AnalyticsNav';
 import AnalyticsSidebar from '../../../components/tinycms/analytics/AnalyticsSidebar';
-import {
-  hasuraGetDataImports,
-  getSessionDuration,
-} from '../../../lib/analytics';
+import { hasuraGetDataImports } from '../../../lib/analytics';
 import moment from 'moment';
 
 const Container = tw.div`flex flex-wrap -mx-2 mb-8`;
@@ -18,6 +16,8 @@ const MainContent = tw.div`w-full lg:w-1/2 px-2`;
 const SettingsContainer = tw.div`min-w-0 w-full flex-auto lg:static lg:max-h-full lg:overflow-visible p-2`;
 const HeaderContainer = tw.div`pt-5 pb-10`;
 const Header = tw.h1`inline-block text-3xl font-extrabold text-gray-900 tracking-tight`;
+
+// const fetcher = (url) => fetch(url).then((res) => res.json())
 
 export default function AnalyticsIndex(props) {
   const [updateKey, setUpdateKey] = useState(Math.random());
@@ -33,22 +33,10 @@ export default function AnalyticsIndex(props) {
   const [dataImports, setDataImports] = useState([]);
 
   function triggerImport(event) {
-    let tableName = event.target.value;
-    switch (tableName) {
-      case 'ga_session_duration':
-        console.log(tableName, startDate, endDate);
-        var result = getSessionDuration({
-          startDate: startDate,
-          endDate: endDate,
-          viewID: props.googleAnalyticsViewID,
-          apiUrl: props.apiUrl,
-          orgSlug: props.apiToken,
-        });
-        if (result) {
-          setUpdateKey(Math.random());
-        }
-        break;
-    }
+    // let tableName = event.target.value;
+    // const { data, error } = useSWR(`/api/data-import/${tableName}`, fetcher);
+    if (error) return error;
+    if (!data) return data;
   }
 
   const initAuth = () => {
