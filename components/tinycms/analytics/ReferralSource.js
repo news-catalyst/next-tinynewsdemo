@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import tw from 'twin.macro';
-import { getMetricsData } from '../../../lib/analytics';
+import { hasuraGetReferralSessions } from '../../../lib/analytics';
 
 const SubHeaderContainer = tw.div`pt-10 pb-5`;
 const SubHeader = tw.h1`inline-block text-xl font-extrabold text-gray-900 tracking-tight`;
@@ -8,53 +8,43 @@ const SubHeader = tw.h1`inline-block text-xl font-extrabold text-gray-900 tracki
 const ReferralSource = (props) => {
   const referralRef = useRef();
 
-  const INITIAL_STATE = {
-    labels: [],
-    values: [],
-  };
-  const [referralData, setReferralData] = useState(INITIAL_STATE);
+  const [referralSessions, setReferralSessions] = useState([]);
+  const [totalReferralSessions, setTotalReferralSessions] = useState({});
 
   useEffect(() => {
-    const referralDimension = ['ga:source'];
-    const sessionsMetric = 'ga:sessions';
+    let sessionParams = {
+      url: props.apiUrl,
+      orgSlug: props.apiToken,
+      startDate: props.startDate.format('YYYY-MM-DD'),
+      endDate: props.endDate.format('YYYY-MM-DD'),
+    };
 
-    getMetricsData(
-      props.viewID,
-      props.startDate,
-      props.endDate,
-      [sessionsMetric],
-      referralDimension
-    )
-      .then((response) => {
-        const queryResult = response.result.reports[0].data.rows;
+    const fetchReferralSessions = async () => {
+      const { errors, data } = await hasuraGetReferralSessions(sessionParams);
 
-        let labels = [];
-        let values = [];
+      if (errors && !data) {
+        console.error(errors);
+      }
 
-        queryResult.forEach((row) => {
-          let label = row.dimensions[0];
-          if (label === '/') {
-            label += ' (homepage)';
-          }
-          let value = row.metrics[0].values[0];
-
-          labels.push(label);
-          values.push(value);
-        });
-
-        setReferralData({
-          ...referralData,
-          labels,
-          values,
-        });
-
-        if (window.location.hash && window.location.hash === '#referral') {
-          if (referralRef) {
-            referralRef.current.scrollIntoView({ behavior: 'smooth' });
-          }
+      setReferralSessions(data.ga_referral_sessions);
+      let trs = {};
+      data.ga_referral_sessions.map((session) => {
+        if (trs[session.source]) {
+          trs[session.source] += parseInt(session.count);
+        } else {
+          trs[session.source] = parseInt(session.count);
         }
-      })
-      .catch((error) => console.error(error));
+      });
+      setTotalReferralSessions(trs);
+    };
+
+    fetchReferralSessions();
+
+    if (window.location.hash && window.location.hash === '#referral') {
+      if (referralRef) {
+        referralRef.current.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
   }, [props.startDate, props.endDate]);
 
   return (
@@ -75,13 +65,13 @@ const ReferralSource = (props) => {
           </tr>
         </thead>
         <tbody>
-          {referralData.labels.map((label, i) => (
+          {Object.keys(totalReferralSessions).map((source, i) => (
             <tr key={`referral-data-row-${i}`}>
               <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-                {label}
+                {source}
               </td>
               <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-                {referralData.values[i]}
+                {totalReferralSessions[source]}
               </td>
             </tr>
           ))}

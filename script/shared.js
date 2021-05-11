@@ -1,3 +1,4 @@
+const { replace } = require("formik");
 const fetch = require("node-fetch");
 
 const INSERT_ORGANIZATION_MUTATION = `mutation MyMutation($slug: String = "", $name: String = "") {
@@ -258,6 +259,272 @@ function hasuraListOrganizations(params) {
   });
 }
 
+const HASURA_INSERT_PAGE_VIEW_DATA = `mutation MyMutation($count: Int!, $date: date!, $path: String!) {
+  insert_ga_page_views_one(object: {count: $count, date: $date, path: $path}) {
+    updated_at
+    id
+    path
+    created_at
+    count
+    date
+    organization_id
+  }
+}`;
+
+function hasuraInsertPageView(params) {
+  return fetchGraphQL({
+    url: params['url'],
+    orgSlug: params['orgSlug'],
+    query: HASURA_INSERT_PAGE_VIEW_DATA,
+    name: 'MyMutation',
+    variables: {
+      count: params['count'],
+      date: params['date'],
+      path: params['path'],
+    },
+  })
+}
+
+const HASURA_INSERT_REFERRAL_SESSION_DATA = `mutation MyMutation($count: Int!, $date: date!, $source: String!) {
+  insert_ga_referral_sessions_one(object: {source: $source, count: $count, date: $date}) {
+    updated_at
+    id
+    created_at
+    source
+    count
+    date
+    organization_id
+  }
+}`;
+
+function hasuraInsertReferralSession(params) {
+  return fetchGraphQL({
+    url: params['url'],
+    orgSlug: params['orgSlug'],
+    query: HASURA_INSERT_REFERRAL_SESSION_DATA,
+    name: 'MyMutation',
+    variables: {
+      count: params['count'],
+      source: params['source'],
+      date: params['date'],
+    },
+  })
+}
+
+const HASURA_INSERT_GEO_SESSION_DATA = `mutation MyMutation($count: Int!, $date: date!, $region: String!) {
+  insert_ga_geo_sessions_one(object: {region: $region, count: $count, date: $date}) {
+    updated_at
+    id
+    created_at
+    region
+    count
+    date
+    organization_id
+  }
+}`;
+
+function hasuraInsertGeoSession(params) {
+  return fetchGraphQL({
+    url: params['url'],
+    orgSlug: params['orgSlug'],
+    query: HASURA_INSERT_GEO_SESSION_DATA,
+    name: 'MyMutation',
+    variables: {
+      count: params['count'],
+      region: params['region'],
+      date: params['date'],
+    },
+  })
+}
+
+const HASURA_INSERT_SESSION_DATA = `mutation MyMutation($count: Int!, $date: date!) {
+  insert_ga_sessions_one(object: {count: $count, date: $date}) {
+    updated_at
+    id
+    created_at
+    count
+    date
+    organization_id
+  }
+}`;
+
+function hasuraInsertSession(params) {
+  return fetchGraphQL({
+    url: params['url'],
+    orgSlug: params['orgSlug'],
+    query: HASURA_INSERT_SESSION_DATA,
+    name: 'MyMutation',
+    variables: {
+      count: params['count'],
+      date: params['date'],
+    },
+  })
+}
+
+const HASURA_INSERT_SESSION_DURATION_DATA = `mutation MyMutation($seconds: float8!, $date: date!) {
+  insert_ga_session_duration_one(object: {seconds: $seconds, date: $date}) {
+    updated_at
+    id
+    created_at
+    seconds
+    date
+    organization_id
+  }
+}`;
+
+function hasuraInsertSessionDuration(params) {
+  return fetchGraphQL({
+    url: params['url'],
+    orgSlug: params['orgSlug'],
+    query: HASURA_INSERT_SESSION_DURATION_DATA,
+    name: 'MyMutation',
+    variables: {
+      seconds: params['seconds'],
+      date: params['date'],
+    },
+  })
+}
+
+const HASURA_INSERT_NEWSLETTER_IMPRESSION_DATA = `mutation MyMutation($action: String!, $date: date!, $impressions: Int!, $path: String!) {
+  insert_ga_newsletter_impressions_one(object: {action: $action, date: $date, impressions: $impressions, path: $path}) {
+    action
+    created_at
+    date
+    id
+    impressions
+    organization_id
+    path
+    updated_at
+  }
+}`;
+
+function hasuraInsertNewsletterImpression(params) {
+  return fetchGraphQL({
+    url: params['url'],
+    orgSlug: params['orgSlug'],
+    query: HASURA_INSERT_NEWSLETTER_IMPRESSION_DATA,
+    name: 'MyMutation',
+    variables: {
+      action: params['action'],
+      date: params['date'],
+      impressions: params['impressions'],
+      path: params['path'],
+    },
+  })
+}
+
+const HASURA_INSERT_CUSTOM_DIMENSION_DATA = `mutation MyMutation($count: Int!, $date: date!, $dimension: String!, $label: String!) {
+  insert_ga_custom_dimensions_one(object: {count: $count, date: $date, dimension: $dimension, label: $label}) {
+    count
+    created_at
+    date
+    dimension
+    id
+    label
+    organization_id
+    updated_at
+  }
+}`
+
+function hasuraInsertCustomDimension(params) {
+  return fetchGraphQL({
+    url: params['url'],
+    orgSlug: params['orgSlug'],
+    query: HASURA_INSERT_CUSTOM_DIMENSION_DATA,
+    name: 'MyMutation',
+    variables: {
+      count: params['count'],
+      date: params['date'],
+      dimension: params['dimension'],
+      label: params['label'],
+    },
+  })
+}
+
+const HASURA_INSERT_READING_FREQUENCY_DATA = `mutation MyMutation($category: String!, $count: Int!, $date: date!) {
+  insert_ga_reading_frequency_one(object: {count: $count, category: $category, date: $date}) {
+    id
+    updated_at
+    organization_id
+    date
+    created_at
+    category
+    count
+  }
+}`;
+
+function hasuraInsertReadingFrequency(params) {
+  return fetchGraphQL({
+    url: params['url'],
+    orgSlug: params['orgSlug'],
+    query: HASURA_INSERT_READING_FREQUENCY_DATA,
+    name: 'MyMutation',
+    variables: {
+      category: params['category'],
+      count: params['count'],
+      date: params['date'],
+    },
+  })
+}
+
+const HASURA_INSERT_READING_DEPTH_DATA = `mutation MyMutation($date: date!, $path: String!, $read_100: float8!, $read_25: float8!, $read_50: float8!, $read_75: float8!) {
+  insert_ga_reading_depth_one(object: {path: $path, date: $date, read_25: $read_25, read_50: $read_50, read_75: $read_75, read_100: $read_100}) {
+    id
+    date
+    organization_id
+    path
+    read_100
+    read_25
+    read_50
+    read_75
+    updated_at
+    created_at
+  }
+}`;
+
+const HASURA_GET_READING_DEPTH_DATA = `query MyQuery($path: String_comparison_exp, $date: date_comparison_exp) {
+  ga_reading_depth(where: {path: $path, date: $date}) {
+    date
+    id
+    organization_id
+    path
+    read_100
+    read_25
+    read_50
+    read_75
+  }
+}`;
+
+function hasuraGetReadingDepth(params) {
+  return fetchGraphQL({
+    url: params['url'],
+    orgSlug: params['orgSlug'],
+    query: HASURA_GET_READING_DEPTH_DATA,
+    name: 'MyQuery',
+    variables: {
+      path: params['path'],
+      date: params['date'],
+    },
+  })
+}
+
+function hasuraInsertReadingDepth(params) {
+  return fetchGraphQL({
+    url: params['url'],
+    orgSlug: params['orgSlug'],
+    query: HASURA_INSERT_READING_DEPTH_DATA,
+    name: 'MyMutation',
+    variables: {
+      date: params['date'],
+      path: params['path'],
+      read_25: params['read_25'],
+      read_50: params['read_50'],
+      read_75: params['read_75'],
+      read_100: params['read_100'],
+    },
+  })
+}
+
 async function fetchGraphQL(params) {
   let url;
   let orgSlug;
@@ -284,11 +551,6 @@ async function fetchGraphQL(params) {
   let operationName = params['name'];
   let variables = params['variables'];
 
-  // console.log(JSON.stringify({
-  //   query: operationQuery,
-  //   variables: variables,
-  //   operationName: operationName}))
-
   const result = await fetch(url, {
     method: 'POST',
     headers: requestHeaders,
@@ -302,9 +564,29 @@ async function fetchGraphQL(params) {
   return await result.json();
 }
 
+function sanitizePath(path) {
+  if (/\?/.test(path)) {
+    path = path.split('?')[0];
+  }
+  if (/\/en-US\//.test(path)) {
+    path = path.replace('/en-US', '');
+  }
+  return path;
+}
+
 module.exports = {
   hasuraInsertOrganization,
   hasuraInsertOrgLocales,
+  hasuraInsertPageView,
+  hasuraInsertSession,
+  hasuraInsertSessionDuration,
+  hasuraInsertGeoSession,
+  hasuraInsertReferralSession,
+  hasuraGetReadingDepth,
+  hasuraInsertReadingDepth,
+  hasuraInsertReadingFrequency,
+  hasuraInsertCustomDimension,
+  hasuraInsertNewsletterImpression,
   hasuraListAllLocales,
   hasuraListLocales,
   hasuraListOrganizations,
@@ -315,5 +597,6 @@ module.exports = {
   hasuraInsertSections,
   hasuraUpsertSection,
   hasuraRemoveOrganization,
-  fetchGraphQL
+  fetchGraphQL,
+  sanitizePath
 }
