@@ -133,6 +133,9 @@ export default function NewsletterOverview(props) {
                 viewID={viewID}
                 startDate={startDate}
                 endDate={endDate}
+                apiUrl={props.apiUrl}
+                apiToken={props.apiToken}
+                dimension="dimension2"
               />
 
               <MailchimpReport
@@ -151,6 +154,8 @@ export default function NewsletterOverview(props) {
   );
 }
 export async function getServerSideProps(context) {
+  const apiUrl = process.env.HASURA_API_URL;
+  const apiToken = process.env.ORG_SLUG;
   const clientID = process.env.ANALYTICS_CLIENT_ID;
   const clientSecret = process.env.ANALYTICS_CLIENT_SECRET;
 
@@ -171,6 +176,8 @@ export async function getServerSideProps(context) {
 
   return {
     props: {
+      apiUrl,
+      apiToken,
       clientID: clientID,
       clientSecret: clientSecret,
       mailchimpKey: process.env.MAILCHIMP_API_KEY,

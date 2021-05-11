@@ -478,6 +478,134 @@ async function getDonorDimension(startDate, endDate) {
   .catch((e) => console.error("[GA] Error getting donor data:", e ));
 }
 
+async function getNewsletterDimension(startDate, endDate) {
+  analyticsreporting.reports.batchGet( {
+    requestBody: {
+      reportRequests: [
+      {
+        viewId: googleAnalyticsViewID,
+        dateRanges:[
+          {
+            startDate: startDate,
+            endDate: endDate
+          }],
+        metrics:[
+          {
+            expression: "ga:totalEvents"
+          },
+        ],
+        dimensions: [
+          { name: 'ga:eventCategory'},
+          { name: 'ga:eventAction'},
+          { name: 'ga:eventLabel'},
+          { name: 'ga:dimension2'},
+          { name: 'ga:date'},
+        ],
+        filtersExpression: 'ga:eventCategory==NTG Newsletter;ga:eventAction==Newsletter Signup',
+      }]
+    }
+  } )
+  .then((response) => {
+    let reports = response.data.reports;
+
+    console.log("newsletter signup form data from", startDate, "to", endDate);
+    // console.log(JSON.stringify(reports))
+    let data = reports[0].data;
+
+    if (data && data.rows) {
+      data.rows.map( (row) => {
+        let frequency = row.dimensions[3];
+        let metricDate = row.dimensions[4];
+        let signupCount = parseInt(row.metrics[0].values[0]);
+
+        shared.hasuraInsertCustomDimension({
+          url: apiUrl,
+          orgSlug: apiToken,
+          date: metricDate,
+          count: signupCount,
+          label: frequency,
+          dimension: "dimension2",
+        }).then ( (res) => {
+          if (res.errors) {
+            console.error("[GA] error inserting newsletter signup form data: ", res.errors);
+          } else {
+            console.log(" + newsletter signup form", metricDate, frequency, signupCount);
+          }
+        })
+        .catch((e) => console.error("[GA] Error inserting newsletter signup form data into hasura:", e ));
+
+      })
+    } else {
+      console.error("[GA] no newsletter signup form data found between", startDate, "and", endDate);
+    }
+  })
+  .catch((e) => console.error("[GA] Error getting newsletter signup form data:", e ));
+}
+
+async function getNewsletterImpressions(startDate, endDate) {
+  analyticsreporting.reports.batchGet( {
+    requestBody: {
+      reportRequests: [
+      {
+        viewId: googleAnalyticsViewID,
+        dateRanges:[
+          {
+            startDate: startDate,
+            endDate: endDate
+          }],
+        metrics:[
+          {
+            expression: "ga:totalEvents"
+          },
+        ],
+        dimensions: [
+          { name: 'ga:eventAction'},
+          { name: 'ga:eventCategory'},
+          { name: 'ga:eventLabel'},
+          { name: 'ga:pagePath'},
+        ],
+        filtersExpression: 'ga:eventCategory==NTG Newsletter',
+      }]
+    }
+  } )
+  .then((response) => {
+    let reports = response.data.reports;
+
+    console.log("newsletter impression data from", startDate, "to", endDate);
+    // console.log(JSON.stringify(reports))
+    let data = reports[0].data;
+
+    if (data && data.rows) {
+      data.rows.map( (row) => {
+        let articlePath = shared.sanitizePath(row.dimensions[3]);
+
+        if (articlePath !== '/') {
+          let action = row.dimensions[0];
+          let impressions = parseInt(row.metrics[0].values[0]);
+          shared.hasuraInsertNewsletterImpression({
+            url: apiUrl,
+            orgSlug: apiToken,
+            date: startDate,
+            path: articlePath,
+            impressions: impressions,
+            action: action,
+          }).then ( (res) => {
+            if (res.errors) {
+              console.error("[GA] error inserting newsletter impression data: ", res.errors);
+            } else {
+              console.log(" + reading depth", startDate, articlePath, action, impressions);
+            }
+          })
+          .catch((e) => console.error("[GA] Error inserting newsletter impression data into hasura:", e ));
+        }
+      });
+    } else {
+      console.error("[GA] no newsletter impression data found between", startDate, "and", endDate);
+    }
+  })
+  .catch((e) => console.error("[GA] Error getting newsletter impression data:", e ));
+}
+
 async function getReadingDepth(startDate, endDate) {
   analyticsreporting.reports.batchGet( {
     requestBody: {
@@ -564,7 +692,7 @@ async function getReadingDepth(startDate, endDate) {
       console.error("[GA] no reading depth data found between", startDate, "and", endDate);
     }
   })
-  .catch((e) => console.error("[GA] Error getting session duration data:", e ));
+  .catch((e) => console.error("[GA] Error getting reading depth data:", e ));
 }
 
 program
@@ -573,6 +701,8 @@ program
     .requiredOption('-e, --endDate <endDate>', 'end date YYYY-MM-DD')
     .description("loads metrics data from google analytics into hasura")
     .action( (opts) => {
+      getNewsletterImpressions(opts.startDate, opts.endDate);
+      getNewsletterDimension(opts.startDate, opts.endDate);
       getSubscriberDimension(opts.startDate, opts.endDate);
       getDonorDimension(opts.startDate, opts.endDate);
       getReadingFrequency(opts.startDate, opts.endDate);
