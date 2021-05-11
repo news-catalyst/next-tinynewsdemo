@@ -385,6 +385,34 @@ function hasuraInsertSessionDuration(params) {
   })
 }
 
+const HASURA_INSERT_NEWSLETTER_IMPRESSION_DATA = `mutation MyMutation($action: String!, $date: date!, $impressions: Int!, $path: String!) {
+  insert_ga_newsletter_impressions_one(object: {action: $action, date: $date, impressions: $impressions, path: $path}) {
+    action
+    created_at
+    date
+    id
+    impressions
+    organization_id
+    path
+    updated_at
+  }
+}`;
+
+function hasuraInsertNewsletterImpression(params) {
+  return fetchGraphQL({
+    url: params['url'],
+    orgSlug: params['orgSlug'],
+    query: HASURA_INSERT_NEWSLETTER_IMPRESSION_DATA,
+    name: 'MyMutation',
+    variables: {
+      action: params['action'],
+      date: params['date'],
+      impressions: params['impressions'],
+      path: params['path'],
+    },
+  })
+}
+
 const HASURA_INSERT_CUSTOM_DIMENSION_DATA = `mutation MyMutation($count: Int!, $date: date!, $dimension: String!, $label: String!) {
   insert_ga_custom_dimensions_one(object: {count: $count, date: $date, dimension: $dimension, label: $label}) {
     count
@@ -558,6 +586,7 @@ module.exports = {
   hasuraInsertReadingDepth,
   hasuraInsertReadingFrequency,
   hasuraInsertCustomDimension,
+  hasuraInsertNewsletterImpression,
   hasuraListAllLocales,
   hasuraListLocales,
   hasuraListOrganizations,
