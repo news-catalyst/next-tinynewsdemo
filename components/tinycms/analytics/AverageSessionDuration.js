@@ -9,86 +9,51 @@ import {
   Tooltip,
   Legend,
 } from 'recharts';
-import { getMetricsData } from '../../../lib/analytics';
-import { formatDate } from '../../../lib/utils';
+import { hasuraGetSessionDuration } from '../../../lib/analytics';
 
 const SubHeaderContainer = tw.div`pt-10 pb-5`;
 const SubHeader = tw.h1`inline-block text-xl font-extrabold text-gray-900 tracking-tight`;
 
-// const CustomTooltip = ({ active, payload, label }) => {
-//   if (active && payload && payload.length) {
-//     return (
-//       <div className="custom-tooltip">
-//         <p className="label">{`${label} : ${payload[0].value} seconds`}</p>
-//       </div>
-//     );
-//   }
-//   return null;
-// };
-
 const AverageSessionDuration = (props) => {
   const timeRef = useRef();
-  const INITIAL_STATE = {
-    labels: [],
-    values: [],
-  };
-  const [timeReportData, setTimeReportData] = useState(INITIAL_STATE);
   const [timeAverage, setTimeAverage] = useState(0);
   const [chartData, setChartData] = useState([]);
 
   useEffect(() => {
-    const dimensions = ['ga:date'];
-    const timeMetric = 'ga:avgSessionDuration';
+    let sessionParams = {
+      url: props.apiUrl,
+      orgSlug: props.apiToken,
+      startDate: props.startDate.format('YYYY-MM-DD'),
+      endDate: props.endDate.format('YYYY-MM-DD'),
+    };
+    const fetchSessionDuration = async () => {
+      const { errors, data } = await hasuraGetSessionDuration(sessionParams);
+      let chartValues = [];
 
-    getMetricsData(
-      props.viewID,
-      props.startDate,
-      props.endDate,
-      [timeMetric],
-      dimensions
-    )
-      .then((response) => {
-        const queryResult = response.result.reports[0].data.rows;
-        const rowCount = response.result.reports[0].data.rowCount;
+      if (errors && !data) {
+        console.error(errors);
+      }
+      let totalDuration = 0.0;
+      data.ga_session_duration.map((pv) => {
+        totalDuration += parseFloat(pv.seconds);
+        let lineDataPoint = {
+          name: pv.date,
+          seconds: parseFloat(pv.seconds),
+        };
+        chartValues.push(lineDataPoint);
+      });
+      setChartData(chartValues);
+      setTimeAverage(
+        parseFloat(totalDuration / data.ga_session_duration.length)
+      );
+    };
+    fetchSessionDuration();
 
-        let total = 0;
-
-        let labels = [];
-        let values = [];
-        let chartValues = [];
-
-        queryResult.forEach((row) => {
-          let formattedDate = formatDate(row.dimensions[0]);
-          let value = row.metrics[0].values[0];
-          total += parseInt(value);
-
-          labels.push(formattedDate);
-          values.push(value);
-
-          let lineDataPoint = {
-            name: formattedDate,
-            duration: parseInt(value),
-          };
-          chartValues.push(lineDataPoint);
-        });
-
-        setTimeAverage(parseInt(total / rowCount));
-
-        setTimeReportData({
-          ...timeReportData,
-          labels,
-          values,
-        });
-
-        setChartData(chartValues);
-
-        if (window.location.hash && window.location.hash === '#time') {
-          if (timeRef) {
-            timeRef.current.scrollIntoView({ behavior: 'smooth' });
-          }
-        }
-      })
-      .catch((error) => console.error(error));
+    if (window.location.hash && window.location.hash === '#time') {
+      if (timeRef) {
+        timeRef.current.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
   }, [props.startDate, props.endDate]);
 
   return (
@@ -111,7 +76,7 @@ const AverageSessionDuration = (props) => {
         <Legend />
         <Line
           type="monotone"
-          dataKey="duration"
+          dataKey="seconds"
           stroke="#8884d8"
           isAnimationActive={false}
         />
