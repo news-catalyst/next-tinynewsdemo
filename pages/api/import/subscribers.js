@@ -53,6 +53,7 @@ async function getSubscribers(params) {
     });
     console.log('GA response:', response);
 
+    let insertPromises = [];
     if (
       !response ||
       !response.data ||
@@ -61,18 +62,14 @@ async function getSubscribers(params) {
       !response.data.reports[0].data ||
       !response.data.reports[0].data.rows
     ) {
-      throw 'No rows returned for ' + startDate;
-    }
-
-    let insertPromises = [];
-    response.data.reports[0].data.rows.forEach((row) => {
+      console.log('No data from GA for subscriber clicks on ' + startDate);
       insertPromises.push(
         hasuraInsertCustomDimension({
           url: apiUrl,
           orgSlug: apiToken,
-          count: row.metrics[0].values[0],
+          count: 0,
           label: 'isSubscriber',
-          dimension: 'dimension4',
+          dimension: 'dimension5',
           date: startDate,
         }).then((result) => {
           if (result.errors) {
@@ -82,7 +79,26 @@ async function getSubscribers(params) {
           }
         })
       );
-    });
+    } else {
+      response.data.reports[0].data.rows.forEach((row) => {
+        insertPromises.push(
+          hasuraInsertCustomDimension({
+            url: apiUrl,
+            orgSlug: apiToken,
+            count: row.metrics[0].values[0],
+            label: 'isSubscriber',
+            dimension: 'dimension5',
+            date: startDate,
+          }).then((result) => {
+            if (result.errors) {
+              return { status: 'error', errors: result.errors };
+            } else {
+              return { status: 'ok', result: result, errors: [] };
+            }
+          })
+        );
+      });
+    }
 
     let returnResults = { errors: [], results: [] };
 
