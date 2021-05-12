@@ -170,7 +170,7 @@ export default function AnalyticsIndex(props) {
                   <option value="ga_sessions">ga_sessions</option>
                 </select>
               </AnalyticsSidebar> */}
-              <AnalyticsSidebar title="Yesterday">
+              <AnalyticsSidebar title="Most Recent Imports">
                 <table tw="w-full table-auto">
                   <thead>
                     <tr>
@@ -178,10 +178,10 @@ export default function AnalyticsIndex(props) {
                         Table
                       </th>
                       <th tw="border border-gray-500 px-4 py-2 text-gray-600 font-bold">
-                        Start Date
+                        Date
                       </th>
                       <th tw="border border-gray-500 px-4 py-2 text-gray-600 font-bold">
-                        End Date
+                        Finished At
                       </th>
                     </tr>
                   </thead>
@@ -195,7 +195,7 @@ export default function AnalyticsIndex(props) {
                           {di.start_date}
                         </td>
                         <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-                          {di.end_date}
+                          {di.updated_at}
                         </td>
                       </tr>
                     ))}
