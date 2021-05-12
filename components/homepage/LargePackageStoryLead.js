@@ -75,6 +75,7 @@ export default function LargePackageStoryLead(props) {
                     key={props.featuredArticle.slug}
                     article={props.featuredArticle}
                     big={isDesktop}
+                    metadata={props.metadata}
                   />
                 </AssetMetaContainer>
                 <AssetThumbnailContainer>
@@ -116,6 +117,7 @@ export default function LargePackageStoryLead(props) {
                 <FeaturedArticleMeta
                   key={props.subFeaturedTopArticle.slug}
                   article={props.subFeaturedTopArticle}
+                  metadata={props.metadata}
                 />
               </AssetMetaContainer>
             )}
@@ -150,6 +152,7 @@ export default function LargePackageStoryLead(props) {
                 <FeaturedArticleMeta
                   key={props.subFeaturedBottomArticle.slug}
                   article={props.subFeaturedBottomArticle}
+                  metadata={props.metadata}
                 />
               </AssetMetaContainer>
             )}
