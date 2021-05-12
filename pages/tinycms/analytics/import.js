@@ -146,7 +146,7 @@ export default function AnalyticsIndex(props) {
               <HeaderContainer>
                 <Header>Analytics: Data Imports from GA</Header>
               </HeaderContainer>
-              <AnalyticsSidebar title="Trigger Import">
+              {/* <AnalyticsSidebar title="Trigger Import">
                 <select onChange={triggerImport}>
                   <option>Select a table</option>
                   <option value="ga_custom_dimensions">
@@ -169,7 +169,7 @@ export default function AnalyticsIndex(props) {
                   </option>
                   <option value="ga_sessions">ga_sessions</option>
                 </select>
-              </AnalyticsSidebar>
+              </AnalyticsSidebar> */}
               <AnalyticsSidebar title="Yesterday">
                 <table tw="w-full table-auto">
                   <thead>
