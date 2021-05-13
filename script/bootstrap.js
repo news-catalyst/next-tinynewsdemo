@@ -4,6 +4,7 @@ const { program } = require('commander');
 program.version('0.0.1');
 
 const fs = require('fs');
+const yaml = require('js-yaml')
 
 const { google } = require("googleapis");
 const credentials = require("./credentials.json");
@@ -18,12 +19,32 @@ const vercel = require("./vercel");
 require('dotenv').config({ path: '.env.local' })
 
 const apiUrl = process.env.HASURA_API_URL;
-const apiToken = process.env.ORG_SLUG;
 const adminSecret = process.env.HASURA_ADMIN_SECRET;
 
 const googleAnalyticsAccountID = process.env.GA_ACCOUNT_ID;
 
 let organizationID;
+
+async function setupGitHubAction(slug) {
+  let source = '.github/workflows/import-data-from-ga.yml';
+  let destination = `.github/workflows/import-data-from-ga-${slug}.yml`;
+
+  try {
+    let sourceContents = fs.readFileSync(source, 'utf8');
+    let sourceData = yaml.load(sourceContents);
+
+    let newEnvName = `data_import_${slug}`;
+    sourceData["jobs"]["GA-Data-Importer"]["environment"] = newEnvName;
+
+    let yamlStr = yaml.dump(sourceData);
+    fs.writeFileSync(destination, yamlStr, 'utf8');
+
+    console.log("setup a new github action at " + destination + " in env " + newEnvName);
+
+  } catch (e) {
+    console.error(e);
+  }
+}
 
 async function setupGoogleAnalytics(name, url) {
   analytics.management.webproperties.insert(
@@ -378,6 +399,8 @@ async function createOrganization(opts) {
         setupGoogleDrive(slug, emails);
         setupGoogleAnalytics(name, url);
 
+        setupGitHubAction(slug);
+
         console.log("Make sure to review settings in the tinycms once this is done!")
       })
     })
@@ -405,11 +428,6 @@ program
     .requiredOption('-u, --url <url>', 'specify the url on vercel, used for GA property setup')
     .description("sets up a new organization in Hasura and Google Drive")
     .action( (opts) => {
-      console.log("opts.name: ", opts.name);
-      console.log("opts.slug: ", opts.slug);
-      console.log("opts.emails: ", opts.emails);
-      console.log("opts.locales: ", opts.locales);
-
       createOrganization(opts);
       vercel.createProject(opts.name, opts.slug);
     });
