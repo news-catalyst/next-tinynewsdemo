@@ -3,7 +3,7 @@ on: [push]
 jobs:
   GA-Data-Importer:
     runs-on: ubuntu-latest
-    environment: Production – oaklyn
+    environment: data_import_oaklyn
     steps:
       - run: echo "🔎 Running GA data importer"
       - uses: actions/checkout@v2
@@ -16,6 +16,8 @@ jobs:
       - name: install date-fns
         run: npm install date-fns
       - name: run data importer
+        env:
+          SITE_URL: ${{ secrets.SITE_URL }}
         run: npm run data:import
       - run: echo "🍏 This job's status is ${{ job.status }}."
 
