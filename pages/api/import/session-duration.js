@@ -53,6 +53,7 @@ async function getSessionDuration(params) {
     });
     console.log('GA response:', response);
 
+    let insertPromises = [];
     if (
       !response ||
       !response.data ||
@@ -61,17 +62,12 @@ async function getSessionDuration(params) {
       !response.data.reports[0].data ||
       !response.data.reports[0].data.rows
     ) {
-      throw 'No rows returned for ' + startDate;
-    }
-
-    let insertPromises = [];
-    response.data.reports[0].data.rows.forEach((row) => {
       insertPromises.push(
         hasuraInsertSessionDuration({
           url: apiUrl,
           orgSlug: apiToken,
-          seconds: row.metrics[0].values[0],
-          date: row.dimensions[0],
+          seconds: 0,
+          date: startDate,
         }).then((result) => {
           console.log('hasura insert result:', result);
           if (result.errors) {
@@ -81,7 +77,26 @@ async function getSessionDuration(params) {
           }
         })
       );
-    });
+    } else {
+      response.data.reports[0].data.rows.forEach((row) => {
+        insertPromises.push(
+          hasuraInsertSessionDuration({
+            url: apiUrl,
+            orgSlug: apiToken,
+            seconds: row.metrics[0].values[0],
+            date: row.dimensions[0],
+          }).then((result) => {
+            console.log('hasura insert result:', result);
+            if (result.errors) {
+              return { status: 'error', errors: result.errors };
+            } else {
+              return { status: 'ok', result: result, errors: [] };
+            }
+          })
+        );
+      });
+    }
+
     let returnResults = { errors: [], results: [] };
     for await (let result of insertPromises) {
       console.log('for await result:', result);
@@ -100,9 +115,9 @@ async function getSessionDuration(params) {
 }
 
 export default async (req, res) => {
-  const { startDate, endDate, tableName } = req.query;
+  const { startDate, endDate } = req.query;
 
-  console.log('data import:', startDate, endDate, tableName);
+  console.log('data import:', startDate, endDate);
   const results = await getSessionDuration({
     startDate: startDate,
     endDate: endDate,
