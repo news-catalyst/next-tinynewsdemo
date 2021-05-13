@@ -3,6 +3,7 @@ on: [push]
 jobs:
   GA-Data-Importer:
     runs-on: ubuntu-latest
+    environment: Production – oaklyn
     steps:
       - run: echo "🔎 Running GA data importer"
       - uses: actions/checkout@v2
