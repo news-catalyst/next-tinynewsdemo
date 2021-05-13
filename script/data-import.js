@@ -1,6 +1,3 @@
-const { program } = require('commander'); 
-program.version('0.0.1');
-
 const fetch = require("node-fetch");
 require('dotenv').config({ path: '.env.local' })
 
@@ -33,20 +30,12 @@ async function runDataImport(startDate, endDate) {
   };
 }
 
-program
-  // .requiredOption('-s, --start-date <startDate>', 'start date')
-  // .requiredOption('-e, --end-date <endDate>', 'end date')
-  .description("hits all data import API endpoints for GA")
-  .action( (opts) => {
-    let twoDaysAgo = new Date(); 
-    twoDaysAgo.setDate(twoDaysAgo.getDate() - 2); 
-    let startDate = format(twoDaysAgo, "yyyy-MM-dd")
+let twoDaysAgo = new Date(); 
+twoDaysAgo.setDate(twoDaysAgo.getDate() - 2); 
+let startDate = format(twoDaysAgo, "yyyy-MM-dd")
 
-    let yesterday = new Date(); // Today!
-    yesterday.setDate(yesterday.getDate() - 1); 
-    let endDate = format(yesterday, "yyyy-MM-dd")
+let yesterday = new Date(); // Today!
+yesterday.setDate(yesterday.getDate() - 1); 
+let endDate = format(yesterday, "yyyy-MM-dd")
 
-    runDataImport(startDate, endDate);
-  });
-
-program.parse(process.argv);
+runDataImport(startDate, endDate);
