@@ -6,7 +6,7 @@
     "dev": "next dev",
     "clear": "node script/clear.js",
     "populate": "node script/populate.js",
-    "analytics": "node script/analytics.js",
+    "data:import": "node script/data-import.js",
     "bootstrap": "node script/bootstrap.js",
     "status": "node script/status.js",
     "remove:org": "node script/remove.js",
