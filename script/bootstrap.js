@@ -13,6 +13,9 @@ const auth = new google.auth.JWT(credentials.client_email, null, credentials.pri
 const drive = google.drive({ version: "v3", auth });
 const analytics = google.analytics({version: "v3", auth})
 
+const { Octokit } = require("@octokit/rest");
+const { request } = require("@octokit/request");
+
 const shared = require("./shared");
 const vercel = require("./vercel");
 
@@ -21,9 +24,72 @@ require('dotenv').config({ path: '.env.local' })
 const apiUrl = process.env.HASURA_API_URL;
 const adminSecret = process.env.HASURA_ADMIN_SECRET;
 
+const githubRepo = process.env.GIT_REPO;
+const githubToken = process.env.GITHUB_TOKEN;
+
 const googleAnalyticsAccountID = process.env.GA_ACCOUNT_ID;
 
 let organizationID;
+
+function generateEnvName(slug) {
+  return `data_import_${slug}`
+}
+
+async function createGitHubEnv(slug) {
+  const octokit = new Octokit({
+    auth: githubToken,
+  });
+
+  const [owner, repo] = githubRepo.split('/');
+
+  const environmentName = generateEnvName(slug);
+  console.log("creating environment", environmentName)
+
+  try {
+    const response = await octokit.rest.repos.getAllEnvironments({
+      owner,
+      repo,
+    })
+    console.log("Current data import environments:")
+    let envExists = false;
+    response.data.environments.forEach((env) => {
+      if (/data_import_/.test(env.name)) {
+        console.log(`\t* ${env.name}`);
+      }
+      if (env.name === environmentName) {
+        envExists = true;
+      }
+    })
+
+    if (envExists) {
+      console.error("environment " + environmentName + " already exists");
+      return;
+    }
+
+    // the `createOrUpdateEnvironment` method version of this request in Octokit/rest doesn't work.
+    // it's using the wrong GH api url and format.
+    // (does a PUT to /repos/owner/repo/environments with {environment_name: $name} in the request body)
+    // this is the correct request URL and format.
+    // https://docs.github.com/en/rest/reference/repos#create-or-update-an-environment
+    const result = await request("PUT /repos/{owner}/{repo}/environments/{environment_name}", {
+      headers: {
+        authorization: `token ${githubToken}`,
+      },
+      owner: owner,
+      repo: repo,
+      environment_name: environmentName,
+    });
+
+    if (result && (result.status >= 200 && result.status < 300)) {
+      console.log("Created GitHub environment: " + environmentName);
+    }
+    console.log(result);
+
+   } catch (err) {
+    console.error(err);
+  }
+
+}
 
 async function setupGitHubAction(slug) {
   let source = '.github/workflows/import-data-from-ga.yml';
@@ -33,13 +99,13 @@ async function setupGitHubAction(slug) {
     let sourceContents = fs.readFileSync(source, 'utf8');
     let sourceData = yaml.load(sourceContents);
 
-    let newEnvName = `data_import_${slug}`;
-    sourceData["jobs"]["GA-Data-Importer"]["environment"] = newEnvName;
+    const environmentName = generateEnvName(slug);
+    sourceData["jobs"]["GA-Data-Importer"]["environment"] = environmentName;
 
     let yamlStr = yaml.dump(sourceData);
     fs.writeFileSync(destination, yamlStr, 'utf8');
 
-    console.log("setup a new github action at " + destination + " in env " + newEnvName);
+    console.log("setup a new github action at " + destination + " in env " + environmentName);
 
   } catch (e) {
     console.error(e);
@@ -421,15 +487,16 @@ function arrayUnique(array) {
 }
 
 program
-    .requiredOption('-n, --name <name>', 'the name of the new organization')
+    // .requiredOption('-n, --name <name>', 'the name of the new organization')
     .requiredOption('-s, --slug <slug>', 'a short (A-Za-z0-9_) slug for the organization')
-    .requiredOption('-l, --locales [locales...]', 'specify supported locales')
-    .requiredOption('-e, --emails [emails...]', 'specify emails for org members (needed for google drive)')
-    .requiredOption('-u, --url <url>', 'specify the url on vercel, used for GA property setup')
+    // .requiredOption('-l, --locales [locales...]', 'specify supported locales')
+    // .requiredOption('-e, --emails [emails...]', 'specify emails for org members (needed for google drive)')
+    // .requiredOption('-u, --url <url>', 'specify the url on vercel, used for GA property setup')
     .description("sets up a new organization in Hasura and Google Drive")
     .action( (opts) => {
-      createOrganization(opts);
-      vercel.createProject(opts.name, opts.slug);
+      createGitHubEnv(opts.slug)
+      // createOrganization(opts);
+      // vercel.createProject(opts.name, opts.slug);
     });
 
 program.parse(process.argv);
