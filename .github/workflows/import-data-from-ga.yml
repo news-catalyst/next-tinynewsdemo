@@ -8,6 +8,6 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
       - run: echo "🖥️ repo and node are setup"
-      - run: yarn && yarn data:import
+      - run: yarn data:import
       - run: echo "🍏 This job's status is ${{ job.status }}."
 
