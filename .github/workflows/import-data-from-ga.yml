@@ -1,0 +1,13 @@
+name: GA Data Importer
+on: [push]
+jobs:
+  GA-Data-Importer:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "🔎 Running GA data importer"
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+      - run: echo "🖥️ repo and node are setup"
+      - run: yarn data:import
+      - run: echo "🍏 This job's status is ${{ job.status }}."
+
