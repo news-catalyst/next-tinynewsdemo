@@ -48,6 +48,7 @@
     "googleapis": "^67.1.1",
     "graphql-request": "^2.0.0",
     "journalize": "^2.4.0",
+    "js-yaml": "^4.1.0",
     "local-storage-fallback": "^4.1.1",
     "moment": "^2.29.1",
     "next": "^10.0.1",
