@@ -98,7 +98,7 @@ async function getPageViews(params) {
     console.log('returning this:', returnResults);
     return returnResults;
   } catch (e) {
-    console.error('czaught error:', e);
+    console.error('caught error:', e);
   }
 }
 
@@ -113,8 +113,10 @@ export default async (req, res) => {
     apiUrl: apiUrl,
   });
 
-  if (results.errors && results.errors.length > 0) {
+  if (results && results.errors && results.errors.length > 0) {
     return res.status(500).json({ status: 'error', errors: results.errors });
+  } else if (!results) {
+    return res.status(404).json({ status: 'error', errors: ['No data found'] });
   }
 
   const auditResult = await hasuraInsertDataImport({
