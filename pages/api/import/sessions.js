@@ -53,6 +53,7 @@ async function getSessions(params) {
     });
     console.log('GA response:', response);
 
+    let insertPromises = [];
     if (
       !response ||
       !response.data ||
@@ -61,17 +62,12 @@ async function getSessions(params) {
       !response.data.reports[0].data ||
       !response.data.reports[0].data.rows
     ) {
-      throw 'No rows returned for ' + startDate;
-    }
-
-    let insertPromises = [];
-    response.data.reports[0].data.rows.forEach((row) => {
       insertPromises.push(
         hasuraInsertSession({
           url: apiUrl,
           orgSlug: apiToken,
-          count: row.metrics[0].values[0],
-          date: row.dimensions[0],
+          count: 0,
+          date: startDate,
         }).then((result) => {
           console.log('hasura insert result:', result);
           if (result.errors) {
@@ -81,7 +77,25 @@ async function getSessions(params) {
           }
         })
       );
-    });
+    } else {
+      response.data.reports[0].data.rows.forEach((row) => {
+        insertPromises.push(
+          hasuraInsertSession({
+            url: apiUrl,
+            orgSlug: apiToken,
+            count: row.metrics[0].values[0],
+            date: row.dimensions[0],
+          }).then((result) => {
+            console.log('hasura insert result:', result);
+            if (result.errors) {
+              return { status: 'error', errors: result.errors };
+            } else {
+              return { status: 'ok', result: result, errors: [] };
+            }
+          })
+        );
+      });
+    }
 
     let returnResults = { errors: [], results: [] };
 
