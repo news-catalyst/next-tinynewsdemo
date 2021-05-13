@@ -8,9 +8,13 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
       - run: echo "🖥️ repo and node are setup"
-      - name: install packages
-        run: yarn install
+      - name: install node-fetch
+        run: npm install node-fetch
+      - name: install dotenv
+        run: npm install dotenv
+      - name: install date-fns
+        run: npm install date-fns
       - name: run data importer
-        run: yarn data:import
+        run: npm run data:import
       - run: echo "🍏 This job's status is ${{ job.status }}."
 
