@@ -18,6 +18,11 @@ jobs:
       - name: run data importer
         env:
           SITE_URL: ${{ secrets.SITE_URL }}
+          HASURA_API_URL: ${{ secrets.HASURA_API_URL }}
+          ORG_SLUG: ${{ secrets.ORG_SLUG }}
+          GOOGLE_CREDENTIALS_EMAIL: ${{ secrets.GOOGLE_CREDENTIALS_EMAIL }}
+          GOOGLE_CREDENTIALS_PRIVATE_KEY: ${{ secrets.GOOGLE_CREDENTIALS_PRIVATE_KEY }}
+          NEXT_PUBLIC_ANALYTICS_VIEW_ID: ${{ secrets.NEXT_PUBLIC_ANALYTICS_VIEW_ID }}
         run: npm run data:import
       - run: echo "🍏 This job's status is ${{ job.status }}."
 
