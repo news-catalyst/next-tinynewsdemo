@@ -95,7 +95,8 @@ async function getReferralSessions(params) {
     }
     return returnResults;
   } catch (e) {
-    console.error('czaught error:', e);
+    console.error('caught error:', e);
+    return { errors: [e] };
   }
 }
 
@@ -110,8 +111,15 @@ export default async (req, res) => {
     apiUrl: apiUrl,
   });
 
+  let resultNotes =
+    results.results && results.results[0] && results.results[0].data
+      ? results.results[0].data
+      : JSON.stringify(results);
+
+  let successFlag = true;
   if (results.errors && results.errors.length > 0) {
-    return res.status(500).json({ status: 'error', errors: results.errors });
+    successFlag = false;
+    resultNotes = results.errors;
   }
 
   const auditResult = await hasuraInsertDataImport({
@@ -120,14 +128,24 @@ export default async (req, res) => {
     table_name: 'ga_referral_sessions',
     start_date: startDate,
     end_date: endDate,
+    success: successFlag,
+    notes: JSON.stringify(resultNotes),
   });
+
+  const auditStatus = auditResult.data ? 'ok' : 'error';
+
+  if (results.errors && results.errors.length > 0) {
+    return res
+      .status(500)
+      .json({ status: 'error', errors: resultNotes, audit: auditStatus });
+  }
 
   res.status(200).json({
     name: 'ga_referral_sessions',
     startDate: startDate,
     endDate: endDate,
-    status: 'OK',
-    message: JSON.stringify(results),
-    audit: JSON.stringify(auditResult),
+    status: 'ok',
+    message: resultNotes,
+    audit: auditStatus,
   });
 };
