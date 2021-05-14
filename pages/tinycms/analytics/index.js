@@ -150,7 +150,11 @@ export default function AnalyticsIndex(props) {
                     </tr>
                   </tbody>
                 </table>
-                <YesterdaysTopTen viewID={viewID} />
+                <YesterdaysTopTen
+                  apiUrl={props.apiUrl}
+                  apiToken={props.apiToken}
+                  viewID={viewID}
+                />
                 <YesterdaysDonorViews viewID={viewID} />
                 <YesterdaysSubscriberViews viewID={viewID} />
               </AnalyticsSidebar>
@@ -205,6 +209,8 @@ export default function AnalyticsIndex(props) {
   );
 }
 export async function getServerSideProps(context) {
+  const apiUrl = process.env.HASURA_API_URL;
+  const apiToken = process.env.ORG_SLUG;
   const clientID = process.env.ANALYTICS_CLIENT_ID;
   const clientSecret = process.env.ANALYTICS_CLIENT_SECRET;
   const mailchimpApiKey = process.env.MAILCHIMP_API_KEY;
@@ -238,6 +244,8 @@ export async function getServerSideProps(context) {
 
   return {
     props: {
+      apiUrl,
+      apiToken,
       clientID: clientID,
       clientSecret: clientSecret,
       newSubscribers: newSubscribers,
