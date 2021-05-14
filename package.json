@@ -81,6 +81,7 @@
     "styled-component": "^2.8.0",
     "styled-components": "^5.2.3",
     "swr": "^0.5.6",
+    "tweetsodium": "^0.0.5",
     "universal-cookie": "^4.0.4",
     "web-vitals": "^0.2.3"
   },
