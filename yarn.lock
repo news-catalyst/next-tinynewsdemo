@@ -2550,6 +2550,11 @@
     "inherits" "^2.0.4"
     "readable-stream" "^3.4.0"
 
+"blakejs@^1.1.0":
+  "integrity" "sha1-ad+S75U6qIylGjLfarHFShVfx6U="
+  "resolved" "https://registry.npmjs.org/blakejs/-/blakejs-1.1.0.tgz"
+  "version" "1.1.0"
+
 "bluebird@^3.5.5":
   "integrity" "sha512-XpNj6GDQzdfW+r2Wnn7xiSAd7TM3jzkxGXBGTtWKuSXv1xUV+azxAm8jdWZN06QTQk+2N2XB9jRDkvbmQmcRtg=="
   "resolved" "https://registry.npmjs.org/bluebird/-/bluebird-3.7.2.tgz"
@@ -12158,6 +12163,19 @@
   "integrity" "sha1-WuaBd/GS1EViadEIr6k/+HQ/T2Q="
   "resolved" "https://registry.npmjs.org/tweetnacl/-/tweetnacl-0.14.5.tgz"
   "version" "0.14.5"
+
+"tweetnacl@^1.0.1":
+  "integrity" "sha512-6rt+RN7aOi1nGMyC4Xa5DdYiukl2UWCbcJft7YhxReBGQD7OAM8Pbxw6YMo4r2diNEA8FEmu32YOn9rhaiE5yw=="
+  "resolved" "https://registry.npmjs.org/tweetnacl/-/tweetnacl-1.0.3.tgz"
+  "version" "1.0.3"
+
+"tweetsodium@^0.0.5":
+  "integrity" "sha512-T3aXZtx7KqQbutTtBfn+P5By3HdBuB1eCoGviIrRJV2sXeToxv2X2cv5RvYqgG26PSnN5m3fYixds22Gkfd11w=="
+  "resolved" "https://registry.npmjs.org/tweetsodium/-/tweetsodium-0.0.5.tgz"
+  "version" "0.0.5"
+  dependencies:
+    "blakejs" "^1.1.0"
+    "tweetnacl" "^1.0.1"
 
 "twin.macro@^2.3.2":
   "integrity" "sha512-tR2VHr/7r1HxGWYHSs3+cxhUsHd9DDPaaJ4EFZQ4uBeDhP+0irMbRXCPxAADvTY5vWW89pEK1F+ka3F8SY+2rw=="
