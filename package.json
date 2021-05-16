@@ -60,7 +60,7 @@
     "purgecss": "^2.3.0",
     "react": "^16.14.0",
     "react-analytics-charts": "^1.2.12",
-    "react-aws-s3": "https://github.com/news-catalyst/react-aws-s3.git",
+    "react-aws-s3": "https://github.com/news-catalyst/react-aws-s3.git#master",
     "react-chartjs-2": "^2.11.1",
     "react-cookie": "^4.0.3",
     "react-datepicker": "^3.6.0",
