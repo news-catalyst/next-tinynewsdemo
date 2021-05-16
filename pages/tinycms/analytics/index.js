@@ -121,6 +121,22 @@ export default function AnalyticsIndex(props) {
                     </tr>
                     <tr>
                       <th tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                        Donor Sessions
+                      </th>
+                      <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                        {props.donorSessionCount}
+                      </td>
+                    </tr>
+                    <tr>
+                      <th tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                        Subscriber Sessions
+                      </th>
+                      <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                        {props.subscriberSessionCount}
+                      </td>
+                    </tr>
+                    <tr>
+                      <th tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
                         New Subscribers
                       </th>
                       <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
@@ -133,8 +149,6 @@ export default function AnalyticsIndex(props) {
                   pageViews={props.pageViews}
                   readingDepth={props.readingDepth}
                 />
-                {/* <YesterdaysDonorViews viewID={viewID} />
-                <YesterdaysSubscriberViews viewID={viewID} /> */}
               </AnalyticsSidebar>
               <AnalyticsSidebar title="About this Data">
                 <p tw="p-2">
@@ -194,8 +208,8 @@ export async function getServerSideProps(context) {
   const mailchimpApiKey = process.env.MAILCHIMP_API_KEY;
   const mailchimpServer = process.env.MAILCHIMP_SERVER_PREFIX;
 
-  const startDate = moment().subtract(90, 'days');
-  const endDate = moment();
+  const startDate = moment().subtract(2, 'days');
+  const endDate = moment().subtract(1, 'days');
 
   let sessionCount = 0;
   let sessionParams = {
@@ -208,7 +222,6 @@ export async function getServerSideProps(context) {
   if (errors && !data) {
     console.error(errors);
   }
-  console.log('data:', data);
 
   let sessions = data.ga_sessions;
   sessions.map((pv) => {
@@ -216,10 +229,19 @@ export async function getServerSideProps(context) {
   });
 
   let pageViews = data.ga_page_views;
-  console.log('pageViews:', pageViews);
 
   let readingDepth = data.ga_reading_depth;
-  console.log('readingDepth:', readingDepth);
+
+  let donors = data.donorDimensions;
+  let donorSessionCount = 0;
+  donors.map((item) => {
+    donorSessionCount += parseInt(item.count);
+  });
+  let subscribers = data.subscriberDimensions;
+  let subscriberSessionCount = 0;
+  subscribers.map((item) => {
+    subscriberSessionCount += parseInt(item.count);
+  });
 
   // I tried doing this call in the component's useEffect, but Mailchimp's API
   // throws a CORS error when I try that :(
@@ -257,6 +279,8 @@ export async function getServerSideProps(context) {
       pageViews: pageViews,
       readingDepth: readingDepth,
       sessionCount: sessionCount,
+      donorSessionCount: donorSessionCount,
+      subscriberSessionCount: subscriberSessionCount,
     },
   };
 }
