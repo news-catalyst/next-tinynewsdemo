@@ -15,24 +15,15 @@ const YesterdaysTopTen = (props) => {
   const [startDate, setStartDate] = useState(moment().subtract(32, 'days'));
   const [endDate, setEndDate] = useState(moment().subtract(1, 'days'));
 
+  const [sortedTableRows, setSortedTableRows] = useState([]);
   const [totalPageViews, setTotalPageViews] = useState({});
 
+  console.log('props:', props);
   useEffect(() => {
-    let pvParams = {
-      url: props.apiUrl,
-      orgSlug: props.apiToken,
-      startDate: startDate.format('YYYY-MM-DD'),
-      endDate: endDate.format('YYYY-MM-DD'),
-    };
     const fetchPageViews = async () => {
-      const { errors, data } = await hasuraGetPageViews(pvParams);
-
-      if (errors && !data) {
-        console.error(errors);
-      }
       let totalPV = {};
 
-      for await (let pv of data.ga_page_views) {
+      props.pageViews.map((pv) => {
         if (!totalPV[pv.path]) {
           totalPV[pv.path] = {
             read_25: 0,
@@ -44,38 +35,63 @@ const YesterdaysTopTen = (props) => {
           };
         }
         totalPV[pv.path]['pageviews'] += parseInt(pv.count);
-        let rdParams = {
-          url: props.apiUrl,
-          orgSlug: props.apiToken,
-          startDate: startDate.format('YYYY-MM-DD'),
-          endDate: endDate.format('YYYY-MM-DD'),
-          path: pv.path,
-        };
-        const { errors, data } = await hasuraGetReadingDepthForPath(rdParams);
-        if (errors && !data) {
-          console.error(errors);
-          return errors;
-        }
-        data.ga_reading_depth.map((rd) => {
-          totalPV[rd.path]['read_25'] += parseInt(rd.read_25);
-          totalPV[rd.path]['read_50'] += parseInt(rd.read_50);
-          totalPV[rd.path]['read_75'] += parseInt(rd.read_75);
-          totalPV[rd.path]['read_100'] += parseInt(rd.read_100);
+        props.readingDepth.map((rd) => {
+          if (rd.path === pv.path) {
+            console.log('Found matching reading depth path:', rd.path);
+            totalPV[rd.path]['read_25'] += parseInt(rd.read_25);
+            totalPV[rd.path]['read_50'] += parseInt(rd.read_50);
+            totalPV[rd.path]['read_75'] += parseInt(rd.read_75);
+            totalPV[rd.path]['read_100'] += parseInt(rd.read_100);
+          }
         });
-      }
+      });
 
-      Object.keys(totalPV).map((path) => {
+      Object.keys(totalPV).map((path, i) => {
         if (totalPV[path]['pageviews'] > 0) {
           let conversion =
             (totalPV[path]['read_100'] / totalPV[path]['pageviews']) * 100;
-          totalPV[path]['conversion'] = conversion;
+          totalPV[path]['conversion'] = conversion.toFixed(2);
         }
       });
+
+      var sortable = [];
+      Object.keys(totalPV).forEach((path) => {
+        sortable.push([path, totalPV[path]['pageviews']]);
+      });
+      console.log('sortable:', sortable);
+
+      sortable.sort(function (a, b) {
+        return b[1] - a[1];
+      });
+
+      let rows = [];
+      sortable.map((item, i) => {
+        if (i >= 10) {
+          return;
+        }
+        console.log('sortable item:', item);
+        let label = item[0];
+        rows.push(
+          <tr key={`page-view-row-${i}`}>
+            <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+              {label}
+            </td>
+            <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+              {totalPV[label]['pageviews']}
+            </td>
+            <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+              {totalPV[label]['conversion']}
+            </td>
+          </tr>
+        );
+      });
       setTotalPageViews(totalPV);
+      setSortedTableRows(rows);
       setUpdateKey(Math.random());
     };
 
     fetchPageViews();
+    console.log("found yesterday's top ten:", totalPageViews);
   }, [startDate, endDate]);
 
   return (
@@ -84,9 +100,11 @@ const YesterdaysTopTen = (props) => {
         <SubHeader>Top 10 Stories Overall</SubHeader>
       </SubHeaderContainer>
 
-      {Object.keys(totalPageViews).length <= 0 && (
-        <p tw="px-4">Not enough data for the past 24 hours.</p>
-      )}
+      <div key={`message-${updateKey}`}>
+        {Object.keys(totalPageViews).length <= 0 && (
+          <p tw="px-4">Not enough data for the past 24 hours.</p>
+        )}
+      </div>
 
       {Object.keys(totalPageViews).length > 0 && (
         <table tw="w-full table-auto" key={updateKey}>
@@ -97,21 +115,7 @@ const YesterdaysTopTen = (props) => {
               <th tw="px-4">Read 100%</th>
             </tr>
           </thead>
-          <tbody>
-            {Object.keys(totalPageViews).map((label, i) => (
-              <tr key={`page-view-row-${i}`}>
-                <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-                  {label}
-                </td>
-                <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-                  {totalPageViews[label]['pageviews']}
-                </td>
-                <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-                  {totalPageViews[label]['conversion']}
-                </td>
-              </tr>
-            ))}
-          </tbody>
+          <tbody>{sortedTableRows}</tbody>
         </table>
       )}
     </>

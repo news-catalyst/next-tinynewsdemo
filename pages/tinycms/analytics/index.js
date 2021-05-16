@@ -9,7 +9,7 @@ import AnalyticsSidebar from '../../../components/tinycms/analytics/AnalyticsSid
 import YesterdaysDonorViews from '../../../components/tinycms/analytics/YesterdaysDonorViews';
 import YesterdaysSubscriberViews from '../../../components/tinycms/analytics/YesterdaysSubscriberViews';
 import YesterdaysTopTen from '../../../components/tinycms/analytics/YesterdaysTopTen';
-import { getMetricsData } from '../../../lib/analytics';
+import { hasuraGetYesterday } from '../../../lib/analytics';
 import moment from 'moment';
 
 const Container = tw.div`flex flex-wrap -mx-2 mb-8`;
@@ -22,14 +22,10 @@ const HeaderContainer = tw.div`pt-5 pb-10`;
 const Header = tw.h1`inline-block text-3xl font-extrabold text-gray-900 tracking-tight`;
 
 export default function AnalyticsIndex(props) {
-  const [startDate, setStartDate] = useState(moment().subtract(90, 'days'));
-  const [endDate, setEndDate] = useState(moment());
-  const [sessionCount, setSessionCount] = useState(null);
+  const [startDate, setStartDate] = useState(props.startDate);
+  const [endDate, setEndDate] = useState(props.endDate);
 
   const [isSignedIn, setIsSignedIn] = useState(false);
-  const [viewID, setViewID] = useState(
-    process.env.NEXT_PUBLIC_ANALYTICS_VIEW_ID
-  );
 
   const initAuth = () => {
     return window.gapi.auth2.init({
@@ -92,23 +88,6 @@ export default function AnalyticsIndex(props) {
 
   useEffect(() => {
     window.gapi.load('auth2', init); //(1)
-
-    if (isSignedIn) {
-      const sessionsMetric = 'ga:sessions';
-      const dimensions = ['ga:date'];
-
-      getMetricsData(viewID, startDate, endDate, [sessionsMetric], dimensions)
-        .then((response) => {
-          const queryResult = response.result.reports[0].data.rows;
-
-          // should be one row returned
-          queryResult.forEach((row) => {
-            let value = row.metrics[0].values[0];
-            setSessionCount(value);
-          });
-        })
-        .catch((error) => console.error(error));
-    }
   }, [isSignedIn]);
 
   return (
@@ -137,7 +116,7 @@ export default function AnalyticsIndex(props) {
                         Sessions
                       </th>
                       <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-                        {sessionCount}
+                        {props.sessionCount}
                       </td>
                     </tr>
                     <tr>
@@ -151,12 +130,11 @@ export default function AnalyticsIndex(props) {
                   </tbody>
                 </table>
                 <YesterdaysTopTen
-                  apiUrl={props.apiUrl}
-                  apiToken={props.apiToken}
-                  viewID={viewID}
+                  pageViews={props.pageViews}
+                  readingDepth={props.readingDepth}
                 />
-                <YesterdaysDonorViews viewID={viewID} />
-                <YesterdaysSubscriberViews viewID={viewID} />
+                {/* <YesterdaysDonorViews viewID={viewID} />
+                <YesterdaysSubscriberViews viewID={viewID} /> */}
               </AnalyticsSidebar>
               <AnalyticsSidebar title="About this Data">
                 <p tw="p-2">
@@ -216,6 +194,33 @@ export async function getServerSideProps(context) {
   const mailchimpApiKey = process.env.MAILCHIMP_API_KEY;
   const mailchimpServer = process.env.MAILCHIMP_SERVER_PREFIX;
 
+  const startDate = moment().subtract(90, 'days');
+  const endDate = moment();
+
+  let sessionCount = 0;
+  let sessionParams = {
+    url: apiUrl,
+    orgSlug: apiToken,
+    startDate: startDate,
+    endDate: endDate,
+  };
+  const { errors, data } = await hasuraGetYesterday(sessionParams);
+  if (errors && !data) {
+    console.error(errors);
+  }
+  console.log('data:', data);
+
+  let sessions = data.ga_sessions;
+  sessions.map((pv) => {
+    sessionCount += parseInt(pv.count);
+  });
+
+  let pageViews = data.ga_page_views;
+  console.log('pageViews:', pageViews);
+
+  let readingDepth = data.ga_reading_depth;
+  console.log('readingDepth:', readingDepth);
+
   // I tried doing this call in the component's useEffect, but Mailchimp's API
   // throws a CORS error when I try that :(
   mailchimp.setConfig({
@@ -244,11 +249,14 @@ export async function getServerSideProps(context) {
 
   return {
     props: {
-      apiUrl,
-      apiToken,
+      apiUrl: apiUrl,
+      apiToken: apiToken,
       clientID: clientID,
       clientSecret: clientSecret,
       newSubscribers: newSubscribers,
+      pageViews: pageViews,
+      readingDepth: readingDepth,
+      sessionCount: sessionCount,
     },
   };
 }
