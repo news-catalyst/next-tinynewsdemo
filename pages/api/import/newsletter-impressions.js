@@ -64,7 +64,9 @@ async function getNewsletterImpressions(params) {
       !response.data.reports[0].data ||
       !response.data.reports[0].data.rows
     ) {
-      throw 'No rows returned for ' + startDate;
+      const error = new Error('No rows returned for ' + startDate);
+      error.code = '404';
+      throw error;
     }
 
     let insertPromises = [];
@@ -125,7 +127,11 @@ export default async (req, res) => {
 
   let successFlag = true;
   if (results.errors && results.errors.length > 0) {
-    successFlag = false;
+    if (results.errors[0].code && results.errors[0].code === '404') {
+      successFlag = true;
+    } else {
+      successFlag = false;
+    }
     resultNotes = results.errors;
   }
 
