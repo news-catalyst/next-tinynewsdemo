@@ -96,6 +96,7 @@ export default function AddSection({
   return (
     <AdminLayout>
       <AdminNav
+        switchLocales={true}
         currentLocale={currentLocale}
         locales={locales}
         homePageEditor={false}

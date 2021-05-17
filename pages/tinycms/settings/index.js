@@ -174,6 +174,7 @@ export default function Settings({
   return (
     <AdminLayout>
       <AdminNav
+        switchLocales={true}
         currentLocale={currentLocale}
         locales={locales}
         homePageEditor={false}
