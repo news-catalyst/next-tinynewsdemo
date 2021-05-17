@@ -33,7 +33,7 @@ export default function AdminLayout({ children }) {
                   <div tw="clear-left px-5">
                     <div tw="flex justify-center items-center block sm:inline-block no-underline">
                       <SignInButton
-                        className="button is-link"
+                        tw="cursor-pointer"
                         onClick={() =>
                           signIn('presspass', {
                             callbackUrl: `${process.env.NEXT_PUBLIC_SITE_URL}/tinycms/`,
