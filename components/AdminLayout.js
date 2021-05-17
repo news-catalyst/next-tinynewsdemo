@@ -36,7 +36,8 @@ export default function AdminLayout({ children }) {
                         tw="cursor-pointer"
                         onClick={() =>
                           signIn('presspass', {
-                            callbackUrl: `${process.env.NEXT_PUBLIC_SITE_URL}/tinycms/`,
+                            callbackUrl:
+                              'https://tinynews.tylerjfisher.com/tinycms/',
                           })
                         }
                       >
