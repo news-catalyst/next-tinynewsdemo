@@ -77,6 +77,7 @@ export default function Authors({ authors, currentLocale, locales }) {
   return (
     <AdminLayout>
       <AdminNav
+        switchLocales={true}
         currentLocale={currentLocale}
         locales={locales}
         homePageEditor={false}

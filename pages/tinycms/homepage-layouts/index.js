@@ -35,7 +35,11 @@ export default function HomepageLayouts({ homepageLayouts }) {
 
   return (
     <AdminLayout>
-      <AdminNav homePageEditor={false} showConfigOptions={true} />
+      <AdminNav
+        switchLocales={true}
+        homePageEditor={false}
+        showConfigOptions={true}
+      />
       <div id="page">
         <h1 className="title">Homepage Layouts</h1>
 

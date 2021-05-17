@@ -92,7 +92,7 @@ export default function AnalyticsIndex(props) {
 
   return (
     <AdminLayout>
-      <AdminNav homePageEditor={false} />
+      <AdminNav switchLocales={false} homePageEditor={false} />
       <Container>
         <Sidebar>
           <LightSidebar>
