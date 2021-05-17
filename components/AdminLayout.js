@@ -6,7 +6,7 @@ const SignInButton = tw.a`hidden md:flex w-full md:w-auto px-4 py-2 text-right b
 
 export default function AdminLayout({ children }) {
   const [session, loading] = useSession();
-
+  console.log(process.env.NEXT_PUBLIC_SITE_URL);
   return (
     <>
       <Head>
@@ -36,7 +36,7 @@ export default function AdminLayout({ children }) {
                         className="button is-link"
                         onClick={() =>
                           signIn('presspass', {
-                            callbackUrl: 'http://localhost:3000/tinycms/',
+                            callbackUrl: `${process.env.NEXT_PUBLIC_SITE_URL}/tinycms/`,
                           })
                         }
                       >
