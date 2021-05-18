@@ -1,6 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import tw from 'twin.macro';
-import { getMetricsData } from '../../../lib/analytics';
+import {
+  getMetricsData,
+  hasuraGetDonationImpressions,
+} from '../../../lib/analytics';
 
 const SubHeaderContainer = tw.div`pt-3 pb-5`;
 const SubHeader = tw.h1`inline-block text-xl font-extrabold text-gray-900 tracking-tight`;
@@ -10,210 +13,102 @@ const DonateClicks = (props) => {
   const [pageViews, setPageViews] = useState({});
   const [donateTableRows, setDonateTableRows] = useState([]);
   const [donationsFrequencyData, setDonationsFrequencyData] = useState([]);
-
-  let pv = {};
+  const [totalImpressions, setTotalImpressions] = useState({});
+  const [frequencySignups, setFrequencySignups] = useState({});
 
   useEffect(() => {
-    const pageViewsMetric = 'ga:pageviews';
-    const pvDimensions = ['ga:pagePath'];
-    const orderBy = { fieldName: pageViewsMetric, order: 'DESCENDING' };
+    const fetchDonationImpressions = async () => {
+      let params = {
+        url: props.apiUrl,
+        orgSlug: props.apiToken,
+        startDate: props.startDate.format('YYYY-MM-DD'),
+        endDate: props.endDate.format('YYYY-MM-DD'),
+      };
+      const { errors, data } = await hasuraGetDonationImpressions(params);
 
-    getMetricsData(
-      props.viewID,
-      props.startDate,
-      props.endDate,
-      [pageViewsMetric],
-      pvDimensions,
-      orderBy
-    )
-      .then((response) => {
-        const queryResult = response.result.reports[0].data.rows;
-
-        let labels = [];
-        let values = [];
-
-        if (queryResult) {
-          queryResult.forEach((row) => {
-            let label = row.dimensions[0];
-
-            if (!/tinycms/.test(label)) {
-              if (label === '/') {
-                label += ' (homepage)';
-              }
-              let value = row.metrics[0].values[0];
-
-              labels.push(label);
-              values.push(value);
-              pv[label] = value;
-            }
-          });
-        }
-
-        // setPageViews(pv);
-
-        let eventMetrics = ['ga:totalEvents'];
-        let eventDimensions = [
-          'ga:eventCategory',
-          'ga:eventAction',
-          'ga:eventLabel',
-          'ga:pagePath',
-        ];
-
-        let donateRows = [];
-        getMetricsData(
-          props.viewID,
-          props.startDate,
-          props.endDate,
-          eventMetrics,
-          eventDimensions,
-          {
-            filters: 'ga:eventCategory==Donate',
-          }
-        )
-          .then((response) => {
-            const queryResult = response.result.reports[0].data.rows;
-
-            let collectedData = {};
-            queryResult.forEach((row) => {
-              let category = row.dimensions[0];
-              let action = row.dimensions[1];
-              let label = row.dimensions[2];
-              let articlePath = row.dimensions[3];
-
-              if (articlePath !== '/') {
-                let conversion = 0;
-                let pvCount = 0;
-                let count = row.metrics[0].values[0];
-                if (pv && pv[articlePath] && pv[articlePath] > 0) {
-                  pvCount = pv[articlePath];
-                  conversion = Math.round((count / pvCount) * 100);
-                }
-                if (
-                  collectedData[articlePath] &&
-                  collectedData[articlePath][label]
-                ) {
-                  collectedData[articlePath][label]['count'] = count;
-                  collectedData[articlePath][label]['conversion'] = conversion;
-                  collectedData[articlePath][label]['pageViews'] = pvCount;
-                } else {
-                  collectedData[articlePath] = {};
-                  collectedData[articlePath][label] = {};
-                  collectedData[articlePath][label]['count'] = count;
-                  collectedData[articlePath][label]['conversion'] = conversion;
-                  collectedData[articlePath][label]['pageViews'] = pvCount;
-                }
-              }
-            });
-            var sortable = [];
-            Object.keys(collectedData).forEach((key) => {
-              Object.keys(collectedData[key]).forEach((subKey) => {
-                sortable.push([key, collectedData[key][subKey]['conversion']]);
-              });
-            });
-
-            sortable.sort(function (a, b) {
-              return b[1] - a[1];
-            });
-
-            sortable.map((item, i) => {
-              let key = item[0];
-              let uniqueRowKey = `donate-table-row-${i}`;
-              donateRows.push(
-                <tr key={uniqueRowKey}>
-                  <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-                    {key}
-                  </td>
-                  {Object.keys(collectedData[key]).map((subKey, i) => (
-                    <React.Fragment key={`table-row-${subKey}-${i}`}>
-                      <td
-                        key={`donate-cell-subkey-${i}`}
-                        tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium"
-                      >
-                        {subKey}
-                      </td>
-                      <td
-                        key={`donate-cell-count-${i}`}
-                        tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium"
-                      >
-                        {collectedData[key][subKey]['count']}
-                      </td>
-                      <td
-                        key={`donate-cell-pageviews-${i}`}
-                        tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium"
-                      >
-                        {collectedData[key][subKey]['pageViews']}
-                      </td>
-                      <td
-                        key={`donate-cell-conversion-${i}`}
-                        tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium"
-                      >
-                        {collectedData[key][subKey]['conversion']}%
-                      </td>
-                    </React.Fragment>
-                  ))}
-                </tr>
-              );
-            });
-            setDonateTableRows(donateRows);
-
-            if (window.location.hash && window.location.hash === '#donations') {
-              if (donationsRef) {
-                donationsRef.current.scrollIntoView({ behavior: 'smooth' });
-              }
-            }
-          })
-          .catch((error) => console.error(error));
-      })
-      .catch((error) => console.error(error));
-
-    let eventMetrics = ['ga:totalEvents'];
-    let donationReadingFrequencyDim = [
-      'ga:eventCategory',
-      'ga:eventAction',
-      'ga:eventLabel',
-      'ga:dimension2',
-    ];
-
-    // get metrics for reading frequency + donation
-    getMetricsData(
-      props.viewID,
-      props.startDate,
-      props.endDate,
-      eventMetrics,
-      donationReadingFrequencyDim,
-      {
-        filters: 'ga:eventCategory==Donate',
+      if (errors && !data) {
+        console.error(errors);
       }
-    ).then((response) => {
-      const queryResult = response.result.reports[0].data.rows;
 
-      let donationsByFrequency = {};
-      queryResult.forEach((row) => {
-        let frequency = row.dimensions[3];
-        let count = parseInt(row.metrics[0].values[0]);
+      let totalImps = {};
+      data.ga_donation_impressions.map((row) => {
+        if (!totalImps[row.path]) {
+          totalImps[row.path] = { clicks: 0 };
+        }
+        totalImps[row.path]['clicks'] = parseInt(row.impressions); //todo rename this to clicks
 
-        if (donationsByFrequency[frequency]) {
-          donationsByFrequency[frequency] += count;
-        } else {
-          donationsByFrequency[frequency] = count;
+        console.log(row);
+      });
+      data.ga_page_views.map((pv) => {
+        if (totalImps[pv.path]) {
+          console.log(
+            'found matching article for page views:',
+            totalImps[pv.path]
+          );
+          if (totalImps[pv.path]['pageviews']) {
+            totalImps[pv.path]['pageviews'] += parseInt(pv.count);
+          } else {
+            totalImps[pv.path]['pageviews'] = parseInt(pv.count);
+          }
         }
       });
+      Object.keys(totalImps).map((path) => {
+        if (totalImps[path]['pageviews'] > 0) {
+          let conversion =
+            (totalImps[path]['clicks'] / totalImps[path]['pageviews']) * 100;
+          totalImps[path]['conversion'] = conversion;
+          console.log(path, conversion, totalImps[path]);
+        }
+      });
+      var sortable = [];
+      Object.keys(totalImps).forEach((key) => {
+        sortable.push([key, totalImps[key]['conversion']]);
+      });
 
-      let donationsFrequencyRows = [];
-      Object.keys(donationsByFrequency).map((key, i) => {
-        donationsFrequencyRows.push(
-          <tr key={`donate-reading-frequency-row-${i}`}>
+      sortable.sort(function (a, b) {
+        return b[1] - a[1];
+      });
+
+      let donateRows = [];
+      sortable.map((item, i) => {
+        let key = item[0];
+        let uniqueRowKey = `donate-table-row-${i}`;
+        donateRows.push(
+          <tr key={uniqueRowKey}>
             <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
               {key}
             </td>
-            <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-              {donationsByFrequency[key]}
+            <td
+              key={`donate-cell-count-${i}`}
+              tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium"
+            >
+              {totalImps[key]['clicks']}
+            </td>
+            <td
+              key={`donate-cell-pageviews-${i}`}
+              tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium"
+            >
+              {totalImps[key]['pageviews']}
+            </td>
+            <td
+              key={`donate-cell-conversion-${i}`}
+              tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium"
+            >
+              {totalImps[key]['conversion']}%
             </td>
           </tr>
         );
       });
-      setDonationsFrequencyData(donationsFrequencyRows);
-    });
+      setDonateTableRows(donateRows);
+      setTotalImpressions(totalImps);
+    };
+    fetchDonationImpressions();
+
+    if (window.location.hash && window.location.hash === '#donations') {
+      if (donationsRef) {
+        donationsRef.current.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
   }, [props.startDate, props.endDate]);
 
   return (
@@ -230,7 +125,6 @@ const DonateClicks = (props) => {
         <thead>
           <tr key="header-row">
             <th tw="px-4">Article</th>
-            <th tw="px-4">Label</th>
             <th tw="px-4">Clicks</th>
             <th tw="px-4">Views</th>
             <th tw="px-4">Conversion</th>
@@ -239,7 +133,7 @@ const DonateClicks = (props) => {
         <tbody>{donateTableRows}</tbody>
       </table>
 
-      <table tw="pt-10 mt-10 w-full table-auto">
+      {/* <table tw="pt-10 mt-10 w-full table-auto">
         <thead>
           <tr>
             <th tw="px-4">Reading Frequency</th>
@@ -247,7 +141,7 @@ const DonateClicks = (props) => {
           </tr>
         </thead>
         <tbody>{donationsFrequencyData}</tbody>
-      </table>
+      </table> */}
     </>
   );
 };

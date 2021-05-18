@@ -147,7 +147,6 @@ export default function Audience(props) {
               />
 
               <CustomDimensions
-                viewID={viewID}
                 startDate={startDate}
                 endDate={endDate}
                 dimension="dimension4"
@@ -157,7 +156,6 @@ export default function Audience(props) {
               />
 
               <CustomDimensions
-                viewID={viewID}
                 startDate={startDate}
                 endDate={endDate}
                 dimension="dimension5"
