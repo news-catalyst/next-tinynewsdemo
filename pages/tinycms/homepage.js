@@ -101,6 +101,7 @@ export default function HomePageEditor({
   return (
     <AdminLayout>
       <AdminNav
+        switchLocales={true}
         homePageEditor={true}
         layoutSchemas={layoutSchemas}
         changeLayout={changeLayout}

@@ -132,6 +132,7 @@ export default function EditAuthor({
     <AdminLayout>
       <AdminNav
         currentLocale={currentLocale}
+        switchLocales={true}
         locales={locales}
         homePageEditor={false}
         showConfigOptions={true}

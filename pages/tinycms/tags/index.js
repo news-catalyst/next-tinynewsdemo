@@ -55,6 +55,7 @@ export default function Tags({ tags, currentLocale, locales }) {
   return (
     <AdminLayout>
       <AdminNav
+        switchLocales={true}
         currentLocale={currentLocale}
         locales={locales}
         homePageEditor={false}
