@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import tw from 'twin.macro';
 import {
   getMetricsData,
-  hasuraGetDonationImpressions,
+  hasuraGetDonationClicks,
 } from '../../../lib/analytics';
 
 const SubHeaderContainer = tw.div`pt-3 pb-5`;
@@ -13,56 +13,57 @@ const DonateClicks = (props) => {
   const [pageViews, setPageViews] = useState({});
   const [donateTableRows, setDonateTableRows] = useState([]);
   const [donationsFrequencyData, setDonationsFrequencyData] = useState([]);
-  const [totalImpressions, setTotalImpressions] = useState({});
+  const [totalClickDatas, setTotalClickDatas] = useState({});
   const [frequencySignups, setFrequencySignups] = useState({});
 
   useEffect(() => {
-    const fetchDonationImpressions = async () => {
+    const fetchDonationClicks = async () => {
       let params = {
         url: props.apiUrl,
         orgSlug: props.apiToken,
         startDate: props.startDate.format('YYYY-MM-DD'),
         endDate: props.endDate.format('YYYY-MM-DD'),
       };
-      const { errors, data } = await hasuraGetDonationImpressions(params);
+      const { errors, data } = await hasuraGetDonationClicks(params);
 
       if (errors && !data) {
         console.error(errors);
       }
 
-      let totalImps = {};
-      data.ga_donation_impressions.map((row) => {
-        if (!totalImps[row.path]) {
-          totalImps[row.path] = { clicks: 0 };
+      let totalClicks = {};
+      data.ga_donation_clicks.map((row) => {
+        if (!totalClicks[row.path]) {
+          totalClicks[row.path] = { clicks: 0 };
         }
-        totalImps[row.path]['clicks'] = parseInt(row.impressions); //todo rename this to clicks
+        totalClicks[row.path]['clicks'] = parseInt(row.count);
 
         console.log(row);
       });
       data.ga_page_views.map((pv) => {
-        if (totalImps[pv.path]) {
+        if (totalClicks[pv.path]) {
           console.log(
             'found matching article for page views:',
-            totalImps[pv.path]
+            totalClicks[pv.path]
           );
-          if (totalImps[pv.path]['pageviews']) {
-            totalImps[pv.path]['pageviews'] += parseInt(pv.count);
+          if (totalClicks[pv.path]['pageviews']) {
+            totalClicks[pv.path]['pageviews'] += parseInt(pv.count);
           } else {
-            totalImps[pv.path]['pageviews'] = parseInt(pv.count);
+            totalClicks[pv.path]['pageviews'] = parseInt(pv.count);
           }
         }
       });
-      Object.keys(totalImps).map((path) => {
-        if (totalImps[path]['pageviews'] > 0) {
+      Object.keys(totalClicks).map((path) => {
+        if (totalClicks[path]['pageviews'] > 0) {
           let conversion =
-            (totalImps[path]['clicks'] / totalImps[path]['pageviews']) * 100;
-          totalImps[path]['conversion'] = conversion;
-          console.log(path, conversion, totalImps[path]);
+            (totalClicks[path]['clicks'] / totalClicks[path]['pageviews']) *
+            100;
+          totalClicks[path]['conversion'] = conversion;
+          console.log(path, conversion, totalClicks[path]);
         }
       });
       var sortable = [];
-      Object.keys(totalImps).forEach((key) => {
-        sortable.push([key, totalImps[key]['conversion']]);
+      Object.keys(totalClicks).forEach((key) => {
+        sortable.push([key, totalClicks[key]['conversion']]);
       });
 
       sortable.sort(function (a, b) {
@@ -82,27 +83,27 @@ const DonateClicks = (props) => {
               key={`donate-cell-count-${i}`}
               tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium"
             >
-              {totalImps[key]['clicks']}
+              {totalClicks[key]['clicks']}
             </td>
             <td
               key={`donate-cell-pageviews-${i}`}
               tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium"
             >
-              {totalImps[key]['pageviews']}
+              {totalClicks[key]['pageviews']}
             </td>
             <td
               key={`donate-cell-conversion-${i}`}
               tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium"
             >
-              {totalImps[key]['conversion']}%
+              {totalClicks[key]['conversion']}%
             </td>
           </tr>
         );
       });
       setDonateTableRows(donateRows);
-      setTotalImpressions(totalImps);
+      setTotalClickDatas(totalClicks);
     };
-    fetchDonationImpressions();
+    fetchDonationClicks();
 
     if (window.location.hash && window.location.hash === '#donations') {
       if (donationsRef) {
