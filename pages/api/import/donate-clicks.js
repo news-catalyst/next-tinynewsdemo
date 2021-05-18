@@ -1,6 +1,6 @@
 import {
   hasuraInsertDataImport,
-  hasuraInsertDonationImpression,
+  hasuraInsertDonationClick,
   sanitizePath,
 } from '../../../lib/analytics';
 
@@ -20,7 +20,7 @@ const scopes = [
 const auth = new google.auth.JWT(credsEmail, null, credsPrivateKey, scopes);
 const analyticsreporting = google.analyticsreporting({ version: 'v4', auth });
 
-async function getDonationImpressions(params) {
+async function getDonationClicks(params) {
   let startDate = params['startDate'];
   let endDate = params['endDate'];
   let googleAnalyticsViewID = params['viewID'];
@@ -72,10 +72,10 @@ async function getDonationImpressions(params) {
     let insertPromises = [];
     response.data.reports[0].data.rows.forEach((row) => {
       insertPromises.push(
-        hasuraInsertDonationImpression({
+        hasuraInsertDonationClick({
           url: apiUrl,
           orgSlug: apiToken,
-          impressions: row.metrics[0].values[0],
+          count: row.metrics[0].values[0],
           path: sanitizePath(row.dimensions[3]),
           date: startDate,
           action: row.dimensions[0],
@@ -112,8 +112,8 @@ async function getDonationImpressions(params) {
 export default async (req, res) => {
   const { startDate, endDate } = req.query;
 
-  console.log('data import donation impression data:', startDate, endDate);
-  const results = await getDonationImpressions({
+  console.log('data import donation click data:', startDate, endDate);
+  const results = await getDonationClicks({
     startDate: startDate,
     endDate: endDate,
     viewID: googleAnalyticsViewID,
@@ -138,7 +138,7 @@ export default async (req, res) => {
   const auditResult = await hasuraInsertDataImport({
     url: apiUrl,
     orgSlug: apiToken,
-    table_name: 'ga_donation_impressions',
+    table_name: 'ga_donation_clicks',
     start_date: startDate,
     end_date: endDate,
     success: successFlag,
@@ -154,7 +154,7 @@ export default async (req, res) => {
   }
 
   res.status(200).json({
-    name: 'ga_donation_impressions',
+    name: 'ga_donation_clicks',
     startDate: startDate,
     endDate: endDate,
     status: 'ok',
