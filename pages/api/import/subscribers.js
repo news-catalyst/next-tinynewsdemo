@@ -44,7 +44,7 @@ async function getSubscribers(params) {
             ],
             dimensions: [
               {
-                name: 'ga:dimension4',
+                name: 'ga:dimension5',
               },
             ],
           },
