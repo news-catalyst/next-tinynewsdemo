@@ -57,7 +57,7 @@ const DonateClicks = (props) => {
           let conversion =
             (totalClicks[path]['clicks'] / totalClicks[path]['pageviews']) *
             100;
-          totalClicks[path]['conversion'] = conversion;
+          totalClicks[path]['conversion'] = conversion.toFixed(2);
           console.log(path, conversion, totalClicks[path]);
         }
       });
