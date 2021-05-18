@@ -138,7 +138,7 @@ export default async (req, res) => {
   });
 
   res.status(200).json({
-    name: tableName,
+    name: 'ga_session_duration',
     startDate: startDate,
     endDate: endDate,
     status: 'OK',
