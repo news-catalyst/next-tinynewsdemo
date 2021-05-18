@@ -85,6 +85,7 @@ export default function EditSection({
     <AdminLayout>
       <AdminNav
         currentLocale={currentLocale}
+        switchLocales={true}
         locales={locales}
         homePageEditor={false}
         showConfigOptions={true}

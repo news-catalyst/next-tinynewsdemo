@@ -55,6 +55,7 @@ export default function AddTag({ apiUrl, apiToken, currentLocale, locales }) {
     <AdminLayout>
       <AdminNav
         currentLocale={currentLocale}
+        switchLocales={true}
         locales={locales}
         homePageEditor={false}
         showConfigOptions={true}

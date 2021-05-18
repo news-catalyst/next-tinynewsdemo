@@ -31,16 +31,9 @@ export default function NewAdminNav(props) {
       props.hpData &&
       props.hpData.homepage_layout_schema
     ) {
-      console.log(
-        'is homepage editor AND has hp data/schema',
-        props.homePageEditor,
-        props.hpData
-      );
       setCurrentLayoutName(props.hpData.homepage_layout_schema.name);
     } else if (props.homePageEditor) {
       console.log('is homepage editor AND missing hp data/schema', props);
-    } else {
-      console.log('AdminNav props:', props);
     }
   }, [props.hpData]);
 
@@ -57,10 +50,12 @@ export default function NewAdminNav(props) {
               </Link>
             </BrandContainer>
             <NavItemsDiv>
-              <LocaleSwitcher
-                currentLocale={props.currentLocale}
-                locales={props.locales}
-              />
+              {props.switchLocales && (
+                <LocaleSwitcher
+                  currentLocale={props.currentLocale}
+                  locales={props.locales}
+                />
+              )}
               <Link href="/tinycms/analytics">
                 <NavItem>Analytics</NavItem>
               </Link>

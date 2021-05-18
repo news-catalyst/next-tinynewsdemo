@@ -9,7 +9,7 @@ import AnalyticsSidebar from '../../../components/tinycms/analytics/AnalyticsSid
 import YesterdaysDonorViews from '../../../components/tinycms/analytics/YesterdaysDonorViews';
 import YesterdaysSubscriberViews from '../../../components/tinycms/analytics/YesterdaysSubscriberViews';
 import YesterdaysTopTen from '../../../components/tinycms/analytics/YesterdaysTopTen';
-import { getMetricsData } from '../../../lib/analytics';
+import { hasuraGetYesterday } from '../../../lib/analytics';
 import moment from 'moment';
 
 const Container = tw.div`flex flex-wrap -mx-2 mb-8`;
@@ -22,14 +22,10 @@ const HeaderContainer = tw.div`pt-5 pb-10`;
 const Header = tw.h1`inline-block text-3xl font-extrabold text-gray-900 tracking-tight`;
 
 export default function AnalyticsIndex(props) {
-  const [startDate, setStartDate] = useState(moment().subtract(90, 'days'));
-  const [endDate, setEndDate] = useState(moment());
-  const [sessionCount, setSessionCount] = useState(null);
+  const [startDate, setStartDate] = useState(props.startDate);
+  const [endDate, setEndDate] = useState(props.endDate);
 
   const [isSignedIn, setIsSignedIn] = useState(false);
-  const [viewID, setViewID] = useState(
-    process.env.NEXT_PUBLIC_ANALYTICS_VIEW_ID
-  );
 
   const initAuth = () => {
     return window.gapi.auth2.init({
@@ -92,28 +88,11 @@ export default function AnalyticsIndex(props) {
 
   useEffect(() => {
     window.gapi.load('auth2', init); //(1)
-
-    if (isSignedIn) {
-      const sessionsMetric = 'ga:sessions';
-      const dimensions = ['ga:date'];
-
-      getMetricsData(viewID, startDate, endDate, [sessionsMetric], dimensions)
-        .then((response) => {
-          const queryResult = response.result.reports[0].data.rows;
-
-          // should be one row returned
-          queryResult.forEach((row) => {
-            let value = row.metrics[0].values[0];
-            setSessionCount(value);
-          });
-        })
-        .catch((error) => console.error(error));
-    }
   }, [isSignedIn]);
 
   return (
     <AdminLayout>
-      <AdminNav homePageEditor={false} />
+      <AdminNav switchLocales={false} homePageEditor={false} />
       <Container>
         <Sidebar>
           <LightSidebar>
@@ -137,7 +116,23 @@ export default function AnalyticsIndex(props) {
                         Sessions
                       </th>
                       <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-                        {sessionCount}
+                        {props.sessionCount}
+                      </td>
+                    </tr>
+                    <tr>
+                      <th tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                        Donor Sessions
+                      </th>
+                      <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                        {props.donorSessionCount}
+                      </td>
+                    </tr>
+                    <tr>
+                      <th tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                        Subscriber Sessions
+                      </th>
+                      <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                        {props.subscriberSessionCount}
                       </td>
                     </tr>
                     <tr>
@@ -150,9 +145,10 @@ export default function AnalyticsIndex(props) {
                     </tr>
                   </tbody>
                 </table>
-                <YesterdaysTopTen viewID={viewID} />
-                <YesterdaysDonorViews viewID={viewID} />
-                <YesterdaysSubscriberViews viewID={viewID} />
+                <YesterdaysTopTen
+                  pageViews={props.pageViews}
+                  readingDepth={props.readingDepth}
+                />
               </AnalyticsSidebar>
               <AnalyticsSidebar title="About this Data">
                 <p tw="p-2">
@@ -205,10 +201,47 @@ export default function AnalyticsIndex(props) {
   );
 }
 export async function getServerSideProps(context) {
+  const apiUrl = process.env.HASURA_API_URL;
+  const apiToken = process.env.ORG_SLUG;
   const clientID = process.env.ANALYTICS_CLIENT_ID;
   const clientSecret = process.env.ANALYTICS_CLIENT_SECRET;
   const mailchimpApiKey = process.env.MAILCHIMP_API_KEY;
   const mailchimpServer = process.env.MAILCHIMP_SERVER_PREFIX;
+
+  const startDate = moment().subtract(2, 'days');
+  const endDate = moment().subtract(1, 'days');
+
+  let sessionCount = 0;
+  let sessionParams = {
+    url: apiUrl,
+    orgSlug: apiToken,
+    startDate: startDate,
+    endDate: endDate,
+  };
+  const { errors, data } = await hasuraGetYesterday(sessionParams);
+  if (errors && !data) {
+    console.error(errors);
+  }
+
+  let sessions = data.ga_sessions;
+  sessions.map((pv) => {
+    sessionCount += parseInt(pv.count);
+  });
+
+  let pageViews = data.ga_page_views;
+
+  let readingDepth = data.ga_reading_depth;
+
+  let donors = data.donorDimensions;
+  let donorSessionCount = 0;
+  donors.map((item) => {
+    donorSessionCount += parseInt(item.count);
+  });
+  let subscribers = data.subscriberDimensions;
+  let subscriberSessionCount = 0;
+  subscribers.map((item) => {
+    subscriberSessionCount += parseInt(item.count);
+  });
 
   // I tried doing this call in the component's useEffect, but Mailchimp's API
   // throws a CORS error when I try that :(
@@ -238,9 +271,16 @@ export async function getServerSideProps(context) {
 
   return {
     props: {
+      apiUrl: apiUrl,
+      apiToken: apiToken,
       clientID: clientID,
       clientSecret: clientSecret,
       newSubscribers: newSubscribers,
+      pageViews: pageViews,
+      readingDepth: readingDepth,
+      sessionCount: sessionCount,
+      donorSessionCount: donorSessionCount,
+      subscriberSessionCount: subscriberSessionCount,
     },
   };
 }
