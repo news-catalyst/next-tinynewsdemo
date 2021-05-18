@@ -12,6 +12,7 @@ import AdminNav from '../../../components/nav/AdminNav';
 import Notification from '../../../components/tinycms/Notification';
 import { hasuraListLocales } from '../../../lib/articles.js';
 import { hasuraCreateSection } from '../../../lib/section';
+import { slugify } from '../../../lib/utils';
 
 export default function AddSection({
   apiUrl,
@@ -23,9 +24,14 @@ export default function AddSection({
   const [notificationType, setNotificationType] = useState('');
   const [showNotification, setShowNotification] = useState(false);
   const [title, setTitle] = useState('');
-  const [slug, setSlug] = useState('');
+  const [slug, setSlug] = useState(null);
   const [published, setPublished] = useState(false);
   const [errors, setErrors] = useState([]);
+
+  function updateTitleAndSlug(value) {
+    setTitle(value);
+    setSlug(slugify(value));
+  }
 
   function handlePublished(event) {
     const value =
@@ -51,15 +57,6 @@ export default function AddSection({
       let removeAtIndex = errors.indexOf('Title is required.');
       errors.splice(removeAtIndex, 1);
       setErrors(errors);
-    }
-
-    if (slug === null || slug === '') {
-      if (errors.indexOf('Slug is required.') < 0) {
-        errors.push('Slug is required.');
-        setErrors(errors);
-      }
-      console.log('errors:', errors);
-      formIsValid = false;
     }
 
     if (!formIsValid) {
@@ -117,15 +114,17 @@ export default function AddSection({
           <TinyInputField
             name="title"
             value={title}
-            onChange={(ev) => setTitle(ev.target.value)}
+            onChange={(ev) => updateTitleAndSlug(ev.target.value)}
             label="Title"
           />
-          <TinyInputField
-            name="slug"
-            value={slug}
-            onChange={(ev) => setSlug(ev.target.value)}
-            label="Slug"
-          />
+
+          {slug && (
+            <label>
+              <span tw="block font-medium text-gray-700">URL Slug</span>
+              <span tw="block font-light text-gray-700">{slug}</span>
+            </label>
+          )}
+
           <TinyCheckboxField
             name="published"
             checked={published}
