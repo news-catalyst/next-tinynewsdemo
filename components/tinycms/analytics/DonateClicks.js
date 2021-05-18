@@ -10,9 +10,7 @@ const SubHeader = tw.h1`inline-block text-xl font-extrabold text-gray-900 tracki
 
 const DonateClicks = (props) => {
   const donationsRef = useRef();
-  const [pageViews, setPageViews] = useState({});
   const [donateTableRows, setDonateTableRows] = useState([]);
-  const [donationsFrequencyData, setDonationsFrequencyData] = useState([]);
   const [totalClickDatas, setTotalClickDatas] = useState({});
   const [frequencySignups, setFrequencySignups] = useState({});
 
@@ -33,11 +31,17 @@ const DonateClicks = (props) => {
       let totalClicks = {};
       data.ga_donation_clicks.map((row) => {
         if (!totalClicks[row.path]) {
-          totalClicks[row.path] = { clicks: 0 };
+          totalClicks[row.path] = {
+            clicks: 0,
+            pageviews: 0,
+            conversion: 0,
+            read_25: 0,
+            read_50: 0,
+            read_75: 0,
+            read_100: 0,
+          };
         }
         totalClicks[row.path]['clicks'] = parseInt(row.count);
-
-        console.log(row);
       });
       data.ga_page_views.map((pv) => {
         if (totalClicks[pv.path]) {
@@ -52,6 +56,17 @@ const DonateClicks = (props) => {
           }
         }
       });
+      data.ga_reading_depth.map((rd) => {
+        if (!totalClicks[rd.path]) {
+          console.log(`no match for ${rd.path}`);
+          return;
+        }
+        totalClicks[rd.path]['read_25'] += parseInt(rd.read_25);
+        totalClicks[rd.path]['read_50'] += parseInt(rd.read_50);
+        totalClicks[rd.path]['read_75'] += parseInt(rd.read_75);
+        totalClicks[rd.path]['read_100'] += parseInt(rd.read_100);
+      });
+
       Object.keys(totalClicks).map((path) => {
         if (totalClicks[path]['pageviews'] > 0) {
           let conversion =
@@ -74,6 +89,7 @@ const DonateClicks = (props) => {
       sortable.map((item, i) => {
         let key = item[0];
         let uniqueRowKey = `donate-table-row-${i}`;
+        console.log(totalClicks[key]);
         donateRows.push(
           <tr key={uniqueRowKey}>
             <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
