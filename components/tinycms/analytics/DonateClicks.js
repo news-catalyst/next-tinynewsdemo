@@ -11,6 +11,7 @@ const SubHeader = tw.h1`inline-block text-xl font-extrabold text-gray-900 tracki
 const DonateClicks = (props) => {
   const donationsRef = useRef();
   const [donateTableRows, setDonateTableRows] = useState([]);
+  const [donorFrequencyRows, setDonorFrequencyRows] = useState([]);
   const [totalClickDatas, setTotalClickDatas] = useState({});
   const [frequencySignups, setFrequencySignups] = useState({});
 
@@ -56,16 +57,18 @@ const DonateClicks = (props) => {
           }
         }
       });
-      data.ga_reading_depth.map((rd) => {
-        if (!totalClicks[rd.path]) {
-          console.log(`no match for ${rd.path}`);
-          return;
+      let donorFrequency = {};
+      data.ga_donor_reading_frequency.map((rd) => {
+        if (!donorFrequency[rd.date]) {
+          donorFrequency[rd.date] = {};
         }
-        totalClicks[rd.path]['read_25'] += parseInt(rd.read_25);
-        totalClicks[rd.path]['read_50'] += parseInt(rd.read_50);
-        totalClicks[rd.path]['read_75'] += parseInt(rd.read_75);
-        totalClicks[rd.path]['read_100'] += parseInt(rd.read_100);
+        if (donorFrequency[rd.date][rd.label]) {
+          donorFrequency[rd.date][rd.label] += parseInt(rd.count);
+        } else {
+          donorFrequency[rd.date][rd.label] = parseInt(rd.count);
+        }
       });
+      console.log('donor frequency:', donorFrequency);
 
       Object.keys(totalClicks).map((path) => {
         if (totalClicks[path]['pageviews'] > 0) {
@@ -118,6 +121,46 @@ const DonateClicks = (props) => {
       });
       setDonateTableRows(donateRows);
       setTotalClickDatas(totalClicks);
+
+      let donorFreqRows = [];
+      Object.keys(donorFrequency).map((date, i) => {
+        let uniqueRowKey = `frequency-table-row-${i}`;
+        donorFreqRows.push(
+          <tr key={uniqueRowKey}>
+            <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+              {date}
+            </td>
+            <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+              {donorFrequency[date]['1 post'] || 0}
+            </td>
+            <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+              {donorFrequency[date]['2-3 posts'] || 0}
+            </td>
+            <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+              {donorFrequency[date]['4-5 posts'] || 0}
+            </td>
+            <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+              {donorFrequency[date]['6-8 posts'] || 0}
+            </td>
+            <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+              {donorFrequency[date]['9-13 posts'] || 0}
+            </td>
+            <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+              {donorFrequency[date]['14-21 posts'] || 0}
+            </td>
+            <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+              {donorFrequency[date]['22-34 posts'] || 0}
+            </td>
+            <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+              {donorFrequency[date]['35-55 posts'] || 0}
+            </td>
+            <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+              {donorFrequency[date]['56+']}
+            </td>
+          </tr>
+        );
+      });
+      setDonorFrequencyRows(donorFreqRows);
     };
     fetchDonationClicks();
 
@@ -150,15 +193,23 @@ const DonateClicks = (props) => {
         <tbody>{donateTableRows}</tbody>
       </table>
 
-      {/* <table tw="pt-10 mt-10 w-full table-auto">
+      <table tw="pt-10 mt-10 w-full table-auto">
         <thead>
           <tr>
-            <th tw="px-4">Reading Frequency</th>
-            <th tw="px-4">Clicks</th>
+            <th tw="px-4">Date</th>
+            <th tw="px-4">1 Post</th>
+            <th tw="px-4">2-3 Posts</th>
+            <th tw="px-4">4-5 Posts</th>
+            <th tw="px-4">6-8 Posts</th>
+            <th tw="px-4">9-13 Posts</th>
+            <th tw="px-4">14-21 Posts</th>
+            <th tw="px-4">22-34 Posts</th>
+            <th tw="px-4">35-55 Posts</th>
+            <th tw="px-4">56+</th>
           </tr>
         </thead>
-        <tbody>{donationsFrequencyData}</tbody>
-      </table> */}
+        <tbody>{donorFrequencyRows}</tbody>
+      </table>
     </>
   );
 };
