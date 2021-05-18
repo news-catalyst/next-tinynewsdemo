@@ -1,5 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import tw from 'twin.macro';
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+} from 'recharts';
 import { hasuraGetCustomDimension } from '../../../lib/analytics';
 
 const SubHeaderContainer = tw.div`pt-10 pb-5`;
@@ -7,7 +16,7 @@ const SubHeader = tw.h1`inline-block text-xl font-extrabold text-gray-900 tracki
 
 const CustomDimensions = (props) => {
   const subscriptionsRef = useRef();
-  const [customDims, setCustomDims] = useState([]);
+  const [chartData, setChartData] = useState([]);
 
   useEffect(() => {
     let params = {
@@ -20,14 +29,22 @@ const CustomDimensions = (props) => {
     const fetchCustomDimension = async () => {
       const { errors, data } = await hasuraGetCustomDimension(params);
 
+      let chartValues = [];
+
       if (errors && !data) {
         console.error(errors);
       }
-
-      console.log('data:', data);
-      setCustomDims(data.ga_custom_dimensions);
+      data.ga_custom_dimensions.map((item) => {
+        let lineDataPoint = {
+          name: item.date,
+          sessions: parseInt(item.count),
+        };
+        chartValues.push(lineDataPoint);
+      });
+      setChartData(chartValues);
     };
     fetchCustomDimension();
+    console.log(chartData);
 
     if (window.location.hash && window.location.hash === '#subscriptions') {
       if (subscriptionsRef) {
@@ -45,37 +62,19 @@ const CustomDimensions = (props) => {
         {props.startDate.format('dddd, MMMM Do YYYY')} -{' '}
         {props.endDate.format('dddd, MMMM Do YYYY')}
       </p>
-      <table tw="w-full table-auto">
-        <thead>
-          <tr>
-            <th tw="px-4">{props.label}</th>
-            <th tw="px-4">Sessions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {customDims.length > 0 &&
-            customDims.map((item, i) => (
-              <tr key={`label-row-${i}`}>
-                <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-                  {item.date}
-                </td>
-                <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-                  {item.count}
-                </td>
-              </tr>
-            ))}
-          {customDims.length === 0 && (
-            <tr>
-              <td
-                colSpan="2"
-                tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium"
-              >
-                No data found
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </table>
+      <LineChart width={740} height={400} data={chartData}>
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey="name" />
+        <YAxis type="number" domain={[0, 'dataMax']} />
+        <Tooltip />
+        <Legend />
+        <Line
+          type="monotone"
+          dataKey="sessions"
+          stroke="#8884d8"
+          isAnimationActive={false}
+        />
+      </LineChart>
     </>
   );
 };
