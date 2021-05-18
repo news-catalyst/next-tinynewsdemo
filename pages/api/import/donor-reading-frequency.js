@@ -1,6 +1,6 @@
 import {
   hasuraInsertDataImport,
-  hasuraInsertCustomDimension,
+  hasuraInsertDonorReadingFrequency,
 } from '../../../lib/analytics';
 
 const { google } = require('googleapis');
@@ -19,7 +19,7 @@ const scopes = [
 const auth = new google.auth.JWT(credsEmail, null, credsPrivateKey, scopes);
 const analyticsreporting = google.analyticsreporting({ version: 'v4', auth });
 
-async function getSubscribers(params) {
+async function getDonorReadingFrequency(params) {
   let startDate = params['startDate'];
   let endDate = params['endDate'];
   let googleAnalyticsViewID = params['viewID'];
@@ -39,14 +39,18 @@ async function getSubscribers(params) {
             ],
             metrics: [
               {
-                expression: 'ga:sessions',
+                expression: 'ga:totalEvents',
               },
             ],
             dimensions: [
               {
-                name: 'ga:dimension5',
+                name: 'ga:eventCategory',
+                name: 'ga:eventAction',
+                name: 'ga:eventLabel',
+                name: 'ga:dimension2',
               },
             ],
+            filtersExpression: 'ga:eventCategory==Donate',
           },
         ],
       },
@@ -54,6 +58,7 @@ async function getSubscribers(params) {
     console.log('GA response:', response);
 
     let insertPromises = [];
+
     if (
       !response ||
       !response.data ||
@@ -62,32 +67,23 @@ async function getSubscribers(params) {
       !response.data.reports[0].data ||
       !response.data.reports[0].data.rows
     ) {
-      console.log('No data from GA for subscriber clicks on ' + startDate);
-      insertPromises.push(
-        hasuraInsertCustomDimension({
-          url: apiUrl,
-          orgSlug: apiToken,
-          count: 0,
-          label: 'isSubscriber',
-          dimension: 'dimension5',
-          date: startDate,
-        }).then((result) => {
-          if (result.errors) {
-            return { status: 'error', errors: result.errors };
-          } else {
-            return { status: 'ok', result: result, errors: [] };
-          }
-        })
+      console.log(
+        'No data from GA for donor reading frequency on ' + startDate
       );
+      const error = new Error('No rows returned for ' + startDate);
+      error.code = '404';
+      throw error;
     } else {
       response.data.reports[0].data.rows.forEach((row) => {
+        let label = row.dimensions[0];
+        let count = row.metrics[0].values[0];
+        console.log(label, count, row);
         insertPromises.push(
-          hasuraInsertCustomDimension({
+          hasuraInsertDonorReadingFrequency({
             url: apiUrl,
             orgSlug: apiToken,
-            count: row.metrics[0].values[0],
-            label: 'isSubscriber',
-            dimension: 'dimension5',
+            count: count,
+            label: label,
             date: startDate,
           }).then((result) => {
             if (result.errors) {
@@ -120,8 +116,8 @@ async function getSubscribers(params) {
 export default async (req, res) => {
   const { startDate, endDate } = req.query;
 
-  console.log('data import subscriber data:', startDate, endDate);
-  const results = await getSubscribers({
+  console.log('data import donor data:', startDate, endDate);
+  const results = await getDonorReadingFrequency({
     startDate: startDate,
     endDate: endDate,
     viewID: googleAnalyticsViewID,
@@ -142,7 +138,7 @@ export default async (req, res) => {
   const auditResult = await hasuraInsertDataImport({
     url: apiUrl,
     orgSlug: apiToken,
-    table_name: 'ga_subscribers',
+    table_name: 'ga_donor_reading_frequency',
     start_date: startDate,
     end_date: endDate,
     success: successFlag,
@@ -158,7 +154,7 @@ export default async (req, res) => {
   }
 
   res.status(200).json({
-    name: 'ga_subscribers',
+    name: 'ga_donor_reading_frequency',
     startDate: startDate,
     endDate: endDate,
     status: 'ok',
