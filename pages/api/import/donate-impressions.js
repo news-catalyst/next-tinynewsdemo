@@ -1,6 +1,7 @@
 import {
   hasuraInsertDataImport,
-  hasuraInsertCustomDimension,
+  hasuraInsertDonationImpression,
+  sanitizePath,
 } from '../../../lib/analytics';
 
 const { google } = require('googleapis');
@@ -19,7 +20,7 @@ const scopes = [
 const auth = new google.auth.JWT(credsEmail, null, credsPrivateKey, scopes);
 const analyticsreporting = google.analyticsreporting({ version: 'v4', auth });
 
-async function getSubscribers(params) {
+async function getDonationImpressions(params) {
   let startDate = params['startDate'];
   let endDate = params['endDate'];
   let googleAnalyticsViewID = params['viewID'];
@@ -39,21 +40,22 @@ async function getSubscribers(params) {
             ],
             metrics: [
               {
-                expression: 'ga:sessions',
+                expression: 'ga:totalEvents',
               },
             ],
             dimensions: [
-              {
-                name: 'ga:dimension5',
-              },
+              { name: 'ga:eventAction' },
+              { name: 'ga:eventCategory' },
+              { name: 'ga:eventLabel' },
+              { name: 'ga:pagePath' },
             ],
+            filtersExpression: 'ga:eventCategory==Donate',
           },
         ],
       },
     });
     console.log('GA response:', response);
 
-    let insertPromises = [];
     if (
       !response ||
       !response.data ||
@@ -62,16 +64,23 @@ async function getSubscribers(params) {
       !response.data.reports[0].data ||
       !response.data.reports[0].data.rows
     ) {
-      console.log('No data from GA for subscriber clicks on ' + startDate);
+      const error = new Error('No rows returned for ' + startDate);
+      error.code = '404';
+      throw error;
+    }
+
+    let insertPromises = [];
+    response.data.reports[0].data.rows.forEach((row) => {
       insertPromises.push(
-        hasuraInsertCustomDimension({
+        hasuraInsertDonationImpression({
           url: apiUrl,
           orgSlug: apiToken,
-          count: 0,
-          label: 'isSubscriber',
-          dimension: 'dimension5',
+          impressions: row.metrics[0].values[0],
+          path: sanitizePath(row.dimensions[3]),
           date: startDate,
+          action: row.dimensions[0],
         }).then((result) => {
+          console.log('hasura insert result:', result);
           if (result.errors) {
             return { status: 'error', errors: result.errors };
           } else {
@@ -79,30 +88,12 @@ async function getSubscribers(params) {
           }
         })
       );
-    } else {
-      response.data.reports[0].data.rows.forEach((row) => {
-        insertPromises.push(
-          hasuraInsertCustomDimension({
-            url: apiUrl,
-            orgSlug: apiToken,
-            count: row.metrics[0].values[0],
-            label: 'isSubscriber',
-            dimension: 'dimension5',
-            date: startDate,
-          }).then((result) => {
-            if (result.errors) {
-              return { status: 'error', errors: result.errors };
-            } else {
-              return { status: 'ok', result: result, errors: [] };
-            }
-          })
-        );
-      });
-    }
+    });
 
     let returnResults = { errors: [], results: [] };
 
     for await (let result of insertPromises) {
+      console.log('for await result:', result);
       if (result['errors'] && result['errors'].length > 0) {
         returnResults['errors'].push(result['errors']);
       }
@@ -110,6 +101,7 @@ async function getSubscribers(params) {
         returnResults['results'].push(result['result']);
       }
     }
+    console.log('returning this:', returnResults);
     return returnResults;
   } catch (e) {
     console.error('caught error:', e);
@@ -120,8 +112,8 @@ async function getSubscribers(params) {
 export default async (req, res) => {
   const { startDate, endDate } = req.query;
 
-  console.log('data import subscriber data:', startDate, endDate);
-  const results = await getSubscribers({
+  console.log('data import donation impression data:', startDate, endDate);
+  const results = await getDonationImpressions({
     startDate: startDate,
     endDate: endDate,
     viewID: googleAnalyticsViewID,
@@ -135,14 +127,18 @@ export default async (req, res) => {
 
   let successFlag = true;
   if (results.errors && results.errors.length > 0) {
-    successFlag = false;
+    if (results.errors[0].code && results.errors[0].code === '404') {
+      successFlag = true;
+    } else {
+      successFlag = false;
+    }
     resultNotes = results.errors;
   }
 
   const auditResult = await hasuraInsertDataImport({
     url: apiUrl,
     orgSlug: apiToken,
-    table_name: 'ga_subscribers',
+    table_name: 'ga_donation_impressions',
     start_date: startDate,
     end_date: endDate,
     success: successFlag,
@@ -158,7 +154,7 @@ export default async (req, res) => {
   }
 
   res.status(200).json({
-    name: 'ga_subscribers',
+    name: 'ga_donation_impressions',
     startDate: startDate,
     endDate: endDate,
     status: 'ok',

@@ -24,9 +24,6 @@ const Header = tw.h1`inline-block text-3xl font-extrabold text-gray-900 tracking
 export default function Audience(props) {
   const [isSignedIn, setIsSignedIn] = useState(false);
 
-  const [viewID, setViewID] = useState(
-    process.env.NEXT_PUBLIC_ANALYTICS_VIEW_ID
-  );
   const [startDate, setStartDate] = useState(moment().subtract(30, 'days'));
   const [endDate, setEndDate] = useState(moment());
   const [focusedInput, setFocusedInput] = useState(null);
@@ -143,13 +140,13 @@ export default function Audience(props) {
               />
 
               <DonateClicks
-                viewID={viewID}
                 startDate={startDate}
                 endDate={endDate}
+                apiUrl={props.apiUrl}
+                apiToken={props.apiToken}
               />
 
               <CustomDimensions
-                viewID={viewID}
                 startDate={startDate}
                 endDate={endDate}
                 dimension="dimension4"
@@ -159,7 +156,6 @@ export default function Audience(props) {
               />
 
               <CustomDimensions
-                viewID={viewID}
                 startDate={startDate}
                 endDate={endDate}
                 dimension="dimension5"
