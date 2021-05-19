@@ -46,6 +46,9 @@ async function getReferralSessions(params) {
               {
                 name: 'ga:source',
               },
+              {
+                name: 'ga:date',
+              },
             ],
           },
         ],
@@ -73,7 +76,7 @@ async function getReferralSessions(params) {
           url: apiUrl,
           orgSlug: apiToken,
           count: row.metrics[0].values[0],
-          date: startDate,
+          date: row.dimensions[1],
           source: row.dimensions[0],
         }).then((result) => {
           if (result.errors) {

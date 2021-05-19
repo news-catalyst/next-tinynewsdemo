@@ -46,6 +46,9 @@ async function getReadingFrequency(params) {
               {
                 name: 'ga:dimension2',
               },
+              {
+                name: 'ga:date',
+              },
             ],
           },
         ],
@@ -66,37 +69,31 @@ async function getReadingFrequency(params) {
       throw error;
     }
 
-    let insertPromises = [];
+    let objects = [];
     response.data.reports[0].data.rows.forEach((row) => {
-      insertPromises.push(
-        hasuraInsertReadingFrequency({
-          url: apiUrl,
-          orgSlug: apiToken,
-          count: row.metrics[0].values[0],
-          category: row.dimensions.join(' - '),
-          date: startDate,
-        }).then((result) => {
-          console.log('hasura insert result:', result);
-          if (result.errors) {
-            return { status: 'error', errors: result.errors };
-          } else {
-            return { status: 'ok', result: result, errors: [] };
-          }
-        })
-      );
+      objects.push({
+        count: row.metrics[0].values[0],
+        category: row.dimensions[0],
+        date: row.dimensions[1],
+      });
     });
 
     let returnResults = { errors: [], results: [] };
 
-    for await (let result of insertPromises) {
-      console.log('for await result:', result);
-      if (result['errors'] && result['errors'].length > 0) {
-        returnResults['errors'].push(result['errors']);
+    hasuraInsertReadingFrequency({
+      url: apiUrl,
+      orgSlug: apiToken,
+      objects: objects,
+    }).then((result) => {
+      console.log('hasura insert result:', result);
+      if (result.errors) {
+        returnResults['errors'].push(result.errors);
+        returnResults['status'] = 'error';
+      } else {
+        returnResults['results'].push(result);
+        returnResults['status'] = 'ok';
       }
-      if (result['result']) {
-        returnResults['results'].push(result['result']);
-      }
-    }
+    });
     console.log('returning this:', returnResults);
     return returnResults;
   } catch (e) {

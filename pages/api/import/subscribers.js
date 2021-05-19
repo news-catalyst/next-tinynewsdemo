@@ -46,6 +46,9 @@ async function getSubscribers(params) {
               {
                 name: 'ga:dimension5',
               },
+              {
+                name: 'ga:date',
+              },
             ],
           },
         ],
@@ -88,7 +91,7 @@ async function getSubscribers(params) {
             count: row.metrics[0].values[0],
             label: 'isSubscriber',
             dimension: 'dimension5',
-            date: startDate,
+            date: row.dimensions[1],
           }).then((result) => {
             if (result.errors) {
               return { status: 'error', errors: result.errors };
