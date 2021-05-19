@@ -208,8 +208,8 @@ export async function getServerSideProps(context) {
   const mailchimpApiKey = process.env.MAILCHIMP_API_KEY;
   const mailchimpServer = process.env.MAILCHIMP_SERVER_PREFIX;
 
-  const startDate = moment().subtract(2, 'days');
-  const endDate = moment().subtract(1, 'days');
+  const startDate = moment().subtract(1, 'days');
+  const endDate = moment();
 
   let sessionCount = 0;
   let sessionParams = {
