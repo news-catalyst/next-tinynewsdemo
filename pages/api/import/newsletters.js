@@ -56,7 +56,7 @@ async function getNewsletterSignup(params) {
         ],
       },
     });
-    console.log('GA response:', response);
+    console.log('GA response:', JSON.stringify(response.data));
 
     if (
       !response ||
@@ -66,7 +66,10 @@ async function getNewsletterSignup(params) {
       !response.data.reports[0].data ||
       !response.data.reports[0].data.rows
     ) {
-      const error = new Error('No rows returned for ' + startDate);
+      const error = new Error(
+        'No rows returned for ' + startDate,
+        JSON.stringify(response.data.reports)
+      );
       error.code = '404';
       throw error;
     }

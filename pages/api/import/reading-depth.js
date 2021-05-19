@@ -48,6 +48,7 @@ async function getReadingDepth(params) {
               { name: 'ga:eventCategory' },
               { name: 'ga:eventLabel' },
               { name: 'ga:pagePath' },
+              { name: 'ga:date' },
             ],
             filtersExpression: 'ga:eventCategory==NTG Article Milestone',
           },
@@ -73,6 +74,7 @@ async function getReadingDepth(params) {
     let collectedData = {};
     response.data.reports[0].data.rows.forEach((row) => {
       let articlePath = sanitizePath(row.dimensions[3]);
+      let date = row.dimensions[4];
       if (articlePath !== '/') {
         let percentage = row.dimensions[0];
         let label = `read_${percentage.replace('%', '')}`;
@@ -87,7 +89,7 @@ async function getReadingDepth(params) {
           collectedData[articlePath][label] += count;
         }
 
-        collectedData[articlePath]['date'] = startDate;
+        collectedData[articlePath]['date'] = date;
       }
     });
     Object.keys(collectedData).map((path) => {
