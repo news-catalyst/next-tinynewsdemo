@@ -1,6 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react';
 import tw from 'twin.macro';
 import {
+  BarChart,
+  Bar,
+  Cell,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from 'recharts';
+import {
   hasuraGetCustomDimension,
   hasuraGetNewsletterImpressions,
 } from '../../../lib/analytics';
@@ -11,8 +22,8 @@ const SubHeader = tw.h1`inline-block text-xl font-extrabold text-gray-900 tracki
 const NewsletterSignupFormData = (props) => {
   const signupRef = useRef();
 
+  const [chartData, setChartData] = useState([]);
   const [totalImpressions, setTotalImpressions] = useState({});
-  const [frequencySignups, setFrequencySignups] = useState({});
 
   useEffect(() => {
     let params = {
@@ -42,7 +53,18 @@ const NewsletterSignupFormData = (props) => {
         }
         freqSigns[item.label] += parseInt(item.count);
       });
-      setFrequencySignups(freqSigns);
+      setChartData([
+        { name: '0 posts', count: freqSigns['0 posts'] },
+        { name: '1 post', count: freqSigns['1 post'] },
+        { name: '2-3 posts', count: freqSigns['2-3 posts'] },
+        { name: '4-5 posts', count: freqSigns['4-5 posts'] },
+        { name: '6-8 posts', count: freqSigns['6-8 posts'] },
+        { name: '9-13 posts', count: freqSigns['9-13 posts'] },
+        { name: '14-21 posts', count: freqSigns['14-21 posts'] },
+        { name: '22-34 posts', count: freqSigns['22-34 posts'] },
+        { name: '35-55 posts', count: freqSigns['35-55 posts'] },
+        { name: '56+', count: freqSigns['56+'] },
+      ]);
     };
     fetchCustomDimension();
 
@@ -136,26 +158,24 @@ const NewsletterSignupFormData = (props) => {
         {props.endDate.format('dddd, MMMM Do YYYY')}
       </p>
 
-      <table tw="w-full table-auto">
-        <thead>
-          <tr>
-            <th tw="px-4">Articles Read</th>
-            <th tw="px-4">Signups</th>
-          </tr>
-        </thead>
-        <tbody>
-          {Object.keys(frequencySignups).map((label, i) => (
-            <tr key={`frequency-signup-row-${i}`}>
-              <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-                {label}
-              </td>
-              <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-                {frequencySignups[label]}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <BarChart
+        width={740}
+        height={400}
+        data={chartData}
+        margin={{
+          top: 5,
+          right: 30,
+          left: 20,
+          bottom: 5,
+        }}
+      >
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey="name" />
+        <YAxis />
+        <Tooltip />
+        <Legend />
+        <Bar dataKey="count" fill="#8884d8" />
+      </BarChart>
     </>
   );
 };
