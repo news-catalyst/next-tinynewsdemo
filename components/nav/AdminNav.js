@@ -74,7 +74,6 @@ export default function NewAdminNav(props) {
               <Link href="/tinycms/tags">
                 <NavItem>Tags</NavItem>
               </Link>
-              <SignoutButton onClick={() => signOut()}>Sign out</SignoutButton>
             </NavItemsDiv>
           </NavBarInnerContainer>
         </NavBarContainer>

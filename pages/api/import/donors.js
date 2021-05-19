@@ -46,6 +46,9 @@ async function getDonors(params) {
               {
                 name: 'ga:dimension4',
               },
+              {
+                name: 'ga:date',
+              },
             ],
           },
         ],
@@ -89,7 +92,7 @@ async function getDonors(params) {
             count: row.metrics[0].values[0],
             label: 'isDonor',
             dimension: 'dimension4',
-            date: startDate,
+            date: row.dimensions[1],
           }).then((result) => {
             if (result.errors) {
               return { status: 'error', errors: result.errors };

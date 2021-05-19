@@ -51,7 +51,6 @@ async function getSessions(params) {
         ],
       },
     });
-    console.log('GA response:', response);
 
     let insertPromises = [];
     if (
@@ -62,6 +61,7 @@ async function getSessions(params) {
       !response.data.reports[0].data ||
       !response.data.reports[0].data.rows
     ) {
+      console.log(startDate, '0 rows');
       insertPromises.push(
         hasuraInsertSession({
           url: apiUrl,
@@ -69,7 +69,6 @@ async function getSessions(params) {
           count: 0,
           date: startDate,
         }).then((result) => {
-          console.log('hasura insert result:', result);
           if (result.errors) {
             return { status: 'error', errors: result.errors };
           } else {
@@ -79,18 +78,22 @@ async function getSessions(params) {
       );
     } else {
       response.data.reports[0].data.rows.forEach((row) => {
+        let sessionDate = row.dimensions[0];
+        let sessionCount = row.metrics[0].values[0];
+        console.log(sessionDate, sessionCount);
+
         insertPromises.push(
           hasuraInsertSession({
             url: apiUrl,
             orgSlug: apiToken,
-            count: row.metrics[0].values[0],
-            date: row.dimensions[0],
+            count: sessionCount,
+            date: sessionDate,
           }).then((result) => {
-            console.log('hasura insert result:', result);
+            let statusMessage = `${sessionDate} - ${sessionCount}`;
             if (result.errors) {
               return { status: 'error', errors: result.errors };
             } else {
-              return { status: 'ok', result: result, errors: [] };
+              return { status: 'ok', result: statusMessage, errors: [] };
             }
           })
         );
@@ -100,7 +103,6 @@ async function getSessions(params) {
     let returnResults = { errors: [], results: [] };
 
     for await (let result of insertPromises) {
-      console.log('for await result:', result);
       if (result['errors'] && result['errors'].length > 0) {
         returnResults['errors'].push(result['errors']);
       }
@@ -108,7 +110,6 @@ async function getSessions(params) {
         returnResults['results'].push(result['result']);
       }
     }
-    console.log('returning this:', returnResults);
     return returnResults;
   } catch (e) {
     console.error('caught error:', e);
@@ -127,10 +128,7 @@ export default async (req, res) => {
     apiUrl: apiUrl,
   });
 
-  let resultNotes =
-    results.results && results.results[0] && results.results[0].data
-      ? results.results[0].data
-      : JSON.stringify(results);
+  let resultNotes = results['results'];
 
   let successFlag = true;
   if (results.errors && results.errors.length > 0) {
@@ -161,7 +159,7 @@ export default async (req, res) => {
     startDate: startDate,
     endDate: endDate,
     status: 'ok',
-    message: resultNotes,
+    message: JSON.stringify(resultNotes),
     audit: auditStatus,
   });
 };

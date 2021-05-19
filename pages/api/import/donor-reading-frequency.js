@@ -43,12 +43,11 @@ async function getDonorReadingFrequency(params) {
               },
             ],
             dimensions: [
-              {
-                name: 'ga:eventCategory',
-                name: 'ga:eventAction',
-                name: 'ga:eventLabel',
-                name: 'ga:dimension2',
-              },
+              { name: 'ga:eventCategory' },
+              { name: 'ga:eventAction' },
+              { name: 'ga:eventLabel' },
+              { name: 'ga:dimension2' },
+              { name: 'ga:date' },
             ],
             filtersExpression: 'ga:eventCategory==Donate',
           },
@@ -75,16 +74,16 @@ async function getDonorReadingFrequency(params) {
       throw error;
     } else {
       response.data.reports[0].data.rows.forEach((row) => {
-        let label = row.dimensions[0];
+        let frequency = row.dimensions[3];
+        let date = row.dimensions[4];
         let count = row.metrics[0].values[0];
-        console.log(label, count, row);
         insertPromises.push(
           hasuraInsertDonorReadingFrequency({
             url: apiUrl,
             orgSlug: apiToken,
             count: count,
-            label: label,
-            date: startDate,
+            label: frequency,
+            date: date,
           }).then((result) => {
             if (result.errors) {
               return { status: 'error', errors: result.errors };
