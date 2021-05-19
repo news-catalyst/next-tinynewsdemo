@@ -6,8 +6,6 @@ import AdminLayout from '../../../components/AdminLayout';
 import AdminNav from '../../../components/nav/AdminNav';
 import AnalyticsNav from '../../../components/tinycms/analytics/AnalyticsNav';
 import AnalyticsSidebar from '../../../components/tinycms/analytics/AnalyticsSidebar';
-import YesterdaysDonorViews from '../../../components/tinycms/analytics/YesterdaysDonorViews';
-import YesterdaysSubscriberViews from '../../../components/tinycms/analytics/YesterdaysSubscriberViews';
 import YesterdaysTopTen from '../../../components/tinycms/analytics/YesterdaysTopTen';
 import { hasuraGetYesterday } from '../../../lib/analytics';
 import moment from 'moment';
@@ -22,74 +20,6 @@ const HeaderContainer = tw.div`pt-5 pb-10`;
 const Header = tw.h1`inline-block text-3xl font-extrabold text-gray-900 tracking-tight`;
 
 export default function AnalyticsIndex(props) {
-  const [startDate, setStartDate] = useState(props.startDate);
-  const [endDate, setEndDate] = useState(props.endDate);
-
-  const [isSignedIn, setIsSignedIn] = useState(false);
-
-  const initAuth = () => {
-    return window.gapi.auth2.init({
-      client_id: props.clientID, //paste your client ID here
-      scope: 'https://www.googleapis.com/auth/analytics.readonly',
-    });
-  };
-
-  const checkSignedIn = () => {
-    return new Promise((resolve, reject) => {
-      initAuth() //calls the previous function
-        .then(() => {
-          const auth = window.gapi.auth2.getAuthInstance(); //returns the GoogleAuth object
-          resolve(auth.isSignedIn.get()); //returns whether the current user is currently signed in
-        })
-        .catch((error) => {
-          reject(error);
-        });
-    });
-  };
-
-  const renderButton = () => {
-    window.gapi.signin2.render('signin-button', {
-      scope: 'profile email',
-      width: 240,
-      height: 50,
-      longtitle: true,
-      theme: 'dark',
-      onsuccess: onSuccess,
-      onfailure: onFailure,
-    });
-  };
-
-  const onSuccess = (googleUser) => {
-    console.log('Logged in as: ' + googleUser.getBasicProfile().getName());
-  };
-
-  const onFailure = (error) => {
-    console.error(error);
-  };
-
-  const updateSignin = (signedIn) => {
-    setIsSignedIn(signedIn);
-    if (!signedIn) {
-      renderButton();
-    }
-  };
-
-  const init = () => {
-    //(2)
-    checkSignedIn()
-      .then((signedIn) => {
-        updateSignin(signedIn);
-      })
-      .catch((error) => {
-        console.log('checkSignedIn error: ', error);
-        console.error(error);
-      });
-  };
-
-  useEffect(() => {
-    window.gapi.load('auth2', init); //(1)
-  }, [isSignedIn]);
-
   return (
     <AdminLayout>
       <AdminNav switchLocales={false} homePageEditor={false} />
@@ -101,100 +31,96 @@ export default function AnalyticsIndex(props) {
           </LightSidebar>
         </Sidebar>
         <MainContent>
-          {!isSignedIn ? (
-            <div id="signin-button"></div>
-          ) : (
-            <SettingsContainer>
-              <HeaderContainer>
-                <Header>Analytics</Header>
-              </HeaderContainer>
-              <AnalyticsSidebar title="Yesterday">
-                <table tw="w-full table-auto">
-                  <tbody>
-                    <tr>
-                      <th tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-                        Sessions
-                      </th>
-                      <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-                        {props.sessionCount}
-                      </td>
-                    </tr>
-                    <tr>
-                      <th tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-                        Donor Sessions
-                      </th>
-                      <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-                        {props.donorSessionCount}
-                      </td>
-                    </tr>
-                    <tr>
-                      <th tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-                        Subscriber Sessions
-                      </th>
-                      <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-                        {props.subscriberSessionCount}
-                      </td>
-                    </tr>
-                    <tr>
-                      <th tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-                        New Subscribers
-                      </th>
-                      <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-                        {props.newSubscribers}
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-                <YesterdaysTopTen
-                  pageViews={props.pageViews}
-                  readingDepth={props.readingDepth}
-                />
-              </AnalyticsSidebar>
-              <AnalyticsSidebar title="About this Data">
-                <p tw="p-2">
-                  tinycms analytics data is meant to reveal insights about how
-                  your audience is - or is not - interacting with your published
-                  content.
-                </p>
-                <p tw="p-2">
-                  Information related to donate button clicks, page views,
-                  reading behavior and sessions come from{' '}
-                  <a href="https://analytics.google.com/">Google Analytics</a>.
-                  This site is configured for GA as follows:
-                </p>
+          <SettingsContainer>
+            <HeaderContainer>
+              <Header>Analytics</Header>
+            </HeaderContainer>
+            <AnalyticsSidebar title="Yesterday">
+              <table tw="w-full table-auto">
+                <tbody>
+                  <tr>
+                    <th tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                      Sessions
+                    </th>
+                    <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                      {props.sessionCount}
+                    </td>
+                  </tr>
+                  <tr>
+                    <th tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                      Donor Sessions
+                    </th>
+                    <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                      {props.donorSessionCount}
+                    </td>
+                  </tr>
+                  <tr>
+                    <th tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                      Subscriber Sessions
+                    </th>
+                    <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                      {props.subscriberSessionCount}
+                    </td>
+                  </tr>
+                  <tr>
+                    <th tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                      New Subscribers
+                    </th>
+                    <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                      {props.newSubscribers}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <YesterdaysTopTen
+                pageViews={props.pageViews}
+                readingDepth={props.readingDepth}
+              />
+            </AnalyticsSidebar>
+            <AnalyticsSidebar title="About this Data">
+              <p tw="p-2">
+                tinycms analytics data is meant to reveal insights about how
+                your audience is - or is not - interacting with your published
+                content.
+              </p>
+              <p tw="p-2">
+                Information related to donate button clicks, page views, reading
+                behavior and sessions come from{' '}
+                <a href="https://analytics.google.com/">Google Analytics</a>.
+                This site is configured for GA as follows:
+              </p>
 
-                <ul tw="p-2">
-                  <li>
-                    <b>Tracking ID:</b>{' '}
-                    <code>{process.env.NEXT_PUBLIC_GA_TRACKING_ID}</code>
-                  </li>
-                  <li>
-                    <b>View ID:</b>{' '}
-                    <code>{process.env.NEXT_PUBLIC_ANALYTICS_VIEW_ID}</code>
-                  </li>
-                </ul>
+              <ul tw="p-2">
+                <li>
+                  <b>Tracking ID:</b>{' '}
+                  <code>{process.env.NEXT_PUBLIC_GA_TRACKING_ID}</code>
+                </li>
+                <li>
+                  <b>View ID:</b>{' '}
+                  <code>{process.env.NEXT_PUBLIC_ANALYTICS_VIEW_ID}</code>
+                </li>
+              </ul>
 
-                <p tw="p-2">
-                  Information on newsletter subscriptions come from{' '}
-                  <a href="https://mailchimp.com/">Mailchimp</a>. This site is
-                  configured for Mailchimp with a <b>subscribe URL</b>
-                  of:
-                </p>
-                <p tw="p-2">
-                  <code>{process.env.NEXT_PUBLIC_MAILCHIMP_SUBSCRIBE_URL}</code>
-                </p>
-                <p tw="p-2">
-                  For a deeper dive on understanding your audience and measuring
-                  the impact of your reporting, News Catalyst recommends
-                  checking out{' '}
-                  <a href="https://source.opennews.org/articles/memberkit-upgrade-your-analytics/">
-                    MemberKit
-                  </a>
-                  .
-                </p>
-              </AnalyticsSidebar>
-            </SettingsContainer>
-          )}
+              <p tw="p-2">
+                Information on newsletter subscriptions come from{' '}
+                <a href="https://mailchimp.com/">Mailchimp</a>. This site is
+                configured for Mailchimp with a <b>subscribe URL</b>
+                of:
+              </p>
+              <p tw="p-2">
+                <code>{process.env.NEXT_PUBLIC_MAILCHIMP_SUBSCRIBE_URL}</code>
+              </p>
+              <p tw="p-2">
+                For a deeper dive on understanding your audience and measuring
+                the impact of your reporting, News Catalyst recommends checking
+                out{' '}
+                <a href="https://source.opennews.org/articles/memberkit-upgrade-your-analytics/">
+                  MemberKit
+                </a>
+                .
+              </p>
+            </AnalyticsSidebar>
+          </SettingsContainer>
         </MainContent>
       </Container>
     </AdminLayout>
