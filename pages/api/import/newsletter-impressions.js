@@ -48,6 +48,7 @@ async function getNewsletterImpressions(params) {
               { name: 'ga:eventCategory' },
               { name: 'ga:eventLabel' },
               { name: 'ga:pagePath' },
+              { name: 'ga:date' },
             ],
             filtersExpression: 'ga:eventCategory==NTG Newsletter',
           },
@@ -77,7 +78,7 @@ async function getNewsletterImpressions(params) {
           orgSlug: apiToken,
           impressions: row.metrics[0].values[0],
           path: sanitizePath(row.dimensions[3]),
-          date: startDate,
+          date: row.dimensions[4],
           action: row.dimensions[0],
         }).then((result) => {
           console.log('hasura insert result:', result);

@@ -46,6 +46,9 @@ async function getPageViews(params) {
               {
                 name: 'ga:pagePath',
               },
+              {
+                name: 'ga:date',
+              },
             ],
           },
         ],
@@ -73,7 +76,7 @@ async function getPageViews(params) {
           url: apiUrl,
           orgSlug: apiToken,
           count: row.metrics[0].values[0],
-          date: startDate,
+          date: row.dimensions[1],
           path: row.dimensions[0],
         }).then((result) => {
           console.log('hasura insert result:', result);

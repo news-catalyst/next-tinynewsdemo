@@ -553,6 +553,51 @@ function hasuraInsertReadingDepth(params) {
   })
 }
 
+const HASURA_DELETE_ANALYTICS = `mutation MyMutation {
+  delete_ga_data_imports(where: {id: {_gt: 0}}) {
+    affected_rows
+  }
+  delete_ga_custom_dimensions(where: {id: {_gt: 0}}) {
+    affected_rows
+  }
+  delete_ga_donor_reading_frequency(where: {id: {_gt: 0}}) {
+    affected_rows
+  }
+  delete_ga_geo_sessions(where: {id: {_gt: 0}}) {
+    affected_rows
+  }
+  delete_ga_newsletter_impressions(where: {id: {_gt: 0}}) {
+    affected_rows
+  }
+  delete_ga_page_views(where: {id: {_gt: 0}}) {
+    affected_rows
+  }
+  delete_ga_reading_depth(where: {id: {_gt: 0}}) {
+    affected_rows
+  }
+  delete_ga_reading_frequency(where: {id: {_gt: 0}}) {
+    affected_rows
+  }
+  delete_ga_referral_sessions(where: {id: {_gt: 0}}) {
+    affected_rows
+  }
+  delete_ga_session_duration(where: {id: {_gt: 0}}) {
+    affected_rows
+  }
+  delete_ga_sessions(where: {id: {_gt: 0}}) {
+    affected_rows
+  }
+}`;
+
+function hasuraDeleteAnalytics(params) {
+  return fetchGraphQL({
+    url: params['url'],
+    orgSlug: params['orgSlug'],
+    query: HASURA_DELETE_ANALYTICS,
+    name: 'MyMutation',
+  })
+}
+
 async function fetchGraphQL(params) {
   let url;
   let orgSlug;
@@ -626,6 +671,7 @@ module.exports = {
   hasuraInsertDataImport,
   hasuraUpsertSection,
   hasuraRemoveOrganization,
+  hasuraDeleteAnalytics,
   fetchGraphQL,
   sanitizePath
 }

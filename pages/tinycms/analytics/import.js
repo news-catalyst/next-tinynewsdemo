@@ -29,7 +29,6 @@ export default function AnalyticsIndex(props) {
     moment().subtract(1, 'days').format('yyyy-MM-DD')
   );
   // const [endDate, setEndDate] = useState(subDays(new Date(), 1));
-  const [isSignedIn, setIsSignedIn] = useState(false);
   const [dataImports, setDataImports] = useState([]);
 
   function triggerImport(event) {
@@ -39,94 +38,31 @@ export default function AnalyticsIndex(props) {
     if (!data) return data;
   }
 
-  const initAuth = () => {
-    return window.gapi.auth2.init({
-      client_id: props.clientID, //paste your client ID here
-      scope: 'https://www.googleapis.com/auth/analytics.readonly',
-    });
-  };
-
-  const checkSignedIn = () => {
-    return new Promise((resolve, reject) => {
-      initAuth() //calls the previous function
-        .then(() => {
-          const auth = window.gapi.auth2.getAuthInstance(); //returns the GoogleAuth object
-          resolve(auth.isSignedIn.get()); //returns whether the current user is currently signed in
-        })
-        .catch((error) => {
-          reject(error);
-        });
-    });
-  };
-
-  const renderButton = () => {
-    window.gapi.signin2.render('signin-button', {
-      scope: 'profile email',
-      width: 240,
-      height: 50,
-      longtitle: true,
-      theme: 'dark',
-      onsuccess: onSuccess,
-      onfailure: onFailure,
-    });
-  };
-
-  const onSuccess = (googleUser) => {
-    console.log('Logged in as: ' + googleUser.getBasicProfile().getName());
-  };
-
-  const onFailure = (error) => {
-    console.error(error);
-  };
-
-  const updateSignin = (signedIn) => {
-    setIsSignedIn(signedIn);
-    if (!signedIn) {
-      renderButton();
-    }
-  };
-
-  const init = () => {
-    //(2)
-    checkSignedIn()
-      .then((signedIn) => {
-        updateSignin(signedIn);
-      })
-      .catch((error) => {
-        console.log('checkSignedIn error: ', error);
-        console.error(error);
-      });
-  };
-
   useEffect(() => {
-    window.gapi.load('auth2', init); //(1)
+    let params = {
+      url: props.apiUrl,
+      orgSlug: props.apiToken,
+      // startDate: startDate.format('YYYY-MM-DD'),
+      // endDate: endDate.format('YYYY-MM-DD'),
+    };
+    const fetchDataImports = async () => {
+      const { errors, data } = await hasuraGetDataImports(params);
 
-    if (isSignedIn) {
-      let params = {
-        url: props.apiUrl,
-        orgSlug: props.apiToken,
-        // startDate: startDate.format('YYYY-MM-DD'),
-        // endDate: endDate.format('YYYY-MM-DD'),
-      };
-      const fetchDataImports = async () => {
-        const { errors, data } = await hasuraGetDataImports(params);
-
-        if (errors && !data) {
-          console.error(errors);
-        }
-        // let totalRF = {};
-        // data.ga_reading_frequency.map((rf) => {
-        //   if (totalRF[rf.category]) {
-        //     totalRF[rf.category] += parseInt(rf.count);
-        //   } else {
-        //     totalRF[rf.category] = parseInt(rf.count);
-        //   }
-        // });
-        setDataImports(data.ga_data_imports);
-      };
-      fetchDataImports();
-    }
-  }, [isSignedIn, updateKey]);
+      if (errors && !data) {
+        console.error(errors);
+      }
+      // let totalRF = {};
+      // data.ga_reading_frequency.map((rf) => {
+      //   if (totalRF[rf.category]) {
+      //     totalRF[rf.category] += parseInt(rf.count);
+      //   } else {
+      //     totalRF[rf.category] = parseInt(rf.count);
+      //   }
+      // });
+      setDataImports(data.ga_data_imports);
+    };
+    fetchDataImports();
+  }, [updateKey]);
 
   return (
     <AdminLayout>
@@ -139,14 +75,11 @@ export default function AnalyticsIndex(props) {
           </LightSidebar>
         </Sidebar>
         <MainContent>
-          {!isSignedIn ? (
-            <div id="signin-button"></div>
-          ) : (
-            <SettingsContainer>
-              <HeaderContainer>
-                <Header>Analytics: Data Imports from GA</Header>
-              </HeaderContainer>
-              {/* <AnalyticsSidebar title="Trigger Import">
+          <SettingsContainer>
+            <HeaderContainer>
+              <Header>Analytics: Data Imports from GA</Header>
+            </HeaderContainer>
+            {/* <AnalyticsSidebar title="Trigger Import">
                 <select onChange={triggerImport}>
                   <option>Select a table</option>
                   <option value="ga_custom_dimensions">
@@ -170,40 +103,39 @@ export default function AnalyticsIndex(props) {
                   <option value="ga_sessions">ga_sessions</option>
                 </select>
               </AnalyticsSidebar> */}
-              <AnalyticsSidebar title="Most Recent Imports">
-                <table tw="w-full table-auto">
-                  <thead>
-                    <tr>
-                      <th tw="border border-gray-500 px-4 py-2 text-gray-600 font-bold">
-                        Table
-                      </th>
-                      <th tw="border border-gray-500 px-4 py-2 text-gray-600 font-bold">
-                        Date
-                      </th>
-                      <th tw="border border-gray-500 px-4 py-2 text-gray-600 font-bold">
-                        Finished At
-                      </th>
+            <AnalyticsSidebar title="Most Recent Imports">
+              <table tw="w-full table-auto">
+                <thead>
+                  <tr>
+                    <th tw="border border-gray-500 px-4 py-2 text-gray-600 font-bold">
+                      Table
+                    </th>
+                    <th tw="border border-gray-500 px-4 py-2 text-gray-600 font-bold">
+                      Date
+                    </th>
+                    <th tw="border border-gray-500 px-4 py-2 text-gray-600 font-bold">
+                      Finished At
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {dataImports.map((di, i) => (
+                    <tr key={`data-import-row-${i}`}>
+                      <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                        {di.table_name}
+                      </td>
+                      <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                        {di.start_date}
+                      </td>
+                      <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                        {di.updated_at}
+                      </td>
                     </tr>
-                  </thead>
-                  <tbody>
-                    {dataImports.map((di, i) => (
-                      <tr key={`data-import-row-${i}`}>
-                        <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-                          {di.table_name}
-                        </td>
-                        <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-                          {di.start_date}
-                        </td>
-                        <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-                          {di.updated_at}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </AnalyticsSidebar>
-            </SettingsContainer>
-          )}
+                  ))}
+                </tbody>
+              </table>
+            </AnalyticsSidebar>
+          </SettingsContainer>
         </MainContent>
       </Container>
     </AdminLayout>

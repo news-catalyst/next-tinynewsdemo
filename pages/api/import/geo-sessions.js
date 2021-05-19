@@ -49,6 +49,9 @@ async function getGeoSessions(params) {
               {
                 name: 'ga:region',
               },
+              {
+                name: 'ga:date',
+              },
             ],
           },
         ],
@@ -75,9 +78,9 @@ async function getGeoSessions(params) {
         hasuraInsertGeoSession({
           url: apiUrl,
           orgSlug: apiToken,
-          region: row.dimensions.join(' - '),
+          region: `${row.dimensions[0]}-${row.dimensions[1]}`,
           count: row.metrics[0].values[0],
-          date: startDate,
+          date: row.dimensions[2],
         }).then((result) => {
           console.log('hasura insert result:', result);
           if (result.errors) {
