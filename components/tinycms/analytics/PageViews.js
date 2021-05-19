@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
 import tw from 'twin.macro';
-import moment from 'moment';
 // import { parsePageViews } from '../../../lib/utils';
 import { hasuraGetPageViews } from '../../../lib/analytics';
 
@@ -9,7 +8,7 @@ const SubHeader = tw.h1`inline-block text-xl font-extrabold text-gray-900 tracki
 
 const PageViews = (props) => {
   const pageviewsRef = useRef();
-  const [pageViews, setPageViews] = useState([]);
+  const [sortedPageViews, setSortedPageViews] = useState([]);
   const [totalPageViews, setTotalPageViews] = useState({});
 
   useEffect(() => {
@@ -33,8 +32,17 @@ const PageViews = (props) => {
           totalPV[pv.path] = parseInt(pv.count);
         }
       });
-      setPageViews(data.ga_page_views);
+      var sortable = [];
+      Object.keys(totalPV).forEach((path) => {
+        sortable.push([path, totalPV[path]]);
+      });
+
+      sortable.sort(function (a, b) {
+        return b[1] - a[1];
+      });
+
       setTotalPageViews(totalPV);
+      setSortedPageViews(sortable);
     };
     fetchPageViews();
     if (window.location.hash && window.location.hash === '#pageviews') {
@@ -62,13 +70,13 @@ const PageViews = (props) => {
           </tr>
         </thead>
         <tbody>
-          {Object.keys(totalPageViews).map((path, i) => (
+          {sortedPageViews.map((item, i) => (
             <tr key={`page-view-row-${i}`}>
               <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-                {path}
+                {item[0]}
               </td>
               <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-                {totalPageViews[path]}
+                {item[1]}
               </td>
             </tr>
           ))}
