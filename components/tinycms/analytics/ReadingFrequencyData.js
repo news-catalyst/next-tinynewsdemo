@@ -8,6 +8,7 @@ const SubHeader = tw.h1`inline-block text-xl font-extrabold text-gray-900 tracki
 const ReadingFrequencyData = (props) => {
   const frequencyRef = useRef();
   const [totalReadingFrequency, setTotalReadingFrequency] = useState({});
+  const [sortedFrequency, setSortedFrequency] = useState([]);
 
   useEffect(() => {
     let params = {
@@ -30,9 +31,19 @@ const ReadingFrequencyData = (props) => {
           totalRF[rf.category] = parseInt(rf.count);
         }
       });
+      var sortable = [];
+      Object.keys(totalRF).forEach((key) => {
+        sortable.push([key, totalRF[key]]);
+      });
+
+      sortable.sort(function (a, b) {
+        return b[1] - a[1];
+      });
       setTotalReadingFrequency(totalRF);
+      setSortedFrequency(sortable);
     };
     fetchReadingFrequency();
+
     if (window.location.hash && window.location.hash === '#frequency') {
       if (frequencyRef) {
         frequencyRef.current.scrollIntoView({ behavior: 'smooth' });
@@ -58,13 +69,13 @@ const ReadingFrequencyData = (props) => {
           </tr>
         </thead>
         <tbody>
-          {Object.keys(totalReadingFrequency).map((category, i) => (
+          {sortedFrequency.map((item, i) => (
             <tr key={`reading-frequency-row-${i}`}>
               <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-                {category}
+                {item[0]}
               </td>
               <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-                {totalReadingFrequency[category]}
+                {totalReadingFrequency[item[0]]}
               </td>
             </tr>
           ))}
