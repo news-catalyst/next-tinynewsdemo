@@ -112,7 +112,7 @@ const NewsletterSignupFormData = (props) => {
 
   return (
     <>
-      <SubHeaderContainer>
+      <SubHeaderContainer ref={signupRef}>
         <SubHeader>Website Signup Form</SubHeader>
       </SubHeaderContainer>
       <p tw="p-2">
