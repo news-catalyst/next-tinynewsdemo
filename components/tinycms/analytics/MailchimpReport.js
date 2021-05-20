@@ -109,7 +109,7 @@ export default function MailchimpReport(props) {
                   Click Rate
                 </td>
                 <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-                  {Math.round(report.clicks.click_rate * 100)}%
+                  {report.stats.click_rate.toFixed(2)}%
                 </td>
               </tr>
               <tr>
@@ -117,7 +117,7 @@ export default function MailchimpReport(props) {
                   Subscribe Rate
                 </td>
                 <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-                  {Math.round(report.list_stats.sub_rate * 100)}%
+                  {Math.round(report.list_stats.sub_rate * 100).toFixed(2)}%
                 </td>
               </tr>
               <tr>
@@ -125,7 +125,7 @@ export default function MailchimpReport(props) {
                   Unsubscribe Rate
                 </td>
                 <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-                  {Math.round(report.list_stats.unsub_rate * 100)}%
+                  {Math.round(report.list_stats.unsub_rate * 100).toFixed(2)}%
                 </td>
               </tr>
               {report.growth.history.map((month) => (
