@@ -43,10 +43,6 @@ const ReadingDepthData = (props) => {
 
       data.ga_page_views.map((pv) => {
         if (totalRD[pv.path]) {
-          console.log(
-            'found matching article for page views:',
-            totalRD[pv.path]
-          );
           if (totalRD[pv.path]['pageviews']) {
             totalRD[pv.path]['pageviews'] += parseInt(pv.count);
           } else {

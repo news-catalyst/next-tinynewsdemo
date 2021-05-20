@@ -15,7 +15,7 @@ const SubHeaderContainer = tw.div`pt-10 pb-5`;
 const SubHeader = tw.h1`inline-block text-xl font-extrabold text-gray-900 tracking-tight`;
 
 const CustomDimensions = (props) => {
-  const subscriptionsRef = useRef();
+  const customRef = useRef();
   const [chartData, setChartData] = useState([]);
 
   useEffect(() => {
@@ -47,15 +47,15 @@ const CustomDimensions = (props) => {
     console.log(chartData);
 
     if (window.location.hash && window.location.hash === '#subscriptions') {
-      if (subscriptionsRef) {
-        subscriptionsRef.current.scrollIntoView({ behavior: 'smooth' });
+      if (customRef) {
+        customRef.current.scrollIntoView({ behavior: 'smooth' });
       }
     }
   }, [props.startDate, props.endDate]);
 
   return (
     <>
-      <SubHeaderContainer ref={subscriptionsRef}>
+      <SubHeaderContainer ref={customRef}>
         <SubHeader>Sessions by audience segment: {props.label}</SubHeader>
       </SubHeaderContainer>
       <p tw="p-2">

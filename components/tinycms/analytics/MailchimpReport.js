@@ -20,7 +20,7 @@ export default function MailchimpReport(props) {
       {props.reports.map((report, i) => (
         <div key={`report-${i}`}>
           <SubHeaderContainer>
-            <SubHeader>Newsletter Campaign: {report.campaign_title}</SubHeader>
+            <SubHeader>Newsletter Audience Stats</SubHeader>
           </SubHeaderContainer>
 
           <table tw="w-full table-auto">
@@ -33,18 +33,26 @@ export default function MailchimpReport(props) {
             <tbody>
               <tr>
                 <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-                  List name
+                  Newsletter emails sent
                 </td>
                 <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-                  {report.list_name}
+                  {report.stats.campaign_count}
                 </td>
               </tr>
               <tr>
                 <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-                  Emails sent
+                  Member Count
                 </td>
                 <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-                  {report.emails_sent}
+                  {report.stats.member_count}
+                </td>
+              </tr>
+              <tr>
+                <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                  Unsubscribe Count
+                </td>
+                <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                  {report.stats.unsubscribe_count}
                 </td>
               </tr>
               <tr>
@@ -58,6 +66,22 @@ export default function MailchimpReport(props) {
               </tr>
               <tr>
                 <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                  Signups since last send
+                </td>
+                <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                  {report.stats.member_count_since_send}
+                </td>
+              </tr>
+              <tr>
+                <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                  Unsubscribes since last send
+                </td>
+                <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                  {report.stats.unsubscribe_count_since_send}
+                </td>
+              </tr>
+              <tr>
+                <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
                   Opens (count)
                 </td>
                 <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
@@ -66,18 +90,10 @@ export default function MailchimpReport(props) {
               </tr>
               <tr>
                 <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-                  Unique Opens
+                  Open rate
                 </td>
                 <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-                  {report.opens.unique_opens}
-                </td>
-              </tr>
-              <tr>
-                <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-                  Open Rate
-                </td>
-                <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-                  {Math.round(report.opens.open_rate * 100)}%
+                  {report.stats.open_rate.toFixed(2)}%
                 </td>
               </tr>
               <tr>
@@ -93,7 +109,7 @@ export default function MailchimpReport(props) {
                   Click Rate
                 </td>
                 <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-                  {Math.round(report.clicks.click_rate * 100)}%
+                  {report.stats.click_rate.toFixed(2)}%
                 </td>
               </tr>
               <tr>
@@ -101,7 +117,7 @@ export default function MailchimpReport(props) {
                   Subscribe Rate
                 </td>
                 <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-                  {Math.round(report.list_stats.sub_rate * 100)}%
+                  {Math.round(report.list_stats.sub_rate * 100).toFixed(2)}%
                 </td>
               </tr>
               <tr>
@@ -109,7 +125,7 @@ export default function MailchimpReport(props) {
                   Unsubscribe Rate
                 </td>
                 <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-                  {Math.round(report.list_stats.unsub_rate * 100)}%
+                  {Math.round(report.list_stats.unsub_rate * 100).toFixed(2)}%
                 </td>
               </tr>
               {report.growth.history.map((month) => (
@@ -121,7 +137,7 @@ export default function MailchimpReport(props) {
                     <table>
                       <tbody>
                         <tr>
-                          <th>Subscribed</th>
+                          <th>Members</th>
                           <td>{month.subscribed}</td>
                         </tr>
                         <tr>
