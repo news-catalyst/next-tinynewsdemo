@@ -7,6 +7,7 @@ const SubHeader = tw.h1`inline-block text-xl font-extrabold text-gray-900 tracki
 
 const DonateClicks = (props) => {
   const donationsRef = useRef();
+
   const [donateTableRows, setDonateTableRows] = useState([]);
   const [donorFrequencyRows, setDonorFrequencyRows] = useState([]);
   const [totalClickDatas, setTotalClickDatas] = useState({});
@@ -42,10 +43,6 @@ const DonateClicks = (props) => {
       });
       data.ga_page_views.map((pv) => {
         if (totalClicks[pv.path]) {
-          console.log(
-            'found matching article for page views:',
-            totalClicks[pv.path]
-          );
           if (totalClicks[pv.path]['pageviews']) {
             totalClicks[pv.path]['pageviews'] += parseInt(pv.count);
           } else {
@@ -64,7 +61,6 @@ const DonateClicks = (props) => {
           donorFrequency[rd.date][rd.label] = parseInt(rd.count);
         }
       });
-      console.log('donor frequency:', donorFrequency);
 
       Object.keys(totalClicks).map((path) => {
         if (totalClicks[path]['pageviews'] > 0) {
@@ -171,7 +167,7 @@ const DonateClicks = (props) => {
 
   return (
     <>
-      <SubHeaderContainer>
+      <SubHeaderContainer ref={donationsRef}>
         <SubHeader>Donate Button Clicks with Page Views</SubHeader>
       </SubHeaderContainer>
 
