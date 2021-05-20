@@ -1,5 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react';
 import tw from 'twin.macro';
+import {
+  BarChart,
+  Bar,
+  Cell,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from 'recharts';
 import { hasuraGetReadingFrequency } from '../../../lib/analytics';
 
 const SubHeaderContainer = tw.div`pt-10 pb-5`;
@@ -7,7 +18,7 @@ const SubHeader = tw.h1`inline-block text-xl font-extrabold text-gray-900 tracki
 
 const ReadingFrequencyData = (props) => {
   const frequencyRef = useRef();
-  const [totalReadingFrequency, setTotalReadingFrequency] = useState({});
+  const [chartData, setChartData] = useState([]);
 
   useEffect(() => {
     let params = {
@@ -24,15 +35,29 @@ const ReadingFrequencyData = (props) => {
       }
       let totalRF = {};
       data.ga_reading_frequency.map((rf) => {
+        console.log(rf.category, rf.count);
         if (totalRF[rf.category]) {
           totalRF[rf.category] += parseInt(rf.count);
         } else {
           totalRF[rf.category] = parseInt(rf.count);
         }
       });
-      setTotalReadingFrequency(totalRF);
+
+      setChartData([
+        { name: '0 posts', count: totalRF['0 posts'] },
+        { name: '1 post', count: totalRF['1 post'] },
+        { name: '2-3 posts', count: totalRF['2-3 posts'] },
+        { name: '4-5 posts', count: totalRF['4-5 posts'] },
+        { name: '6-8 posts', count: totalRF['6-8 posts'] },
+        { name: '9-13 posts', count: totalRF['9-13 posts'] },
+        { name: '14-21 posts', count: totalRF['14-21 posts'] },
+        { name: '22-34 posts', count: totalRF['22-34 posts'] },
+        { name: '35-55 posts', count: totalRF['35-55 posts'] },
+        { name: '56+', count: totalRF['56+'] },
+      ]);
     };
     fetchReadingFrequency();
+
     if (window.location.hash && window.location.hash === '#frequency') {
       if (frequencyRef) {
         frequencyRef.current.scrollIntoView({ behavior: 'smooth' });
@@ -50,26 +75,24 @@ const ReadingFrequencyData = (props) => {
         {props.endDate.format('dddd, MMMM Do YYYY')}
       </p>
 
-      <table tw="w-full table-auto">
-        <thead>
-          <tr>
-            <th tw="px-4">Number of Articles</th>
-            <th tw="px-4">Views</th>
-          </tr>
-        </thead>
-        <tbody>
-          {Object.keys(totalReadingFrequency).map((category, i) => (
-            <tr key={`reading-frequency-row-${i}`}>
-              <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-                {category}
-              </td>
-              <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-                {totalReadingFrequency[category]}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <BarChart
+        width={740}
+        height={400}
+        data={chartData}
+        margin={{
+          top: 5,
+          right: 30,
+          left: 20,
+          bottom: 5,
+        }}
+      >
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey="name" />
+        <YAxis />
+        <Tooltip />
+        <Legend />
+        <Bar dataKey="count" fill="#8884d8" />
+      </BarChart>
     </>
   );
 };

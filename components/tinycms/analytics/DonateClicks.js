@@ -1,19 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react';
 import tw from 'twin.macro';
-import {
-  getMetricsData,
-  hasuraGetDonationClicks,
-} from '../../../lib/analytics';
+import { hasuraGetDonationClicks } from '../../../lib/analytics';
 
 const SubHeaderContainer = tw.div`pt-3 pb-5`;
 const SubHeader = tw.h1`inline-block text-xl font-extrabold text-gray-900 tracking-tight`;
 
 const DonateClicks = (props) => {
   const donationsRef = useRef();
+
   const [donateTableRows, setDonateTableRows] = useState([]);
   const [donorFrequencyRows, setDonorFrequencyRows] = useState([]);
   const [totalClickDatas, setTotalClickDatas] = useState({});
-  const [frequencySignups, setFrequencySignups] = useState({});
 
   useEffect(() => {
     const fetchDonationClicks = async () => {
@@ -46,10 +43,6 @@ const DonateClicks = (props) => {
       });
       data.ga_page_views.map((pv) => {
         if (totalClicks[pv.path]) {
-          console.log(
-            'found matching article for page views:',
-            totalClicks[pv.path]
-          );
           if (totalClicks[pv.path]['pageviews']) {
             totalClicks[pv.path]['pageviews'] += parseInt(pv.count);
           } else {
@@ -68,7 +61,6 @@ const DonateClicks = (props) => {
           donorFrequency[rd.date][rd.label] = parseInt(rd.count);
         }
       });
-      console.log('donor frequency:', donorFrequency);
 
       Object.keys(totalClicks).map((path) => {
         if (totalClicks[path]['pageviews'] > 0) {
@@ -123,43 +115,45 @@ const DonateClicks = (props) => {
       setTotalClickDatas(totalClicks);
 
       let donorFreqRows = [];
-      Object.keys(donorFrequency).map((date, i) => {
-        let uniqueRowKey = `frequency-table-row-${i}`;
-        donorFreqRows.push(
-          <tr key={uniqueRowKey}>
-            <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-              {date}
-            </td>
-            <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-              {donorFrequency[date]['1 post'] || 0}
-            </td>
-            <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-              {donorFrequency[date]['2-3 posts'] || 0}
-            </td>
-            <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-              {donorFrequency[date]['4-5 posts'] || 0}
-            </td>
-            <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-              {donorFrequency[date]['6-8 posts'] || 0}
-            </td>
-            <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-              {donorFrequency[date]['9-13 posts'] || 0}
-            </td>
-            <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-              {donorFrequency[date]['14-21 posts'] || 0}
-            </td>
-            <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-              {donorFrequency[date]['22-34 posts'] || 0}
-            </td>
-            <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-              {donorFrequency[date]['35-55 posts'] || 0}
-            </td>
-            <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-              {donorFrequency[date]['56+']}
-            </td>
-          </tr>
-        );
-      });
+      Object.keys(donorFrequency)
+        .sort()
+        .map((date, i) => {
+          let uniqueRowKey = `frequency-table-row-${i}`;
+          donorFreqRows.push(
+            <tr key={uniqueRowKey}>
+              <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                {date}
+              </td>
+              <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                {donorFrequency[date]['1 post'] || 0}
+              </td>
+              <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                {donorFrequency[date]['2-3 posts'] || 0}
+              </td>
+              <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                {donorFrequency[date]['4-5 posts'] || 0}
+              </td>
+              <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                {donorFrequency[date]['6-8 posts'] || 0}
+              </td>
+              <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                {donorFrequency[date]['9-13 posts'] || 0}
+              </td>
+              <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                {donorFrequency[date]['14-21 posts'] || 0}
+              </td>
+              <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                {donorFrequency[date]['22-34 posts'] || 0}
+              </td>
+              <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                {donorFrequency[date]['35-55 posts'] || 0}
+              </td>
+              <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                {donorFrequency[date]['56+'] || 0}
+              </td>
+            </tr>
+          );
+        });
       setDonorFrequencyRows(donorFreqRows);
     };
     fetchDonationClicks();
@@ -173,9 +167,10 @@ const DonateClicks = (props) => {
 
   return (
     <>
-      <SubHeaderContainer>
-        <SubHeader>Donate Button Clicks</SubHeader>
+      <SubHeaderContainer ref={donationsRef}>
+        <SubHeader>Donate Button Clicks with Page Views</SubHeader>
       </SubHeaderContainer>
+
       <p tw="p-2">
         {props.startDate.format('dddd, MMMM Do YYYY')} -{' '}
         {props.endDate.format('dddd, MMMM Do YYYY')}
@@ -193,6 +188,9 @@ const DonateClicks = (props) => {
         <tbody>{donateTableRows}</tbody>
       </table>
 
+      <SubHeaderContainer>
+        <SubHeader>Donate Button Clicks by Reading Frequency</SubHeader>
+      </SubHeaderContainer>
       <table tw="pt-10 mt-10 w-full table-auto">
         <thead>
           <tr>
