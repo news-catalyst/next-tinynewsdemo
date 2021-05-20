@@ -73,7 +73,10 @@ async function getDonorReadingFrequency(params) {
       error.code = '404';
       throw error;
     } else {
-      response.data.reports[0].data.rows.forEach((row) => {
+      let rows = response.data.reports[0].data.rows;
+      console.log('GA rows:', rows.length);
+
+      rows.forEach((row) => {
         let frequency = row.dimensions[3];
         let date = row.dimensions[4];
         let count = row.metrics[0].values[0];
@@ -95,16 +98,18 @@ async function getDonorReadingFrequency(params) {
       });
     }
 
-    let returnResults = { errors: [], results: [] };
+    let returnResults = { rowCount: 0, errors: [], results: [] };
 
     for await (let result of insertPromises) {
       if (result['errors'] && result['errors'].length > 0) {
         returnResults['errors'].push(result['errors']);
       }
       if (result['result']) {
+        returnResults['rowCount'] += 1;
         returnResults['results'].push(result['result']);
       }
     }
+    console.log('returnResults:', returnResults);
     return returnResults;
   } catch (e) {
     console.error('caught error:', e);
@@ -142,8 +147,10 @@ export default async (req, res) => {
     end_date: endDate,
     success: successFlag,
     notes: JSON.stringify(resultNotes),
+    row_count: results.rowCount,
   });
 
+  console.log('auditResult:', auditResult);
   const auditStatus = auditResult.data ? 'ok' : 'error';
 
   if (results.errors && results.errors.length > 0) {
@@ -159,5 +166,6 @@ export default async (req, res) => {
     status: 'ok',
     message: resultNotes,
     audit: auditStatus,
+    rowCount: results.rowCount,
   });
 };
