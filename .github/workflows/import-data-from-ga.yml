@@ -2,6 +2,10 @@ name: GA Data Importer
 on:
   schedule:
     - cron: '5 9 * * *'
+  push:
+    branches:
+      - master
+      - feature/run-action-on-push
 jobs:
   GA-Data-Importer:
     runs-on: ubuntu-latest
