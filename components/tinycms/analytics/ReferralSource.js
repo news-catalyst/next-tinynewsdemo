@@ -10,6 +10,7 @@ const ReferralSource = (props) => {
 
   const [referralSessions, setReferralSessions] = useState([]);
   const [totalReferralSessions, setTotalReferralSessions] = useState({});
+  const [sortedReferralSessions, setSortedReferralSessions] = useState([]);
 
   useEffect(() => {
     let sessionParams = {
@@ -35,7 +36,16 @@ const ReferralSource = (props) => {
           trs[session.source] = parseInt(session.count);
         }
       });
+      var sortable = [];
+      Object.keys(trs).forEach((key) => {
+        sortable.push([key, trs[key]]);
+      });
+
+      sortable.sort(function (a, b) {
+        return b[1] - a[1];
+      });
       setTotalReferralSessions(trs);
+      setSortedReferralSessions(sortable);
     };
 
     fetchReferralSessions();
@@ -65,13 +75,13 @@ const ReferralSource = (props) => {
           </tr>
         </thead>
         <tbody>
-          {Object.keys(totalReferralSessions).map((source, i) => (
+          {sortedReferralSessions.map((item, i) => (
             <tr key={`referral-data-row-${i}`}>
               <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-                {source}
+                {item[0]}
               </td>
               <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-                {totalReferralSessions[source]}
+                {totalReferralSessions[item[0]]}
               </td>
             </tr>
           ))}
