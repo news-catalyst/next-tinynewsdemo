@@ -46,6 +46,7 @@ async function runDataImport(startDate, endDate, table) {
       }
       let message = JSON.parse(resultData)
       console.log("message:", message);
+
       // results.push(message);
       return message;
     })
@@ -80,8 +81,10 @@ program
       endDate = new Date(opts.endDate);
     }
 
-    runDataImport(startDate, endDate, opts.table);
-
+    setInterval(() => {
+      console.log('Waiting several seconds between requests to the GA API...');
+      runDataImport(startDate, endDate, opts.table);
+    }, 5000)
   });
 
 program.parse(process.argv);
