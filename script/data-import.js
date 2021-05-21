@@ -46,6 +46,7 @@ async function runDataImport(startDate, endDate, table) {
       }
       let message = JSON.parse(resultData)
       console.log("message:", message);
+
       // results.push(message);
       return message;
     })
@@ -64,24 +65,30 @@ program
   .option('-t, --table <table>', 'import a single table only')
   .description("imports daily GA data for each date in the specified range")
   .action( (opts) => {
-    let startDate;
-    if (opts.startDate === undefined) {
-      let yesterday = new Date(); 
-      startDate = new Date(yesterday.setDate(yesterday.getDate() - 1));
-    } else {
-      startDate = new Date(opts.startDate);
+    try {
+      let startDate;
+      if (opts.startDate === undefined) {
+        let yesterday = new Date(); 
+        startDate = new Date(yesterday.setDate(yesterday.getDate() - 1));
+      } else {
+        startDate = new Date(opts.startDate);
+      }
+
+      let endDate;
+      if (opts.endDate === undefined) {
+        let today = new Date(); 
+        endDate = new Date(today.setDate(today.getDate() - 1));
+      } else {
+        endDate = new Date(opts.endDate);
+      }
+
+      setInterval(() => {
+        console.log('Waiting several seconds between requests to the GA API...');
+        runDataImport(startDate, endDate, opts.table);
+      }, 5000)
+    } catch(error) {
+      core.setFailed(error.message);
     }
-
-    let endDate;
-    if (opts.endDate === undefined) {
-      let today = new Date(); 
-      endDate = new Date(today.setDate(today.getDate() - 1));
-    } else {
-      endDate = new Date(opts.endDate);
-    }
-
-    runDataImport(startDate, endDate, opts.table);
-
   });
 
 program.parse(process.argv);
