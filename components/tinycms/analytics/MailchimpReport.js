@@ -23,6 +23,7 @@ export default function MailchimpReport(props) {
     // the mailchimp API returns growth history month by month with
     // `subscribed` equal to the "Total subscribed members on the list at the end of the month. "
     // `unsubscribed` is also available but doesn't seem necessary to subtract from the monthly subscriber figures here
+
     props.reports[0].growth.history.map((monthlyStats) => {
       let lineDataPoint = {
         month: monthlyStats.month,
@@ -164,10 +165,9 @@ export default function MailchimpReport(props) {
 
       <LineChart width={740} height={400} data={chartData}>
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="month" />
+        <XAxis dataKey="month" reversed={true} />
         <YAxis type="number" domain={[0, 'dataMax']} />
         <Tooltip />
-        <Legend />
         <Line
           type="monotone"
           dataKey="subscribers"
