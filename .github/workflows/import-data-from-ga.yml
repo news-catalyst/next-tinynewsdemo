@@ -30,8 +30,11 @@ jobs:
         run: npm install dotenv
       - name: install date-fns
         run: npm install date-fns
-      - name: donate-clicks
-        run: yarn data:import donate-clicks
+      - name: donateclicks
+        run:
+          set +e
+          yarn data:import donate-clicks
+          echo ::set-output name=exit_status::$?
       - name: check-status
-        run: echo "${{ steps.donate-clicks.outcome }}"
+        run: echo "exit status ${{ steps.donateclicks.outputs.exit_status }}"
       - run: echo "🍏 This job's status is ${{ job.status }}."
