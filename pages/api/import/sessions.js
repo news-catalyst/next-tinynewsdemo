@@ -107,24 +107,20 @@ export default async (req, res) => {
     });
   } catch (e) {
     console.error(e);
-    return res
-      .status(500)
-      .json({
-        status: 'error',
-        errors: 'Failed getting sessions data from GA',
-      });
+    return res.status(500).json({
+      status: 'error',
+      errors: 'Failed getting sessions data from GA',
+    });
   }
 
   try {
     importSessions(rows);
   } catch (e) {
     console.error(e);
-    return res
-      .status(500)
-      .json({
-        status: 'error',
-        errors: 'Failed importing GA sessions into Hasura',
-      });
+    return res.status(500).json({
+      status: 'error',
+      errors: 'Failed importing GA sessions into Hasura',
+    });
   }
 
   const auditResult = await hasuraInsertDataImport({
@@ -139,12 +135,10 @@ export default async (req, res) => {
   const auditStatus = auditResult.data ? 'ok' : 'error';
 
   if (auditStatus === 'error') {
-    return res
-      .status(500)
-      .json({
-        status: 'error',
-        errors: 'Failed logging data import audit for sessions data',
-      });
+    return res.status(500).json({
+      status: 'error',
+      errors: 'Failed logging data import audit for sessions data',
+    });
   }
 
   res.status(200).json({

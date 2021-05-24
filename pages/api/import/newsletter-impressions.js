@@ -115,24 +115,20 @@ export default async (req, res) => {
     });
   } catch (e) {
     console.error(e);
-    return res
-      .status(500)
-      .json({
-        status: 'error',
-        errors: 'Failed getting newsletter impressions data from GA',
-      });
+    return res.status(500).json({
+      status: 'error',
+      errors: 'Failed getting newsletter impressions data from GA',
+    });
   }
 
   try {
     importNewsletterImpressions(rows);
   } catch (e) {
     console.error(e);
-    return res
-      .status(500)
-      .json({
-        status: 'error',
-        errors: 'Failed importing GA newsletter impressions data into Hasura',
-      });
+    return res.status(500).json({
+      status: 'error',
+      errors: 'Failed importing GA newsletter impressions data into Hasura',
+    });
   }
 
   const auditResult = await hasuraInsertDataImport({
@@ -147,13 +143,11 @@ export default async (req, res) => {
   const auditStatus = auditResult.data ? 'ok' : 'error';
 
   if (auditStatus === 'error') {
-    return res
-      .status(500)
-      .json({
-        status: 'error',
-        errors:
-          'Failed logging data import audit for newsletter impressions data',
-      });
+    return res.status(500).json({
+      status: 'error',
+      errors:
+        'Failed logging data import audit for newsletter impressions data',
+    });
   }
 
   res.status(200).json({
