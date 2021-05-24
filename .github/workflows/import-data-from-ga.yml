@@ -22,8 +22,6 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
       - run: echo "🖥️ repo and node are setup"
-      - name: install commander
-        run: npm install commander
       - name: install node-fetch
         run: npm install node-fetch
       - name: install dotenv
