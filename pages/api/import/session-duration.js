@@ -92,6 +92,15 @@ function importSessionDuration(rows) {
 export default async (req, res) => {
   const { startDate, endDate } = req.query;
 
+  if (startDate === undefined) {
+    let yesterday = new Date();
+    startDate = new Date(yesterday.setDate(yesterday.getDate() - 1));
+  }
+
+  if (endDate === undefined) {
+    endDate = new Date();
+  }
+
   console.log('data import:', startDate, endDate);
 
   let rows;
