@@ -23,110 +23,111 @@ async function getSessionDuration(params) {
   let startDate = params['startDate'];
   let endDate = params['endDate'];
   let googleAnalyticsViewID = params['viewID'];
-  let apiUrl = params['apiUrl'];
 
-  try {
-    const response = await analyticsreporting.reports.batchGet({
-      requestBody: {
-        reportRequests: [
-          {
-            viewId: googleAnalyticsViewID,
-            dateRanges: [
-              {
-                startDate: startDate,
-                endDate: endDate,
-              },
-            ],
-            metrics: [
-              {
-                expression: 'ga:avgSessionDuration',
-              },
-            ],
-            dimensions: [
-              {
-                name: 'ga:date',
-              },
-            ],
-          },
-        ],
-      },
-    });
-    console.log('GA response:', response);
+  const response = await analyticsreporting.reports.batchGet({
+    requestBody: {
+      reportRequests: [
+        {
+          viewId: googleAnalyticsViewID,
+          dateRanges: [
+            {
+              startDate: startDate,
+              endDate: endDate,
+            },
+          ],
+          metrics: [
+            {
+              expression: 'ga:avgSessionDuration',
+            },
+          ],
+          dimensions: [
+            {
+              name: 'ga:date',
+            },
+          ],
+        },
+      ],
+    },
+  });
 
-    let insertPromises = [];
-    if (
-      !response ||
-      !response.data ||
-      !response.data.reports ||
-      !response.data.reports[0] ||
-      !response.data.reports[0].data ||
-      !response.data.reports[0].data.rows
-    ) {
-      insertPromises.push(
-        hasuraInsertSessionDuration({
-          url: apiUrl,
-          orgSlug: apiToken,
-          seconds: 0,
-          date: startDate,
-        }).then((result) => {
-          console.log('hasura insert result:', result);
-          if (result.errors) {
-            return { status: 'error', errors: result.errors };
-          } else {
-            return { status: 'ok', result: result, errors: [] };
-          }
-        })
-      );
-    } else {
-      response.data.reports[0].data.rows.forEach((row) => {
-        insertPromises.push(
-          hasuraInsertSessionDuration({
-            url: apiUrl,
-            orgSlug: apiToken,
-            seconds: row.metrics[0].values[0],
-            date: row.dimensions[0],
-          }).then((result) => {
-            console.log('hasura insert result:', result);
-            if (result.errors) {
-              return { status: 'error', errors: result.errors };
-            } else {
-              return { status: 'ok', result: result, errors: [] };
-            }
-          })
-        );
-      });
-    }
-
-    let returnResults = { errors: [], results: [] };
-    for await (let result of insertPromises) {
-      console.log('for await result:', result);
-      if (result['errors'] && result['errors'].length > 0) {
-        returnResults['errors'].push(result['errors']);
-      }
-      if (result['result']) {
-        returnResults['results'].push(result['result']);
-      }
-    }
-    console.log('returning this:', returnResults);
-    return returnResults;
-  } catch (e) {
-    console.error('czaught error:', e);
+  if (
+    response.status !== 404 &&
+    (response.status > 299 || response.status < 200)
+  ) {
+    const error = new Error(
+      'Google Analytics API returned an error: (' +
+        response.status +
+        ') ' +
+        response.statusText
+    );
+    error.code = response;
+    throw error;
   }
+  return response.data.reports[0].data.rows;
+}
+
+function importSessionDuration(rows) {
+  rows.forEach((row) => {
+    hasuraInsertSessionDuration({
+      url: apiUrl,
+      orgSlug: apiToken,
+      seconds: row.metrics[0].values[0],
+      date: row.dimensions[0],
+    }).then((result) => {
+      console.log('hasura insert result:', result);
+      if (result.errors) {
+        const error = new Error(
+          'Error inserting data into hasura',
+          result.errors
+        );
+        error.code = '500';
+        throw error;
+      } else {
+        console.log('data import ok');
+      }
+    });
+  });
 }
 
 export default async (req, res) => {
   const { startDate, endDate } = req.query;
 
-  console.log('data import:', startDate, endDate);
-  const results = await getSessionDuration({
-    startDate: startDate,
-    endDate: endDate,
-    viewID: googleAnalyticsViewID,
-    apiUrl: apiUrl,
-  });
+  if (startDate === undefined) {
+    let yesterday = new Date();
+    startDate = new Date(yesterday.setDate(yesterday.getDate() - 1));
+  }
 
-  if (results.errors && results.errors.length > 0) {
-    return res.status(500).json({ status: 'error', errors: results.errors });
+  if (endDate === undefined) {
+    endDate = new Date();
+  }
+
+  console.log('data import:', startDate, endDate);
+
+  let rows;
+
+  try {
+    rows = await getSessionDuration({
+      startDate: startDate,
+      endDate: endDate,
+      viewID: googleAnalyticsViewID,
+      apiUrl: apiUrl,
+    });
+  } catch (e) {
+    console.error(e);
+    return res.status(500).json({
+      status: 'error',
+      errors: 'Failed getting session durations data from GA',
+    });
+  }
+
+  try {
+    importSessionDuration(rows);
+  } catch (e) {
+    console.error(e);
+    return res.status(500).json({
+      status: 'error',
+      errors: 'Failed importing GA session durations into Hasura',
+    });
   }
 
   const auditResult = await hasuraInsertDataImport({
@@ -135,14 +136,23 @@ export default async (req, res) => {
     table_name: 'ga_session_duration',
     start_date: startDate,
     end_date: endDate,
+    success: true,
   });
+
+  const auditStatus = auditResult.data ? 'ok' : 'error';
+
+  if (auditStatus === 'error') {
+    return res.status(500).json({
+      status: 'error',
+      errors: 'Failed logging data import audit for session durations data',
+    });
+  }
 
   res.status(200).json({
     name: 'ga_session_duration',
     startDate: startDate,
     endDate: endDate,
     status: 'OK',
-    message: JSON.stringify(results),
     audit: JSON.stringify(auditResult),
   });
 };

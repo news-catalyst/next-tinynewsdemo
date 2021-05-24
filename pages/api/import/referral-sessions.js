@@ -23,112 +23,113 @@ async function getReferralSessions(params) {
   let startDate = params['startDate'];
   let endDate = params['endDate'];
   let googleAnalyticsViewID = params['viewID'];
-  let apiUrl = params['apiUrl'];
 
-  try {
-    const response = await analyticsreporting.reports.batchGet({
-      requestBody: {
-        reportRequests: [
-          {
-            viewId: googleAnalyticsViewID,
-            dateRanges: [
-              {
-                startDate: startDate,
-                endDate: endDate,
-              },
-            ],
-            metrics: [
-              {
-                expression: 'ga:sessions',
-              },
-            ],
-            dimensions: [
-              {
-                name: 'ga:source',
-              },
-              {
-                name: 'ga:date',
-              },
-            ],
-          },
-        ],
-      },
-    });
-    console.log('GA response:', response);
+  const response = await analyticsreporting.reports.batchGet({
+    requestBody: {
+      reportRequests: [
+        {
+          viewId: googleAnalyticsViewID,
+          dateRanges: [
+            {
+              startDate: startDate,
+              endDate: endDate,
+            },
+          ],
+          metrics: [
+            {
+              expression: 'ga:sessions',
+            },
+          ],
+          dimensions: [
+            {
+              name: 'ga:source',
+            },
+            {
+              name: 'ga:date',
+            },
+          ],
+        },
+      ],
+    },
+  });
 
-    if (
-      !response ||
-      !response.data ||
-      !response.data.reports ||
-      !response.data.reports[0] ||
-      !response.data.reports[0].data ||
-      !response.data.reports[0].data.rows
-    ) {
-      const error = new Error('No rows returned for ' + startDate);
-      error.code = '404';
-      throw error;
-    }
-
-    let insertPromises = [];
-    response.data.reports[0].data.rows.forEach((row) => {
-      insertPromises.push(
-        hasuraInsertReferralSession({
-          url: apiUrl,
-          orgSlug: apiToken,
-          count: row.metrics[0].values[0],
-          date: row.dimensions[1],
-          source: row.dimensions[0],
-        }).then((result) => {
-          if (result.errors) {
-            return { status: 'error', errors: result.errors };
-          } else {
-            return { status: 'ok', result: result, errors: [] };
-          }
-        })
-      );
-    });
-
-    let returnResults = { errors: [], results: [] };
-
-    for await (let result of insertPromises) {
-      if (result['errors'] && result['errors'].length > 0) {
-        returnResults['errors'].push(result['errors']);
-      }
-      if (result['result']) {
-        returnResults['results'].push(result['result']);
-      }
-    }
-    return returnResults;
-  } catch (e) {
-    console.error('caught error:', e);
-    return { errors: [e] };
+  if (
+    response.status !== 404 &&
+    (response.status > 299 || response.status < 200)
+  ) {
+    const error = new Error(
+      'Google Analytics API returned an error: (' +
+        response.status +
+        ') ' +
+        response.statusText
+    );
+    error.code = response;
+    throw error;
   }
+  return response.data.reports[0].data.rows;
+}
+
+function importReferralSessions(rows) {
+  rows.forEach((row) => {
+    hasuraInsertReferralSession({
+      url: apiUrl,
+      orgSlug: apiToken,
+      count: row.metrics[0].values[0],
+      date: row.dimensions[1],
+      source: row.dimensions[0],
+    }).then((result) => {
+      if (result.errors) {
+        const error = new Error(
+          'Error inserting data into hasura',
+          result.errors
+        );
+        error.code = '500';
+        throw error;
+      } else {
+        console.log('data import ok');
+      }
+    });
+  });
 }
 
 export default async (req, res) => {
   const { startDate, endDate } = req.query;
 
+  if (startDate === undefined) {
+    let yesterday = new Date();
+    startDate = new Date(yesterday.setDate(yesterday.getDate() - 1));
+  }
+
+  if (endDate === undefined) {
+    endDate = new Date();
+  }
   console.log('data import referral sessions:', startDate, endDate);
-  const results = await getReferralSessions({
-    startDate: startDate,
-    endDate: endDate,
-    viewID: googleAnalyticsViewID,
-    apiUrl: apiUrl,
-  });
 
-  let resultNotes =
-    results.results && results.results[0] && results.results[0].data
-      ? results.results[0].data
-      : JSON.stringify(results);
+  let rows;
 
-  let successFlag = true;
-  if (results.errors && results.errors.length > 0) {
-    if (results.errors[0].code && results.errors[0].code === '404') {
-      successFlag = true;
-    } else {
-      successFlag = false;
-    }
-    resultNotes = results.errors;
+  try {
+    rows = await getReferralSessions({
+      startDate: startDate,
+      endDate: endDate,
+      viewID: googleAnalyticsViewID,
+      apiUrl: apiUrl,
+    });
+  } catch (e) {
+    console.error(e);
+    return res.status(500).json({
+      status: 'error',
+      errors: 'Failed getting referral sessions data from GA',
+    });
+  }
+
+  try {
+    importReferralSessions(rows);
+  } catch (e) {
+    console.error(e);
+    return res.status(500).json({
+      status: 'error',
+      errors: 'Failed importing GA referral sessions into Hasura',
+    });
   }
 
   const auditResult = await hasuraInsertDataImport({
@@ -137,16 +138,16 @@ export default async (req, res) => {
     table_name: 'ga_referral_sessions',
     start_date: startDate,
     end_date: endDate,
-    success: successFlag,
-    notes: JSON.stringify(resultNotes),
+    success: true,
   });
 
   const auditStatus = auditResult.data ? 'ok' : 'error';
 
-  if (results.errors && results.errors.length > 0) {
-    return res
-      .status(500)
-      .json({ status: 'error', errors: resultNotes, audit: auditStatus });
+  if (auditStatus === 'error') {
+    return res.status(500).json({
+      status: 'error',
+      errors: 'Failed logging data import audit for referral sessions data',
+    });
   }
 
   res.status(200).json({
@@ -154,7 +155,6 @@ export default async (req, res) => {
     startDate: startDate,
     endDate: endDate,
     status: 'ok',
-    message: resultNotes,
     audit: auditStatus,
   });
 };
