@@ -30,31 +30,8 @@ jobs:
         run: npm install dotenv
       - name: install date-fns
         run: npm install date-fns
-      - name: importing donate-clicks
+      - name: donate-clicks
         run: yarn data:import donate-clicks
-      - name: importing donor-reading-frequency
-        run: yarn data:import donor-reading-frequency
-      - name: importing donors
-        run: yarn data:import donors
-      - name: importing geo-sessions
-        run: yarn data:import geo-sessions
-      - name: importing newsletter-impressions
-        run: yarn data:import newsletter-impressions
-      - name: importing newsletters
-        run: yarn data:import newsletters
-      - name: importing page-views
-        run: yarn data:import page-views
-      - name: importing reading-depth
-        run: yarn data:import reading-depth
-      - name: importing reading-frequency
-        run: yarn data:import reading-frequency
-      - name: importing referral-sessions
-        run: yarn data:import referral-sessions
-      - name: importing session-duration
-        run: yarn data:import session-duration
-      - name: importing sessions
-        run: yarn data:import sessions
-      - name: importing subscribers
-        run: yarn data:import subscribers
+      - name: check-status
+        run: echo "${{ steps.donate-clicks.outcome }}"
       - run: echo "🍏 This job's status is ${{ job.status }}."
-
