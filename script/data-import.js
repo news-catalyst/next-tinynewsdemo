@@ -24,7 +24,7 @@ const endpoints = [
 ];
 
 async function runDataImport(startDate, endDate, table) {
-  console.log("running data import:", startDate, endDate);
+  console.log("running data import:", startDate, endDate, table);
 
   let runOnEndpoints = endpoints;
   if (table !== undefined) {
@@ -82,10 +82,7 @@ program
         endDate = new Date(opts.endDate);
       }
 
-      setInterval(() => {
-        console.log('Waiting several seconds between requests to the GA API...');
-        runDataImport(startDate, endDate, opts.table);
-      }, 5000)
+      runDataImport(startDate, endDate, opts.table);
     } catch(error) {
       core.setFailed(error.message);
     }
