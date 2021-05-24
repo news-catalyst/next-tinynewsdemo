@@ -57,13 +57,14 @@ async function getDonors(params) {
     response.status !== 404 &&
     (response.status > 299 || response.status < 200)
   ) {
-    const error = new Error(
+    let error = new Error(
       'Google Analytics API returned an error: (' +
         response.status +
         ') ' +
         response.statusText
     );
-    error.code = response;
+    error.code = response.status;
+    error.message = response.statusText;
     throw error;
   }
   return response.data.reports[0].data.rows;
@@ -81,7 +82,7 @@ function importDonorData(rows) {
       date: startDate,
     }).then((result) => {
       if (result.errors) {
-        const error = new Error(
+        let error = new Error(
           'Error inserting data into hasura',
           result.errors
         );
@@ -102,7 +103,7 @@ function importDonorData(rows) {
         date: row.dimensions[1],
       }).then((result) => {
         if (result.errors) {
-          const error = new Error(
+          let error = new Error(
             'Error inserting data into hasura',
             result.errors
           );
@@ -117,7 +118,7 @@ function importDonorData(rows) {
 }
 
 export default async (req, res) => {
-  const { startDate, endDate } = req.query;
+  let { startDate, endDate } = req.query;
 
   if (startDate === undefined) {
     let yesterday = new Date();
@@ -137,9 +138,10 @@ export default async (req, res) => {
     });
   } catch (e) {
     console.error(e);
-    return res
-      .status(500)
-      .json({ status: 'error', errors: 'Failed getting donors data from GA' });
+    return res.status(e.code).json({
+      status: 'error',
+      errors: e.message,
+    });
   }
 
   try {

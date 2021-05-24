@@ -16,8 +16,12 @@ async function runDataImport(startDate, endDate, table) {
   fetch(endpointURL, {
     method: "GET",
   })
-  .then(res => res.json())
+  .then(res => {
+    console.log("converting res to json", res)
+    return res.json()
+  })
   .then(resultData => {
+    console.log("got resultData:", resultData)
     if (resultData.status === 'error' || resultData.errors) {
       const error = new Error("Failed importing data");
       error.code = 500;
@@ -29,6 +33,7 @@ async function runDataImport(startDate, endDate, table) {
     return message;
   })
   .catch(err => {
+    console.log("error from data import api:", err)
     return err
   })
 }

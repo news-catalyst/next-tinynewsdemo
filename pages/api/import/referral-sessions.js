@@ -93,7 +93,7 @@ function importReferralSessions(rows) {
 }
 
 export default async (req, res) => {
-  const { startDate, endDate } = req.query;
+  let { startDate, endDate } = req.query;
 
   if (startDate === undefined) {
     let yesterday = new Date();
@@ -116,9 +116,9 @@ export default async (req, res) => {
     });
   } catch (e) {
     console.error(e);
-    return res.status(500).json({
+    return res.status(e.code).json({
       status: 'error',
-      errors: 'Failed getting referral sessions data from GA',
+      errors: e.message,
     });
   }
 
