@@ -23,5 +23,5 @@ jobs:
       - uses: actions/setup-node@v1
       - run: echo "🖥️ repo and node are setup"
       - name: donateclicks
-        run: curl ${{env.SITE_URL}}/api/import/donate-clicks
+        run: curl -f ${{env.SITE_URL}}/api/import/donate-clicks
       - run: echo "🍏 This job's status is ${{ job.status }}."
