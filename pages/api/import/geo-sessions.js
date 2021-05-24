@@ -23,142 +23,143 @@ async function getGeoSessions(params) {
   let startDate = params['startDate'];
   let endDate = params['endDate'];
   let googleAnalyticsViewID = params['viewID'];
-  let apiUrl = params['apiUrl'];
 
-  try {
-    const response = await analyticsreporting.reports.batchGet({
-      requestBody: {
-        reportRequests: [
-          {
-            viewId: googleAnalyticsViewID,
-            dateRanges: [
-              {
-                startDate: startDate,
-                endDate: endDate,
-              },
-            ],
-            metrics: [
-              {
-                expression: 'ga:sessions',
-              },
-            ],
-            dimensions: [
-              {
-                name: 'ga:country',
-              },
-              {
-                name: 'ga:region',
-              },
-              {
-                name: 'ga:date',
-              },
-            ],
-          },
-        ],
-      },
-    });
-    console.log('GA response:', response);
+  const response = await analyticsreporting.reports.batchGet({
+    requestBody: {
+      reportRequests: [
+        {
+          viewId: googleAnalyticsViewID,
+          dateRanges: [
+            {
+              startDate: startDate,
+              endDate: endDate,
+            },
+          ],
+          metrics: [
+            {
+              expression: 'ga:sessions',
+            },
+          ],
+          dimensions: [
+            {
+              name: 'ga:country',
+            },
+            {
+              name: 'ga:region',
+            },
+            {
+              name: 'ga:date',
+            },
+          ],
+        },
+      ],
+    },
+  });
 
-    if (
-      !response ||
-      !response.data ||
-      !response.data.reports ||
-      !response.data.reports[0] ||
-      !response.data.reports[0].data ||
-      !response.data.reports[0].data.rows
-    ) {
-      const error = new Error('No rows returned for ' + startDate);
-      error.code = '404';
-      throw error;
-    }
-
-    let insertPromises = [];
-    response.data.reports[0].data.rows.forEach((row) => {
-      insertPromises.push(
-        hasuraInsertGeoSession({
-          url: apiUrl,
-          orgSlug: apiToken,
-          region: `${row.dimensions[0]}-${row.dimensions[1]}`,
-          count: row.metrics[0].values[0],
-          date: row.dimensions[2],
-        }).then((result) => {
-          console.log('hasura insert result:', result);
-          if (result.errors) {
-            return { status: 'error', errors: result.errors };
-          } else {
-            return { status: 'ok', result: result, errors: [] };
-          }
-        })
-      );
-    });
-
-    let returnResults = { errors: [], results: [] };
-
-    for await (let result of insertPromises) {
-      console.log('for await result:', result);
-      if (result['errors'] && result['errors'].length > 0) {
-        returnResults['errors'].push(result['errors']);
-      }
-      if (result['result']) {
-        returnResults['results'].push(result['result']);
-      }
-    }
-    return returnResults;
-  } catch (e) {
-    console.error('caught error:', e);
-    return { errors: [e] };
+  if (
+    response.status !== 404 &&
+    (response.status > 299 || response.status < 200)
+  ) {
+    const error = new Error(
+      'Google Analytics API returned an error: (' +
+        response.status +
+        ') ' +
+        response.statusText
+    );
+    error.code = response;
+    throw error;
   }
+  return response.data.reports[0].data.rows;
+}
+
+function importGeoSessions(rows) {
+  if (!rows) {
+    const error = new Error('No rows returned for ' + startDate);
+    error.code = '404';
+    throw error;
+  }
+
+  rows.forEach((row) => {
+    hasuraInsertGeoSession({
+      url: apiUrl,
+      orgSlug: apiToken,
+      region: `${row.dimensions[0]}-${row.dimensions[1]}`,
+      count: row.metrics[0].values[0],
+      date: row.dimensions[2],
+    }).then((result) => {
+      console.log('hasura insert result:', result);
+      if (result.errors) {
+        const error = new Error(
+          'Error inserting data into hasura',
+          result.errors
+        );
+        error.code = '500';
+        throw error;
+      } else {
+        console.log('data import ok');
+      }
+    });
+  });
 }
 
 export default async (req, res) => {
   const { startDate, endDate } = req.query;
 
   console.log('data import page views:', startDate, endDate);
-  const results = await getGeoSessions({
-    startDate: startDate,
-    endDate: endDate,
-    viewID: googleAnalyticsViewID,
-    apiUrl: apiUrl,
-  });
-
-  let resultNotes =
-    results.results && results.results[0] && results.results[0].data
-      ? results.results[0].data
-      : JSON.stringify(results);
-
-  let successFlag = true;
-  if (results.errors && results.errors.length > 0) {
-    if (results.errors[0].code && results.errors[0].code === '404') {
-      successFlag = true;
-    } else {
-      successFlag = false;
-    }
-    resultNotes = results.errors;
+  let rows;
+  try {
+    rows = await getGeoSessions({
+      startDate: startDate,
+      endDate: endDate,
+      viewID: googleAnalyticsViewID,
+      apiUrl: apiUrl,
+    });
+  } catch (e) {
+    console.error(e);
+    return res
+      .status(500)
+      .json({
+        status: 'error',
+        errors: 'Failed getting geo sessions data from GA',
+      });
   }
 
+  try {
+    importGeoSessions(rows);
+  } catch (e) {
+    console.error(e);
+    return res
+      .status(500)
+      .json({
+        status: 'error',
+        errors: 'Failed importing GA geo sessions data into Hasura',
+      });
+  }
   const auditResult = await hasuraInsertDataImport({
     url: apiUrl,
     orgSlug: apiToken,
     table_name: 'ga_geo_sessions',
     start_date: startDate,
     end_date: endDate,
-    success: successFlag,
-    notes: JSON.stringify(resultNotes),
+    success: true,
   });
 
   const auditStatus = auditResult.data ? 'ok' : 'error';
 
-  if (results.errors && results.errors.length > 0) {
+  if (auditStatus === 'error') {
     return res
       .status(500)
-      .json({ status: 'error', errors: resultNotes, audit: auditStatus });
+      .json({
+        status: 'error',
+        errors: 'Failed logging data import audit for geo sessions data',
+      });
   }
+
   res.status(200).json({
     name: 'ga_geo_sessions',
     startDate: startDate,
     endDate: endDate,
     status: 'ok',
-    message: resultNotes,
     audit: auditStatus,
   });
 };

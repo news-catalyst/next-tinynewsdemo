@@ -31,30 +31,30 @@ jobs:
       - name: install date-fns
         run: npm install date-fns
       - name: importing donate-clicks
-        run: npm run data:import -t donate-clicks
+        run: yarn data:import -t donate-clicks
       - name: importing donor-reading-frequency
-        run: npm run data:import -t donor-reading-frequency
+        run: yarn data:import -t donor-reading-frequency
       - name: importing donors
-        run: npm run data:import -t donors
+        run: yarn data:import -t donors
       - name: importing geo-sessions
-        run: npm run data:import -t geo-sessions
+        run: yarn data:import -t geo-sessions
       - name: importing newsletter-impressions
-        run: npm run data:import -t newsletter-impressions
+        run: yarn data:import -t newsletter-impressions
       - name: importing newsletters
-        run: npm run data:import -t newsletters
+        run: yarn data:import -t newsletters
       - name: importing page-views
-        run: npm run data:import -t page-views
+        run: yarn data:import -t page-views
       - name: importing reading-depth
-        run: npm run data:import -t reading-depth
+        run: yarn data:import -t reading-depth
       - name: importing reading-frequency
-        run: npm run data:import -t reading-frequency
+        run: yarn data:import -t reading-frequency
       - name: importing referral-sessions
-        run: npm run data:import -t referral-sessions
+        run: yarn data:import -t referral-sessions
       - name: importing session-duration
-        run: npm run data:import -t session-duration
+        run: yarn data:import -t session-duration
       - name: importing sessions
-        run: npm run data:import -t sessions
+        run: yarn data:import -t sessions
       - name: importing subscribers
-        run: npm run data:import -t subscribers
+        run: yarn data:import -t subscribers
       - run: echo "🍏 This job's status is ${{ job.status }}."
 

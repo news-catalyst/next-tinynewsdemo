@@ -26,43 +26,32 @@ const endpoints = [
 async function runDataImport(startDate, endDate, table) {
   console.log("running data import:", startDate, endDate, table);
 
-  let runOnEndpoints = endpoints;
-  if (table !== undefined) {
-    runOnEndpoints = [table];
-  }
+  let endpointURL = baseURL + table;
+  endpointURL += `?startDate=${format(startDate, 'yyyy-MM-dd')}&endDate=${format(endDate, 'yyyy-MM-dd')}`;
 
-  for await (let endpoint of runOnEndpoints) {
-    let endpointURL = baseURL + endpoint;
-    endpointURL += `?startDate=${format(startDate, 'yyyy-MM-dd')}&endDate=${format(endDate, 'yyyy-MM-dd')}`;
-
-    fetch(endpointURL, {
-      method: "GET",
-    })
-    .then(res => res.json())
-    .then(resultData => {
-      if (resultData.status === 'error' || resultData.errors) {
-        console.error(resultData.errors);
-        throw resultData.errors;
-      }
-      let message = JSON.parse(resultData)
-      console.log("message:", message);
-
-      // results.push(message);
-      return message;
-    })
-    .catch(err => {
-      let errorMessage = `error: ${endpointURL} ${JSON.stringify(err)}`;
-      // console.error(errorMessage)
-      return errorMessage;
-    })
-  };
-
+  fetch(endpointURL, {
+    method: "GET",
+  })
+  .then(res => res.json())
+  .then(resultData => {
+    if (resultData.status === 'error' || resultData.errors) {
+      console.error("result error:", resultData.errors);
+      throw resultData.errors;
+    }
+    let message = JSON.parse(resultData)
+    return message;
+  })
+  .catch(err => {
+    let errorMessage = `error: ${endpointURL} ${JSON.stringify(err)}`;
+    // console.error(errorMessage)
+    return errorMessage;
+  })
 }
 
 program
   .option('-s, --start-date <startDate>', 'start of the date range')
   .option('-e, --end-date <endDate>', 'end of the date range')
-  .option('-t, --table <table>', 'import a single table only')
+  .requiredOption('-t, --table <table>', 'import a single table only')
   .description("imports daily GA data for each date in the specified range")
   .action( (opts) => {
     try {
@@ -82,8 +71,13 @@ program
         endDate = new Date(opts.endDate);
       }
 
-      runDataImport(startDate, endDate, opts.table);
+      let endpoint = opts.table;
+      console.log("endpoint:", endpoint);
+
+      let output = runDataImport(startDate, endDate, endpoint);
+      console.log(output)
     } catch(error) {
+      console.log("returning error!@!!!!")
       core.setFailed(error.message);
     }
   });
