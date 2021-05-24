@@ -138,12 +138,10 @@ export default async (req, res) => {
     importDonorData(rows);
   } catch (e) {
     console.error(e);
-    return res
-      .status(500)
-      .json({
-        status: 'error',
-        errors: 'Failed importing GA donor data into Hasura',
-      });
+    return res.status(500).json({
+      status: 'error',
+      errors: 'Failed importing GA donor data into Hasura',
+    });
   }
 
   const auditResult = await hasuraInsertDataImport({
@@ -158,12 +156,10 @@ export default async (req, res) => {
   const auditStatus = auditResult.data ? 'ok' : 'error';
 
   if (auditStatus === 'error') {
-    return res
-      .status(500)
-      .json({
-        status: 'error',
-        errors: 'Failed logging data import audit for donor data',
-      });
+    return res.status(500).json({
+      status: 'error',
+      errors: 'Failed logging data import audit for donor data',
+    });
   }
 
   res.status(200).json({
