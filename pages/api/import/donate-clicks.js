@@ -112,8 +112,16 @@ function importDonateClicks(rows) {
 }
 
 export default async (req, res) => {
-  const { startDate, endDate } = req.query;
+  let { startDate, endDate } = req.query;
 
+  if (startDate === undefined) {
+    let yesterday = new Date();
+    startDate = new Date(yesterday.setDate(yesterday.getDate() - 1));
+  }
+
+  if (endDate === undefined) {
+    endDate = new Date();
+  }
   console.log('data import donation click data:', startDate, endDate);
 
   let rows;
@@ -127,24 +135,20 @@ export default async (req, res) => {
     });
   } catch (e) {
     console.error(e);
-    return res
-      .status(500)
-      .json({
-        status: 'error',
-        errors: 'Failed getting donation click data from GA',
-      });
+    return res.status(500).json({
+      status: 'error',
+      errors: 'Failed getting donation click data from GA',
+    });
   }
 
   try {
     importDonateClicks(rows);
   } catch (e) {
     console.error(e);
-    return res
-      .status(500)
-      .json({
-        status: 'error',
-        errors: 'Failed importing GA donation click data into Hasura',
-      });
+    return res.status(500).json({
+      status: 'error',
+      errors: 'Failed importing GA donation click data into Hasura',
+    });
   }
 
   const auditResult = await hasuraInsertDataImport({
@@ -159,12 +163,10 @@ export default async (req, res) => {
   const auditStatus = auditResult.data ? 'ok' : 'error';
 
   if (auditStatus === 'error') {
-    return res
-      .status(500)
-      .json({
-        status: 'error',
-        errors: 'Failed logging data import audit for donation clicks',
-      });
+    return res.status(500).json({
+      status: 'error',
+      errors: 'Failed logging data import audit for donation clicks',
+    });
   }
 
   res.status(200).json({
