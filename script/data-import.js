@@ -1,5 +1,4 @@
-const { program } = require('commander');
-program.version('0.0.1');
+const core = require('@actions/core');
 
 const fetch = require("node-fetch");
 require('dotenv').config({ path: '.env.local' })
@@ -7,21 +6,6 @@ require('dotenv').config({ path: '.env.local' })
 const {format} = require('date-fns');
 
 const baseURL = process.env.SITE_URL + "/api/import/";
-const endpoints = [
-  "donate-clicks", 
-  "donor-reading-frequency", 
-  "donors", 
-  "geo-sessions", 
-  "newsletter-impressions", 
-  "newsletters", 
-  "page-views", 
-  "reading-depth", 
-  "reading-frequency", 
-  "referral-sessions", 
-  "session-duration", 
-  "sessions", 
-  "subscribers"
-];
 
 async function runDataImport(startDate, endDate, table) {
   console.log("running data import:", startDate, endDate, table);
@@ -35,51 +19,40 @@ async function runDataImport(startDate, endDate, table) {
   .then(res => res.json())
   .then(resultData => {
     if (resultData.status === 'error' || resultData.errors) {
-      console.error("result error:", resultData.errors);
-      throw resultData.errors;
+      const error = new Error("Failed importing data");
+      error.code = 500;
+      error.message = JSON.stringify(resultData);
+      console.error("Failed importing data:", error);
+      throw error
     }
     let message = JSON.parse(resultData)
     return message;
   })
   .catch(err => {
-    let errorMessage = `error: ${endpointURL} ${JSON.stringify(err)}`;
-    // console.error(errorMessage)
-    return errorMessage;
+    return err
   })
 }
 
-program
-  .option('-s, --start-date <startDate>', 'start of the date range')
-  .option('-e, --end-date <endDate>', 'end of the date range')
-  .requiredOption('-t, --table <table>', 'import a single table only')
-  .description("imports daily GA data for each date in the specified range")
-  .action( (opts) => {
-    try {
-      let startDate;
-      if (opts.startDate === undefined) {
-        let yesterday = new Date(); 
-        startDate = new Date(yesterday.setDate(yesterday.getDate() - 1));
-      } else {
-        startDate = new Date(opts.startDate);
-      }
+(async () => {
+  let endpoint = process.argv[2];
 
-      let endDate;
-      if (opts.endDate === undefined) {
-        let today = new Date(); 
-        endDate = new Date(today.setDate(today.getDate() - 1));
-      } else {
-        endDate = new Date(opts.endDate);
-      }
+  let yesterday = new Date(); 
+  let startDate = new Date(yesterday.setDate(yesterday.getDate() - 1));
+  if (process.argv[3]) { 
+    startDate = new Date(process.argv[3])
+  }
 
-      let endpoint = opts.table;
-      console.log("endpoint:", endpoint);
+  let today = new Date(); 
+  let endDate = new Date(today.setDate(today.getDate() - 1));
+  if (process.argv[4]) { 
+    endDate = new Date(process.argv[4])
+  }
 
-      let output = runDataImport(startDate, endDate, endpoint);
-      console.log(output)
-    } catch(error) {
-      console.log("returning error!@!!!!")
-      core.setFailed(error.message);
-    }
-  });
-
-program.parse(process.argv);
+  let result;
+  try {
+    result = await runDataImport(startDate, endDate, endpoint);
+  } catch(err) {
+    console.error("caught error:", err);
+    core.setFailed(`Action failed with error ${err}`);
+  }
+})();
