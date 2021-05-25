@@ -93,7 +93,7 @@ function importSessions(rows) {
 }
 
 export default async (req, res) => {
-  const { startDate, endDate } = req.query;
+  let { startDate, endDate } = req.query;
 
   console.log('data import page views:', startDate, endDate);
   let rows;
@@ -107,9 +107,9 @@ export default async (req, res) => {
     });
   } catch (e) {
     console.error(e);
-    return res.status(500).json({
+    return res.status(e.code).json({
       status: 'error',
-      errors: 'Failed getting sessions data from GA',
+      errors: e.message,
     });
   }
 

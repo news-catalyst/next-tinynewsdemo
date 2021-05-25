@@ -58,14 +58,14 @@ async function getDonationClicks(params) {
     response.status !== 404 &&
     (response.status > 299 || response.status < 200)
   ) {
-    console.log('GA error:', response);
     const error = new Error(
       'Google Analytics API returned an error: (' +
         response.status +
         ') ' +
         response.statusText
     );
-    error.code = response;
+    error.code = response.status;
+    error.message = response.statusText;
     throw error;
   }
 
@@ -77,7 +77,6 @@ async function getDonationClicks(params) {
     !response.data.reports[0].data ||
     !response.data.reports[0].data.rows
   ) {
-    console.log('no rows - 404');
     const error = new Error('No rows returned for ' + startDate);
     error.code = '404';
     throw error;
@@ -134,10 +133,9 @@ export default async (req, res) => {
       apiUrl: apiUrl,
     });
   } catch (e) {
-    console.error(e);
-    return res.status(500).json({
+    return res.status(e.code).json({
       status: 'error',
-      errors: 'Failed getting donation click data from GA',
+      errors: e.message,
     });
   }
 
@@ -145,9 +143,14 @@ export default async (req, res) => {
     importDonateClicks(rows);
   } catch (e) {
     console.error(e);
-    return res.status(500).json({
+    let code = 500;
+    if (e && e.code) {
+      code = e.code;
+      console.log('returning error response with status code' + code);
+    }
+    return res.status(code).json({
       status: 'error',
-      errors: 'Failed importing GA donation click data into Hasura',
+      errors: e.message,
     });
   }
 
