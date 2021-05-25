@@ -45,6 +45,7 @@ export default function Settings({
   currentLocale,
   siteMetadata,
   locales,
+  awsConfig,
 }) {
   const siteInfoRef = useRef();
   const designRef = useRef();
@@ -147,8 +148,6 @@ export default function Settings({
       setParsedData(parsed);
     }
 
-    console.log('parsedData:', parsed);
-
     const { errors, data } = await hasuraUpsertMetadata({
       url: apiUrl,
       orgSlug: apiToken,
@@ -237,6 +236,10 @@ export default function Settings({
                 designRef={designRef}
                 handleChange={handleChange}
                 parsedData={parsedData}
+                awsConfig={awsConfig}
+                setNotificationMessage={setNotificationMessage}
+                setNotificationType={setNotificationType}
+                setShowNotification={setShowNotification}
               />
             </SettingsContainer>
           </form>
@@ -271,6 +274,15 @@ export async function getServerSideProps(context) {
   if (siteMetadata === undefined) {
     siteMetadata = null;
   }
+
+  const awsConfig = {
+    bucketName: process.env.TNC_AWS_BUCKET_NAME,
+    dirName: process.env.TNC_AWS_DIR_NAME,
+    region: process.env.TNC_AWS_REGION,
+    accessKeyId: process.env.TNC_AWS_ACCESS_ID,
+    secretAccessKey: process.env.TNC_AWS_ACCESS_KEY,
+  };
+
   return {
     props: {
       apiUrl: apiUrl,
@@ -278,6 +290,7 @@ export async function getServerSideProps(context) {
       currentLocale: context.locale,
       siteMetadata: siteMetadata,
       locales: locales,
+      awsConfig: awsConfig,
     },
   };
 }

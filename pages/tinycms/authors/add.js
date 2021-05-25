@@ -115,19 +115,6 @@ export default function AddAuthor({
           notificationType={notificationType}
         />
       )}
-      <UploadContainer>
-        {displayUpload && (
-          <Upload
-            awsConfig={awsConfig}
-            slug={slug}
-            bioImage={bioImage}
-            setBioImage={setBioImage}
-            setNotificationMessage={setNotificationMessage}
-            setNotificationType={setNotificationType}
-            setShowNotification={setShowNotification}
-          />
-        )}
-      </UploadContainer>
 
       <FormContainer>
         <FormHeader title="Add Author" />
@@ -171,6 +158,20 @@ export default function AddAuthor({
             labelYes="Staff"
             labelNo="Not Staff"
           />
+          <UploadContainer>
+            {displayUpload && (
+              <Upload
+                awsConfig={awsConfig}
+                slug={slug}
+                image={bioImage}
+                setter={setBioImage}
+                setNotificationMessage={setNotificationMessage}
+                setNotificationType={setNotificationType}
+                setShowNotification={setShowNotification}
+                folderName="authors"
+              />
+            )}
+          </UploadContainer>
 
           <TinySubmitCancelButtons destURL="/tinycms/authors" />
         </form>
