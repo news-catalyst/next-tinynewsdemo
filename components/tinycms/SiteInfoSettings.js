@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import tw, { css, styled } from 'twin.macro';
 import MembershipBlock from '../plugins/MembershipBlock';
 import NewsletterBlock from '../plugins/NewsletterBlock';
+import Upload from './Upload';
 
 const SettingsHeader = tw.h1`text-4xl font-bold leading-normal mt-0 mb-2 text-black`;
 const SiteInfoFieldsContainer = tw.div`grid grid-cols-3 gap-4`;
@@ -161,6 +162,7 @@ export default function SiteInfoSettings(props) {
   const [newsletterDek, setNewsletterDek] = useState(
     props.parsedData['newsletterDek']
   );
+  const [logo, setLogo] = useState(props.parsedData['logo']);
 
   useEffect(() => {
     setSearchTitle(props.parsedData['searchTitle']);
@@ -209,7 +211,16 @@ export default function SiteInfoSettings(props) {
         </label>
         <label htmlFor="logo">
           <span tw="mt-1 font-bold">Logo</span>
-          <Input type="file" name="logo" onChange={props.handleChange} />
+          <Upload
+            awsConfig={props.awsConfig}
+            slug={shortName}
+            image={logo}
+            setter={setLogo}
+            setNotificationMessage={props.setNotificationMessage}
+            setNotificationType={props.setNotificationType}
+            setShowNotification={props.setShowNotification}
+            folderName="logos"
+          />
         </label>
       </SiteInfoFieldsContainer>
 
