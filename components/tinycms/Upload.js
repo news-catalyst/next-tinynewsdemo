@@ -27,15 +27,12 @@ export default function Upload(props) {
     ReactS3Client.uploadFile(file, newFilename)
       .then((data) => {
         if (data.status === 204) {
-          console.log('setting logo to', data.location);
           props.setter(data.location);
 
           let updatedParsedData = props.parsedData;
           updatedParsedData['logo'] = data.location;
-          console.log('updating parsed data:', updatedParsedData);
 
           props.updateParsedData(updatedParsedData);
-          console.log('updated parsed data:', props.parsedData);
 
           setImageSrc(data.location + '?' + Math.random());
           setRandomKey(Math.random());
