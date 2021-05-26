@@ -143,6 +143,7 @@ export default function Settings({
 
     let parsed = parsedData;
 
+    console.log('parsed:', parsed);
     if (jsonData && (Object.keys(parsedData).length === 0 || editData)) {
       parsed = JSON.parse(jsonData);
       setParsedData(parsed);
@@ -236,6 +237,7 @@ export default function Settings({
                 designRef={designRef}
                 handleChange={handleChange}
                 parsedData={parsedData}
+                updateParsedData={setParsedData}
                 awsConfig={awsConfig}
                 setNotificationMessage={setNotificationMessage}
                 setNotificationType={setNotificationType}
