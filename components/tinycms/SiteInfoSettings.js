@@ -215,6 +215,8 @@ export default function SiteInfoSettings(props) {
             awsConfig={props.awsConfig}
             slug={shortName}
             image={logo}
+            updateParsedData={props.updateParsedData}
+            parsedData={props.parsedData}
             setter={setLogo}
             setNotificationMessage={props.setNotificationMessage}
             setNotificationType={props.setNotificationType}
