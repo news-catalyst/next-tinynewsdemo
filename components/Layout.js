@@ -176,6 +176,12 @@ export default function Layout({
             rel="stylesheet"
           />
         )}
+        {meta.theme === 'stylefive' && (
+          <link
+            href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@0,400;0,700;1,400;1,700&family=Lato:ital,wght@0,400;0,700;1,400;1,700&display=swap"
+            rel="stylesheet"
+          />
+        )}
 
         {isAmp && (
           <script
