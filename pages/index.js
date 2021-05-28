@@ -107,8 +107,11 @@ export async function getStaticProps({ locale }) {
     );
   }
 
-  const allAds = (await cachedContents('ads', getArticleAds)) || [];
-  const expandedAds = allAds.filter((ad) => ad.adTypeId === 166);
+  let expandedAds = [];
+  if (process.env.LETTERHEAD_API_URL) {
+    const allAds = (await cachedContents('ads', getArticleAds)) || [];
+    expandedAds = allAds.filter((ad) => ad.adTypeId === 166);
+  }
 
   return {
     props: {
