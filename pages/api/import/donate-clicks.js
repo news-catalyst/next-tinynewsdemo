@@ -3,6 +3,7 @@ import {
   hasuraInsertDonationClick,
   sanitizePath,
 } from '../../../lib/analytics';
+import { format } from 'date-fns';
 
 const { google } = require('googleapis');
 const googleAnalyticsViewID = process.env.NEXT_PUBLIC_ANALYTICS_VIEW_ID;
@@ -116,10 +117,12 @@ export default async (req, res) => {
   if (startDate === undefined) {
     let yesterday = new Date();
     startDate = new Date(yesterday.setDate(yesterday.getDate() - 1));
+    startDate = format(startDate, 'yyyy-MM-dd');
   }
 
   if (endDate === undefined) {
     endDate = new Date();
+    endDate = format(endDate, 'yyyy-MM-dd');
   }
   console.log('data import donation click data:', startDate, endDate);
 
@@ -133,6 +136,7 @@ export default async (req, res) => {
       apiUrl: apiUrl,
     });
   } catch (e) {
+    console.log('error getting data from GA:', e);
     return res.status(e.code).json({
       status: 'error',
       errors: e.message,
@@ -142,7 +146,7 @@ export default async (req, res) => {
   try {
     importDonateClicks(rows);
   } catch (e) {
-    console.error(e);
+    console.error('error importing data into hasura:', e);
     let code = 500;
     if (e && e.code) {
       code = e.code;

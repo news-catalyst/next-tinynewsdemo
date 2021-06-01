@@ -2,6 +2,7 @@ import {
   hasuraInsertDataImport,
   hasuraInsertReadingFrequency,
 } from '../../../lib/analytics';
+import { format } from 'date-fns';
 
 const { google } = require('googleapis');
 const googleAnalyticsViewID = process.env.NEXT_PUBLIC_ANALYTICS_VIEW_ID;
@@ -104,10 +105,12 @@ export default async (req, res) => {
   if (startDate === undefined) {
     let yesterday = new Date();
     startDate = new Date(yesterday.setDate(yesterday.getDate() - 1));
+    startDate = format(startDate, 'yyyy-MM-dd');
   }
 
   if (endDate === undefined) {
     endDate = new Date();
+    endDate = format(endDate, 'yyyy-MM-dd');
   }
   console.log('data import reading frequency:', startDate, endDate);
 
