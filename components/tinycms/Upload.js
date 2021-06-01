@@ -2,29 +2,38 @@ import React, { useEffect, useRef, useState } from 'react';
 import S3 from 'react-aws-s3';
 import tw from 'twin.macro';
 
-const UploadButton = tw.input`hidden md:flex w-full md:w-auto px-4 py-2 text-right bg-blue-700 hover:bg-blue-500 text-white md:rounded`;
+const UploadButton = tw.input`hidden md:flex md:w-auto px-4 py-2 text-right bg-blue-700 hover:bg-blue-500 text-white md:rounded text-center cursor-pointer`;
+const ImgWrapper = tw.div`w-40 h-auto`;
+
 export default function Upload(props) {
   const fileInput = useRef();
-  const [imageSrc, setImageSrc] = useState(props.bioImage);
+  const [imageSrc, setImageSrc] = useState(props.image);
   const [randomKey, setRandomKey] = useState(Math.random());
 
   useEffect(() => {
-    if (props.bioImage) {
-      setImageSrc(props.bioImage);
+    if (props.image) {
+      setImageSrc(props.image);
     }
-  }, [props.bioImage]);
+  }, [props.image]);
 
   const handleClick = (event) => {
     event.preventDefault();
 
     let file = fileInput.current.files[0];
-    let newFilename = 'authors/' + props.slug; // ;
+    let newFilename = `${props.folderName}/${props.slug}`;
 
     const ReactS3Client = new S3(props.awsConfig);
+    console.log(ReactS3Client);
     ReactS3Client.uploadFile(file, newFilename)
       .then((data) => {
         if (data.status === 204) {
-          props.setBioImage(data.location);
+          props.setter(data.location);
+
+          let updatedParsedData = props.parsedData;
+          updatedParsedData['logo'] = data.location;
+
+          props.updateParsedData(updatedParsedData);
+
           setImageSrc(data.location + '?' + Math.random());
           setRandomKey(Math.random());
           props.setNotificationMessage('Successfully uploaded the image');
@@ -45,11 +54,13 @@ export default function Upload(props) {
 
   return (
     <>
-      <img src={imageSrc} key={randomKey} />
-      <form className="upload-steps" onSubmit={handleClick}>
+      <ImgWrapper>
+        <img src={imageSrc} key={randomKey} />
+      </ImgWrapper>
+      <div className="upload-steps">
         <input className="file-input" type="file" ref={fileInput} />
-        <UploadButton type="submit" value="Upload" />
-      </form>
+        <UploadButton onClick={handleClick} value="Upload" />
+      </div>
     </>
   );
 }
