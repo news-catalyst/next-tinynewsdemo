@@ -76,8 +76,8 @@ function generate(locale) {
 
   let feed = new RSS({
     title: `${process.env.ORG_NAME} RSS Feed`,
-    site_url: process.env.SITE_URL,
-    feed_url: `${process.env.SITE_URL}/feed.xml`,
+    site_url: process.env.NEXT_PUBLIC_SITE_URL,
+    feed_url: `${process.env.NEXT_PUBLIC_SITE_URL}/feed.xml`,
   });
 
   hasuraGetArticlesRss({
@@ -100,7 +100,7 @@ function generate(locale) {
       if (!article.article_translations || !article.article_translations[0]) {
         return;
       }
-      const articleHref = `${process.env.SITE_URL}/articles/${article.category.slug}/${article.slug}`
+      const articleHref = `${process.env.NEXT_PUBLIC_SITE_URL}/articles/${article.category.slug}/${article.slug}`
       const headline = article.article_translations[0].headline;
       const searchDescription = article.article_translations[0].search_description;
       let pubDate = getPubDate(article);
