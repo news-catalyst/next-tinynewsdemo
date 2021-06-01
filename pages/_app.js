@@ -49,23 +49,27 @@ const App = ({ Component, pageProps }) => {
     }
 
     let pagePath = window.location.pathname + window.location.search;
-    console.log(
-      'tracking page view',
-      pagePath,
-      'with custom dimensions:',
-      dimensionsData
-    );
-    trackPageViewedWithDimensions(pagePath, dimensionsData);
-
-    const handleRouteChange = () => {
-      let routeChangeData = trackReadingHistoryWithPageView();
+    if (!/tinycms/.test(pagePath)) {
       console.log(
-        'tracking page view for route change',
+        'tracking page view',
         pagePath,
         'with custom dimensions:',
-        routeChangeData
+        dimensionsData
       );
-      trackPageViewedWithDimensions(pagePath, routeChangeData);
+      trackPageViewedWithDimensions(pagePath, dimensionsData);
+    }
+
+    const handleRouteChange = () => {
+      if (!/tinycms/.test(pagePath)) {
+        let routeChangeData = trackReadingHistoryWithPageView();
+        console.log(
+          'tracking page view for route change',
+          pagePath,
+          'with custom dimensions:',
+          routeChangeData
+        );
+        trackPageViewedWithDimensions(pagePath, routeChangeData);
+      }
     };
     Router.events.on('routeChangeComplete', handleRouteChange);
     return () => {
