@@ -1,7 +1,7 @@
 name: GA Data Importer
-on:
+'on':
   schedule:
-    - cron: '5 9 * * *'
+    - cron: 5 9 * * *
   push:
     branches:
       - master
@@ -9,7 +9,7 @@ on:
 jobs:
   GA-Data-Importer:
     runs-on: ubuntu-latest
-    environment: data_import_oaklyn
+    environment: data_import_nsw-examiner
     env:
       NEXT_PUBLIC_SITE_URL: ${{ secrets.NEXT_PUBLIC_SITE_URL }}
       HASURA_API_URL: ${{ secrets.HASURA_API_URL }}

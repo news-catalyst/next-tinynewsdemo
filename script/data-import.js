@@ -5,7 +5,7 @@ require('dotenv').config({ path: '.env.local' })
 
 const {format} = require('date-fns');
 
-const baseURL = process.env.SITE_URL + "/api/import/";
+const baseURL = process.env.NEXT_PUBLIC_SITE_URL + "/api/import/";
 
 async function runDataImport(startDate, endDate, table) {
   console.log("running data import:", startDate, endDate, table);
