@@ -5,7 +5,7 @@ on:
   push:
     branches:
       - master
-      - feature/run-one-data-import-at-a-time
+      - bugfix/format-dates-data-import-api
 jobs:
   GA-Data-Importer:
     runs-on: ubuntu-latest
