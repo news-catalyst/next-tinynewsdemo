@@ -37,6 +37,10 @@ const typographyOptions = {
     headingFont: 'Arbutus Slab',
     bodyFont: 'Mulish',
   },
+  stylefive: {
+    headingFont: 'Bodoni Moda',
+    bodyFont: 'Lato',
+  },
 };
 
 export default function Settings({
