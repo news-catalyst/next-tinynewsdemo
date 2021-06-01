@@ -146,25 +146,6 @@ export default function EditAuthor({
         />
       )}
 
-      <UploadContainer>
-        {displayUpload && (
-          <div tw="mt-3 mb-6">
-            <label tw="mt-3">
-              <span tw="block font-medium text-gray-700 block">Avatar</span>
-              <Upload
-                awsConfig={awsConfig}
-                slug={slug}
-                bioImage={bioImage}
-                setBioImage={setBioImage}
-                setNotificationMessage={setNotificationMessage}
-                setNotificationType={setNotificationType}
-                setShowNotification={setShowNotification}
-              />
-            </label>
-          </div>
-        )}
-      </UploadContainer>
-
       <FormContainer>
         <FormHeader title="Edit Author" />
 
@@ -207,6 +188,25 @@ export default function EditAuthor({
             labelYes="Staff"
             labelNo="Not Staff"
           />
+          <UploadContainer>
+            {displayUpload && (
+              <div tw="mt-3 mb-6">
+                <label tw="mt-3">
+                  <span tw="block font-medium text-gray-700 block">Avatar</span>
+                  <Upload
+                    awsConfig={awsConfig}
+                    slug={slug}
+                    image={bioImage}
+                    setBioImage={setBioImage}
+                    setNotificationMessage={setNotificationMessage}
+                    setNotificationType={setNotificationType}
+                    setShowNotification={setShowNotification}
+                    folderName="authors"
+                  />
+                </label>
+              </div>
+            )}
+          </UploadContainer>
 
           <TinySubmitCancelButtons destURL="/tinycms/authors" />
         </form>
