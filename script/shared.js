@@ -369,7 +369,7 @@ function hasuraInsertGeoSession(params) {
 }
 
 const HASURA_INSERT_SESSION_DATA = `mutation MyMutation($count: Int!, $date: date!) {
-  insert_ga_sessions_one(object: {count: $count, date: $date}) {
+  insert_ga_sessions_one(object: {count: $count, date: $date}, on_conflict: {constraint: ga_sessions_organization_id_date_key, update_columns: count}) {
     updated_at
     id
     created_at
@@ -389,9 +389,8 @@ function hasuraInsertSession(params) {
       count: params['count'],
       date: params['date'],
     },
-  })
+  });
 }
-
 
 const HASURA_INSERT_SESSION_DURATION_DATA = `mutation MyMutation($seconds: float8!, $date: date!) {
   insert_ga_session_duration_one(object: {seconds: $seconds, date: $date}, on_conflict: {constraint: ga_session_duration_organization_id_date_key, update_columns: seconds}) {
