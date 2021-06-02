@@ -151,6 +151,15 @@ async function getData(params) {
     reportRequest['dimensions'] = [
       { name: 'ga:date', },
     ];
+
+  } else if (params['data'] === 'subscribers') {
+    reportRequest['metrics'] = [
+      { expression: 'ga:sessions', },
+    ];
+    reportRequest['dimensions'] = [
+      { name: 'ga:dimension5', },
+      { name: 'ga:date', },
+    ];
   }
 
   const response = await analyticsreporting.reports.batchGet({
@@ -448,6 +457,26 @@ function storeData(params, rows) {
         orgSlug: apiToken,
         count: row.metrics[0].values[0],
         date: row.dimensions[0],
+      }).then((result) => {
+        if (result.errors) {
+          const error = new Error(
+            'Error inserting data into hasura',
+            result.errors
+          );
+          error.code = '500';
+          throw error;
+        } else {
+          console.log('data import ok');
+        }
+      });
+    } else if (params['data'] === 'subscribers') {
+      shared.hasuraInsertCustomDimension({
+        url: apiUrl,
+        orgSlug: apiToken,
+        count: row.metrics[0].values[0],
+        label: 'isSubscriber',
+        dimension: 'dimension5',
+        date: row.dimensions[1],
       }).then((result) => {
         if (result.errors) {
           const error = new Error(
