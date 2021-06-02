@@ -82,6 +82,28 @@ async function getData(params) {
       { name: 'ga:date' },
     ];
     reportRequest['filtersExpression'] = 'ga:eventCategory==NTG Newsletter';
+
+  } else if (params['data'] === 'newsletters') {
+    reportRequest['metrics'] = [
+      { expression: 'ga:totalEvents', },
+    ];
+    reportRequest['dimensions'] = [
+      { name: 'ga:eventCategory' },
+      { name: 'ga:eventAction' },
+      { name: 'ga:eventLabel' },
+      { name: 'ga:dimension2' },
+      { name: 'ga:date' },
+    ];
+    reportRequest['filtersExpression'] = 'ga:eventCategory==NTG Newsletter;ga:eventAction==Newsletter Signup';
+
+  } else if (params['data'] === 'page-views') {
+    reportRequest['metrics'] = [
+      { expression: 'ga:pageViews', },
+    ];
+    reportRequest['dimensions'] = [
+      { name: 'ga:pagePath', },
+      { name: 'ga:date', },
+    ];
   }
 
   const response = await analyticsreporting.reports.batchGet({
@@ -194,6 +216,47 @@ function storeData(params, rows) {
         path: shared.sanitizePath(row.dimensions[3]),
         date: row.dimensions[4],
         action: row.dimensions[0],
+      }).then((result) => {
+        console.log('hasura insert result:', result);
+        if (result.errors) {
+          const error = new Error(
+            'Error inserting data into hasura',
+            result.errors
+          );
+          error.code = '500';
+          throw error;
+        } else {
+          console.log('data import ok');
+        }
+      });
+    } else if (params['data'] === 'newsletters') {
+      shared.hasuraInsertCustomDimension({
+        url: apiUrl,
+        orgSlug: apiToken,
+        count: row.metrics[0].values[0],
+        date: row.dimensions[4],
+        label: row.dimensions[3],
+        dimension: 'dimension2',
+      }).then((result) => {
+        console.log('hasura insert result:', result);
+        if (result.errors) {
+          const error = new Error(
+            'Error inserting data into hasura',
+            result.errors
+          );
+          error.code = '500';
+          throw error;
+        } else {
+          console.log('data import ok');
+        }
+      });
+    } else if (params['data'] === 'page-views') {
+      shared.hasuraInsertPageView({
+        url: apiUrl,
+        orgSlug: apiToken,
+        count: row.metrics[0].values[0],
+        date: row.dimensions[1],
+        path: shared.sanitizePath(row.dimensions[0]),
       }).then((result) => {
         console.log('hasura insert result:', result);
         if (result.errors) {

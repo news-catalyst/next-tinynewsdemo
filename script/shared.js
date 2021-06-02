@@ -315,8 +315,9 @@ function hasuraListOrganizations(params) {
   });
 }
 
+
 const HASURA_INSERT_PAGE_VIEW_DATA = `mutation MyMutation($count: Int!, $date: date!, $path: String!) {
-  insert_ga_page_views_one(object: {count: $count, date: $date, path: $path}) {
+  insert_ga_page_views_one(object: {count: $count, date: $date, path: $path}, on_conflict: {constraint: ga_page_views_organization_id_date_path_key, update_columns: count}) {
     updated_at
     id
     path
@@ -338,7 +339,7 @@ function hasuraInsertPageView(params) {
       date: params['date'],
       path: params['path'],
     },
-  })
+  });
 }
 
 const HASURA_INSERT_REFERRAL_SESSION_DATA = `mutation MyMutation($count: Int!, $date: date!, $source: String!) {
