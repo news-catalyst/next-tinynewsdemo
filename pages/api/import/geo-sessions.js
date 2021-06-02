@@ -149,6 +149,7 @@ export default async (req, res) => {
     start_date: startDate,
     end_date: endDate,
     success: true,
+    row_count: rows.length,
   });
 
   const auditStatus = auditResult.data ? 'ok' : 'error';
@@ -156,7 +157,8 @@ export default async (req, res) => {
   if (auditStatus === 'error') {
     return res.status(500).json({
       status: 'error',
-      errors: 'Failed logging data import audit for geo sessions data',
+      errors:
+        'Failed logging data import audit: ' + JSON.stringify(auditResult),
     });
   }
 
