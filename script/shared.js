@@ -498,17 +498,18 @@ function hasuraInsertCustomDimension(params) {
   });
 }
 
-const HASURA_INSERT_READING_FREQUENCY_DATA = `mutation MyMutation($category: String!, $count: Int!, $date: date!) {
-  insert_ga_reading_frequency_one(object: {count: $count, category: $category, date: $date}) {
-    id
-    updated_at
-    organization_id
-    date
-    created_at
-    category
-    count
+const HASURA_INSERT_READING_FREQUENCY_DATA = `mutation MyMutation($objects: [ga_reading_frequency_insert_input!]!) {
+  insert_ga_reading_frequency(objects: $objects, on_conflict: {constraint: ga_reading_frequency_organization_id_date_category_key, update_columns: count}) {
+    affected_rows
+    returning {
+      id
+      date
+      category
+      count
+    }
   }
-}`;
+}
+`;
 
 function hasuraInsertReadingFrequency(params) {
   return fetchGraphQL({
@@ -517,11 +518,9 @@ function hasuraInsertReadingFrequency(params) {
     query: HASURA_INSERT_READING_FREQUENCY_DATA,
     name: 'MyMutation',
     variables: {
-      category: params['category'],
-      count: params['count'],
-      date: params['date'],
+      objects: params['objects'],
     },
-  })
+  });
 }
 
 const HASURA_GET_READING_DEPTH_DATA = `query MyQuery($path: String_comparison_exp, $date: date_comparison_exp) {

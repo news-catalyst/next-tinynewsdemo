@@ -117,6 +117,15 @@ async function getData(params) {
       { name: 'ga:date' },
     ];
     reportRequest['filtersExpression'] = 'ga:eventCategory==NTG Article Milestone';
+
+  } else if (params['data'] === 'reading-frequency') {
+    reportRequest['metrics'] = [
+      { expression: 'ga:pageviews', },
+    ];
+    reportRequest['dimensions'] = [
+      { name: 'ga:dimension2', },
+      { name: 'ga:date', },
+    ];
   }
 
   const response = await analyticsreporting.reports.batchGet({
@@ -158,8 +167,37 @@ async function getData(params) {
 }
 
 function storeData(params, rows) {
-  let collectedData = {};
+  if (params['data'] === 'reading-frequency') {
+    let objects = [];
+    rows.forEach((row) => {
+      objects.push({
+        count: row.metrics[0].values[0],
+        category: row.dimensions[0],
+        date: row.dimensions[1],
+      });
+    });
+
+    shared.hasuraInsertReadingFrequency({
+      url: apiUrl,
+      orgSlug: apiToken,
+      objects: objects,
+    }).then((result) => {
+      console.log('hasura insert result:', result);
+      if (result.errors) {
+        const error = new Error(
+          'Error inserting data into hasura',
+          result.errors
+        );
+        error.code = '500';
+        throw error;
+      } else {
+        console.log('data import ok');
+      }
+    });
+  }
+
   if (params['data'] === 'reading-depth') {
+    let collectedData = {};
     rows.forEach((row) => {
       let articlePath = shared.sanitizePath(row.dimensions[3]);
       let date = row.dimensions[4];
