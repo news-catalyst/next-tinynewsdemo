@@ -21,32 +21,33 @@ jobs:
       - run: echo "🔎 Running GA data importer"
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
+      - run: echo "setting up node packages"
+      - run: npm install commander date-fns dotenv googleapis
       - run: echo "🖥️ repo and node are setup"
-      - run: echo "${{env.NEXT_PUBLIC_SITE_URL}}/api/import/donate-clicks"
       - name: donate-clicks
-        run: curl -f ${{env.NEXT_PUBLIC_SITE_URL}}/api/import/donate-clicks
+        run: node script/ga.js -d donate-clicks
       - name: donor-reading-frequency
-        run: curl -f ${{env.NEXT_PUBLIC_SITE_URL}}/api/import/donor-reading-frequency
+        run: node script/ga.js -d donor-reading-frequency
       - name: donors
-        run: curl -f ${{env.NEXT_PUBLIC_SITE_URL}}/api/import/donors
+        run: node script/ga.js -d donors
       - name: geo-sessions
-        run: curl -f ${{env.NEXT_PUBLIC_SITE_URL}}/api/import/geo-sessions
+        run: node script/ga.js -d geo-sessions
       - name: newsletter-impressions
-        run: curl -f ${{env.NEXT_PUBLIC_SITE_URL}}/api/import/newsletter-impressions
+        run: node script/ga.js -d newsletter-impressions
       - name: newsletters
-        run: curl -f ${{env.NEXT_PUBLIC_SITE_URL}}/api/import/newsletters
+        run: node script/ga.js -d newsletters
       - name: page-views
-        run: curl -f ${{env.NEXT_PUBLIC_SITE_URL}}/api/import/page-views
+        run: node script/ga.js -d page-views
       - name: reading-depth
-        run: curl -f ${{env.NEXT_PUBLIC_SITE_URL}}/api/import/reading-depth
+        run: node script/ga.js -d reading-depth
       - name: reading-frequency
-        run: curl -f ${{env.NEXT_PUBLIC_SITE_URL}}/api/import/reading-frequency
+        run: node script/ga.js -d reading-frequency
       - name: referral-sessions
-        run: curl -f ${{env.NEXT_PUBLIC_SITE_URL}}/api/import/referral-sessions
+        run: node script/ga.js -d referral-sessions
       - name: session-duration
-        run: curl -f ${{env.NEXT_PUBLIC_SITE_URL}}/api/import/session-duration
+        run: node script/ga.js -d session-duration
       - name: sessions
-        run: curl -f ${{env.NEXT_PUBLIC_SITE_URL}}/api/import/sessions
+        run: node script/ga.js -d sessions
       - name: subscribers
-        run: curl -f ${{env.NEXT_PUBLIC_SITE_URL}}/api/import/subscribers
+        run: node script/ga.js -d subscribers
       - run: echo "🍏 This job's status is ${{ job.status }}."
