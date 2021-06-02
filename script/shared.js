@@ -29,6 +29,34 @@ function hasuraInsertDataImport(params) {
   });
 }
 
+const HASURA_INSERT_DONATION_CLICK_DATA = `mutation MyMutation($action: String!, $date: date!, $count: Int!, $path: String!) {
+  insert_ga_donation_clicks_one(object: {action: $action, date: $date, count: $count, path: $path}, on_conflict: {constraint: ga_donation_impressions_organization_id_path_date_action_key, update_columns: count}) {
+    action
+    created_at
+    date
+    id
+    count
+    organization_id
+    path
+    updated_at
+  }
+}`;
+
+function hasuraInsertDonationClick(params) {
+  return fetchGraphQL({
+    url: params['url'],
+    orgSlug: params['orgSlug'],
+    query: HASURA_INSERT_DONATION_CLICK_DATA,
+    name: 'MyMutation',
+    variables: {
+      action: params['action'],
+      date: params['date'],
+      count: params['count'],
+      path: params['path'],
+    },
+  });
+}
+
 const INSERT_ORGANIZATION_MUTATION = `mutation MyMutation($slug: String = "", $name: String = "") {
   insert_organizations_one(object: {name: $name, slug: $slug}) {
     id
@@ -442,7 +470,7 @@ function hasuraInsertNewsletterImpression(params) {
 }
 
 const HASURA_INSERT_CUSTOM_DIMENSION_DATA = `mutation MyMutation($count: Int!, $date: date!, $dimension: String!, $label: String!) {
-  insert_ga_custom_dimensions_one(object: {count: $count, date: $date, dimension: $dimension, label: $label}) {
+  insert_ga_custom_dimensions_one(object: {count: $count, date: $date, dimension: $dimension, label: $label}, on_conflict: {constraint: ga_events_organization_id_dimension_date_label_key, update_columns: count}) {
     count
     created_at
     date
@@ -452,7 +480,7 @@ const HASURA_INSERT_CUSTOM_DIMENSION_DATA = `mutation MyMutation($count: Int!, $
     organization_id
     updated_at
   }
-}`
+}`;
 
 function hasuraInsertCustomDimension(params) {
   return fetchGraphQL({
@@ -466,7 +494,7 @@ function hasuraInsertCustomDimension(params) {
       dimension: params['dimension'],
       label: params['label'],
     },
-  })
+  });
 }
 
 const HASURA_INSERT_READING_FREQUENCY_DATA = `mutation MyMutation($category: String!, $count: Int!, $date: date!) {
@@ -672,6 +700,7 @@ module.exports = {
   hasuraUpsertSection,
   hasuraRemoveOrganization,
   hasuraDeleteAnalytics,
+  hasuraInsertDonationClick,
   fetchGraphQL,
   sanitizePath
 }
