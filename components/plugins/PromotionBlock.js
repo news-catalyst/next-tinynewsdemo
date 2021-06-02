@@ -14,7 +14,7 @@ export default function PromotionBlock({ metadata, prefer }) {
     }
   }
   if (prefer === 'donation') {
-    if (process.env.process.env.NEXT_PUBLIC_MONKEYPOD_URL) {
+    if (process.env.NEXT_PUBLIC_MONKEYPOD_URL) {
       promo = donation;
     } else if (process.env.NEXT_PUBLIC_MAILCHIMP_SUBSCRIBE_URL) {
       promo = newsletter;
