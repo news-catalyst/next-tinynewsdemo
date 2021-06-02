@@ -392,6 +392,31 @@ function hasuraInsertSession(params) {
   });
 }
 
+const HASURA_INSERT_DONOR_READING_FREQUENCY = `mutation MyMutation($count: Int!, $label: String!, $date: date!) {
+  insert_ga_donor_reading_frequency_one(object: {count: $count, label: $label, date: $date}, on_conflict: {constraint: ga_donor_reading_frequency_organization_id_label_date_key, update_columns: count}) {
+    updated_at
+    id
+    created_at
+    count
+    date
+    label
+  }
+}`;
+
+function hasuraInsertDonorReadingFrequency(params) {
+  return fetchGraphQL({
+    url: params['url'],
+    orgSlug: params['orgSlug'],
+    query: HASURA_INSERT_DONOR_READING_FREQUENCY,
+    name: 'MyMutation',
+    variables: {
+      count: params['count'],
+      label: params['label'],
+      date: params['date'],
+    },
+  });
+}
+
 const HASURA_INSERT_SESSION_DURATION_DATA = `mutation MyMutation($seconds: float8!, $date: date!) {
   insert_ga_session_duration_one(object: {seconds: $seconds, date: $date}, on_conflict: {constraint: ga_session_duration_organization_id_date_key, update_columns: seconds}) {
     updated_at
@@ -700,6 +725,7 @@ module.exports = {
   hasuraRemoveOrganization,
   hasuraDeleteAnalytics,
   hasuraInsertDonationClick,
+  hasuraInsertDonorReadingFrequency,
   fetchGraphQL,
   sanitizePath
 }
