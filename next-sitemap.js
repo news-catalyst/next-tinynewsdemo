@@ -1,7 +1,7 @@
 require('dotenv').config({ path: '.env.local' })
 
 module.exports = {
-  siteUrl: process.env.SITE_URL,
+  siteUrl: process.env.NEXT_PUBLIC_SITE_URL,
   exclude: ['/tinycms', '/tinycms/*', '/*/preview/*'],
   priority: 0.5,
   transform: async (config, path) => {

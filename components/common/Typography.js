@@ -51,4 +51,17 @@ module.exports = {
     HomepagePromoBlockDek: 'Mulish',
     HomepagePromoBlockCTA: 'Mulish',
   },
+  stylefive: {
+    ArticleDescriptor: 'Lato',
+    ArticleHeader: 'Bodoni Moda',
+    ArticleDek: 'Lato',
+    PublishDate: 'Lato',
+    ArticleMetaTop: 'Lato',
+    Caption: 'Lato',
+    SectionLink: 'Lato',
+    DonateLink: 'Lato',
+    HomepagePromoBlockHeader: 'Bodoni Moda',
+    HomepagePromoBlockDek: 'Lato',
+    HomepagePromoBlockCTA: 'Lato',
+  },
 };
