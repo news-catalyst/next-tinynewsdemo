@@ -69,6 +69,19 @@ async function getData(params) {
       { name: 'ga:region', },
       { name: 'ga:date', },
     ];
+
+  } else if (params['data'] === 'newsletter-impressions') {
+    reportRequest['metrics'] = [
+      { expression: 'ga:totalEvents', },
+    ];
+    reportRequest['dimensions'] = [
+      { name: 'ga:eventAction' },
+      { name: 'ga:eventCategory' },
+      { name: 'ga:eventLabel' },
+      { name: 'ga:pagePath' },
+      { name: 'ga:date' },
+    ];
+    reportRequest['filtersExpression'] = 'ga:eventCategory==NTG Newsletter';
   }
 
   const response = await analyticsreporting.reports.batchGet({
@@ -160,6 +173,27 @@ function storeData(params, rows) {
         region: `${row.dimensions[0]}-${row.dimensions[1]}`,
         count: row.metrics[0].values[0],
         date: row.dimensions[2],
+      }).then((result) => {
+        console.log('hasura insert result:', result);
+        if (result.errors) {
+          const error = new Error(
+            'Error inserting data into hasura',
+            result.errors
+          );
+          error.code = '500';
+          throw error;
+        } else {
+          console.log('data import ok');
+        }
+      });
+    } else if (params['data'] === 'newsletter-impressions') {
+      shared.hasuraInsertNewsletterImpression({
+        url: apiUrl,
+        orgSlug: apiToken,
+        impressions: row.metrics[0].values[0],
+        path: shared.sanitizePath(row.dimensions[3]),
+        date: row.dimensions[4],
+        action: row.dimensions[0],
       }).then((result) => {
         console.log('hasura insert result:', result);
         if (result.errors) {
