@@ -342,32 +342,6 @@ function hasuraInsertPageView(params) {
   });
 }
 
-const HASURA_INSERT_REFERRAL_SESSION_DATA = `mutation MyMutation($count: Int!, $date: date!, $source: String!) {
-  insert_ga_referral_sessions_one(object: {source: $source, count: $count, date: $date}) {
-    updated_at
-    id
-    created_at
-    source
-    count
-    date
-    organization_id
-  }
-}`;
-
-function hasuraInsertReferralSession(params) {
-  return fetchGraphQL({
-    url: params['url'],
-    orgSlug: params['orgSlug'],
-    query: HASURA_INSERT_REFERRAL_SESSION_DATA,
-    name: 'MyMutation',
-    variables: {
-      count: params['count'],
-      source: params['source'],
-      date: params['date'],
-    },
-  })
-}
-
 const HASURA_INSERT_GEO_SESSION_DATA = `mutation MyMutation($count: Int!, $date: date!, $region: String!) {
   insert_ga_geo_sessions_one(object: {region: $region, count: $count, date: $date}, on_conflict: {constraint: ga_geo_sessions_organization_id_date_region_key, update_columns: count}) {
     updated_at
@@ -523,6 +497,31 @@ function hasuraInsertReadingFrequency(params) {
   });
 }
 
+const HASURA_INSERT_REFERRAL_SESSION_DATA = `mutation MyMutation($count: Int!, $date: date!, $source: String!) {
+  insert_ga_referral_sessions_one(object: {source: $source, count: $count, date: $date}, on_conflict: {constraint: ga_referral_sessions_organization_id_date_source_key, update_columns: count}) {
+    updated_at
+    id
+    created_at
+    source
+    count
+    date
+    organization_id
+  }
+}`;
+
+function hasuraInsertReferralSession(params) {
+  return fetchGraphQL({
+    url: params['url'],
+    orgSlug: params['orgSlug'],
+    query: HASURA_INSERT_REFERRAL_SESSION_DATA,
+    name: 'MyMutation',
+    variables: {
+      count: params['count'],
+      source: params['source'],
+      date: params['date'],
+    },
+  });
+}
 const HASURA_GET_READING_DEPTH_DATA = `query MyQuery($path: String_comparison_exp, $date: date_comparison_exp) {
   ga_reading_depth(where: {path: $path, date: $date}) {
     date
