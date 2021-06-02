@@ -104,6 +104,19 @@ async function getData(params) {
       { name: 'ga:pagePath', },
       { name: 'ga:date', },
     ];
+    
+  } else if (params['data'] === 'reading-depth') {
+    reportRequest['metrics'] = [
+      { expression: 'ga:totalEvents', },
+    ];
+    reportRequest['dimensions'] = [
+      { name: 'ga:eventAction' },
+      { name: 'ga:eventCategory' },
+      { name: 'ga:eventLabel' },
+      { name: 'ga:pagePath' },
+      { name: 'ga:date' },
+    ];
+    reportRequest['filtersExpression'] = 'ga:eventCategory==NTG Article Milestone';
   }
 
   const response = await analyticsreporting.reports.batchGet({
@@ -145,6 +158,61 @@ async function getData(params) {
 }
 
 function storeData(params, rows) {
+  let collectedData = {};
+  if (params['data'] === 'reading-depth') {
+    rows.forEach((row) => {
+      let articlePath = shared.sanitizePath(row.dimensions[3]);
+      let date = row.dimensions[4];
+
+      if (articlePath !== '/') {
+        let percentage = row.dimensions[0];
+        let label = `read_${percentage.replace('%', '')}`;
+        let count = parseInt(row.metrics[0].values[0]);
+
+        if (!collectedData[articlePath]) {
+          collectedData[articlePath] = {};
+        }
+        if (!collectedData[articlePath][label]) {
+          collectedData[articlePath][label] = count;
+        } else {
+          collectedData[articlePath][label] += count;
+        }
+
+        collectedData[articlePath]['date'] = date;
+      }
+    });
+    Object.keys(collectedData).map((path) => {
+      let cd = collectedData[path];
+      let read25 = cd['read_25'] || 0;
+      let read50 = cd['read_50'] || 0;
+      let read75 = cd['read_75'] || 0;
+      let read100 = cd['read_100'] || 0;
+      shared.hasuraInsertReadingDepth({
+        url: apiUrl,
+        orgSlug: apiToken,
+        date: cd['date'],
+        path: path,
+        read_25: read25,
+        read_50: read50,
+        read_75: read75,
+        read_100: read100,
+      }).then((result) => {
+        console.log('hasura insert result:', result);
+        if (result.errors) {
+          const error = new Error(
+            'Error inserting data into hasura',
+            result.errors
+          );
+          error.code = '500';
+          throw error;
+        } else {
+          console.log('data import ok');
+        }
+      });
+    });
+    return;
+  }
+
   rows.forEach((row) => {
     if (params['data'] === 'donate-clicks') {
       shared.hasuraInsertDonationClick({
@@ -270,6 +338,7 @@ function storeData(params, rows) {
           console.log('data import ok');
         }
       });
+
     }
   });
 }

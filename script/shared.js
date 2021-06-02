@@ -524,21 +524,6 @@ function hasuraInsertReadingFrequency(params) {
   })
 }
 
-const HASURA_INSERT_READING_DEPTH_DATA = `mutation MyMutation($date: date!, $path: String!, $read_100: float8!, $read_25: float8!, $read_50: float8!, $read_75: float8!) {
-  insert_ga_reading_depth_one(object: {path: $path, date: $date, read_25: $read_25, read_50: $read_50, read_75: $read_75, read_100: $read_100}) {
-    id
-    date
-    organization_id
-    path
-    read_100
-    read_25
-    read_50
-    read_75
-    updated_at
-    created_at
-  }
-}`;
-
 const HASURA_GET_READING_DEPTH_DATA = `query MyQuery($path: String_comparison_exp, $date: date_comparison_exp) {
   ga_reading_depth(where: {path: $path, date: $date}) {
     date
@@ -565,6 +550,21 @@ function hasuraGetReadingDepth(params) {
   })
 }
 
+const HASURA_INSERT_READING_DEPTH_DATA = `mutation MyMutation($date: date!, $path: String!, $read_100: float8!, $read_25: float8!, $read_50: float8!, $read_75: float8!) {
+  insert_ga_reading_depth_one(object: {path: $path, date: $date, read_25: $read_25, read_50: $read_50, read_75: $read_75, read_100: $read_100}, on_conflict: {constraint: ga_reading_depth_organization_id_date_path_key, update_columns: [read_25, read_50, read_75, read_100]}) {
+    id
+    date
+    organization_id
+    path
+    read_100
+    read_25
+    read_50
+    read_75
+    updated_at
+    created_at
+  }
+}`;
+
 function hasuraInsertReadingDepth(params) {
   return fetchGraphQL({
     url: params['url'],
@@ -579,7 +579,7 @@ function hasuraInsertReadingDepth(params) {
       read_75: params['read_75'],
       read_100: params['read_100'],
     },
-  })
+  });
 }
 
 const HASURA_DELETE_ANALYTICS = `mutation MyMutation {
