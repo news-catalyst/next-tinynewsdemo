@@ -135,6 +135,14 @@ async function getData(params) {
       { name: 'ga:source', },
       { name: 'ga:date', },
     ];
+
+  } else if (params['data'] === 'session-duration') {
+    reportRequest['metrics'] = [
+      { expression: 'ga:avgSessionDuration', },
+    ];
+    reportRequest['dimensions'] = [
+      { name: 'ga:date', },
+    ];
   }
 
   const response = await analyticsreporting.reports.batchGet({
@@ -395,6 +403,26 @@ function storeData(params, rows) {
         date: row.dimensions[1],
         source: row.dimensions[0],
       }).then((result) => {
+        if (result.errors) {
+          const error = new Error(
+            'Error inserting data into hasura',
+            result.errors
+          );
+          error.code = '500';
+          throw error;
+        } else {
+          console.log('data import ok');
+        }
+      });
+
+    } else if (params['data'] === 'session-duration') {
+      shared.hasuraInsertSessionDuration({
+        url: apiUrl,
+        orgSlug: apiToken,
+        seconds: row.metrics[0].values[0],
+        date: row.dimensions[0],
+      }).then((result) => {
+        console.log('hasura insert result:', result);
         if (result.errors) {
           const error = new Error(
             'Error inserting data into hasura',

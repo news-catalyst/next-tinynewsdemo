@@ -392,8 +392,9 @@ function hasuraInsertSession(params) {
   })
 }
 
+
 const HASURA_INSERT_SESSION_DURATION_DATA = `mutation MyMutation($seconds: float8!, $date: date!) {
-  insert_ga_session_duration_one(object: {seconds: $seconds, date: $date}) {
+  insert_ga_session_duration_one(object: {seconds: $seconds, date: $date}, on_conflict: {constraint: ga_session_duration_organization_id_date_key, update_columns: seconds}) {
     updated_at
     id
     created_at
@@ -413,7 +414,7 @@ function hasuraInsertSessionDuration(params) {
       seconds: params['seconds'],
       date: params['date'],
     },
-  })
+  });
 }
 
 const HASURA_INSERT_NEWSLETTER_IMPRESSION_DATA = `mutation MyMutation($action: String!, $date: date!, $impressions: Int!, $path: String!) {
