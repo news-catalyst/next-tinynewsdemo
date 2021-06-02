@@ -59,6 +59,16 @@ async function getData(params) {
       { name: 'ga:dimension4', },
       { name: 'ga:date', },
     ];
+
+  } else if (params['data'] === 'geo-sessions') {
+    reportRequest['metrics'] = [
+      { expression: 'ga:sessions', },
+    ];
+    reportRequest['dimensions'] = [
+      { name: 'ga:country', },
+      { name: 'ga:region', },
+      { name: 'ga:date', },
+    ];
   }
 
   const response = await analyticsreporting.reports.batchGet({
@@ -141,6 +151,26 @@ function storeData(params, rows) {
           throw error;
         } else {
           console.log('data insert ok');
+        }
+      });
+    } else if (params['data'] === 'geo-sessions') {
+      shared.hasuraInsertGeoSession({
+        url: apiUrl,
+        orgSlug: apiToken,
+        region: `${row.dimensions[0]}-${row.dimensions[1]}`,
+        count: row.metrics[0].values[0],
+        date: row.dimensions[2],
+      }).then((result) => {
+        console.log('hasura insert result:', result);
+        if (result.errors) {
+          const error = new Error(
+            'Error inserting data into hasura',
+            result.errors
+          );
+          error.code = '500';
+          throw error;
+        } else {
+          console.log('data import ok');
         }
       });
     }

@@ -368,7 +368,7 @@ function hasuraInsertReferralSession(params) {
 }
 
 const HASURA_INSERT_GEO_SESSION_DATA = `mutation MyMutation($count: Int!, $date: date!, $region: String!) {
-  insert_ga_geo_sessions_one(object: {region: $region, count: $count, date: $date}) {
+  insert_ga_geo_sessions_one(object: {region: $region, count: $count, date: $date}, on_conflict: {constraint: ga_geo_sessions_organization_id_date_region_key, update_columns: count}) {
     updated_at
     id
     created_at
@@ -390,7 +390,7 @@ function hasuraInsertGeoSession(params) {
       region: params['region'],
       date: params['date'],
     },
-  })
+  });
 }
 
 const HASURA_INSERT_SESSION_DATA = `mutation MyMutation($count: Int!, $date: date!) {
