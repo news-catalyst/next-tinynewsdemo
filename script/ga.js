@@ -51,6 +51,19 @@ async function getData(params) {
     ];
     reportRequest['filtersExpression'] = 'ga:eventCategory==Donate';
 
+  } else if (params['data'] === 'donor-reading-frequency') {
+    reportRequest['metrics'] = [
+      { expression: 'ga:totalEvents', },
+    ];
+    reportRequest['dimensions'] = [
+      { name: 'ga:eventCategory' },
+      { name: 'ga:eventAction' },
+      { name: 'ga:eventLabel' },
+      { name: 'ga:dimension2' },
+      { name: 'ga:date' },
+    ];
+    reportRequest['filtersExpression'] = 'ga:eventCategory==Donate';
+
   } else if (params['data'] === 'donors') {
     reportRequest['metrics'] = [
       { expression: 'ga:sessions', },
@@ -489,6 +502,26 @@ function storeData(params, rows) {
           console.log('data import ok');
         }
       });
+
+    } else if (params['data'] === 'donor-reading-frequency') {
+      shared.hasuraInsertDonorReadingFrequency({
+        url: apiUrl,
+        orgSlug: apiToken,
+        count: row.metrics[0].values[0],
+        label: row.dimensions[3],
+        date: row.dimensions[4],
+      }).then((result) => {
+        if (result.errors) {
+          const error = new Error(
+            'Error inserting data into hasura',
+            result.errors
+          );
+          error.code = '500';
+          throw error;
+        } else {
+          console.log('data insert ok');
+        }
+      })
     }
   });
 }
