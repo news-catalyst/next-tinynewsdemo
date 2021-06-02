@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import tw, { css, styled } from 'twin.macro';
 import MembershipBlock from '../plugins/MembershipBlock';
 import NewsletterBlock from '../plugins/NewsletterBlock';
+import Upload from './Upload';
 
 const SettingsHeader = tw.h1`text-4xl font-bold leading-normal mt-0 mb-2 text-black`;
 const SiteInfoFieldsContainer = tw.div`grid grid-cols-3 gap-4`;
@@ -34,6 +35,12 @@ const StyleFourHead = styled.span`
 `;
 const StyleFourBody = styled.span`
   font-family: 'Mulish', sans-serif;
+`;
+const StyleFiveHead = styled.span`
+  font-family: 'Bodoni Moda', serif;
+`;
+const StyleFiveBody = styled.span`
+  font-family: 'Lato', sans-serif;
 `;
 const ColorContainer = styled.div`
   float: left;
@@ -161,6 +168,7 @@ export default function SiteInfoSettings(props) {
   const [newsletterDek, setNewsletterDek] = useState(
     props.parsedData['newsletterDek']
   );
+  const [logo, setLogo] = useState(props.parsedData['logo']);
 
   useEffect(() => {
     setSearchTitle(props.parsedData['searchTitle']);
@@ -209,7 +217,18 @@ export default function SiteInfoSettings(props) {
         </label>
         <label htmlFor="logo">
           <span tw="mt-1 font-bold">Logo</span>
-          <Input type="file" name="logo" onChange={props.handleChange} />
+          <Upload
+            awsConfig={props.awsConfig}
+            slug={shortName}
+            image={logo}
+            updateParsedData={props.updateParsedData}
+            parsedData={props.parsedData}
+            setter={setLogo}
+            setNotificationMessage={props.setNotificationMessage}
+            setNotificationType={props.setNotificationType}
+            setShowNotification={props.setShowNotification}
+            folderName="logos"
+          />
         </label>
       </SiteInfoFieldsContainer>
 
@@ -283,6 +302,22 @@ export default function SiteInfoSettings(props) {
               <StyleFourBody tw="p-2 mt-1">
                 Mulish is your body font
               </StyleFourBody>
+            </label>
+            <label>
+              <input
+                type="radio"
+                name="theme"
+                value="stylefive"
+                checked={theme === 'stylefive'}
+                onChange={props.handleChange}
+              />
+              <StyleFiveHead tw="p-2 mt-1 font-bold">
+                Bodoni Moda is your headline font
+              </StyleFiveHead>
+              <br />
+              <StyleFiveBody tw="p-2 mt-1">
+                Lato is your body font
+              </StyleFiveBody>
             </label>
           </SingleColumnContainer>
         </div>
