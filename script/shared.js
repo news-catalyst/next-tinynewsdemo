@@ -442,7 +442,7 @@ function hasuraInsertSessionDuration(params) {
 }
 
 const HASURA_INSERT_NEWSLETTER_IMPRESSION_DATA = `mutation MyMutation($action: String!, $date: date!, $impressions: Int!, $path: String!) {
-  insert_ga_newsletter_impressions_one(object: {action: $action, date: $date, impressions: $impressions, path: $path}) {
+  insert_ga_newsletter_impressions_one(object: {action: $action, date: $date, impressions: $impressions, path: $path}, on_conflict: {constraint: ga_newsletter_impressions_organization_id_path_action_date_key, update_columns: impressions}) {
     action
     created_at
     date
@@ -466,7 +466,7 @@ function hasuraInsertNewsletterImpression(params) {
       impressions: params['impressions'],
       path: params['path'],
     },
-  })
+  });
 }
 
 const HASURA_INSERT_CUSTOM_DIMENSION_DATA = `mutation MyMutation($count: Int!, $date: date!, $dimension: String!, $label: String!) {
