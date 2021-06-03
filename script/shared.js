@@ -29,6 +29,34 @@ function hasuraInsertDataImport(params) {
   });
 }
 
+const HASURA_INSERT_DONATION_CLICK_DATA = `mutation MyMutation($action: String!, $date: date!, $count: Int!, $path: String!) {
+  insert_ga_donation_clicks_one(object: {action: $action, date: $date, count: $count, path: $path}, on_conflict: {constraint: ga_donation_impressions_organization_id_path_date_action_key, update_columns: count}) {
+    action
+    created_at
+    date
+    id
+    count
+    organization_id
+    path
+    updated_at
+  }
+}`;
+
+function hasuraInsertDonationClick(params) {
+  return fetchGraphQL({
+    url: params['url'],
+    orgSlug: params['orgSlug'],
+    query: HASURA_INSERT_DONATION_CLICK_DATA,
+    name: 'MyMutation',
+    variables: {
+      action: params['action'],
+      date: params['date'],
+      count: params['count'],
+      path: params['path'],
+    },
+  });
+}
+
 const INSERT_ORGANIZATION_MUTATION = `mutation MyMutation($slug: String = "", $name: String = "") {
   insert_organizations_one(object: {name: $name, slug: $slug}) {
     id
@@ -287,8 +315,9 @@ function hasuraListOrganizations(params) {
   });
 }
 
+
 const HASURA_INSERT_PAGE_VIEW_DATA = `mutation MyMutation($count: Int!, $date: date!, $path: String!) {
-  insert_ga_page_views_one(object: {count: $count, date: $date, path: $path}) {
+  insert_ga_page_views_one(object: {count: $count, date: $date, path: $path}, on_conflict: {constraint: ga_page_views_organization_id_date_path_key, update_columns: count}) {
     updated_at
     id
     path
@@ -310,37 +339,11 @@ function hasuraInsertPageView(params) {
       date: params['date'],
       path: params['path'],
     },
-  })
-}
-
-const HASURA_INSERT_REFERRAL_SESSION_DATA = `mutation MyMutation($count: Int!, $date: date!, $source: String!) {
-  insert_ga_referral_sessions_one(object: {source: $source, count: $count, date: $date}) {
-    updated_at
-    id
-    created_at
-    source
-    count
-    date
-    organization_id
-  }
-}`;
-
-function hasuraInsertReferralSession(params) {
-  return fetchGraphQL({
-    url: params['url'],
-    orgSlug: params['orgSlug'],
-    query: HASURA_INSERT_REFERRAL_SESSION_DATA,
-    name: 'MyMutation',
-    variables: {
-      count: params['count'],
-      source: params['source'],
-      date: params['date'],
-    },
-  })
+  });
 }
 
 const HASURA_INSERT_GEO_SESSION_DATA = `mutation MyMutation($count: Int!, $date: date!, $region: String!) {
-  insert_ga_geo_sessions_one(object: {region: $region, count: $count, date: $date}) {
+  insert_ga_geo_sessions_one(object: {region: $region, count: $count, date: $date}, on_conflict: {constraint: ga_geo_sessions_organization_id_date_region_key, update_columns: count}) {
     updated_at
     id
     created_at
@@ -362,11 +365,11 @@ function hasuraInsertGeoSession(params) {
       region: params['region'],
       date: params['date'],
     },
-  })
+  });
 }
 
 const HASURA_INSERT_SESSION_DATA = `mutation MyMutation($count: Int!, $date: date!) {
-  insert_ga_sessions_one(object: {count: $count, date: $date}) {
+  insert_ga_sessions_one(object: {count: $count, date: $date}, on_conflict: {constraint: ga_sessions_organization_id_date_key, update_columns: count}) {
     updated_at
     id
     created_at
@@ -386,11 +389,36 @@ function hasuraInsertSession(params) {
       count: params['count'],
       date: params['date'],
     },
-  })
+  });
+}
+
+const HASURA_INSERT_DONOR_READING_FREQUENCY = `mutation MyMutation($count: Int!, $label: String!, $date: date!) {
+  insert_ga_donor_reading_frequency_one(object: {count: $count, label: $label, date: $date}, on_conflict: {constraint: ga_donor_reading_frequency_organization_id_label_date_key, update_columns: count}) {
+    updated_at
+    id
+    created_at
+    count
+    date
+    label
+  }
+}`;
+
+function hasuraInsertDonorReadingFrequency(params) {
+  return fetchGraphQL({
+    url: params['url'],
+    orgSlug: params['orgSlug'],
+    query: HASURA_INSERT_DONOR_READING_FREQUENCY,
+    name: 'MyMutation',
+    variables: {
+      count: params['count'],
+      label: params['label'],
+      date: params['date'],
+    },
+  });
 }
 
 const HASURA_INSERT_SESSION_DURATION_DATA = `mutation MyMutation($seconds: float8!, $date: date!) {
-  insert_ga_session_duration_one(object: {seconds: $seconds, date: $date}) {
+  insert_ga_session_duration_one(object: {seconds: $seconds, date: $date}, on_conflict: {constraint: ga_session_duration_organization_id_date_key, update_columns: seconds}) {
     updated_at
     id
     created_at
@@ -410,11 +438,11 @@ function hasuraInsertSessionDuration(params) {
       seconds: params['seconds'],
       date: params['date'],
     },
-  })
+  });
 }
 
 const HASURA_INSERT_NEWSLETTER_IMPRESSION_DATA = `mutation MyMutation($action: String!, $date: date!, $impressions: Int!, $path: String!) {
-  insert_ga_newsletter_impressions_one(object: {action: $action, date: $date, impressions: $impressions, path: $path}) {
+  insert_ga_newsletter_impressions_one(object: {action: $action, date: $date, impressions: $impressions, path: $path}, on_conflict: {constraint: ga_newsletter_impressions_organization_id_path_action_date_key, update_columns: impressions}) {
     action
     created_at
     date
@@ -438,11 +466,11 @@ function hasuraInsertNewsletterImpression(params) {
       impressions: params['impressions'],
       path: params['path'],
     },
-  })
+  });
 }
 
 const HASURA_INSERT_CUSTOM_DIMENSION_DATA = `mutation MyMutation($count: Int!, $date: date!, $dimension: String!, $label: String!) {
-  insert_ga_custom_dimensions_one(object: {count: $count, date: $date, dimension: $dimension, label: $label}) {
+  insert_ga_custom_dimensions_one(object: {count: $count, date: $date, dimension: $dimension, label: $label}, on_conflict: {constraint: ga_events_organization_id_dimension_date_label_key, update_columns: count}) {
     count
     created_at
     date
@@ -452,7 +480,7 @@ const HASURA_INSERT_CUSTOM_DIMENSION_DATA = `mutation MyMutation($count: Int!, $
     organization_id
     updated_at
   }
-}`
+}`;
 
 function hasuraInsertCustomDimension(params) {
   return fetchGraphQL({
@@ -466,20 +494,21 @@ function hasuraInsertCustomDimension(params) {
       dimension: params['dimension'],
       label: params['label'],
     },
-  })
+  });
 }
 
-const HASURA_INSERT_READING_FREQUENCY_DATA = `mutation MyMutation($category: String!, $count: Int!, $date: date!) {
-  insert_ga_reading_frequency_one(object: {count: $count, category: $category, date: $date}) {
-    id
-    updated_at
-    organization_id
-    date
-    created_at
-    category
-    count
+const HASURA_INSERT_READING_FREQUENCY_DATA = `mutation MyMutation($objects: [ga_reading_frequency_insert_input!]!) {
+  insert_ga_reading_frequency(objects: $objects, on_conflict: {constraint: ga_reading_frequency_organization_id_date_category_key, update_columns: count}) {
+    affected_rows
+    returning {
+      id
+      date
+      category
+      count
+    }
   }
-}`;
+}
+`;
 
 function hasuraInsertReadingFrequency(params) {
   return fetchGraphQL({
@@ -488,28 +517,36 @@ function hasuraInsertReadingFrequency(params) {
     query: HASURA_INSERT_READING_FREQUENCY_DATA,
     name: 'MyMutation',
     variables: {
-      category: params['category'],
-      count: params['count'],
-      date: params['date'],
+      objects: params['objects'],
     },
-  })
+  });
 }
 
-const HASURA_INSERT_READING_DEPTH_DATA = `mutation MyMutation($date: date!, $path: String!, $read_100: float8!, $read_25: float8!, $read_50: float8!, $read_75: float8!) {
-  insert_ga_reading_depth_one(object: {path: $path, date: $date, read_25: $read_25, read_50: $read_50, read_75: $read_75, read_100: $read_100}) {
+const HASURA_INSERT_REFERRAL_SESSION_DATA = `mutation MyMutation($count: Int!, $date: date!, $source: String!) {
+  insert_ga_referral_sessions_one(object: {source: $source, count: $count, date: $date}, on_conflict: {constraint: ga_referral_sessions_organization_id_date_source_key, update_columns: count}) {
+    updated_at
     id
+    created_at
+    source
+    count
     date
     organization_id
-    path
-    read_100
-    read_25
-    read_50
-    read_75
-    updated_at
-    created_at
   }
 }`;
 
+function hasuraInsertReferralSession(params) {
+  return fetchGraphQL({
+    url: params['url'],
+    orgSlug: params['orgSlug'],
+    query: HASURA_INSERT_REFERRAL_SESSION_DATA,
+    name: 'MyMutation',
+    variables: {
+      count: params['count'],
+      source: params['source'],
+      date: params['date'],
+    },
+  });
+}
 const HASURA_GET_READING_DEPTH_DATA = `query MyQuery($path: String_comparison_exp, $date: date_comparison_exp) {
   ga_reading_depth(where: {path: $path, date: $date}) {
     date
@@ -536,6 +573,21 @@ function hasuraGetReadingDepth(params) {
   })
 }
 
+const HASURA_INSERT_READING_DEPTH_DATA = `mutation MyMutation($date: date!, $path: String!, $read_100: float8!, $read_25: float8!, $read_50: float8!, $read_75: float8!) {
+  insert_ga_reading_depth_one(object: {path: $path, date: $date, read_25: $read_25, read_50: $read_50, read_75: $read_75, read_100: $read_100}, on_conflict: {constraint: ga_reading_depth_organization_id_date_path_key, update_columns: [read_25, read_50, read_75, read_100]}) {
+    id
+    date
+    organization_id
+    path
+    read_100
+    read_25
+    read_50
+    read_75
+    updated_at
+    created_at
+  }
+}`;
+
 function hasuraInsertReadingDepth(params) {
   return fetchGraphQL({
     url: params['url'],
@@ -550,7 +602,7 @@ function hasuraInsertReadingDepth(params) {
       read_75: params['read_75'],
       read_100: params['read_100'],
     },
-  })
+  });
 }
 
 const HASURA_DELETE_ANALYTICS = `mutation MyMutation {
@@ -672,6 +724,8 @@ module.exports = {
   hasuraUpsertSection,
   hasuraRemoveOrganization,
   hasuraDeleteAnalytics,
+  hasuraInsertDonationClick,
+  hasuraInsertDonorReadingFrequency,
   fetchGraphQL,
   sanitizePath
 }
