@@ -16,10 +16,13 @@ const scopes = [
 async function getData(params) {
   if (params['requireDotEnv']) {
     require('dotenv').config({ path: '.env.local' })
+    console.log(process.env);
   }
   const googleAnalyticsViewID = process.env.NEXT_PUBLIC_ANALYTICS_VIEW_ID;
   const credsEmail = process.env.GOOGLE_CREDENTIALS_EMAIL;
   const credsPrivateKey = process.env.GOOGLE_CREDENTIALS_PRIVATE_KEY;
+
+  console.log("authenticating with google:", credsEmail, credsPrivateKey, scopes);
   const auth = new google.auth.JWT(credsEmail, null, credsPrivateKey, scopes);
   const analyticsreporting = google.analyticsreporting({ version: 'v4', auth });
   let startDate = params['startDate'];
