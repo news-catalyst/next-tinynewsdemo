@@ -1,6 +1,8 @@
 const { program } = require('commander');
 program.version('0.0.1');
 
+const core = require('@actions/core');
+
 const shared = require("./shared");
 
 const {format} = require('date-fns');
@@ -590,6 +592,7 @@ async function importDataFromGA(params) {
     //   console.log('Imported data for ' + params['data'] + ': ' + JSON.stringify(auditResult));
   } catch (e) {
     console.error('error importing data into hasura:', e);
+    throw e;
   }
 
   // } catch(e) {
@@ -604,7 +607,11 @@ program
   .option('-e, --end-date <endDate>', 'optional, end date for analytics report from GA (YYYY-MM-DD)')
   .description("imports data from google analytics")
   .action( (opts) => {
-    importDataFromGA(opts);
+    try {
+      importDataFromGA(opts);
+    } catch(e) {
+      core.setFailed(`Action failed with error ${e}`);
+    }
   });
 
 program.parse(process.argv);
