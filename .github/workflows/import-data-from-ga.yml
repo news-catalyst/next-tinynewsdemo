@@ -21,8 +21,7 @@ jobs:
       - run: echo "🔎 Running GA data importer"
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
-      - run: echo "setting up node packages"
-      - run: npm install commander date-fns dotenv googleapis
+      - run: npm install
       - run: echo "🖥️ repo and node are setup"
       - name: donate-clicks
         run: node script/ga.js -d donate-clicks
