@@ -5,28 +5,25 @@ const shared = require("./shared");
 
 const {format} = require('date-fns');
 
-require('dotenv').config({ path: '.env.local' })
 
 const { google } = require('googleapis');
-const googleAnalyticsViewID = process.env.NEXT_PUBLIC_ANALYTICS_VIEW_ID;
-
-const apiUrl = process.env.HASURA_API_URL;
-const apiToken = process.env.ORG_SLUG;
-
-const credsEmail = process.env.GOOGLE_CREDENTIALS_EMAIL;
-const credsPrivateKey = process.env.GOOGLE_CREDENTIALS_PRIVATE_KEY;
 const scopes = [
   'https://www.googleapis.com/auth/drive',
   'https://www.googleapis.com/auth/analytics',
   'https://www.googleapis.com/auth/analytics.edit',
 ];
-const auth = new google.auth.JWT(credsEmail, null, credsPrivateKey, scopes);
-const analyticsreporting = google.analyticsreporting({ version: 'v4', auth });
 
 async function getData(params) {
+  if (params['requireDotEnv']) {
+    require('dotenv').config({ path: '.env.local' })
+  }
+  const googleAnalyticsViewID = process.env.NEXT_PUBLIC_ANALYTICS_VIEW_ID;
+  const credsEmail = process.env.GOOGLE_CREDENTIALS_EMAIL;
+  const credsPrivateKey = process.env.GOOGLE_CREDENTIALS_PRIVATE_KEY;
+  const auth = new google.auth.JWT(credsEmail, null, credsPrivateKey, scopes);
+  const analyticsreporting = google.analyticsreporting({ version: 'v4', auth });
   let startDate = params['startDate'];
   let endDate = params['endDate'];
-  let googleAnalyticsViewID = params['viewID'];
 
   let reportRequest = {
     viewId: googleAnalyticsViewID,
@@ -214,6 +211,12 @@ async function getData(params) {
 }
 
 function storeData(params, rows) {
+  if (params['requireDotEnv']) {
+    require('dotenv').config({ path: '.env.local' })
+  }
+  const apiUrl = process.env.HASURA_API_URL;
+  const apiToken = process.env.ORG_SLUG;
+ 
   if (params['data'] === 'reading-frequency') {
     let objects = [];
     rows.forEach((row) => {
@@ -548,8 +551,9 @@ async function importDataFromGA(params) {
       startDate: startDate,
       endDate: endDate,
       data: params['data'],
-      viewID: googleAnalyticsViewID,
-      apiUrl: apiUrl,
+      // viewID: googleAnalyticsViewID,
+      // apiUrl: apiUrl,
+      requireDotEnv: params['requireDotEnv']
     });
   } catch (e) {
     console.log('error getting data from GA:', e);
@@ -593,6 +597,7 @@ async function importDataFromGA(params) {
 
 program
   .requiredOption('-d, --data <data>', 'required, data to import, ex: donate-clicks')
+  .option('-r, --requireDotEnv', 'optional, require dotenv when running on localhost')
   .option('-s, --start-date <startDate>', 'optional, start date for analytics report from GA (YYYY-MM-DD)')
   .option('-e, --end-date <endDate>', 'optional, end date for analytics report from GA (YYYY-MM-DD)')
   .description("imports data from google analytics")
