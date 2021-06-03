@@ -2,11 +2,8 @@ const { program } = require('commander');
 program.version('0.0.1');
 
 const core = require('@actions/core');
-
 const shared = require("./shared");
-
 const {format} = require('date-fns');
-
 
 const { google } = require('googleapis');
 const scopes = [
@@ -564,7 +561,6 @@ async function importDataFromGA(params) {
   }
 
   if (!rows || (rows && rows.length <= 0)) {
-    console.log("No rows returned");
     return;
   }
 
@@ -572,32 +568,10 @@ async function importDataFromGA(params) {
 
   try {
     storeData(params, rows);
-    //   const auditResult = await shared.hasuraInsertDataImport({
-    //     url: apiUrl,
-    //     orgSlug: apiToken,
-    //     table_name: 'ga_donation_clicks',
-    //     start_date: startDate,
-    //     end_date: endDate,
-    //     success: true,
-    //     row_count: rows.length,
-    //   });
-
-    //   console.log(auditResult);
-
-    //   const auditStatus = auditResult.data ? 'ok' : 'error';
-
-    //   if (auditStatus === 'error') {
-    //     console.error('Failed logging data import audit for donation clicks: ' + JSON.stringify(auditResult));
-    //   }
-    //   console.log('Imported data for ' + params['data'] + ': ' + JSON.stringify(auditResult));
   } catch (e) {
     console.error('error importing data into hasura:', e);
     throw e;
   }
-
-  // } catch(e) {
-  //   console.error(e)
-  // }
 };
 
 program
