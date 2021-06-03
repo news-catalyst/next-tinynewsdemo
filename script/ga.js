@@ -20,7 +20,7 @@ async function getData(params) {
   }
   const googleAnalyticsViewID = process.env.NEXT_PUBLIC_ANALYTICS_VIEW_ID;
   const credsEmail = process.env.GOOGLE_CREDENTIALS_EMAIL;
-  const credsPrivateKey = process.env.GOOGLE_CREDENTIALS_PRIVATE_KEY;
+  const credsPrivateKey = process.env.GOOGLE_CREDENTIALS_PRIVATE_KEY.replace(/\\n/gm, '\n')
 
   console.log("authenticating with google:", credsEmail, credsPrivateKey, scopes);
   const auth = new google.auth.JWT(credsEmail, null, credsPrivateKey, scopes);
