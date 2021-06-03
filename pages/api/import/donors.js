@@ -25,6 +25,8 @@ async function getDonors(params) {
   let endDate = params['endDate'];
   let googleAnalyticsViewID = params['viewID'];
 
+  console.log('startDate:', startDate);
+  console.log('endDate:', endDate);
   const response = await analyticsreporting.reports.batchGet({
     requestBody: {
       reportRequests: [
@@ -71,7 +73,7 @@ async function getDonors(params) {
   return response.data.reports[0].data.rows;
 }
 
-function importDonorData(rows) {
+function importDonorData(rows, startDate) {
   if (!rows) {
     console.log('No data from GA for donors');
     hasuraInsertCustomDimension({
@@ -131,6 +133,7 @@ export default async (req, res) => {
     endDate = new Date();
     endDate = format(endDate, 'yyyy-MM-dd');
   }
+
   let rows;
   try {
     rows = await getDonors({
@@ -148,13 +151,18 @@ export default async (req, res) => {
   }
 
   try {
-    importDonorData(rows);
+    importDonorData(rows, startDate);
   } catch (e) {
     console.error(e);
     return res.status(500).json({
       status: 'error',
       errors: 'Failed importing GA donor data into Hasura',
     });
+  }
+
+  let rowCount = 0;
+  if (rows) {
+    rowCount = rows.length;
   }
 
   const auditResult = await hasuraInsertDataImport({
@@ -164,6 +172,7 @@ export default async (req, res) => {
     start_date: startDate,
     end_date: endDate,
     success: true,
+    row_count: rowCount,
   });
 
   const auditStatus = auditResult.data ? 'ok' : 'error';
@@ -171,7 +180,8 @@ export default async (req, res) => {
   if (auditStatus === 'error') {
     return res.status(500).json({
       status: 'error',
-      errors: 'Failed logging data import audit for donor data',
+      errors:
+        'Failed logging data import audit: ' + JSON.stringify(auditResult),
     });
   }
 
