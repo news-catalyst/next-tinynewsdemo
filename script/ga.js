@@ -205,9 +205,8 @@ async function getData(params) {
     !response.data.reports[0].data ||
     !response.data.reports[0].data.rows
   ) {
-    const error = new Error('No rows returned for ' + startDate);
-    error.code = '404';
-    throw error;
+    console.error('No rows returned for ' + startDate);
+    return [];
   }
 
   return response.data.reports[0].data.rows;
@@ -560,9 +559,10 @@ async function importDataFromGA(params) {
     });
   } catch (e) {
     console.log('error getting data from GA:', e);
+    throw e;
   }
 
-  if (!rows) {
+  if (!rows || (rows && rows.length <= 0)) {
     console.log("No rows returned");
     return;
   }
