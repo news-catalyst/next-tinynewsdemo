@@ -3,15 +3,12 @@ import { useScrollPercentage } from 'react-scroll-percentage';
 import tw from 'twin.macro';
 import { useAnalytics } from '../../lib/hooks/useAnalytics.js';
 import { renderBody } from '../../lib/utils.js';
-import DonationBlock from '../plugins/DonationBlock';
-import NewsletterBlock from '../plugins/NewsletterBlock';
+import PromotionBlock from '../plugins/PromotionBlock';
 import { PostTextContainer, PostText } from '../common/CommonStyles.js';
 
 const ArticleBodyWrapper = tw.section`mb-4`;
 const SectionContainer = tw.div`w-full px-5 items-center flex flex-col flex-nowrap mx-auto max-w-7xl`;
 const BlockWrapper = tw.div`max-w-2xl w-full`;
-
-const randomBlockNumber = Math.floor(Math.random() * 2);
 
 export default function ArticleBody({ article, ads, isAmp, metadata }) {
   const body = renderBody(article.article_translations, ads, isAmp);
@@ -77,16 +74,7 @@ export default function ArticleBody({ article, ads, isAmp, metadata }) {
           <PostTextContainer>{body}</PostTextContainer>
         </PostText>
         <BlockWrapper>
-          {randomBlockNumber === 0 && (
-            <NewsletterBlock
-              metadata={metadata}
-              headline={article.headline}
-              wrap={false}
-            />
-          )}
-          {randomBlockNumber === 1 && (
-            <DonationBlock metadata={metadata} wrap={false} />
-          )}
+          <PromotionBlock metadata={metadata} prefer="newsletter" />
         </BlockWrapper>
       </SectionContainer>
     </ArticleBodyWrapper>

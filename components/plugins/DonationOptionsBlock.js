@@ -37,7 +37,9 @@ export default function DonationOptionsBlock({ metadata, wrap = true }) {
         </div>
       </CardContent>
       <CardFooter>
-        <DonateFooterLink href={generateMonkeypodUrl(option.uuid)}>
+        <DonateFooterLink
+          href={`${process.env.NEXT_PUBLIC_MONKEYPOD_URL}&option_id=${process.env.NEXT_PUBLIC_MONKEYPOD_UUID}&amount=${option.amount}`}
+        >
           Donate
         </DonateFooterLink>
       </CardFooter>

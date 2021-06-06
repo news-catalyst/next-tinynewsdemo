@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import tw, { css, styled } from 'twin.macro';
-import MembershipBlock from '../plugins/MembershipBlock';
+import DonationBlock from '../plugins/DonationBlock';
 import NewsletterBlock from '../plugins/NewsletterBlock';
 import Upload from './Upload';
 
@@ -461,7 +461,7 @@ export default function SiteInfoSettings(props) {
         <div tw="col-span-1">
           <span tw="mt-1 font-bold">Preview</span>
 
-          <MembershipBlock metadata={props.parsedData} />
+          <DonationBlock metadata={props.parsedData} />
         </div>
       </MembershipContainer>
 
