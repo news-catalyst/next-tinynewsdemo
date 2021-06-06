@@ -40,7 +40,9 @@ export default function GlobalNav({ metadata, sections }) {
           </a>
         </Link>
         <RightNav>{sectionLinks}</RightNav>
-        <Donate label={metadata.supportCTA} metadata={metadata} />
+        {process.env.NEXT_PUBLIC_MONKEYPOD_URL && (
+          <Donate label={metadata.supportCTA} metadata={metadata} />
+        )}
       </NavInnerContainer>
     </NavContainer>
   );
