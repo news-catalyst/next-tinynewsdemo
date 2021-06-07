@@ -125,6 +125,34 @@ async function createProject(name, slug) {
         }
         results.push(result);
       }
+      // next set the VERCEL_ENV for preview and production
+      const productionEnvResult = await fetch(envUrl, {
+        method: 'POST',
+        headers: requestHeaders,
+        body: JSON.stringify({
+          "type": "encrypted",
+          "key": "VERCEL_ENV",
+          "value": "production",
+          "target": [
+            "production",
+          ]
+        })
+      });
+      results.push(productionEnvResult);
+      const previewEnvResult = await fetch(envUrl, {
+        method: 'POST',
+        headers: requestHeaders,
+        body: JSON.stringify({
+          "type": "encrypted",
+          "key": "VERCEL_ENV",
+          "value": "preview",
+          "target": [
+            "preview",
+          ]
+        })
+      });
+      results.push(previewEnvResult);
+
       console.log();
       console.log("✅ Done! The project is created in Vercel. To deploy, push to the master branch on github");
       if (envSuccess) {
