@@ -1,7 +1,6 @@
-const { replace } = require("formik");
 const fetch = require("node-fetch");
 
-const INSERT_DATA_IMPORT = `mutation MyMutation($notes: String, $end_date: date, $start_date: date, $table_name: String) {
+const INSERT_DATA_IMPORT = `mutation FrontendInsertDataImport($notes: String, $end_date: date, $start_date: date, $table_name: String) {
   insert_ga_data_imports_one(object: {end_date: $end_date, notes: $notes, start_date: $start_date, table_name: $table_name}) {
     id
     notes
@@ -19,7 +18,7 @@ function hasuraInsertDataImport(params) {
     url: params['url'],
     orgSlug: params['orgSlug'],
     query: INSERT_DATA_IMPORT,
-    name: 'MyMutation',
+    name: 'FrontendInsertDataImport',
     variables: {
       notes: params['notes'],
       end_date: params['end_date'],
@@ -29,7 +28,7 @@ function hasuraInsertDataImport(params) {
   });
 }
 
-const HASURA_INSERT_DONATION_CLICK_DATA = `mutation MyMutation($action: String!, $date: date!, $count: Int!, $path: String!) {
+const HASURA_INSERT_DONATION_CLICK_DATA = `mutation FrontendInsertDonationClick($action: String!, $date: date!, $count: Int!, $path: String!) {
   insert_ga_donation_clicks_one(object: {action: $action, date: $date, count: $count, path: $path}, on_conflict: {constraint: ga_donation_impressions_organization_id_path_date_action_key, update_columns: count}) {
     action
     created_at
@@ -47,7 +46,7 @@ function hasuraInsertDonationClick(params) {
     url: params['url'],
     orgSlug: params['orgSlug'],
     query: HASURA_INSERT_DONATION_CLICK_DATA,
-    name: 'MyMutation',
+    name: 'FrontendInsertDonationClick',
     variables: {
       action: params['action'],
       date: params['date'],
@@ -57,7 +56,7 @@ function hasuraInsertDonationClick(params) {
   });
 }
 
-const INSERT_ORGANIZATION_MUTATION = `mutation MyMutation($slug: String = "", $name: String = "") {
+const INSERT_ORGANIZATION_MUTATION = `mutation FrontendInsertOrganization($slug: String = "", $name: String = "") {
   insert_organizations_one(object: {name: $name, slug: $slug}) {
     id
     name
@@ -70,7 +69,7 @@ function hasuraInsertOrganization(params) {
     url: params['url'],
     adminSecret: params['adminSecret'],
     query: INSERT_ORGANIZATION_MUTATION,
-    name: 'MyMutation',
+    name: 'FrontendInsertOrganization',
     variables: {
       name: params['name'],
       slug: params['slug'],
@@ -78,7 +77,7 @@ function hasuraInsertOrganization(params) {
   });
 }
 
-const INSERT_ORG_LOCALES_MUTATION = `mutation MyMutation($objects: [organization_locales_insert_input!]!)
+const INSERT_ORG_LOCALES_MUTATION = `mutation FrontendInsertOrgLocales($objects: [organization_locales_insert_input!]!)
  {
   insert_organization_locales(
     objects: $objects
@@ -92,12 +91,12 @@ function hasuraInsertOrgLocales(params) {
     url: params['url'],
     adminSecret: params['adminSecret'],
     query: INSERT_ORG_LOCALES_MUTATION,
-    name: 'MyMutation',
+    name: 'FrontendInsertOrgLocales',
     variables: {"objects": params['orgLocales']}
   });
 }
 
-const HASURA_UPSERT_METADATA = `mutation MyMutation($published: Boolean, $data: jsonb, $locale_code: String, $organization_id: Int!) {
+const HASURA_UPSERT_METADATA = `mutation FrontendUpsertMetadata($published: Boolean, $data: jsonb, $locale_code: String, $organization_id: Int!) {
   insert_site_metadatas(objects: {organization_id: $organization_id, published: $published, site_metadata_translations: {data: {data: $data, locale_code: $locale_code}, on_conflict: {constraint: site_metadata_translations_locale_code_site_metadata_id_key, update_columns: data}}}, on_conflict: {constraint: site_metadatas_organization_id_key, update_columns: published}) {
     returning {
       id
@@ -111,7 +110,7 @@ function hasuraUpsertMetadata(params) {
     url: params['url'],
     adminSecret: params['adminSecret'],
     query: HASURA_UPSERT_METADATA,
-    name: 'MyMutation',
+    name: 'FrontendUpsertMetadata',
     variables: {
       organization_id: params['organization_id'],
       data: params['data'],
@@ -121,7 +120,7 @@ function hasuraUpsertMetadata(params) {
   });
 }
 
-const HASURA_REMOVE_ORGANIZATION = `mutation MyMutation($slug: String!) {
+const HASURA_REMOVE_ORGANIZATION = `mutation FrontendRemoveOrganization($slug: String!) {
     delete_organization_locales(where: {organization: {slug: {_eq: $slug}}}) {
       affected_rows
     }
@@ -150,14 +149,14 @@ function hasuraRemoveOrganization(params) {
     url: params['url'],
     adminSecret: params['adminSecret'],
     query: HASURA_REMOVE_ORGANIZATION,
-    name: 'MyMutation',
+    name: 'FrontendRemoveOrganization',
     variables: {
       slug: params['slug'],
     },
   });
 }
 
-const HASURA_UPSERT_LAYOUT = `mutation MyMutation($organization_id: Int!, $name: String!, $data: jsonb!) {
+const HASURA_UPSERT_LAYOUT = `mutation FrontendUpsertLayout($organization_id: Int!, $name: String!, $data: jsonb!) {
   insert_homepage_layout_schemas(objects: {name: $name, data: $data, organization_id: $organization_id}, on_conflict: {constraint: homepage_layout_schemas_name_organization_id_key, update_columns: [name, data]}) {
     returning {
       id
@@ -171,7 +170,7 @@ function hasuraUpsertHomepageLayout(params) {
     url: params['url'],
     adminSecret: params['adminSecret'],
     query: HASURA_UPSERT_LAYOUT,
-    name: 'MyMutation',
+    name: 'FrontendUpsertLayout',
     variables: {
       organization_id: params['organization_id'],
       name: params['name'],
@@ -180,7 +179,7 @@ function hasuraUpsertHomepageLayout(params) {
   });
 }
 
-const HASURA_INSERT_SECTIONS = `mutation MyMutation($objects: [categories_insert_input!]!) {
+const HASURA_INSERT_SECTIONS = `mutation FrontendInsertSections($objects: [categories_insert_input!]!) {
   insert_categories(objects: $objects, on_conflict: {constraint: categories_organization_id_slug_key, update_columns: [slug, published]}) {
     returning {
       id
@@ -195,30 +194,14 @@ function hasuraInsertSections(params) {
     url: params['url'],
     adminSecret: params['adminSecret'],
     query: HASURA_INSERT_SECTIONS,
-    name: 'MyMutation',
+    name: 'FrontendInsertSections',
     variables: {
       objects: params['objects']
     }
   });
 }
 
-function hasuraUpsertSection(params) {
-  return fetchGraphQL({
-    url: params['url'],
-    adminSecret: params['adminSecret'],
-    query: HASURA_UPSERT_SECTION,
-    name: 'MyMutation',
-    variables: {
-      organization_id: params['organization_id'],
-      locale_code: params['localeCode'],
-      slug: params['slug'],
-      published: params['published'],
-      title: params['title'],
-    },
-  });
-}
-
-const HASURA_LIST_TAGS = `query MyQuery {
+const HASURA_LIST_TAGS = `query FrontendListTags {
   tags(where: {published: {_eq: true}}) {
     slug
     tag_translations {
@@ -233,11 +216,11 @@ function hasuraListTags(params) {
     url: params['url'],
     orgSlug: params['orgSlug'],
     query: HASURA_LIST_TAGS,
-    name: 'MyQuery',
+    name: 'FrontendListTags',
   });
 }
 
-const HASURA_LIST_SECTIONS = `query MyQuery {
+const HASURA_LIST_SECTIONS = `query FrontendListSections {
   categories(where: {published: {_eq: true}}) {
     slug
     category_translations {
@@ -252,11 +235,11 @@ function hasuraListSections(params) {
     url: params['url'],
     orgSlug: params['orgSlug'],
     query: HASURA_LIST_SECTIONS,
-    name: 'MyQuery',
+    name: 'FrontendListSections',
   });
 }
 
-const HASURA_LIST_ALL_LOCALES = `query MyQuery {
+const HASURA_LIST_ALL_LOCALES = `query FrontendListAllLocales {
   locales {
     id
     code
@@ -269,10 +252,10 @@ function hasuraListAllLocales(params) {
     url: params['url'],
     adminSecret: params['adminSecret'],
     query: HASURA_LIST_ALL_LOCALES,
-    name: 'MyQuery'
+    name: 'FrontendListAllLocales'
   });
 }
-const HASURA_LIST_ORG_LOCALES = `query MyQuery {
+const HASURA_LIST_ORG_LOCALES = `query FrontendListOrgLocales {
   organization_locales {
     locale {
       code
@@ -284,7 +267,7 @@ function hasuraListLocales(params) {
     url: params['url'],
     orgSlug: params['orgSlug'],
     query: HASURA_LIST_ORG_LOCALES,
-    name: 'MyQuery',
+    name: 'FrontendListOrgLocales',
     variables: {
       locale_code: params['localeCode'],
       slug: params['slug'],
@@ -292,7 +275,7 @@ function hasuraListLocales(params) {
   });
 }
 
-const HASURA_LIST_ORGANIZATIONS = `query MyQuery {
+const HASURA_LIST_ORGANIZATIONS = `query FrontendListOrganizations {
   organizations {
     created_at
     id
@@ -311,12 +294,12 @@ function hasuraListOrganizations(params) {
     url: params['url'],
     adminSecret: params['adminSecret'],
     query: HASURA_LIST_ORGANIZATIONS,
-    name: 'MyQuery',
+    name: 'FrontendListOrganizations',
   });
 }
 
 
-const HASURA_INSERT_PAGE_VIEW_DATA = `mutation MyMutation($count: Int!, $date: date!, $path: String!) {
+const HASURA_INSERT_PAGE_VIEW_DATA = `mutation FrontendInsertPageView($count: Int!, $date: date!, $path: String!) {
   insert_ga_page_views_one(object: {count: $count, date: $date, path: $path}, on_conflict: {constraint: ga_page_views_organization_id_date_path_key, update_columns: count}) {
     updated_at
     id
@@ -333,7 +316,7 @@ function hasuraInsertPageView(params) {
     url: params['url'],
     orgSlug: params['orgSlug'],
     query: HASURA_INSERT_PAGE_VIEW_DATA,
-    name: 'MyMutation',
+    name: 'FrontendInsertPageView',
     variables: {
       count: params['count'],
       date: params['date'],
@@ -342,7 +325,7 @@ function hasuraInsertPageView(params) {
   });
 }
 
-const HASURA_INSERT_GEO_SESSION_DATA = `mutation MyMutation($count: Int!, $date: date!, $region: String!) {
+const HASURA_INSERT_GEO_SESSION_DATA = `mutation FrontendInsertGeoSession($count: Int!, $date: date!, $region: String!) {
   insert_ga_geo_sessions_one(object: {region: $region, count: $count, date: $date}, on_conflict: {constraint: ga_geo_sessions_organization_id_date_region_key, update_columns: count}) {
     updated_at
     id
@@ -359,7 +342,7 @@ function hasuraInsertGeoSession(params) {
     url: params['url'],
     orgSlug: params['orgSlug'],
     query: HASURA_INSERT_GEO_SESSION_DATA,
-    name: 'MyMutation',
+    name: 'FrontendInsertGeoSession',
     variables: {
       count: params['count'],
       region: params['region'],
@@ -368,7 +351,7 @@ function hasuraInsertGeoSession(params) {
   });
 }
 
-const HASURA_INSERT_SESSION_DATA = `mutation MyMutation($count: Int!, $date: date!) {
+const HASURA_INSERT_SESSION_DATA = `mutation FrontendInsertSession($count: Int!, $date: date!) {
   insert_ga_sessions_one(object: {count: $count, date: $date}, on_conflict: {constraint: ga_sessions_organization_id_date_key, update_columns: count}) {
     updated_at
     id
@@ -384,7 +367,7 @@ function hasuraInsertSession(params) {
     url: params['url'],
     orgSlug: params['orgSlug'],
     query: HASURA_INSERT_SESSION_DATA,
-    name: 'MyMutation',
+    name: 'FrontendInsertSession',
     variables: {
       count: params['count'],
       date: params['date'],
@@ -392,7 +375,7 @@ function hasuraInsertSession(params) {
   });
 }
 
-const HASURA_INSERT_DONOR_READING_FREQUENCY = `mutation MyMutation($count: Int!, $label: String!, $date: date!) {
+const HASURA_INSERT_DONOR_READING_FREQUENCY = `mutation FrontendInsertDonorFrequency($count: Int!, $label: String!, $date: date!) {
   insert_ga_donor_reading_frequency_one(object: {count: $count, label: $label, date: $date}, on_conflict: {constraint: ga_donor_reading_frequency_organization_id_label_date_key, update_columns: count}) {
     updated_at
     id
@@ -408,7 +391,7 @@ function hasuraInsertDonorReadingFrequency(params) {
     url: params['url'],
     orgSlug: params['orgSlug'],
     query: HASURA_INSERT_DONOR_READING_FREQUENCY,
-    name: 'MyMutation',
+    name: 'FrontendInsertDonorFrequency',
     variables: {
       count: params['count'],
       label: params['label'],
@@ -417,7 +400,7 @@ function hasuraInsertDonorReadingFrequency(params) {
   });
 }
 
-const HASURA_INSERT_SESSION_DURATION_DATA = `mutation MyMutation($seconds: float8!, $date: date!) {
+const HASURA_INSERT_SESSION_DURATION_DATA = `mutation FrontendInsertSessionDuration($seconds: float8!, $date: date!) {
   insert_ga_session_duration_one(object: {seconds: $seconds, date: $date}, on_conflict: {constraint: ga_session_duration_organization_id_date_key, update_columns: seconds}) {
     updated_at
     id
@@ -433,7 +416,7 @@ function hasuraInsertSessionDuration(params) {
     url: params['url'],
     orgSlug: params['orgSlug'],
     query: HASURA_INSERT_SESSION_DURATION_DATA,
-    name: 'MyMutation',
+    name: 'FrontendInsertSessionDuration',
     variables: {
       seconds: params['seconds'],
       date: params['date'],
@@ -441,7 +424,7 @@ function hasuraInsertSessionDuration(params) {
   });
 }
 
-const HASURA_INSERT_NEWSLETTER_IMPRESSION_DATA = `mutation MyMutation($action: String!, $date: date!, $impressions: Int!, $path: String!) {
+const HASURA_INSERT_NEWSLETTER_IMPRESSION_DATA = `mutation FrontendInsertNewsletterImpression($action: String!, $date: date!, $impressions: Int!, $path: String!) {
   insert_ga_newsletter_impressions_one(object: {action: $action, date: $date, impressions: $impressions, path: $path}, on_conflict: {constraint: ga_newsletter_impressions_organization_id_path_action_date_key, update_columns: impressions}) {
     action
     created_at
@@ -459,7 +442,7 @@ function hasuraInsertNewsletterImpression(params) {
     url: params['url'],
     orgSlug: params['orgSlug'],
     query: HASURA_INSERT_NEWSLETTER_IMPRESSION_DATA,
-    name: 'MyMutation',
+    name: 'FrontendInsertNewsletterImpression',
     variables: {
       action: params['action'],
       date: params['date'],
@@ -469,7 +452,7 @@ function hasuraInsertNewsletterImpression(params) {
   });
 }
 
-const HASURA_INSERT_CUSTOM_DIMENSION_DATA = `mutation MyMutation($count: Int!, $date: date!, $dimension: String!, $label: String!) {
+const HASURA_INSERT_CUSTOM_DIMENSION_DATA = `mutation FrontendInsertCustomDimension($count: Int!, $date: date!, $dimension: String!, $label: String!) {
   insert_ga_custom_dimensions_one(object: {count: $count, date: $date, dimension: $dimension, label: $label}, on_conflict: {constraint: ga_events_organization_id_dimension_date_label_key, update_columns: count}) {
     count
     created_at
@@ -487,7 +470,7 @@ function hasuraInsertCustomDimension(params) {
     url: params['url'],
     orgSlug: params['orgSlug'],
     query: HASURA_INSERT_CUSTOM_DIMENSION_DATA,
-    name: 'MyMutation',
+    name: 'FrontendInsertCustomDimension',
     variables: {
       count: params['count'],
       date: params['date'],
@@ -497,7 +480,7 @@ function hasuraInsertCustomDimension(params) {
   });
 }
 
-const HASURA_INSERT_READING_FREQUENCY_DATA = `mutation MyMutation($objects: [ga_reading_frequency_insert_input!]!) {
+const HASURA_INSERT_READING_FREQUENCY_DATA = `mutation FrontendInsertReadingFrequency($objects: [ga_reading_frequency_insert_input!]!) {
   insert_ga_reading_frequency(objects: $objects, on_conflict: {constraint: ga_reading_frequency_organization_id_date_category_key, update_columns: count}) {
     affected_rows
     returning {
@@ -515,14 +498,14 @@ function hasuraInsertReadingFrequency(params) {
     url: params['url'],
     orgSlug: params['orgSlug'],
     query: HASURA_INSERT_READING_FREQUENCY_DATA,
-    name: 'MyMutation',
+    name: 'FrontendInsertReadingFrequency',
     variables: {
       objects: params['objects'],
     },
   });
 }
 
-const HASURA_INSERT_REFERRAL_SESSION_DATA = `mutation MyMutation($count: Int!, $date: date!, $source: String!) {
+const HASURA_INSERT_REFERRAL_SESSION_DATA = `mutation FrontendInsertReferralSession($count: Int!, $date: date!, $source: String!) {
   insert_ga_referral_sessions_one(object: {source: $source, count: $count, date: $date}, on_conflict: {constraint: ga_referral_sessions_organization_id_date_source_key, update_columns: count}) {
     updated_at
     id
@@ -539,7 +522,7 @@ function hasuraInsertReferralSession(params) {
     url: params['url'],
     orgSlug: params['orgSlug'],
     query: HASURA_INSERT_REFERRAL_SESSION_DATA,
-    name: 'MyMutation',
+    name: 'FrontendInsertReferralSession',
     variables: {
       count: params['count'],
       source: params['source'],
@@ -547,7 +530,7 @@ function hasuraInsertReferralSession(params) {
     },
   });
 }
-const HASURA_GET_READING_DEPTH_DATA = `query MyQuery($path: String_comparison_exp, $date: date_comparison_exp) {
+const HASURA_GET_READING_DEPTH_DATA = `query FrontendGetReadingDepth($path: String_comparison_exp, $date: date_comparison_exp) {
   ga_reading_depth(where: {path: $path, date: $date}) {
     date
     id
@@ -565,7 +548,7 @@ function hasuraGetReadingDepth(params) {
     url: params['url'],
     orgSlug: params['orgSlug'],
     query: HASURA_GET_READING_DEPTH_DATA,
-    name: 'MyQuery',
+    name: 'FrontendGetReadingDepth',
     variables: {
       path: params['path'],
       date: params['date'],
@@ -573,7 +556,7 @@ function hasuraGetReadingDepth(params) {
   })
 }
 
-const HASURA_INSERT_READING_DEPTH_DATA = `mutation MyMutation($date: date!, $path: String!, $read_100: float8!, $read_25: float8!, $read_50: float8!, $read_75: float8!) {
+const HASURA_INSERT_READING_DEPTH_DATA = `mutation FrontendInsertReadingDepth($date: date!, $path: String!, $read_100: float8!, $read_25: float8!, $read_50: float8!, $read_75: float8!) {
   insert_ga_reading_depth_one(object: {path: $path, date: $date, read_25: $read_25, read_50: $read_50, read_75: $read_75, read_100: $read_100}, on_conflict: {constraint: ga_reading_depth_organization_id_date_path_key, update_columns: [read_25, read_50, read_75, read_100]}) {
     id
     date
@@ -593,7 +576,7 @@ function hasuraInsertReadingDepth(params) {
     url: params['url'],
     orgSlug: params['orgSlug'],
     query: HASURA_INSERT_READING_DEPTH_DATA,
-    name: 'MyMutation',
+    name: 'FrontendInsertReadingDepth',
     variables: {
       date: params['date'],
       path: params['path'],
@@ -605,7 +588,7 @@ function hasuraInsertReadingDepth(params) {
   });
 }
 
-const HASURA_DELETE_ANALYTICS = `mutation MyMutation {
+const HASURA_DELETE_ANALYTICS = `mutation FrontendDeleteAnalytics {
   delete_ga_data_imports(where: {id: {_gt: 0}}) {
     affected_rows
   }
@@ -646,7 +629,7 @@ function hasuraDeleteAnalytics(params) {
     url: params['url'],
     orgSlug: params['orgSlug'],
     query: HASURA_DELETE_ANALYTICS,
-    name: 'MyMutation',
+    name: 'FrontendDeleteAnalytics',
   })
 }
 
@@ -721,7 +704,6 @@ module.exports = {
   hasuraUpsertMetadata,
   hasuraInsertSections,
   hasuraInsertDataImport,
-  hasuraUpsertSection,
   hasuraRemoveOrganization,
   hasuraDeleteAnalytics,
   hasuraInsertDonationClick,

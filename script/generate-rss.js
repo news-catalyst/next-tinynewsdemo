@@ -7,7 +7,7 @@ require('dotenv').config({ path: '.env.local' })
 const apiUrl = process.env.HASURA_API_URL;
 const apiToken = process.env.ORG_SLUG;
 
-const HASURA_GET_ARTICLES_RSS = `query MyQuery($locale_code: String!) {
+const HASURA_GET_ARTICLES_RSS = `query FrontendGetArticlesRSS($locale_code: String!) {
   articles(limit: 10, order_by: {created_at: desc}, where: {article_translations: {locale_code: {_eq: $locale_code}}}) {
     slug
     article_translations(where: {locale_code: {_eq: $locale_code}, published: {_eq: true}}) {
@@ -46,7 +46,7 @@ function hasuraGetArticlesRss(params) {
     url: apiUrl,
     orgSlug: apiToken,
     query: HASURA_GET_ARTICLES_RSS,
-    name: 'MyQuery',
+    name: 'FrontendGetArticlesRSS',
     variables: {
       locale_code: params['localeCode'],
     },
