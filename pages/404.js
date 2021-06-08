@@ -58,12 +58,16 @@ export async function getStaticProps({ locale }) {
     throw errors;
   } else {
     sections = data.categories;
-    siteMetadata = data.site_metadatas[0].site_metadata_translations[0].data;
     for (var i = 0; i < sections.length; i++) {
       sections[i].title = hasuraLocaliseText(
         sections[i].category_translations,
         'title'
       );
+    }
+    try {
+      siteMetadata = data.site_metadatas[0].site_metadata_translations[0].data;
+    } catch (e) {
+      console.error(e);
     }
   }
 
