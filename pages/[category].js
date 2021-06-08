@@ -1,4 +1,5 @@
 import { useRouter } from 'next/router';
+import React, { useEffect } from 'react';
 import Layout from '../components/Layout.js';
 import { cachedContents } from '../lib/cached';
 import { hasuraCategoryPage, hasuraListAllSections } from '../lib/articles.js';
@@ -11,6 +12,13 @@ export default function CategoryPage(props) {
   const isAmp = useAmp();
 
   const router = useRouter();
+
+  useEffect(() => {
+    if (!props.categoryExists) {
+      router.push('/404');
+    }
+  }, [props.categoryExists]);
+
   // If the page is not yet generated, this will be displayed
   // initially until getStaticProps() finishes running
   if (router.isFallback) {
@@ -79,6 +87,7 @@ export async function getStaticProps({ locale, params }) {
   let tags = [];
   let siteMetadata;
   let title;
+  let categoryExists = false;
 
   const { errors, data } = await hasuraCategoryPage({
     url: apiUrl,
@@ -103,6 +112,7 @@ export async function getStaticProps({ locale, params }) {
         'title'
       );
       if (sections[i].slug == params.category) {
+        categoryExists = true;
         title = hasuraLocaliseText(sections[i].category_translations, 'title');
         if (title) {
           break;
@@ -135,6 +145,7 @@ export async function getStaticProps({ locale, params }) {
   return {
     props: {
       articles,
+      categoryExists,
       tags,
       title,
       sections,
