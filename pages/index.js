@@ -45,7 +45,7 @@ export async function getStaticProps({ locale }) {
     console.log('failed finding site metadata for ', locale, metadatas);
   }
 
-  if (siteMetadata.landingPage) {
+  if (siteMetadata && siteMetadata.landingPage) {
     return {
       props: {
         locale,
