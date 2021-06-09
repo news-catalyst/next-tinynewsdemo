@@ -268,10 +268,6 @@ function hasuraListLocales(params) {
     orgSlug: params['orgSlug'],
     query: HASURA_LIST_ORG_LOCALES,
     name: 'FrontendListOrgLocales',
-    variables: {
-      locale_code: params['localeCode'],
-      slug: params['slug'],
-    },
   });
 }
 
@@ -490,8 +486,7 @@ const HASURA_INSERT_READING_FREQUENCY_DATA = `mutation FrontendInsertReadingFreq
       count
     }
   }
-}
-`;
+}`;
 
 function hasuraInsertReadingFrequency(params) {
   return fetchGraphQL({
@@ -529,31 +524,6 @@ function hasuraInsertReferralSession(params) {
       date: params['date'],
     },
   });
-}
-const HASURA_GET_READING_DEPTH_DATA = `query FrontendGetReadingDepth($path: String_comparison_exp, $date: date_comparison_exp) {
-  ga_reading_depth(where: {path: $path, date: $date}) {
-    date
-    id
-    organization_id
-    path
-    read_100
-    read_25
-    read_50
-    read_75
-  }
-}`;
-
-function hasuraGetReadingDepth(params) {
-  return fetchGraphQL({
-    url: params['url'],
-    orgSlug: params['orgSlug'],
-    query: HASURA_GET_READING_DEPTH_DATA,
-    name: 'FrontendGetReadingDepth',
-    variables: {
-      path: params['path'],
-      date: params['date'],
-    },
-  })
 }
 
 const HASURA_INSERT_READING_DEPTH_DATA = `mutation FrontendInsertReadingDepth($date: date!, $path: String!, $read_100: float8!, $read_25: float8!, $read_50: float8!, $read_75: float8!) {
@@ -690,7 +660,6 @@ module.exports = {
   hasuraInsertSessionDuration,
   hasuraInsertGeoSession,
   hasuraInsertReferralSession,
-  hasuraGetReadingDepth,
   hasuraInsertReadingDepth,
   hasuraInsertReadingFrequency,
   hasuraInsertCustomDimension,
