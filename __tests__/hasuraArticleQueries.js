@@ -1,5 +1,4 @@
-import { fetchGraphQL } from '../lib/utils';
-import { HASURA_LIST_ORG_LOCALES } from '../lib/articles';
+import { hasuraListLocales } from '../lib/articles';
 require('dotenv').config({ path: '.env.local' })
 
 const apiUrl = process.env.HASURA_API_URL;
@@ -11,10 +10,10 @@ let params = {
 };
 
 it('lists locales for oaklyn', () => {
-  params['name'] = 'FrontendListOrgLocales';
-  params['query'] = HASURA_LIST_ORG_LOCALES;
+  // params['name'] = 'FrontendListOrgLocales';
+  // params['query'] = HASURA_LIST_ORG_LOCALES;
 
-  return fetchGraphQL(params).then(response => {
+  return hasuraListLocales(params).then(response => {
     expect(response.data).toHaveProperty('organization_locales');
     expect(response.data.organization_locales).toHaveLength(2);
 
