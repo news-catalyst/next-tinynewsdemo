@@ -146,13 +146,9 @@ it('gets data to article page', () => {
   params['slug'] = 'kensingtons-last-minute-gift-guide';
   params['categorySlug'] = 'news';
   return hasuraArticlePage(params).then(response => {
-    console.log(response.data);
-    expect(response.data).toHaveProperty('articles');
-    expect(response.data.articles).toHaveLength(1);
-    expect(response.data.articles[0]).toHaveProperty('slug');
-    expect(response.data.articles[0]).toHaveProperty('article_translations');
-    expect(response.data.articles[0]).toHaveProperty('category');
-    expect(response.data.articles[0]).toHaveProperty('author_articles');
+    expect(response.data).toHaveProperty('article_slug_versions');
+    expect(response.data.article_slug_versions).toHaveLength(1);
+    expect(response.data.article_slug_versions[0]).toHaveProperty('article');
   });
 });
 
