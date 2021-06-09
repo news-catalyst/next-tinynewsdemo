@@ -1,5 +1,6 @@
 import { hasuraGetCustomDimension, hasuraGetDataImports, hasuraGetDonationClicks, hasuraGetGeoSessions, hasuraGetNewsletterImpressions, hasuraGetPageViews, hasuraGetReadingDepth, hasuraGetReadingFrequency, hasuraGetReferralSessions, hasuraGetSessionDuration, hasuraGetSessions, hasuraGetYesterday } from '../lib/analytics';
 import { hasuraGetHomepageEditor, hasuraGetHomepageLayouts, hasuraGetHomepageData, hasuraListLocales, hasuraSearchArticles, hasuraListAllTags, hasuraListAllSections, hasuraGetPagePreview, hasuraGetPage, hasuraGetLayout, hasuraGetMetadataByLocale, hasuraPreviewArticleBySlug, hasuraGetArticleBySlug, hasuraListAllPageSlugsPreview, hasuraListAllPageSlugs, hasuraListAllArticleSlugs, hasuraListAllAuthorPaths, hasuraTagPage, hasuraCategoryPage, hasuraPreviewArticlePage, hasuraArticlePage, hasuraAuthorPage } from '../lib/articles';
+import { hasuraGetAuthorById, hasuraGetAuthorBySlug, hasuraListAllAuthors } from '../lib/authors';
 import { hasuraGetHomepageLayout, hasuraHomepage, hasuraListHomepageLayoutSchemas, hasuraStreamArticles } from '../lib/homepage';
 import { hasuraGetSectionById, hasuraGetTagById, hasuraListAllSectionsByLocale } from '../lib/section';
 require('dotenv').config({ path: '.env.local' })
@@ -293,6 +294,40 @@ it('gets a section by ID', () => {
   return hasuraGetSectionById(params).then(response => {
     expect(response.data).toHaveProperty('organization_locales');
     expect(response.data).toHaveProperty('categories_by_pk');
+  });
+});
+
+describe('authors', () => {
+  it('lists authors', () => {
+    params['localCode'] = 'en-US';
+    return hasuraListAllAuthors(params['localeCode']).then(response => {
+      expect(response.data).toHaveProperty('organization_locales');
+      expect(response.data).toHaveProperty('authors');
+    });
+  });
+  it('gets author by slug', () => {
+    params['slug'] = 'jacqui-lough';
+    return hasuraGetAuthorBySlug(params).then(response => {
+      expect(response.data).toHaveProperty('authors');
+      expect(response.data.authors[0]).toHaveProperty('id');
+      expect(response.data.authors[0]).toHaveProperty('name');
+      expect(response.data.authors[0]).toHaveProperty('photoUrl');
+      expect(response.data.authors[0]).toHaveProperty('slug');
+      expect(response.data.authors[0]).toHaveProperty('staff');
+      expect(response.data.authors[0]).toHaveProperty('twitter');
+    });
+  });
+  it('gets author by id', () => {
+    params['id'] = 1;
+    return hasuraGetAuthorById(params).then(response => {
+      expect(response.data).toHaveProperty('authors_by_pk');
+      expect(response.data.authors_by_pk).toHaveProperty('id');
+      expect(response.data.authors_by_pk).toHaveProperty('name');
+      expect(response.data.authors_by_pk).toHaveProperty('photoUrl');
+      expect(response.data.authors_by_pk).toHaveProperty('slug');
+      expect(response.data.authors_by_pk).toHaveProperty('staff');
+      expect(response.data.authors_by_pk).toHaveProperty('twitter');
+    });
   });
 });
 
