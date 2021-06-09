@@ -603,6 +603,52 @@ function hasuraDeleteAnalytics(params) {
   })
 }
 
+const HASURA_GET_ARTICLES_RSS = `query FrontendGetArticlesRSS($locale_code: String!) {
+  articles(limit: 10, order_by: {created_at: desc}, where: {article_translations: {locale_code: {_eq: $locale_code}}}) {
+    slug
+    article_translations(where: {locale_code: {_eq: $locale_code}, published: {_eq: true}}) {
+      content
+      custom_byline
+      first_published_at
+      headline
+      last_published_at
+      published
+      search_description
+      updated_at
+    }
+    author_articles {
+      author {
+        name
+        photoUrl
+        slug
+        twitter
+        author_translations(where: {locale_code: {_eq: $locale_code}}) {
+          bio
+          title
+        }
+      }
+    }
+    category {
+      slug
+      category_translations(where: {locale_code: {_eq: $locale_code}}) {
+        title
+      }
+    }
+  }
+}`;
+
+function hasuraGetArticlesRss(params) {
+  return fetchGraphQL({
+    url: params['url'],
+    orgSlug: params['orgSlug'],
+    query: HASURA_GET_ARTICLES_RSS,
+    name: 'FrontendGetArticlesRSS',
+    variables: {
+      locale_code: params['localeCode'],
+    },
+  });
+}
+
 async function fetchGraphQL(params) {
   let url;
   let orgSlug;
@@ -677,6 +723,7 @@ module.exports = {
   hasuraDeleteAnalytics,
   hasuraInsertDonationClick,
   hasuraInsertDonorReadingFrequency,
+  hasuraGetArticlesRss,
   fetchGraphQL,
   sanitizePath
 }

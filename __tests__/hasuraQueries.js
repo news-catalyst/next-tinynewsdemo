@@ -479,4 +479,14 @@ describe('shared', () => {
       expect(response.data).toHaveProperty('organizations');
     });
   });
+  it('gets data for article RSS', () => {
+    params['localeCode'] = 'en-US';
+    return shared.hasuraGetArticlesRss(params).then(response => {
+      expect(response.data).toHaveProperty('articles');
+      expect(response.data.articles[0]).toHaveProperty('category');
+      expect(response.data.articles[0]).toHaveProperty('slug');
+      expect(response.data.articles[0]).toHaveProperty('author_articles');
+      expect(response.data.articles[0]).toHaveProperty('article_translations');
+    });
+  });
 })
