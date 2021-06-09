@@ -286,6 +286,7 @@ export async function getServerSideProps(context) {
     region: process.env.TNC_AWS_REGION,
     accessKeyId: process.env.TNC_AWS_ACCESS_ID,
     secretAccessKey: process.env.TNC_AWS_ACCESS_KEY,
+    s3Url: `https://${process.env.TNC_AWS_BUCKET_NAME}.s3.${process.env.TNC_AWS_REGION}.amazonaws.com`,
   };
 
   return {
