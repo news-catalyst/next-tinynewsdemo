@@ -1,3 +1,4 @@
+import { hasuraGetCustomDimension, hasuraGetDataImports, hasuraGetDonationClicks, hasuraGetGeoSessions, hasuraGetNewsletterImpressions, hasuraGetPageViews, hasuraGetReadingDepth, hasuraGetReadingFrequency, hasuraGetReferralSessions, hasuraGetSessionDuration, hasuraGetSessions, hasuraGetYesterday } from '../lib/analytics';
 import { hasuraGetHomepageEditor, hasuraGetHomepageLayouts, hasuraGetHomepageData, hasuraListLocales, hasuraSearchArticles, hasuraListAllTags, hasuraListAllSections, hasuraGetPagePreview, hasuraGetPage, hasuraGetLayout, hasuraGetMetadataByLocale, hasuraPreviewArticleBySlug, hasuraGetArticleBySlug, hasuraListAllPageSlugsPreview, hasuraListAllPageSlugs, hasuraListAllArticleSlugs, hasuraListAllAuthorPaths, hasuraTagPage, hasuraCategoryPage, hasuraPreviewArticlePage, hasuraArticlePage, hasuraAuthorPage } from '../lib/articles';
 import { hasuraGetHomepageLayout, hasuraHomepage, hasuraListHomepageLayoutSchemas, hasuraStreamArticles } from '../lib/homepage';
 import { hasuraGetSectionById, hasuraGetTagById, hasuraListAllSectionsByLocale } from '../lib/section';
@@ -290,8 +291,129 @@ it('gets a tag by ID', () => {
 it('gets a section by ID', () => {
   params['id'] = 1;
   return hasuraGetSectionById(params).then(response => {
-    console.log(Object.keys(response.data));
     expect(response.data).toHaveProperty('organization_locales');
     expect(response.data).toHaveProperty('categories_by_pk');
   });
+});
+
+// ANALYTICS
+
+describe('analytics', () => {
+  let startDate = '2021-06-01';
+  let endDate = '2021-06-10';
+
+  it('gets all data imports', () => {
+    return hasuraGetDataImports(params).then(response => {
+      expect(response.data).toHaveProperty('ga_data_imports');
+    });
+  });
+
+  it('gets referral sessions', () => {
+    params['startDate'] = startDate;
+    params['endDate'] = endDate;
+
+    return hasuraGetReferralSessions(params).then(response => {
+      expect(response.data).toHaveProperty('ga_referral_sessions');
+    });
+  });
+
+  it('gets geo sessions', () => {
+    params['startDate'] = startDate;
+    params['endDate'] = endDate;
+
+    return hasuraGetGeoSessions(params).then(response => {
+      expect(response.data).toHaveProperty('ga_geo_sessions');
+    });
+  });
+
+  it('gets sessions', () => {
+    params['startDate'] = startDate;
+    params['endDate'] = endDate;
+
+    return hasuraGetSessions(params).then(response => {
+      expect(response.data).toHaveProperty('ga_sessions');
+    });
+  });
+
+  it('gets yesterdays data', () => {
+    params['startDate'] = startDate;
+    params['endDate'] = endDate;
+
+    return hasuraGetYesterday(params).then(response => {
+      expect(response.data).toHaveProperty('donorDimensions');
+      expect(response.data).toHaveProperty('subscriberDimensions');
+      expect(response.data).toHaveProperty('ga_page_views');
+      expect(response.data).toHaveProperty('ga_reading_depth');
+      expect(response.data).toHaveProperty('ga_sessions');
+    });
+  });
+
+  it('gets session duration', () => {
+    params['startDate'] = startDate;
+    params['endDate'] = endDate;
+
+    return hasuraGetSessionDuration(params).then(response => {
+      expect(response.data).toHaveProperty('ga_session_duration');
+    });
+  });
+
+  it('gets reading depth', () => {
+    params['startDate'] = startDate;
+    params['endDate'] = endDate;
+
+    return hasuraGetReadingDepth(params).then(response => {
+      expect(response.data).toHaveProperty('ga_reading_depth');
+      expect(response.data).toHaveProperty('ga_page_views');
+    });
+  });
+
+  it('gets custom dimensions', () => {
+    params['startDate'] = startDate;
+    params['endDate'] = endDate;
+    params['dimension'] = 'dimension4';
+
+    return hasuraGetCustomDimension(params).then(response => {
+      expect(response.data).toHaveProperty('ga_custom_dimensions');
+    });
+  });
+
+  it('gets reading frequency', () => {
+    params['startDate'] = startDate;
+    params['endDate'] = endDate;
+
+    return hasuraGetReadingFrequency(params).then(response => {
+      expect(response.data).toHaveProperty('ga_reading_frequency');
+    });
+  });
+
+  it('gets donation clicks', () => {
+    params['startDate'] = startDate;
+    params['endDate'] = endDate;
+
+    return hasuraGetDonationClicks(params).then(response => {
+      expect(response.data).toHaveProperty('ga_donor_reading_frequency');
+      expect(response.data).toHaveProperty('ga_donation_clicks');
+      expect(response.data).toHaveProperty('ga_page_views');
+    });
+  });
+
+  it('gets newsletter impressions', () => {
+    params['startDate'] = startDate;
+    params['endDate'] = endDate;
+
+    return hasuraGetNewsletterImpressions(params).then(response => {
+      expect(response.data).toHaveProperty('ga_newsletter_impressions');
+    });
+  });
+
+  it('gets page views', () => {
+    params['startDate'] = startDate;
+    params['endDate'] = endDate;
+    params['limit'] = 100;
+
+    return hasuraGetPageViews(params).then(response => {
+      expect(response.data).toHaveProperty('ga_page_views');
+    });
+  });
+
 });
