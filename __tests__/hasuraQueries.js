@@ -331,8 +331,6 @@ describe('authors', () => {
   });
 });
 
-// ANALYTICS
-
 describe('analytics', () => {
   let startDate = '2021-06-01';
   let endDate = '2021-06-10';
@@ -450,5 +448,35 @@ describe('analytics', () => {
       expect(response.data).toHaveProperty('ga_page_views');
     });
   });
-
 });
+
+const shared = require("../script/shared");
+
+describe('shared', () => {
+  params['adminSecret'] = process.env.HASURA_ADMIN_SECRET;
+  it('lists tags', () => {
+    return shared.hasuraListTags(params).then(response => {
+      expect(response.data).toHaveProperty('tags');
+    });
+  });
+  it('lists sections', () => {
+    return shared.hasuraListSections(params).then(response => {
+      expect(response.data).toHaveProperty('categories');
+    });
+  });
+  it('lists all locales', () => {
+    return shared.hasuraListAllLocales(params).then(response => {
+      expect(response.data).toHaveProperty('locales');
+    });
+  });
+  it('lists organization locales', () => {
+    return shared.hasuraListLocales(params).then(response => {
+      expect(response.data).toHaveProperty('organization_locales');
+    });
+  });
+  it('lists organizations', () => {
+    return shared.hasuraListOrganizations(params).then(response => {
+      expect(response.data).toHaveProperty('organizations');
+    });
+  });
+})
