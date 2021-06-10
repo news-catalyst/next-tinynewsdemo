@@ -3,6 +3,7 @@ on: [push]
 jobs:
   cypress-run:
     runs-on: ubuntu-latest
+    container: cypress/browsers:node12.18.3-chrome87-ff82
     environment: data_import_oaklyn
     env:
       LOCALES: ${{ secrets.LOCALES }}
@@ -20,5 +21,6 @@ jobs:
       - name: Cypress run
         uses: cypress-io/github-action@v2
         with:
+          browser: firefox
           build: npm run build
           start: npm start
