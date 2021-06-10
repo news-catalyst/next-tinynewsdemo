@@ -5,6 +5,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: data_import_oaklyn
     env:
+      LOCALES: ${{ secrets.LOCALES }}
       NEXT_PUBLIC_SITE_URL: ${{ secrets.NEXT_PUBLIC_SITE_URL }}
       HASURA_API_URL: ${{ secrets.HASURA_API_URL }}
       ORG_SLUG: ${{ secrets.ORG_SLUG }}
