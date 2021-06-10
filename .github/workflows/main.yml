@@ -4,7 +4,9 @@ jobs:
   install:
     name: Build and upload front-end site
     runs-on: ubuntu-latest
-    container: cypress/browsers:node14.16.0-chrome89-ff86
+    container: 
+      image: cypress/browsers:node14.16.0-chrome89-ff86
+      options: --user 1001
     environment: data_import_oaklyn
     env:
       LOCALES: ${{ secrets.LOCALES }}
@@ -33,7 +35,9 @@ jobs:
     name: Run Cypress tests
     needs: install
     runs-on: ubuntu-latest
-    container: cypress/browsers:node14.16.0-chrome89-ff86
+    container: 
+      image: cypress/browsers:node14.16.0-chrome89-ff86
+      options: --user 1001
     environment: data_import_oaklyn
     env:
       LOCALES: ${{ secrets.LOCALES }}
