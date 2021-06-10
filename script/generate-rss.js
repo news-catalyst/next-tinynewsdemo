@@ -4,55 +4,6 @@ const shared = require("./shared");
 
 require('dotenv').config({ path: '.env.local' })
 
-const apiUrl = process.env.HASURA_API_URL;
-const apiToken = process.env.ORG_SLUG;
-
-const HASURA_GET_ARTICLES_RSS = `query FrontendGetArticlesRSS($locale_code: String!) {
-  articles(limit: 10, order_by: {created_at: desc}, where: {article_translations: {locale_code: {_eq: $locale_code}}}) {
-    slug
-    article_translations(where: {locale_code: {_eq: $locale_code}, published: {_eq: true}}) {
-      content
-      custom_byline
-      first_published_at
-      headline
-      last_published_at
-      published
-      search_description
-      updated_at
-    }
-    author_articles {
-      author {
-        name
-        photoUrl
-        slug
-        twitter
-        author_translations(where: {locale_code: {_eq: $locale_code}}) {
-          bio
-          title
-        }
-      }
-    }
-    category {
-      slug
-      category_translations(where: {locale_code: {_eq: $locale_code}}) {
-        title
-      }
-    }
-  }
-}`;
-
-function hasuraGetArticlesRss(params) {
-  return shared.fetchGraphQL({
-    url: apiUrl,
-    orgSlug: apiToken,
-    query: HASURA_GET_ARTICLES_RSS,
-    name: 'FrontendGetArticlesRSS',
-    variables: {
-      locale_code: params['localeCode'],
-    },
-  });
-}
-
 function getPubDate(article) {
   if (article && article.article_translations && article.article_translations[0] && article.article_translations[0].first_published_at) {
     let dateString = article.article_translations[0].first_published_at;
@@ -80,7 +31,7 @@ function generate(locale) {
     feed_url: `${process.env.NEXT_PUBLIC_SITE_URL}/feed.xml`,
   });
 
-  hasuraGetArticlesRss({
+  shared.hasuraGetArticlesRss({
     url: apiUrl,
     orgSlug: apiToken,
     localeCode: locale,

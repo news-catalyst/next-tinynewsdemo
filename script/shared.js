@@ -268,10 +268,6 @@ function hasuraListLocales(params) {
     orgSlug: params['orgSlug'],
     query: HASURA_LIST_ORG_LOCALES,
     name: 'FrontendListOrgLocales',
-    variables: {
-      locale_code: params['localeCode'],
-      slug: params['slug'],
-    },
   });
 }
 
@@ -490,8 +486,7 @@ const HASURA_INSERT_READING_FREQUENCY_DATA = `mutation FrontendInsertReadingFreq
       count
     }
   }
-}
-`;
+}`;
 
 function hasuraInsertReadingFrequency(params) {
   return fetchGraphQL({
@@ -529,31 +524,6 @@ function hasuraInsertReferralSession(params) {
       date: params['date'],
     },
   });
-}
-const HASURA_GET_READING_DEPTH_DATA = `query FrontendGetReadingDepth($path: String_comparison_exp, $date: date_comparison_exp) {
-  ga_reading_depth(where: {path: $path, date: $date}) {
-    date
-    id
-    organization_id
-    path
-    read_100
-    read_25
-    read_50
-    read_75
-  }
-}`;
-
-function hasuraGetReadingDepth(params) {
-  return fetchGraphQL({
-    url: params['url'],
-    orgSlug: params['orgSlug'],
-    query: HASURA_GET_READING_DEPTH_DATA,
-    name: 'FrontendGetReadingDepth',
-    variables: {
-      path: params['path'],
-      date: params['date'],
-    },
-  })
 }
 
 const HASURA_INSERT_READING_DEPTH_DATA = `mutation FrontendInsertReadingDepth($date: date!, $path: String!, $read_100: float8!, $read_25: float8!, $read_50: float8!, $read_75: float8!) {
@@ -633,6 +603,52 @@ function hasuraDeleteAnalytics(params) {
   })
 }
 
+const HASURA_GET_ARTICLES_RSS = `query FrontendGetArticlesRSS($locale_code: String!) {
+  articles(limit: 10, order_by: {created_at: desc}, where: {article_translations: {locale_code: {_eq: $locale_code}}}) {
+    slug
+    article_translations(where: {locale_code: {_eq: $locale_code}, published: {_eq: true}}) {
+      content
+      custom_byline
+      first_published_at
+      headline
+      last_published_at
+      published
+      search_description
+      updated_at
+    }
+    author_articles {
+      author {
+        name
+        photoUrl
+        slug
+        twitter
+        author_translations(where: {locale_code: {_eq: $locale_code}}) {
+          bio
+          title
+        }
+      }
+    }
+    category {
+      slug
+      category_translations(where: {locale_code: {_eq: $locale_code}}) {
+        title
+      }
+    }
+  }
+}`;
+
+function hasuraGetArticlesRss(params) {
+  return fetchGraphQL({
+    url: params['url'],
+    orgSlug: params['orgSlug'],
+    query: HASURA_GET_ARTICLES_RSS,
+    name: 'FrontendGetArticlesRSS',
+    variables: {
+      locale_code: params['localeCode'],
+    },
+  });
+}
+
 async function fetchGraphQL(params) {
   let url;
   let orgSlug;
@@ -690,7 +706,6 @@ module.exports = {
   hasuraInsertSessionDuration,
   hasuraInsertGeoSession,
   hasuraInsertReferralSession,
-  hasuraGetReadingDepth,
   hasuraInsertReadingDepth,
   hasuraInsertReadingFrequency,
   hasuraInsertCustomDimension,
@@ -708,6 +723,7 @@ module.exports = {
   hasuraDeleteAnalytics,
   hasuraInsertDonationClick,
   hasuraInsertDonorReadingFrequency,
+  hasuraGetArticlesRss,
   fetchGraphQL,
   sanitizePath
 }
