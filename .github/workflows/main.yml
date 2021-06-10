@@ -34,6 +34,11 @@ jobs:
   cypress-run:
     name: Run Cypress tests
     needs: install
+    strategy:
+      fail-fast: false
+      matrix:
+        # run copies of the current job in parallel
+        containers: [1, 2, 3, 4, 5]
     runs-on: ubuntu-latest
     container: 
       image: cypress/browsers:node14.16.0-chrome89-ff86
@@ -47,6 +52,8 @@ jobs:
       GOOGLE_CREDENTIALS_EMAIL: ${{ secrets.GOOGLE_CREDENTIALS_EMAIL }}
       GOOGLE_CREDENTIALS_PRIVATE_KEY: ${{ secrets.GOOGLE_CREDENTIALS_PRIVATE_KEY }}
       NEXT_PUBLIC_ANALYTICS_VIEW_ID: ${{ secrets.NEXT_PUBLIC_ANALYTICS_VIEW_ID }}
+      CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -57,9 +64,14 @@ jobs:
           path: .next
       # Install NPM dependencies, cache them correctly
       # and run all Cypress tests
-      - name: Cypress run
+      - name: 'UI Tests - Firefox'
         uses: cypress-io/github-action@v2
         with:
-          browser: firefox
-          build: npm run build
+          install: false
           start: npm start
+          wait-on: 'http://localhost:3000'
+          wait-on-timeout: 120
+          browser: firefox
+          record: true
+          parallel: true
+          group: 'UI - Firefox'
