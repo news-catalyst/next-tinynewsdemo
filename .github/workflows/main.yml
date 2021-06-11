@@ -25,11 +25,18 @@ jobs:
       - name: Cache node modules
         uses: actions/cache@v2
         with:
-          path: node_modules
-          key: node_modules-${{ hashFiles('npm-shrinkwrap.json') }}
+          path: ~/.npm
+          key: npm-dir
           # loading an older version is fine here, since it will get an npm install
           restore-keys: |
-            node_modules-
+            npm-dir-
+      - name: Cache cypress binary
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache
+          key: cached-cypress-binary
+          restore-keys: |
+            cached-cypress-binary-
       - name: npm install
         run: npm install
       - name: Cypress install
@@ -74,16 +81,21 @@ jobs:
       - name: Load node_modules
         uses: actions/cache@v2
         with:
-          path: node_modules
-          key: node_modules-${{ hashFiles('npm-shrinkwrap.json') }}
+          path: ~/.npm
+          key: npm-dir
           # no restore-keys here, so we only accept this exact version
+      - name: Load cypress binary
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache
+          key: cached-cypress-binary
       - name: Download the build folders
         uses: actions/download-artifact@v2
         with:
           name: build
           path: .next
       - name: Install dependencies
-        run: npm install
+        run: npm ci
       # Install NPM dependencies, cache them correctly
       # and run all Cypress tests
       - name: 'UI Tests - Firefox'
