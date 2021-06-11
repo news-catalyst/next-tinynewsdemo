@@ -1,5 +1,5 @@
-describe('Page tests', () => {
-  it('renders the homepage successfully', () => {
+describe('homepage', () => {
+  it('renders successfully', () => {
     cy.visit('http://localhost:3000/')
     cy.contains('Oaklyn')
     cy.get('header nav a[href="/business"]')
