@@ -37,8 +37,8 @@ jobs:
           key: cached-cypress-binary
           restore-keys: |
             cached-cypress-binary-
-      - name: npm install
-        run: npm install
+      - name: npm ci
+        run: npm ci
       - name: Cypress install
         uses: cypress-io/github-action@v2
         with:
