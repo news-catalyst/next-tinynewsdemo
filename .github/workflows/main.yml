@@ -22,6 +22,16 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      - name: Cache node modules
+        uses: actions/cache@v2
+        with:
+          path: node_modules
+          key: node_modules-${{ hashFiles('npm-shrinkwrap.json') }}
+          # loading an older version is fine here, since it will get an npm install
+          restore-keys: |
+            node_modules-
+      - name: npm install
+        run: npm install
       - name: Cypress install
         uses: cypress-io/github-action@v2
         with:
@@ -61,6 +71,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      - name: Load node_modules
+        uses: actions/cache@v2
+        with:
+          path: node_modules
+          key: node_modules-${{ hashFiles('npm-shrinkwrap.json') }}
+          # no restore-keys here, so we only accept this exact version
       - name: Download the build folders
         uses: actions/download-artifact@v2
         with:
