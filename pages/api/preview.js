@@ -1,6 +1,6 @@
 import { hasuraPreviewArticleBySlug } from '../../lib/articles.js';
 
-export default async (req, res) => {
+export default async function Handler(req, res) {
   const apiUrl = process.env.HASURA_API_URL;
   const apiToken = process.env.ORG_SLUG;
 
@@ -51,4 +51,4 @@ export default async (req, res) => {
   }
 
   res.redirect(articlePath);
-};
+}
