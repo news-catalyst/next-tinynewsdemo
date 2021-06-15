@@ -21,7 +21,7 @@ export default function ArticleFooter({ article, isAmp, metadata }) {
   if (article.tag_articles) {
     tagLinks = article.tag_articles.map((tag_article) => (
       <TagsListItem key={tag_article.tag.slug}>
-        <Link href={`/tags/${tag_article.tag.slug}`}>
+        <Link href={`/tags/${tag_article.tag.slug}`} passHref>
           <TagsListLink>
             {hasuraLocaliseText(tag_article.tag.tag_translations, 'title')}
           </TagsListLink>

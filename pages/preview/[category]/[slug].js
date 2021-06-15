@@ -83,9 +83,9 @@ export async function getStaticProps(context) {
       tags[i].title = hasuraLocaliseText(tags[i].tag_translations, 'title');
     }
     sections = data.categories;
-    for (var i = 0; i < sections.length; i++) {
-      sections[i].title = hasuraLocaliseText(
-        sections[i].category_translations,
+    for (var j = 0; j < sections.length; j++) {
+      sections[j].title = hasuraLocaliseText(
+        sections[j].category_translations,
         'title'
       );
     }

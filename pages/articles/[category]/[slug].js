@@ -26,7 +26,7 @@ export default function ArticlePage(props) {
     if (!props.article) {
       router.push('/404');
     }
-  }, [props.article]);
+  }, [props.article, router]);
 
   // trying to fix build errors...
   if (!props.article) {

@@ -135,7 +135,7 @@ export default function Settings({
     if (action && action === 'create') {
       setMessage('Successfully created metadata.');
     }
-  }, []);
+  }, [action, siteMetadata]);
 
   async function handleCancel(ev) {
     ev.preventDefault();
@@ -192,27 +192,27 @@ export default function Settings({
               <ul tw="ml-6">
                 <li>
                   <Link href="/tinycms/settings#siteInfo">
-                    <a href="/tinycms/settings#siteInfo">Site Information</a>
+                    <a>Site Information</a>
                   </Link>
                 </li>
                 <li>
                   <Link href="/tinycms/settings#design">
-                    <a href="/tinycms/settings#design">Design</a>
+                    <a>Design</a>
                   </Link>
                 </li>
                 <li>
                   <Link href="/tinycms/settings#newsletter">
-                    <a href="/tinycms/settings#newsletter">Newsletter Block</a>
+                    <a>Newsletter Block</a>
                   </Link>
                 </li>
                 <li>
                   <Link href="/tinycms/settings#membership">
-                    <a href="/tinycms/settings#membership">Membership Block</a>
+                    <a>Membership Block</a>
                   </Link>
                 </li>
                 <li>
                   <Link href="/tinycms/settings#seo">
-                    <a href="/tinycms/settings#seo">SEO/Social</a>
+                    <a>SEO/Social</a>
                   </Link>
                 </li>
               </ul>

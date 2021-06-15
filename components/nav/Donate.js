@@ -30,7 +30,7 @@ const Donate = ({ label, metadata }) => {
     });
   };
   return (
-    <Link href="/donate">
+    <Link href="/donate" passHref>
       <DonateLink
         style={{
           minHeight: '2.375rem',
