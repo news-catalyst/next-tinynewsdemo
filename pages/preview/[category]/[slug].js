@@ -117,7 +117,7 @@ export async function getStaticProps(context) {
   let ads = [];
   if (process.env.LETTERHEAD_API_URL) {
     const allAds = (await cachedContents('ads', getArticleAds)) || [];
-    ads = allAds.filter((ad) => ad.adTypeId === 164);
+    ads = allAds.filter((ad) => ad.adTypeId === 164 && ad.status === 4);
   }
 
   return {
