@@ -21,19 +21,19 @@ export default function EmbedNode({ node, amp }) {
       el = <Youtube node={node} amp={amp} url={url} />;
       break;
     case 'tiktok.com':
-      el = <TikTokEmbed node={node} />;
+      el = <TikTokEmbed node={node} amp={amp} />;
       break;
     case 'facebook.com':
-      el = <Facebook node={node} />;
+      el = <Facebook node={node} amp={amp} />;
       break;
     case 'instagram.com':
-      el = <Instagram node={node} />;
+      el = <Instagram node={node} amp={amp} />;
       break;
     case 'open.spotify.com':
-      el = <Spotify node={node} />;
+      el = <Spotify node={node} amp={amp} />;
       break;
     case 'embed.podcasts.apple.com':
-      el = <ApplePodcasts node={node} />;
+      el = <ApplePodcasts node={node} amp={amp} />;
       break;
     default:
       el = (
