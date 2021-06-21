@@ -110,7 +110,7 @@ export async function getStaticProps({ locale }) {
   let expandedAds = [];
   if (process.env.LETTERHEAD_API_URL) {
     const allAds = (await cachedContents('ads', getArticleAds)) || [];
-    console.log(allAds)
+    console.log(allAds);
     expandedAds = allAds.filter((ad) => ad.adTypeId === 166 && ad.status === 4);
   }
 
