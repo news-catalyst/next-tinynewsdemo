@@ -1,6 +1,9 @@
 import tw from 'twin.macro';
 import Twitter from './embeds/Twitter';
 import Youtube from './embeds/Youtube';
+import TikTokEmbed from './embeds/TikTok';
+import Facebook from './embeds/Facebook';
+import Instagram from './embeds/Instagram';
 
 const EmbedWrapper = tw.div`mb-5 max-w-full w-full`;
 
@@ -14,6 +17,15 @@ export default function EmbedNode({ node, amp }) {
       break;
     case 'youtube.com':
       el = <Youtube node={node} amp={amp} url={url} />;
+      break;
+    case 'tiktok.com':
+      el = <TikTokEmbed node={node} />;
+      break;
+    case 'facebook.com':
+      el = <Facebook node={node} />;
+      break;
+    case 'instagram.com':
+      el = <Instagram node={node} />;
       break;
     default:
       el = (
