@@ -191,6 +191,7 @@ export default function Layout({
             key="amp-analytics"
           />
         )}
+
       </Head>
       <ThemeWrapper meta={meta}>
         {renderNav && <GlobalNav metadata={meta} sections={sections} />}
