@@ -1,6 +1,11 @@
 import tw from 'twin.macro';
-import { TwitterTweetEmbed } from 'react-twitter-embed';
-import ReactPlayer from 'react-player/lazy';
+import Twitter from './embeds/Twitter';
+import Youtube from './embeds/Youtube';
+import TikTokEmbed from './embeds/TikTok';
+import Facebook from './embeds/Facebook';
+import Instagram from './embeds/Instagram';
+import Spotify from './embeds/Spotify';
+import ApplePodcasts from './embeds/ApplePodcasts';
 
 const EmbedWrapper = tw.div`mb-5 max-w-full w-full`;
 
@@ -10,46 +15,25 @@ export default function EmbedNode({ node, amp }) {
   const url = new URL(node.link);
   switch (url.hostname.replace('www.', '')) {
     case 'twitter.com':
-      const tweetId = node.link.split('/').slice(-1)[0];
-      el = amp ? (
-        <amp-twitter
-          layout="responsive"
-          data-tweetid={tweetId}
-          width="400"
-          height="200"
-        />
-      ) : (
-        <TwitterTweetEmbed tweetId={tweetId} />
-      );
+      el = <Twitter node={node} amp={amp} />;
       break;
     case 'youtube.com':
-      const videoId = url.searchParams.get('v');
-      el = amp ? (
-        <amp-youtube
-          layout="responsive"
-          data-videoid={videoId}
-          width="800"
-          height="400"
-        />
-      ) : (
-        <div
-          style={{
-            position: 'relative',
-            paddingTop: '56.25%',
-          }}
-        >
-          <ReactPlayer
-            url={node.link}
-            width="100%"
-            height="100%"
-            style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-            }}
-          />
-        </div>
-      );
+      el = <Youtube node={node} amp={amp} url={url} />;
+      break;
+    case 'tiktok.com':
+      el = <TikTokEmbed node={node} amp={amp} />;
+      break;
+    case 'facebook.com':
+      el = <Facebook node={node} amp={amp} />;
+      break;
+    case 'instagram.com':
+      el = <Instagram node={node} amp={amp} />;
+      break;
+    case 'open.spotify.com':
+      el = <Spotify node={node} amp={amp} />;
+      break;
+    case 'embed.podcasts.apple.com':
+      el = <ApplePodcasts node={node} amp={amp} />;
       break;
     default:
       el = (
