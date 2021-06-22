@@ -7,7 +7,7 @@ import { determineTextColor } from '../../lib/utils';
 import Colors from '../common/Colors';
 
 const Group = tw.div`relative`;
-const Input = tw.input`block w-full border-b border-gray-500 bg-black opacity-20`;
+const Input = tw.input`block w-full border-b border-gray-500 opacity-70 text-black font-bold`;
 const Bar = tw.div``;
 const Submit = styled.input(({ textColor, backgroundColor }) => ({
   ...tw`block absolute cursor-pointer rounded-full font-bold leading-none w-8 h-8 pl-2 right-2 z-10`,
@@ -82,8 +82,8 @@ const CustomForm = ({ status, message, onValidated, metadata }) => {
           style={{
             bottom: '0.3125rem',
             paddingTop: '0.375rem',
-            fontSize: '18px',
-            padding: '10px 10px 10px 5px',
+            fontSize: '20px',
+            padding: '5px 5px 10px 5px',
           }}
           textColor={textColor}
           backgroundColor={backgroundColor}
