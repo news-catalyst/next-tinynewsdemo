@@ -18,6 +18,7 @@ export default function AuthorPage({
   expandedAds,
 }) {
   const router = useRouter();
+  const isAmp = useAmp();
   // If the page is not yet generated, this will be displayed
   // initially until getStaticProps() finishes running
   if (router.isFallback) {
@@ -29,7 +30,6 @@ export default function AuthorPage({
     authorName = author.name;
   }
 
-  const isAmp = useAmp();
   return (
     <Layout meta={siteMetadata} sections={sections}>
       <ArticleStream

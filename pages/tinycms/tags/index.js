@@ -35,7 +35,7 @@ export default function Tags({ tags, currentLocale, locales }) {
       setNotificationType('success');
       setShowNotification(true);
     }
-  }, []);
+  }, [action]);
 
   const listItems = tags.map((tag) => {
     let title = hasuraLocaliseText(tag.tag_translations, 'title');

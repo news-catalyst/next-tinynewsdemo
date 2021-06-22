@@ -55,7 +55,8 @@ export default function Upload(props) {
   return (
     <>
       <ImgWrapper>
-        <img src={imageSrc} key={randomKey} />
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={imageSrc} key={randomKey} alt="" />
       </ImgWrapper>
       <div className="upload-steps">
         <input className="file-input" type="file" ref={fileInput} />

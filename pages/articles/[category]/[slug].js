@@ -15,18 +15,18 @@ export const config = { amp: 'hybrid' };
 export default function ArticlePage(props) {
   const router = useRouter();
 
+  useEffect(() => {
+    if (!props.article) {
+      router.push('/404');
+    }
+  }, [props.article, router]);
+
   // If the page is not yet generated, this will be displayed
   // initially until getStaticProps() finishes running
   // See: https://nextjs.org/docs/basic-features/data-fetching#the-fallback-key-required
   if (router.isFallback) {
     return <div>Loading...</div>;
   }
-
-  useEffect(() => {
-    if (!props.article) {
-      router.push('/404');
-    }
-  }, [props.article, router]);
 
   // trying to fix build errors...
   if (!props.article) {

@@ -35,7 +35,7 @@ export default function NewAdminNav(props) {
     } else if (props.homePageEditor) {
       console.log('is homepage editor AND missing hp data/schema', props);
     }
-  }, [props.hpData]);
+  }, [props]);
 
   return (
     <div>

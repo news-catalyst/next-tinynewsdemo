@@ -12,15 +12,15 @@ export default function Static({ page, sections, siteMetadata }) {
   const router = useRouter();
   const isAmp = useAmp();
 
-  if (router.isFallback) {
-    return <div>Loading...</div>;
-  }
-
   useEffect(() => {
     if (!page || page === undefined || page === null || page === {}) {
       router.push('/404');
     }
-  }, [page]);
+  }, [page, router]);
+
+  if (router.isFallback) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <StaticPage

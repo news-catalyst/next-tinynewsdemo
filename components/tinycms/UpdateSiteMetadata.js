@@ -44,7 +44,7 @@ export default function UpdateMetadata(props) {
       let formattedJSON = JSON.stringify(parsed, null, 2);
       setJsonData(formattedJSON);
     }
-  }, []);
+  }, [props.metadata]);
 
   async function handleCancel(ev) {
     ev.preventDefault();

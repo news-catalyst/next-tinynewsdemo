@@ -65,7 +65,15 @@ export default function ArticleBody({ article, ads, isAmp, metadata }) {
       });
       setFullReached(true);
     }
-  }, [percentage]);
+  }, [
+    percentage,
+    article.headline,
+    trackEvent,
+    oneQuarterReached,
+    oneHalfReached,
+    threeQuartersReached,
+    fullReached,
+  ]);
 
   return (
     <ArticleBodyWrapper>

@@ -6,6 +6,7 @@ export default function AdPixel({ pixel, isAmp }) {
       {isAmp ? (
         <amp-img width={0} height={0} src={uniq} layout="nodisplay" />
       ) : (
+        // eslint-disable-next-line @next/next/no-img-element
         <img
           src={uniq}
           width={0}
@@ -16,6 +17,7 @@ export default function AdPixel({ pixel, isAmp }) {
             height: 0,
             width: 0,
           }}
+          alt=""
         />
       )}
     </>

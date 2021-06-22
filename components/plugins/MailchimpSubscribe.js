@@ -105,7 +105,7 @@ const Newsletter = ({ articleTitle, metadata }) => {
         non_interaction: true,
       });
     }
-  }, [inView]);
+  }, [inView, articleTitle, trackEvent]);
 
   return (
     <div ref={ref}>

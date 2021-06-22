@@ -27,7 +27,7 @@ export default function EditHomepageLayout({
       setJsonData(homepageLayout.data);
       setHomepageLayoutId(homepageLayout.id);
     }
-  }, []);
+  }, [homepageLayout]);
 
   const router = useRouter();
 

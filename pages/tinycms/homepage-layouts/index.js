@@ -18,7 +18,7 @@ export default function HomepageLayouts({ homepageLayouts }) {
     if (action && action === 'create') {
       setMessage('Successfully created homepage layout.');
     }
-  }, []);
+  }, [action]);
 
   const listItems = homepageLayouts.map((homepageLayout) => {
     return (
