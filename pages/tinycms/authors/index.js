@@ -35,7 +35,7 @@ export default function Authors({ authors, currentLocale, locales }) {
       setNotificationType('success');
       setShowNotification(true);
     }
-  }, []);
+  }, [action]);
 
   const listItems = authors.map((author) => {
     let title = hasuraLocaliseText(author.author_translations, 'title');

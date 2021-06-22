@@ -54,7 +54,7 @@ const AverageSessionDuration = (props) => {
         timeRef.current.scrollIntoView({ behavior: 'smooth' });
       }
     }
-  }, [props.startDate, props.endDate]);
+  }, [props.startDate, props.endDate, props.apiUrl, props.apiToken]);
 
   return (
     <>

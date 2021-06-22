@@ -67,7 +67,7 @@ const ReadingDepthData = (props) => {
         depthRef.current.scrollIntoView({ behavior: 'smooth' });
       }
     }
-  }, [props.startDate, props.endDate]);
+  }, [props.startDate, props.endDate, props.apiToken, props.apiUrl]);
 
   return (
     <>

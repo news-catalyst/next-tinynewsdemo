@@ -163,7 +163,7 @@ const DonateClicks = (props) => {
         donationsRef.current.scrollIntoView({ behavior: 'smooth' });
       }
     }
-  }, [props.startDate, props.endDate]);
+  }, [props.startDate, props.endDate, props.apiToken, props.apiUrl]);
 
   return (
     <>

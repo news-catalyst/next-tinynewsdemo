@@ -15,7 +15,7 @@ export default function TikTokEmbed({ node, amp }) {
         // instead of a catch() block so that we don't swallow
         // exceptions from actual bugs in components.
       );
-  }, []);
+  }, [amp, node.link]);
   const el = amp ? (
     <div />
   ) : (
