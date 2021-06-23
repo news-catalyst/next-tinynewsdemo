@@ -100,9 +100,9 @@ export async function getStaticProps({ locale }) {
   }
 
   const sections = data.categories;
-  for (var i = 0; i < sections.length; i++) {
-    sections[i].title = hasuraLocaliseText(
-      sections[i].category_translations,
+  for (var j = 0; j < sections.length; j++) {
+    sections[j].title = hasuraLocaliseText(
+      sections[j].category_translations,
       'title'
     );
   }
@@ -110,7 +110,6 @@ export async function getStaticProps({ locale }) {
   let expandedAds = [];
   if (process.env.LETTERHEAD_API_URL) {
     const allAds = (await cachedContents('ads', getArticleAds)) || [];
-    console.log(allAds);
     expandedAds = allAds.filter((ad) => ad.adTypeId === 166 && ad.status === 4);
   }
 

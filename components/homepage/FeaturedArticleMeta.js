@@ -82,7 +82,7 @@ export default function FeaturedArticleMeta({ article, big, metadata }) {
     <>
       {article.category && (
         <AssetDescriptor>
-          <Link href={`/${article.category.slug}`}>
+          <Link href={`/${article.category.slug}`} passHref>
             <AssetDescriptorLink big={big} meta={metadata}>
               {categoryTitle}
             </AssetDescriptorLink>

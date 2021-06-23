@@ -45,7 +45,7 @@ const GeoSessions = (props) => {
         geoRef.current.scrollIntoView({ behavior: 'smooth' });
       }
     }
-  }, [props.startDate, props.endDate]);
+  }, [props.startDate, props.endDate, props.apiToken, props.apiUrl]);
 
   return (
     <>

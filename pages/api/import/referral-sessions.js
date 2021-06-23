@@ -93,7 +93,7 @@ function importReferralSessions(rows) {
   });
 }
 
-export default async (req, res) => {
+export default async function Handler(req, res) {
   let { startDate, endDate } = req.query;
 
   if (startDate === undefined) {
@@ -162,4 +162,4 @@ export default async (req, res) => {
     status: 'ok',
     audit: auditStatus,
   });
-};
+}

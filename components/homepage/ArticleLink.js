@@ -87,7 +87,11 @@ export default function ArticleLink({
       <AssetMetaContainer>
         <AssetDescriptor meta={metadata}>
           {article.category && showCategory && (
-            <Link key={categoryTitle} href={`/${article.category.slug}`}>
+            <Link
+              key={categoryTitle}
+              href={`/${article.category.slug}`}
+              passHref
+            >
               <AssetDescriptorLink meta={metadata}>
                 {categoryTitle}
               </AssetDescriptorLink>

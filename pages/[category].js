@@ -17,7 +17,7 @@ export default function CategoryPage(props) {
     if (!props.categoryExists) {
       router.push('/404');
     }
-  }, [props.categoryExists]);
+  }, [props.categoryExists, router]);
 
   // If the page is not yet generated, this will be displayed
   // initially until getStaticProps() finishes running
@@ -120,8 +120,8 @@ export async function getStaticProps({ locale, params }) {
       }
     }
 
-    for (var i = 0; i < tags.length; i++) {
-      tags[i].title = hasuraLocaliseText(tags[i].tag_translations, 'title');
+    for (var j = 0; j < tags.length; j++) {
+      tags[j].title = hasuraLocaliseText(tags[j].tag_translations, 'title');
     }
 
     let metadatas = data.site_metadatas;

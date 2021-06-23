@@ -56,7 +56,7 @@ export default function EditAuthor({
       setStaffYesNo('no');
       setStaff(false);
     }
-  }, []);
+  }, [author]);
 
   const handleChange = (ev) => {
     if (ev.target.value === 'yes') {

@@ -35,7 +35,7 @@ export default function EditTag({
       setTitle(title);
       setSlug(tag.slug);
     }
-  }, []);
+  }, [tag]);
 
   async function handleSubmit(ev) {
     ev.preventDefault();

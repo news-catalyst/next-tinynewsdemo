@@ -35,7 +35,7 @@ export default function Authors({ authors, currentLocale, locales }) {
       setNotificationType('success');
       setShowNotification(true);
     }
-  }, []);
+  }, [action]);
 
   const listItems = authors.map((author) => {
     let title = hasuraLocaliseText(author.author_translations, 'title');
@@ -98,7 +98,7 @@ export default function Authors({ authors, currentLocale, locales }) {
         </div>
 
         <div tw="flex pt-8 justify-end">
-          <Link href="/tinycms/authors/add">
+          <Link href="/tinycms/authors/add" passHref>
             <AddAuthorButton>Add Author</AddAuthorButton>
           </Link>
         </div>

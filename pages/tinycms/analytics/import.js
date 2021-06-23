@@ -62,7 +62,7 @@ export default function AnalyticsIndex(props) {
       setDataImports(data.ga_data_imports);
     };
     fetchDataImports();
-  }, [updateKey]);
+  }, [updateKey, props.apiToken, props.apiUrl]);
 
   return (
     <AdminLayout>
