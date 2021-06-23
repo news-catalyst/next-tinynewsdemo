@@ -14,7 +14,9 @@ export default function MetadataSelect(props) {
           onChange={props.handleChange}
         >
           {props.choices.map((choice) => (
-            <option value={choice}>{choice}</option>
+            <option key={choice} value={choice}>
+              {choice}
+            </option>
           ))}
         </select>
       </div>

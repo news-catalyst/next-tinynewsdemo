@@ -1,4 +1,4 @@
-import React from 'react';
+import Image from 'next/image';
 
 export default function TextAd({ ad, isAmp }) {
   return (
@@ -17,7 +17,13 @@ export default function TextAd({ ad, isAmp }) {
               layout="responsive"
             />
           ) : (
-            <img src={ad.image.url} className="ad-banner" alt={ad.image.alt} />
+            <Image
+              src={ad.image.url}
+              className="ad-banner"
+              alt={ad.image.alt}
+              width={300}
+              height={300}
+            />
           )}
         </a>
       </div>

@@ -38,17 +38,17 @@ export default function Grid({ header, type, articles }) {
       'Hootsuite',
     ];
 
-    for (var i = 0; i < articles.length; i++) {
+    for (var j = 0; j < articles.length; j++) {
       const translation =
-        articles[i].article_translations[
-          articles[i].article_translations.length - 1
+        articles[j].article_translations[
+          articles[j].article_translations.length - 1
         ];
 
       gridItems.push(
         <GridItem
-          header={`How to use ${tech[i]}`}
+          header={`How to use ${tech[j]}`}
           dek="Lorem Ipsum"
-          article={articles[i]}
+          article={articles[j]}
         />
       );
     }

@@ -50,7 +50,7 @@ const DailySessions = (props) => {
         dailyRef.current.scrollIntoView({ behavior: 'smooth' });
       }
     }
-  }, [props.startDate, props.endDate]);
+  }, [props.startDate, props.endDate, chartData, props.apiToken, props.apiUrl]);
 
   return (
     <>

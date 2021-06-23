@@ -6,6 +6,7 @@ import { useAmp } from 'next/amp';
 import GlobalStyles from './../components/GlobalStyles';
 
 export function reportWebVitals({ id, name, label, value }) {
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const { trackEvent } = useAnalytics();
   if (label === 'web-vital') {
     const event = {
@@ -27,15 +28,38 @@ const App = ({ Component, pageProps }) => {
     logReadingHistory,
     summarizeReadingHistory,
     donorStatusFromCookie,
+    trackMailChimpParams,
   } = useAnalytics();
   const isAmp = useAmp();
   useEffect(() => {
     if (isAmp) {
       return true;
     }
+
+    function trackNewsletterVisits(trackMailChimpParams) {
+      let isSubscriber = trackMailChimpParams();
+      if (isSubscriber) {
+        setDimension('dimension5', true);
+        return {
+          dimension5: true,
+        };
+      } else {
+        return {};
+      }
+    }
+
+    function trackReadingHistoryWithPageView() {
+      logReadingHistory();
+      const readingHistory = summarizeReadingHistory();
+      setDimension('dimension2', readingHistory);
+      return {
+        dimension2: readingHistory,
+      };
+    }
+
     init(process.env.NEXT_PUBLIC_GA_TRACKING_ID);
     let readingDimensionsData = trackReadingHistoryWithPageView();
-    let newsletterDimensionsData = trackNewsletterVisits();
+    let newsletterDimensionsData = trackNewsletterVisits(trackMailChimpParams);
 
     let dimensionsData = {
       ...readingDimensionsData,
@@ -50,24 +74,12 @@ const App = ({ Component, pageProps }) => {
 
     let pagePath = window.location.pathname + window.location.search;
     if (!/tinycms/.test(pagePath)) {
-      console.log(
-        'tracking page view',
-        pagePath,
-        'with custom dimensions:',
-        dimensionsData
-      );
       trackPageViewedWithDimensions(pagePath, dimensionsData);
     }
 
     const handleRouteChange = () => {
       if (!/tinycms/.test(pagePath)) {
         let routeChangeData = trackReadingHistoryWithPageView();
-        console.log(
-          'tracking page view for route change',
-          pagePath,
-          'with custom dimensions:',
-          routeChangeData
-        );
         trackPageViewedWithDimensions(pagePath, routeChangeData);
       }
     };
@@ -75,28 +87,7 @@ const App = ({ Component, pageProps }) => {
     return () => {
       Router.events.off('routeChangeComplete', handleRouteChange);
     };
-  }, []);
-
-  function trackNewsletterVisits() {
-    const { trackMailChimpParams } = useAnalytics();
-    let isSubscriber = trackMailChimpParams();
-    if (isSubscriber) {
-      setDimension('dimension5', true);
-      return {
-        dimension5: true,
-      };
-    } else {
-      return {};
-    }
-  }
-  function trackReadingHistoryWithPageView() {
-    logReadingHistory();
-    const readingHistory = summarizeReadingHistory();
-    setDimension('dimension2', readingHistory);
-    return {
-      dimension2: readingHistory,
-    };
-  }
+  });
 
   return (
     <Provider session={pageProps.session}>

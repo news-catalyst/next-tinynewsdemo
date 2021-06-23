@@ -35,7 +35,7 @@ export default function Tags({ tags, currentLocale, locales }) {
       setNotificationType('success');
       setShowNotification(true);
     }
-  }, []);
+  }, [action]);
 
   const listItems = tags.map((tag) => {
     let title = hasuraLocaliseText(tag.tag_translations, 'title');
@@ -76,7 +76,7 @@ export default function Tags({ tags, currentLocale, locales }) {
         </div>
 
         <div tw="flex pt-8 justify-end">
-          <Link href="/tinycms/tags/add">
+          <Link href="/tinycms/tags/add" passHref>
             <AddTagButton>Add Tag</AddTagButton>
           </Link>
         </div>
@@ -92,7 +92,7 @@ export default function Tags({ tags, currentLocale, locales }) {
         </Table>
 
         <div tw="flex pt-8 justify-end">
-          <Link href="/tinycms/tags/add">
+          <Link href="/tinycms/tags/add" passHref>
             <AddTagButton>Add Tag</AddTagButton>
           </Link>
         </div>

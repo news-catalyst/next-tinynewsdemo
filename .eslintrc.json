@@ -12,7 +12,8 @@
   "extends": [
     "eslint:recommended",
     "plugin:react/recommended",
-    "plugin:prettier/recommended"
+    "plugin:prettier/recommended",
+    "next"
   ],
   "settings": {
     "react": {
@@ -48,7 +49,10 @@
     "react/prop-types": 0,
     "no-nested-ternary": 0,
     "react/no-unescaped-entities": 0,
-    "react/react-in-jsx-scope": 0
+    "react/react-in-jsx-scope": 0,
+    "no-unused-vars": 0,
+    "no-undef": 0,
+    "@next/next/no-page-custom-font": 0
   },
   "globals": {
     "grecaptcha": "readonly"
