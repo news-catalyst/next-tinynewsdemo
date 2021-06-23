@@ -8,6 +8,7 @@ module.exports = {
       'wherebyspace.nyc3.digitaloceanspaces.com',
       'tiny-news-demo-assets-oaklyn.s3.amazonaws.com',
       'tnc-test-upload-bucket.s3.us-east-1.amazonaws.com',
+      'ucarecdn.com',
     ],
   },
   i18n: {
