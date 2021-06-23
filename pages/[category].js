@@ -14,7 +14,7 @@ export default function CategoryPage(props) {
   const router = useRouter();
 
   useEffect(() => {
-    if (!props.categoryExists) {
+    if (props.categoryExists === false) {
       router.push('/404');
     }
   }, [props.categoryExists, router]);
@@ -111,6 +111,7 @@ export async function getStaticProps({ locale, params }) {
         sections[i].category_translations,
         'title'
       );
+      console.log(sections[i]);
       if (sections[i].slug == params.category) {
         categoryExists = true;
         title = hasuraLocaliseText(sections[i].category_translations, 'title');
