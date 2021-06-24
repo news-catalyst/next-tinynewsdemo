@@ -56,13 +56,11 @@ export default function UpdateMetadata(props) {
 
     let parsed = parsedData;
 
-    console.log('parsedData:', parsedData);
     if (jsonData && (Object.keys(parsedData).length === 0 || editData)) {
       parsed = JSON.parse(jsonData);
       setParsedData(parsed);
     }
 
-    console.log('parsedData:', parsed);
     const { errors, data } = await hasuraUpsertMetadata({
       url: props.apiUrl,
       orgSlug: props.apiToken,
