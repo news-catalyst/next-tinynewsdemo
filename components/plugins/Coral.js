@@ -6,7 +6,8 @@ class Coral extends Component {
     script.id = 'loadCoral';
     script.src = '/coral.js';
     script.async = true;
-    this.instance.appendChild(script); }
+    this.instance.appendChild(script);
+  }
 
   render() {
     return <div ref={(el) => (this.instance = el)} id="coral_thread"></div>;
