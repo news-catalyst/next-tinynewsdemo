@@ -30,17 +30,17 @@ const Advertise = ({ label, metadata }) => {
     });
   };
   return (
-      <AdvertiseLink
-        style={{
-          minHeight: '2.375rem',
-        }}
-        className="site__cta button Advertise"
-        onClick={trackClick}
-        meta={metadata}
-        href="https://store.tryletterhead.com/catalyst-test"
-      >
-        {label}
-      </AdvertiseLink>
+    <AdvertiseLink
+      style={{
+        minHeight: '2.375rem',
+      }}
+      className="site__cta button Advertise"
+      onClick={trackClick}
+      meta={metadata}
+      href="https://store.tryletterhead.com/catalyst-test"
+    >
+      {label}
+    </AdvertiseLink>
   );
 };
 export default Advertise;

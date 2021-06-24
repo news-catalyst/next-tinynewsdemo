@@ -56,14 +56,19 @@ export default function ArticleStream({
 
   const articleStream = articles.map((article, i) => {
     const streamArticle = renderArticle(article);
-    if (i > 0 && i % AD_PLACEMENT_INDEX === 0 && ads.length === 0 && adIndex === 0) {
-      adIndex = adIndex + 1
+    if (
+      i > 0 &&
+      i % AD_PLACEMENT_INDEX === 0 &&
+      ads.length === 0 &&
+      adIndex === 0
+    ) {
+      adIndex = adIndex + 1;
       return (
         <>
-          <AdPromotion metadata={metadata}/>
+          <AdPromotion metadata={metadata} />
           {streamArticle}
         </>
-      )
+      );
     }
     if (i > 0 && i % AD_PLACEMENT_INDEX === 0 && adIndex < ads.length) {
       const ad = renderAd(ads[adIndex]);
