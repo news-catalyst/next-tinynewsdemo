@@ -196,7 +196,6 @@ it('gets data to get (public render) an article by slug', () => {
     expect(response.data.articles[0]).toHaveProperty('author_articles');
   });
 });
-    // console.log(Object.keys(response.data));
 
 it('lists all page slugs for preview', () => {
   return hasuraListAllPageSlugsPreview(params).then(response => {

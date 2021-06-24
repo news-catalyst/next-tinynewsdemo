@@ -64,15 +64,6 @@ export default function HomePageEditor({
       article3 = subFeaturedBottomArticle.id;
     }
 
-    console.log(
-      'saving homepage...',
-      selectedLayout.id,
-      'article1:',
-      article1,
-      article2,
-      article3
-    );
-
     const { errors, data } = await hasuraSaveHomepageLayout({
       url: apiUrl,
       orgSlug: apiToken,

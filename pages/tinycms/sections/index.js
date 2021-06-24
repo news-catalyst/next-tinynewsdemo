@@ -32,7 +32,6 @@ export default function Sections({ sections, currentLocale, locales }) {
   }, [action]);
 
   const listItems = sections.map((section) => {
-    console.log('section:', section);
     let title = hasuraLocaliseText(section.category_translations, 'title');
     return (
       <TableRow key={section.id}>
