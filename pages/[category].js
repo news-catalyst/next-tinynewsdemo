@@ -111,7 +111,6 @@ export async function getStaticProps({ locale, params }) {
         sections[i].category_translations,
         'title'
       );
-      console.log(sections[i]);
       if (sections[i].slug == params.category) {
         categoryExists = true;
         title = hasuraLocaliseText(sections[i].category_translations, 'title');

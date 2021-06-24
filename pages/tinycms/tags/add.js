@@ -39,7 +39,6 @@ export default function AddTag({ apiUrl, apiToken, currentLocale, locales }) {
     const { errors, data } = await hasuraCreateTag(params);
 
     if (data && data.insert_tags_one) {
-      console.log(data.insert_tags_one);
       setNotificationMessage('Successfully saved and published the tag!');
       setNotificationType('success');
       setShowNotification(true);

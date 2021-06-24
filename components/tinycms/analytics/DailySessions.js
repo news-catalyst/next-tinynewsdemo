@@ -43,8 +43,7 @@ const DailySessions = (props) => {
       setChartData(chartValues);
     };
     fetchSessions();
-
-    console.log(chartData);
+    
     if (window.location.hash && window.location.hash === '#daily') {
       if (dailyRef) {
         dailyRef.current.scrollIntoView({ behavior: 'smooth' });
