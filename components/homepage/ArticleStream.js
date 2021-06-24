@@ -2,6 +2,7 @@ import tw from 'twin.macro';
 import PromotionBlock from '../plugins/PromotionBlock';
 import ArticleLink from './ArticleLink';
 import ExpandedTextWithImageAd from '../ads/ExpandedTextWithImageAd';
+import AdPromotion from '../ads/AdPromotion.js';
 
 const SectionLayout = tw.section`flex mb-8`;
 const SectionContainer = tw.div`md:grid md:grid-cols-packageLayoutTablet lg:grid-cols-packageLayoutDesktop flex flex-row flex-wrap grid-rows-1 w-full px-5 mx-auto max-w-7xl`;
@@ -55,7 +56,20 @@ export default function ArticleStream({
 
   const articleStream = articles.map((article, i) => {
     const streamArticle = renderArticle(article);
-
+    if (
+      i > 0 &&
+      i % AD_PLACEMENT_INDEX === 0 &&
+      ads.length === 0 &&
+      adIndex === 0
+    ) {
+      adIndex = adIndex + 1;
+      return (
+        <>
+          <AdPromotion metadata={metadata} />
+          {streamArticle}
+        </>
+      );
+    }
     if (i > 0 && i % AD_PLACEMENT_INDEX === 0 && adIndex < ads.length) {
       const ad = renderAd(ads[adIndex]);
       adIndex++;

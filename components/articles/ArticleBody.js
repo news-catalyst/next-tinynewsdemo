@@ -11,7 +11,7 @@ const SectionContainer = tw.div`w-full px-5 items-center flex flex-col flex-nowr
 const BlockWrapper = tw.div`max-w-2xl w-full`;
 
 export default function ArticleBody({ article, ads, isAmp, metadata }) {
-  const body = renderBody(article.article_translations, ads, isAmp);
+  const body = renderBody(article.article_translations, ads, isAmp, metadata);
 
   const { trackEvent } = useAnalytics();
 
