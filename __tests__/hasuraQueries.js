@@ -1,7 +1,6 @@
 import { hasuraGetCustomDimension, hasuraGetDataImports, hasuraGetDonationClicks, hasuraGetGeoSessions, hasuraGetNewsletterImpressions, hasuraGetPageViews, hasuraGetReadingDepth, hasuraGetReadingFrequency, hasuraGetReferralSessions, hasuraGetSessionDuration, hasuraGetSessions, hasuraGetYesterday } from '../lib/analytics';
-import { hasuraGetHomepageEditor, hasuraGetHomepageLayouts, hasuraGetHomepageData, hasuraListLocales, hasuraSearchArticles, hasuraGetPagePreview, hasuraGetPage, hasuraGetLayout, hasuraGetMetadataByLocale, hasuraPreviewArticleBySlug, hasuraGetArticleBySlug, hasuraListAllPageSlugsPreview, hasuraListAllPageSlugs, hasuraListAllArticleSlugs, hasuraListAllAuthorPaths, hasuraTagPage, hasuraPreviewArticlePage, hasuraArticlePage, hasuraAuthorPage } from '../lib/articles';
+import { hasuraGetHomepageEditor, hasuraGetHomepageLayouts, hasuraGetHomepageData, hasuraListLocales, hasuraSearchArticles, hasuraGetPagePreview, hasuraGetPage, hasuraGetLayout, hasuraGetMetadataByLocale, hasuraPreviewArticleBySlug, hasuraGetArticleBySlug, hasuraListAllPageSlugsPreview, hasuraListAllPageSlugs, hasuraListAllArticleSlugs, hasuraPreviewArticlePage, hasuraArticlePage } from '../lib/articles';
 import { hasuraGetHomepageLayout, hasuraListHomepageLayoutSchemas, hasuraStreamArticles } from '../lib/homepage';
-import { hasuraGetTagById, hasuraListAllSectionsByLocale } from '../lib/section';
 
 require('dotenv').config({ path: '.env.local' })
 
@@ -210,14 +209,6 @@ it('lists layout schemas', () => {
   params['localeCode'] = 'en-US';
   return hasuraListHomepageLayoutSchemas(params).then(response => {
     expect(response.data).toHaveProperty('homepage_layout_schemas');
-  });
-});
-
-it('lists all sections by locale', () => {
-  params['localeCode'] = 'en-US';
-  return hasuraListAllSectionsByLocale(params).then(response => {
-    expect(response.data).toHaveProperty('organization_locales');
-    expect(response.data).toHaveProperty('categories');
   });
 });
 
