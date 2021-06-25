@@ -1,6 +1,5 @@
 import { hasuraGetCustomDimension, hasuraGetDataImports, hasuraGetDonationClicks, hasuraGetGeoSessions, hasuraGetNewsletterImpressions, hasuraGetPageViews, hasuraGetReadingDepth, hasuraGetReadingFrequency, hasuraGetReferralSessions, hasuraGetSessionDuration, hasuraGetSessions, hasuraGetYesterday } from '../lib/analytics';
 import { hasuraGetHomepageEditor, hasuraGetHomepageLayouts, hasuraGetHomepageData, hasuraListLocales, hasuraSearchArticles, hasuraGetPagePreview, hasuraGetPage, hasuraGetLayout, hasuraGetMetadataByLocale, hasuraPreviewArticleBySlug, hasuraGetArticleBySlug, hasuraListAllPageSlugsPreview, hasuraListAllPageSlugs, hasuraListAllArticleSlugs, hasuraListAllAuthorPaths, hasuraTagPage, hasuraPreviewArticlePage, hasuraArticlePage, hasuraAuthorPage } from '../lib/articles';
-import { hasuraGetAuthorById, hasuraGetAuthorBySlug, hasuraListAllAuthors } from '../lib/authors';
 import { hasuraGetHomepageLayout, hasuraListHomepageLayoutSchemas, hasuraStreamArticles } from '../lib/homepage';
 import { hasuraGetTagById, hasuraListAllSectionsByLocale } from '../lib/section';
 
@@ -116,19 +115,6 @@ it('gets site metadata by locale', () => {
   });
 });
 
-it('gets data to author page', () => {
-  params['localeCode'] = 'en-US';
-  params['authorSlug'] = 'jacqui-lough';
-  return hasuraAuthorPage(params).then(response => {
-    expect(response.data).toHaveProperty('authors');
-    expect(response.data.authors).toHaveLength(1);
-    expect(response.data.authors[0]).toHaveProperty('slug');
-    expect(response.data).toHaveProperty('articles');
-    expect(response.data).toHaveProperty('categories');
-    expect(response.data).toHaveProperty('site_metadatas');
-  });
-});
-
 it('gets data to article page', () => {
   params['localeCode'] = 'en-US';
   params['slug'] = 'kensingtons-last-minute-gift-guide';
@@ -205,24 +191,6 @@ it('lists all published article slugs', () => {
   });
 });
 
-it('lists all author paths', () => {
-  return hasuraListAllAuthorPaths(params).then(response => {
-    expect(response.data).toHaveProperty('authors');
-    expect(response.data.authors[0]).toHaveProperty('author_translations');
-    expect(response.data.authors[0]).toHaveProperty('slug');
-  });
-});
-
-it('gets tag page data', () => {
-  params['localeCode'] = 'en-US';
-  params['tagSlug'] = 'pandemic';
-  return hasuraTagPage(params).then(response => {
-    expect(response.data).toHaveProperty('tags');
-    expect(response.data).toHaveProperty('site_metadatas');
-    expect(response.data).toHaveProperty('categories');
-  });
-});
-
 it('gets homepage layout by id', () => {
   params['id'] = 1;
   return hasuraGetHomepageLayout(params).then(response => {
@@ -250,48 +218,6 @@ it('lists all sections by locale', () => {
   return hasuraListAllSectionsByLocale(params).then(response => {
     expect(response.data).toHaveProperty('organization_locales');
     expect(response.data).toHaveProperty('categories');
-  });
-});
-
-it('gets a tag by ID', () => {
-  params['id'] = 1;
-  return hasuraGetTagById(params).then(response => {
-    expect(response.data).toHaveProperty('organization_locales');
-    expect(response.data).toHaveProperty('tags_by_pk');
-  });
-});
-
-describe('authors', () => {
-  it('lists authors', () => {
-    params['localCode'] = 'en-US';
-    return hasuraListAllAuthors(params['localeCode']).then(response => {
-      expect(response.data).toHaveProperty('organization_locales');
-      expect(response.data).toHaveProperty('authors');
-    });
-  });
-  it('gets author by slug', () => {
-    params['slug'] = 'jacqui-lough';
-    return hasuraGetAuthorBySlug(params).then(response => {
-      expect(response.data).toHaveProperty('authors');
-      expect(response.data.authors[0]).toHaveProperty('id');
-      expect(response.data.authors[0]).toHaveProperty('name');
-      expect(response.data.authors[0]).toHaveProperty('photoUrl');
-      expect(response.data.authors[0]).toHaveProperty('slug');
-      expect(response.data.authors[0]).toHaveProperty('staff');
-      expect(response.data.authors[0]).toHaveProperty('twitter');
-    });
-  });
-  it('gets author by id', () => {
-    params['id'] = 1;
-    return hasuraGetAuthorById(params).then(response => {
-      expect(response.data).toHaveProperty('authors_by_pk');
-      expect(response.data.authors_by_pk).toHaveProperty('id');
-      expect(response.data.authors_by_pk).toHaveProperty('name');
-      expect(response.data.authors_by_pk).toHaveProperty('photoUrl');
-      expect(response.data.authors_by_pk).toHaveProperty('slug');
-      expect(response.data.authors_by_pk).toHaveProperty('staff');
-      expect(response.data.authors_by_pk).toHaveProperty('twitter');
-    });
   });
 });
 
