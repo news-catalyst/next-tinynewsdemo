@@ -1,5 +1,5 @@
 import { hasuraGetCustomDimension, hasuraGetDataImports, hasuraGetDonationClicks, hasuraGetGeoSessions, hasuraGetNewsletterImpressions, hasuraGetPageViews, hasuraGetReadingDepth, hasuraGetReadingFrequency, hasuraGetReferralSessions, hasuraGetSessionDuration, hasuraGetSessions, hasuraGetYesterday } from '../lib/analytics';
-import { hasuraGetHomepageEditor, hasuraGetHomepageLayouts, hasuraGetHomepageData, hasuraListLocales, hasuraSearchArticles, hasuraListAllTags, hasuraGetPagePreview, hasuraGetPage, hasuraGetLayout, hasuraGetMetadataByLocale, hasuraPreviewArticleBySlug, hasuraGetArticleBySlug, hasuraListAllPageSlugsPreview, hasuraListAllPageSlugs, hasuraListAllArticleSlugs, hasuraListAllAuthorPaths, hasuraTagPage, hasuraPreviewArticlePage, hasuraArticlePage, hasuraAuthorPage } from '../lib/articles';
+import { hasuraGetHomepageEditor, hasuraGetHomepageLayouts, hasuraGetHomepageData, hasuraListLocales, hasuraSearchArticles, hasuraGetPagePreview, hasuraGetPage, hasuraGetLayout, hasuraGetMetadataByLocale, hasuraPreviewArticleBySlug, hasuraGetArticleBySlug, hasuraListAllPageSlugsPreview, hasuraListAllPageSlugs, hasuraListAllArticleSlugs, hasuraListAllAuthorPaths, hasuraTagPage, hasuraPreviewArticlePage, hasuraArticlePage, hasuraAuthorPage } from '../lib/articles';
 import { hasuraGetAuthorById, hasuraGetAuthorBySlug, hasuraListAllAuthors } from '../lib/authors';
 import { hasuraGetHomepageLayout, hasuraListHomepageLayoutSchemas, hasuraStreamArticles } from '../lib/homepage';
 import { hasuraGetTagById, hasuraListAllSectionsByLocale } from '../lib/section';
@@ -76,15 +76,6 @@ it('gets homepage data', () => {
     expect(response.data.homepage_layout_datas[0]).toHaveProperty('second_article');
     expect(response.data.homepage_layout_datas[0]).toHaveProperty('third_article');
     expect(response.data.homepage_layout_datas[0]).toHaveProperty('homepage_layout_schema');
-  });
-});
-
-it('gets all tags', () => {
-  return hasuraListAllTags(params).then(response => {
-    expect(response.data).toHaveProperty('tags');
-    expect(response.data.tags[0]).toHaveProperty('id');
-    expect(response.data.tags[0]).toHaveProperty('slug');
-    expect(response.data.tags[0]).toHaveProperty('tag_translations');
   });
 });
 
