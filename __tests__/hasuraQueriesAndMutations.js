@@ -1,5 +1,5 @@
-import { hasuraGetSectionById, hasuraCreateTag, hasuraCreateSection, hasuraListAllSectionsByLocale, hasuraUpdateSection } from '../lib/section';
-import { hasuraListAllSections } from '../lib/articles';
+import { hasuraGetSectionById, hasuraGetTagById, hasuraCreateTag, hasuraCreateSection, hasuraListAllSectionsByLocale, hasuraUpdateSection, hasuraUpdateTag } from '../lib/section';
+import { hasuraListAllTags, hasuraListAllSections, hasuraTagPage, hasuraCategoryPage } from '../lib/articles';
 
 require('dotenv').config({ path: '.env.local' })
 
@@ -12,6 +12,7 @@ let params = {
 };
 
 let newsSectionId;
+let newTagId;
 
 describe('sections', () => {
   it('creates a section', () => {
@@ -87,10 +88,51 @@ describe('tags', () => {
     params['slug'] = 'tag-news';
 
     return hasuraCreateTag(params).then(response => {
-      newsSectionId = response.data.insert_tags_one.id;
+      newTagId = response.data.insert_tags_one.id;
       expect(response.data).toHaveProperty('insert_tags_one.id');
       expect(response.data).toHaveProperty('insert_tags_one.slug');
       expect(response.data).toHaveProperty('insert_tags_one.tag_translations');
     });
   });
+
+  it('gets all tags', () => {
+    return hasuraListAllTags(params).then(response => {
+      expect(response.data).toHaveProperty('tags');
+      expect(response.data.tags[0]).toHaveProperty('id');
+      expect(response.data.tags[0]).toHaveProperty('slug');
+      expect(response.data.tags[0]).toHaveProperty('tag_translations');
+    });
+  });
+
+  it('gets tag page data', () => {
+    params['localeCode'] = 'en-US';
+    params['tagSlug'] = 'pandemic';
+    return hasuraTagPage(params).then(response => {
+      expect(response.data).toHaveProperty('tags');
+      expect(response.data).toHaveProperty('site_metadatas');
+      expect(response.data).toHaveProperty('categories');
+    });
+  });
+
+  it('gets a tag by ID', () => {
+    params['id'] = newTagId;
+    return hasuraGetTagById(params).then(response => {
+      expect(response.data).toHaveProperty('organization_locales');
+      expect(response.data).toHaveProperty('tags_by_pk');
+    });
+  });
+
+  it('updates a tag title', () => {
+    params['id'] = newTagId;
+    params['localeCode'] = 'en-US';
+    params['title'] = 'New Tag News';
+    params['published'] = true;
+    params['slug'] = 'news';
+
+    return hasuraUpdateTag(params).then(response => {
+      expect(response.data).toHaveProperty('insert_tag_translations');
+      expect(response.data).toHaveProperty('update_tags_by_pk');
+    });
+  });
+
 });
