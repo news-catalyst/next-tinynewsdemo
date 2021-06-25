@@ -1,8 +1,8 @@
 import { hasuraGetCustomDimension, hasuraGetDataImports, hasuraGetDonationClicks, hasuraGetGeoSessions, hasuraGetNewsletterImpressions, hasuraGetPageViews, hasuraGetReadingDepth, hasuraGetReadingFrequency, hasuraGetReferralSessions, hasuraGetSessionDuration, hasuraGetSessions, hasuraGetYesterday } from '../lib/analytics';
-import { hasuraGetHomepageEditor, hasuraGetHomepageLayouts, hasuraGetHomepageData, hasuraListLocales, hasuraSearchArticles, hasuraListAllTags, hasuraListAllSections, hasuraGetPagePreview, hasuraGetPage, hasuraGetLayout, hasuraGetMetadataByLocale, hasuraPreviewArticleBySlug, hasuraGetArticleBySlug, hasuraListAllPageSlugsPreview, hasuraListAllPageSlugs, hasuraListAllArticleSlugs, hasuraListAllAuthorPaths, hasuraTagPage, hasuraCategoryPage, hasuraPreviewArticlePage, hasuraArticlePage, hasuraAuthorPage } from '../lib/articles';
+import { hasuraGetHomepageEditor, hasuraGetHomepageLayouts, hasuraGetHomepageData, hasuraListLocales, hasuraSearchArticles, hasuraListAllTags, hasuraGetPagePreview, hasuraGetPage, hasuraGetLayout, hasuraGetMetadataByLocale, hasuraPreviewArticleBySlug, hasuraGetArticleBySlug, hasuraListAllPageSlugsPreview, hasuraListAllPageSlugs, hasuraListAllArticleSlugs, hasuraListAllAuthorPaths, hasuraTagPage, hasuraPreviewArticlePage, hasuraArticlePage, hasuraAuthorPage } from '../lib/articles';
 import { hasuraGetAuthorById, hasuraGetAuthorBySlug, hasuraListAllAuthors } from '../lib/authors';
 import { hasuraGetHomepageLayout, hasuraListHomepageLayoutSchemas, hasuraStreamArticles } from '../lib/homepage';
-import { hasuraGetSectionById, hasuraGetTagById, hasuraListAllSectionsByLocale } from '../lib/section';
+import { hasuraGetTagById, hasuraListAllSectionsByLocale } from '../lib/section';
 
 require('dotenv').config({ path: '.env.local' })
 
@@ -85,14 +85,6 @@ it('gets all tags', () => {
     expect(response.data.tags[0]).toHaveProperty('id');
     expect(response.data.tags[0]).toHaveProperty('slug');
     expect(response.data.tags[0]).toHaveProperty('tag_translations');
-  });
-});
-
-it('gets all sections', () => {
-  return hasuraListAllSections(params).then(response => {
-    expect(response.data).toHaveProperty('categories');
-    expect(response.data.categories[0]).toHaveProperty('slug');
-    expect(response.data.categories[0]).toHaveProperty('category_translations');
   });
 });
 
@@ -240,17 +232,6 @@ it('gets tag page data', () => {
   });
 });
 
-it('gets category page data', () => {
-  params['localeCode'] = 'en-US';
-  params['categorySlug'] = 'business';
-  return hasuraCategoryPage(params).then(response => {
-    expect(response.data).toHaveProperty('articles');
-    expect(response.data).toHaveProperty('categories');
-    expect(response.data.categories[0]).toHaveProperty('slug');
-    expect(response.data.categories[0]).toHaveProperty('category_translations');
-  });
-});
-
 it('gets homepage layout by id', () => {
   params['id'] = 1;
   return hasuraGetHomepageLayout(params).then(response => {
@@ -286,14 +267,6 @@ it('gets a tag by ID', () => {
   return hasuraGetTagById(params).then(response => {
     expect(response.data).toHaveProperty('organization_locales');
     expect(response.data).toHaveProperty('tags_by_pk');
-  });
-});
-
-it('gets a section by ID', () => {
-  params['id'] = 1;
-  return hasuraGetSectionById(params).then(response => {
-    expect(response.data).toHaveProperty('organization_locales');
-    expect(response.data).toHaveProperty('categories_by_pk');
   });
 });
 
