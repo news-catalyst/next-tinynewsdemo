@@ -1,6 +1,7 @@
 import { hasuraGetSectionById, hasuraGetTagById, hasuraCreateTag, hasuraCreateSection, hasuraListAllSectionsByLocale, hasuraUpdateSection, hasuraUpdateTag } from '../lib/section';
-import { hasuraListLocales, hasuraListAllTags, hasuraListAllSections, hasuraAuthorPage, hasuraTagPage, hasuraCategoryPage, hasuraListAllAuthorPaths } from '../lib/articles';
+import { hasuraGetMetadataByLocale, hasuraListLocales, hasuraListAllTags, hasuraListAllSections, hasuraAuthorPage, hasuraTagPage, hasuraCategoryPage, hasuraListAllAuthorPaths } from '../lib/articles';
 import { hasuraCreateAuthor, hasuraGetAuthorById, hasuraGetAuthorBySlug, hasuraListAllAuthors } from '../lib/authors';
+import { hasuraUpsertMetadata } from '../lib/site_metadata';
 
 const shared = require("../script/shared");
 
@@ -55,6 +56,84 @@ describe('organizations', () => {
       expect(response.data.organization_locales[1]['locale']['code']).toEqual("es");
     });
   });
+});
+
+describe('metadata', () => {
+
+  it('gets site metadata by locale', () => {
+    params['localeCode'] = 'en-US';
+    return hasuraGetMetadataByLocale(params).then(response => {
+      expect(response.data).toHaveProperty('organization_locales');
+      expect(response.data).toHaveProperty('site_metadatas');
+    });
+  });
+
+  it ('updates site metadata', () => {
+    params['localeCode'] = 'en-US';
+    params['published'] = false;
+    params['data'] = {
+      nav: '{"articles":"Articles","topics":"All Topics","cms":"tinycms"}',
+      logo: 'https://tnc-test-upload-bucket.s3.us-east-1.amazonaws.com/oaklyn/logos/The Oaklyn Observer.jpeg',
+      color: 'colortwo',
+      theme: 'stylefour',
+      labels: '{"latestNews":"Latest News","search":"Search","topics":"Topics"}',
+      siteUrl: 'https://tinynewsco.org/',
+      aboutCTA: 'Learn more',
+      aboutDek: 'We’re journalists for Oaklyn. We amplify community voices, share information resources, and investigate systems, not just symptoms.',
+      aboutHed: 'Who We Are',
+      bodyFont: 'Mulish',
+      shortName: 'The Oaklyn Observer',
+      subscribe: '{"title":"Subscribe","subtitle":"Get the latest news from Oaklyn in your inbox."}',
+      supportCTA: 'Donate',
+      supportDek: 'The Oaklyn Observer exists based on the support of our readers. Chip in today to help us continue serving Oaklyn with quality journalism.',
+      supportHed: 'Support our work',
+      supportURL: 'https://tiny-news-collective.monkeypod.io/give/support-the-oaklyn-observer?secret=84fc2987ea6e8f11b8f4f8aca8b749d7',
+      footerTitle: 'tinynewsco.org',
+      headingFont: 'Arbutus Slab',
+      landingPage: false,
+      searchTitle: 'The Oaklyn Observer',
+      primaryColor: '#de7a00',
+      twitterTitle: 'Twitter title',
+      facebookTitle: 'Facebook title',
+      homepageTitle: 'The New Oaklyn Observer',
+      membershipDek: 'Support great journalism by becoming a member for a low monthly price.',
+      membershipHed: 'Become a member',
+      newsletterDek: 'Get the latest headlines from The Oaklyn Observer right in your inbox. This is updated.',
+      newsletterHed: 'Sign up for our newsletter',
+      donateBlockDek: 'Support our local journalism with a monthly pledge.',
+      donateBlockHed: 'Donate',
+      secondaryColor: '#002c57',
+      donationOptions: '[{\n' +
+        '"uuid": "92f77857-eea6-4035-ae86-e9781e2627b2",\n' +
+        '"amount": 5,\n' +
+        '"name": "Member"\n' +
+        '},\n' +
+        '{\n' +
+        '"uuid": "92f778a9-3187-4fe5-9d6b-a3041f126456",\n' +
+        '"amount": 10,\n' +
+        '"name": "Supporter"\n' +
+        '},\n' +
+        '{\n' +
+        '"uuid": "92f77888-d1cc-4491-8080-780f0b109320",\n' +
+        '"amount": 20,\n' +
+        '"name": "Superuser"\n' +
+        '}]',
+      footerBylineLink: 'https://newscatalyst.org',
+      footerBylineName: 'News Catalyst',
+      homepageSubtitle: 'a new local news initiative',
+      searchDescription: 'Page description',
+      twitterDescription: 'Twitter description',
+      facebookDescription: 'Facebook description'
+    };
+    
+    return hasuraUpsertMetadata(params).then(response => {
+      console.log(response.data);
+      expect(response.data).toHaveProperty('insert_site_metadatas');
+      expect(response.data.insert_site_metadatas).toHaveProperty('returning');
+      expect(response.data.insert_site_metadatas.returning[0]).toHaveProperty('published');
+      expect(response.data.insert_site_metadatas.returning[0].published).toBe(false);
+    });
+  })
 });
 
 describe('sections', () => {
