@@ -91,14 +91,6 @@ it('gets layout', () => {
   });
 });
 
-it('gets site metadata by locale', () => {
-  params['localeCode'] = 'en-US';
-  return hasuraGetMetadataByLocale(params).then(response => {
-    expect(response.data).toHaveProperty('organization_locales');
-    expect(response.data).toHaveProperty('site_metadatas');
-  });
-});
-
 it('gets data to article page', () => {
   params['localeCode'] = 'en-US';
   params['slug'] = 'kensingtons-last-minute-gift-guide';
