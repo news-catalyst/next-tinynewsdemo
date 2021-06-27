@@ -12,21 +12,6 @@ let params = {
   orgSlug: apiToken
 };
 
-it('lists locales for oaklyn', () => {
-  return hasuraListLocales(params).then(response => {
-    expect(response.data).toHaveProperty('organization_locales');
-    expect(response.data.organization_locales).toHaveLength(2);
-
-    expect(response.data.organization_locales[0]).toHaveProperty("locale");
-    expect(response.data.organization_locales[0]['locale']).toHaveProperty("code");
-    expect(response.data.organization_locales[0]['locale']['code']).toEqual("en-US");
-
-    expect(response.data.organization_locales[1]).toHaveProperty("locale");
-    expect(response.data.organization_locales[1]['locale']).toHaveProperty("code");
-    expect(response.data.organization_locales[1]['locale']['code']).toEqual("es");
-  });
-});
-
 
 it('searches articles', () => {
   params['localeCode'] = 'en-US';
@@ -343,21 +328,6 @@ describe('shared', () => {
   it('lists sections', () => {
     return shared.hasuraListSections(params).then(response => {
       expect(response.data).toHaveProperty('categories');
-    });
-  });
-  it('lists all locales', () => {
-    return shared.hasuraListAllLocales(params).then(response => {
-      expect(response.data).toHaveProperty('locales');
-    });
-  });
-  it('lists organization locales', () => {
-    return shared.hasuraListLocales(params).then(response => {
-      expect(response.data).toHaveProperty('organization_locales');
-    });
-  });
-  it('lists organizations', () => {
-    return shared.hasuraListOrganizations(params).then(response => {
-      expect(response.data).toHaveProperty('organizations');
     });
   });
   it('gets data for article RSS', () => {
