@@ -1,6 +1,8 @@
 import { hasuraGetSectionById, hasuraGetTagById, hasuraCreateTag, hasuraCreateSection, hasuraListAllSectionsByLocale, hasuraUpdateSection, hasuraUpdateTag } from '../lib/section';
-import { hasuraListAllTags, hasuraListAllSections, hasuraAuthorPage, hasuraTagPage, hasuraCategoryPage, hasuraListAllAuthorPaths } from '../lib/articles';
+import { hasuraListLocales, hasuraListAllTags, hasuraListAllSections, hasuraAuthorPage, hasuraTagPage, hasuraCategoryPage, hasuraListAllAuthorPaths } from '../lib/articles';
 import { hasuraCreateAuthor, hasuraGetAuthorById, hasuraGetAuthorBySlug, hasuraListAllAuthors } from '../lib/authors';
+
+const shared = require("../script/shared");
 
 require('dotenv').config({ path: '.env.local' })
 
@@ -15,6 +17,45 @@ let params = {
 let newAuthorId;
 let newsSectionId;
 let newTagId;
+let testOrganization;
+
+describe('organizations', () => {
+  params['adminSecret'] = process.env.HASURA_ADMIN_SECRET;
+
+  it('lists organizations', () => {
+    return shared.hasuraListOrganizations(params).then(response => {
+      expect(response.data).toHaveProperty('organizations');
+      expect(response.data.organizations[0]).toHaveProperty('name');
+      expect(response.data.organizations[0]).toHaveProperty('slug');
+      expect(response.data.organizations[0]).toHaveProperty('organization_locales');
+      testOrganization = response.data.organizations[0];
+    });
+  });
+
+  it('lists all locales', () => {
+    return shared.hasuraListAllLocales(params).then(response => {
+      expect(response.data).toHaveProperty('locales');
+      expect(response.data.locales[0]).toHaveProperty('code');
+      expect(response.data.locales[0]).toHaveProperty('name');
+    });
+  });
+
+  it('lists locales for an org', () => {
+    params['orgSlug'] = testOrganization.slug;
+    return hasuraListLocales(params).then(response => {
+      expect(response.data).toHaveProperty('organization_locales');
+      expect(response.data.organization_locales).toHaveLength(2);
+
+      expect(response.data.organization_locales[0]).toHaveProperty("locale");
+      expect(response.data.organization_locales[0]['locale']).toHaveProperty("code");
+      expect(response.data.organization_locales[0]['locale']['code']).toEqual("en-US");
+
+      expect(response.data.organization_locales[1]).toHaveProperty("locale");
+      expect(response.data.organization_locales[1]['locale']).toHaveProperty("code");
+      expect(response.data.organization_locales[1]['locale']['code']).toEqual("es");
+    });
+  });
+});
 
 describe('sections', () => {
   it('creates a section', () => {
