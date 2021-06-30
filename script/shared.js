@@ -106,6 +106,7 @@ const HASURA_UPSERT_METADATA = `mutation FrontendUpsertMetadata($published: Bool
 }`;
 
 function hasuraUpsertMetadata(params) {
+  console.log("upsert metadata:", params);
   return fetchGraphQL({
     url: params['url'],
     adminSecret: params['adminSecret'],
