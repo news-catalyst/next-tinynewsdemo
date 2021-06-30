@@ -1,5 +1,5 @@
 import { hasuraGetSectionById, hasuraGetTagById, hasuraCreateTag, hasuraCreateSection, hasuraListAllSectionsByLocale, hasuraUpdateSection, hasuraUpdateTag } from '../lib/section';
-import { hasuraGetPage, hasuraCreatePage, hasuraSearchArticles, hasuraArticlePage, hasuraPreviewArticlePage, hasuraPreviewArticleBySlug, hasuraGetArticleBySlug, hasuraListAllArticleSlugs, hasuraGetMetadataByLocale, hasuraListLocales, hasuraListAllTags, hasuraListAllSections, hasuraAuthorPage, hasuraTagPage, hasuraCategoryPage, hasuraCreateArticle } from '../lib/articles';
+import { hasuraGetHomepageEditor, hasuraCreatePage, hasuraSearchArticles, hasuraArticlePage, hasuraPreviewArticlePage, hasuraPreviewArticleBySlug, hasuraGetArticleBySlug, hasuraListAllArticleSlugs, hasuraGetMetadataByLocale, hasuraListLocales, hasuraListAllTags, hasuraListAllSections, hasuraAuthorPage, hasuraTagPage, hasuraCategoryPage, hasuraCreateArticle } from '../lib/articles';
 import { hasuraCreateAuthor, hasuraGetAuthorById, hasuraGetAuthorBySlug, hasuraListAllAuthors } from '../lib/authors';
 import { hasuraUpsertMetadata } from '../lib/site_metadata';
 
@@ -7,49 +7,21 @@ const shared = require("../script/shared");
 
 require('dotenv').config({ path: '.env.local' })
 
-let newAuthorId = 12 // commented out test that creates the author with an upsert because it fails in unpredictable ways;
+let newAuthorId = 12;
 let newsSectionId;
 let newTagId;
 
+// if we want to test bootstrap commands, we'll need to use these params
 let secretParams = {
   url: process.env.HASURA_API_URL,
   adminSecret: process.env.HASURA_ADMIN_SECRET,
 };
 
+// otherwise all queries and mutations are built on the organization's access
 let orgParams = {
   url: process.env.HASURA_API_URL,
   orgSlug: "oaklyn"
 }
-
-describe('organizations', () => {
-  it('lists organizations', () => {
-      return shared.hasuraListOrganizations(secretParams).then(response => {
-        expect(response.data).toHaveProperty('organizations');
-        expect(response.data.organizations[0]).toHaveProperty('name');
-        expect(response.data.organizations[0]).toHaveProperty('slug');
-        expect(response.data.organizations[0]).toHaveProperty('organization_locales');
-      });
-  });
-
-  it('lists all locales', () => {
-      return shared.hasuraListAllLocales(secretParams).then(response => {
-        expect(response.data).toHaveProperty('locales');
-        expect(response.data.locales[0]).toHaveProperty('code');
-        expect(response.data.locales[0]).toHaveProperty('name');
-      });
-  });
-
-  it('lists locales for an org', () => {
-      return hasuraListLocales(orgParams).then(response => {
-        expect(response.data).toHaveProperty('organization_locales');
-        expect(response.data.organization_locales).toHaveLength(1);
-
-        expect(response.data.organization_locales[0]).toHaveProperty("locale");
-        expect(response.data.organization_locales[0]['locale']).toHaveProperty("code");
-        expect(response.data.organization_locales[0]['locale']['code']).toEqual("en-US");
-      });
-  });
-});
 
 describe('metadata', () => {
   it('gets site metadata by locale', () => {
@@ -278,7 +250,6 @@ describe('authors', () => {
   // this test keeps failing intermittently; commenting out until I figure out what the problem is
   // related:  https://hasura.io/docs/1.0/graphql/core/mutations/upsert.html#nested-upsert-caveats
   it('creates an author', () => {
-
     let authorParams = Object.assign({}, orgParams); 
     authorParams['localeCode'] = 'en-US';
     authorParams['authorSlug'] = 'test-author-created';
@@ -290,9 +261,8 @@ describe('authors', () => {
     authorParams['twitter'] = '@author';
     authorParams['bio'] = 'This is a test author biography.';
     authorParams['photoUrl'] = 'https://example.com/photo.jpg';
-    console.log('author params:', authorParams);
+
     return hasuraCreateAuthor(authorParams).then(response => {
-      console.log('hasuraCreateAuthor:', response);
       expect(response.data).toHaveProperty('insert_authors')
       expect(response.data.insert_authors).toHaveProperty('returning')
       newAuthorId = response.data.insert_authors.returning[0].id;
@@ -533,7 +503,20 @@ describe('pages', () => {
         expect(response.data.insert_pages.returning[0].page_translations[0]).toHaveProperty('published');
         expect(response.data.insert_pages.returning[0].page_translations[0].published).toEqual(true);
       });
-
   });
+});
 
+describe('homepage', () => {
+  it('gets data for homepage editor', () => {
+    let hpParams = Object.assign({}, orgParams); 
+    hpParams['localeCode'] = 'en-US';
+
+    return hasuraGetHomepageEditor(hpParams).then(response => {
+      expect(response.data).toHaveProperty('homepage_layout_schemas');
+      expect(response.data).toHaveProperty('homepage_layout_datas');
+      expect(response.data).toHaveProperty('categories');
+      expect(response.data).toHaveProperty('site_metadatas');
+      expect(response.data).toHaveProperty('tags');
+    });
+  });
 });
