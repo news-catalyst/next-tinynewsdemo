@@ -9,6 +9,7 @@
     "data:import": "node script/data-import.js",
     "data:clear": "node script/clear-analytics.js",
     "bootstrap": "node script/bootstrap.js",
+    "bootstrap:tests": "node script/bootstrap-tests.js",
     "status": "node script/status.js",
     "remove:org": "node script/remove.js",
     "test": "jest",
