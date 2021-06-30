@@ -57,7 +57,7 @@ function hasuraInsertDonationClick(params) {
 }
 
 const INSERT_ORGANIZATION_MUTATION = `mutation FrontendInsertOrganization($slug: String = "", $name: String = "") {
-  insert_organizations_one(object: {name: $name, slug: $slug}) {
+  insert_organizations_one(object: {name: $name, slug: $slug}, on_conflict: {constraint: organizations_slug_key, update_columns: [name,slug]}) {
     id
     name
     slug
