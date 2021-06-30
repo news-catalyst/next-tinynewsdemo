@@ -219,79 +219,17 @@ async function createOrganization(opts) {
       let allLocales = res.data.locales;
       let orgLocaleObjects = [];
       allLocales.forEach( (aLocale) => {
+        console.log("all locales:", aLocale, "locales:", locales)
         let foundLocale = locales.find( l => l === aLocale.code);
+        console.log("all locales found:", foundLocale)
         if (foundLocale)  {
           orgLocaleObjects.push({
             locale_id: aLocale.id,
             organization_id: organizationID
           })
         }
-        shared.hasuraInsertSections({
-          url: apiUrl,
-          adminSecret: adminSecret,
-          objects: [
-            {
-              organization_id: organizationID,
-              title: "News",
-              slug: "news",
-              published: true,
-              category_translations: {
-                data: {
-                  locale_code: aLocale.code,
-                  title: "News"
-                },
-                on_conflict: {constraint: "category_translations_locale_code_category_id_key", update_columns: "title"}
-              }
-            },
-            {
-              organization_id: organizationID,
-              title: "Politics",
-              slug: "politics",
-              published: false,
-              category_translations: {
-                data: {
-                  locale_code: aLocale.code,
-                  title: "Politics"
-                },
-                on_conflict: {constraint: "category_translations_locale_code_category_id_key", update_columns: "title"}
-              }
-            },
-            {
-              organization_id: organizationID,
-              title: "COVID-19",
-              slug: "covid-19",
-              published: false,
-              category_translations: {
-                data: {
-                  locale_code: aLocale.code,
-                  title: "COVID-19"
-                },
-                on_conflict: {constraint: "category_translations_locale_code_category_id_key", update_columns: "title"}
-              }
-            },
-          ]
-        }).then( (res) => {
-          console.log("Created the default sections:", res);
-          shared.hasuraUpsertHomepageLayout({
-            url: apiUrl,
-            adminSecret: adminSecret,
-            organization_id: organizationID,
-            name: "Large Package Story Lead",
-            data: "{ \"subfeatured-top\":\"string\", \"subfeatured-bottom\":\"string\", \"featured\":\"string\" }"
-          }).then ( (res) => {
-            console.log("Created the Large Package Story Lead homepage layout:", res);
-            shared.hasuraUpsertHomepageLayout({
-              url: apiUrl,
-              adminSecret: adminSecret,
-              organization_id: organizationID,
-              name: "Big Featured Story",
-              data: "{ \"featured\":\"string\" }"
-            }).then ( (res) => {
-              console.log("Created the Big Featured Story homepage layout:", res);
-            })
-          })
-        })
-      })
+      });
+      console.log("orgLocaleObjects:", orgLocaleObjects)
       shared.hasuraInsertOrgLocales({
         url: apiUrl,
         adminSecret: adminSecret,
@@ -345,11 +283,74 @@ async function createOrganization(opts) {
             published: true,
           }).then( (res) => {
             console.log("created site metadata for " + name + " in locale " + locale);
+            console.log(res);
+          })
+          shared.hasuraInsertSections({
+            url: apiUrl,
+            adminSecret: adminSecret,
+            objects: [
+              {
+                organization_id: organizationID,
+                title: "News",
+                slug: "news",
+                published: true,
+                category_translations: {
+                  data: {
+                    locale_code: locale,
+                    title: "News"
+                  },
+                  on_conflict: {constraint: "category_translations_locale_code_category_id_key", update_columns: "title"}
+                }
+              },
+              {
+                organization_id: organizationID,
+                title: "Politics",
+                slug: "politics",
+                published: false,
+                category_translations: {
+                  data: {
+                    locale_code: locale,
+                    title: "Politics"
+                  },
+                  on_conflict: {constraint: "category_translations_locale_code_category_id_key", update_columns: "title"}
+                }
+              },
+              {
+                organization_id: organizationID,
+                title: "COVID-19",
+                slug: "covid-19",
+                published: false,
+                category_translations: {
+                  data: {
+                    locale_code: locale,
+                    title: "COVID-19"
+                  },
+                  on_conflict: {constraint: "category_translations_locale_code_category_id_key", update_columns: "title"}
+                }
+              },
+            ]
+          }).then( (res) => {
+            console.log("Created the default sections:", res);
+            shared.hasuraUpsertHomepageLayout({
+              url: apiUrl,
+              adminSecret: adminSecret,
+              organization_id: organizationID,
+              name: "Large Package Story Lead",
+              data: "{ \"subfeatured-top\":\"string\", \"subfeatured-bottom\":\"string\", \"featured\":\"string\" }"
+            }).then ( (res) => {
+              console.log("Created the Large Package Story Lead homepage layout:", res);
+              shared.hasuraUpsertHomepageLayout({
+                url: apiUrl,
+                adminSecret: adminSecret,
+                organization_id: organizationID,
+                name: "Big Featured Story",
+                data: "{ \"featured\":\"string\" }"
+              }).then ( (res) => {
+                console.log("Created the Big Featured Story homepage layout:", res);
+              })
+            })
           })
         })
-
-        // setupGoogleAnalytics(name, url);
-
         console.log("Make sure to review settings in the tinycms once this is done!")
       })
     })
