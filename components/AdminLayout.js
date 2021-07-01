@@ -8,11 +8,6 @@ export default function AdminLayout({ children }) {
   const [session, loading] = useSession();
   const cypressTesting = process.env.NEXT_PUBLIC_CYPRESS_TESTING;
 
-  console.log(
-    'cypressTesting: ',
-    cypressTesting,
-    process.env.NEXT_PUBLIC_CYPRESS_TESTING
-  );
   return (
     <>
       <Head>
