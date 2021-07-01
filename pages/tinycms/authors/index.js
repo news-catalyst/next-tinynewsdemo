@@ -5,7 +5,10 @@ import tw from 'twin.macro';
 import AdminLayout from '../../../components/AdminLayout.js';
 import AdminNav from '../../../components/nav/AdminNav';
 import Notification from '../../../components/tinycms/Notification';
-import { hasuraListAllAuthors } from '../../../lib/authors.js';
+import {
+  deleteSingleAuthor,
+  hasuraListAllAuthors,
+} from '../../../lib/authors.js';
 import { hasuraLocaliseText } from '../../../lib/utils.js';
 
 const Table = tw.table`table-auto w-full`;
@@ -16,13 +19,45 @@ const TableHeader = tw.th`px-4 py-2`;
 const TableCell = tw.td`border px-4 py-2`;
 const AddAuthorButton = tw.a`hidden md:flex w-full md:w-auto px-4 py-2 text-right bg-blue-900 hover:bg-blue-500 text-white md:rounded`;
 
-export default function Authors({ authors, currentLocale, locales }) {
+export default function Authors({
+  apiUrl,
+  apiToken,
+  authors,
+  currentLocale,
+  locales,
+}) {
   const [notificationMessage, setNotificationMessage] = useState('');
   const [notificationType, setNotificationType] = useState('');
   const [showNotification, setShowNotification] = useState(false);
 
   const router = useRouter();
   const { action } = router.query;
+
+  const refreshData = () => {
+    router.replace(router.asPath);
+  };
+
+  async function deleteAuthor(authorId) {
+    let params = {
+      url: apiUrl,
+      orgSlug: apiToken,
+      id: authorId,
+    };
+    const { errors, data } = await deleteSingleAuthor(params);
+
+    if (errors) {
+      console.error(errors);
+      setNotificationMessage(errors);
+      setNotificationType('error');
+      setShowNotification(true);
+    } else {
+      // display success message
+      setNotificationMessage('Removed the author with id ' + authorId);
+      setNotificationType('success');
+      refreshData();
+      setShowNotification(true);
+    }
+  }
 
   useEffect(() => {
     if (action && action === 'edit') {
@@ -70,6 +105,19 @@ export default function Authors({ authors, currentLocale, locales }) {
         <TableCell>{title}</TableCell>
         <TableCell>{author.twitter}</TableCell>
         <TableCell>{bio}</TableCell>
+        <TableCell>
+          <button
+            className="delete-author"
+            onClick={() => {
+              if (
+                window.confirm('Are you sure you wish to delete this author?')
+              )
+                deleteAuthor(author.id);
+            }}
+          >
+            remove
+          </button>
+        </TableCell>
       </TableRow>
     );
   });
@@ -111,6 +159,7 @@ export default function Authors({ authors, currentLocale, locales }) {
               <TableHeader>Title</TableHeader>
               <TableHeader>Twitter</TableHeader>
               <TableHeader>Bio</TableHeader>
+              <TableHeader></TableHeader>
             </TableRow>
           </TableHead>
           <TableBody>{listItems}</TableBody>
@@ -121,6 +170,9 @@ export default function Authors({ authors, currentLocale, locales }) {
 }
 
 export async function getServerSideProps(context) {
+  const apiUrl = process.env.HASURA_API_URL;
+  const apiToken = process.env.ORG_SLUG;
+
   const { errors, data } = await hasuraListAllAuthors(context.locale);
 
   if (errors) {
@@ -132,6 +184,8 @@ export async function getServerSideProps(context) {
 
   return {
     props: {
+      apiUrl: apiUrl,
+      apiToken: apiToken,
       authors: authors,
       currentLocale: context.locale,
       locales: locales,
