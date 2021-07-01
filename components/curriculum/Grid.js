@@ -14,10 +14,19 @@ export default function Grid({ header, type, articles }) {
       articles[i].article_translations[
         articles[i].article_translations.length - 1
       ];
+    const mainImageNode = translation.content.find(
+      (node) => node.type === 'mainImage'
+    );
+    let mainImage = null;
+
+    if (mainImageNode) {
+      mainImage = mainImageNode.children[0];
+    }
     gridItems.push(
       <GridItem
         header={translation.headline}
         dek={translation.search_description}
+        image={mainImage}
         hammer={type === 'curriculum' && `Week ${i + 1}`}
         article={articles[i]}
       />
