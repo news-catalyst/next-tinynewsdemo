@@ -3,7 +3,7 @@ import TextNode from './TextNode.js';
 
 const UnorderedList = tw.ul`mb-4 list-outside list-disc`;
 const OrderedList = tw.ol`mb-4 list-outside list-decimal`;
-const ListItem = tw.li`mb-1 pl-2 ml-2`;
+const ListItem = tw.li`mb-1 pl-2 ml-2 text-lg`;
 
 export default function ListNode({ node }) {
   let items = [];
