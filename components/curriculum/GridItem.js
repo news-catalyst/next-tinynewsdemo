@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import tw from 'twin.macro';
-import MainImage from '../articles/MainImage';
+import Image from 'next/image';
 
 const ItemWrapper = tw.div`w-full md:w-1/2 lg:w-1/3 p-4`;
 const Item = tw.div`w-full border border-gray-200 shadow-lg`;
@@ -10,7 +10,7 @@ const Hammer = tw.p`text-xs font-bold uppercase mb-2 text-gray-500`;
 const ItemHeader = tw.h3`text-2xl font-bold leading-tight tracking-tight mb-4`;
 const ItemDek = tw.p`text-base`;
 
-export default function GridItem({ header, dek, hammer, article }) {
+export default function GridItem({ header, dek, image, hammer, article }) {
   return (
     <ItemWrapper>
       <Link
@@ -20,11 +20,17 @@ export default function GridItem({ header, dek, hammer, article }) {
         <a>
           <Item
             style={{
-              minHeight: '34rem',
+              minHeight: '25rem',
             }}
           >
             <ItemImageContainer>
-              <MainImage article={article} />
+              <Image
+                src={image.imageUrl}
+                width={1080}
+                height={(image.height / image.width) * 1080}
+                alt={image.imageAlt}
+                className="image"
+              />
             </ItemImageContainer>
             <ItemTextContainer>
               <Hammer>{hammer}</Hammer>
