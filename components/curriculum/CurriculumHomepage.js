@@ -12,19 +12,23 @@ export default function CurriculumHomepage({
     .filter((article) => article.category.slug === 'curriculum')
     .reverse();
 
+  const documentationArticles = streamArticles
+    .filter((article) => article.category.slug === 'documentation')
+    .reverse();
+
   return (
     <div className="homepage">
       <Layout meta={siteMetadata} sections={sections} locale={locale}>
         <HomepageHeader />
         <Grid
-          header="Your eight week course"
+          header="Your 12 week course"
           type="curriculum"
           articles={curriculumArticles}
         />
         <Grid
           header="Tech stack documentation"
           type="documentation"
-          articles={curriculumArticles}
+          articles={documentationArticles}
         />
       </Layout>
     </div>
