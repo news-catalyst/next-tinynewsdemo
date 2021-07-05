@@ -8,10 +8,17 @@ describe('tinycms authors', () => {
     cy.get('table thead tr th')
     cy.get('th').contains("Name")
 
-    cy.get('button.delete-author').each(($el, index, $list) => {
-      cy.wrap($el).click()
-    })
-
+    cy.get('body')
+      .then(($body) => {
+        // synchronously query from body
+        // to find which element was created
+        if ($body.find('button.delete-author').length) {
+          cy.get('button.delete-author').each(($el, index, $list) => {
+            cy.wrap($el).click()
+            cy.on('window:confirm', () => true);
+          })
+        }
+      })
   })
 
  it('adds a new author', () => {
@@ -26,5 +33,12 @@ describe('tinycms authors', () => {
     cy.get('strong').contains('Success!')
   })
 
- 
+ it('updates an existing author', () => {
+    cy.visit('/tinycms/authors')
+    cy.get('table>tbody>tr>td>a').click();
+
+    cy.get('input[name="title"').clear().type("Staff Writer")
+    cy.get('form').submit()
+    cy.get('strong').contains('Success!')
+  })
 })
