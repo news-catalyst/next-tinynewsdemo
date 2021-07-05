@@ -17,6 +17,17 @@ export default function GlobalFooter(props) {
         <p>
           <strong>{title}</strong> by <a href={bylineLink}>{byline}</a>.
         </p>
+        <p>
+          <a href="./about">About</a> | <a href="./donate">Donate</a> |{' '}
+          <a href="https://store.tryletterhead.com/catalyst-test">
+            Advertising
+          </a>
+        </p>
+        <p>Copyright {props.metadata.shortName}</p>
+        <p>
+          This project is part of the
+          <a href="tinynewsco.org">Tiny News Collective</a>.
+        </p>
       </div>
     </Footer>
   );
