@@ -18,8 +18,10 @@ export default function GlobalFooter(props) {
           <strong>{title}</strong> by <a href={bylineLink}>{byline}</a>.
         </p>
         <p>
-          <a href="./about">About</a> | <a href="./donate">Donate</a> | 
-          <a href="https://store.tryletterhead.com/catalyst-test"> Advertising </a>
+          <a href="./about">About</a> | <a href="./donate">Donate</a> |{' '}
+          <a href="https://store.tryletterhead.com/catalyst-test">
+            Advertising
+          </a>
         </p>
         <p>Copyright {props.metadata.shortName}</p>
         <p>
