@@ -3,5 +3,8 @@
   "baseUrl": "http://localhost:3000",
   "chromeWebSecurity": false,
   "video": false,
-  "defaultCommandTimeout": 10000
+  "defaultCommandTimeout": 10000,
+  "env": {
+    "apiUrl": "https://tinynews-testing.hasura.app/v1/graphql"
+  }
 }

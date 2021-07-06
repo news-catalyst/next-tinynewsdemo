@@ -11,6 +11,7 @@ describe('tinycms authors', () => {
   })
 
  it('adds a new author', () => {
+    cy.task("db:authors");
     cy.visit('/tinycms/authors/add')
     cy.location('pathname').should('eq', '/tinycms/authors/add')
     cy.get('input[name="name"').type("New AuthorName")
