@@ -1,4 +1,55 @@
 /// <reference types="cypress" />
+const fetch = require("node-fetch");
+
+
+async function fetchGraphQL(params) {
+  let url = params['url'];
+  let orgSlug = params['orgSlug'];
+
+  let operationQuery = params['query'];
+  let operationName = params['name'];
+  let variables = params['variables'];
+
+  const result = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'TNC-Organization': orgSlug,
+    },
+    body: JSON.stringify({
+      query: operationQuery,
+      variables: variables,
+      operationName: operationName,
+    }),
+  });
+
+  return await result.json();
+}
+
+const DELETE_AUTHORS_MUTATION = `mutation DeleteAllAuthors {
+  delete_author_translations(where: {author_id: {_gt: 0}}) {
+    affected_rows
+  }
+  delete_author_articles(where: {author_id: {_gt: 0}}) {
+    affected_rows
+  }
+  delete_author_pages(where: {author_id: {_gt: 0}}) {
+    affected_rows
+  }
+  delete_authors(where: {id: {_gt: 0}}) {
+    affected_rows
+  }
+}`;
+
+function deleteAllAuthors(params) {
+  console.log("function deleteAllAuthors:", params)
+  return fetchGraphQL({
+    url: params['url'],
+    orgSlug: params['orgSlug'],
+    query: DELETE_AUTHORS_MUTATION,
+    name: 'DeleteAllAuthors',
+  });
+}
+
 // ***********************************************************
 // This example plugins/index.js can be used to load plugins
 //
@@ -13,5 +64,22 @@
 // the project's config changing)
 
 module.exports = (on, config) => {
+  const apiGraphQL = config.env.apiUrl;
+
+  on("task", {
+    async "db:authors"() {
+      console.log("cypress task db:authors...")
+      // seed database with test data
+      const { errors, data } = await deleteAllAuthors({
+        "url": apiGraphQL,
+        "orgSlug": "test-org"
+      })
+      if (errors) {
+        console.error("errors:", errors);
+      }
+      console.log("data:", data);
+      return data;
+    },
+  })
 }
 // eslint-disable-next-line no-unused-vars
