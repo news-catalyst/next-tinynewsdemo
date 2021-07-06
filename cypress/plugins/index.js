@@ -41,12 +41,32 @@ const DELETE_AUTHORS_MUTATION = `mutation DeleteAllAuthors {
 }`;
 
 function deleteAllAuthors(params) {
-  console.log("function deleteAllAuthors:", params)
   return fetchGraphQL({
     url: params['url'],
     orgSlug: params['orgSlug'],
     query: DELETE_AUTHORS_MUTATION,
     name: 'DeleteAllAuthors',
+  });
+}
+
+const DELETE_TAGS_MUTATION = `mutation DeleteAllTags {
+  delete_tag_translations(where: {tag_id: {_gt: 0}}) {
+    affected_rows
+  }
+  delete_tag_articles(where: {tag_id: {_gt: 0}}) {
+    affected_rows
+  }
+  delete_tags(where: {id: {_gt: 0}}) {
+    affected_rows
+  }
+}`;
+
+function deleteAllTags(params) {
+  return fetchGraphQL({
+    url: params['url'],
+    orgSlug: params['orgSlug'],
+    query: DELETE_TAGS_MUTATION,
+    name: 'DeleteAllTags',
   });
 }
 
@@ -68,9 +88,20 @@ module.exports = (on, config) => {
 
   on("task", {
     async "db:authors"() {
-      console.log("cypress task db:authors...")
       // seed database with test data
       const { errors, data } = await deleteAllAuthors({
+        "url": apiGraphQL,
+        "orgSlug": "test-org"
+      })
+      if (errors) {
+        console.error("errors:", errors);
+      }
+      console.log("data:", data);
+      return data;
+    },
+    async "db:tags"() {
+      // seed database with test data
+      const { errors, data } = await deleteAllTags({
         "url": apiGraphQL,
         "orgSlug": "test-org"
       })
