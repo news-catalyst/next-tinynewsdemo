@@ -7,15 +7,22 @@ import Colors from '../common/Colors';
 
 const DonateLink = styled.a(({ meta }) => ({
   ...tw`items-center flex font-bold leading-none px-5 ml-5 order-2 lg:ml-0 lg:order-none`,
-  fontFamily: Typography[meta.theme].DonateLink,
+  fontFamily:
+    Typography && Typography[meta.theme]
+      ? Typography[meta.theme].DonateLink
+      : '',
   backgroundColor:
     meta.color === 'custom'
       ? meta.primaryColor
-      : Colors[meta.color].CTABackground,
+      : Colors[meta.color]
+      ? Colors[meta.color].CTABackground
+      : '',
   color:
     meta.color === 'custom'
       ? determineTextColor(meta.primaryColor)
-      : Colors[meta.color].CTAText,
+      : Colors[meta.color]
+      ? Colors[meta.color].CTAText
+      : '',
 }));
 
 const Donate = ({ label, metadata }) => {
