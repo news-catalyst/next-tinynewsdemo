@@ -16,6 +16,9 @@ const ChangeArticleButton = tw.button`hidden md:flex w-full md:w-auto px-4 py-2 
 export default function BigFeaturedStory(props) {
   const [isModalActive, setModal] = useState(false);
 
+  const featuredArticleSlug = props.featuredArticle
+    ? props.featuredArticle.slug
+    : '';
   const featuredArticleMarkup = (
     <>
       <AssetMetaContainer
@@ -24,7 +27,7 @@ export default function BigFeaturedStory(props) {
         }}
       >
         <FeaturedArticleMeta
-          key={props.featuredArticle.slug}
+          key={featuredArticleSlug}
           article={props.featuredArticle}
           big={true}
           metadata={props.metadata}
