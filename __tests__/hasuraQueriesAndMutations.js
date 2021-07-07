@@ -1,5 +1,5 @@
 import { hasuraGetSectionById, hasuraGetTagById, hasuraCreateTag, hasuraCreateSection, hasuraListAllSectionsByLocale, hasuraUpdateSection, hasuraUpdateTag } from '../lib/section';
-import { hasuraGetHomepageEditor, hasuraCreatePage, hasuraSearchArticles, hasuraArticlePage, hasuraPreviewArticlePage, hasuraPreviewArticleBySlug, hasuraGetArticleBySlug, hasuraListAllArticleSlugs, hasuraGetMetadataByLocale, hasuraListAllTags, hasuraListAllSections, hasuraAuthorPage, hasuraTagPage, hasuraCategoryPage, hasuraCreateArticle, hasuraUpdateArticle } from '../lib/articles';
+import { hasuraGetHomepageEditor, hasuraCreatePage, hasuraSearchArticles, hasuraArticlePage, hasuraPreviewArticlePage, hasuraPreviewArticleBySlug, hasuraGetArticleBySlug, hasuraListAllArticleSlugs, hasuraGetMetadataByLocale, hasuraListAllTags, hasuraListAllSections, hasuraAuthorPage, hasuraTagPage, hasuraCategoryPage, hasuraCreateArticle, hasuraUpdateArticle, hasuraDeleteArticles } from '../lib/articles';
 import { hasuraCreateAuthor, hasuraGetAuthorById, hasuraGetAuthorBySlug, hasuraListAllAuthors } from '../lib/authors';
 import { hasuraUpsertMetadata } from '../lib/site_metadata';
 
@@ -20,7 +20,7 @@ let secretParams = {
 // otherwise all queries and mutations are built on the organization's access
 let orgParams = {
   url: process.env.HASURA_API_URL,
-  orgSlug: "oaklyn"
+  orgSlug: "test-org"
 }
 
 describe('metadata', () => {
@@ -319,14 +319,20 @@ let esCategories = [];
 
 describe('articles', () => {
   beforeAll(async (done) => {
+    const { errors, data } = await hasuraDeleteArticles(orgParams);
+    if (errors) {
+      console.error("errors deleting articles:", errors);
+    }
+    // console.log("deleted articles: ", data);
+
     let enCategoryParams = Object.assign({}, orgParams); 
     enCategoryParams['localeCode'] = "en-US";
-    const { errors, data } = await hasuraListAllSectionsByLocale(enCategoryParams);
-    if (errors) {
-      console.error("errors:", errors);
+    let enResponse = await hasuraListAllSectionsByLocale(enCategoryParams);
+    if (enResponse.errors) {
+      console.error("errors:", enResponse.errors);
     }
-    enCategories = data.categories;
-    console.log("english categories:", enCategories);
+    enCategories = enResponse.data.categories;
+    // console.log("english categories:", enCategories);
 
     let esCategoryParams = Object.assign({}, orgParams); 
     esCategoryParams['localeCode'] = "es";
@@ -335,7 +341,7 @@ describe('articles', () => {
       console.error("errors:", esResponse.errors);
     }
     esCategories = esResponse.data.categories;
-    console.log("spanish categories:", esCategories);
+    // console.log("spanish categories:", esCategories);
     done();
   })
 
@@ -353,9 +359,9 @@ describe('articles', () => {
       articleParams['article_sources'] = [];
       articleParams['category_id'] = enCategories[0].id;
 
-      console.log("hasuraCreateArticle params:", articleParams);
+      // console.log("hasuraCreateArticle params:", articleParams);
       return hasuraCreateArticle(articleParams).then(response => {
-        console.log("hasuraCreateArticle:", JSON.stringify(response));
+        // console.log("hasuraCreateArticle:", JSON.stringify(response));
         
         expect(response.data).toHaveProperty('insert_articles');
         expect(response.data.insert_articles).toHaveProperty('returning');
@@ -368,11 +374,11 @@ describe('articles', () => {
       });
   });
 
-  it('adds a spanish translation to an unpublished article', () => {
+  it('adds a spanish translation to an article', () => {
     let articleParams = Object.assign({}, orgParams); 
     articleParams['locale_code'] = 'es';
     articleParams['headline'] = 'Test Article 1 spanish Headline';
-    articleParams['published'] = false
+    articleParams['published'] = true
     articleParams['slug'] = 'test-article-1';
     articleParams['id'] = articleId;
     articleParams['content'] = '<p>Test article spanish copy appears in this field.</p>';
@@ -384,7 +390,7 @@ describe('articles', () => {
     articleParams['category_id'] = esCategories[0].id;
 
     return hasuraUpdateArticle(articleParams).then(response => {
-      console.log("hasuraUpdateArticle:", JSON.stringify(response));
+      // console.log("hasuraUpdateArticle:", JSON.stringify(response));
       
       expect(response.data).toHaveProperty('insert_articles');
       expect(response.data.insert_articles).toHaveProperty('returning');
@@ -440,10 +446,10 @@ describe('articles', () => {
     articleParams['article_sources'] = [];
 
     return hasuraCreateArticle(articleParams).then(response => {
-      console.log("adds another article response:", response);
+      // console.log("adds another article response:", response);
       expect(response.data).toHaveProperty('insert_articles');
       expect(response.data.insert_articles).toHaveProperty('returning');
-      console.log(response.data.insert_articles.returning[0]);
+      // console.log(response.data.insert_articles.returning[0]);
       
       expect(response.data.insert_articles.returning[0]).toHaveProperty('id');
       expect(response.data.insert_articles.returning[0]).toHaveProperty('slug');
@@ -471,6 +477,7 @@ describe('articles', () => {
       articleParams['term'] = 'Test Article';
 
       return hasuraSearchArticles(articleParams).then(response => {
+        // console.log("hasuraSearchArticles:", response)
         expect(response.data).toHaveProperty('articles');
         expect(response.data.articles[0]).toHaveProperty('id');
         expect(response.data.articles[0]).toHaveProperty('article_translations');
@@ -508,9 +515,7 @@ describe('articles', () => {
         expect(response.data).toHaveProperty('site_metadatas');
 
         let articlesData = response.data.articles;
-        console.log("articlesData:", articlesData);
         let articleData = articlesData[0];
-        console.log("article data:", articleData);
         expect(response.data.articles[0]).toHaveProperty('slug');
         expect(response.data.articles[0]).toHaveProperty('article_translations');
         let translation = articleData.article_translations[0];
@@ -534,9 +539,9 @@ describe('articles', () => {
       expect(response.data).toHaveProperty('site_metadatas');
 
       let articlesData = response.data.articles;
-      console.log("articlesData:", articlesData);
+      // console.log("articlesData:", articlesData);
       let articleData = articlesData[0];
-      console.log("article data:", articleData);
+      // console.log("article data:", articleData);
       expect(response.data.articles[0]).toHaveProperty('slug');
       expect(response.data.articles[0]).toHaveProperty('article_translations');
       let translation = articleData.article_translations[0];
@@ -577,6 +582,27 @@ describe('articles', () => {
       });
 
   });
+
+  it('gets data (by slug) for the same article in spanish', () => {
+    let articleParams = Object.assign({}, orgParams); 
+    articleParams['localeCode'] = 'es';
+    articleParams['slug'] = 'test-article-1';
+    return hasuraGetArticleBySlug(articleParams).then(response => {
+      expect(response.data).toHaveProperty('articles');
+      expect(response.data.articles).toHaveLength(1);
+
+      let articleData = response.data.articles[0];
+      expect(articleData).toHaveProperty('slug');
+      expect(articleData).toHaveProperty('article_translations');
+      expect(articleData).toHaveProperty('slug');
+      expect(articleData).toHaveProperty('article_translations');
+      expect(articleData).toHaveProperty('category');
+      expect(articleData).toHaveProperty('author_articles');
+      let translation = articleData.article_translations[0];
+      expect(translation.headline).toEqual("Test Article 1 spanish Headline");
+    });
+
+});
 });
 
 describe('pages', () => {
