@@ -92,7 +92,7 @@ export default function AddAuthor({
     };
     const { errors, data } = await hasuraCreateAuthor(params);
 
-    if (data && data.insert_authors_one) {
+    if (data && data.insert_authors) {
       setNotificationMessage('Added the author.');
       setNotificationType('success');
       setShowNotification(true);
