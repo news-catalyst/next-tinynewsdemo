@@ -6,6 +6,8 @@ const SignInButton = tw.a`hidden md:flex w-full md:w-auto px-4 py-2 text-right b
 
 export default function AdminLayout({ children }) {
   const [session, loading] = useSession();
+  const cypressTesting = process.env.NEXT_PUBLIC_CYPRESS_TESTING;
+
   return (
     <>
       <Head>
@@ -18,7 +20,7 @@ export default function AdminLayout({ children }) {
         <script async src="https://apis.google.com/js/client:platform.js" />
       </Head>
       <main className="container">
-        {!session && (
+        {!session && !cypressTesting && (
           <section tw="bg-gray-200 text-gray-900 relative">
             <div tw="min-h-screen bg-right-top bg-cover flex">
               <div tw="relative container mx-auto p-4 flex items-center z-10">
@@ -33,6 +35,7 @@ export default function AdminLayout({ children }) {
                     <div tw="flex justify-center items-center block sm:inline-block no-underline">
                       <SignInButton
                         tw="cursor-pointer"
+                        id="tinycms-signin-button"
                         onClick={() =>
                           signIn('presspass', {
                             callbackUrl: `${process.env.NEXT_PUBLIC_SITE_URL}/tinycms/`,
@@ -48,7 +51,7 @@ export default function AdminLayout({ children }) {
             </div>
           </section>
         )}
-        {session && <>{children}</>}
+        {(session || cypressTesting) && <>{children}</>}
       </main>
     </>
   );

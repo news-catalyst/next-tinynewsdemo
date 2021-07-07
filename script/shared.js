@@ -57,7 +57,7 @@ function hasuraInsertDonationClick(params) {
 }
 
 const INSERT_ORGANIZATION_MUTATION = `mutation FrontendInsertOrganization($slug: String = "", $name: String = "") {
-  insert_organizations_one(object: {name: $name, slug: $slug}) {
+  insert_organizations_one(object: {name: $name, slug: $slug}, on_conflict: {constraint: organizations_slug_key, update_columns: [name,slug]}) {
     id
     name
     slug
@@ -106,6 +106,7 @@ const HASURA_UPSERT_METADATA = `mutation FrontendUpsertMetadata($published: Bool
 }`;
 
 function hasuraUpsertMetadata(params) {
+  console.log("upsert metadata:", params);
   return fetchGraphQL({
     url: params['url'],
     adminSecret: params['adminSecret'],
