@@ -344,6 +344,13 @@ describe('articles', () => {
     // console.log("spanish categories:", esCategories);
     done();
   })
+  // clean up articles to avoid errors building the testing site
+  afterAll(async (done) => {
+    const { errors, data } = await hasuraDeleteArticles(orgParams);
+    if (errors) {
+      console.error("jest after article tests: errors deleting articles:", errors);
+    }
+  })
 
   it('creates an unpublished article in US English', () => {
       let articleParams = Object.assign({}, orgParams); 
