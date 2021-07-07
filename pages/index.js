@@ -82,6 +82,7 @@ export async function getStaticProps({ locale }) {
     orgSlug: apiToken,
     localeCode: locale,
     ids: ids,
+    limit: process.env.ORG_SLUG === 'tiny-news-curriculum' ? 20 : 10,
   });
   let streamArticles = [];
   if (streamResult.errors || !streamResult.data) {
