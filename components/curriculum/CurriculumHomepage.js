@@ -12,6 +12,12 @@ export default function CurriculumHomepage({
     .filter((article) => article.category.slug === 'curriculum')
     .reverse();
 
+  const preProgram = streamArticles
+    .filter(
+      (article) => article.category.slug === 'pre-program-information-training'
+    )
+    .reverse();
+
   const documentationArticles = streamArticles
     .filter((article) => article.category.slug === 'documentation')
     .reverse();
@@ -20,6 +26,11 @@ export default function CurriculumHomepage({
     <div className="homepage">
       <Layout meta={siteMetadata} sections={sections} locale={locale}>
         <HomepageHeader />
+        <Grid
+          header="Pre-Program Information & Training"
+          type="pre-program"
+          articles={preProgram}
+        />
         <Grid
           header="Your 12 week course"
           type="curriculum"
