@@ -111,6 +111,15 @@ module.exports = (on, config) => {
       console.log("data:", data);
       return data;
     },
+    async "db:articles"() {
+      // clear out existing articles
+      const { errors, data } = await hasuraDeleteArticles(orgParams);
+      if (errors) {
+        console.error("errors deleting articles:", errors);
+      }
+      console.log("data:", data);
+      return data;
+    }
   })
 }
 // eslint-disable-next-line no-unused-vars
