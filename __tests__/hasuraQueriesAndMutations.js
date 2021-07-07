@@ -1,5 +1,5 @@
 import { hasuraGetSectionById, hasuraGetTagById, hasuraCreateTag, hasuraCreateSection, hasuraListAllSectionsByLocale, hasuraUpdateSection, hasuraUpdateTag } from '../lib/section';
-import { hasuraGetHomepageEditor, hasuraCreatePage, hasuraSearchArticles, hasuraArticlePage, hasuraPreviewArticlePage, hasuraPreviewArticleBySlug, hasuraGetArticleBySlug, hasuraListAllArticleSlugs, hasuraGetMetadataByLocale, hasuraListLocales, hasuraListAllTags, hasuraListAllSections, hasuraAuthorPage, hasuraTagPage, hasuraCategoryPage, hasuraCreateArticle } from '../lib/articles';
+import { hasuraGetHomepageEditor, hasuraCreatePage, hasuraSearchArticles, hasuraArticlePage, hasuraPreviewArticlePage, hasuraPreviewArticleBySlug, hasuraGetArticleBySlug, hasuraListAllArticleSlugs, hasuraGetMetadataByLocale, hasuraListAllTags, hasuraListAllSections, hasuraAuthorPage, hasuraTagPage, hasuraCategoryPage, hasuraCreateArticle, hasuraUpdateArticle } from '../lib/articles';
 import { hasuraCreateAuthor, hasuraGetAuthorById, hasuraGetAuthorBySlug, hasuraListAllAuthors } from '../lib/authors';
 import { hasuraUpsertMetadata } from '../lib/site_metadata';
 
@@ -313,8 +313,33 @@ describe('authors', () => {
   });
 });
 
+let articleId;
+let enCategories = [];
+let esCategories = [];
+
 describe('articles', () => {
-  it('creates an unpublished article', () => {
+  beforeAll(async (done) => {
+    let enCategoryParams = Object.assign({}, orgParams); 
+    enCategoryParams['localeCode'] = "en-US";
+    const { errors, data } = await hasuraListAllSectionsByLocale(enCategoryParams);
+    if (errors) {
+      console.error("errors:", errors);
+    }
+    enCategories = data.categories;
+    console.log("english categories:", enCategories);
+
+    let esCategoryParams = Object.assign({}, orgParams); 
+    esCategoryParams['localeCode'] = "es";
+    const esResponse = await hasuraListAllSectionsByLocale(esCategoryParams);
+    if (esResponse.errors) {
+      console.error("errors:", esResponse.errors);
+    }
+    esCategories = esResponse.data.categories;
+    console.log("spanish categories:", esCategories);
+    done();
+  })
+
+  it('creates an unpublished article in US English', () => {
       let articleParams = Object.assign({}, orgParams); 
       articleParams['locale_code'] = 'en-US';
       articleParams['headline'] = 'Test Article 1 Headline';
@@ -326,19 +351,50 @@ describe('articles', () => {
       articleParams['document_id'] = '1cS3u5bdBP7sg29t-nBW8UgvUHDNpiZRFccZA53A04sU';
       articleParams['created_by_email'] = 'jacqui@newscatalyst.org';
       articleParams['article_sources'] = [];
-      articleParams['category_id'] = newsSectionId;
+      articleParams['category_id'] = enCategories[0].id;
 
+      console.log("hasuraCreateArticle params:", articleParams);
       return hasuraCreateArticle(articleParams).then(response => {
-        // console.log("hasuraCreateArticle:", response);
+        console.log("hasuraCreateArticle:", JSON.stringify(response));
+        
         expect(response.data).toHaveProperty('insert_articles');
         expect(response.data.insert_articles).toHaveProperty('returning');
         expect(response.data.insert_articles.returning[0]).toHaveProperty('id');
+        articleId = response.data.insert_articles.returning[0].id;
         expect(response.data.insert_articles.returning[0]).toHaveProperty('slug');
         expect(response.data.insert_articles.returning[0].slug).toEqual(articleParams['slug']);
         expect(response.data.insert_articles.returning[0]).toHaveProperty('article_translations');
         expect(response.data.insert_articles.returning[0]).toHaveProperty('category');
       });
+  });
 
+  it('adds a spanish translation to an unpublished article', () => {
+    let articleParams = Object.assign({}, orgParams); 
+    articleParams['locale_code'] = 'es';
+    articleParams['headline'] = 'Test Article 1 spanish Headline';
+    articleParams['published'] = false
+    articleParams['slug'] = 'test-article-1';
+    articleParams['id'] = articleId;
+    articleParams['content'] = '<p>Test article spanish copy appears in this field.</p>';
+    articleParams['search_title'] = 'Test Article 1 Spanish Search Title';
+    articleParams['search_description'] = 'Test article 1 spanish search description copy.';
+    articleParams['document_id'] = '1cS3u5bdBP7sg29t-nBW8UgvUHDNpiZRFccZA53A04sU';
+    articleParams['created_by_email'] = 'jacqui@newscatalyst.org';
+    articleParams['article_sources'] = [];
+    articleParams['category_id'] = esCategories[0].id;
+
+    return hasuraUpdateArticle(articleParams).then(response => {
+      console.log("hasuraUpdateArticle:", JSON.stringify(response));
+      
+      expect(response.data).toHaveProperty('insert_articles');
+      expect(response.data.insert_articles).toHaveProperty('returning');
+      expect(response.data.insert_articles.returning[0]).toHaveProperty('id');
+      articleId = response.data.insert_articles.returning[0].id;
+      expect(response.data.insert_articles.returning[0]).toHaveProperty('slug');
+      expect(response.data.insert_articles.returning[0].slug).toEqual(articleParams['slug']);
+      expect(response.data.insert_articles.returning[0]).toHaveProperty('article_translations');
+      expect(response.data.insert_articles.returning[0]).toHaveProperty('category');
+    });
   });
 
   it('updates an article to published', () => {
@@ -346,7 +402,8 @@ describe('articles', () => {
       articleParams['locale_code'] = 'en-US';
       articleParams['headline'] = 'Test Article 1 Headline';
       articleParams['published'] = true;
-      articleParams['category_id'] = newsSectionId;
+      articleParams['id'] = articleId;
+      articleParams['category_id'] = enCategories[0].id;;
       articleParams['slug'] = 'test-article-1';
       articleParams['content'] = '<p>Test article copy appears in this field.</p>';
       articleParams['search_title'] = 'Test Article 1 Search Title';
@@ -355,7 +412,7 @@ describe('articles', () => {
       articleParams['created_by_email'] = 'jacqui@newscatalyst.org';
       articleParams['article_sources'] = [];
 
-      return hasuraCreateArticle(articleParams).then(response => {
+      return hasuraUpdateArticle(articleParams).then(response => {
         expect(response.data).toHaveProperty('insert_articles');
         expect(response.data.insert_articles).toHaveProperty('returning');
         expect(response.data.insert_articles.returning[0]).toHaveProperty('id');
@@ -367,6 +424,36 @@ describe('articles', () => {
       });
 
   });
+
+  it('adds another article', () => {
+    let articleParams = Object.assign({}, orgParams); 
+    articleParams['locale_code'] = 'en-US';
+    articleParams['headline'] = 'Test Article 2 Headline';
+    articleParams['published'] = true;
+    articleParams['category_id'] = enCategories[0].id;
+    articleParams['slug'] = 'test-article-2';
+    articleParams['content'] = '<p>Test article 2 copy appears in this field.</p>';
+    articleParams['search_title'] = 'Test Article 2 Search Title';
+    articleParams['search_description'] = 'Test article 2 search description copy.';
+    articleParams['document_id'] = '1cS3u5bdBP7sg29t-nBW8UgvUHDNpiZRFccZA53A0123';
+    articleParams['created_by_email'] = 'jacqui@newscatalyst.org';
+    articleParams['article_sources'] = [];
+
+    return hasuraCreateArticle(articleParams).then(response => {
+      console.log("adds another article response:", response);
+      expect(response.data).toHaveProperty('insert_articles');
+      expect(response.data.insert_articles).toHaveProperty('returning');
+      console.log(response.data.insert_articles.returning[0]);
+      
+      expect(response.data.insert_articles.returning[0]).toHaveProperty('id');
+      expect(response.data.insert_articles.returning[0]).toHaveProperty('slug');
+      expect(response.data.insert_articles.returning[0].slug).toEqual(articleParams['slug']);
+      expect(response.data.insert_articles.returning[0]).toHaveProperty('article_translations');
+      expect(response.data.insert_articles.returning[0]).toHaveProperty('category');
+      expect(response.data.insert_articles.returning[0].article_translations[0].published).toEqual(true);
+    });
+});
+
   it('lists all published page slugs', () => {
       let articleParams = Object.assign({}, orgParams); 
       return hasuraListAllArticleSlugs(articleParams).then(response => {
@@ -409,7 +496,7 @@ describe('articles', () => {
 
   });
 
-  it('gets data for previewing an article page', () => {
+  it('gets data for previewing an article page in english', () => {
       let articleParams = Object.assign({}, orgParams); 
       articleParams['localeCode'] = 'en-US';
       articleParams['slug'] = 'test-article-1';
@@ -419,13 +506,47 @@ describe('articles', () => {
         expect(response.data).toHaveProperty('categories');
         expect(response.data).toHaveProperty('tags');
         expect(response.data).toHaveProperty('site_metadatas');
+
+        let articlesData = response.data.articles;
+        console.log("articlesData:", articlesData);
+        let articleData = articlesData[0];
+        console.log("article data:", articleData);
         expect(response.data.articles[0]).toHaveProperty('slug');
         expect(response.data.articles[0]).toHaveProperty('article_translations');
+        let translation = articleData.article_translations[0];
+        expect(translation.locale_code).toEqual("en-US");
+        expect(translation.headline).toEqual("Test Article 1 Headline");
         expect(response.data.articles[0]).toHaveProperty('category');
         expect(response.data.articles[0]).toHaveProperty('author_articles');
       });
 
   });
+
+  it('gets data for previewing an article page in spanish', () => {
+    let articleParams = Object.assign({}, orgParams); 
+    articleParams['localeCode'] = 'es';
+    articleParams['slug'] = 'test-article-1';
+    articleParams['categorySlug'] = 'news';
+    return hasuraPreviewArticlePage(articleParams).then(response => {
+      expect(response.data).toHaveProperty('articles');
+      expect(response.data).toHaveProperty('categories');
+      expect(response.data).toHaveProperty('tags');
+      expect(response.data).toHaveProperty('site_metadatas');
+
+      let articlesData = response.data.articles;
+      console.log("articlesData:", articlesData);
+      let articleData = articlesData[0];
+      console.log("article data:", articleData);
+      expect(response.data.articles[0]).toHaveProperty('slug');
+      expect(response.data.articles[0]).toHaveProperty('article_translations');
+      let translation = articleData.article_translations[0];
+      expect(translation.locale_code).toEqual("es");
+      expect(translation.headline).toEqual("Test Article 1 spanish Headline");
+      expect(response.data.articles[0]).toHaveProperty('category');
+      expect(response.data.articles[0]).toHaveProperty('author_articles');
+    });
+
+});
 
   it('gets data to preview an article by slug', () => {
       let articleParams = Object.assign({}, orgParams); 
