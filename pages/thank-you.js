@@ -34,7 +34,7 @@ export default function ThankYou({ referrer, page, sections, siteMetadata }) {
 
   // there will only be one translation returned for a given page + locale
   const localisedPage = page.page_translations[0];
-  const body = renderBody(page.page_translations, isAmp);
+  const body = renderBody(page.page_translations, [], isAmp, siteMetadata);
 
   return (
     <Layout meta={siteMetadata} sections={sections}>
