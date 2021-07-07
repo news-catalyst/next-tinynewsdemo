@@ -86,7 +86,11 @@ export default function NewAdminNav(props) {
               </BrandContainer>
               <HomepageNavItemsDiv>
                 {props.layoutSchemas.map((option) => (
-                  <NavItem key={option.id} onClick={() => switchLayout(option)}>
+                  <NavItem
+                    className="layout-switcher"
+                    key={option.id}
+                    onClick={() => switchLayout(option)}
+                  >
                     {option.name}
                     {option.name === currentLayoutName ? ` (current)` : ``}
                   </NavItem>

@@ -72,6 +72,11 @@ export default function AddAuthor({
       return false;
     }
     let published = true;
+
+    let staffBool = false;
+    if (staff === 'yes') {
+      staffBool = true;
+    }
     let params = {
       url: apiUrl,
       orgSlug: apiToken,
@@ -81,18 +86,19 @@ export default function AddAuthor({
       name: name,
       published: published,
       slug: slug,
-      staff: staff,
+      staff: staffBool,
       twitter: twitter,
       photoUrl: bioImage,
     };
     const { errors, data } = await hasuraCreateAuthor(params);
 
-    if (data && data.insert_authors_one) {
+    if (data && data.insert_authors) {
       setNotificationMessage('Added the author.');
       setNotificationType('success');
       setShowNotification(true);
     } else if (errors) {
-      setNotificationMessage(errors);
+      console.log(errors);
+      setNotificationMessage(JSON.stringify(errors));
       setNotificationType('error');
       setShowNotification(true);
     }
