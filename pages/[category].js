@@ -104,7 +104,6 @@ export async function getStaticProps({ locale, params }) {
   } else {
     articles = data.articles;
     sections = data.categories;
-    tags = data.tags;
 
     for (var i = 0; i < sections.length; i++) {
       sections[i].title = hasuraLocaliseText(
@@ -114,9 +113,6 @@ export async function getStaticProps({ locale, params }) {
       if (sections[i].slug == params.category) {
         categoryExists = true;
         title = hasuraLocaliseText(sections[i].category_translations, 'title');
-        if (title) {
-          break;
-        }
       }
     }
 
