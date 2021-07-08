@@ -22,6 +22,7 @@ export default function Layout({
   article,
   sections,
   renderNav = true,
+  renderFooter = true,
 }) {
   if (meta === null || meta === undefined) {
     meta = {};
@@ -217,7 +218,7 @@ export default function Layout({
           )}
           {children}
         </Main>
-        <GlobalFooter metadata={metaValues} />
+        {renderFooter && <GlobalFooter metadata={metaValues} />}
       </ThemeWrapper>
     </>
   );
