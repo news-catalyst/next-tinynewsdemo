@@ -17,7 +17,7 @@ const TagsListItem = tw.li`mb-4 ml-4`;
 const TagsListLink = tw.a`text-gray-700 uppercase text-xs bg-gray-200 rounded flex justify-center p-3 cursor-pointer hover:bg-blue-500 hover:text-white`;
 
 export default function ArticleFooter({ article, isAmp, metadata }) {
-  let tagLinks;
+  let tagLinks = [];
   if (article.tag_articles) {
     tagLinks = article.tag_articles.map((tag_article) => (
       <TagsListItem key={tag_article.tag.slug}>
@@ -32,9 +32,9 @@ export default function ArticleFooter({ article, isAmp, metadata }) {
   return (
     <ArticleMetaBottom meta={metadata}>
       <SectionContainer>
-        <ArticleByline>
-          {article.author_articles &&
-            article.author_articles.map((authorArticle, i) => (
+        {article.author_articles && article.author_articles.length > 0 && (
+          <ArticleByline>
+            {article.author_articles.map((authorArticle, i) => (
               <ArticleFooterAuthor
                 key={authorArticle.author.slug}
                 author={authorArticle.author}
@@ -44,11 +44,15 @@ export default function ArticleFooter({ article, isAmp, metadata }) {
                 metadata={metadata}
               />
             ))}
-        </ArticleByline>
-        <ArticleTags>
-          {tagLinks && <TagsTitle>Read more:</TagsTitle>}
-          <TagsList>{tagLinks}</TagsList>
-        </ArticleTags>
+          </ArticleByline>
+        )}
+
+        {tagLinks && tagLinks.length > 0 && (
+          <ArticleTags>
+            <TagsTitle>Read more:</TagsTitle>
+            <TagsList>{tagLinks}</TagsList>
+          </ArticleTags>
+        )}
       </SectionContainer>
     </ArticleMetaBottom>
   );
