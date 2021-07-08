@@ -14,9 +14,7 @@ export default function Grid({ header, type, articles }) {
       articles[i].article_translations[
         articles[i].article_translations.length - 1
       ];
-    const mainImageNode = translation.content.find(
-      (node) => node.type === 'mainImage'
-    );
+    const mainImageNode = translation.main_image;
     let mainImage = null;
 
     if (mainImageNode) {
