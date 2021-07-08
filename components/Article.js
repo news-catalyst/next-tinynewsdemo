@@ -13,6 +13,7 @@ export default function Article({
   ads,
   siteMetadata,
   sectionArticles,
+  renderFooter,
 }) {
   const isAmp = useAmp();
 
@@ -22,7 +23,12 @@ export default function Article({
   siteMetadata['canonicalUrl'] = canonicalArticleUrl;
 
   return (
-    <Layout meta={siteMetadata} article={article} sections={sections}>
+    <Layout
+      meta={siteMetadata}
+      article={article}
+      sections={sections}
+      renderFooter={renderFooter}
+    >
       <div className="post">
         <ArticleHeader
           article={article}
