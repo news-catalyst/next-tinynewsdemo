@@ -8,6 +8,7 @@ const Title = tw.h2`text-3xl font-bold max-w-2xl mx-auto text-center mb-8`;
 
 export default function Grid({ header, type, articles }) {
   let gridItems = [];
+  let weekNumber = 1;
 
   for (var i = 0; i < articles.length; i++) {
     const translation =
@@ -22,12 +23,21 @@ export default function Grid({ header, type, articles }) {
     if (mainImageNode) {
       mainImage = mainImageNode.children[0];
     }
+
+    let hammer = `Week ${weekNumber}`;
+
+    if (translation.headline.includes('Week 0')) {
+      hammer = 'Week 0';
+    } else {
+      weekNumber++;
+    }
+
     gridItems.push(
       <GridItem
         header={translation.headline}
         dek={translation.search_description}
         image={mainImage}
-        hammer={type === 'curriculum' && `Week ${i + 1}`}
+        hammer={hammer}
         article={articles[i]}
       />
     );
