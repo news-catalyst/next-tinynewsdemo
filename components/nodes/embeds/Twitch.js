@@ -1,9 +1,9 @@
 import ReactPlayer from 'react-player/lazy';
 
-export default function Youtube({ node, amp, url }) {
+export default function Twitch({ node, amp, url }) {
   const videoId = url.searchParams.get('v');
   const el = amp ? (
-    <amp-youtube
+    <amp-twitch
       layout="responsive"
       data-videoid={videoId}
       width="800"

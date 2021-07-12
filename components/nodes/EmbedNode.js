@@ -6,6 +6,8 @@ import Facebook from './embeds/Facebook';
 import Instagram from './embeds/Instagram';
 import Spotify from './embeds/Spotify';
 import ApplePodcasts from './embeds/ApplePodcasts';
+import Vimeo from './embeds/Vimeo';
+import Twitch from './embeds/Twitch';
 
 const EmbedWrapper = tw.div`mb-5 max-w-full w-full`;
 
@@ -34,6 +36,12 @@ export default function EmbedNode({ node, amp }) {
       break;
     case 'embed.podcasts.apple.com':
       el = <ApplePodcasts node={node} amp={amp} />;
+      break;
+    case 'vimeo.com':
+      el = <Vimeo node={node} amp={amp} url={url} />;
+      break;
+    case 'twitch.tv':
+      el = <Twitch node={node} amp={amp} url={url} />;
       break;
     default:
       el = (
