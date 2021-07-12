@@ -40,7 +40,12 @@ export default function CurriculumHomepage({
 
   return (
     <div className="homepage">
-      <Layout meta={siteMetadata} sections={sections} locale={locale}>
+      <Layout
+        meta={siteMetadata}
+        sections={sections}
+        locale={locale}
+        renderFooter={false}
+      >
         <HomepageHeader />
         <Grid
           header="Your 12 week course"
