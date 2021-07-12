@@ -23,15 +23,17 @@ export default function GridItem({ header, dek, image, hammer, article }) {
               minHeight: '25rem',
             }}
           >
-            <ItemImageContainer>
-              <Image
-                src={image.imageUrl}
-                width={1080}
-                height={(image.height / image.width) * 1080}
-                alt={image.imageAlt}
-                className="image"
-              />
-            </ItemImageContainer>
+            {image && (
+              <ItemImageContainer>
+                <Image
+                  src={image.imageUrl}
+                  width={1080}
+                  height={(image.height / image.width) * 1080}
+                  alt={image.imageAlt}
+                  className="image"
+                />
+              </ItemImageContainer>
+            )}
             <ItemTextContainer>
               <Hammer>{hammer}</Hammer>
               <ItemHeader>{header}</ItemHeader>
