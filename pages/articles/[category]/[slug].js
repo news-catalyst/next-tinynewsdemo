@@ -127,6 +127,11 @@ export async function getStaticProps({ locale, params }) {
     ads = allAds.filter((ad) => ad.adTypeId === 164 && ad.status === 4);
   }
 
+  let renderFooter = true;
+  if (process.env.ORG_SLUG === 'tiny-news-curriculum') {
+    renderFooter = false; // turns off the global footer for the curriculum site
+  }
+
   return {
     props: {
       article,
@@ -134,6 +139,7 @@ export async function getStaticProps({ locale, params }) {
       ads,
       siteMetadata,
       sectionArticles,
+      renderFooter,
     },
     // Re-generate the post at most once per second
     // if a request comes in

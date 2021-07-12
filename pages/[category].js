@@ -26,7 +26,11 @@ export default function CategoryPage(props) {
   }
 
   return (
-    <Layout meta={props.siteMetadata} sections={props.sections}>
+    <Layout
+      meta={props.siteMetadata}
+      sections={props.sections}
+      renderFooter={props.renderFooter}
+    >
       <ArticleStream
         articles={props.articles}
         sections={props.sections}
@@ -138,6 +142,11 @@ export async function getStaticProps({ locale, params }) {
     expandedAds = allAds.filter((ad) => ad.adTypeId === 166 && ad.status === 4);
   }
 
+  let renderFooter = true;
+  if (process.env.ORG_SLUG === 'tiny-news-curriculum') {
+    renderFooter = false; // turns off the global footer for the curriculum site
+  }
+
   return {
     props: {
       articles,
@@ -147,6 +156,7 @@ export async function getStaticProps({ locale, params }) {
       sections,
       siteMetadata,
       expandedAds,
+      renderFooter,
     },
   };
 }
