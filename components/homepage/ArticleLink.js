@@ -47,17 +47,17 @@ export default function ArticleLink({
     );
   }
 
-  let articleContent = hasuraLocaliseText(
+  let mainImageContent = hasuraLocaliseText(
     article.article_translations,
-    'content'
+    'main_image'
   );
   if (
-    articleContent !== null &&
-    articleContent !== undefined &&
-    typeof articleContent !== 'string'
+    mainImageContent !== null &&
+    mainImageContent !== undefined &&
+    typeof mainImageContent !== 'string'
   ) {
     try {
-      mainImageNode = articleContent.find((node) => node.type === 'mainImage');
+      mainImageNode = mainImageContent;
     } catch (e) {
       console.log(
         article.id,

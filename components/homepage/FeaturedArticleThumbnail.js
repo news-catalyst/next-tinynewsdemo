@@ -5,26 +5,13 @@ import tw from 'twin.macro';
 const AssetThumbnail = tw.div`overflow-hidden relative w-full mb-4 md:mb-0 md:ml-5 order-2 w-full`;
 
 export default function FeaturedArticleThumbnail({ article, isAmp }) {
-  let mainImage = null;
+  let mainImage = {};
   let mainImageNode = null;
 
   const translation = article['article_translations'][0];
 
-  try {
-    if (translation) {
-      if (typeof translation.content === 'string') {
-        mainImageNode = JSON.parse(translation.content).find(
-          (node) => node.type === 'mainImage'
-        );
-      } else {
-        mainImageNode = translation.content.find(
-          (node) => node.type === 'mainImage'
-        );
-      }
-    }
-  } catch (err) {
-    console.error(err, translation);
-  }
+  console.log('FeaturedArticleThumbnail translation:', translation);
+  mainImageNode = translation.main_image;
 
   try {
     if (mainImageNode) {
