@@ -1,18 +1,22 @@
+import tw from 'twin.macro';
 import Layout from './Layout';
 import NewsletterBlock from './plugins/NewsletterBlock';
-import landingPageStyles from '../styles/landingpage.js';
+
+const Container = tw.div`flex items-center justify-center flex-col min-h-screen max-w-3xl mx-auto py-6 px-8`;
+const Title = tw.h1`text-4xl font-bold mb-4`;
+const Dek = tw.p`text-xl mb-6`;
+const BlockWrapper = tw.div`w-full`;
 
 export default function LandingPage({ siteMetadata, sections }) {
   return (
     <Layout meta={siteMetadata} sections={sections} renderNav={false}>
-      <div className="landing-page-container">
-        <h1>{siteMetadata.shortName}</h1>
-        <p>{siteMetadata.aboutDek}</p>
-        <NewsletterBlock metadata={siteMetadata} />
-      </div>
-      <style jsx global>
-        {landingPageStyles}
-      </style>
+      <Container>
+        <Title>{siteMetadata.shortName}</Title>
+        <Dek>{siteMetadata.aboutDek}</Dek>
+        <BlockWrapper>
+          <NewsletterBlock metadata={siteMetadata} />
+        </BlockWrapper>
+      </Container>
     </Layout>
   );
 }
