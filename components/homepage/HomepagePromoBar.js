@@ -68,14 +68,16 @@ export default function HomepagePromoBar({ metadata }) {
         <RightBlock>
           <BlockHeader meta={metadata}>{metadata.supportHed}</BlockHeader>
           <BlockDek meta={metadata}>{metadata.supportDek}</BlockDek>
-          <DonateBlockCTA
-            style={{
-              minHeight: '2.375rem',
-            }}
-            meta={metadata}
-          >
-            {metadata.supportCTA}
-          </DonateBlockCTA>
+          <Link href="/donate" passHref>
+            <DonateBlockCTA
+              style={{
+                minHeight: '2.375rem',
+              }}
+              meta={metadata}
+            >
+              {metadata.supportCTA}
+            </DonateBlockCTA>
+          </Link>
         </RightBlock>
       </SectionContainer>
     </SectionLayout>
