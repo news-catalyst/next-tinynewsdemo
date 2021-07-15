@@ -16,7 +16,7 @@ const DonationWrapper = styled.div(({ textColor, backgroundColor }) => ({
 const DonationHed = tw.h4`text-2xl font-bold tracking-tight leading-5 mb-2`;
 const DonationDek = tw.p`mb-6`;
 const DonateLink = styled.a(({ textColor, backgroundColor }) => ({
-  ...tw`py-2 px-4 font-bold`,
+  ...tw`py-2 px-4 font-bold cursor-pointer border border-transparent hover:bg-transparent hover:text-white hover:border-white`,
   backgroundColor: backgroundColor,
   color: textColor,
 }));
@@ -62,7 +62,7 @@ export default function DonationBlock({ metadata }) {
             minHeight: '2.375rem',
           }}
         >
-          Donate
+          {metadata.membershipCTA}
         </DonateLink>
       </Link>
     </DonationWrapper>
