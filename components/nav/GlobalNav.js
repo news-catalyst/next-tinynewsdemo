@@ -42,7 +42,15 @@ export default function GlobalNav({ metadata, sections, isAmp }) {
       <LogoWrapper>
         <Logo>
           {isAmp ? (
-            <amp-img src={logo} layout="fixed-height" alt={title} />
+            <amp-img
+              src={logo}
+              layout="fill"
+              alt={title}
+              style={{
+                objectFit: 'contain',
+                objectPosition: 'left',
+              }}
+            />
           ) : (
             <Image
               src={logo}
