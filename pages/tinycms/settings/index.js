@@ -17,8 +17,8 @@ const LightSidebar = tw.div`bg-gray-100 text-black p-2`;
 const SidebarContent = tw.div`mt-6 ml-2`;
 const MainContent = tw.div`w-full lg:w-3/4 px-4 py-4`;
 const SettingsContainer = tw.div`min-w-0 w-full flex-auto lg:static lg:max-h-full lg:overflow-visible p-2`;
-const SaveContainer = tw.div`absolute bottom-0 h-16 w-16`;
-const SaveButton = tw.button`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded align-bottom`;
+const SaveContainer = tw.div`absolute bottom-10 h-16 w-72`;
+const SaveButton = tw.button`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded align-bottom w-full`;
 
 const typographyOptions = {
   styleone: {
