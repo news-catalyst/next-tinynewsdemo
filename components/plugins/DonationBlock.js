@@ -1,7 +1,10 @@
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import tw, { styled } from 'twin.macro';
+import { useAnalytics } from '../../lib/hooks/useAnalytics.js';
 import Donate from '../nav/Donate.js';
 import Colors from '../common/Colors';
+import Typography from '../common/Typography';
 import { determineTextColor } from '../../lib/utils';
 
 const DonationWrapper = styled.div(({ textColor, backgroundColor }) => ({
@@ -12,10 +15,25 @@ const DonationWrapper = styled.div(({ textColor, backgroundColor }) => ({
 
 const DonationHed = tw.h4`text-2xl font-bold tracking-tight leading-5 mb-2`;
 const DonationDek = tw.p`mb-6`;
+const DonateLink = styled.a(({ textColor, backgroundColor }) => ({
+  ...tw`py-2 px-4 font-bold cursor-pointer border border-transparent hover:bg-transparent hover:text-white hover:border-white`,
+  backgroundColor: backgroundColor,
+  color: textColor,
+}));
 
 export default function DonationBlock({ metadata }) {
   const [textColor, setTextColor] = useState(null);
   const [backgroundColor, setBackgroundColor] = useState(null);
+  const { trackEvent } = useAnalytics();
+
+  const trackClick = () => {
+    trackEvent({
+      action: 'Clicked',
+      category: 'Donate',
+      label: 'Promotion Block',
+      non_interaction: false,
+    });
+  };
 
   useEffect(() => {
     let bgc;
@@ -35,7 +53,18 @@ export default function DonationBlock({ metadata }) {
     <DonationWrapper textColor={textColor} backgroundColor={backgroundColor}>
       <DonationHed>{metadata.membershipHed}</DonationHed>
       <DonationDek>{metadata.membershipDek}</DonationDek>
-      <Donate metadata={metadata} label="Donate" />
+      <Link href="/donate" passHref>
+        <DonateLink
+          textColor={backgroundColor}
+          backgroundColor={textColor}
+          onClick={trackClick}
+          style={{
+            minHeight: '2.375rem',
+          }}
+        >
+          {metadata.membershipCTA}
+        </DonateLink>
+      </Link>
     </DonationWrapper>
   );
 }

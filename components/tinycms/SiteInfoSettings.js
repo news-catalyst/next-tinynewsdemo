@@ -162,6 +162,9 @@ export default function SiteInfoSettings(props) {
   const [membershipDek, setMembershipDek] = useState(
     props.parsedData['membershipDek']
   );
+  const [membershipCTA, setMembershipCTA] = useState(
+    props.parsedData['membershipCTA']
+  );
   const [newsletterHed, setNewsletterHed] = useState(
     props.parsedData['newsletterHed']
   );
@@ -454,6 +457,15 @@ export default function SiteInfoSettings(props) {
               type="text"
               name="membershipDek"
               value={membershipDek}
+              onChange={props.handleChange}
+            />
+          </label>
+          <label htmlFor="CTA">
+            <span tw="mt-1 font-bold">CTA</span>
+            <Input
+              type="text"
+              name="membershipCTA"
+              value={membershipCTA}
               onChange={props.handleChange}
             />
           </label>
