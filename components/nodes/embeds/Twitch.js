@@ -1,14 +1,8 @@
 import ReactPlayer from 'react-player/lazy';
 
-export default function Twitch({ node, amp, url }) {
-  const videoId = url.searchParams.get('v');
+export default function Twitch({ node, amp }) {
   const el = amp ? (
-    <amp-twitch
-      layout="responsive"
-      data-videoid={videoId}
-      width="800"
-      height="400"
-    />
+    <div />
   ) : (
     <div
       style={{
