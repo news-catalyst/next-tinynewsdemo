@@ -1,35 +1,13 @@
 import NextAuth from 'next-auth';
+import Providers from 'next-auth/providers';
 
 export default NextAuth({
   // Configure one or more authentication providers
   providers: [
-    {
-      id: 'presspass',
-      name: 'PressPass',
-      type: 'oauth',
-      version: '2.0',
-      scope: 'openid profile email organizations',
-      accessTokenUrl: 'https://server.presspass.dev/openid/token',
-      authorizationUrl:
-        'https://server.presspass.dev/openid/authorize/?response_type=code',
-      clientId: '901292',
-      idToken: true,
-      params: { grant_type: 'authorization_code' },
-      profileUrl: 'https://server.presspass.dev/openid/userinfo',
-      async profile(profile, tokens) {
-        const res = await fetch(
-          'https://server.presspass.dev/openid/userinfo',
-          {
-            headers: {
-              Authorization: `Bearer ${tokens.accessToken}`,
-            },
-          }
-        );
-        const responseData = await res.json();
-        responseData.id = 'presspass';
-        return responseData;
-      },
-    },
+    Providers.Google({
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    }),
   ],
   debug: true,
   secret: process.env.SECRET,
@@ -66,8 +44,9 @@ export default NextAuth({
     async signIn(user, account, profile) {
       let isAllowedToSignIn = false;
 
-      user.organizations.forEach((org) => {
-        if (org.slug === process.env.ORG_SLUG) {
+      let authorizedEmails = process.env.AUTHORIZED_EMAILS.split(',');
+      authorizedEmails.forEach((authorizedEmail) => {
+        if (user.email === authorizedEmail) {
           isAllowedToSignIn = true;
         }
       });
