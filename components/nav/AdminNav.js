@@ -35,7 +35,7 @@ export default function NewAdminNav(props) {
     } else if (props.homePageEditor) {
       console.log('is homepage editor AND missing hp data/schema', props);
     }
-  }, [props.hpData]);
+  }, [props]);
 
   return (
     <div>
@@ -44,9 +44,7 @@ export default function NewAdminNav(props) {
           <NavBarInnerContainer>
             <BrandContainer>
               <Link href="/tinycms">
-                <a tw="text-4xl" href="/tinycms">
-                  TinyCMS
-                </a>
+                <a tw="text-4xl">TinyCMS</a>
               </Link>
             </BrandContainer>
             <NavItemsDiv>
@@ -56,22 +54,22 @@ export default function NewAdminNav(props) {
                   locales={props.locales}
                 />
               )}
-              <Link href="/tinycms/analytics">
+              <Link href="/tinycms/analytics" passHref>
                 <NavItem>Analytics</NavItem>
               </Link>
-              <Link href="/tinycms/homepage">
+              <Link href="/tinycms/homepage" passHref>
                 <NavItem>Homepage Editor</NavItem>
               </Link>
-              <Link href="/tinycms/authors">
+              <Link href="/tinycms/authors" passHref>
                 <NavItem>Authors</NavItem>
               </Link>
-              <Link href="/tinycms/settings">
+              <Link href="/tinycms/settings" passHref>
                 <NavItem>Settings</NavItem>
               </Link>
-              <Link href="/tinycms/sections">
+              <Link href="/tinycms/sections" passHref>
                 <NavItem>Sections</NavItem>
               </Link>
-              <Link href="/tinycms/tags">
+              <Link href="/tinycms/tags" passHref>
                 <NavItem>Tags</NavItem>
               </Link>
             </NavItemsDiv>
@@ -88,7 +86,11 @@ export default function NewAdminNav(props) {
               </BrandContainer>
               <HomepageNavItemsDiv>
                 {props.layoutSchemas.map((option) => (
-                  <NavItem key={option.id} onClick={() => switchLayout(option)}>
+                  <NavItem
+                    className="layout-switcher"
+                    key={option.id}
+                    onClick={() => switchLayout(option)}
+                  >
                     {option.name}
                     {option.name === currentLayoutName ? ` (current)` : ``}
                   </NavItem>

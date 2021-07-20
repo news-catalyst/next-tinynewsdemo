@@ -64,15 +64,6 @@ export default function HomePageEditor({
       article3 = subFeaturedBottomArticle.id;
     }
 
-    console.log(
-      'saving homepage...',
-      selectedLayout.id,
-      'article1:',
-      article1,
-      article2,
-      article3
-    );
-
     const { errors, data } = await hasuraSaveHomepageLayout({
       url: apiUrl,
       orgSlug: apiToken,
@@ -203,9 +194,9 @@ export async function getServerSideProps({ locale }) {
   }
 
   const sections = data.categories;
-  for (var i = 0; i < sections.length; i++) {
-    sections[i].title = hasuraLocaliseText(
-      sections[i].category_translations,
+  for (var j = 0; j < sections.length; j++) {
+    sections[j].title = hasuraLocaliseText(
+      sections[j].category_translations,
       'title'
     );
   }

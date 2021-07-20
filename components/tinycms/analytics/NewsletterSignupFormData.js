@@ -108,7 +108,13 @@ const NewsletterSignupFormData = (props) => {
         signupRef.current.scrollIntoView({ behavior: 'smooth' });
       }
     }
-  }, [props.startDate, props.endDate]);
+  }, [
+    props.startDate,
+    props.endDate,
+    props.apiToken,
+    props.apiUrl,
+    props.dimension,
+  ]);
 
   return (
     <>

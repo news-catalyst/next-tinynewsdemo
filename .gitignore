@@ -36,4 +36,5 @@ yarn-error.log*
 cached/*.json
 script/credentials.json
 .env.local*
+.env.testing
 cypress/videos

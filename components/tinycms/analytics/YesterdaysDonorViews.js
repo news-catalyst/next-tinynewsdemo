@@ -40,7 +40,7 @@ const YesterdaysDonorViews = (props) => {
         }
       })
       .catch((error) => console.error(error));
-  }, [startDate, endDate]);
+  }, [startDate, endDate, props.viewID]);
 
   return (
     <>

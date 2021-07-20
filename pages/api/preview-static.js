@@ -1,6 +1,6 @@
 import { hasuraGetPage } from '../../lib/articles.js';
 
-export default async (req, res) => {
+export default async function Handler(req, res) {
   // Check the secret and next parameters
   // This secret should only be known to this API route and the CMS
   if (req.query.secret !== process.env.PREVIEW_TOKEN || !req.query.slug) {
@@ -36,4 +36,4 @@ export default async (req, res) => {
   }
 
   res.redirect(nextPath);
-};
+}

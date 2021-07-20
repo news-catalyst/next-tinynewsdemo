@@ -55,7 +55,6 @@ const ReadingDepthData = (props) => {
           let conversion =
             (totalRD[path]['read_100'] / totalRD[path]['pageviews']) * 100;
           totalRD[path]['conversion'] = conversion;
-          console.log(path, conversion, totalRD[path]);
         }
       });
       setTotalReadingDepth(totalRD);
@@ -67,7 +66,7 @@ const ReadingDepthData = (props) => {
         depthRef.current.scrollIntoView({ behavior: 'smooth' });
       }
     }
-  }, [props.startDate, props.endDate]);
+  }, [props.startDate, props.endDate, props.apiToken, props.apiUrl]);
 
   return (
     <>

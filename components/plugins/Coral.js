@@ -7,11 +7,6 @@ class Coral extends Component {
     script.src = '/coral.js';
     script.async = true;
     this.instance.appendChild(script);
-
-    document.getElementById('loadCoral').addEventListener('load', () => {
-      console.log('Coral is loaded');
-      console.log('storyUrl: ', this.props.storyURL);
-    });
   }
 
   render() {

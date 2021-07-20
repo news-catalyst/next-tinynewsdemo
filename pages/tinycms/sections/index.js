@@ -29,10 +29,9 @@ export default function Sections({ sections, currentLocale, locales }) {
     if (action && action === 'create') {
       setMessage('Successfully created section.');
     }
-  }, []);
+  }, [action]);
 
   const listItems = sections.map((section) => {
-    console.log('section:', section);
     let title = hasuraLocaliseText(section.category_translations, 'title');
     return (
       <TableRow key={section.id}>
@@ -71,7 +70,7 @@ export default function Sections({ sections, currentLocale, locales }) {
         {message && <div className="success">{message}</div>}
 
         <div tw="flex pt-8 justify-end">
-          <Link href="/tinycms/sections/add">
+          <Link href="/tinycms/sections/add" passHref>
             <AddSectionButton>Add Section</AddSectionButton>
           </Link>
         </div>
@@ -88,7 +87,7 @@ export default function Sections({ sections, currentLocale, locales }) {
         </Table>
 
         <div tw="flex pt-8 justify-end">
-          <Link href="/tinycms/sections/add">
+          <Link href="/tinycms/sections/add" passHref>
             <AddSectionButton>Add Section</AddSectionButton>
           </Link>
         </div>

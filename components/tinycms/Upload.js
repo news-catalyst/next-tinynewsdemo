@@ -23,7 +23,6 @@ export default function Upload(props) {
     let newFilename = `${props.folderName}/${props.slug}`;
 
     const ReactS3Client = new S3(props.awsConfig);
-    console.log(ReactS3Client);
     ReactS3Client.uploadFile(file, newFilename)
       .then((data) => {
         if (data.status === 204) {
@@ -55,7 +54,8 @@ export default function Upload(props) {
   return (
     <>
       <ImgWrapper>
-        <img src={imageSrc} key={randomKey} />
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={imageSrc} key={randomKey} alt="" />
       </ImgWrapper>
       <div className="upload-steps">
         <input className="file-input" type="file" ref={fileInput} />

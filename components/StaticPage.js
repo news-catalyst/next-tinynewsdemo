@@ -20,7 +20,7 @@ export default function StaticPage({ siteMetadata, sections, page, isAmp }) {
   if (page) {
     // there will only be one translation returned for a given page + locale
     localisedPage = page.page_translations[0];
-    body = renderBody(page.page_translations, isAmp);
+    body = renderBody(page.page_translations, [], isAmp, siteMetadata);
   }
 
   return (

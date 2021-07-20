@@ -32,7 +32,6 @@ const CustomForm = ({ status, message, onValidated, metadata }) => {
     } else if (Colors[metadata.color]) {
       tc = Colors[metadata.color].PromoBlockCTAText;
       bgc = Colors[metadata.color].PromoBlockCTABackground;
-      console.log('unknown color', metadata.color);
     }
 
     setBackgroundColor(bgc);
@@ -105,7 +104,7 @@ const Newsletter = ({ articleTitle, metadata }) => {
         non_interaction: true,
       });
     }
-  }, [inView]);
+  }, [inView, articleTitle, trackEvent]);
 
   return (
     <div ref={ref}>

@@ -44,14 +44,20 @@ const CustomDimensions = (props) => {
       setChartData(chartValues);
     };
     fetchCustomDimension();
-    console.log(chartData);
 
     if (window.location.hash && window.location.hash === '#subscriptions') {
       if (customRef) {
         customRef.current.scrollIntoView({ behavior: 'smooth' });
       }
     }
-  }, [props.startDate, props.endDate]);
+  }, [
+    props.startDate,
+    props.endDate,
+    chartData,
+    props.apiToken,
+    props.apiUrl,
+    props.dimension,
+  ]);
 
   return (
     <>

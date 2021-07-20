@@ -44,13 +44,12 @@ const DailySessions = (props) => {
     };
     fetchSessions();
 
-    console.log(chartData);
     if (window.location.hash && window.location.hash === '#daily') {
       if (dailyRef) {
         dailyRef.current.scrollIntoView({ behavior: 'smooth' });
       }
     }
-  }, [props.startDate, props.endDate]);
+  }, [props.startDate, props.endDate, chartData, props.apiToken, props.apiUrl]);
 
   return (
     <>
