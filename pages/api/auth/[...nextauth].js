@@ -44,9 +44,9 @@ export default NextAuth({
     async signIn(user, account, profile) {
       let isAllowedToSignIn = false;
 
-      let authorizedEmails = process.env.AUTHORIZED_EMAILS.split(',');
-      authorizedEmails.forEach((authorizedEmail) => {
-        if (user.email === authorizedEmail) {
+      let authorizedDomains = process.env.AUTHORIZED_EMAIL_DOMAINS.split(',');
+      authorizedDomains.forEach((authorizedDomain) => {
+        if (user.email.split('@')[1] === authorizedDomain) {
           isAllowedToSignIn = true;
         }
       });
