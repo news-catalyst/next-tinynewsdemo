@@ -194,7 +194,9 @@ export default function Layout({
         )}
       </Head>
       <ThemeWrapper meta={meta}>
-        {renderNav && <GlobalNav metadata={meta} sections={sections} />}
+        {renderNav && (
+          <GlobalNav metadata={meta} sections={sections} isAmp={isAmp} />
+        )}
         <Main>
           {isAmp && (
             <AmpAnalytics
