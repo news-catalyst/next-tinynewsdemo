@@ -79,7 +79,6 @@ export default function AddSection({
     const { hasuraErrors, data } = await hasuraCreateSection(params);
 
     if (data && data.insert_categories_one) {
-      console.log(data.insert_categories_one);
       setNotificationMessage('Added the new section.');
       setNotificationType('success');
       setShowNotification(true);

@@ -6,14 +6,13 @@ const AnalyticsNav = (props) => {
   return (
     <ul>
       <li>
-        <a href="/tinycms/analytics/audience">Audience</a>
+        <Link href="/tinycms/analytics/audience">
+          <a tw="cursor-pointer">Audience</a>
+        </Link>
         <ul>
           <li>
             <Link href="/tinycms/analytics/audience#donations">
-              <a
-                href="/tinycms/analytics/audience#donations"
-                tw="w-full flex align-bottom"
-              >
+              <a tw="w-full flex align-bottom cursor-pointer">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   tw="float-left align-bottom h-6 w-3"
@@ -34,10 +33,7 @@ const AnalyticsNav = (props) => {
           </li>
           <li>
             <Link href="/tinycms/analytics/audience#subscriptions">
-              <a
-                href="/tinycms/analytics/audience#subscriptions"
-                tw="w-full flex align-bottom"
-              >
+              <a tw="w-full flex align-bottom cursor-pointer">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   tw="float-left align-bottom h-6 w-3"
@@ -59,14 +55,13 @@ const AnalyticsNav = (props) => {
         </ul>
       </li>
       <li>
-        <a href="/tinycms/analytics/newsletter">Newsletters</a>
+        <Link href="/tinycms/analytics/newsletter">
+          <a tw="cursor-pointer">Newsletters</a>
+        </Link>
         <ul>
           <li>
             <Link href="/tinycms/analytics/newsletter#signups">
-              <a
-                href="/tinycms/analytics/newsletter#signups"
-                tw="w-full flex align-bottom"
-              >
+              <a tw="w-full flex align-bottom cursor-pointer">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   tw="float-left align-bottom h-6 w-3"
@@ -87,10 +82,7 @@ const AnalyticsNav = (props) => {
           </li>
           <li>
             <Link href="/tinycms/analytics/newsletter#campaigns">
-              <a
-                href="/tinycms/analytics/newsletter#signups"
-                tw="w-full flex align-bottom"
-              >
+              <a tw="w-full flex align-bottom cursor-pointer">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   tw="float-left align-bottom h-6 w-3"
@@ -112,14 +104,13 @@ const AnalyticsNav = (props) => {
         </ul>
       </li>
       <li>
-        <a href="/tinycms/analytics/pageviews">Page Views</a>
+        <Link href="/tinycms/analytics/pageviews">
+          <a tw="cursor-pointer">Page Views</a>
+        </Link>
         <ul>
           <li>
             <Link href="/tinycms/analytics/pageviews#pageviews">
-              <a
-                href="/tinycms/analytics/pageviews#pageviews"
-                tw="w-full flex align-bottom"
-              >
+              <a tw="w-full flex align-bottom cursor-pointer">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   tw="float-left align-bottom h-6 w-3"
@@ -140,10 +131,7 @@ const AnalyticsNav = (props) => {
           </li>
           <li>
             <Link href="/tinycms/analytics/pageviews#depth">
-              <a
-                href="/tinycms/analytics/pageviews#depth"
-                tw="w-full flex align-bottom"
-              >
+              <a tw="w-full flex align-bottom cursor-pointer">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   tw="float-left align-bottom h-6 w-3"
@@ -164,10 +152,7 @@ const AnalyticsNav = (props) => {
           </li>
           <li>
             <Link href="/tinycms/analytics/pageviews#frequency">
-              <a
-                href="/tinycms/analytics/pageviews#frequency"
-                tw="w-full flex align-bottom"
-              >
+              <a tw="w-full flex align-bottom cursor-pointer">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   tw="float-left align-bottom h-6 w-3"
@@ -189,14 +174,13 @@ const AnalyticsNav = (props) => {
         </ul>
       </li>
       <li>
-        <a href="/tinycms/analytics/sessions">Sessions</a>
+        <Link href="/tinycms/analytics/sessions">
+          <a tw="cursor-pointer">Sessions</a>
+        </Link>
         <ul>
           <li>
             <Link href="/tinycms/analytics/sessions#daily">
-              <a
-                href="/tinycms/analytics/sessions#daily"
-                tw="w-full flex align-bottom"
-              >
+              <a tw="w-full flex align-bottom cursor-pointer">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   tw="float-left align-bottom h-6 w-3"
@@ -217,10 +201,7 @@ const AnalyticsNav = (props) => {
           </li>
           <li>
             <Link href="/tinycms/analytics/sessions#geo">
-              <a
-                href="/tinycms/analytics/sessions#geo"
-                tw="w-full flex align-bottom"
-              >
+              <a tw="w-full flex align-bottom">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   tw="float-left align-bottom h-6 w-3"
@@ -241,10 +222,7 @@ const AnalyticsNav = (props) => {
           </li>
           <li>
             <Link href="/tinycms/analytics/sessions#referral">
-              <a
-                href="/tinycms/analytics/sessions#referral"
-                tw="w-full flex align-bottom"
-              >
+              <a tw="w-full flex align-bottom">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   tw="float-left align-bottom h-6 w-3"
@@ -265,10 +243,7 @@ const AnalyticsNav = (props) => {
           </li>
           <li>
             <Link href="/tinycms/analytics/sessions#time">
-              <a
-                href="/tinycms/analytics/sessions#time"
-                tw="w-full flex align-bottom"
-              >
+              <a tw="w-full flex align-bottom">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   tw="float-left align-bottom h-6 w-3"

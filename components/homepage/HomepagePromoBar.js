@@ -61,7 +61,7 @@ export default function HomepagePromoBar({ metadata }) {
         <LeftBlock>
           <BlockHeader meta={metadata}>{metadata.aboutHed}</BlockHeader>
           <BlockDek meta={metadata}>{metadata.aboutDek}</BlockDek>
-          <Link href="/about">
+          <Link href="/about" passHref>
             <BlockCTA meta={metadata}>{metadata.aboutCTA}</BlockCTA>
           </Link>
         </LeftBlock>

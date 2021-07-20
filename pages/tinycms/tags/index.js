@@ -6,6 +6,7 @@ import AdminNav from '../../../components/nav/AdminNav';
 import tw from 'twin.macro';
 import Notification from '../../../components/tinycms/Notification';
 import { hasuraListAllTags } from '../../../lib/articles.js';
+import { deleteSingleTag } from '../../../lib/section.js';
 import { hasuraLocaliseText } from '../../../lib/utils.js';
 
 const Table = tw.table`table-auto w-full`;
@@ -16,13 +17,45 @@ const TableHeader = tw.th`px-4 py-2`;
 const TableCell = tw.td`border px-4 py-2`;
 const AddTagButton = tw.a`hidden md:flex w-full md:w-auto px-4 py-2 text-right bg-blue-900 hover:bg-blue-500 text-white md:rounded`;
 
-export default function Tags({ tags, currentLocale, locales }) {
+export default function Tags({
+  apiUrl,
+  apiToken,
+  tags,
+  currentLocale,
+  locales,
+}) {
   const [notificationMessage, setNotificationMessage] = useState('');
   const [notificationType, setNotificationType] = useState('');
   const [showNotification, setShowNotification] = useState(false);
 
   const router = useRouter();
   const { action } = router.query;
+
+  const refreshData = () => {
+    router.replace(router.asPath);
+  };
+
+  async function deleteTag(tagId) {
+    let params = {
+      url: apiUrl,
+      orgSlug: apiToken,
+      id: tagId,
+    };
+    const { errors, data } = await deleteSingleTag(params);
+
+    if (errors) {
+      console.error(errors);
+      setNotificationMessage(errors);
+      setNotificationType('error');
+      setShowNotification(true);
+    } else {
+      // display success message
+      setNotificationMessage('Removed the tag with id ' + tagId);
+      setNotificationType('success');
+      refreshData();
+      setShowNotification(true);
+    }
+  }
 
   useEffect(() => {
     if (action && action === 'edit') {
@@ -35,7 +68,7 @@ export default function Tags({ tags, currentLocale, locales }) {
       setNotificationType('success');
       setShowNotification(true);
     }
-  }, []);
+  }, [action]);
 
   const listItems = tags.map((tag) => {
     let title = hasuraLocaliseText(tag.tag_translations, 'title');
@@ -48,6 +81,17 @@ export default function Tags({ tags, currentLocale, locales }) {
           </Link>
         </TableCell>
         <TableCell>{tag.slug}</TableCell>
+        <TableCell>
+          <button
+            className="delete-tag"
+            onClick={() => {
+              if (window.confirm('Are you sure you wish to delete this tag?'))
+                deleteTag(tag.id);
+            }}
+          >
+            remove
+          </button>
+        </TableCell>
       </TableRow>
     );
   });
@@ -76,7 +120,7 @@ export default function Tags({ tags, currentLocale, locales }) {
         </div>
 
         <div tw="flex pt-8 justify-end">
-          <Link href="/tinycms/tags/add">
+          <Link href="/tinycms/tags/add" passHref>
             <AddTagButton>Add Tag</AddTagButton>
           </Link>
         </div>
@@ -86,13 +130,14 @@ export default function Tags({ tags, currentLocale, locales }) {
             <TableRow>
               <TableHeader>Name</TableHeader>
               <TableHeader>Slug</TableHeader>
+              <TableHeader></TableHeader>
             </TableRow>
           </TableHead>
           <TableBody>{listItems}</TableBody>
         </Table>
 
         <div tw="flex pt-8 justify-end">
-          <Link href="/tinycms/tags/add">
+          <Link href="/tinycms/tags/add" passHref>
             <AddTagButton>Add Tag</AddTagButton>
           </Link>
         </div>
@@ -125,6 +170,8 @@ export async function getServerSideProps(context) {
 
   return {
     props: {
+      apiUrl: apiUrl,
+      apiToken: apiToken,
       tags: tags,
       currentLocale: context.locale,
       locales: locales,

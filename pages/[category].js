@@ -14,10 +14,10 @@ export default function CategoryPage(props) {
   const router = useRouter();
 
   useEffect(() => {
-    if (!props.categoryExists) {
+    if (props.categoryExists === false) {
       router.push('/404');
     }
-  }, [props.categoryExists]);
+  }, [props.categoryExists, router]);
 
   // If the page is not yet generated, this will be displayed
   // initially until getStaticProps() finishes running
@@ -26,7 +26,11 @@ export default function CategoryPage(props) {
   }
 
   return (
-    <Layout meta={props.siteMetadata} sections={props.sections}>
+    <Layout
+      meta={props.siteMetadata}
+      sections={props.sections}
+      renderFooter={props.renderFooter}
+    >
       <ArticleStream
         articles={props.articles}
         sections={props.sections}
@@ -104,7 +108,6 @@ export async function getStaticProps({ locale, params }) {
   } else {
     articles = data.articles;
     sections = data.categories;
-    tags = data.tags;
 
     for (var i = 0; i < sections.length; i++) {
       sections[i].title = hasuraLocaliseText(
@@ -114,14 +117,11 @@ export async function getStaticProps({ locale, params }) {
       if (sections[i].slug == params.category) {
         categoryExists = true;
         title = hasuraLocaliseText(sections[i].category_translations, 'title');
-        if (title) {
-          break;
-        }
       }
     }
 
-    for (var i = 0; i < tags.length; i++) {
-      tags[i].title = hasuraLocaliseText(tags[i].tag_translations, 'title');
+    for (var j = 0; j < tags.length; j++) {
+      tags[j].title = hasuraLocaliseText(tags[j].tag_translations, 'title');
     }
 
     let metadatas = data.site_metadatas;
@@ -142,6 +142,11 @@ export async function getStaticProps({ locale, params }) {
     expandedAds = allAds.filter((ad) => ad.adTypeId === 166 && ad.status === 4);
   }
 
+  let renderFooter = true;
+  if (process.env.ORG_SLUG === 'tiny-news-curriculum') {
+    renderFooter = false; // turns off the global footer for the curriculum site
+  }
+
   return {
     props: {
       articles,
@@ -151,6 +156,7 @@ export async function getStaticProps({ locale, params }) {
       sections,
       siteMetadata,
       expandedAds,
+      renderFooter,
     },
   };
 }

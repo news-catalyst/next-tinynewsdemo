@@ -15,18 +15,18 @@ export const config = { amp: 'hybrid' };
 export default function ArticlePage(props) {
   const router = useRouter();
 
+  useEffect(() => {
+    if (!props.article) {
+      router.push('/404');
+    }
+  }, [props.article, router]);
+
   // If the page is not yet generated, this will be displayed
   // initially until getStaticProps() finishes running
   // See: https://nextjs.org/docs/basic-features/data-fetching#the-fallback-key-required
   if (router.isFallback) {
     return <div>Loading...</div>;
   }
-
-  useEffect(() => {
-    if (!props.article) {
-      router.push('/404');
-    }
-  }, [props.article]);
 
   // trying to fix build errors...
   if (!props.article) {
@@ -127,6 +127,11 @@ export async function getStaticProps({ locale, params }) {
     ads = allAds.filter((ad) => ad.adTypeId === 164 && ad.status === 4);
   }
 
+  let renderFooter = true;
+  if (process.env.ORG_SLUG === 'tiny-news-curriculum') {
+    renderFooter = false; // turns off the global footer for the curriculum site
+  }
+
   return {
     props: {
       article,
@@ -134,6 +139,7 @@ export async function getStaticProps({ locale, params }) {
       ads,
       siteMetadata,
       sectionArticles,
+      renderFooter,
     },
     // Re-generate the post at most once per second
     // if a request comes in

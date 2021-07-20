@@ -18,7 +18,7 @@ export default function HomepageLayouts({ homepageLayouts }) {
     if (action && action === 'create') {
       setMessage('Successfully created homepage layout.');
     }
-  }, []);
+  }, [action]);
 
   const listItems = homepageLayouts.map((homepageLayout) => {
     return (
@@ -48,7 +48,9 @@ export default function HomepageLayouts({ homepageLayouts }) {
 
         <section className="section">
           <Link href="/tinycms/homepage-layouts/add">
-            <button className="button">Add Homepage Layout</button>
+            <a>
+              <button className="button">Add Homepage Layout</button>
+            </a>
           </Link>
         </section>
       </div>

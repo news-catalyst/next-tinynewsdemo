@@ -18,7 +18,6 @@ const YesterdaysTopTen = (props) => {
   const [sortedTableRows, setSortedTableRows] = useState([]);
   const [totalPageViews, setTotalPageViews] = useState({});
 
-  console.log('props:', props);
   useEffect(() => {
     const fetchPageViews = async () => {
       let totalPV = {};
@@ -37,7 +36,6 @@ const YesterdaysTopTen = (props) => {
         totalPV[pv.path]['pageviews'] += parseInt(pv.count);
         props.readingDepth.map((rd) => {
           if (rd.path === pv.path) {
-            console.log('Found matching reading depth path:', rd.path);
             totalPV[rd.path]['read_25'] += parseInt(rd.read_25);
             totalPV[rd.path]['read_50'] += parseInt(rd.read_50);
             totalPV[rd.path]['read_75'] += parseInt(rd.read_75);
@@ -58,7 +56,6 @@ const YesterdaysTopTen = (props) => {
       Object.keys(totalPV).forEach((path) => {
         sortable.push([path, totalPV[path]['pageviews']]);
       });
-      console.log('sortable:', sortable);
 
       sortable.sort(function (a, b) {
         return b[1] - a[1];
@@ -69,7 +66,6 @@ const YesterdaysTopTen = (props) => {
         if (i >= 10) {
           return;
         }
-        console.log('sortable item:', item);
         let label = item[0];
         rows.push(
           <tr key={`page-view-row-${i}`}>
@@ -91,8 +87,7 @@ const YesterdaysTopTen = (props) => {
     };
 
     fetchPageViews();
-    console.log("found yesterday's top ten:", totalPageViews);
-  }, [startDate, endDate]);
+  }, [startDate, endDate, props.pageViews, props.readingDepth, totalPageViews]);
 
   return (
     <>

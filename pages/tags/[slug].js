@@ -15,13 +15,13 @@ export default function TagPage({
   expandedAds,
 }) {
   const router = useRouter();
+  const isAmp = useAmp();
+
   // If the page is not yet generated, this will be displayed
   // initially until getStaticProps() finishes running
   if (router.isFallback) {
     return <div>Loading...</div>;
   }
-
-  const isAmp = useAmp();
 
   let tagTitle = hasuraLocaliseText(tag.tag_translations, 'title');
   return (

@@ -68,7 +68,6 @@ const DonateClicks = (props) => {
             (totalClicks[path]['clicks'] / totalClicks[path]['pageviews']) *
             100;
           totalClicks[path]['conversion'] = conversion.toFixed(2);
-          console.log(path, conversion, totalClicks[path]);
         }
       });
       var sortable = [];
@@ -84,7 +83,6 @@ const DonateClicks = (props) => {
       sortable.map((item, i) => {
         let key = item[0];
         let uniqueRowKey = `donate-table-row-${i}`;
-        console.log(totalClicks[key]);
         donateRows.push(
           <tr key={uniqueRowKey}>
             <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
@@ -163,7 +161,7 @@ const DonateClicks = (props) => {
         donationsRef.current.scrollIntoView({ behavior: 'smooth' });
       }
     }
-  }, [props.startDate, props.endDate]);
+  }, [props.startDate, props.endDate, props.apiToken, props.apiUrl]);
 
   return (
     <>

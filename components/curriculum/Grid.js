@@ -8,51 +8,39 @@ const Title = tw.h2`text-3xl font-bold max-w-2xl mx-auto text-center mb-8`;
 
 export default function Grid({ header, type, articles }) {
   let gridItems = [];
+  let weekNumber = 1;
 
-  if (type === 'curriculum') {
-    for (var i = 0; i < articles.length; i++) {
-      const translation =
-        articles[i].article_translations[
-          articles[i].article_translations.length - 1
-        ];
-      gridItems.push(
-        <GridItem
-          header={translation.headline}
-          dek={translation.search_description}
-          hammer={`Week ${i + 1}`}
-          article={articles[i]}
-        />
-      );
+  for (var i = 0; i < articles.length; i++) {
+    const translation =
+      articles[i].article_translations[
+        articles[i].article_translations.length - 1
+      ];
+    const mainImageNode = translation.main_image;
+    let mainImage = null;
+
+    if (mainImageNode) {
+      mainImage = mainImageNode.children[0];
     }
+
+    let hammer = `Week ${weekNumber}`;
+
+    if (translation.headline.includes('Week 0')) {
+      hammer = 'Week 0';
+    } else {
+      weekNumber++;
+    }
+
+    gridItems.push(
+      <GridItem
+        header={translation.headline}
+        dek={translation.search_description}
+        image={mainImage}
+        hammer={hammer}
+        article={articles[i]}
+      />
+    );
   }
 
-  if (type === 'documentation') {
-    const tech = [
-      'Google Docs',
-      'TinyCMS',
-      'TinyCMS Analytics',
-      'Letterhead',
-      'MonkeyPod',
-      'Coral Project',
-      'Mailchimp',
-      'Hootsuite',
-    ];
-
-    for (var i = 0; i < articles.length; i++) {
-      const translation =
-        articles[i].article_translations[
-          articles[i].article_translations.length - 1
-        ];
-
-      gridItems.push(
-        <GridItem
-          header={`How to use ${tech[i]}`}
-          dek="Lorem Ipsum"
-          article={articles[i]}
-        />
-      );
-    }
-  }
   return (
     <SectionLayout>
       <SectionContainer>
