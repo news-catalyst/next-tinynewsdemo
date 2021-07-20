@@ -37,7 +37,7 @@ export default function AdminLayout({ children }) {
                         tw="cursor-pointer"
                         id="tinycms-signin-button"
                         onClick={() =>
-                          signIn('presspass', {
+                          signIn('google', {
                             callbackUrl: `${process.env.NEXT_PUBLIC_SITE_URL}/tinycms/`,
                           })
                         }
