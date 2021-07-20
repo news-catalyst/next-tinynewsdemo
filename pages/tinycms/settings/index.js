@@ -6,7 +6,6 @@ import { hasuraGetMetadataByLocale } from '../../../lib/articles.js';
 import AdminLayout from '../../../components/AdminLayout.js';
 import AdminNav from '../../../components/nav/AdminNav';
 import SiteInfoSettings from '../../../components/tinycms/SiteInfoSettings';
-import newsletterStyles from '../../../styles/newsletter.js';
 import { hasuraUpsertMetadata } from '../../../lib/site_metadata';
 import Notification from '../../../components/tinycms/Notification';
 
@@ -250,9 +249,6 @@ export default function Settings({
           </form>
         </MainContent>
       </Container>
-      <style jsx global>
-        {newsletterStyles}
-      </style>
     </AdminLayout>
   );
 }
