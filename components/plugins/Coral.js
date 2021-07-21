@@ -10,7 +10,20 @@ class Coral extends Component {
   }
 
   render() {
-    return <div ref={(el) => (this.instance = el)} id="coral_thread"></div>;
+    return (
+      <div
+        ref={(el) => (this.instance = el)}
+        id="coral_thread"
+        style={{
+          paddingLeft: '1.25rem',
+          paddingRight: '1.25rem',
+          width: '100%',
+          marginRight: 'auto',
+          marginLeft: 'auto',
+          maxWidth: '64rem',
+        }}
+      ></div>
+    );
   }
 }
 
