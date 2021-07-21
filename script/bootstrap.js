@@ -524,7 +524,8 @@ async function createOrganization(opts) {
           "footerBylineName": "News Catalyst",
           "searchDescription": "Page description",
           "twitterDescription": "Twitter description",
-          "facebookDescription": "Facebook description"
+          "facebookDescription": "Facebook description",
+          "commenting": "on"
         };
 
         locales.map( (locale) => {
