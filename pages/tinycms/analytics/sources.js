@@ -10,6 +10,7 @@ import SourcesByRace from '../../../components/tinycms/analytics/SourcesByRace';
 import SourcesByEthnicity from '../../../components/tinycms/analytics/SourcesByEthnicity';
 import SourcesByGender from '../../../components/tinycms/analytics/SourcesByGender';
 import SourcesBySexualOrientation from '../../../components/tinycms/analytics/SourcesBySexualOrientation';
+import SourceTopZips from '../../../components/tinycms/analytics/SourceTopZips';
 import AnalyticsSidebar from '../../../components/tinycms/analytics/AnalyticsSidebar';
 import AnalyticsNav from '../../../components/tinycms/analytics/AnalyticsNav';
 
@@ -88,6 +89,13 @@ export default function SourcesOverview(props) {
             />
 
             <SourcesBySexualOrientation
+              startDate={startDate}
+              endDate={endDate}
+              apiUrl={props.apiUrl}
+              apiToken={props.apiToken}
+            />
+
+            <SourceTopZips
               startDate={startDate}
               endDate={endDate}
               apiUrl={props.apiUrl}
