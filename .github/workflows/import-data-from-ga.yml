@@ -4,8 +4,7 @@ on:
     - cron: '5 9 * * *'
   push:
     branches:
-      - master
-      - bugfix/data-import-row-count-issues
+      - main
 jobs:
   GA-Data-Importer:
     runs-on: ubuntu-latest
