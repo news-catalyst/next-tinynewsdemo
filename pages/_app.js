@@ -27,7 +27,8 @@ const App = ({ Component, pageProps }) => {
     setDimension,
     logReadingHistory,
     summarizeReadingHistory,
-    donorStatusFromCookie,
+    donorStatusFromStorage,
+    newsletterStatusFromStorage,
     trackMailChimpParams,
   } = useAnalytics();
   const isAmp = useAmp();
@@ -37,8 +38,9 @@ const App = ({ Component, pageProps }) => {
     }
 
     function trackNewsletterVisits(trackMailChimpParams) {
-      let isSubscriber = trackMailChimpParams();
-      if (isSubscriber) {
+      let hitFromSubscriber = trackMailChimpParams();
+      let isLoggedSubscriber = newsletterStatusFromStorage();
+      if (hitFromSubscriber || isLoggedSubscriber) {
         setDimension('dimension5', true);
         return {
           dimension5: true,
@@ -66,7 +68,7 @@ const App = ({ Component, pageProps }) => {
       ...newsletterDimensionsData,
     };
 
-    let donorStatus = donorStatusFromCookie();
+    let donorStatus = donorStatusFromStorage();
     if (donorStatus) {
       setDimension('dimension4', true);
       dimensionsData['dimension4'] = true;
