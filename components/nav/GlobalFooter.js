@@ -50,7 +50,7 @@ export default function GlobalFooter(props) {
           <p> copyright {props.metadata.footerTitle}</p>
           <p>
             this project is part of the{' '}
-            <FooterHoverUnderline href="tinynewsco.org">
+            <FooterHoverUnderline href="https://tinynewsco.org">
               tiny news collective
             </FooterHoverUnderline>
             .
