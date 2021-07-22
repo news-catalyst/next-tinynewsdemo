@@ -9,11 +9,11 @@ const SectionLayout = styled.section(({ meta }) => ({
   backgroundColor:
     meta.color === 'custom'
       ? meta.secondaryColor
-      : Colors[meta.color].HomepagePromoBackground,
+      : Colors[meta.color || 'colorone'].HomepagePromoBackground,
   color:
     meta.color === 'custom'
       ? determineTextColor(meta.secondaryColor)
-      : Colors[meta.color].HomepagePromoText,
+      : Colors[meta.color || 'colorone'].HomepagePromoText,
 }));
 
 const SectionContainer = tw.div`px-5 flex flex-row flex-wrap mx-auto w-full max-w-7xl`;
@@ -27,31 +27,31 @@ const LeftBlock = tw(
 const RightBlock = tw(Block)``;
 const BlockHeader = styled.h2(({ meta }) => ({
   ...tw`text-xl font-bold mb-5`,
-  fontFamily: Typography[meta.theme].HomepagePromoBlockHeader,
+  fontFamily: Typography[meta.theme || 'styleone'].HomepagePromoBlockHeader,
 }));
 const BlockDek = styled.p(({ meta }) => ({
   ...tw`text-base mb-3`,
-  fontFamily: Typography[meta.theme].HomepagePromoBlockDek,
+  fontFamily: Typography[meta.theme || 'styleone'].HomepagePromoBlockDek,
 }));
 const BlockCTA = styled.a(({ meta }) => ({
   ...tw`text-base font-bold cursor-pointer`,
-  fontFamily: Typography[meta.theme].HomepagePromoBlockCTA,
+  fontFamily: Typography[meta.theme || 'styleone'].HomepagePromoBlockCTA,
   color:
     meta.color === 'custom'
       ? meta.primaryColor
-      : Colors[meta.color].CTABackground,
+      : Colors[meta.color ? meta.color : 'colorone'].CTABackground,
 }));
 const DonateBlockCTA = styled.a(({ meta }) => ({
   ...tw`inline-flex text-base font-bold cursor-pointer items-center px-5`,
-  fontFamily: Typography[meta.theme].HomepagePromoBlockCTA,
+  fontFamily: Typography[meta.theme || 'styleone'].HomepagePromoBlockCTA,
   color:
     meta.color === 'custom'
       ? determineTextColor(meta.primaryColor)
-      : Colors[meta.color].CTAText,
+      : Colors[meta.color || 'colorone'].CTAText,
   backgroundColor:
     meta.color === 'custom'
       ? meta.primaryColor
-      : Colors[meta.color].CTABackground,
+      : Colors[meta.color || 'colorone'].CTABackground,
 }));
 
 export default function HomepagePromoBar({ metadata }) {

@@ -13,11 +13,11 @@ const NewsletterWrapper = styled.div(({ textColor, backgroundColor }) => ({
 
 const NewsletterHed = styled.h4(({ meta }) => ({
   ...tw`text-2xl font-bold tracking-tight leading-5 mb-2`,
-  fontFamily: Typography[meta.theme].PromotionBlockHed,
+  fontFamily: Typography[meta.theme || 'styleone'].PromotionBlockHed,
 }));
 const NewsletterDek = styled.p(({ meta }) => ({
   ...tw`mb-6`,
-  fontFamily: Typography[meta.theme].PromotionBlockDek,
+  fontFamily: Typography[meta.theme || 'styleone'].PromotionBlockDek,
 }));
 
 export default function NewsletterBlock({ metadata, headline }) {
