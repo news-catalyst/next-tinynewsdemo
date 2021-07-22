@@ -259,7 +259,7 @@ export default function SiteInfoSettings(props) {
             <input
               type="radio"
               name="commenting"
-              value="on"
+              value="off"
               checked={commenting !== 'on'}
               onChange={props.handleChange}
             />
