@@ -2,7 +2,7 @@
     let d = document, s = d.createElement('script');
     let storyURL = window.location.href;
     // s.src = '//' + url + '/assets/js/embed.js';
-    s.src = 'https://coral-talk-news-catalyst.herokuapp.com/assets/js/embed.js';
+    s.src = 'http://coral-talk-lb-1654697893.us-east-1.elb.amazonaws.com/assets/js/embed.js';
     s.async = false;
     s.defer = true;
     s.onload = function() {
@@ -10,7 +10,7 @@
             id: "coral_thread",
             autoRender: true,
             // rootURL: '//' + url,
-            rootURL: 'https://coral-talk-news-catalyst.herokuapp.com',
+            rootURL: 'http://coral-talk-lb-1654697893.us-east-1.elb.amazonaws.com',
             // Uncomment these lines and replace with the ID of the
             // story's ID and URL from your CMS to provide the
             // tightest integration. Refer to our documentation at
@@ -22,3 +22,4 @@
     };
     (d.head || d.body).appendChild(s);
 })();
+
