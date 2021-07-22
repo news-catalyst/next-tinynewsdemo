@@ -13,12 +13,19 @@ const DonationWrapper = styled.div(({ textColor, backgroundColor }) => ({
   color: textColor,
 }));
 
-const DonationHed = tw.h4`text-2xl font-bold tracking-tight leading-5 mb-2`;
-const DonationDek = tw.p`mb-6`;
-const DonateLink = styled.a(({ textColor, backgroundColor }) => ({
+const DonationHed = styled.h4(({ meta }) => ({
+  ...tw`text-2xl font-bold tracking-tight leading-5 mb-2`,
+  fontFamily: Typography[meta.theme].PromotionBlockHed,
+}));
+const DonationDek = styled.p(({ meta }) => ({
+  ...tw`mb-6`,
+  fontFamily: Typography[meta.theme].PromotionBlockDek,
+}));
+const DonateLink = styled.a(({ textColor, backgroundColor, meta }) => ({
   ...tw`py-2 px-4 font-bold cursor-pointer border border-transparent hover:bg-transparent hover:text-white hover:border-white`,
   backgroundColor: backgroundColor,
   color: textColor,
+  fontFamily: Typography[meta.theme].PromotionBlockCTA,
 }));
 
 export default function DonationBlock({ metadata }) {
@@ -51,12 +58,13 @@ export default function DonationBlock({ metadata }) {
 
   return (
     <DonationWrapper textColor={textColor} backgroundColor={backgroundColor}>
-      <DonationHed>{metadata.membershipHed}</DonationHed>
-      <DonationDek>{metadata.membershipDek}</DonationDek>
+      <DonationHed meta={metadata}>{metadata.membershipHed}</DonationHed>
+      <DonationDek meta={metadata}>{metadata.membershipDek}</DonationDek>
       <Link href="/donate" passHref>
         <DonateLink
           textColor={backgroundColor}
           backgroundColor={textColor}
+          meta={metadata}
           onClick={trackClick}
           style={{
             minHeight: '2.375rem',
