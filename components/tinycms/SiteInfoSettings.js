@@ -146,6 +146,8 @@ export default function SiteInfoSettings(props) {
     props.parsedData['twitterDescription']
   );
 
+  const [commenting, setCommenting] = useState(props.parsedData['commenting']);
+
   const [shortName, setShortName] = useState(props.parsedData['shortName']);
   const [siteUrl, setSiteUrl] = useState(props.parsedData['siteUrl']);
   const [color, setColor] = useState(props.parsedData['color']);
@@ -180,6 +182,8 @@ export default function SiteInfoSettings(props) {
     setFacebookDescription(props.parsedData['facebookDescription']);
     setTwitterTitle(props.parsedData['twitterTitle']);
     setTwitterDescription(props.parsedData['twitterDescription']);
+
+    setCommenting(props.parsedData['commenting']);
 
     setShortName(props.parsedData['shortName']);
     setSiteUrl(props.parsedData['siteUrl']);
@@ -233,6 +237,35 @@ export default function SiteInfoSettings(props) {
             folderName="logos"
           />
         </label>
+      </SiteInfoFieldsContainer>
+
+      <SettingsHeader ref={props.siteInfoRef} id="siteInfo">
+        Comments
+      </SettingsHeader>
+
+      <SiteInfoFieldsContainer>
+        <div>
+          <label>
+            <input
+              type="radio"
+              name="commenting"
+              value="on"
+              checked={commenting === 'on'}
+              onChange={props.handleChange}
+            />
+            <span tw="p-2 mt-1 font-bold">On</span>
+          </label>
+          <label>
+            <input
+              type="radio"
+              name="commenting"
+              value="off"
+              checked={commenting !== 'on'}
+              onChange={props.handleChange}
+            />
+            <span tw="p-2 mt-1 font-bold">Off</span>
+          </label>
+        </div>
       </SiteInfoFieldsContainer>
 
       <SettingsHeader ref={props.designRef} id="design">
