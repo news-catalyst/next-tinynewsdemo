@@ -1,6 +1,14 @@
 import tw from 'twin.macro';
 
-const Footer = tw.footer`flex items-center justify-center bg-gray-200 h-40 text-xs uppercase`;
+const Footer = tw.footer`flex items-center justify-center bg-gray-200 h-40 text-xl uppercase`;
+
+const FooterHoverUnderline = tw.a`no-underline md:hover:underline`;
+
+const FooterLinksDiv = tw.div`mt-2 space-x-6 text-center`;
+
+const FooterLink = tw.p`inline text-black text-base`;
+
+const FooterCopyright = tw.div`text-xs mt-5 text-center`;
 
 export default function GlobalFooter(props) {
   let title;
@@ -14,20 +22,40 @@ export default function GlobalFooter(props) {
   return (
     <Footer>
       <div>
-        <p>
-          <strong>{title}</strong> by <a href={bylineLink}>{byline}</a>.
-        </p>
-        <p>
-          <a href="./about">About</a> | <a href="./donate">Donate</a> |{' '}
-          <a href="https://store.tryletterhead.com/catalyst-test">
-            Advertising
-          </a>
-        </p>
-        <p>Copyright {props.metadata.shortName}</p>
-        <p>
-          This project is part of the
-          <a href="tinynewsco.org">Tiny News Collective</a>.
-        </p>
+        <div>
+          <p>
+            <strong>{title}</strong> by{' '}
+            <FooterHoverUnderline href={bylineLink}>
+              {byline}
+            </FooterHoverUnderline>
+            .
+          </p>
+          <FooterLinksDiv>
+            <FooterLink>
+              <FooterHoverUnderline href="./about">about</FooterHoverUnderline>{' '}
+            </FooterLink>
+            <FooterLink>
+              <FooterHoverUnderline href="https://store.tryletterhead.com/catalyst-test">
+                advertising
+              </FooterHoverUnderline>
+            </FooterLink>
+            <FooterLink>
+              <FooterHoverUnderline href="./donate">
+                donate
+              </FooterHoverUnderline>{' '}
+            </FooterLink>
+          </FooterLinksDiv>
+        </div>
+        <FooterCopyright>
+          <p> copyright {props.metadata.footerTitle}</p>
+          <p>
+            this project is part of the{' '}
+            <FooterHoverUnderline href="tinynewsco.org">
+              tiny news collective
+            </FooterHoverUnderline>
+            .
+          </p>
+        </FooterCopyright>
       </div>
     </Footer>
   );
