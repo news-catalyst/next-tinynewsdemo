@@ -15,17 +15,17 @@ const DonationWrapper = styled.div(({ textColor, backgroundColor }) => ({
 
 const DonationHed = styled.h4(({ meta }) => ({
   ...tw`text-2xl font-bold tracking-tight leading-5 mb-2`,
-  fontFamily: Typography[meta.theme].PromotionBlockHed,
+  fontFamily: Typography[meta.theme || 'styleone'].PromotionBlockHed,
 }));
 const DonationDek = styled.p(({ meta }) => ({
   ...tw`mb-6`,
-  fontFamily: Typography[meta.theme].PromotionBlockDek,
+  fontFamily: Typography[meta.theme || 'styleone'].PromotionBlockDek,
 }));
 const DonateLink = styled.a(({ textColor, backgroundColor, meta }) => ({
   ...tw`py-2 px-4 font-bold cursor-pointer border border-transparent hover:bg-transparent hover:text-white hover:border-white`,
   backgroundColor: backgroundColor,
   color: textColor,
-  fontFamily: Typography[meta.theme].PromotionBlockCTA,
+  fontFamily: Typography[meta.theme || 'styleone'].PromotionBlockCTA,
 }));
 
 export default function DonationBlock({ metadata }) {
