@@ -22,6 +22,8 @@ export default function Article({
   let canonicalArticleUrl = generateArticleUrl(baseUrl, article);
   siteMetadata['canonicalUrl'] = canonicalArticleUrl;
 
+  const displayComments = siteMetadata['commenting'] === 'on';
+
   return (
     <Layout
       meta={siteMetadata}
@@ -48,7 +50,7 @@ export default function Article({
             metadata={siteMetadata}
           />
         </section>
-        <Comments article={article} isAmp={isAmp} />
+        {displayComments && <Comments article={article} isAmp={isAmp} />}
         <Recirculation
           articles={sectionArticles}
           isAmp={isAmp}
