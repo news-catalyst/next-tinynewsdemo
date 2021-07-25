@@ -11,6 +11,9 @@ module.exports = {
     HomepagePromoBlockHeader: 'Libre Franklin',
     HomepagePromoBlockDek: 'Libre Franklin',
     HomepagePromoBlockCTA: 'Libre Franklin',
+    PromotionBlockHed: 'Libre Franklin',
+    PromotionBlockDek: 'Libre Franklin',
+    PromotionBlockCTA: 'Libre Franklin',
   },
   styletwo: {
     ArticleDescriptor: 'Source Sans Pro',
@@ -24,6 +27,9 @@ module.exports = {
     HomepagePromoBlockHeader: 'Source Serif Pro',
     HomepagePromoBlockDek: 'Source Sans Pro',
     HomepagePromoBlockCTA: 'Source Sans Pro',
+    PromotionBlockHed: 'Source Serif Pro',
+    PromotionBlockDek: 'Source Sans Pro',
+    PromotionBlockCTA: 'Source Sans Pro',
   },
   stylethree: {
     ArticleDescriptor: 'Roboto',
@@ -37,6 +43,9 @@ module.exports = {
     HomepagePromoBlockHeader: 'Roboto Condensed',
     HomepagePromoBlockDek: 'Roboto',
     HomepagePromoBlockCTA: 'Roboto',
+    PromotionBlockHed: 'Roboto Condensed',
+    PromotionBlockDek: 'Roboto',
+    PromotionBlockCTA: 'Roboto',
   },
   stylefour: {
     ArticleDescriptor: 'Mulish',
@@ -50,6 +59,9 @@ module.exports = {
     HomepagePromoBlockHeader: 'Arbutus Slab',
     HomepagePromoBlockDek: 'Mulish',
     HomepagePromoBlockCTA: 'Mulish',
+    PromotionBlockHed: 'Arbutus Slab',
+    PromotionBlockDek: 'Mulish',
+    PromotionBlockCTA: 'Mulish',
   },
   stylefive: {
     ArticleDescriptor: 'Lato',
@@ -63,5 +75,8 @@ module.exports = {
     HomepagePromoBlockHeader: 'Bodoni Moda',
     HomepagePromoBlockDek: 'Lato',
     HomepagePromoBlockCTA: 'Lato',
+    PromotionBlockHed: 'Arbutus Slab',
+    PromotionBlockDek: 'Mulish',
+    PromotionBlockCTA: 'Mulish',
   },
 };

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import tw, { css, styled } from 'twin.macro';
 import DonationBlock from '../plugins/DonationBlock';
 import NewsletterBlock from '../plugins/NewsletterBlock';
+import HomepagePromoBar from '../homepage/HomepagePromoBar';
 import Upload from './Upload';
 
 const SettingsHeader = tw.h1`text-4xl font-bold leading-normal mt-0 mb-2 text-black`;
@@ -10,6 +11,7 @@ const SeoContainer = tw.div``;
 const DesignContainer = tw.div`grid grid-cols-2 gap-4`;
 const MembershipContainer = tw.div`grid grid-cols-2 gap-8`;
 const NewsletterContainer = tw.div`grid grid-cols-2 gap-8`;
+const HomepagePromoContainer = tw.div`grid grid-cols-2 gap-8`;
 const DesignHeader = tw.h1`text-2xl font-bold leading-normal mt-0 mb-2 text-black`;
 const SingleColumnContainer = tw.div`grid grid-cols-1 gap-4`;
 const StyleOneHead = styled.span`
@@ -158,6 +160,12 @@ export default function SiteInfoSettings(props) {
     props.parsedData['secondaryColor']
   );
   const [theme, setTheme] = useState(props.parsedData['theme']);
+  const [aboutHed, setAboutHed] = useState(props.parsedData['aboutHed']);
+  const [aboutDek, setAboutDek] = useState(props.parsedData['aboutDek']);
+  const [aboutCTA, setAboutCTA] = useState(props.parsedData['aboutCTA']);
+  const [supportHed, setSupportHed] = useState(props.parsedData['supportHed']);
+  const [supportDek, setSupportDek] = useState(props.parsedData['supportDek']);
+  const [supportCTA, setSupportCTA] = useState(props.parsedData['supportCTA']);
   const [membershipHed, setMembershipHed] = useState(
     props.parsedData['membershipHed']
   );
@@ -189,6 +197,12 @@ export default function SiteInfoSettings(props) {
     setSiteUrl(props.parsedData['siteUrl']);
     setColor(props.parsedData['color']);
     setTheme(props.parsedData['theme']);
+    setAboutHed(props.parsedData['aboutHed']);
+    setAboutDek(props.parsedData['aboutDek']);
+    setAboutCTA(props.parsedData['aboutCTA']);
+    setSupportHed(props.parsedData['supportHed']);
+    setSupportDek(props.parsedData['supportDek']);
+    setSupportCTA(props.parsedData['supportCTA']);
     setPrimaryColor(props.parsedData['primaryColor']);
     setSecondaryColor(props.parsedData['secondaryColor']);
     setMembershipDek(props.parsedData['membershipDek']);
@@ -436,7 +450,71 @@ export default function SiteInfoSettings(props) {
           </SingleColumnContainer>
         </div>
       </DesignContainer>
-
+      <HomepagePromoContainer ref={props.homepagePromoRef} id="homepage-promo">
+        <SettingsHeader tw="col-span-3 mt-5">Homepage promo bar</SettingsHeader>
+        <div>
+          <label htmlFor="heading">
+            <span tw="w-full mt-1 font-bold">About promo heading</span>
+            <Input
+              type="text"
+              name="aboutHed"
+              value={aboutHed}
+              onChange={props.handleChange}
+            />
+          </label>
+          <label htmlFor="description">
+            <span tw="mt-1 font-bold">About promo description</span>
+            <Input
+              type="text"
+              name="aboutDek"
+              value={aboutDek}
+              onChange={props.handleChange}
+            />
+          </label>
+          <label htmlFor="cta">
+            <span tw="mt-1 font-bold">About call to action</span>
+            <Input
+              type="text"
+              name="aboutCTA"
+              value={aboutCTA}
+              onChange={props.handleChange}
+            />
+          </label>
+        </div>
+        <div>
+          <label htmlFor="heading">
+            <span tw="w-full mt-1 font-bold">Support promo heading</span>
+            <Input
+              type="text"
+              name="supportHed"
+              value={supportHed}
+              onChange={props.handleChange}
+            />
+          </label>
+          <label htmlFor="description">
+            <span tw="mt-1 font-bold">Support promo description</span>
+            <Input
+              type="text"
+              name="supportDek"
+              value={supportDek}
+              onChange={props.handleChange}
+            />
+          </label>
+          <label htmlFor="description">
+            <span tw="mt-1 font-bold">Support call to action</span>
+            <Input
+              type="text"
+              name="supportCTA"
+              value={supportCTA}
+              onChange={props.handleChange}
+            />
+          </label>
+        </div>
+      </HomepagePromoContainer>
+      <div>
+        <span tw="mt-1 font-bold">Preview</span>
+        <HomepagePromoBar metadata={props.parsedData} />
+      </div>
       <NewsletterContainer ref={props.newsletterRef} id="newsletter">
         <SettingsHeader tw="col-span-3 mt-5">
           Newsletter promotion block

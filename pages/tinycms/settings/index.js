@@ -52,6 +52,7 @@ export default function Settings({
 }) {
   const siteInfoRef = useRef();
   const designRef = useRef();
+  const homepagePromoRef = useRef();
   const newsletterRef = useRef();
   const membershipRef = useRef();
   const seoRef = useRef();
@@ -195,8 +196,18 @@ export default function Settings({
                   </Link>
                 </li>
                 <li>
+                  <Link href="/tinycms/settings#comments">
+                    <a>Comments</a>
+                  </Link>
+                </li>
+                <li>
                   <Link href="/tinycms/settings#design">
                     <a>Design</a>
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/tinycms/settings#homepage-promo">
+                    <a>Homepage Promo</a>
                   </Link>
                 </li>
                 <li>
@@ -237,6 +248,7 @@ export default function Settings({
                 newsletterRef={newsletterRef}
                 membershipRef={membershipRef}
                 designRef={designRef}
+                homepagePromoRef={homepagePromoRef}
                 handleChange={handleChange}
                 parsedData={parsedData}
                 updateParsedData={setParsedData}
