@@ -1,6 +1,7 @@
 import tw, { styled } from 'twin.macro';
 import MailchimpSubscribe from './MailchimpSubscribe';
 import Colors from '../common/Colors';
+import Typography from '../common/Typography';
 import { determineTextColor } from '../../lib/utils';
 import { useEffect, useState } from 'react';
 
@@ -10,8 +11,14 @@ const NewsletterWrapper = styled.div(({ textColor, backgroundColor }) => ({
   color: textColor,
 }));
 
-const NewsletterHed = tw.h4`text-2xl font-bold tracking-tight leading-5 mb-2`;
-const NewsletterDek = tw.p`mb-6`;
+const NewsletterHed = styled.h4(({ meta }) => ({
+  ...tw`text-2xl font-bold tracking-tight leading-5 mb-2`,
+  fontFamily: Typography[meta.theme || 'styleone'].PromotionBlockHed,
+}));
+const NewsletterDek = styled.p(({ meta }) => ({
+  ...tw`mb-6`,
+  fontFamily: Typography[meta.theme || 'styleone'].PromotionBlockDek,
+}));
 
 export default function NewsletterBlock({ metadata, headline }) {
   const [textColor, setTextColor] = useState(null);
@@ -33,8 +40,8 @@ export default function NewsletterBlock({ metadata, headline }) {
 
   return (
     <NewsletterWrapper textColor={textColor} backgroundColor={backgroundColor}>
-      <NewsletterHed>{metadata.newsletterHed}</NewsletterHed>
-      <NewsletterDek>{metadata.newsletterDek}</NewsletterDek>
+      <NewsletterHed meta={metadata}>{metadata.newsletterHed}</NewsletterHed>
+      <NewsletterDek meta={metadata}>{metadata.newsletterDek}</NewsletterDek>
       <br />
       <MailchimpSubscribe metadata={metadata} articleTitle={headline} />
     </NewsletterWrapper>
