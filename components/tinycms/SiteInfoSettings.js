@@ -603,7 +603,13 @@ export default function SiteInfoSettings(props) {
         <div tw="mt-2">
           <label htmlFor="defaultSocialImage">
             <span tw="mt-1 font-bold">Default social image</span>{' '}
-            <span tw="text-gray-600">(used when article lacks an image)</span>
+            <span tw="text-gray-600">
+              (for best results, use an image with a 16:9 aspect ratio.{' '}
+              <a href="https://pixelhunter.io/#Facebook" target="_new">
+                Pixelhunter has several examples for reference
+              </a>
+              .)
+            </span>
             <Upload
               awsConfig={props.awsConfig}
               slug={shortName}
