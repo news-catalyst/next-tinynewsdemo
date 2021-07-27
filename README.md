@@ -56,15 +56,18 @@ Open [http://localhost:3000](http://localhost:3000) with your browser.
 
 Copy the file `.env.local-template` to a file called `.env.local` and fill in all of the environment variables.
 
-To switch between environments - aka, tiny news organizations - use the `script/run` command:
+To switch between environments - aka, tiny news organizations - use the `script/switch` command:
 
 ```
-$ script/run $name
-$ script/run oaklyn
-$ script/run prod
+$ script/switch $name
+$ script/switch oaklyn
 ```
 
 Note: these commands expect `.env.local-$name` to exist in order to work.
+
+## Bootstrap a new org
+
+The [latest instructions on how to launch a new organisation are in a Google Doc](https://docs.google.com/document/d/1sSvtRTYkk2PoixMrWPT3FSM6qO_5zseqdCXv4LmP7Rc/edit?usp=sharing) and subject to change; please reference that for info.
 
 ## Learn More
 
