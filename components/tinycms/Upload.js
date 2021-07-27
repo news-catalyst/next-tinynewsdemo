@@ -28,10 +28,11 @@ export default function Upload(props) {
         if (data.status === 204) {
           props.setter(data.location);
 
-          let updatedParsedData = props.parsedData;
-          updatedParsedData['logo'] = data.location;
-
-          props.updateParsedData(updatedParsedData);
+          if (props.parsedData) {
+            let updatedParsedData = props.parsedData;
+            updatedParsedData[props.imageKey] = data.location;
+            props.updateParsedData(updatedParsedData);
+          }
 
           setImageSrc(data.location + '?' + Math.random());
           setRandomKey(Math.random());

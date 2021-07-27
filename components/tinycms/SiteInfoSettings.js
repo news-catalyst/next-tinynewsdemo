@@ -182,6 +182,9 @@ export default function SiteInfoSettings(props) {
     props.parsedData['newsletterDek']
   );
   const [logo, setLogo] = useState(props.parsedData['logo']);
+  const [defaultSocialImage, setDefaultSocialImage] = useState(
+    props.parsedData['defaultSocialImage']
+  );
 
   useEffect(() => {
     setSearchTitle(props.parsedData['searchTitle']);
@@ -209,6 +212,9 @@ export default function SiteInfoSettings(props) {
     setMembershipHed(props.parsedData['membershipHed']);
     setNewsletterDek(props.parsedData['newsletterDek']);
     setNewsletterHed(props.parsedData['newsletterHed']);
+
+    setLogo(props.parsedData['logo']);
+    setDefaultSocialImage(props.parsedData['defaultSocialImage']);
   }, [props.parsedData]);
 
   return (
@@ -242,6 +248,7 @@ export default function SiteInfoSettings(props) {
             awsConfig={props.awsConfig}
             slug={shortName}
             image={logo}
+            imageKey="logo"
             updateParsedData={props.updateParsedData}
             parsedData={props.parsedData}
             setter={setLogo}
@@ -592,6 +599,26 @@ export default function SiteInfoSettings(props) {
         <SettingsHeader tw="col-span-3 mt-5" id="seo">
           SEO and Social Metadata
         </SettingsHeader>
+
+        <div tw="mt-2">
+          <label htmlFor="defaultSocialImage">
+            <span tw="mt-1 font-bold">Default social image</span>{' '}
+            <span tw="text-gray-600">(used when article lacks an image)</span>
+            <Upload
+              awsConfig={props.awsConfig}
+              slug={shortName}
+              imageKey="defaultSocialImage"
+              image={defaultSocialImage}
+              updateParsedData={props.updateParsedData}
+              parsedData={props.parsedData}
+              setter={setDefaultSocialImage}
+              setNotificationMessage={props.setNotificationMessage}
+              setNotificationType={props.setNotificationType}
+              setShowNotification={props.setShowNotification}
+              folderName="social"
+            />
+          </label>
+        </div>
 
         <div tw="mt-2">
           <label htmlFor="searchTitle">
