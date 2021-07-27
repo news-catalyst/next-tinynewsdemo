@@ -21,8 +21,12 @@ export default function GlobalNav({ metadata, sections, isAmp }) {
 
   if (sections && sections[0] && typeof sections[0].title === 'string') {
     sectionLinks = sections.slice(0, 4).map((section) => (
-      <Link key={`navbar-${section.slug}`} href={`/${section.slug}`} passHref>
-        <SectionLink href={`/${section.slug}`} meta={metadata}>
+      <Link
+        key={`navbar-${section.slug}`}
+        href={`/categories/${section.slug}`}
+        passHref
+      >
+        <SectionLink href={`/categories/${section.slug}`} meta={metadata}>
           {section.title}
         </SectionLink>
       </Link>

@@ -1,12 +1,15 @@
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
-import Layout from '../components/Layout.js';
-import { cachedContents } from '../lib/cached';
-import { hasuraCategoryPage, hasuraListAllSections } from '../lib/articles.js';
-import { getArticleAds } from '../lib/ads.js';
-import { hasuraLocaliseText } from '../lib/utils.js';
+import Layout from '../../components/Layout.js';
+import { cachedContents } from '../../lib/cached';
+import {
+  hasuraCategoryPage,
+  hasuraListAllSections,
+} from '../../lib/articles.js';
+import { getArticleAds } from '../../lib/ads.js';
+import { hasuraLocaliseText } from '../../lib/utils.js';
 import { useAmp } from 'next/amp';
-import ArticleStream from '../components/homepage/ArticleStream';
+import ArticleStream from '../../components/homepage/ArticleStream';
 
 export default function CategoryPage(props) {
   const isAmp = useAmp();
