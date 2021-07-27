@@ -37,11 +37,12 @@ export default function Layout({
     facebookDescription: meta['facebookDescription'],
     twitterTitle: meta['twitterTitle'],
     twitterDescription: meta['twitterDescription'],
-    coverImage: meta['coverImage'],
+    coverImage: meta['coverImage'] || meta['defaultSocialImage'],
     footerTitle: meta['footerTitle'],
     footerBylineLink: meta['footerBylineLink'],
     footerBylineName: meta['footerBylineName'],
   };
+
   if (article) {
     metaValues.section = hasuraLocaliseText(
       article.category.category_translations,
