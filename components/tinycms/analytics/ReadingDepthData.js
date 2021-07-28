@@ -116,7 +116,7 @@ const ReadingDepthData = (props) => {
                 {totalReadingDepth[path]['pageviews']}
               </td>
               <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-                {totalReadingDepth[path]['conversion']}%
+                {totalReadingDepth[path]['conversion'].toFixed(1)}%
               </td>
             </tr>
           ))}

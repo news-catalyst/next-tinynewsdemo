@@ -51,7 +51,23 @@ export default function SessionsOverview(props) {
               <Header>Analytics: Sessions Overview</Header>
             </HeaderContainer>
             <AnalyticsSidebar title="About this Data">
-              <p tw="p-2">tk</p>
+              <p tw="p-2">
+                Sessions are a core metric for understanding your audience. When
+                a user arrives on your page, that begins a session. As they
+                navigate around the page, they may view many pages, but they all
+                comprise a single session.
+              </p>
+              <p tw="p-2">
+                On this page, track how many sessions you are receiving every
+                day, where those sessions are coming from geographically, how
+                long those sessions are, and the referral source.
+              </p>
+              <p tw="p-2">
+                Referral source identifies where your users came from on the
+                internet. Did they enter your URL in their address bar? That's a
+                "direct" referral. If they clicked on a link from somewhere
+                else, the referral source is the site that hosted the link.
+              </p>
             </AnalyticsSidebar>
 
             <DateRangePickerWrapper

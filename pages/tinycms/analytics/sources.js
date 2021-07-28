@@ -49,7 +49,12 @@ export default function SourcesOverview(props) {
               <Header>Analytics: Sources Overview</Header>
             </HeaderContainer>
             <AnalyticsSidebar title="About this Data">
-              <p tw="p-2">tk</p>
+              <p tw="p-2">
+                Through the TinyCMS publishing tools in Google Docs, you can log
+                your sources and demographic information about them. Here, we
+                aggregate that information so you can keep track of the
+                diversity of your sources.
+              </p>
             </AnalyticsSidebar>
 
             <DateRangePickerWrapper
