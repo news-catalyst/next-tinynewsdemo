@@ -20,7 +20,6 @@ export default function GlobalNav({ metadata, sections, isAmp }) {
   let sectionLinks;
 
   if (sections && sections[0] && typeof sections[0].title === 'string') {
-    sectionLinks = sections.slice(0, 4).map((section) => (
     sectionLinks = sections
       .slice(0, 4)
       .filter((section) => section.published)
