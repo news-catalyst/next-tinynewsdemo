@@ -93,7 +93,10 @@ export default function ArticleHeader({ article, isAmp, metadata }) {
     <section key="title" className="section post__header">
       <SectionContainer>
         <ArticleDescriptor meta={metadata}>
-          <Link key={categoryTitle} href={`/${article.category.slug}`}>
+          <Link
+            key={categoryTitle}
+            href={`/categories/${article.category.slug}`}
+          >
             <a>{categoryTitle}</a>
           </Link>
         </ArticleDescriptor>

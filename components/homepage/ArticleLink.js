@@ -89,7 +89,7 @@ export default function ArticleLink({
           {article.category && showCategory && (
             <Link
               key={categoryTitle}
-              href={`/${article.category.slug}`}
+              href={`/categories/${article.category.slug}`}
               passHref
             >
               <AssetDescriptorLink meta={metadata}>
