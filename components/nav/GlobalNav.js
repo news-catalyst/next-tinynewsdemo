@@ -24,8 +24,12 @@ export default function GlobalNav({ metadata, sections, isAmp }) {
       .slice(0, 4)
       .filter((section) => section.published)
       .map((section) => (
-        <Link key={`navbar-${section.slug}`} href={`/${section.slug}`} passHref>
-          <SectionLink href={`/${section.slug}`} meta={metadata}>
+        <Link
+          key={`navbar-${section.slug}`}
+          href={`/categories/${section.slug}`}
+          passHref
+        >
+          <SectionLink href={`/categories/${section.slug}`} meta={metadata}>
             {section.title}
           </SectionLink>
         </Link>
