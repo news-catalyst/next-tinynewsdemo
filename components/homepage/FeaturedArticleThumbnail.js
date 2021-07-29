@@ -10,7 +10,6 @@ export default function FeaturedArticleThumbnail({ article, isAmp }) {
 
   const translation = article['article_translations'][0];
 
-  console.log('FeaturedArticleThumbnail translation:', translation);
   mainImageNode = translation.main_image;
 
   try {
