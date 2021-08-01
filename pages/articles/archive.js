@@ -1,4 +1,6 @@
 import { useRouter } from 'next/router';
+import React, { useState } from 'react';
+import ReactPaginate from 'react-paginate';
 import Layout from '../../components/Layout.js';
 import { hasuraArticlesArchivePage } from '../../lib/articles.js';
 import { hasuraLocaliseText } from '../../lib/utils';
@@ -8,8 +10,13 @@ import { useAmp } from 'next/amp';
 import ArticleStream from '../../components/homepage/ArticleStream';
 
 export default function ArticlesArchivePage({
+  apiUrl,
+  apiToken,
+  locale,
   sections,
   articles,
+  totalCount,
+  limit,
   siteMetadata,
   expandedAds,
 }) {
@@ -21,16 +28,61 @@ export default function ArticlesArchivePage({
     return <div>Loading...</div>;
   }
 
+  const [currentArticles, setCurrentArticles] = useState(articles);
+  const [pageCount, setPageCount] = useState(Math.ceil(totalCount / limit));
+  const [perPage, setPerPage] = useState(limit);
+  // const [offset, setOffset] = useState(0);
+
+  const loadArticles = async (offset) => {
+    console.log('loading articles with offset:', offset);
+    const { errors, data } = await hasuraArticlesArchivePage({
+      url: apiUrl,
+      orgSlug: apiToken,
+      localeCode: locale,
+      limit: perPage,
+      offset: offset,
+    });
+
+    if (errors || !data) {
+      console.error('errors:', errors);
+      return {
+        notFound: true,
+      };
+    } else {
+      console.log('data.articles:', data.articles);
+      setCurrentArticles(data.articles);
+    }
+  };
+  function handlePageClick(data) {
+    console.log('data:', data);
+    let selected = data.selected;
+    let offset = Math.ceil(selected * perPage);
+
+    loadArticles(offset);
+  }
+
   return (
     <Layout meta={siteMetadata} sections={sections}>
       <ArticleStream
         sections={sections}
-        articles={articles}
+        articles={currentArticles}
         title={`Articles Archive`}
         showCategory={true}
         isAmp={isAmp}
         metadata={siteMetadata}
         ads={expandedAds}
+      />
+      <ReactPaginate
+        previousLabel={'previous'}
+        nextLabel={'next'}
+        breakLabel={'...'}
+        breakClassName={'break-me'}
+        pageCount={pageCount}
+        marginPagesDisplayed={2}
+        pageRangeDisplayed={5}
+        onPageChange={handlePageClick}
+        containerClassName={'pagination'}
+        activeClassName={'active'}
       />
     </Layout>
   );
@@ -48,6 +100,8 @@ export async function getServerSideProps(context) {
   let limit = context.query.limit || 10;
   let offset = context.query.offset || 0;
 
+  let totalCount = 0;
+
   const { errors, data } = await hasuraArticlesArchivePage({
     url: apiUrl,
     orgSlug: apiToken,
@@ -63,6 +117,8 @@ export async function getServerSideProps(context) {
   } else {
     articles = data.articles;
     sections = data.categories;
+
+    totalCount = data.articles_aggregate.aggregate.count;
 
     for (var i = 0; i < sections.length; i++) {
       sections[i].title = hasuraLocaliseText(
@@ -87,8 +143,13 @@ export async function getServerSideProps(context) {
 
   return {
     props: {
+      apiUrl,
+      apiToken,
+      locale,
       sections,
       articles,
+      totalCount,
+      limit,
       siteMetadata,
       expandedAds,
     },
