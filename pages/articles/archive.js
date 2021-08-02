@@ -20,6 +20,11 @@ export default function ArticlesArchivePage({
   siteMetadata,
   expandedAds,
 }) {
+  const [currentArticles, setCurrentArticles] = useState(articles);
+  const [pageCount, setPageCount] = useState(Math.ceil(totalCount / limit));
+  const [perPage, setPerPage] = useState(limit);
+  // const [offset, setOffset] = useState(0);
+
   const router = useRouter();
   const isAmp = useAmp();
   // If the page is not yet generated, this will be displayed
@@ -27,11 +32,6 @@ export default function ArticlesArchivePage({
   if (router.isFallback) {
     return <div>Loading...</div>;
   }
-
-  const [currentArticles, setCurrentArticles] = useState(articles);
-  const [pageCount, setPageCount] = useState(Math.ceil(totalCount / limit));
-  const [perPage, setPerPage] = useState(limit);
-  // const [offset, setOffset] = useState(0);
 
   const loadArticles = async (offset) => {
     console.log('loading articles with offset:', offset);
