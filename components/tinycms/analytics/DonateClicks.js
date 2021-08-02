@@ -4,6 +4,7 @@ import { hasuraGetDonationClicks } from '../../../lib/analytics';
 
 const SubHeaderContainer = tw.div`pt-3 pb-5`;
 const SubHeader = tw.h1`inline-block text-xl font-extrabold text-gray-900 tracking-tight`;
+const SubDek = tw.p`max-w-3xl`;
 
 const DonateClicks = (props) => {
   const donationsRef = useRef();
@@ -167,6 +168,10 @@ const DonateClicks = (props) => {
     <>
       <SubHeaderContainer ref={donationsRef}>
         <SubHeader>Donate Button Clicks with Page Views</SubHeader>
+        <SubDek>
+          This table shows you which of your pages are getting people to click
+          the donation prompt.
+        </SubDek>
       </SubHeaderContainer>
 
       <p tw="p-2">
@@ -188,6 +193,10 @@ const DonateClicks = (props) => {
 
       <SubHeaderContainer>
         <SubHeader>Donate Button Clicks by Reading Frequency</SubHeader>
+        <SubDek>
+          This table shows you whether frequent readers or new readers or more
+          likely to click your donate buttons across your site.
+        </SubDek>
       </SubHeaderContainer>
       <table tw="pt-10 mt-10 w-full table-auto">
         <thead>

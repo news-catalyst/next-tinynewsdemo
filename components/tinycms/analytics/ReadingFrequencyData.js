@@ -15,6 +15,7 @@ import { hasuraGetReadingFrequency } from '../../../lib/analytics';
 
 const SubHeaderContainer = tw.div`pt-10 pb-5`;
 const SubHeader = tw.h1`inline-block text-xl font-extrabold text-gray-900 tracking-tight`;
+const SubDek = tw.p`max-w-3xl`;
 
 const ReadingFrequencyData = (props) => {
   const frequencyRef = useRef();
@@ -69,6 +70,12 @@ const ReadingFrequencyData = (props) => {
     <>
       <SubHeaderContainer ref={frequencyRef}>
         <SubHeader>Page views by audience segment: reading frequency</SubHeader>
+        <SubDek>
+          For each of your pageviews, we measure how many pages that viewer has
+          visited already. This chart breaks down all of your pageviews by the
+          number of posts a user has seen. This helps you know whether you're
+          attracting loyal readers or new readers.
+        </SubDek>
       </SubHeaderContainer>
       <p tw="p-2">
         {props.startDate.format('dddd, MMMM Do YYYY')} -{' '}
