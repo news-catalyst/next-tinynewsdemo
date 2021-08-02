@@ -9,6 +9,7 @@ import { cachedContents } from '../../lib/cached';
 import { getArticleAds } from '../../lib/ads.js';
 import { useAmp } from 'next/amp';
 import ArticleStream from '../../components/homepage/ArticleStream';
+import tw from 'twin.macro';
 
 export default function AuthorPage({
   sections,
@@ -26,12 +27,55 @@ export default function AuthorPage({
   }
 
   let authorName;
+  let authorPhoto;
+  let authorTitle;
+  let authorBio;
+  let authorTwitter;
   if (author) {
     authorName = author.name;
+    authorPhoto = author.photoUrl;
+    authorTitle = author.title;
+    authorBio = author.bio;
+    authorTwitter = author.twitter;
   }
+
+  let twitterCall;
+  let twitterLink;
+  if (authorTwitter) {
+    twitterCall = `Follow ${authorName} on Twitter @`;
+    twitterLink = 'https://twitter.com/' + authorTwitter;
+  }
+
+  const ProfileHeaderDiv = tw.div`flex flex-row items-center md:w-full mx-5 my-8 bg-white`;
+  const ProfileImage = tw.img`flex block rounded-full mr-5 w-48 h-48 bg-white`;
+  const ProfileHeadingText = tw.p`text-3xl uppercase`;
+  const ProfileTitle = tw.p`text-xl`;
+  const ProfileDiv = tw.div`w-2/3 border-b-2 border-black pb-2`;
+  const ProfileBio = tw.p`pt-2 text-lg`;
+  const ProfileTwitter = tw.p`text-base pt-3`;
+  const TwitterHoverUnderline = tw.a`hover:underline`;
 
   return (
     <Layout meta={siteMetadata} sections={sections}>
+      <ProfileHeaderDiv>
+        <ProfileImage src={authorPhoto}></ProfileImage>
+        <div>
+          <ProfileHeadingText>
+            <strong>{authorName}</strong>
+          </ProfileHeadingText>
+          <ProfileTitle>{authorTitle}</ProfileTitle>
+          <ProfileDiv></ProfileDiv>
+          <ProfileBio>{authorBio}</ProfileBio>
+          <ProfileTwitter>
+            <em>
+              {twitterCall}
+              <TwitterHoverUnderline href={twitterLink}>
+                {authorTwitter}
+              </TwitterHoverUnderline>
+            </em>
+          </ProfileTwitter>
+        </div>
+      </ProfileHeaderDiv>
       <ArticleStream
         sections={sections}
         articles={articles}
