@@ -10,6 +10,7 @@ import { getArticleAds } from '../../lib/ads.js';
 import { useAmp } from 'next/amp';
 import ArticleStream from '../../components/homepage/ArticleStream';
 import tw from 'twin.macro';
+import { Anchor } from '../../components/common/CommonStyles.js';
 
 export default function AuthorPage({
   sections,
@@ -34,8 +35,8 @@ export default function AuthorPage({
   if (author) {
     authorName = author.name;
     authorPhoto = author.photoUrl;
-    authorTitle = author.title;
-    authorBio = author.bio;
+    authorTitle = hasuraLocaliseText(author.author_translations, 'title');
+    authorBio = hasuraLocaliseText(author.author_translations, 'bio');
     authorTwitter = author.twitter;
   }
 
@@ -46,14 +47,13 @@ export default function AuthorPage({
     twitterLink = 'https://twitter.com/' + authorTwitter;
   }
 
-  const ProfileHeaderDiv = tw.div`flex flex-row items-center md:w-full mx-5 my-8 bg-white`;
+  const ProfileHeaderDiv = tw.div`flex flex-row items-center max-w-7xl mx-auto my-8 bg-white`;
   const ProfileImage = tw.img`flex block rounded-full mr-5 w-48 h-48 bg-white`;
-  const ProfileHeadingText = tw.p`text-3xl uppercase`;
-  const ProfileTitle = tw.p`text-xl`;
-  const ProfileDiv = tw.div`w-2/3 border-b-2 border-black pb-2`;
+  const ProfileHeadingText = tw.p`text-4xl uppercase`;
+  const ProfileTitle = tw.p`text-2xl`;
+  const ProfileDiv = tw.div`w-full border-b-2 border-black pb-2`;
   const ProfileBio = tw.p`pt-2 text-lg`;
   const ProfileTwitter = tw.p`text-base pt-3`;
-  const TwitterHoverUnderline = tw.a`hover:underline`;
 
   return (
     <Layout meta={siteMetadata} sections={sections}>
@@ -69,9 +69,7 @@ export default function AuthorPage({
           <ProfileTwitter>
             <em>
               {twitterCall}
-              <TwitterHoverUnderline href={twitterLink}>
-                {authorTwitter}
-              </TwitterHoverUnderline>
+              <Anchor href={twitterLink}>{authorTwitter}</Anchor>
             </em>
           </ProfileTwitter>
         </div>
