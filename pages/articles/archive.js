@@ -11,7 +11,7 @@ import { useAmp } from 'next/amp';
 import ArticleStream from '../../components/homepage/ArticleStream';
 
 const PaginationSection = tw.section`flex mb-8`;
-const PaginationContainer = tw.div`md:grid md:grid-cols-packageLayoutTablet lg:grid-cols-packageLayoutDesktop flex flex-row flex-wrap grid-rows-1 w-full px-5 mx-auto max-w-7xl items-center justify-between border-t border-gray-200`;
+const PaginationContainer = tw.div`md:grid md:grid-cols-packageLayoutTablet lg:grid-cols-packageLayoutDesktop flex flex-row flex-wrap grid-rows-1 w-full px-5 mx-auto max-w-7xl items-center justify-between`;
 
 export default function ArticlesArchivePage({
   apiUrl,
@@ -48,20 +48,17 @@ export default function ArticlesArchivePage({
     });
 
     if (errors || !data) {
-      console.error('errors:', errors);
+      console.error('error:', errors);
       return {
         notFound: true,
       };
     } else {
-      console.log('data.articles:', data.articles);
       setCurrentArticles(data.articles);
     }
   };
   function handlePageClick(data) {
-    console.log('data:', data);
     let selected = data.selected;
     let offset = Math.ceil(selected * perPage);
-
     loadArticles(offset);
   }
 
