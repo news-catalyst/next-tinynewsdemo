@@ -9,6 +9,8 @@ import { cachedContents } from '../../lib/cached';
 import { getArticleAds } from '../../lib/ads.js';
 import { useAmp } from 'next/amp';
 import ArticleStream from '../../components/homepage/ArticleStream';
+import tw from 'twin.macro';
+import { Anchor } from '../../components/common/CommonStyles.js';
 
 export default function AuthorPage({
   sections,
@@ -26,12 +28,52 @@ export default function AuthorPage({
   }
 
   let authorName;
+  let authorPhoto;
+  let authorTitle;
+  let authorBio;
+  let authorTwitter;
   if (author) {
     authorName = author.name;
+    authorPhoto = author.photoUrl;
+    authorTitle = hasuraLocaliseText(author.author_translations, 'title');
+    authorBio = hasuraLocaliseText(author.author_translations, 'bio');
+    authorTwitter = author.twitter;
   }
+
+  let twitterCall;
+  let twitterLink;
+  if (authorTwitter) {
+    twitterCall = `Follow ${authorName} on Twitter @`;
+    twitterLink = 'https://twitter.com/' + authorTwitter;
+  }
+
+  const ProfileHeaderDiv = tw.div`flex flex-row items-center max-w-7xl mx-auto my-8 bg-white`;
+  const ProfileImage = tw.img`flex block rounded-full mr-5 w-48 h-48 bg-white`;
+  const ProfileHeadingText = tw.p`text-4xl uppercase`;
+  const ProfileTitle = tw.p`text-2xl`;
+  const ProfileDiv = tw.div`w-full border-b-2 border-black pb-2`;
+  const ProfileBio = tw.p`pt-2 text-lg`;
+  const ProfileTwitter = tw.p`text-base pt-3`;
 
   return (
     <Layout meta={siteMetadata} sections={sections}>
+      <ProfileHeaderDiv>
+        <ProfileImage src={authorPhoto}></ProfileImage>
+        <div>
+          <ProfileHeadingText>
+            <strong>{authorName}</strong>
+          </ProfileHeadingText>
+          <ProfileTitle>{authorTitle}</ProfileTitle>
+          <ProfileDiv></ProfileDiv>
+          <ProfileBio>{authorBio}</ProfileBio>
+          <ProfileTwitter>
+            <em>
+              {twitterCall}
+              <Anchor href={twitterLink}>{authorTwitter}</Anchor>
+            </em>
+          </ProfileTwitter>
+        </div>
+      </ProfileHeaderDiv>
       <ArticleStream
         sections={sections}
         articles={articles}
