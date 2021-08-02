@@ -32,7 +32,7 @@ export default function DonationOptionsBlock({ metadata, wrap = true }) {
         <div className="content">
           <CardDonationAmount>${option.amount}</CardDonationAmount>
           <CardDonationDescription>
-            Monthly subscription amount.
+            {option.description}
           </CardDonationDescription>
         </div>
       </CardContent>

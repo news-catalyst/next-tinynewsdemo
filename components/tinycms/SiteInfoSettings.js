@@ -3,6 +3,7 @@ import tw, { css, styled } from 'twin.macro';
 import DonationBlock from '../plugins/DonationBlock';
 import NewsletterBlock from '../plugins/NewsletterBlock';
 import HomepagePromoBar from '../homepage/HomepagePromoBar';
+import DonationOptionsBlock from '../plugins/DonationOptionsBlock';
 import Upload from './Upload';
 
 const SettingsHeader = tw.h1`text-4xl font-bold leading-normal mt-0 mb-2 text-black`;
@@ -12,6 +13,8 @@ const DesignContainer = tw.div`grid grid-cols-2 gap-4`;
 const MembershipContainer = tw.div`grid grid-cols-2 gap-8`;
 const NewsletterContainer = tw.div`grid grid-cols-2 gap-8`;
 const HomepagePromoContainer = tw.div`grid grid-cols-2 gap-8`;
+const DonationOptionsEditor = tw.div`grid grid-cols-3 gap-4`;
+const DonationOptionsContainer = tw.div``;
 const DesignHeader = tw.h1`text-2xl font-bold leading-normal mt-0 mb-2 text-black`;
 const SingleColumnContainer = tw.div`grid grid-cols-1 gap-4`;
 const StyleOneHead = styled.span`
@@ -185,6 +188,9 @@ export default function SiteInfoSettings(props) {
   const [defaultSocialImage, setDefaultSocialImage] = useState(
     props.parsedData['defaultSocialImage']
   );
+  const [donationOptions, setDonationOptions] = useState(
+    JSON.parse(props.parsedData['donationOptions'])
+  );
 
   useEffect(() => {
     setSearchTitle(props.parsedData['searchTitle']);
@@ -193,9 +199,7 @@ export default function SiteInfoSettings(props) {
     setFacebookDescription(props.parsedData['facebookDescription']);
     setTwitterTitle(props.parsedData['twitterTitle']);
     setTwitterDescription(props.parsedData['twitterDescription']);
-
     setCommenting(props.parsedData['commenting']);
-
     setShortName(props.parsedData['shortName']);
     setSiteUrl(props.parsedData['siteUrl']);
     setColor(props.parsedData['color']);
@@ -212,7 +216,7 @@ export default function SiteInfoSettings(props) {
     setMembershipHed(props.parsedData['membershipHed']);
     setNewsletterDek(props.parsedData['newsletterDek']);
     setNewsletterHed(props.parsedData['newsletterHed']);
-
+    setDonationOptions(JSON.parse(props.parsedData['donationOptions']));
     setLogo(props.parsedData['logo']);
     setDefaultSocialImage(props.parsedData['defaultSocialImage']);
   }, [props.parsedData]);
@@ -594,6 +598,54 @@ export default function SiteInfoSettings(props) {
           <DonationBlock metadata={props.parsedData} />
         </div>
       </MembershipContainer>
+
+      <DonationOptionsEditor>
+        {Array.isArray(donationOptions) &&
+          donationOptions.map((option, i) => (
+            <div key={`option-${i}`}>
+              <div tw="mt-2">
+                <label htmlFor={`donationOptions-${i}-name`}>
+                  <span tw="mt-1 font-bold">Option name</span>
+                  <Input
+                    tw="w-full rounded-md border-solid border-gray-300"
+                    type="text"
+                    name={`donationOptions-${i}-name`}
+                    value={option.name}
+                    onChange={props.handleChange}
+                  />
+                </label>
+              </div>
+              <div tw="mt-2">
+                <label htmlFor={`donationOptions-${i}-description`}>
+                  <span tw="mt-1 font-bold">Option Description</span>
+                  <Input
+                    tw="w-full rounded-md border-solid border-gray-300"
+                    type="text"
+                    name={`donationOptions-${i}-description`}
+                    value={option.description}
+                    onChange={props.handleChange}
+                  />
+                </label>
+              </div>
+              <div tw="mt-2">
+                <label htmlFor={`donationOptions-${i}-amount`}>
+                  <span tw="mt-1 font-bold">Option amount</span>
+                  <Input
+                    tw="w-full rounded-md border-solid border-gray-300"
+                    type="number"
+                    name={`donationOptions-${i}-amount`}
+                    value={option.amount}
+                    onChange={props.handleChange}
+                  />
+                </label>
+              </div>
+            </div>
+          ))}
+      </DonationOptionsEditor>
+
+      <DonationOptionsContainer>
+        <DonationOptionsBlock metadata={props.parsedData} />
+      </DonationOptionsContainer>
 
       <SeoContainer ref={props.seoRef}>
         <SettingsHeader tw="col-span-3 mt-5" id="seo">
