@@ -1,5 +1,6 @@
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
+import tw from 'twin.macro';
 import ReactPaginate from 'react-paginate';
 import Layout from '../../components/Layout.js';
 import { hasuraArticlesArchivePage } from '../../lib/articles.js';
@@ -8,6 +9,9 @@ import { cachedContents } from '../../lib/cached';
 import { getArticleAds } from '../../lib/ads.js';
 import { useAmp } from 'next/amp';
 import ArticleStream from '../../components/homepage/ArticleStream';
+
+const PaginationSection = tw.section`flex mb-8`;
+const PaginationContainer = tw.div`md:grid md:grid-cols-packageLayoutTablet lg:grid-cols-packageLayoutDesktop flex flex-row flex-wrap grid-rows-1 w-full px-5 mx-auto max-w-7xl items-center justify-between border-t border-gray-200`;
 
 export default function ArticlesArchivePage({
   apiUrl,
@@ -72,18 +76,22 @@ export default function ArticlesArchivePage({
         metadata={siteMetadata}
         ads={expandedAds}
       />
-      <ReactPaginate
-        previousLabel={'previous'}
-        nextLabel={'next'}
-        breakLabel={'...'}
-        breakClassName={'break-me'}
-        pageCount={pageCount}
-        marginPagesDisplayed={2}
-        pageRangeDisplayed={5}
-        onPageChange={handlePageClick}
-        containerClassName={'pagination'}
-        activeClassName={'active'}
-      />
+      <PaginationSection>
+        <PaginationContainer>
+          <ReactPaginate
+            previousLabel={'previous'}
+            nextLabel={'next'}
+            breakLabel={'...'}
+            breakClassName={'break-me'}
+            pageCount={pageCount}
+            marginPagesDisplayed={2}
+            pageRangeDisplayed={5}
+            onPageChange={handlePageClick}
+            containerClassName={'pagination'}
+            activeClassName={'active'}
+          />
+        </PaginationContainer>
+      </PaginationSection>
     </Layout>
   );
 }
