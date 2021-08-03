@@ -4,6 +4,7 @@ import { hasuraGetReadingDepth } from '../../../lib/analytics';
 
 const SubHeaderContainer = tw.div`pt-10 pb-5`;
 const SubHeader = tw.h1`inline-block text-xl font-extrabold text-gray-900 tracking-tight`;
+const SubDek = tw.p`max-w-3xl`;
 
 const ReadingDepthData = (props) => {
   const depthRef = useRef();
@@ -72,6 +73,11 @@ const ReadingDepthData = (props) => {
     <>
       <SubHeaderContainer ref={depthRef}>
         <SubHeader>Reading Depth</SubHeader>
+        <SubDek>
+          On each of your pages, this table shows you how far people are reading
+          down the page. Note: 100% completion is marked as reaching the bottom
+          of the article text, not the entire page.
+        </SubDek>
       </SubHeaderContainer>
       <p tw="p-2">
         {props.startDate.format('dddd, MMMM Do YYYY')} -{' '}
@@ -116,7 +122,7 @@ const ReadingDepthData = (props) => {
                 {totalReadingDepth[path]['pageviews']}
               </td>
               <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-                {totalReadingDepth[path]['conversion']}%
+                {totalReadingDepth[path]['conversion'].toFixed(1)}%
               </td>
             </tr>
           ))}

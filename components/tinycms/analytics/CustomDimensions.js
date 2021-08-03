@@ -13,6 +13,7 @@ import { hasuraGetCustomDimension } from '../../../lib/analytics';
 
 const SubHeaderContainer = tw.div`pt-10 pb-5`;
 const SubHeader = tw.h1`inline-block text-xl font-extrabold text-gray-900 tracking-tight`;
+const SubDek = tw.p`max-w-3xl`;
 
 const CustomDimensions = (props) => {
   const customRef = useRef();
@@ -63,6 +64,7 @@ const CustomDimensions = (props) => {
     <>
       <SubHeaderContainer ref={customRef}>
         <SubHeader>Sessions by audience segment: {props.label}</SubHeader>
+        <SubDek>{props.dek}</SubDek>
       </SubHeaderContainer>
       <p tw="p-2">
         {props.startDate.format('dddd, MMMM Do YYYY')} -{' '}

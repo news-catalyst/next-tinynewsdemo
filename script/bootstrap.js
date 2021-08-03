@@ -519,7 +519,7 @@ async function createOrganization(opts) {
           "donateBlockDek": "Support our local journalism with a monthly pledge.",
           "donateBlockHed": "Donate",
           "secondaryColor": "#002c57",
-          "donationOptions": "[{\n\"uuid\": \"92f77857-eea6-4035-ae86-e9781e2627b2\",\n\"amount\": 5,\n\"name\": \"Member\"\n},\n{\n\"uuid\": \"92f778a9-3187-4fe5-9d6b-a3041f126456\",\n\"amount\": 10,\n\"name\": \"Supporter\"\n},\n{\n\"uuid\": \"92f77888-d1cc-4491-8080-780f0b109320\",\n\"amount\": 20,\n\"name\": \"Superuser\"\n}]",
+          "donationOptions": "[{\n\"amount\": 5,\n\"name\": \"Member\",\n\"description\": \"This is a description.\"\n},\n{\n\"amount\": 10,\n\"name\": \"Supporter\",\n\"description\": \"This is a description.\"\n},\n{\n\"amount\": 20,\n\"name\": \"Superuser\",\n\"description\": \"This is a description.\"\n}]",
           "footerBylineLink": "https://newscatalyst.org",
           "footerBylineName": "News Catalyst",
           "searchDescription": "Page description",

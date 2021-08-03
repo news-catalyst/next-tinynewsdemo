@@ -51,7 +51,18 @@ export default function PageViewsPage(props) {
               <Header>Analytics: Page Views</Header>
             </HeaderContainer>
             <AnalyticsSidebar title="About this Data">
-              <p tw="p-2">tk</p>
+              <p tw="p-2">
+                Page views are one of the simplest metrics you can use to
+                analyze your audience. Every time a user lands on a page on your
+                site, it registers as a page view.
+              </p>
+              <p tw="p-2">
+                However, page views aren&rsquo;t the most important metric. It
+                can still be useful to know what your audience is reading.
+                Below, you can see what pages your users are seeing, how deeply
+                people are reading on those pages, and how frequently particular
+                users are reading stories.
+              </p>
             </AnalyticsSidebar>
 
             <DateRangePickerWrapper
