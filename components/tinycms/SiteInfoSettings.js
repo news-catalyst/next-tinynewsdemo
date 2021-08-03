@@ -189,7 +189,9 @@ export default function SiteInfoSettings(props) {
     props.parsedData['defaultSocialImage']
   );
   const [donationOptions, setDonationOptions] = useState(
-    JSON.parse(props.parsedData['donationOptions'])
+    props.parsedData['donationOptions']
+      ? JSON.parse(props.parsedData['donationOptions'])
+      : null
   );
 
   useEffect(() => {
@@ -216,7 +218,11 @@ export default function SiteInfoSettings(props) {
     setMembershipHed(props.parsedData['membershipHed']);
     setNewsletterDek(props.parsedData['newsletterDek']);
     setNewsletterHed(props.parsedData['newsletterHed']);
-    setDonationOptions(JSON.parse(props.parsedData['donationOptions']));
+    setDonationOptions(
+      props.parsedData['donationOptions']
+        ? JSON.parse(props.parsedData['donationOptions'])
+        : null
+    );
     setLogo(props.parsedData['logo']);
     setDefaultSocialImage(props.parsedData['defaultSocialImage']);
   }, [props.parsedData]);
