@@ -13,6 +13,7 @@ import { hasuraGetSessions } from '../../../lib/analytics';
 
 const SubHeaderContainer = tw.div`pt-10 pb-5`;
 const SubHeader = tw.h1`inline-block text-xl font-extrabold text-gray-900 tracking-tight`;
+const SubDek = tw.p`max-w-3xl`;
 
 const DailySessions = (props) => {
   const dailyRef = useRef();
@@ -55,6 +56,11 @@ const DailySessions = (props) => {
     <>
       <SubHeaderContainer ref={dailyRef}>
         <SubHeader>Sessions per day</SubHeader>
+        <SubDek>
+          How many sessions happen on your site each day? Look for patterns week
+          by week. Do more people come on weekdays or weekends? How does that
+          align with your publishing schedule?
+        </SubDek>
       </SubHeaderContainer>
       <p tw="p-2">
         {props.startDate.format('dddd, MMMM Do YYYY')} -{' '}

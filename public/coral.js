@@ -2,7 +2,7 @@
     let d = document, s = d.createElement('script');
     let storyURL = window.location.href;
     // s.src = '//' + url + '/assets/js/embed.js';
-    s.src = 'http://coral-talk-lb-1654697893.us-east-1.elb.amazonaws.com/assets/js/embed.js';
+    s.src = '//coral.tinynewsco.org/assets/js/embed.js';
     s.async = false;
     s.defer = true;
     s.onload = function() {
@@ -10,7 +10,7 @@
             id: "coral_thread",
             autoRender: true,
             // rootURL: '//' + url,
-            rootURL: 'http://coral-talk-lb-1654697893.us-east-1.elb.amazonaws.com',
+            rootURL: '//coral.tinynewsco.org',
             // Uncomment these lines and replace with the ID of the
             // story's ID and URL from your CMS to provide the
             // tightest integration. Refer to our documentation at
