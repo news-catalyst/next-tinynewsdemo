@@ -83,6 +83,7 @@ export default function Audience(props) {
               endDate={endDate}
               dimension="dimension4"
               label="Donor"
+              dek="This chart shows you how many sessions have occurred from users who have already donated to your website. Note: we track this via cookies, meaning a user must use the same browser as when they donated for this to track."
               apiUrl={props.apiUrl}
               apiToken={props.apiToken}
             />
@@ -92,6 +93,7 @@ export default function Audience(props) {
               endDate={endDate}
               dimension="dimension5"
               label="Subscriber"
+              dek="This chart shows you have many sessions have occurred from user who have subscribed to your newsletter. Note: we track this via cookies, meaning a user must use the same browser as when they donated for this to track."
               apiUrl={props.apiUrl}
               apiToken={props.apiToken}
             />

@@ -4,6 +4,7 @@ import { hasuraGetReferralSessions } from '../../../lib/analytics';
 
 const SubHeaderContainer = tw.div`pt-10 pb-5`;
 const SubHeader = tw.h1`inline-block text-xl font-extrabold text-gray-900 tracking-tight`;
+const SubDek = tw.p`max-w-3xl`;
 
 const ReferralSource = (props) => {
   const referralRef = useRef();
@@ -61,6 +62,11 @@ const ReferralSource = (props) => {
     <>
       <SubHeaderContainer ref={referralRef}>
         <SubHeader>Session by referral source</SubHeader>
+        <SubDek>
+          Where on the internet are your sessions coming from? Note: (direct)
+          means the user came directly to your site, not via a link from
+          elsewhere on the internet.
+        </SubDek>
       </SubHeaderContainer>
       <p tw="p-2">
         {props.startDate.format('dddd, MMMM Do YYYY')} -{' '}
