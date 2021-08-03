@@ -58,10 +58,10 @@ export default function PageViewsPage(props) {
               </p>
               <p tw="p-2">
                 However, page views aren&rsquo;t the most important metric. It
-                can still useful to know what your audience is reading. Below,
-                you can see what pages your users are seeing, how deeply people
-                are reading on those pages, and how frequently particular users
-                are reading stories.
+                can still be useful to know what your audience is reading.
+                Below, you can see what pages your users are seeing, how deeply
+                people are reading on those pages, and how frequently particular
+                users are reading stories.
               </p>
             </AnalyticsSidebar>
 
