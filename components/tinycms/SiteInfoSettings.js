@@ -600,6 +600,7 @@ export default function SiteInfoSettings(props) {
       </MembershipContainer>
 
       <DonationOptionsEditor>
+        <SettingsHeader tw="col-span-3 mt-5">Donation options</SettingsHeader>
         {Array.isArray(donationOptions) &&
           donationOptions.map((option, i) => (
             <div key={`option-${i}`}>
@@ -611,6 +612,18 @@ export default function SiteInfoSettings(props) {
                     type="text"
                     name={`donationOptions-${i}-name`}
                     value={option.name}
+                    onChange={props.handleChange}
+                  />
+                </label>
+              </div>
+              <div tw="mt-2">
+                <label htmlFor={`donationOptions-${i}-amount`}>
+                  <span tw="mt-1 font-bold">Option amount</span>
+                  <Input
+                    tw="w-full rounded-md border-solid border-gray-300"
+                    type="number"
+                    name={`donationOptions-${i}-amount`}
+                    value={option.amount}
                     onChange={props.handleChange}
                   />
                 </label>
@@ -628,13 +641,13 @@ export default function SiteInfoSettings(props) {
                 </label>
               </div>
               <div tw="mt-2">
-                <label htmlFor={`donationOptions-${i}-amount`}>
-                  <span tw="mt-1 font-bold">Option amount</span>
+                <label htmlFor={`donationOptions-${i}-cta`}>
+                  <span tw="mt-1 font-bold">Option CTA</span>
                   <Input
                     tw="w-full rounded-md border-solid border-gray-300"
-                    type="number"
-                    name={`donationOptions-${i}-amount`}
-                    value={option.amount}
+                    type="text"
+                    name={`donationOptions-${i}-cta`}
+                    value={option.cta}
                     onChange={props.handleChange}
                   />
                 </label>
@@ -644,6 +657,7 @@ export default function SiteInfoSettings(props) {
       </DonationOptionsEditor>
 
       <DonationOptionsContainer>
+        <span tw="mt-1 font-bold">Preview</span>
         <DonationOptionsBlock metadata={props.parsedData} />
       </DonationOptionsContainer>
 
