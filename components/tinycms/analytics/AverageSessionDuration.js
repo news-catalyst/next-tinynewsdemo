@@ -13,6 +13,7 @@ import { hasuraGetSessionDuration } from '../../../lib/analytics';
 
 const SubHeaderContainer = tw.div`pt-10 pb-5`;
 const SubHeader = tw.h1`inline-block text-xl font-extrabold text-gray-900 tracking-tight`;
+const SubDek = tw.p``;
 
 const AverageSessionDuration = (props) => {
   const timeRef = useRef();
@@ -60,13 +61,14 @@ const AverageSessionDuration = (props) => {
     <>
       <SubHeaderContainer ref={timeRef}>
         <SubHeader>Average Session Duration</SubHeader>
+        <SubDek>How long are users staying on your page?</SubDek>
       </SubHeaderContainer>
       <p tw="p-2">
         {props.startDate.format('dddd, MMMM Do YYYY')} -{' '}
         {props.endDate.format('dddd, MMMM Do YYYY')}
       </p>
 
-      <p>Overall average: {timeAverage} seconds</p>
+      <p>Overall average: {timeAverage.toFixed(1)} seconds</p>
 
       <LineChart width={740} height={400} data={chartData}>
         <CartesianGrid strokeDasharray="3 3" />

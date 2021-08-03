@@ -5,6 +5,7 @@ import { hasuraGetPageViews } from '../../../lib/analytics';
 
 const SubHeaderContainer = tw.div`pt-3 pb-5`;
 const SubHeader = tw.h1`inline-block text-xl font-extrabold text-gray-900 tracking-tight`;
+const SubDek = tw.p`max-w-3xl`;
 
 const PageViews = (props) => {
   const pageviewsRef = useRef();
@@ -56,6 +57,10 @@ const PageViews = (props) => {
     <>
       <SubHeaderContainer ref={pageviewsRef}>
         <SubHeader>Page Views</SubHeader>
+        <SubDek>
+          This table shows your most frequently visited pages for your given
+          date range.
+        </SubDek>
       </SubHeaderContainer>
       <p tw="p-2">
         {props.startDate.format('dddd, MMMM Do YYYY')} -{' '}

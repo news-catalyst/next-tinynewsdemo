@@ -4,6 +4,7 @@ import { hasuraGetGeoSessions } from '../../../lib/analytics';
 
 const SubHeaderContainer = tw.div`pt-10 pb-5`;
 const SubHeader = tw.h1`inline-block text-xl font-extrabold text-gray-900 tracking-tight`;
+const SubDek = tw.p`max-w-3xl`;
 
 const GeoSessions = (props) => {
   const geoRef = useRef();
@@ -51,6 +52,10 @@ const GeoSessions = (props) => {
     <>
       <SubHeaderContainer ref={geoRef}>
         <SubHeader>Sessions by geographic region</SubHeader>
+        <SubDek>
+          Where are your sessions coming from? Are they from the geographic
+          region your publication is targeting?
+        </SubDek>
       </SubHeaderContainer>
       <p tw="p-2">
         {props.startDate.format('dddd, MMMM Do YYYY')} -{' '}
