@@ -9,6 +9,7 @@ import { cachedContents } from '../../lib/cached';
 import { getArticleAds } from '../../lib/ads.js';
 import { useAmp } from 'next/amp';
 import ArticleStream from '../../components/homepage/ArticleStream';
+import paginationStyles from '../../styles/pagination.js';
 
 const PaginationSection = tw.section`flex mb-8`;
 const PaginationContainer = tw.div`md:grid md:grid-cols-packageLayoutTablet lg:grid-cols-packageLayoutDesktop flex flex-row flex-wrap grid-rows-1 w-full px-5 mx-auto max-w-7xl items-center justify-between`;
@@ -89,6 +90,10 @@ export default function ArticlesArchivePage({
           />
         </PaginationContainer>
       </PaginationSection>
+
+      <style jsx global>
+        {paginationStyles}
+      </style>
     </Layout>
   );
 }
