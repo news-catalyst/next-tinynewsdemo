@@ -55,6 +55,7 @@ export default function Settings({
   const homepagePromoRef = useRef();
   const newsletterRef = useRef();
   const membershipRef = useRef();
+  const paymentRef = useRef();
   const seoRef = useRef();
   const [message, setMessage] = useState(null);
   const [metadata, setMetadata] = useState(null);
@@ -72,23 +73,34 @@ export default function Settings({
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
 
-    if (type === 'checkbox') {
-      setParsedData((prevState) => ({
-        ...prevState,
-        [name]: checked,
-      }));
-    } else if (type === 'radio') {
-      setParsedData((prevState) => ({
-        ...prevState,
-        [name]: value,
-      }));
+    if (name.startsWith('donationOptions')) {
+      const i = name.split('-')[1];
+      const property = name.split('-')[2];
+      setParsedData((prevState) => {
+        const newState = Object.assign({ ...prevState });
+        const newStateDonationOptions = JSON.parse(newState.donationOptions);
+        newStateDonationOptions[parseInt(i)][property] = value;
+        newState.donationOptions = JSON.stringify(newStateDonationOptions);
+        return newState;
+      });
     } else {
-      setParsedData((prevState) => ({
-        ...prevState,
-        [name]: value,
-      }));
+      if (type === 'checkbox') {
+        setParsedData((prevState) => ({
+          ...prevState,
+          [name]: checked,
+        }));
+      } else if (type === 'radio') {
+        setParsedData((prevState) => ({
+          ...prevState,
+          [name]: value,
+        }));
+      } else {
+        setParsedData((prevState) => ({
+          ...prevState,
+          [name]: value,
+        }));
+      }
     }
-
     // select typography
     if (name === 'theme') {
       setParsedData((prevState) => ({
@@ -221,6 +233,11 @@ export default function Settings({
                   </Link>
                 </li>
                 <li>
+                  <Link href="/tinycms/settings#payment-options">
+                    <a>Payment options</a>
+                  </Link>
+                </li>
+                <li>
                   <Link href="/tinycms/settings#seo">
                     <a>SEO/Social</a>
                   </Link>
@@ -249,6 +266,7 @@ export default function Settings({
                 membershipRef={membershipRef}
                 designRef={designRef}
                 homepagePromoRef={homepagePromoRef}
+                paymentRef={paymentRef}
                 handleChange={handleChange}
                 parsedData={parsedData}
                 updateParsedData={setParsedData}
