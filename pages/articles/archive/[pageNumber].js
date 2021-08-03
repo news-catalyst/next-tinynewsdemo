@@ -2,32 +2,33 @@ import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import tw from 'twin.macro';
 import ReactPaginate from 'react-paginate';
-import Layout from '../../components/Layout.js';
-import { hasuraArticlesArchivePage } from '../../lib/articles.js';
-import { hasuraLocaliseText } from '../../lib/utils';
-import { cachedContents } from '../../lib/cached';
-import { getArticleAds } from '../../lib/ads.js';
+import Layout from '../../../components/Layout.js';
+import {
+  hasuraArticlesArchivePage,
+  hasuraListArticleArchivePages,
+} from '../../../lib/articles.js';
+import { hasuraLocaliseText } from '../../../lib/utils';
+import { cachedContents } from '../../../lib/cached';
+import { getArticleAds } from '../../../lib/ads.js';
 import { useAmp } from 'next/amp';
-import ArticleStream from '../../components/homepage/ArticleStream';
-import paginationStyles from '../../styles/pagination.js';
+import ArticleStream from '../../../components/homepage/ArticleStream';
+import paginationStyles from '../../../styles/pagination.js';
 
 const PaginationSection = tw.section`flex mb-8`;
 const PaginationContainer = tw.div`md:grid md:grid-cols-packageLayoutTablet lg:grid-cols-packageLayoutDesktop flex flex-row flex-wrap grid-rows-1 w-full px-5 mx-auto max-w-7xl items-center justify-between`;
 
 export default function ArticlesArchivePage({
-  apiUrl,
-  apiToken,
-  locale,
   sections,
   articles,
   totalCount,
   limit,
+  pageNumber,
   siteMetadata,
   expandedAds,
 }) {
   const [currentArticles, setCurrentArticles] = useState(articles);
   const [pageCount, setPageCount] = useState(Math.ceil(totalCount / limit));
-  const [perPage, setPerPage] = useState(limit);
+  // const [perPage, setPerPage] = useState(limit);
   // const [offset, setOffset] = useState(0);
 
   const router = useRouter();
@@ -38,31 +39,16 @@ export default function ArticlesArchivePage({
     return <div>Loading...</div>;
   }
 
-  const loadArticles = async (offset) => {
-    console.log('loading articles with offset:', offset);
-    const { errors, data } = await hasuraArticlesArchivePage({
-      url: apiUrl,
-      orgSlug: apiToken,
-      localeCode: locale,
-      limit: perPage,
-      offset: offset,
-    });
-
-    if (errors || !data) {
-      console.error('error:', errors);
-      return {
-        notFound: true,
-      };
-    } else {
-      setCurrentArticles(data.articles);
-    }
-  };
   function handlePageClick(data) {
     let selected = data.selected;
-    let offset = Math.ceil(selected * perPage);
-    loadArticles(offset);
+    router.push({
+      pathname: router.pathname,
+      query: {
+        pageNumber: selected,
+      },
+    });
   }
-
+  console.log('pageNumber', pageNumber, typeof pageNumber);
   return (
     <Layout meta={siteMetadata} sections={sections}>
       <ArticleStream
@@ -87,6 +73,7 @@ export default function ArticlesArchivePage({
             onPageChange={handlePageClick}
             containerClassName={'pagination'}
             activeClassName={'active'}
+            forcePage={pageNumber}
           />
         </PaginationContainer>
       </PaginationSection>
@@ -98,17 +85,51 @@ export default function ArticlesArchivePage({
   );
 }
 
-export async function getServerSideProps(context) {
+function range(size, startAt = 0) {
+  return [...Array(size).keys()].map((i) => i + startAt);
+}
+
+export async function getStaticPaths() {
+  const { errors, data } = await hasuraListArticleArchivePages();
+  if (errors) {
+    throw errors;
+  }
+
+  let limit = 10;
+  let totalCount = data.articles_aggregate.aggregate.count;
+  let pageCount = Math.ceil(totalCount / limit);
+
+  let pageNumbers = range(pageCount, 1);
+  let paths = [];
+  for (const pageNum of pageNumbers) {
+    paths.push({
+      params: {
+        pageNumber: pageNum.toString(),
+      },
+    });
+  }
+
+  console.log(paths);
+  return {
+    paths,
+    fallback: true,
+  };
+}
+
+export async function getStaticProps(context) {
   const apiUrl = process.env.HASURA_API_URL;
   const apiToken = process.env.ORG_SLUG;
+
+  console.log('context:', context);
 
   let articles = [];
   let sections = [];
   let siteMetadata;
 
   let locale = context.locale;
-  let limit = context.query.limit || 10;
-  let offset = context.query.offset || 0;
+  let pageNumber = parseInt(context.params.pageNumber);
+  let limit = 10;
+  let offset = (pageNumber - 1) * limit;
 
   let totalCount = 0;
 
@@ -153,13 +174,11 @@ export async function getServerSideProps(context) {
 
   return {
     props: {
-      apiUrl,
-      apiToken,
-      locale,
       sections,
       articles,
       totalCount,
       limit,
+      pageNumber,
       siteMetadata,
       expandedAds,
     },
