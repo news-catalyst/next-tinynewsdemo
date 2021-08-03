@@ -1,17 +1,53 @@
-import tw from 'twin.macro';
+import tw, { styled } from 'twin.macro';
 import { generateMonkeypodUrl } from '../../lib/utils';
+import Colors from '../common/Colors';
+import Typography from '../common/Typography';
+import { determineTextColor } from '../../lib/utils';
+import { useEffect, useState } from 'react';
 
-const OptionsBlockContainer = tw.div`md:grid md:grid-cols-3 md:gap-4`;
+const OptionsBlockContainer = tw.div`md:flex md:grid-cols-3 md:gap-4`;
 const Card = tw.div`rounded overflow-hidden shadow-lg w-full border-gray-200 border my-8 md:my-0`;
 const CardHeader = tw.header`border-b border-gray-200 pb-4 mb-4`;
-const CardHeading = tw.h4`text-2xl leading-none font-bold text-center px-8 pt-4`;
+const CardHeading = styled.h4(({ meta }) => ({
+  ...tw`text-2xl leading-none font-bold text-center px-8 pt-4`,
+  fontFamily: Typography[meta.theme || 'styleone'].PromotionBlockHed,
+}));
 const CardContent = tw.div`p-8`;
-const CardDonationAmount = tw.h5`text-4xl font-bold text-center leading-none mb-4`;
-const CardDonationDescription = tw.p`text-lg`;
+const CardDonationAmount = styled.h5(({ meta }) => ({
+  ...tw`text-4xl font-bold text-center leading-none mb-4`,
+  fontFamily: Typography[meta.theme || 'styleone'].PromotionBlockDek,
+}));
+const PerMonth = tw.span`text-sm`;
+const CardDonationDescription = styled.p(({ meta }) => ({
+  ...tw`text-lg mt-8`,
+  fontFamily: Typography[meta.theme || 'styleone'].PromotionBlockDek,
+}));
 const CardFooter = tw.footer`border-t border-gray-200 mt-4`;
-const DonateFooterLink = tw.a`items-center justify-center flex text-blue-500 font-bold w-full hover:bg-blue-500 hover:text-white py-4`;
+const DonateFooterLink = styled.a(({ meta, backgroundColor, textColor }) => ({
+  ...tw`items-center justify-center flex font-bold w-full py-4 h-full`,
+  fontFamily: Typography[meta.theme || 'styleone'].PromotionBlockDek,
+  color: textColor,
+  backgroundColor: backgroundColor,
+}));
 
 export default function DonationOptionsBlock({ metadata, wrap = true }) {
+  const [textColor, setTextColor] = useState(null);
+  const [backgroundColor, setBackgroundColor] = useState(null);
+
+  useEffect(() => {
+    let bgc;
+    let tc;
+    if (metadata.color === 'custom') {
+      bgc = metadata.primaryColor;
+      tc = determineTextColor(metadata.primaryColor);
+    } else if (Colors[metadata.color]) {
+      tc = Colors[metadata.color].PromoBlockText;
+      bgc = Colors[metadata.color].PromoBlockBackground;
+    }
+    setBackgroundColor(bgc);
+    setTextColor(tc);
+  }, [metadata]);
+
   if (metadata.donationOptions === '' || metadata.donationOptions === null) {
     return null;
   }
@@ -23,28 +59,40 @@ export default function DonationOptionsBlock({ metadata, wrap = true }) {
     console.error(e);
   }
 
-  const block = parsedOptions.map((option, i) => (
-    <Card key={`donate-option-${i}`}>
-      <CardHeader>
-        <CardHeading>{option.name}</CardHeading>
-      </CardHeader>
-      <CardContent>
-        <div className="content">
-          <CardDonationAmount>${option.amount}</CardDonationAmount>
-          <CardDonationDescription>
-            {option.description}
-          </CardDonationDescription>
-        </div>
-      </CardContent>
-      <CardFooter>
-        <DonateFooterLink
-          href={`${process.env.NEXT_PUBLIC_MONKEYPOD_URL}&option_id=${process.env.NEXT_PUBLIC_MONKEYPOD_UUID}&amount=${option.amount}`}
+  const block = parsedOptions
+    .filter((option) => !!option.name)
+    .map((option, i) => (
+      <Card key={`donate-option-${i}`}>
+        <CardHeader>
+          <CardHeading meta={metadata}>{option.name}</CardHeading>
+        </CardHeader>
+        <CardContent>
+          <div className="content">
+            <CardDonationAmount meta={metadata}>
+              ${option.amount}
+              <PerMonth>/month</PerMonth>
+            </CardDonationAmount>
+            <CardDonationDescription meta={metadata}>
+              {option.description}
+            </CardDonationDescription>
+          </div>
+        </CardContent>
+        <CardFooter
+          style={{
+            height: '4rem',
+          }}
         >
-          Donate
-        </DonateFooterLink>
-      </CardFooter>
-    </Card>
-  ));
+          <DonateFooterLink
+            href={`${process.env.NEXT_PUBLIC_MONKEYPOD_URL}&option_id=${process.env.NEXT_PUBLIC_MONKEYPOD_UUID}&amount=${option.amount}`}
+            meta={metadata}
+            backgroundColor={backgroundColor}
+            textColor={textColor}
+          >
+            {option.cta}
+          </DonateFooterLink>
+        </CardFooter>
+      </Card>
+    ));
 
   return wrap ? <OptionsBlockContainer>{block}</OptionsBlockContainer> : block;
 }
