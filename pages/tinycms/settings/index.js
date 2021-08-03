@@ -55,6 +55,7 @@ export default function Settings({
   const homepagePromoRef = useRef();
   const newsletterRef = useRef();
   const membershipRef = useRef();
+  const paymentRef = useRef();
   const seoRef = useRef();
   const [message, setMessage] = useState(null);
   const [metadata, setMetadata] = useState(null);
@@ -232,6 +233,11 @@ export default function Settings({
                   </Link>
                 </li>
                 <li>
+                  <Link href="/tinycms/settings#payment-options">
+                    <a>Payment options</a>
+                  </Link>
+                </li>
+                <li>
                   <Link href="/tinycms/settings#seo">
                     <a>SEO/Social</a>
                   </Link>
@@ -260,6 +266,7 @@ export default function Settings({
                 membershipRef={membershipRef}
                 designRef={designRef}
                 homepagePromoRef={homepagePromoRef}
+                paymentRef={paymentRef}
                 handleChange={handleChange}
                 parsedData={parsedData}
                 updateParsedData={setParsedData}

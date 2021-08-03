@@ -599,8 +599,8 @@ export default function SiteInfoSettings(props) {
         </div>
       </MembershipContainer>
 
-      <DonationOptionsEditor>
-        <SettingsHeader tw="col-span-3 mt-5">Donation options</SettingsHeader>
+      <DonationOptionsEditor ref={props.paymentRef} id="payment-options">
+        <SettingsHeader tw="col-span-3 mt-5">Payment options</SettingsHeader>
         {Array.isArray(donationOptions) &&
           donationOptions.map((option, i) => (
             <div key={`option-${i}`}>
