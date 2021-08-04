@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import dynamic from 'next/dynamic';
+import tw from 'twin.macro';
 
 const BigFeaturedStory = dynamic(() => import(`./homepage/BigFeaturedStory`));
 const LargePackageStoryLead = dynamic(() =>
@@ -10,6 +11,9 @@ import HomepagePromoBar from './homepage/HomepagePromoBar';
 import Layout from './Layout';
 import ArticleStream from './homepage/ArticleStream';
 import Placeholder from './homepage/Placeholder';
+
+const SectionContainer = tw.div`px-5 flex flex-row flex-wrap mx-auto w-full max-w-7xl`;
+const ViewMoreLink = tw.a`text-base font-bold cursor-pointer`;
 
 export default function Homepage({
   selectedLayout,
@@ -68,6 +72,12 @@ export default function Homepage({
           metadata={siteMetadata}
           ads={expandedAds}
         />
+        <SectionContainer>
+          <ViewMoreLink href={`/articles/archive/1`}>
+            View more stories
+          </ViewMoreLink>
+          .
+        </SectionContainer>
       </Layout>
     </div>
   );
