@@ -1,7 +1,6 @@
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import tw from 'twin.macro';
-import ReactPaginate from 'react-paginate';
 import Layout from '../../../components/Layout.js';
 import {
   hasuraArticlesArchivePage,
@@ -20,16 +19,41 @@ const PaginationContainer = tw.div`md:grid md:grid-cols-packageLayoutTablet lg:g
 export default function ArticlesArchivePage({
   sections,
   articles,
-  totalCount,
-  limit,
-  pageNumber,
+  totalPageCount,
+  currentPageNumber,
   siteMetadata,
   expandedAds,
 }) {
   const [currentArticles, setCurrentArticles] = useState(articles);
-  const [pageCount, setPageCount] = useState(Math.ceil(totalCount / limit));
-  // const [perPage, setPerPage] = useState(limit);
-  // const [offset, setOffset] = useState(0);
+  const [pageNumbers, setPageNumbers] = useState(range(totalPageCount, 1));
+  let paginationLinks = [];
+
+  if (currentPageNumber !== 1) {
+    paginationLinks.push({
+      name: 'previous',
+      pageNum: currentPageNumber - 1,
+      class: 'previous',
+    });
+  }
+
+  pageNumbers.forEach((pageNumber) => {
+    let pageLink = {
+      name: pageNumber,
+      pageNum: pageNumber,
+    };
+    if (pageNumber === currentPageNumber) {
+      pageLink['class'] = 'active';
+    }
+    paginationLinks.push(pageLink);
+  });
+
+  if (currentPageNumber !== totalPageCount) {
+    paginationLinks.push({
+      name: 'next',
+      pageNum: currentPageNumber + 1,
+      class: 'next',
+    });
+  }
 
   const router = useRouter();
   const isAmp = useAmp();
@@ -39,16 +63,6 @@ export default function ArticlesArchivePage({
     return <div>Loading...</div>;
   }
 
-  function handlePageClick(data) {
-    let selected = data.selected;
-    router.push({
-      pathname: router.pathname,
-      query: {
-        pageNumber: selected,
-      },
-    });
-  }
-  console.log('pageNumber', pageNumber, typeof pageNumber);
   return (
     <Layout meta={siteMetadata} sections={sections}>
       <ArticleStream
@@ -62,19 +76,15 @@ export default function ArticlesArchivePage({
       />
       <PaginationSection>
         <PaginationContainer>
-          <ReactPaginate
-            previousLabel={'previous'}
-            nextLabel={'next'}
-            breakLabel={'...'}
-            breakClassName={'break-me'}
-            pageCount={pageCount}
-            marginPagesDisplayed={2}
-            pageRangeDisplayed={5}
-            onPageChange={handlePageClick}
-            containerClassName={'pagination'}
-            activeClassName={'active'}
-            forcePage={pageNumber}
-          />
+          <ul className="pagination">
+            {paginationLinks.map((pageLink) => (
+              <li key={`page-link-${pageLink.name}`} className={pageLink.class}>
+                <a href={`/articles/archive/${pageLink.pageNum}`}>
+                  {pageLink.name}
+                </a>
+              </li>
+            ))}
+          </ul>
         </PaginationContainer>
       </PaginationSection>
 
@@ -109,7 +119,6 @@ export async function getStaticPaths() {
     });
   }
 
-  console.log(paths);
   return {
     paths,
     fallback: true,
@@ -120,18 +129,17 @@ export async function getStaticProps(context) {
   const apiUrl = process.env.HASURA_API_URL;
   const apiToken = process.env.ORG_SLUG;
 
-  console.log('context:', context);
-
   let articles = [];
   let sections = [];
   let siteMetadata;
 
   let locale = context.locale;
-  let pageNumber = parseInt(context.params.pageNumber);
+  let currentPageNumber = parseInt(context.params.pageNumber);
   let limit = 10;
-  let offset = (pageNumber - 1) * limit;
+  let offset = (currentPageNumber - 1) * limit;
 
-  let totalCount = 0;
+  let totalArticleCount = 0;
+  let totalPageCount = 1;
 
   const { errors, data } = await hasuraArticlesArchivePage({
     url: apiUrl,
@@ -149,7 +157,8 @@ export async function getStaticProps(context) {
     articles = data.articles;
     sections = data.categories;
 
-    totalCount = data.articles_aggregate.aggregate.count;
+    totalArticleCount = data.articles_aggregate.aggregate.count;
+    totalPageCount = Math.ceil(totalArticleCount / limit);
 
     for (var i = 0; i < sections.length; i++) {
       sections[i].title = hasuraLocaliseText(
@@ -176,9 +185,8 @@ export async function getStaticProps(context) {
     props: {
       sections,
       articles,
-      totalCount,
-      limit,
-      pageNumber,
+      totalPageCount,
+      currentPageNumber,
       siteMetadata,
       expandedAds,
     },
