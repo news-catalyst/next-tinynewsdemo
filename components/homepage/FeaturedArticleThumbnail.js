@@ -13,7 +13,7 @@ export default function FeaturedArticleThumbnail({ article, isAmp }) {
   mainImageNode = translation.main_image;
 
   try {
-    if (mainImageNode) {
+    if (mainImageNode && Object.keys(mainImageNode).length > 0) {
       mainImage = mainImageNode.children[0];
     }
   } catch (err) {
