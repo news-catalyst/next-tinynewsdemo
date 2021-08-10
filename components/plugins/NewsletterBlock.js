@@ -1,5 +1,5 @@
 import tw, { styled } from 'twin.macro';
-import MailchimpSubscribe from './MailchimpSubscribe';
+import NewsletterSubscribe from './NewsletterSubscribe';
 import Colors from '../common/Colors';
 import Typography from '../common/Typography';
 import { determineTextColor } from '../../lib/utils';
@@ -43,7 +43,7 @@ export default function NewsletterBlock({ metadata, headline }) {
       <NewsletterHed meta={metadata}>{metadata.newsletterHed}</NewsletterHed>
       <NewsletterDek meta={metadata}>{metadata.newsletterDek}</NewsletterDek>
       <br />
-      <MailchimpSubscribe metadata={metadata} articleTitle={headline} />
+      <NewsletterSubscribe metadata={metadata} articleTitle={headline} />
     </NewsletterWrapper>
   );
 }
