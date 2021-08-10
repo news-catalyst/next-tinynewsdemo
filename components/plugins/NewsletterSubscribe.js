@@ -13,7 +13,7 @@ const Submit = styled.input(({ textColor, backgroundColor }) => ({
   color: textColor,
 }));
 
-const url = '/api/subscribe/';
+const url = '/api/subscribe';
 
 const NewsletterSubscribe = ({ articleTitle, metadata }) => {
   const { trackEvent } = useAnalytics();
@@ -23,6 +23,7 @@ const NewsletterSubscribe = ({ articleTitle, metadata }) => {
   const [backgroundColor, setBackgroundColor] = useState(null);
 
   const [email, setEmail] = useState('');
+  const [name, setName] = useState('');
   const [status, setStatus] = useState(null);
   const [message, setMessage] = useState(null);
 
@@ -54,32 +55,35 @@ const NewsletterSubscribe = ({ articleTitle, metadata }) => {
   const handleSubmit = async (evt) => {
     evt.preventDefault();
     setStatus('sending');
-    // (email &&
-    // email.value.indexOf('@') > -1 &&)
+
     try {
-      const subscribeURL = url + email;
-      fetch(subscribeURL, {
+      const subscribeURL = url;
+      const response = await fetch(subscribeURL, {
         method: 'POST',
         body: JSON.stringify({
           email: email,
+          name: name,
         }),
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          console.log(data);
-          setStatus('success');
-          setMessage('Thank you for signing up for our newsletter.');
-          trackEvent({
-            action: 'newsletter signup',
-            category: 'NTG newsletter',
-            label: 'success',
-            non_interaction: false,
-          });
-          return data;
-        })
-        .catch((error) => console.error(error));
+      });
+      const statusCode = response.status;
+      const data = await response.json();
+
+      if (statusCode < 200 || statusCode > 299) {
+        setStatus('error');
+        setMessage(data.message);
+      } else {
+        setStatus('success');
+        setMessage('Thank you for signing up for our newsletter.');
+        trackEvent({
+          action: 'newsletter signup',
+          category: 'NTG newsletter',
+          label: 'success',
+          non_interaction: false,
+        });
+      }
     } catch (error) {
-      return console.error(error);
+      setStatus('error');
+      setMessage(error);
     }
   };
 
@@ -103,6 +107,20 @@ const NewsletterSubscribe = ({ articleTitle, metadata }) => {
             />
           )}
           <Group>
+            <Input
+              type="text"
+              placeholder="Your name"
+              className="input"
+              onChange={(ev) => setName(ev.target.value)}
+              value={name}
+              style={{
+                borderTop: 'none',
+                borderLeft: 'none',
+                borderRight: 'none',
+                marginBottom: '.25rem',
+              }}
+            />
+
             <Input
               type="email"
               placeholder="Your email"
