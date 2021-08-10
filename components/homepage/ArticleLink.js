@@ -69,7 +69,8 @@ export default function ArticleLink({
     }
   }
 
-  if (mainImageNode) {
+  if (mainImageNode && Object.keys(mainImageNode).length > 0) {
+    console.log(article.slug, 'articleLink mainImageNode:', mainImageNode);
     mainImage = mainImageNode.children[0];
   }
 

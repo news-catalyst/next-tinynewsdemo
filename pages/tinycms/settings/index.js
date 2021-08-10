@@ -250,7 +250,10 @@ export default function Settings({
           </LightSidebar>
         </Sidebar>
         <MainContent>
-          <form onSubmit={handleSubmit} className={parsedData['color']}>
+          <form
+            onSubmit={handleSubmit}
+            className={`settings-form ${parsedData['color']}`}
+          >
             {showNotification && (
               <Notification
                 message={notificationMessage}
