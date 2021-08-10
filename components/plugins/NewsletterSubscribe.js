@@ -89,7 +89,12 @@ const NewsletterSubscribe = ({ articleTitle, metadata }) => {
 
   return (
     <div ref={ref}>
-      <form onSubmit={handleSubmit}>
+      <form
+        onSubmit={handleSubmit}
+        target="_top"
+        method="post"
+        action-xhr={url}
+      >
         <div>
           {status === 'sending' && (
             <div style={{ color: 'blue' }}>sending...</div>
