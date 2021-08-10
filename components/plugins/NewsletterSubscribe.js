@@ -15,7 +15,7 @@ const Submit = styled.input(({ textColor, backgroundColor }) => ({
 
 const url = '/api/subscribe/';
 
-const Newsletter = ({ articleTitle, metadata }) => {
+const NewsletterSubscribe = ({ articleTitle, metadata }) => {
   const { trackEvent } = useAnalytics();
   const [ref, inView] = useInView({ triggerOnce: true });
 
@@ -135,4 +135,4 @@ const Newsletter = ({ articleTitle, metadata }) => {
   );
 };
 
-export default Newsletter;
+export default NewsletterSubscribe;
