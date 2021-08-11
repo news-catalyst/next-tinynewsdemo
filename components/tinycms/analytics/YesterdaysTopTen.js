@@ -1,10 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import tw from 'twin.macro';
-import { parseReadingDepth } from '../../../lib/utils';
-import {
-  hasuraGetPageViews,
-  hasuraGetReadingDepthForPath,
-} from '../../../lib/analytics';
 import moment from 'moment';
 
 const SubHeaderContainer = tw.div`pt-10 pb-5`;
@@ -87,7 +82,7 @@ const YesterdaysTopTen = (props) => {
     };
 
     fetchPageViews();
-  }, [startDate, endDate, props.pageViews, props.readingDepth, totalPageViews]);
+  }, [startDate, endDate, props.pageViews, props.readingDepth]);
 
   return (
     <>
