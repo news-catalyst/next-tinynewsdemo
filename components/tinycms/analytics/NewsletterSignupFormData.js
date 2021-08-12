@@ -9,7 +9,6 @@ import {
   CartesianGrid,
   Tooltip,
   Legend,
-  ResponsiveContainer,
 } from 'recharts';
 import {
   hasuraGetCustomDimension,
@@ -24,6 +23,7 @@ const NewsletterSignupFormData = (props) => {
 
   const [chartData, setChartData] = useState([]);
   const [totalImpressions, setTotalImpressions] = useState({});
+  const [sortedImpressions, setSortedImpressions] = useState([]);
 
   useEffect(() => {
     let params = {
@@ -99,6 +99,17 @@ const NewsletterSignupFormData = (props) => {
         }
       });
       setTotalImpressions(totalImps);
+
+      var sortable = [];
+      Object.keys(totalImps).forEach((key) => {
+        sortable.push([key, totalImps[key]['signups']]);
+      });
+
+      sortable.sort(function (a, b) {
+        return b[1] - a[1];
+      });
+      console.log('total:', totalImps, 'sorted:', sortable);
+      setSortedImpressions(sortable);
       // setNewsletterImpressions(data.ga_newsletter_impressions);
     };
     fetchNewsletterImpressions();
@@ -119,7 +130,7 @@ const NewsletterSignupFormData = (props) => {
   return (
     <>
       <SubHeaderContainer ref={signupRef}>
-        <SubHeader>Website Signup Form</SubHeader>
+        <SubHeader>Signups</SubHeader>
       </SubHeaderContainer>
       <p tw="p-2">
         {props.startDate.format('dddd, MMMM Do YYYY')} -{' '}
@@ -136,19 +147,19 @@ const NewsletterSignupFormData = (props) => {
           </tr>
         </thead>
         <tbody>
-          {Object.keys(totalImpressions).map((path, i) => (
+          {sortedImpressions.map((impressionData, i) => (
             <tr key={`newsletter-signup-row-${i}`}>
               <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-                {path}
+                {impressionData[0]}
               </td>
               <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-                {totalImpressions[path]['impressions']}
+                {totalImpressions[impressionData[0]]['impressions']}
               </td>
               <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-                {totalImpressions[path]['signups']}
+                {totalImpressions[impressionData[0]]['signups']}
               </td>
               <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-                {totalImpressions[path]['conversion']}%
+                {totalImpressions[impressionData[0]]['conversion']}%
               </td>
             </tr>
           ))}
