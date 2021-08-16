@@ -20,6 +20,10 @@ export default function FeaturedArticleThumbnail({ article, isAmp }) {
     console.error(err);
   }
 
+  if (!mainImage.imageUrl) {
+    return <div />;
+  }
+
   return (
     <AssetThumbnail>
       {isAmp ? (
