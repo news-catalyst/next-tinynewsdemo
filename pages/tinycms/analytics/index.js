@@ -1,7 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import tw from 'twin.macro';
-import mailchimp from '@mailchimp/mailchimp_marketing';
-import { addDays } from 'date-fns';
 import AdminLayout from '../../../components/AdminLayout';
 import AdminNav from '../../../components/nav/AdminNav';
 import AnalyticsNav from '../../../components/tinycms/analytics/AnalyticsNav';
@@ -67,7 +65,7 @@ export default function AnalyticsIndex(props) {
                       New Subscribers
                     </th>
                     <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-                      {props.newSubscribers}
+                      TK from Letterhead
                     </td>
                   </tr>
                 </tbody>
@@ -103,12 +101,7 @@ export default function AnalyticsIndex(props) {
 
               <p tw="p-2">
                 Information on newsletter subscriptions come from{' '}
-                <a href="https://mailchimp.com/">Mailchimp</a>. This site is
-                configured for Mailchimp with a <b>subscribe URL</b>
-                of:
-              </p>
-              <p tw="p-2">
-                <code>{process.env.NEXT_PUBLIC_MAILCHIMP_SUBSCRIBE_URL}</code>
+                <a href="https://tryletterhead.com/">Letterhead</a>.
               </p>
               <p tw="p-2">
                 For a deeper dive on understanding your audience and measuring
@@ -131,8 +124,6 @@ export async function getServerSideProps(context) {
   const apiToken = process.env.ORG_SLUG;
   const clientID = process.env.ANALYTICS_CLIENT_ID;
   const clientSecret = process.env.ANALYTICS_CLIENT_SECRET;
-  const mailchimpApiKey = process.env.MAILCHIMP_API_KEY;
-  const mailchimpServer = process.env.MAILCHIMP_SERVER_PREFIX;
 
   const startDate = moment().subtract(1, 'days');
   const endDate = moment();
@@ -169,39 +160,12 @@ export async function getServerSideProps(context) {
     subscriberSessionCount += parseInt(item.count);
   });
 
-  // I tried doing this call in the component's useEffect, but Mailchimp's API
-  // throws a CORS error when I try that :(
-  mailchimp.setConfig({
-    apiKey: mailchimpApiKey,
-    server: mailchimpServer,
-  });
-
-  // tally the number of subscribers for all lists in the last 24 hours
-  // so far in our example setup there is only one list, and I'm not sure if
-  // we'll be dealing with multiple lists, so I thought I'd iterate just in case.
-  let newSubscribers = 0;
-  let sinceDate = addDays(new Date(), -1); // yesterday
-  mailchimp.lists.getAllLists().then((response) => {
-    response.lists.map((list) => {
-      mailchimp.lists
-        .getListMembersInfo(list.id, {
-          status: 'subscribed',
-          sinceTimestampOpt: sinceDate,
-        })
-        .then((res) => {
-          newSubscribers += res.total_items;
-        })
-        .catch((error) => console.error(error.message));
-    });
-  });
-
   return {
     props: {
       apiUrl: apiUrl,
       apiToken: apiToken,
       clientID: clientID,
       clientSecret: clientSecret,
-      newSubscribers: newSubscribers,
       pageViews: pageViews,
       readingDepth: readingDepth,
       sessionCount: sessionCount,
