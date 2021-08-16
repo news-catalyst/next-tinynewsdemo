@@ -32,6 +32,27 @@ const AnalyticsNav = (props) => {
             </Link>
           </li>
           <li>
+            <Link href="/tinycms/analytics/audience#signups">
+              <a tw="w-full flex align-bottom cursor-pointer">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  tw="float-left align-bottom h-6 w-3"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+                Signups
+              </a>
+            </Link>
+          </li>
+          <li>
             <Link href="/tinycms/analytics/audience#subscriptions">
               <a tw="w-full flex align-bottom cursor-pointer">
                 <svg
@@ -49,55 +70,6 @@ const AnalyticsNav = (props) => {
                   />
                 </svg>
                 Subscriptions
-              </a>
-            </Link>
-          </li>
-        </ul>
-      </li>
-      <li>
-        <Link href="/tinycms/analytics/newsletter">
-          <a tw="cursor-pointer">Newsletters</a>
-        </Link>
-        <ul>
-          <li>
-            <Link href="/tinycms/analytics/newsletter#signups">
-              <a tw="w-full flex align-bottom cursor-pointer">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  tw="float-left align-bottom h-6 w-3"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
-                Signup Stats
-              </a>
-            </Link>
-          </li>
-          <li>
-            <Link href="/tinycms/analytics/newsletter#campaigns">
-              <a tw="w-full flex align-bottom cursor-pointer">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  tw="float-left align-bottom h-6 w-3"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
-                Mailchimp Campaigns
               </a>
             </Link>
           </li>
