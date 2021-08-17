@@ -34,7 +34,13 @@ async function saveNewsletterEditions(letterheadData) {
       continue;
     }
 
+    let slug = slugify(newsletter.title);
+    if (!slug) {
+      continue;
+    }
+
     let editionData = {
+      slug: slug,
       headline: newsletter.title,
       letterhead_id: newsletter.id,
       letterhead_unique_id: newsletter.uniqueId,
@@ -58,10 +64,31 @@ async function saveNewsletterEditions(letterheadData) {
     if (result.errors) {
       console.error("! Newsletter ID#" + newsletter.id + " '" + newsletter.title + "' had an error saving:", result.errors);
     } else {
-      console.log(". Newsletter ID#" + newsletter.id + " '" + newsletter.title + "' was published at " + newsletter.publicationDate + ", saved in Hasura with ID#" + result.data.insert_newsletter_editions_one.id + ".")
+      console.log(". Newsletter ID#" + newsletter.id + " '" + newsletter.title + "' was published at " + newsletter.publicationDate + ", saved in Hasura with slug: " + result.data.insert_newsletter_editions_one.slug)
     }
 
   }
 }
+
+const slugify = (value) => {
+  if (value === null || typeof value === 'undefined') {
+    return '';
+  }
+  value = value.trim();
+  value = value.toLowerCase();
+  var from = 'àáäâèéëêìíïîòóöôùúüûñç·/_,:;';
+  var to = 'aaaaeeeeiiiioooouuuunc------';
+  for (var i = 0, l = from.length; i < l; i++) {
+    value = value.replace(new RegExp(from.charAt(i), 'g'), to.charAt(i));
+  }
+
+  value = value
+    .replace(/[^a-z0-9 -]/g, '') // remove invalid chars
+    .replace(/\s+/g, '-') // collapse whitespace and replace by -
+    .replace(/-+/g, '-'); // collapse dashes
+
+  return value;
+};
+
 
 getNewsletterEditions();
