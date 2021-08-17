@@ -16,6 +16,7 @@
     "build": "next build",
     "cypress:open": "cypress open",
     "build:rss": "node script/generate-rss.js",
+    "build:newsletters": "node script/build-newsletter-editions.js",
     "postbuild": "next-sitemap && node script/generate-rss.js",
     "start": "next start",
     "export": "next build && next export",
