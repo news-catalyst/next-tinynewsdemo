@@ -1,14 +1,15 @@
 const fetch = require("node-fetch");
 
-const INSERT_NEWSLETTER_EDITION = `mutation FrontendInsertNewsletterEdition($byline: String, $content: jsonb, $headline: String, $letterhead_id: Int, $letterhead_unique_id: String, $newsletter_created_at: timestamptz, $newsletter_published_at: timestamptz, $subheadline: String) {
-  insert_newsletter_editions_one(object: {byline: $byline, content: $content, headline: $headline, letterhead_id: $letterhead_id, letterhead_unique_id: $letterhead_unique_id, newsletter_created_at: $newsletter_created_at, newsletter_published_at: $newsletter_published_at, subheadline: $subheadline}, on_conflict: {constraint: newsletter_editions_organization_id_letterhead_unique_id_key, update_columns: headline}) {
+const INSERT_NEWSLETTER_EDITION = `mutation FrontendInsertNewsletterEdition($slug: String, $byline: String, $content: jsonb, $headline: String, $letterhead_id: Int, $letterhead_unique_id: String, $newsletter_created_at: timestamptz, $newsletter_published_at: timestamptz, $subheadline: String) {
+  insert_newsletter_editions_one(object: {slug: $slug, byline: $byline, content: $content, headline: $headline, letterhead_id: $letterhead_id, letterhead_unique_id: $letterhead_unique_id, newsletter_created_at: $newsletter_created_at, newsletter_published_at: $newsletter_published_at, subheadline: $subheadline}, on_conflict: {constraint: newsletter_editions_organization_id_letterhead_unique_id_key, update_columns: headline}) {
     id
     headline
+    slug
   }
 }`;
 
 function hasuraInsertNewsletterEdition(params) {
-  // console.log(params['data']);
+  console.log(params['data']);
   return fetchGraphQL({
     url: params['url'],
     orgSlug: params['orgSlug'],
@@ -16,6 +17,7 @@ function hasuraInsertNewsletterEdition(params) {
     name: 'FrontendInsertNewsletterEdition',
     variables: {
       byline: params['data']['byline'],
+      slug: params['data']['slug'],
       content: params['data']['content'],
       headline: params['data']['headline'],
       letterhead_id: params['data']['letterhead_id'],
