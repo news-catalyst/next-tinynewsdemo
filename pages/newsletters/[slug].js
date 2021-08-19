@@ -34,6 +34,7 @@ export default function NewsletterEditionPage(props) {
   let body;
 
   if (props.newsletter) {
+    console.log(typeof props.newsletter.content, props.newsletter.content);
     body = renderNewsletterContent(
       props.newsletter.content,
       [],
