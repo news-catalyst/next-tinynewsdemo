@@ -1,32 +1,14 @@
 import React from 'react';
-import Link from 'next/link';
-import tw from 'twin.macro';
 import Layout from '../../components/Layout.js';
 import { cachedContents } from '../../lib/cached';
 import { hasuraListNewsletters } from '../../lib/newsletters.js';
 import { getArticleAds } from '../../lib/ads.js';
-import {
-  ArticleTitle,
-  PostTextContainer,
-  PostText,
-} from '../../components/common/CommonStyles.js';
+import ArticleStream from '../../components/homepage/ArticleStream';
 import { hasuraLocaliseText } from '../../lib/utils.js';
 import { useAmp } from 'next/amp';
 
-const SectionContainer = tw.div`flex flex-col flex-nowrap items-center px-5 mx-auto max-w-7xl w-full`;
-
 export default function NewsletterIndexPage(props) {
   const isAmp = useAmp();
-
-  const newsletterLinks = props.newsletters.map((newsletter, i) => {
-    return (
-      <li key={`newsletter-item-${i}`}>
-        <Link href={`/newsletters/${newsletter.slug}`}>
-          <a href={`/newsletters/${newsletter.slug}`}>{newsletter.headline}</a>
-        </Link>
-      </li>
-    );
-  });
 
   return (
     <Layout
@@ -34,16 +16,15 @@ export default function NewsletterIndexPage(props) {
       sections={props.sections}
       renderFooter={props.renderFooter}
     >
-      <SectionContainer>
-        <ArticleTitle meta={props.siteMetadata} tw="text-center">
-          Newsletter Archive
-        </ArticleTitle>
-        <PostText>
-          <PostTextContainer>
-            <ul>{newsletterLinks}</ul>
-          </PostTextContainer>
-        </PostText>
-      </SectionContainer>
+      <ArticleStream
+        sections={props.sections}
+        articles={props.newsletters}
+        title={'Newsletters Archive'}
+        showCategory={false}
+        isAmp={isAmp}
+        metadata={props.siteMetadata}
+        ads={props.expandedAds}
+      />
     </Layout>
   );
 }
