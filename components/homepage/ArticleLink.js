@@ -36,15 +36,30 @@ export default function ArticleLink({
   let mainImage = null;
   let mainImageNode;
 
-  let headline = hasuraLocaliseText(article.article_translations, 'headline');
+  console.log('article:', article);
+  let headline;
+  if (article.article_translations) {
+    headline = hasuraLocaliseText(article.article_translations, 'headline');
+  } else if (article.newsletter_published_at) {
+    headline = article.headline;
+  }
 
   let categoryTitle;
+  let categoryHref;
+  let linkHref;
+  let linkAs;
 
   if (article.category && article.category.category_translations) {
     categoryTitle = hasuraLocaliseText(
       article.category.category_translations,
       'title'
     );
+    categoryHref = `/categories/${article.category.slug}`;
+    linkHref = '/articles/[category]/[slug]';
+    linkAs = `/articles/${article.category.slug}/${article.slug}`;
+  } else if (article.newsletter_published_at) {
+    linkHref = '/newsletters/[slug]';
+    linkAs = `/newsletters/${article.slug}`;
   }
 
   let mainImageContent = hasuraLocaliseText(
@@ -88,11 +103,7 @@ export default function ArticleLink({
       <AssetMetaContainer>
         <AssetDescriptor meta={metadata}>
           {article.category && showCategory && (
-            <Link
-              key={categoryTitle}
-              href={`/categories/${article.category.slug}`}
-              passHref
-            >
+            <Link key={categoryTitle} href={categoryHref} passHref>
               <AssetDescriptorLink meta={metadata}>
                 {categoryTitle}
               </AssetDescriptorLink>
@@ -101,10 +112,7 @@ export default function ArticleLink({
         </AssetDescriptor>
         <AssetTitle meta={metadata}>
           {headline && (
-            <Link
-              href="/articles/[category]/[slug]"
-              as={`/articles/${article.category.slug}/${article.slug}`}
-            >
+            <Link href={linkHref} as={linkAs}>
               <a>{headline}</a>
             </Link>
           )}
