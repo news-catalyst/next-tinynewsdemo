@@ -13,6 +13,8 @@ import {
   PostTextContainer,
   PostText,
 } from '../../components/common/CommonStyles.js';
+import ArticleFooter from '../../components/articles/ArticleFooter';
+import NewsletterBlock from '../../components/plugins/NewsletterBlock';
 import {
   hasuraLocaliseText,
   renderNewsletterContent,
@@ -20,6 +22,7 @@ import {
 import { useAmp } from 'next/amp';
 
 const SectionContainer = tw.div`flex flex-col flex-nowrap items-center px-5 mx-auto max-w-7xl w-full`;
+const BlockWrapper = tw.div`w-full`;
 
 export default function NewsletterEditionPage(props) {
   const isAmp = useAmp();
@@ -34,7 +37,6 @@ export default function NewsletterEditionPage(props) {
   let body;
 
   if (props.newsletter) {
-    console.log(typeof props.newsletter.content, props.newsletter.content);
     body = renderNewsletterContent(
       props.newsletter.content,
       [],
@@ -55,7 +57,13 @@ export default function NewsletterEditionPage(props) {
         </ArticleTitle>
         <PostText>
           <PostTextContainer>{body}</PostTextContainer>
+          <ArticleFooter
+            article={props.newsletter}
+            isAmp={isAmp}
+            metadata={props.siteMetadata}
+          />
         </PostText>
+        <NewsletterBlock metadata={props.siteMetadata} />
       </SectionContainer>
     </Layout>
   );
