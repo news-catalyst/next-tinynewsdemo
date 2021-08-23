@@ -1,17 +1,19 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
-import tw from 'twin.macro';
 import {
   FormContainer,
   FormHeader,
   TinyInputField,
   TinySubmitCancelButtons,
+  UrlSlugLabel,
+  UrlSlugValue,
 } from '../../../components/tinycms/TinyFormElements';
 import AdminLayout from '../../../components/AdminLayout';
 import AdminNav from '../../../components/nav/AdminNav';
 import Notification from '../../../components/tinycms/Notification';
 import { hasuraListLocales } from '../../../lib/articles.js';
 import { hasuraCreateTag } from '../../../lib/section';
+import { slugify } from '../../../lib/utils';
 
 export default function AddTag({ apiUrl, apiToken, currentLocale, locales }) {
   const [notificationMessage, setNotificationMessage] = useState('');
@@ -22,6 +24,11 @@ export default function AddTag({ apiUrl, apiToken, currentLocale, locales }) {
   const [slug, setSlug] = useState('');
 
   const router = useRouter();
+
+  function updateTitleAndSlug(value) {
+    setTitle(value);
+    setSlug(slugify(value));
+  }
 
   async function handleSubmit(ev) {
     ev.preventDefault();
@@ -75,15 +82,16 @@ export default function AddTag({ apiUrl, apiToken, currentLocale, locales }) {
           <TinyInputField
             name="title"
             value={title}
-            onChange={(ev) => setTitle(ev.target.value)}
+            onChange={(ev) => updateTitleAndSlug(ev.target.value)}
             label="Title"
           />
-          <TinyInputField
-            name="slug"
-            value={slug}
-            onChange={(ev) => setSlug(ev.target.value)}
-            label="Slug"
-          />
+
+          {slug && (
+            <label>
+              <UrlSlugLabel>URL Slug</UrlSlugLabel>
+              <UrlSlugValue>{slug}</UrlSlugValue>
+            </label>
+          )}
 
           <TinySubmitCancelButtons destURL="/tinycms/tags" />
         </form>
