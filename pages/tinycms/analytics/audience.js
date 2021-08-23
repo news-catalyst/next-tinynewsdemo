@@ -1,8 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import tw from 'twin.macro';
-import { addDays } from 'date-fns';
 import moment from 'moment';
-import mailchimp from '@mailchimp/mailchimp_marketing';
 import AdminLayout from '../../../components/AdminLayout';
 import AdminNav from '../../../components/nav/AdminNav';
 import CustomDimensions from '../../../components/tinycms/analytics/CustomDimensions';
@@ -115,36 +113,14 @@ export default function Audience(props) {
     </AdminLayout>
   );
 }
-export async function getServerSideProps(context) {
-  const clientID = process.env.ANALYTICS_CLIENT_ID;
-  const clientSecret = process.env.ANALYTICS_CLIENT_SECRET;
+export async function getServerSideProps() {
   const apiUrl = process.env.HASURA_API_URL;
   const apiToken = process.env.ORG_SLUG;
-
-  mailchimp.setConfig({
-    apiKey: process.env.MAILCHIMP_API_KEY,
-    server: process.env.MAILCHIMP_SERVER_PREFIX,
-  });
-
-  let fullReports = [];
-  let reportsResponse = await mailchimp.reports.getAllCampaignReports({
-    since_send_time: addDays(new Date(), -30),
-  });
-  let report = reportsResponse.reports[0];
-  let listId = report.list_id;
-  let data = await mailchimp.lists.getListGrowthHistory(listId);
-  report['growth'] = data;
-  fullReports.push(report);
 
   return {
     props: {
       apiUrl,
       apiToken,
-      clientID: clientID,
-      clientSecret: clientSecret,
-      mailchimpKey: process.env.MAILCHIMP_API_KEY,
-      mailchimpServer: process.env.MAILCHIMP_SERVER_PREFIX,
-      reports: fullReports,
     },
   };
 }
