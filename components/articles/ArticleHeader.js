@@ -143,17 +143,6 @@ export default function ArticleHeader({ article, isAmp, metadata }) {
               <ArticleAuthorMeta>By {renderAuthors(article)}</ArticleAuthorMeta>
             </ArticleAuthor>
           </ArticleByline>
-          <ArticleCommentCounter
-            style={{
-              backgroundImage:
-                "url(\"data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M3.83333 15.4373V14.9373H3.33333H0.5V0.5H19.5V14.9373H9.16667H8.99435L8.85862 15.0434L3.83333 18.9741V15.4373Z' fill='black' stroke='black'/%3E%3C/svg%3E%0A\")",
-              backgroundPosition: 'left 1rem',
-              backgroundSize: '0.9375rem 0.9375rem',
-            }}
-          >
-            <CommentCounterNumber>52</CommentCounterNumber>
-            <CommentCounterLabel>Comments</CommentCounterLabel>
-          </ArticleCommentCounter>
           <ArticleShareTop>
             <ArticleShareWrapper>
               <ShareItem>
