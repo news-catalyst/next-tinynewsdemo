@@ -13,7 +13,6 @@ describe('tinycms tags', () => {
     cy.task("db:tags");
     cy.visit('/tinycms/tags/add')
     cy.get('input[name="title"').type("New Tag")
-    cy.get('input[name="slug"').type("new-tag")
     cy.get('form').submit().then( () => {
       cy.get('strong').contains('Success!')
     });
