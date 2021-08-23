@@ -1,5 +1,34 @@
 const fetch = require("node-fetch");
 
+const INSERT_NEWSLETTER_EDITION = `mutation FrontendInsertNewsletterEdition($slug: String, $byline: String, $content: jsonb, $headline: String, $letterhead_id: Int, $letterhead_unique_id: String, $newsletter_created_at: timestamptz, $newsletter_published_at: timestamptz, $subheadline: String) {
+  insert_newsletter_editions_one(object: {slug: $slug, byline: $byline, content: $content, headline: $headline, letterhead_id: $letterhead_id, letterhead_unique_id: $letterhead_unique_id, newsletter_created_at: $newsletter_created_at, newsletter_published_at: $newsletter_published_at, subheadline: $subheadline}, on_conflict: {constraint: newsletter_editions_organization_id_letterhead_unique_id_key, update_columns: headline}) {
+    id
+    headline
+    slug
+  }
+}`;
+
+function hasuraInsertNewsletterEdition(params) {
+  console.log(params['data']);
+  return fetchGraphQL({
+    url: params['url'],
+    orgSlug: params['orgSlug'],
+    query: INSERT_NEWSLETTER_EDITION,
+    name: 'FrontendInsertNewsletterEdition',
+    variables: {
+      byline: params['data']['byline'],
+      slug: params['data']['slug'],
+      content: params['data']['content'],
+      headline: params['data']['headline'],
+      letterhead_id: params['data']['letterhead_id'],
+      letterhead_unique_id: params['data']['letterhead_unique_id'],
+      newsletter_created_at: params['data']['newsletter_created_at'],
+      newsletter_published_at: params['data']['newsletter_published_at'],
+      subheadline: params['data']['subheadline'],
+    },
+  });
+}
+
 const INSERT_DATA_IMPORT = `mutation FrontendInsertDataImport($notes: String, $end_date: date, $start_date: date, $table_name: String) {
   insert_ga_data_imports_one(object: {end_date: $end_date, notes: $notes, start_date: $start_date, table_name: $table_name}) {
     id
@@ -700,6 +729,7 @@ function sanitizePath(path) {
 }
 
 module.exports = {
+  hasuraInsertNewsletterEdition,
   hasuraInsertOrganization,
   hasuraInsertOrgLocales,
   hasuraInsertPageView,
