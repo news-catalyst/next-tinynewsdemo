@@ -29,15 +29,12 @@ const ArticleByline = tw.div`border-b border-gray-200 mb-1 pb-5 w-full flex flex
 const ArticleAuthor = tw.div`flex flex-row flex-nowrap items-center`;
 const ArticleAuthorAvatar = tw.div`overflow-hidden relative w-full rounded-full h-12 w-12 mr-2`;
 const ArticleAuthorMeta = tw.div`text-base`;
-const ArticleCommentCounter = tw.div`bg-no-repeat h-11 pl-6 inline-flex items-center`;
-const CommentCounterNumber = tw.span`font-bold leading-none`;
-const CommentCounterLabel = tw.span`leading-none ml-1`;
 const ArticleShareTop = tw.div`inline-flex flex-row flex-nowrap items-center`;
 const ArticleShareWrapper = tw.ul`inline-flex flex-row flex-nowrap items-center`;
 const ShareItem = tw.li`mr-2`;
 const ShareButton = tw.span`bg-no-repeat bg-center border-gray-200 border inline-flex flex items-center justify-center w-10 h-10 pl-6 overflow-hidden rounded-full leading-none text-sm`;
 
-export default function ArticleHeader({ article, isAmp, metadata }) {
+export default function ArticleHeader({ article, isAmp, metadata, mainImage }) {
   if (!article) {
     return null;
   }
@@ -63,30 +60,6 @@ export default function ArticleHeader({ article, isAmp, metadata }) {
   let authorPhoto;
   if (article && article.author_articles && article.author_articles[0]) {
     authorPhoto = article.author_articles[0].author.photoUrl;
-  }
-
-  let mainImageNode;
-  let mainImage = null;
-  let localisedContent = hasuraLocaliseText(
-    article.article_translations,
-    'content'
-  );
-  if (
-    localisedContent !== undefined &&
-    localisedContent !== null &&
-    typeof localisedContent !== 'string'
-  ) {
-    try {
-      mainImageNode = localisedContent.find(
-        (node) => node.type === 'mainImage'
-      );
-
-      if (mainImageNode) {
-        mainImage = mainImageNode.children[0];
-      }
-    } catch (err) {
-      console.log('error finding main image in header: ', err);
-    }
   }
 
   return (
