@@ -26,7 +26,7 @@ const cardContent = [
   {
     title: 'Analytics',
     description:
-      'Learn more about your audience via data from Google Analytics and Mailchimp.',
+      'Learn more about your audience via data from Google Analytics and Letterhead.',
     href: '/tinycms/analytics',
     icon: <ChartBarIcon />,
   },
