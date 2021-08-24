@@ -28,9 +28,14 @@ export default function CategoryPage(props) {
     return <div>Loading...</div>;
   }
 
+  let siteMetadata = props.siteMetadata;
+  // set page title
+  siteMetadata['homepageTitle'] =
+    props.title + ' | ' + siteMetadata['shortName'];
+
   return (
     <Layout
-      meta={props.siteMetadata}
+      meta={siteMetadata}
       sections={props.sections}
       renderFooter={props.renderFooter}
     >

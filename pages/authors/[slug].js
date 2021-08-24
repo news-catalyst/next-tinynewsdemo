@@ -38,6 +38,10 @@ export default function AuthorPage({
     authorTitle = hasuraLocaliseText(author.author_translations, 'title');
     authorBio = hasuraLocaliseText(author.author_translations, 'bio');
     authorTwitter = author.twitter;
+
+    // set page title
+    siteMetadata['homepageTitle'] =
+      authorName + ' | ' + siteMetadata['shortName'];
   }
 
   let twitterCall;
