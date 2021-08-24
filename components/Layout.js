@@ -43,7 +43,12 @@ export default function Layout({
     footerBylineName: meta['footerBylineName'],
   };
 
+  let pageTitle = meta['homepageTitle'];
+
   if (article) {
+    pageTitle = hasuraLocaliseText(article.article_translations, 'headline');
+    pageTitle += ' | ' + metaValues.siteName;
+
     metaValues.section = hasuraLocaliseText(
       article.category.category_translations,
       'title'
@@ -101,7 +106,7 @@ export default function Layout({
   return (
     <>
       <Head>
-        <title>{meta['homepageTitle']}</title>
+        <title>{pageTitle}</title>
         <link rel="icon" href="/favicon.ico" />
         <meta property="description" content={metaValues.searchDescription} />
         {tagList}
