@@ -46,7 +46,10 @@ export default function Layout({
   let pageTitle = meta['homepageTitle'];
 
   if (article) {
-    pageTitle = hasuraLocaliseText(article.article_translations, 'headline');
+    pageTitle = hasuraLocaliseText(
+      article.article_translations,
+      'search_title'
+    );
     pageTitle += ' | ' + metaValues.siteName;
 
     metaValues.section = hasuraLocaliseText(
