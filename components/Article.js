@@ -3,7 +3,7 @@ import ArticleBody from './articles/ArticleBody';
 import Comments from './articles/Comments';
 import ArticleFooter from './articles/ArticleFooter';
 import Recirculation from './articles/Recirculation';
-import { generateArticleUrl } from '../lib/utils.js';
+import { hasuraLocaliseText, generateArticleUrl } from '../lib/utils.js';
 import { useAmp } from 'next/amp';
 import Layout from './Layout.js';
 
@@ -24,6 +24,31 @@ export default function Article({
 
   const displayComments = siteMetadata['commenting'] === 'on';
 
+  let mainImageNode;
+  let mainImage = null;
+  let localisedContent = hasuraLocaliseText(
+    article.article_translations,
+    'content'
+  );
+  if (
+    localisedContent !== undefined &&
+    localisedContent !== null &&
+    typeof localisedContent !== 'string'
+  ) {
+    try {
+      mainImageNode = localisedContent.find(
+        (node) => node.type === 'mainImage'
+      );
+
+      if (mainImageNode) {
+        mainImage = mainImageNode.children[0];
+        siteMetadata['coverImage'] = mainImage.imageUrl;
+      }
+    } catch (err) {
+      console.log('error finding main image: ', err);
+    }
+  }
+
   return (
     <Layout
       meta={siteMetadata}
@@ -36,6 +61,7 @@ export default function Article({
           article={article}
           isAmp={isAmp}
           metadata={siteMetadata}
+          mainImage={mainImage}
         />
         <section className="section post__body rich-text" key="body">
           <ArticleBody
