@@ -24,6 +24,10 @@ export default function TagPage({
   }
 
   let tagTitle = hasuraLocaliseText(tag.tag_translations, 'title');
+
+  // set page title
+  siteMetadata['homepageTitle'] = tagTitle + ' | ' + siteMetadata['shortName'];
+
   return (
     <Layout meta={siteMetadata} sections={sections}>
       <ArticleStream
