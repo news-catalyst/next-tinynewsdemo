@@ -36,7 +36,6 @@ export default function ArticleLink({
   let mainImage = null;
   let mainImageNode;
 
-  console.log('article:', article);
   let headline;
   if (article.article_translations) {
     headline = hasuraLocaliseText(article.article_translations, 'headline');
@@ -85,7 +84,6 @@ export default function ArticleLink({
   }
 
   if (mainImageNode && Object.keys(mainImageNode).length > 0) {
-    console.log(article.slug, 'articleLink mainImageNode:', mainImageNode);
     mainImage = mainImageNode.children[0];
   }
 
