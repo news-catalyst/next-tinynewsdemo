@@ -1,6 +1,9 @@
 import tw, { css, styled } from 'twin.macro';
 import { useRouter } from 'next/router';
 
+export const UrlSlugLabel = tw.span`block font-medium text-gray-700`;
+export const UrlSlugValue = tw.span`block font-light text-gray-700`;
+
 export const FormContainer = tw.div`container mx-auto min-w-0 flex-auto px-4 sm:px-6 xl:px-8 pt-10 pb-24 lg:pb-16`;
 const ButtonsContainer = tw.div`grid grid-cols-4 gap-24 mt-4`;
 const FormTitleContainer = tw.div`pt-5 pb-10`;

@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import tw from 'twin.macro';
 import {
   FormContainer,
   FormHeader,
   TinyCheckboxField,
   TinyInputField,
   TinySubmitCancelButtons,
+  UrlSlugLabel,
+  UrlSlugValue,
 } from '../../../components/tinycms/TinyFormElements';
 import AdminLayout from '../../../components/AdminLayout';
 import {
@@ -111,8 +112,8 @@ export default function EditSection({
           />
           {slug && (
             <label>
-              <span tw="block font-medium text-gray-700">URL Slug</span>
-              <span tw="block font-light text-gray-700">{slug}</span>
+              <UrlSlugLabel>URL Slug</UrlSlugLabel>
+              <UrlSlugValue>{slug}</UrlSlugValue>
             </label>
           )}
 
