@@ -3,19 +3,6 @@
 const { program } = require('commander');
 program.version('0.0.1');
 
-const fs = require('fs');
-const yaml = require('js-yaml')
-
-// const { google } = require("googleapis");
-// const credentials = require("./credentials.json");
-// const scopes = ["https://www.googleapis.com/auth/drive", "https://www.googleapis.com/auth/analytics", "https://www.googleapis.com/auth/analytics.edit"];
-// const auth = new google.auth.JWT(credentials.client_email, null, credentials.private_key, scopes);
-
-const { Octokit } = require("@octokit/rest"); // lists GH envs
-const { request } = require("@octokit/request"); // for creating GH env
-const sodium = require('tweetsodium'); // for encrypting GH env secrets
-const nacl = require('tweetnacl')
-
 const shared = require("./shared");
 // const vercel = require("./vercel");
 
@@ -33,7 +20,6 @@ async function createOrganization(opts) {
   let slug = opts.slug;
   let locales = opts.locales;
 
-  console.log("adminSecret:", adminSecret)
   const { errors, data } = await shared.hasuraInsertOrganization({
     url: apiUrl,
     adminSecret: adminSecret,
@@ -46,6 +32,17 @@ async function createOrganization(opts) {
   } else {
     organizationID = data.insert_organizations_one.id;
     console.log("Created a record for organization with ID " + organizationID, data);
+
+    const result = await shared.hasuraInsertLocale({
+      url: apiUrl,
+      adminSecret: adminSecret,
+      name: "English",
+      code: "en-US",
+    })
+    if (result.errors) {
+      console.error("Error setting en-US locale:", result.errors);
+      return;
+    }
 
     shared.hasuraListAllLocales({
       url: apiUrl,
