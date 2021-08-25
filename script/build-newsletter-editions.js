@@ -10,11 +10,12 @@ const apiUrl = process.env.HASURA_API_URL;
 const apiToken = process.env.ORG_SLUG;
 
 function getNewsletterEditions() {
-  console.log("ENV:", process.env);
+  const letterheadUrl = process.env.LETTERHEAD_API_URL + "channels/" + process.env.LETTERHEAD_CHANNEL_SLUG + "/letters";
+  console.log("Letterhead API URL:", letterheadUrl);
+
   if (!process.env.LETTERHEAD_API_URL) {
     return;
   }
-  const letterheadUrl = process.env.LETTERHEAD_API_URL + "channels/" + process.env.LETTERHEAD_CHANNEL_SLUG + "/letters";
   
   const opts = {
     headers: {
