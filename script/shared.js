@@ -9,7 +9,7 @@ const INSERT_NEWSLETTER_EDITION = `mutation FrontendInsertNewsletterEdition($slu
 }`;
 
 function hasuraInsertNewsletterEdition(params) {
-  console.log(params['data']);
+  console.log(params);
   return fetchGraphQL({
     url: params['url'],
     orgSlug: params['orgSlug'],
