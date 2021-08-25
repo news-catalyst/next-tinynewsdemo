@@ -11,6 +11,7 @@ const apiToken = process.env.ORG_SLUG;
 
 function getNewsletterEditions() {
   const letterheadUrl = process.env.LETTERHEAD_API_URL + "channels/" + process.env.LETTERHEAD_CHANNEL_SLUG + "/letters";
+  console.log("Letterhead API:", letterheadUrl);
   const opts = {
     headers: {
       'Content-Type': 'application/json',
