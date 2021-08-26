@@ -3,23 +3,13 @@ import { hasuraGetHomepageEditor, hasuraCreatePage, hasuraSearchArticles, hasura
 import { hasuraCreateAuthor, hasuraGetAuthorById, hasuraGetAuthorBySlug, hasuraListAllAuthors } from '../lib/authors';
 import { hasuraUpsertMetadata } from '../lib/site_metadata';
 
-const shared = require("../script/shared");
-
-require('dotenv').config({ path: '.env.local' })
-
 let newAuthorId = 12;
 let newsSectionId;
 let newTagId;
 
-// if we want to test bootstrap commands, we'll need to use these params
-let secretParams = {
-  url: process.env.HASURA_API_URL,
-  adminSecret: process.env.HASURA_ADMIN_SECRET,
-};
-
 // otherwise all queries and mutations are built on the organization's access
 let orgParams = {
-  url: process.env.HASURA_API_URL,
+  url: "https://tinynews-testing.hasura.app/v1/graphql",
   orgSlug: "test-org"
 }
 
@@ -28,6 +18,7 @@ describe('metadata', () => {
       let metadataParams = Object.assign({}, orgParams); 
       metadataParams['localeCode'] = 'en-US';
       return hasuraGetMetadataByLocale(metadataParams).then(response => {
+        expect(response.errors).toBeUndefined();
         expect(response.data).toHaveProperty('organization_locales');
         expect(response.data).toHaveProperty('site_metadatas');
       });
@@ -94,6 +85,8 @@ describe('metadata', () => {
       };
     
       return hasuraUpsertMetadata(metadataParams).then(response => {
+        console.log(JSON.stringify(response))
+        expect(response.errors).toBeUndefined();
         expect(response.data).toHaveProperty('insert_site_metadatas');
         expect(response.data.insert_site_metadatas).toHaveProperty('returning');
         expect(response.data.insert_site_metadatas.returning[0]).toHaveProperty('published');
@@ -287,7 +280,7 @@ describe('authors', () => {
   });
 
   it('lists authors', () => {
-      return hasuraListAllAuthors("en-US").then(response => {
+      return hasuraListAllAuthors("en-US", orgParams).then(response => {
         // console.log("hasuraListAllAuthors:", response);
         expect(response.data).toHaveProperty('organization_locales');
         expect(response.data).toHaveProperty('authors');
@@ -323,23 +316,20 @@ describe('articles', () => {
     if (errors) {
       console.error("errors deleting articles:", errors);
     }
-    // console.log("deleted articles: ", data);
 
     let enCategoryParams = Object.assign({}, orgParams); 
     enCategoryParams['localeCode'] = "en-US";
     let enResponse = await hasuraListAllSectionsByLocale(enCategoryParams);
-    if (enResponse.errors) {
-      console.error("errors:", enResponse.errors);
-    }
+    
+    expect(enResponse.errors).toBeUndefined();
     enCategories = enResponse.data.categories;
     // console.log("english categories:", enCategories);
 
     let esCategoryParams = Object.assign({}, orgParams); 
     esCategoryParams['localeCode'] = "es";
     const esResponse = await hasuraListAllSectionsByLocale(esCategoryParams);
-    if (esResponse.errors) {
-      console.error("errors:", esResponse.errors);
-    }
+    expect(esResponse.errors).toBeUndefined();
+
     esCategories = esResponse.data.categories;
     // console.log("spanish categories:", esCategories);
     done();
@@ -347,12 +337,13 @@ describe('articles', () => {
   // clean up articles to avoid errors building the testing site
   afterAll(async (done) => {
     const { errors, data } = await hasuraDeleteArticles(orgParams);
-    if (errors) {
-      console.error("jest after article tests: errors deleting articles:", errors);
-    }
+    expect(errors).toBeUndefined();
+
   })
 
-  it('creates an unpublished article in US English', () => {
+  it('creates an unpublished article in US English', async () => {
+    await new Promise((r) => setTimeout(r, 2000));
+
       let articleParams = Object.assign({}, orgParams); 
       articleParams['locale_code'] = 'en-US';
       articleParams['headline'] = 'Test Article 1 Headline';
@@ -364,12 +355,16 @@ describe('articles', () => {
       articleParams['document_id'] = '1cS3u5bdBP7sg29t-nBW8UgvUHDNpiZRFccZA53A04sU';
       articleParams['created_by_email'] = 'jacqui@newscatalyst.org';
       articleParams['article_sources'] = [];
-      articleParams['category_id'] = enCategories[0].id;
+      if (enCategories && enCategories[0]) {
+        articleParams['category_id'] = enCategories[0].id;
+      } else {
+        console.error("No english category to use: ", enCategories)
+      }
 
       // console.log("hasuraCreateArticle params:", articleParams);
       return hasuraCreateArticle(articleParams).then(response => {
         // console.log("hasuraCreateArticle:", JSON.stringify(response));
-        
+        expect(response.errors).toBeUndefined();
         expect(response.data).toHaveProperty('insert_articles');
         expect(response.data.insert_articles).toHaveProperty('returning');
         expect(response.data.insert_articles.returning[0]).toHaveProperty('id');
@@ -381,7 +376,9 @@ describe('articles', () => {
       });
   });
 
-  it('adds a spanish translation to an article', () => {
+  it('adds a spanish translation to an article', async () => {
+    await new Promise((r) => setTimeout(r, 2000));
+
     let articleParams = Object.assign({}, orgParams); 
     articleParams['locale_code'] = 'es';
     articleParams['headline'] = 'Test Article 1 spanish Headline';
@@ -398,7 +395,7 @@ describe('articles', () => {
 
     return hasuraUpdateArticle(articleParams).then(response => {
       // console.log("hasuraUpdateArticle:", JSON.stringify(response));
-      
+      expect(response.errors).toBeUndefined();
       expect(response.data).toHaveProperty('insert_articles');
       expect(response.data.insert_articles).toHaveProperty('returning');
       expect(response.data.insert_articles.returning[0]).toHaveProperty('id');
@@ -410,7 +407,9 @@ describe('articles', () => {
     });
   });
 
-  it('updates an article to published', () => {
+  it('updates an article to published', async () => {
+    await new Promise((r) => setTimeout(r, 2000));
+
       let articleParams = Object.assign({}, orgParams); 
       articleParams['locale_code'] = 'en-US';
       articleParams['headline'] = 'Test Article 1 Headline';
@@ -426,6 +425,7 @@ describe('articles', () => {
       articleParams['article_sources'] = [];
 
       return hasuraUpdateArticle(articleParams).then(response => {
+        expect(response.errors).toBeUndefined();
         expect(response.data).toHaveProperty('insert_articles');
         expect(response.data.insert_articles).toHaveProperty('returning');
         expect(response.data.insert_articles.returning[0]).toHaveProperty('id');
@@ -438,7 +438,9 @@ describe('articles', () => {
 
   });
 
-  it('adds another article', () => {
+  it('adds another article', async () => {
+    await new Promise((r) => setTimeout(r, 2000));
+
     let articleParams = Object.assign({}, orgParams); 
     articleParams['locale_code'] = 'en-US';
     articleParams['headline'] = 'Test Article 2 Headline';
@@ -453,6 +455,7 @@ describe('articles', () => {
     articleParams['article_sources'] = [];
 
     return hasuraCreateArticle(articleParams).then(response => {
+      expect(response.errors).toBeUndefined();
       // console.log("adds another article response:", response);
       expect(response.data).toHaveProperty('insert_articles');
       expect(response.data.insert_articles).toHaveProperty('returning');
@@ -467,9 +470,12 @@ describe('articles', () => {
     });
 });
 
-  it('lists all published page slugs', () => {
+  it('lists all published page slugs', async () => {
+    await new Promise((r) => setTimeout(r, 2000));
+
       let articleParams = Object.assign({}, orgParams); 
       return hasuraListAllArticleSlugs(articleParams).then(response => {
+        expect(response.errors).toBeUndefined();
         expect(response.data).toHaveProperty('articles');
         expect(response.data.articles[0]).toHaveProperty('article_translations');
         expect(response.data.articles[0]).toHaveProperty('slug');
@@ -478,12 +484,15 @@ describe('articles', () => {
 
   });
 
-  it('searches articles', () => {
-      let articleParams = Object.assign({}, orgParams); 
-      articleParams['localeCode'] = 'en-US';
-      articleParams['term'] = 'Test Article';
+  it('searches articles', async () => {
+    await new Promise((r) => setTimeout(r, 2000));
+
+    let articleParams = Object.assign({}, orgParams); 
+    articleParams['localeCode'] = 'en-US';
+    articleParams['term'] = 'Test Article';
 
       return hasuraSearchArticles(articleParams).then(response => {
+        expect(response.errors).toBeUndefined();
         // console.log("hasuraSearchArticles:", response)
         expect(response.data).toHaveProperty('articles');
         expect(response.data.articles[0]).toHaveProperty('id');
@@ -496,12 +505,15 @@ describe('articles', () => {
 
   });
 
-  it('gets data for article page', () => {
+  it('gets data for article page', async () => {
+    await new Promise((r) => setTimeout(r, 2000));
+
       let articleParams = Object.assign({}, orgParams); 
       articleParams['localeCode'] = 'en-US';
       articleParams['slug'] = 'test-article-1';
       articleParams['categorySlug'] = 'news';
       return hasuraArticlePage(articleParams).then(response => {
+        expect(response.errors).toBeUndefined();
         expect(response.data).toHaveProperty('article_slug_versions');
         expect(response.data).toHaveProperty('categories');
         expect(response.data).toHaveProperty('tags');
@@ -510,12 +522,15 @@ describe('articles', () => {
 
   });
 
-  it('gets data for previewing an article page in english', () => {
+  it('gets data for previewing an article page in english', async () => {
+    await new Promise((r) => setTimeout(r, 2000));
+
       let articleParams = Object.assign({}, orgParams); 
       articleParams['localeCode'] = 'en-US';
       articleParams['slug'] = 'test-article-1';
       articleParams['categorySlug'] = 'news';
       return hasuraPreviewArticlePage(articleParams).then(response => {
+        expect(response.errors).toBeUndefined();
         expect(response.data).toHaveProperty('articles');
         expect(response.data).toHaveProperty('categories');
         expect(response.data).toHaveProperty('tags');
@@ -534,12 +549,15 @@ describe('articles', () => {
 
   });
 
-  it('gets data for previewing an article page in spanish', () => {
+  it('gets data for previewing an article page in spanish', async () => {
+    await new Promise((r) => setTimeout(r, 2000));
+
     let articleParams = Object.assign({}, orgParams); 
     articleParams['localeCode'] = 'es';
     articleParams['slug'] = 'test-article-1';
     articleParams['categorySlug'] = 'news';
     return hasuraPreviewArticlePage(articleParams).then(response => {
+      expect(response.errors).toBeUndefined();
       expect(response.data).toHaveProperty('articles');
       expect(response.data).toHaveProperty('categories');
       expect(response.data).toHaveProperty('tags');
@@ -560,11 +578,14 @@ describe('articles', () => {
 
 });
 
-  it('gets data to preview an article by slug', () => {
+  it('gets data to preview an article by slug', async () => {
+    await new Promise((r) => setTimeout(r, 2000));
+
       let articleParams = Object.assign({}, orgParams); 
       articleParams['localeCode'] = 'en-US';
       articleParams['slug'] = 'test-article-1';
       return hasuraPreviewArticleBySlug(articleParams).then(response => {
+        expect(response.errors).toBeUndefined();
         expect(response.data).toHaveProperty('articles');
         expect(response.data.articles).toHaveLength(1);
         expect(response.data.articles[0]).toHaveProperty('slug');
@@ -575,11 +596,14 @@ describe('articles', () => {
 
   });
 
-  it('gets data for an article by slug', () => {
+  it('gets data for an article by slug', async () => {
+    await new Promise((r) => setTimeout(r, 2000));
+
       let articleParams = Object.assign({}, orgParams); 
       articleParams['localeCode'] = 'en-US';
       articleParams['slug'] = 'test-article-1';
       return hasuraGetArticleBySlug(articleParams).then(response => {
+        expect(response.errors).toBeUndefined();
         expect(response.data).toHaveProperty('articles');
         expect(response.data.articles).toHaveLength(1);
         expect(response.data.articles[0]).toHaveProperty('slug');
@@ -590,11 +614,13 @@ describe('articles', () => {
 
   });
 
-  it('gets data (by slug) for the same article in spanish', () => {
+  it('gets data (by slug) for the same article in spanish', async () => {
+    await new Promise((r) => setTimeout(r, 2000));
     let articleParams = Object.assign({}, orgParams); 
     articleParams['localeCode'] = 'es';
     articleParams['slug'] = 'test-article-1';
     return hasuraGetArticleBySlug(articleParams).then(response => {
+      expect(response.errors).toBeUndefined();
       expect(response.data).toHaveProperty('articles');
       expect(response.data.articles).toHaveLength(1);
 
@@ -613,7 +639,9 @@ describe('articles', () => {
 });
 
 describe('pages', () => {
-  it('creates an unpublished page', () => {
+  it('creates an unpublished page', async () => {
+    await new Promise((r) => setTimeout(r, 2000));
+
       let pageParams = Object.assign({}, orgParams); 
       pageParams['locale_code'] = 'en-US';
       pageParams['headline'] = 'Test Page 1 Headline';
@@ -626,6 +654,7 @@ describe('pages', () => {
       pageParams['created_by_email'] = 'jacqui@newscatalyst.org';
 
       return hasuraCreatePage(pageParams).then(response => {
+        expect(response.errors).toBeUndefined();
         expect(response.data).toHaveProperty('insert_pages');
         expect(response.data.insert_pages).toHaveProperty('returning');
         expect(response.data.insert_pages.returning[0]).toHaveProperty('id');
@@ -635,7 +664,9 @@ describe('pages', () => {
 
   });
 
-  it('updates a page', () => {
+  it('updates a page', async () => {
+    await new Promise((r) => setTimeout(r, 2000));
+
       let pageParams = Object.assign({}, orgParams); 
       pageParams['locale_code'] = 'en-US';
       pageParams['published'] = true;
@@ -661,7 +692,9 @@ describe('pages', () => {
 });
 
 describe('homepage', () => {
-  it('gets data for homepage editor', () => {
+  it('gets data for homepage editor', async () => {
+    await new Promise((r) => setTimeout(r, 2000));
+
     let hpParams = Object.assign({}, orgParams); 
     hpParams['localeCode'] = 'en-US';
 

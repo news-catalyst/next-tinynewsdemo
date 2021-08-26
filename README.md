@@ -69,6 +69,23 @@ Note: these commands expect `.env.local-$name` to exist in order to work.
 
 The [latest instructions on how to launch a new organisation are in a Google Doc](https://docs.google.com/document/d/1sSvtRTYkk2PoixMrWPT3FSM6qO_5zseqdCXv4LmP7Rc/edit?usp=sharing) and subject to change; please reference that for info.
 
+## Setup the test environment
+
+Run these where you have the Hasura repo checked out:
+
+```
+hasura migrate create init --sql-from-server --admin-secret $PRODUCTION_ADMIN_SECRET
+hasura migrate apply --endpoint $TESTING_HASURA_API_ENDPOINT --admin-secret $TESTING_ADMIN_SECRET --version $VERSION_GENERATED_FROM_ABOVE_COMMAND --database-name default
+hasura metadata export --admin-secret $PRODUCTION_ADMIN_SECRET
+hasura metadata apply --endpoint $TESTING_HASURA_API_ENDPOINT --admin-secret $TESTING_ADMIN_SECRET
+```
+
+If you have to repopulate the testing database with the basic data required for the webhook to work, run the following command from where you have this repo checked out:
+
+```
+yarn bootstrap:tests -n "Test Org" -s test-org -l en-US
+```
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:

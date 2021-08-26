@@ -11,6 +11,12 @@ const apiToken = process.env.ORG_SLUG;
 
 function getNewsletterEditions() {
   const letterheadUrl = process.env.LETTERHEAD_API_URL + "channels/" + process.env.LETTERHEAD_CHANNEL_SLUG + "/letters";
+  console.log("Letterhead API URL:", letterheadUrl);
+
+  if (!process.env.LETTERHEAD_API_URL) {
+    return;
+  }
+  
   const opts = {
     headers: {
       'Content-Type': 'application/json',
@@ -35,11 +41,9 @@ function transformDelta(delta) {
 
   delta.ops.forEach((element, i) => {
     if (!element.insert) {
-      console.log("no element.insert: ", element);
       return;
     }
     if (typeof(element.insert) !== 'string') {
-      console.log("element.insert is a", typeof(element.insert), ": ", element.insert);
       return;
     }
 
@@ -65,7 +69,7 @@ function transformDelta(delta) {
   let formattedElements = [];
   elements.forEach((element, i) => {
     if (element.attributes && element.attributes.header) {
-      console.log(i, "header:", elements[i-1].insert)
+      // console.log(i, "header:", elements[i-1].insert)
       formattedElements.push( {
         "link": null,
         "type": "text",
@@ -79,7 +83,7 @@ function transformDelta(delta) {
         ]
       })
     } else if (element.attributes && element.attributes.list) {
-      console.log(i, "list:", elements[i-1].insert)
+      // console.log(i, "list:", elements[i-1].insert)
 
       list.items.push({
         "index": i,
@@ -110,7 +114,7 @@ function transformDelta(delta) {
       }
 
     } else if (element.attributes && (element.attributes.bold || element.attributes.italic)) {
-      console.log(i, "formatted text:", element.insert);
+      // console.log(i, "formatted text:", element.insert);
       let style = {};
       if (element.attributes.bold) {
         style["bold"] = true;
@@ -146,7 +150,7 @@ function transformDelta(delta) {
       
 
     } else if (element.attributes && element.attributes.link) {
-      console.log(i, "link:", element.attributes.link);
+      // console.log(i, "link:", element.attributes.link);
 
       formattedElements.push({
         "link": null,
@@ -164,7 +168,7 @@ function transformDelta(delta) {
         ]
       })
     } else if (element.attributes) {
-      console.log(i, "unknown attrs:", element.attributes);
+      // console.log(i, "unknown attrs:", element.attributes);
 
     } else {
       if (elements[i+1] && elements[i+1].attributes && elements[i+1].attributes.header) {
@@ -226,7 +230,6 @@ async function saveNewsletterEditions(letterheadData) {
     }
 
     let content = transformDelta(JSON.parse(newsletter.delta));
-console.log(content);
 
     let editionData = {
       slug: slug,
