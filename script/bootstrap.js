@@ -10,13 +10,11 @@ const { google } = require("googleapis");
 const credentials = require("./credentials.json");
 const scopes = ["https://www.googleapis.com/auth/drive", "https://www.googleapis.com/auth/analytics", "https://www.googleapis.com/auth/analytics.edit"];
 const auth = new google.auth.JWT(credentials.client_email, null, credentials.private_key, scopes);
-const drive = google.drive({ version: "v3", auth });
 const analytics = google.analytics({version: "v3", auth})
 
 const { Octokit } = require("@octokit/rest"); // lists GH envs
 const { request } = require("@octokit/request"); // for creating GH env
 const sodium = require('tweetsodium'); // for encrypting GH env secrets
-const nacl = require('tweetnacl')
 
 const shared = require("./shared");
 const vercel = require("./vercel");
@@ -51,11 +49,6 @@ function encryptSecret(key, value) {
 // really simple function but this prevents us from using two different environment names in the code
 function generateEnvName(slug) {
   return `data_import_${slug}`
-}
-
-function generateKeyPair() {
-  const keyPair = nacl.box.keyPair()
-  console.log(keyPair);
 }
 
 // create the environment on github and supply it with the required env vars for doing GA data import action runs
@@ -147,7 +140,7 @@ async function createGitHubEnv(slug) {
 
     for await (let secretName of secrets) {
       let plainValue = currentEnv.parsed[secretName];
-      // console.log(`\t* setting secret: ${secretName} ${plainValue}`)
+      console.log(`\t* setting secret: ${secretName} ${plainValue}`)
 
       let encryptedValue = encryptSecret(pubKey, plainValue);
 
@@ -235,121 +228,6 @@ async function setupGoogleAnalytics(name, url) {
 
 }
 
-async function setupGoogleDrive(org, emails) {
-  let topLevelFolderId = process.env.DRIVE_PARENT_FOLDER_ID;
-  drive.files.get({fileId: topLevelFolderId, supportsAllDrives: true, fields: "id,name,webViewLink"}, (err, res) => {
-    if (err) throw err;
-    console.log('Creating a folder for org: ' + org);
-
-    // create the folder here
-    var orgFolderMetadata = {
-      'name': org,
-      parents: [topLevelFolderId],
-      'mimeType': 'application/vnd.google-apps.folder',
-    };
-
-    drive.files.create({
-      resource: orgFolderMetadata,
-      fields: '*',
-      supportsAllDrives: true
-    }, function (err, file) {
-      if (err) {
-        // Handle error
-        console.error(err);
-      } else {
-        console.log(file.data.name + " folder created: " + file.data.webViewLink);
-        webLink = file.data.webViewLink;
-
-        var parentFolderId = file.data.id
-
-        if (emails) {
-          emails.forEach(function (email) {
-            console.log("Granting permission to " + email);
-
-            drive.permissions.create({
-              resource: {
-                  'type': 'user',
-                  'role': 'writer',
-                  'emailAddress': email
-              },
-              supportsAllDrives: true,
-              fileId: parentFolderId,
-              fields: 'id',
-              }, function(err, res) {
-                  if (err) {
-                  // Handle error
-                  console.log("🤬 Error granting permissions to " + email + ":", err);
-              } else {
-                  console.log('✅ Successfully granted permission to ' + email);
-              }
-            });
-          });
-        }
-
-        console.log("🗄️ Created folder for organization", org, "with id:", parentFolderId);
-
-        var articleFolderMetadata = {
-          'name': 'articles',
-          parents: [parentFolderId],
-          'mimeType': 'application/vnd.google-apps.folder'
-        };
-
-        drive.files.create({
-          resource: articleFolderMetadata,
-          supportsAllDrives: true,
-          fields: 'id'
-        }, function (err, file) {
-          if (err) {
-            // Handle error
-            console.log("🤬 Error creating articles folder: ", err);
-          } else {
-            var articleFolderId = file.data.id;
-            console.log('📁 Created articles folder within', org, 'with id:', articleFolderId);
-
-            var articleMetadata = {
-              'name': 'Article TK',
-              parents: [articleFolderId],
-              'mimeType': 'application/vnd.google-apps.document'
-            };
-
-            drive.files.create({
-              resource: articleMetadata,
-              supportsAllDrives: true,
-              fields: 'id'
-            }, function (err, file) {
-              if (err) {
-                // Handle error
-                console.log("🤬 Error creating test article document: ", err);
-              } else {
-                console.log('🗒️ Created test article document (for configuring the add-on) with id: ', file.data.id);
-              }
-            });
-          }
-        });
-
-        var pageFolderMetadata = {
-          'name': 'pages',
-          parents: [parentFolderId],
-          'mimeType': 'application/vnd.google-apps.folder'
-        };
-
-        drive.files.create({
-          resource: pageFolderMetadata,
-          supportsAllDrives: true,
-          fields: 'id'
-        }, function (err, file) {
-          if (err) {
-            // Handle error
-            console.log("🤬 Error creating pages folder: ", err);
-          } else {
-            console.log('📁 Created pages folder within', org, 'with id:', file.data.id);
-          }
-        });
-      }
-    });
-  })
-}
-
 // sets up org-specific ENV values
 function configureNext(name, slug, locales) {
   const currentEnv = require('dotenv').config({ path: '.env.local' })
@@ -383,7 +261,6 @@ function configureNext(name, slug, locales) {
 async function createOrganization(opts) {
   let name = opts.name;
   let slug = opts.slug;
-  let emails = opts.emails;
   let locales = opts.locales;
   let url = opts.url;
 
@@ -541,7 +418,6 @@ async function createOrganization(opts) {
           })
         })
 
-        setupGoogleDrive(slug, emails);
         setupGoogleAnalytics(name, url);
 
         setupGitHubAction(slug);
@@ -570,7 +446,6 @@ program
     .requiredOption('-n, --name <name>', 'the name of the new organization')
     .requiredOption('-s, --slug <slug>', 'a short (A-Za-z0-9_) slug for the organization')
     .requiredOption('-l, --locales [locales...]', 'specify supported locales')
-    .requiredOption('-e, --emails [emails...]', 'specify emails for org members (needed for google drive)')
     .requiredOption('-u, --url <url>', 'specify the url on vercel, used for GA property setup')
     .description("sets up a new organization in Hasura and Google Drive")
     .action( (opts) => {
