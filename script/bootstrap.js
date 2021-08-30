@@ -33,6 +33,7 @@ let organizationID;
 
 // encrypts a secret for GH environment variable setting
 function encryptSecret(key, value) {
+  console.log("encrypting", key, value);
   // Convert the message and key to Uint8Array's (Buffer implements that interface)
   const messageBytes = Buffer.from(value);
   const keyBytes = Buffer.from(key, 'base64');
@@ -129,7 +130,7 @@ async function createGitHubEnv(slug) {
   try {
     console.log("🤫 Okay, now configuring the environment with secrets...")
 
-    const secrets = ["GOOGLE_CREDENTIALS_EMAIL", "GOOGLE_CREDENTIALS_PRIVATE_KEY", "HASURA_API_URL", "NEXT_PUBLIC_ANALYTICS_VIEW_ID", "ORG_SLUG", "SITE_URL"];
+    const secrets = ["GOOGLE_CREDENTIALS_EMAIL", "GOOGLE_CREDENTIALS_PRIVATE_KEY", "HASURA_API_URL", "NEXT_PUBLIC_ANALYTICS_VIEW_ID", "ORG_SLUG", "NEXT_PUBLIC_SITE_URL", "LETTERHEAD_API_URL", "LETTERHEAD_API_KEY", "LETTERHEAD_CHANNEL_SLUG", "AUTHORIZED_EMAIL_DOMAINS"];
 
     const pubKeyResult = await octokit.rest.actions.getRepoPublicKey({
       owner,
@@ -236,7 +237,7 @@ function configureNext(name, slug, locales, url, gaTrackingId) {
     domain = hostName;
   }
   currentEnv.parsed['AUTHORIZED_EMAIL_DOMAINS'] = domain;
-  currentEnv.parsed['SITE_URL'] = currentEnv.parsed['NEXT_PUBLIC_SITE_URL'] = url;
+  currentEnv.parsed['NEXT_PUBLIC_SITE_URL'] = url;
   // set these to the new organization values
   currentEnv.parsed['ORG_NAME'] = name;
   currentEnv.parsed['ORG_SLUG'] = slug;
