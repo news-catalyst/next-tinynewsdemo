@@ -282,5 +282,12 @@ const slugify = (value) => {
   return value;
 };
 
+const publishNewsletters = process.env.PUBLISH_NEWSLETTERS;
+console.log("publish newsletters?", typeof(publishNewsletters), publishNewsletters);
 
-getNewsletterEditions();
+if (!publishNewsletters || publishNewsletters === "false") {
+  console.log("Not publishing newsletters for " + apiToken);
+  return;
+} else {
+  getNewsletterEditions();
+}
