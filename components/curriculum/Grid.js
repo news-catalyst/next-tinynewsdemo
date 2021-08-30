@@ -15,10 +15,11 @@ export default function Grid({ header, type, articles }) {
       articles[i].article_translations[
         articles[i].article_translations.length - 1
       ];
+
     const mainImageNode = translation.main_image;
     let mainImage = null;
 
-    if (mainImageNode) {
+    if (mainImageNode && mainImageNode.children) {
       mainImage = mainImageNode.children[0];
     }
 
