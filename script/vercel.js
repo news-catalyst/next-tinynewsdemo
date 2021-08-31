@@ -167,7 +167,39 @@ async function createProject(name, slug) {
   }
 }
 
+
+async function deleteProject(name) {
+  let requestHeaders = {
+    "Authorization": `Bearer ${TOKEN}`,
+    "Content-Type": "application/json"
+  }
+
+  let teamsUrl = BASE_URL + "/teams";
+  let teamsResult = await fetch(teamsUrl, {
+    method: "GET",
+    headers: requestHeaders,
+  })
+  let teamsData = await teamsResult.json();
+  let ncTeam = teamsData.teams.find((data) => data.slug === 'news-catalyst');
+
+  let teamId = ncTeam.id;
+  // console.log("news catalyst team id: ", teamId)
+
+  let removeProjectUrl = BASE_URL + "/projects/" + name + "?teamId=" + teamId;
+  // let  = `https://api.vercel.com/v8/projects/${name}`;
+  let result = await fetch(removeProjectUrl, {
+    method: "DELETE",
+    headers: requestHeaders,
+  })
+  if (result.ok) {
+    return `Successfully deleted the project named '${name}' from Vercel`;
+  } else {
+    return `An error occurred trying to remove the project named ${name} from Vercel: ${JSON.stringify(result)}`
+  }
+}
+
 module.exports = {
   createProject,
-  getProjects
+  getProjects,
+  deleteProject
 }
