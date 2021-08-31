@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import React, { useEffect } from 'react';
+import React from 'react';
 import {
   hasuraListAllArticleSlugs,
   hasuraArticlePage,
@@ -14,12 +14,6 @@ export const config = { amp: 'hybrid' };
 
 export default function ArticlePage(props) {
   const router = useRouter();
-
-  useEffect(() => {
-    if (!props.article) {
-      router.push('/404');
-    }
-  }, [props.article, router]);
 
   // If the page is not yet generated, this will be displayed
   // initially until getStaticProps() finishes running
