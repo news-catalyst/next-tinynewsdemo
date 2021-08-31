@@ -33,6 +33,7 @@ let organizationID;
 
 // encrypts a secret for GH environment variable setting
 function encryptSecret(key, value) {
+  console.log("encrypting", key, value);
   // Convert the message and key to Uint8Array's (Buffer implements that interface)
   const messageBytes = Buffer.from(value);
   const keyBytes = Buffer.from(key, 'base64');
@@ -129,7 +130,7 @@ async function createGitHubEnv(slug) {
   try {
     console.log("🤫 Okay, now configuring the environment with secrets...")
 
-    const secrets = ["GOOGLE_CREDENTIALS_EMAIL", "GOOGLE_CREDENTIALS_PRIVATE_KEY", "HASURA_API_URL", "NEXT_PUBLIC_ANALYTICS_VIEW_ID", "ORG_SLUG", "SITE_URL"];
+    const secrets = ["GOOGLE_CREDENTIALS_EMAIL", "GOOGLE_CREDENTIALS_PRIVATE_KEY", "HASURA_API_URL", "NEXT_PUBLIC_ANALYTICS_VIEW_ID", "ORG_SLUG", "NEXT_PUBLIC_SITE_URL", "LETTERHEAD_API_URL", "LETTERHEAD_API_KEY", "LETTERHEAD_CHANNEL_SLUG", "AUTHORIZED_EMAIL_DOMAINS"];
 
     const pubKeyResult = await octokit.rest.actions.getRepoPublicKey({
       owner,
@@ -184,66 +185,69 @@ async function setupGitHubAction(slug) {
 }
 
 async function setupGoogleAnalytics(name, url) {
-  analytics.management.webproperties.insert(
+  let response = await analytics.management.webproperties.insert(
     {
       accountId: googleAnalyticsAccountID,
       resource: {
         websiteUrl: url,
         name: name,
       }
-  })
-  .then((response) => {
-    let propertyId = response.data.id;
-    console.log(`[GA] Created property with ID ${propertyId} for ${response.data.name} on domain ${response.data.websiteUrl}`);
+  });
+  let propertyId = response.data.id;
+  console.log(`[GA] Created property with ID ${propertyId} for ${response.data.name} on domain ${response.data.websiteUrl}`);
 
-    // create the view (aka profile)
-    analytics.management.profiles.insert(
-      {
-        accountId: googleAnalyticsAccountID,
-        webPropertyId: propertyId,
-        resource: {
-          name: `${name} website`,
-          botFilteringEnabled: true,
-        }
+  // create the view (aka profile)
+  let profileResponse = await analytics.management.profiles.insert(
+    {
+      accountId: googleAnalyticsAccountID,
+      webPropertyId: propertyId,
+      resource: {
+        name: `${name} website`,
+        botFilteringEnabled: true,
+      }
+  });
+
+  console.log(`[GA] Created view with ID ${profileResponse.data.id}`);
+  console.log(`[GA] Current status of accounts:`);
+  let statusResponse = await analytics.management.webproperties.list({'accountId': googleAnalyticsAccountID});
+  if (statusResponse.data.items && statusResponse.data.items.length) {
+    statusResponse.data.items.map( (item) => {
+      console.log(`[GA] * ${item.id}: ${item.name} (${item.profileCount} profiles)` )
     })
-    .then( (res) => {
-      console.log(`[GA] Created view with ID ${res.data.id}`);
-      console.log(`[GA] Current status of accounts:`);
-      analytics.management.webproperties.list({'accountId': googleAnalyticsAccountID})
-      .then((response) => {
-        if (response.data.items && response.data.items.length) {
-          response.data.items.map( (item) => {
-            console.log(`[GA] * ${item.id}: ${item.name} (${item.profileCount} profiles)` )
-          })
-        } else {
-          console.error("No properties found in GA Account:", googleAnalyticsAccountID);
-        }
-      })
-      .catch((e) => console.error("[GA] Error listing accounts:", e ));
-
-    })
-    .catch((e) => console.error("[GA] Error creating view:", e ));
-  })
-  .catch((e) => console.error("[GA] Error creating property:", e ));
-
+  } else {
+    console.error("No properties found in GA Account:", googleAnalyticsAccountID);
+  }
+  return propertyId;
 }
 
 // sets up org-specific ENV values
-function configureNext(name, slug, locales) {
+function configureNext(name, slug, locales, url, gaTrackingId) {
   const currentEnv = require('dotenv').config({ path: '.env.local' })
 
   if (currentEnv.error) {
     throw currentEnv.error
   }
 
+  const parsedUrl = new URL(url);
+  let hostName = parsedUrl.hostname;
+  let domain;
+  if (hostName.match(/^www/)) { // should we try matching any other subdomain here?
+    domain = hostName.replace(/^[^.]+\./g, '');
+  } else {
+    domain = hostName;
+  }
+  currentEnv.parsed['AUTHORIZED_EMAIL_DOMAINS'] = domain;
+  currentEnv.parsed['NEXT_PUBLIC_SITE_URL'] = url;
   // set these to the new organization values
   currentEnv.parsed['ORG_NAME'] = name;
   currentEnv.parsed['ORG_SLUG'] = slug;
   currentEnv.parsed['TNC_AWS_DIR_NAME'] = slug;
-  currentEnv.parsed['TNC_AWS_BUCKET_NAME'] = `tnc-uploads-${slug}`;
+  currentEnv.parsed['NEXT_PUBLIC_GA_TRACKING_ID'] = gaTrackingId;
 
-  let previousLocales = currentEnv.parsed['LOCALES'].split(',');
-  currentEnv.parsed['LOCALES'] = arrayUnique(locales.concat(previousLocales)).join(',');
+  currentEnv.parsed['LOCALES'] = arrayUnique(locales).join(',');
+
+  console.log("Creating new environment file using the following settings:");
+  console.log(currentEnv.parsed);
 
   var stream = fs.createWriteStream(".new.env.local", {flags:'a'});
   Object.keys(currentEnv.parsed).map((key) =>{
@@ -264,7 +268,10 @@ async function createOrganization(opts) {
   let locales = opts.locales;
   let url = opts.url;
 
-  configureNext(name, slug, locales);
+  let gaTrackingId = await setupGoogleAnalytics(name, url);
+  console.log("GA Tracking ID: ", gaTrackingId);
+
+  configureNext(name, slug, locales, url, gaTrackingId);
 
   const { errors, data } = await shared.hasuraInsertOrganization({
     url: apiUrl,
@@ -371,19 +378,18 @@ async function createOrganization(opts) {
         let siteMetadata = {
           "color": "colorone",
           "theme": "styleone",
-          "siteUrl": "https://tinynewsco.org/",
+          "siteUrl": url,
           "aboutCTA": "Learn more",
           "aboutDek": `About the ${name} TK`,
           "aboutHed": "Who We Are",
-          "bodyFont": "Source Sans Pro",
+          "bodyFont": "Domine",
           "shortName": name,
           "supportCTA": "Donate",
           "supportDek": `${name} exists based on the support of our readers. Chip in today to help us continue delivering quality journalism.`,
           "supportHed": "Support our work",
           "supportURL": "https://tiny-news-collective.monkeypod.io/give/support-the-oaklyn-observer?secret=84fc2987ea6e8f11b8f4f8aca8b749d7",
-          "footerTitle": "tinynewsco.org",
-          "headingFont": "Source Serif Pro",
-          "landingPage": false,
+          "footerTitle": url,
+          "headingFont": "Libre Franklin",
           "searchTitle": name,
           "primaryColor": "#de7a00",
           "twitterTitle": "Twitter title",
@@ -397,8 +403,8 @@ async function createOrganization(opts) {
           "donateBlockHed": "Donate",
           "secondaryColor": "#002c57",
           "donationOptions": "[{\n\"amount\": 5,\n\"name\": \"Member\",\n\"description\": \"This is a description.\"\n},\n{\n\"amount\": 10,\n\"name\": \"Supporter\",\n\"description\": \"This is a description.\"\n},\n{\n\"amount\": 20,\n\"name\": \"Superuser\",\n\"description\": \"This is a description.\"\n}]",
-          "footerBylineLink": "https://newscatalyst.org",
-          "footerBylineName": "News Catalyst",
+          "footerBylineLink": url,
+          "footerBylineName": name,
           "searchDescription": "Page description",
           "twitterDescription": "Twitter description",
           "facebookDescription": "Facebook description",
@@ -417,8 +423,6 @@ async function createOrganization(opts) {
             console.log("created site metadata for " + name + " in locale " + locale);
           })
         })
-
-        setupGoogleAnalytics(name, url);
 
         setupGitHubAction(slug);
         createGitHubEnv(slug);

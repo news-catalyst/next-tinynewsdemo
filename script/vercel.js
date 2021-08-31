@@ -20,7 +20,7 @@ async function getProjects() {
   let ncTeam = teamsData.teams.find((data) => data.slug === 'news-catalyst');
 
   let teamId = ncTeam.id;
-  console.log("news catalyst team id: ", teamId)
+  // console.log("news catalyst team id: ", teamId)
 
   let url = "https://api.vercel.com/v4/projects/?teamId=" + teamId;
   let result = await fetch(url, {
@@ -50,11 +50,11 @@ async function createProject(name, slug) {
   let ncTeam = teamsData.teams.find((data) => data.slug === 'news-catalyst');
 
   let teamId = ncTeam.id;
-  console.log("news catalyst team id: ", teamId)
+  // console.log("news catalyst team id: ", teamId)
 
   let url = BASE_URL + "/projects?teamId=" + teamId;
 
-  console.log("Creating Vercel project with name:", name)
+  console.log("[vercel] Creating project with name:", name)
 
   let requestBody = JSON.stringify({
     name: slug,
@@ -74,10 +74,10 @@ async function createProject(name, slug) {
     const data = await response.json();
 
     if (data && data.error) {
-      console.error("[" + data.error.code + "] Unable to create Vercel project '" + slug + "' because: " + data.error.message);
+      console.error("[vercel] " + data.error.code + " Unable to create project '" + slug + "' because: " + data.error.message);
     } else {
       domain = data.alias[0].domain;
-      console.log("Created Vercel project for " + name + " with name " + slug);
+      console.log("[vercel] Created project for " + name + " with name " + slug);
 
       projectId = data.id;
 
@@ -101,6 +101,7 @@ async function createProject(name, slug) {
       const currentEnv = require('dotenv').config({ path: envFilename });
       let envData = currentEnv.parsed;
 
+      // console.log(envData);
       let results = [];
       let envSuccess = true;
       for(const key of Object.keys(envData)) {
@@ -119,9 +120,9 @@ async function createProject(name, slug) {
         });
         if (!result.ok) {
           envSuccess = false;
-          result.json().then((data) => console.log(" - failed creating env var:", key, data));
+          result.json().then((data) => console.log(" - [vercel] failed creating env var:", key, data));
         } else {
-          console.log(" - configured env var:", key)
+          console.log(" - [vercel] configured env var:", key)
         }
         results.push(result);
       }
@@ -154,15 +155,15 @@ async function createProject(name, slug) {
       results.push(previewEnvResult);
 
       console.log();
-      console.log("✅ Done! The project is created in Vercel. To deploy, push to the master branch on github");
+      console.log("[vercel] ✅ Done! The project is created. To deploy, push to the master branch on github");
       if (envSuccess) {
-        console.log("✅ All env vars are configured in Vercel from .env.local btw");
+        console.log("[vercel] ✅ All env vars are configured from .env.local btw");
       } else {
-        console.error("🤬 Unfortunately we ran into a problem configuring the env vars, though. Either try this again or set them yourself in the web admin.")
+        console.error("[vercel] 🤬 Unfortunately we ran into a problem configuring the env vars, though. Either try this again or set them yourself in the web admin.")
       }
     }
   } catch (error) {
-    console.log("error creating project in vercel:", error);
+    console.log("[vercel] error creating project:", error);
   }
 }
 
