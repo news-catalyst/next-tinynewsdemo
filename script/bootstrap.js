@@ -33,7 +33,7 @@ let organizationID;
 
 // encrypts a secret for GH environment variable setting
 function encryptSecret(key, value) {
-  console.log("encrypting", key, value);
+  // console.log("encrypting", key, value);
   // Convert the message and key to Uint8Array's (Buffer implements that interface)
   const messageBytes = Buffer.from(value);
   const keyBytes = Buffer.from(key, 'base64');
