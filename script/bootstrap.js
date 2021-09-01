@@ -249,17 +249,23 @@ function configureNext(name, slug, locales, url, gaTrackingId) {
   console.log("Creating new environment file using the following settings:");
   console.log(currentEnv.parsed);
 
-  var stream = fs.createWriteStream(".new.env.local", {flags:'a'});
-  Object.keys(currentEnv.parsed).map((key) =>{
-    stream.write(`${key}=${currentEnv.parsed[key]}` + "\n");
-  })
-  stream.end();
+  let orgEnvFilename = `.env.local-${slug}`
+  let tempEnvFilename = ".new.env.local";
 
-  let newEnvFilename = `.env.local-${slug}`
-  fs.rename('.new.env.local', newEnvFilename, function (err) {
-    if (err) throw err
-    console.log(`Successfully configured env in ${newEnvFilename} with:\n`, JSON.stringify(currentEnv));
-  })
+  var tempFile = fs.createWriteStream(tempEnvFilename, {flags:'a'});
+
+  tempFile.on('open', function(fd) {
+    Object.keys(currentEnv.parsed).map((key) =>{
+      tempFile.write(`${key}=${currentEnv.parsed[key]}` + "\n");
+    })
+    tempFile.end();
+    if (fs.existsSync(tempEnvFilename)) {
+      fs.renameSync(tempEnvFilename, orgEnvFilename);
+      console.log("Created new environment file: ", orgEnvFilename)
+    } else {
+      console.error("Temporary env file does not exist:", tempEnvFilename);
+    }
+  });
 }
 
 async function createOrganization(opts) {
