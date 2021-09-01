@@ -8,10 +8,7 @@ export default function PromotionBlock({ metadata, prefer }) {
   const donation = <DonationBlock metadata={metadata} />;
 
   if (prefer === 'newsletter') {
-    if (
-      process.env.NEXT_PUBLIC_MAILCHIMP_SUBSCRIBE_URL &&
-      !storage.getItem('TNCNewsletterSubscriber')
-    ) {
+    if (!storage.getItem('TNCNewsletterSubscriber')) {
       promo = newsletter;
     } else if (process.env.NEXT_PUBLIC_MONKEYPOD_URL) {
       promo = donation;
@@ -20,7 +17,7 @@ export default function PromotionBlock({ metadata, prefer }) {
   if (prefer === 'donation') {
     if (process.env.NEXT_PUBLIC_MONKEYPOD_URL) {
       promo = donation;
-    } else if (process.env.NEXT_PUBLIC_MAILCHIMP_SUBSCRIBE_URL) {
+    } else {
       promo = newsletter;
     }
   }
