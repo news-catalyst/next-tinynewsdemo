@@ -271,8 +271,10 @@ function configureNext(name, slug, locales, url, gaTrackingId) {
 async function createOrganization(opts) {
   let name = opts.name;
   let slug = opts.slug;
-  let locales = opts.locales;
+  let locales = opts.locales[0].split(',');
   let url = opts.url;
+
+  console.log("locales:", typeof(locales), locales);
 
   let gaTrackingId = await setupGoogleAnalytics(name, url);
   console.log("GA Tracking ID: ", gaTrackingId);
@@ -422,11 +424,17 @@ async function createOrganization(opts) {
             url: apiUrl,
             adminSecret: adminSecret,
             organization_id: organizationID,
-            data: siteMetadata,
+            data: JSON.stringify(siteMetadata),
             locale_code: locale,
             published: true,
           }).then( (res) => {
-            console.log("created site metadata for " + name + " in locale " + locale);
+            if (res.errors) {
+              console.error("FAILED creating site metadata in locale: " + locale);
+              console.error(JSON.stringify(res.errors));
+            } else {
+              console.log("created site metadata in locale " + locale);
+              console.log(JSON.stringify(res));
+            }
           })
         })
 
