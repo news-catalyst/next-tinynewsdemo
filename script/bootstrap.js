@@ -429,10 +429,10 @@ async function createOrganization(opts) {
             published: true,
           }).then( (res) => {
             if (res.errors) {
-              console.error("FAILED creating site metadata in locale: " + locale);
+              console.error("! Failed creating site metadata in locale: " + locale);
               console.error(JSON.stringify(res.errors));
             } else {
-              console.log("created site metadata in locale " + locale);
+              console.log("Created site metadata in locale " + locale);
               console.log(JSON.stringify(res));
             }
           })
