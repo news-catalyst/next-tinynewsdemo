@@ -424,7 +424,7 @@ async function createOrganization(opts) {
             url: apiUrl,
             adminSecret: adminSecret,
             organization_id: organizationID,
-            data: JSON.stringify(siteMetadata),
+            data: siteMetadata,
             locale_code: locale,
             published: true,
           }).then( (res) => {
