@@ -52,6 +52,8 @@ export default function Settings({
 }) {
   const siteInfoRef = useRef();
   const designRef = useRef();
+  const landingPageRef = useRef();
+  const commentsRef = useRef();
   const homepagePromoRef = useRef();
   const newsletterRef = useRef();
   const membershipRef = useRef();
@@ -115,6 +117,17 @@ export default function Settings({
       if (siteInfoRef) {
         siteInfoRef.current.scrollIntoView({ behavior: 'smooth' });
       }
+    } else if (window.location.hash && window.location.hash === '#comments') {
+      if (commentsRef) {
+        commentsRef.current.scrollIntoView({ behavior: 'smooth' });
+      }
+    } else if (
+      window.location.hash &&
+      window.location.hash === '#landingPage'
+    ) {
+      if (landingPageRef) {
+        landingPageRef.current.scrollIntoView({ behavior: 'smooth' });
+      }
     } else if (window.location.hash && window.location.hash === '#design') {
       if (designRef) {
         designRef.current.scrollIntoView({ behavior: 'smooth' });
@@ -151,7 +164,7 @@ export default function Settings({
 
   async function handleCancel(ev) {
     ev.preventDefault();
-    router.push('/tinycms/config');
+    router.push('/tinycms');
   }
 
   async function handleSubmit(ev) {
@@ -205,6 +218,11 @@ export default function Settings({
                 <li>
                   <Link href="/tinycms/settings#siteInfo">
                     <a>Site Information</a>
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/tinycms/settings#landingPage">
+                    <a>Landing Page</a>
                   </Link>
                 </li>
                 <li>
@@ -264,6 +282,8 @@ export default function Settings({
             <SettingsContainer>
               <SiteInfoSettings
                 siteInfoRef={siteInfoRef}
+                commentsRef={commentsRef}
+                landingPageRef={landingPageRef}
                 seoRef={seoRef}
                 newsletterRef={newsletterRef}
                 membershipRef={membershipRef}
