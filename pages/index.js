@@ -14,7 +14,7 @@ export default function Home(props) {
   }
 
   const component =
-    props.siteMetadata.landingPage || !props.selectedLayout ? (
+    props.siteMetadata.landingPage === 'on' || !props.selectedLayout ? (
       <LandingPage {...props} />
     ) : (
       <Homepage {...props} />
