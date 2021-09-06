@@ -52,7 +52,7 @@ export default function BigFeaturedStory(props) {
         <Block>
           <Asset>
             {props.editable && (
-              <div style={{ position: 'relative' }}>
+              <div>
                 <ModalArticleSearch
                   apiUrl={props.apiUrl}
                   apiToken={props.apiToken}
