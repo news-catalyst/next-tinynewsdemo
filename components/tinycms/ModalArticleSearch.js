@@ -7,6 +7,8 @@ export default function ModalArticleSearch(props) {
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
 
+  console.log('ModalArticleSearch', props.isActive);
+
   function selectArticle(article) {
     console.log(
       'changing featured article from:',

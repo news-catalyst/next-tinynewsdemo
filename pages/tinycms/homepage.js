@@ -24,6 +24,7 @@ export default function HomePageEditor({
   tags,
   sections,
   locale,
+  locales,
   siteMetadata,
   apiUrl,
   apiToken,
@@ -49,6 +50,14 @@ export default function HomePageEditor({
   }
 
   async function saveAndPublishHomepage() {
+    if (!featuredArticle) {
+      setNotificationMessage(
+        'Sorry, you must feature at least one article to save the homepage!'
+      );
+      setNotificationType('error');
+      setShowNotification(true);
+      return;
+    }
     let article1 = featuredArticle.id;
     let article2 = null;
     let article3 = null;
@@ -91,6 +100,8 @@ export default function HomePageEditor({
   return (
     <AdminLayout>
       <AdminNav
+        currentLocale={locale}
+        locales={locales}
         switchLocales={true}
         homePageEditor={true}
         layoutSchemas={layoutSchemas}
@@ -171,6 +182,8 @@ export async function getServerSideProps({ locale }) {
   }
 
   const layoutSchemas = data.homepage_layout_schemas;
+  const locales = data.organization_locales;
+
   let hpData = data.homepage_layout_datas[0];
   let hpArticles = [];
 
@@ -213,6 +226,7 @@ export async function getServerSideProps({ locale }) {
       tags,
       sections,
       locale,
+      locales,
       siteMetadata,
       apiUrl,
       apiToken,
