@@ -1,4 +1,5 @@
 import { useRouter } from 'next/router';
+import tw from 'twin.macro';
 import React, { useEffect } from 'react';
 import Layout from '../../components/Layout.js';
 import { cachedContents } from '../../lib/cached';
@@ -10,6 +11,11 @@ import { getArticleAds } from '../../lib/ads.js';
 import { hasuraLocaliseText } from '../../lib/utils.js';
 import { useAmp } from 'next/amp';
 import ArticleStream from '../../components/homepage/ArticleStream';
+import ReadInOtherLanguage from '../../components/articles/ReadInOtherLanguage';
+
+const SectionLayout = tw.section`flex mb-8`;
+const SectionContainer = tw.div`md:grid md:grid-cols-packageLayoutTablet lg:grid-cols-packageLayoutDesktop flex flex-row flex-wrap grid-rows-1 w-full px-5 mx-auto max-w-7xl`;
+const Block = tw.div`w-full`;
 
 export default function CategoryPage(props) {
   const isAmp = useAmp();
@@ -48,6 +54,17 @@ export default function CategoryPage(props) {
         metadata={props.siteMetadata}
         ads={props.expandedAds}
       />
+
+      <SectionLayout>
+        <SectionContainer>
+          <Block>
+            <ReadInOtherLanguage
+              locales={props.locales}
+              currentLocale={props.locale}
+            />
+          </Block>
+        </SectionContainer>
+      </SectionLayout>
     </Layout>
   );
 }
@@ -97,6 +114,7 @@ export async function getStaticProps({ locale, params }) {
   let articles = [];
   let sections = [];
   let tags = [];
+  let locales = [];
   let siteMetadata;
   let title;
   let categoryExists = false;
@@ -116,6 +134,7 @@ export async function getStaticProps({ locale, params }) {
   } else {
     articles = data.articles;
     sections = data.categories;
+    locales = data.organization_locales;
 
     for (var i = 0; i < sections.length; i++) {
       sections[i].title = hasuraLocaliseText(
@@ -165,6 +184,8 @@ export async function getStaticProps({ locale, params }) {
       siteMetadata,
       expandedAds,
       renderFooter,
+      locale,
+      locales,
     },
   };
 }
