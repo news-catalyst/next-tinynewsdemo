@@ -66,7 +66,14 @@ async function listTags() {
 }
 
 function getAds() {
-  const url = process.env.LETTERHEAD_API_URL;
+  let today = new Date();
+  const dd = String(today.getDate()).padStart(2, '0');
+  const mm = String(today.getMonth() + 1).padStart(2, '0');
+  const yyyy = today.getFullYear();
+
+  today = `${yyyy}-${mm}-${dd}`;
+
+  const url = `${process.env.LETTERHEAD_API_URL}promotions?date=${today}`;
   const opts = {
     headers: {
       'Content-Type': 'application/json',
