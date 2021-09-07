@@ -13,8 +13,9 @@ export default function Home(props) {
     return <CurriculumHomepage {...props} />;
   }
 
+  console.log(props.siteMetadata.landingPage, props.selectedLayout);
   const component =
-    props.siteMetadata.landingPage || !props.selectedLayout ? (
+    props.siteMetadata.landingPage === 'on' || !props.selectedLayout ? (
       <LandingPage {...props} />
     ) : (
       <Homepage {...props} />
@@ -45,7 +46,7 @@ export async function getStaticProps({ locale }) {
     console.log('failed finding site metadata for ', locale, metadatas);
   }
 
-  if (siteMetadata && siteMetadata.landingPage) {
+  if (siteMetadata && siteMetadata.landingPage === 'on') {
     return {
       props: {
         locale,

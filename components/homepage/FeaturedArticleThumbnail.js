@@ -9,10 +9,8 @@ export default function FeaturedArticleThumbnail({ article, isAmp }) {
   let mainImageNode = null;
 
   const translation = article['article_translations'][0];
-
-  mainImageNode = translation.main_image;
-
   try {
+    mainImageNode = translation.main_image;
     if (mainImageNode && Object.keys(mainImageNode).length > 0) {
       mainImage = mainImageNode.children[0];
     }
