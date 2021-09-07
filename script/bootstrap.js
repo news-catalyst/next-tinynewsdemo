@@ -249,24 +249,32 @@ function configureNext(name, slug, locales, url, gaTrackingId) {
   console.log("Creating new environment file using the following settings:");
   console.log(currentEnv.parsed);
 
-  var stream = fs.createWriteStream(".new.env.local", {flags:'a'});
-  Object.keys(currentEnv.parsed).map((key) =>{
-    stream.write(`${key}=${currentEnv.parsed[key]}` + "\n");
-  })
-  stream.end();
+  let orgEnvFilename = `.env.local-${slug}`
+  let tempEnvFilename = ".new.env.local";
 
-  let newEnvFilename = `.env.local-${slug}`
-  fs.rename('.new.env.local', newEnvFilename, function (err) {
-    if (err) throw err
-    console.log(`Successfully configured env in ${newEnvFilename} with:\n`, JSON.stringify(currentEnv));
-  })
+  var tempFile = fs.createWriteStream(tempEnvFilename, {flags:'a'});
+
+  tempFile.on('open', function(fd) {
+    Object.keys(currentEnv.parsed).map((key) =>{
+      tempFile.write(`${key}=${currentEnv.parsed[key]}` + "\n");
+    })
+    tempFile.end();
+    if (fs.existsSync(tempEnvFilename)) {
+      fs.renameSync(tempEnvFilename, orgEnvFilename);
+      console.log("Created new environment file: ", orgEnvFilename)
+    } else {
+      console.error("Temporary env file does not exist:", tempEnvFilename);
+    }
+  });
 }
 
 async function createOrganization(opts) {
   let name = opts.name;
   let slug = opts.slug;
-  let locales = opts.locales;
+  let locales = opts.locales[0].split(',');
   let url = opts.url;
+
+  console.log("locales:", typeof(locales), locales);
 
   let gaTrackingId = await setupGoogleAnalytics(name, url);
   console.log("GA Tracking ID: ", gaTrackingId);
@@ -420,7 +428,13 @@ async function createOrganization(opts) {
             locale_code: locale,
             published: true,
           }).then( (res) => {
-            console.log("created site metadata for " + name + " in locale " + locale);
+            if (res.errors) {
+              console.error("! Failed creating site metadata in locale: " + locale);
+              console.error(JSON.stringify(res.errors));
+            } else {
+              console.log("Created site metadata in locale " + locale);
+              console.log(JSON.stringify(res));
+            }
           })
         })
 
