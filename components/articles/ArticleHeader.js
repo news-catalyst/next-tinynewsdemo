@@ -83,10 +83,12 @@ export default function ArticleHeader({
         <ArticleTitle meta={metadata}>{headline}</ArticleTitle>
         <ArticleDek meta={metadata}>{searchDescription}</ArticleDek>
         <PublishDate article={article} meta={metadata} />
-        <ReadInOtherLanguage
-          locales={locales}
-          currentLocale={article.article_translations[0].locale_code}
-        />
+        {locales.length > 1 && (
+          <ReadInOtherLanguage
+            locales={locales}
+            currentLocale={article.article_translations[0].locale_code}
+          />
+        )}
         <ArticleFeaturedMedia>
           <FeaturedMediaFigure>
             <FeaturedMediaWrapper>

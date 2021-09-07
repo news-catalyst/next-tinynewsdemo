@@ -47,13 +47,15 @@ export default function TagPage({
         metadata={siteMetadata}
         ads={expandedAds}
       />
-      <SectionLayout>
-        <SectionContainer>
-          <Block>
-            <ReadInOtherLanguage locales={locales} currentLocale={locale} />
-          </Block>
-        </SectionContainer>
-      </SectionLayout>
+      {locales.length > 1 && (
+        <SectionLayout>
+          <SectionContainer>
+            <Block>
+              <ReadInOtherLanguage locales={locales} currentLocale={locale} />
+            </Block>
+          </SectionContainer>
+        </SectionLayout>
+      )}
     </Layout>
   );
 }
