@@ -41,6 +41,7 @@ export default function ArticleHeader({
   metadata,
   mainImage,
   locales,
+  publishedLocales,
 }) {
   if (!article) {
     return null;
@@ -69,6 +70,23 @@ export default function ArticleHeader({
     authorPhoto = article.author_articles[0].author.photoUrl;
   }
 
+  // this block of code bui9lds an array of locales the article is available in
+  // by comparing the list of all site locales with the list of published translations
+  // ex: site locales [en, es]; this article published in [en, es]; current locale is english;
+  // 'ReadInOtherLanguage' component should show "Read in Spanish" link
+  // (logic around current locale is in the component itself)
+  let readLocales = [];
+  let currentLocale = article.article_translations[0].locale_code;
+  if (locales.length > 1) {
+    locales.forEach((siteLocale) => {
+      publishedLocales.forEach((articleLocale) => {
+        if (siteLocale.locale.code === articleLocale.locale_code) {
+          readLocales.push(siteLocale);
+        }
+      });
+    });
+  }
+
   return (
     <section key="title" className="section post__header">
       <SectionContainer>
@@ -83,10 +101,10 @@ export default function ArticleHeader({
         <ArticleTitle meta={metadata}>{headline}</ArticleTitle>
         <ArticleDek meta={metadata}>{searchDescription}</ArticleDek>
         <PublishDate article={article} meta={metadata} />
-        {locales.length > 1 && (
+        {readLocales.length > 1 && (
           <ReadInOtherLanguage
-            locales={locales}
-            currentLocale={article.article_translations[0].locale_code}
+            locales={readLocales}
+            currentLocale={currentLocale}
           />
         )}
         <ArticleFeaturedMedia>
