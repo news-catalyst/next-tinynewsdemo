@@ -85,7 +85,7 @@ export default function ArticleHeader({
         <PublishDate article={article} meta={metadata} />
         <ReadInOtherLanguage
           locales={locales}
-          translations={article.article_translations}
+          currentLocale={article.article_translations[0].locale_code}
         />
         <ArticleFeaturedMedia>
           <FeaturedMediaFigure>
