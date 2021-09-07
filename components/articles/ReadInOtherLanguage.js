@@ -2,10 +2,6 @@ import { useRouter } from 'next/router';
 import Link from 'next/link';
 
 export default function ReadInOtherLanguage({ locales, currentLocale }) {
-  if (locales.length < 1) {
-    return;
-  }
-
   const router = useRouter();
 
   let otherLocales = locales.filter(

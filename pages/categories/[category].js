@@ -54,17 +54,18 @@ export default function CategoryPage(props) {
         metadata={props.siteMetadata}
         ads={props.expandedAds}
       />
-
-      <SectionLayout>
-        <SectionContainer>
-          <Block>
-            <ReadInOtherLanguage
-              locales={props.locales}
-              currentLocale={props.locale}
-            />
-          </Block>
-        </SectionContainer>
-      </SectionLayout>
+      {props.locales.length > 1 && (
+        <SectionLayout>
+          <SectionContainer>
+            <Block>
+              <ReadInOtherLanguage
+                locales={props.locales}
+                currentLocale={props.locale}
+              />
+            </Block>
+          </SectionContainer>
+        </SectionLayout>
+      )}
     </Layout>
   );
 }
