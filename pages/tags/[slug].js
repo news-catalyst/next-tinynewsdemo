@@ -1,5 +1,4 @@
 import { useRouter } from 'next/router';
-import tw from 'twin.macro';
 import Layout from '../../components/Layout.js';
 import { hasuraTagPage, hasuraListAllTags } from '../../lib/articles.js';
 import { cachedContents } from '../../lib/cached';
@@ -8,10 +7,11 @@ import { hasuraLocaliseText } from '../../lib/utils.js';
 import { useAmp } from 'next/amp';
 import ArticleStream from '../../components/homepage/ArticleStream';
 import ReadInOtherLanguage from '../../components/articles/ReadInOtherLanguage';
-
-const SectionLayout = tw.section`flex mb-8`;
-const SectionContainer = tw.div`md:grid md:grid-cols-packageLayoutTablet lg:grid-cols-packageLayoutDesktop flex flex-row flex-wrap grid-rows-1 w-full px-5 mx-auto max-w-7xl`;
-const Block = tw.div`w-full`;
+import {
+  SectionContainer,
+  SectionLayout,
+  Block,
+} from '../../components/common/CommonStyles';
 
 export default function TagPage({
   articles,
