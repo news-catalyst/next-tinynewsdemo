@@ -66,6 +66,7 @@ export async function getStaticProps({ locale, params }) {
   let sectionArticles = [];
   let sections = [];
   let locales = [];
+  let publishedLocales = [];
   let siteMetadata;
   const { errors, data } = await hasuraArticlePage({
     url: apiUrl,
@@ -94,6 +95,7 @@ export async function getStaticProps({ locale, params }) {
     }
 
     locales = data.organization_locales;
+    publishedLocales = data.published_article_translations;
     article = data.article_slug_versions[0].article;
     // article = data.articles.find((a) => a.slug === params.slug);
 
@@ -137,6 +139,7 @@ export async function getStaticProps({ locale, params }) {
       sectionArticles,
       renderFooter,
       locales,
+      publishedLocales,
     },
     // Re-generate the post at most once per second
     // if a request comes in
