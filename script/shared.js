@@ -145,7 +145,19 @@ function hasuraInsertOrgLocales(params) {
 }
 
 const HASURA_UPSERT_METADATA = `mutation FrontendUpsertMetadata($published: Boolean, $data: jsonb, $locale_code: String, $organization_id: Int!) {
-  insert_site_metadatas(objects: {organization_id: $organization_id, published: $published, site_metadata_translations: {data: {data: $data, locale_code: $locale_code}, on_conflict: {constraint: site_metadata_translations_locale_code_site_metadata_id_key, update_columns: data}}}, on_conflict: {constraint: site_metadatas_organization_id_key, update_columns: published}) {
+  insert_site_metadatas(objects: {
+    organization_id: $organization_id, published: $published, 
+    site_metadata_translations: {
+      data: {
+        data: $data, 
+        locale_code: $locale_code
+      }, 
+      on_conflict: {
+        constraint: site_metadata_translations_locale_code_site_metadata_id_key, 
+        update_columns: data
+      }
+    }
+  }, on_conflict: {constraint: site_metadatas_organization_id_key, update_columns: published}) {
     returning {
       id
       published
