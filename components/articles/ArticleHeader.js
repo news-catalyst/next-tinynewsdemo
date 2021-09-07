@@ -7,6 +7,7 @@ import MainImage from './MainImage.js';
 import { hasuraLocaliseText, renderAuthors } from '../../lib/utils.js';
 import { ArticleTitle } from '../common/CommonStyles.js';
 import Typography from '../common/Typography';
+import ReadInOtherLanguage from './ReadInOtherLanguage.js';
 
 const SectionContainer = tw.div`flex mx-auto max-w-5xl px-4 flex-col flex-nowrap`;
 const ArticleDescriptor = styled.span(({ meta }) => ({
@@ -34,7 +35,13 @@ const ArticleShareWrapper = tw.ul`inline-flex flex-row flex-nowrap items-center`
 const ShareItem = tw.li`mr-2`;
 const ShareButton = tw.span`bg-no-repeat bg-center border-gray-200 border inline-flex flex items-center justify-center w-10 h-10 pl-6 overflow-hidden rounded-full leading-none text-sm`;
 
-export default function ArticleHeader({ article, isAmp, metadata, mainImage }) {
+export default function ArticleHeader({
+  article,
+  isAmp,
+  metadata,
+  mainImage,
+  locales,
+}) {
   if (!article) {
     return null;
   }
@@ -76,6 +83,10 @@ export default function ArticleHeader({ article, isAmp, metadata, mainImage }) {
         <ArticleTitle meta={metadata}>{headline}</ArticleTitle>
         <ArticleDek meta={metadata}>{searchDescription}</ArticleDek>
         <PublishDate article={article} meta={metadata} />
+        <ReadInOtherLanguage
+          locales={locales}
+          translations={article.article_translations}
+        />
         <ArticleFeaturedMedia>
           <FeaturedMediaFigure>
             <FeaturedMediaWrapper>
