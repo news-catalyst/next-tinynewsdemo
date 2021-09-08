@@ -5,7 +5,13 @@ import { hasuraGetPage, hasuraListAllPageSlugs } from '../../lib/articles.js';
 import { hasuraLocaliseText } from '../../lib/utils';
 import StaticPage from '../../components/StaticPage';
 
-export default function Static({ page, sections, siteMetadata }) {
+export default function Static({
+  page,
+  sections,
+  siteMetadata,
+  locales,
+  locale,
+}) {
   const router = useRouter();
   const isAmp = useAmp();
 
@@ -18,12 +24,16 @@ export default function Static({ page, sections, siteMetadata }) {
   }
 
   return (
-    <StaticPage
-      isAmp={isAmp}
-      page={page}
-      sections={sections}
-      siteMetadata={siteMetadata}
-    />
+    <>
+      <StaticPage
+        isAmp={isAmp}
+        page={page}
+        sections={sections}
+        siteMetadata={siteMetadata}
+        locales={locales}
+        currentLocale={locale}
+      />
+    </>
   );
 }
 
@@ -57,6 +67,7 @@ export async function getStaticProps({ locale, params }) {
 
   let page = {};
   let sections;
+  let locales = [];
   let siteMetadata = {};
 
   const { errors, data } = await hasuraGetPage({
@@ -81,8 +92,19 @@ export async function getStaticProps({ locale, params }) {
     }
 
     page = data.page_slug_versions[0].page;
-    sections = data.categories;
+    var allPageLocales = data.pages[0].page_translations;
+    var distinctLocaleCodes = [];
+    var distinctLocales = [];
+    for (var i = 0; i < allPageLocales.length; i++) {
+      if (!distinctLocaleCodes.includes(allPageLocales[i].locale.code)) {
+        distinctLocaleCodes.push(allPageLocales[i].locale.code);
+        distinctLocales.push(allPageLocales[i]);
+      }
+    }
+    locales = distinctLocales;
     siteMetadata = data.site_metadatas[0].site_metadata_translations[0].data;
+
+    sections = data.categories;
     for (var i = 0; i < sections.length; i++) {
       sections[i].title = hasuraLocaliseText(
         sections[i].category_translations,
@@ -96,6 +118,8 @@ export async function getStaticProps({ locale, params }) {
       page,
       sections,
       siteMetadata,
+      locales,
+      locale,
     },
   };
 }
