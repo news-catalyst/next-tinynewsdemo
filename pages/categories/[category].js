@@ -10,6 +10,12 @@ import { getArticleAds } from '../../lib/ads.js';
 import { hasuraLocaliseText } from '../../lib/utils.js';
 import { useAmp } from 'next/amp';
 import ArticleStream from '../../components/homepage/ArticleStream';
+import ReadInOtherLanguage from '../../components/articles/ReadInOtherLanguage';
+import {
+  SectionContainer,
+  SectionLayout,
+  Block,
+} from '../../components/common/CommonStyles';
 
 export default function CategoryPage(props) {
   const isAmp = useAmp();
@@ -48,6 +54,18 @@ export default function CategoryPage(props) {
         metadata={props.siteMetadata}
         ads={props.expandedAds}
       />
+      {props.locales.length > 1 && (
+        <SectionLayout>
+          <SectionContainer>
+            <Block>
+              <ReadInOtherLanguage
+                locales={props.locales}
+                currentLocale={props.locale}
+              />
+            </Block>
+          </SectionContainer>
+        </SectionLayout>
+      )}
     </Layout>
   );
 }
@@ -97,6 +115,7 @@ export async function getStaticProps({ locale, params }) {
   let articles = [];
   let sections = [];
   let tags = [];
+  let locales = [];
   let siteMetadata;
   let title;
   let categoryExists = false;
@@ -116,6 +135,7 @@ export async function getStaticProps({ locale, params }) {
   } else {
     articles = data.articles;
     sections = data.categories;
+    locales = data.organization_locales;
 
     for (var i = 0; i < sections.length; i++) {
       sections[i].title = hasuraLocaliseText(
@@ -165,6 +185,8 @@ export async function getStaticProps({ locale, params }) {
       siteMetadata,
       expandedAds,
       renderFooter,
+      locale,
+      locales,
     },
   };
 }

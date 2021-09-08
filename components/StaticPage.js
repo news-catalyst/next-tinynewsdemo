@@ -5,11 +5,21 @@ import {
   ArticleTitle,
   PostTextContainer,
   PostText,
+  SectionLayout,
+  Block,
 } from './common/CommonStyles.js';
+import ReadInOtherLanguage from '../components/articles/ReadInOtherLanguage';
 
 const SectionContainer = tw.div`flex flex-col flex-nowrap items-center px-5 mx-auto max-w-7xl w-full`;
 
-export default function StaticPage({ siteMetadata, sections, page, isAmp }) {
+export default function StaticPage({
+  siteMetadata,
+  sections,
+  page,
+  isAmp,
+  locales,
+  currentLocale,
+}) {
   let baseUrl = process.env.NEXT_PUBLIC_SITE_URL || siteMetadata['siteUrl'];
   // this is used for the canonical link tag in the Layout component
   let canonicalPageUrl = generatePageUrl(baseUrl, page);
@@ -32,6 +42,19 @@ export default function StaticPage({ siteMetadata, sections, page, isAmp }) {
         <PostText>
           <PostTextContainer>{body}</PostTextContainer>
         </PostText>
+
+        {locales.length > 1 && (
+          <SectionLayout>
+            <SectionContainer>
+              <Block>
+                <ReadInOtherLanguage
+                  locales={locales}
+                  currentLocale={currentLocale}
+                />
+              </Block>
+            </SectionContainer>
+          </SectionLayout>
+        )}
       </SectionContainer>
     </Layout>
   );

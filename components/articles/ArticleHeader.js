@@ -7,6 +7,7 @@ import MainImage from './MainImage.js';
 import { hasuraLocaliseText, renderAuthors } from '../../lib/utils.js';
 import { ArticleTitle } from '../common/CommonStyles.js';
 import Typography from '../common/Typography';
+import ReadInOtherLanguage from './ReadInOtherLanguage.js';
 
 const SectionContainer = tw.div`flex mx-auto max-w-5xl px-4 flex-col flex-nowrap`;
 const ArticleDescriptor = styled.span(({ meta }) => ({
@@ -34,7 +35,14 @@ const ArticleShareWrapper = tw.ul`inline-flex flex-row flex-nowrap items-center`
 const ShareItem = tw.li`mr-2`;
 const ShareButton = tw.span`bg-no-repeat bg-center border-gray-200 border inline-flex flex items-center justify-center w-10 h-10 pl-6 overflow-hidden rounded-full leading-none text-sm`;
 
-export default function ArticleHeader({ article, isAmp, metadata, mainImage }) {
+export default function ArticleHeader({
+  article,
+  isAmp,
+  metadata,
+  mainImage,
+  locales,
+  publishedLocales,
+}) {
   if (!article) {
     return null;
   }
@@ -62,6 +70,23 @@ export default function ArticleHeader({ article, isAmp, metadata, mainImage }) {
     authorPhoto = article.author_articles[0].author.photoUrl;
   }
 
+  // this block of code bui9lds an array of locales the article is available in
+  // by comparing the list of all site locales with the list of published translations
+  // ex: site locales [en, es]; this article published in [en, es]; current locale is english;
+  // 'ReadInOtherLanguage' component should show "Read in Spanish" link
+  // (logic around current locale is in the component itself)
+  let readLocales = [];
+  let currentLocale = article.article_translations[0].locale_code;
+  if (locales.length > 1) {
+    locales.forEach((siteLocale) => {
+      publishedLocales.forEach((articleLocale) => {
+        if (siteLocale.locale.code === articleLocale.locale_code) {
+          readLocales.push(siteLocale);
+        }
+      });
+    });
+  }
+
   return (
     <section key="title" className="section post__header">
       <SectionContainer>
@@ -76,6 +101,12 @@ export default function ArticleHeader({ article, isAmp, metadata, mainImage }) {
         <ArticleTitle meta={metadata}>{headline}</ArticleTitle>
         <ArticleDek meta={metadata}>{searchDescription}</ArticleDek>
         <PublishDate article={article} meta={metadata} />
+        {readLocales.length > 1 && (
+          <ReadInOtherLanguage
+            locales={readLocales}
+            currentLocale={currentLocale}
+          />
+        )}
         <ArticleFeaturedMedia>
           <FeaturedMediaFigure>
             <FeaturedMediaWrapper>

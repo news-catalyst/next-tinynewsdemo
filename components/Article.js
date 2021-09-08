@@ -14,6 +14,8 @@ export default function Article({
   siteMetadata,
   sectionArticles,
   renderFooter,
+  locales,
+  publishedLocales,
 }) {
   const isAmp = useAmp();
 
@@ -62,6 +64,8 @@ export default function Article({
           isAmp={isAmp}
           metadata={siteMetadata}
           mainImage={mainImage}
+          locales={locales}
+          publishedLocales={publishedLocales}
         />
         <section className="section post__body rich-text" key="body">
           <ArticleBody
