@@ -11,6 +11,12 @@ import { useAmp } from 'next/amp';
 import ArticleStream from '../../components/homepage/ArticleStream';
 import tw from 'twin.macro';
 import { Anchor } from '../../components/common/CommonStyles.js';
+import ReadInOtherLanguage from '../../components/articles/ReadInOtherLanguage';
+import {
+  SectionContainer,
+  SectionLayout,
+  Block,
+} from '../../components/common/CommonStyles';
 
 export default function AuthorPage({
   sections,
@@ -18,6 +24,8 @@ export default function AuthorPage({
   author,
   siteMetadata,
   expandedAds,
+  locales,
+  locale,
 }) {
   const router = useRouter();
   const isAmp = useAmp();
@@ -87,6 +95,15 @@ export default function AuthorPage({
         metadata={siteMetadata}
         ads={expandedAds}
       />
+      {locales.length > 1 && (
+        <SectionLayout>
+          <SectionContainer>
+            <Block>
+              <ReadInOtherLanguage locales={locales} currentLocale={locale} />
+            </Block>
+          </SectionContainer>
+        </SectionLayout>
+      )}
     </Layout>
   );
 }
@@ -134,6 +151,7 @@ export async function getStaticProps({ locale, params }) {
 
   let articles = [];
   let sections = [];
+  let locales = [];
   let author;
   let siteMetadata;
 
@@ -152,6 +170,7 @@ export async function getStaticProps({ locale, params }) {
     articles = data.articles;
     sections = data.categories;
     author = data.authors[0];
+    locales = data.organization_locales;
 
     for (var i = 0; i < sections.length; i++) {
       sections[i].title = hasuraLocaliseText(
@@ -187,6 +206,8 @@ export async function getStaticProps({ locale, params }) {
       author,
       siteMetadata,
       expandedAds,
+      locales,
+      locale,
     },
   };
 }

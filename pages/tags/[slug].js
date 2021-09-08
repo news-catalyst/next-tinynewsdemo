@@ -6,6 +6,12 @@ import { getArticleAds } from '../../lib/ads.js';
 import { hasuraLocaliseText } from '../../lib/utils.js';
 import { useAmp } from 'next/amp';
 import ArticleStream from '../../components/homepage/ArticleStream';
+import ReadInOtherLanguage from '../../components/articles/ReadInOtherLanguage';
+import {
+  SectionContainer,
+  SectionLayout,
+  Block,
+} from '../../components/common/CommonStyles';
 
 export default function TagPage({
   articles,
@@ -13,6 +19,8 @@ export default function TagPage({
   sections,
   siteMetadata,
   expandedAds,
+  locale,
+  locales,
 }) {
   const router = useRouter();
   const isAmp = useAmp();
@@ -39,6 +47,15 @@ export default function TagPage({
         metadata={siteMetadata}
         ads={expandedAds}
       />
+      {locales.length > 1 && (
+        <SectionLayout>
+          <SectionContainer>
+            <Block>
+              <ReadInOtherLanguage locales={locales} currentLocale={locale} />
+            </Block>
+          </SectionContainer>
+        </SectionLayout>
+      )}
     </Layout>
   );
 }
@@ -81,6 +98,7 @@ export async function getStaticProps({ locale, params }) {
 
   let articles = [];
   let sections = [];
+  let locales = [];
   let tag;
   let siteMetadata;
 
@@ -116,6 +134,8 @@ export async function getStaticProps({ locale, params }) {
       );
     }
 
+    locales = data.organization_locales;
+
     let metadatas = data.site_metadatas;
     try {
       siteMetadata = metadatas[0].site_metadata_translations[0].data;
@@ -137,6 +157,8 @@ export async function getStaticProps({ locale, params }) {
       sections,
       siteMetadata,
       expandedAds,
+      locale,
+      locales,
     },
   };
 }
