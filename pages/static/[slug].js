@@ -105,9 +105,9 @@ export async function getStaticProps({ locale, params }) {
     siteMetadata = data.site_metadatas[0].site_metadata_translations[0].data;
 
     sections = data.categories;
-    for (var i = 0; i < sections.length; i++) {
-      sections[i].title = hasuraLocaliseText(
-        sections[i].category_translations,
+    for (var j = 0; j < sections.length; j++) {
+      sections[j].title = hasuraLocaliseText(
+        sections[j].category_translations,
         'title'
       );
     }
