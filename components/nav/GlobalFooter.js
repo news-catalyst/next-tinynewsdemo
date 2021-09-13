@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import tw from 'twin.macro';
 
 const Footer = tw.footer`flex items-center justify-center bg-gray-200 h-40 text-xl uppercase`;
@@ -20,6 +21,7 @@ export default function GlobalFooter(props) {
     bylineLink = props.metadata['footerBylineLink'];
     byline = props.metadata['footerBylineName'];
   }
+  const currentYear = new Date().getFullYear();
   return (
     <Footer>
       <div>
@@ -29,7 +31,9 @@ export default function GlobalFooter(props) {
           </FooterTitle>
           <FooterLinksDiv>
             <FooterLink>
-              <FooterHoverUnderline href="./about">about</FooterHoverUnderline>{' '}
+              <Link href="/about" passHref>
+                <FooterHoverUnderline>about</FooterHoverUnderline>
+              </Link>{' '}
             </FooterLink>
             {process.env.NEXT_PUBLIC_LETTERHEAD_ADVERTISING_STORE && (
               <FooterLink>
@@ -40,15 +44,17 @@ export default function GlobalFooter(props) {
             )}
             {process.env.NEXT_PUBLIC_MONKEYPOD_URL && (
               <FooterLink>
-                <FooterHoverUnderline href="./donate">
-                  donate
-                </FooterHoverUnderline>{' '}
+                <Link href="/donate" passHref>
+                  <FooterHoverUnderline>donate</FooterHoverUnderline>
+                </Link>{' '}
               </FooterLink>
             )}
           </FooterLinksDiv>
         </div>
         <FooterCopyright>
-          <p> copyright {title}</p>
+          <p>
+            copyright © {currentYear} {title}
+          </p>
           <p>
             this project is part of the{' '}
             <FooterHoverUnderline href="https://tinynewsco.org">
