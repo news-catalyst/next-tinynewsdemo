@@ -174,6 +174,7 @@ export default function Settings({
 
     if (jsonData && (Object.keys(parsedData).length === 0 || editData)) {
       parsed = JSON.parse(jsonData);
+      console.log('parsed:', parsed);
       setParsedData(parsed);
     }
 

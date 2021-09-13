@@ -150,7 +150,15 @@ export default function SiteInfoSettings(props) {
   const [twitterDescription, setTwitterDescription] = useState(
     props.parsedData['twitterDescription']
   );
-
+  const [founderTwitter, setFounderTwitter] = useState(
+    props.parsedData['founderTwitter']
+  );
+  const [founderInstagram, setFounderInstagram] = useState(
+    props.parsedData['founderInstagram']
+  );
+  const [founderFacebook, setFounderFacebook] = useState(
+    props.parsedData['founderFacebook']
+  );
   const [landingPage, setLandingPage] = useState(
     props.parsedData['landingPage']
   );
@@ -196,15 +204,6 @@ export default function SiteInfoSettings(props) {
     props.parsedData['donationOptions']
       ? JSON.parse(props.parsedData['donationOptions'])
       : null
-  );
-  const [founderTwitter, setFounderTwitter] = useState(
-    props.parsedData['founderTwitter']
-  );
-  const [founderInstagram, setFounderInstagram] = useState(
-    props.parsedData['founderInstagram']
-  );
-  const [founderFacebook, setFounderFacebook] = useState(
-    props.parsedData['founderFacebook']
   );
 
   useEffect(() => {
@@ -817,7 +816,7 @@ export default function SiteInfoSettings(props) {
         </div>
         <div tw="mt-2">
           <label htmlFor="founderTwitter">
-            <span tw="mt-1 font-bold">Founder Twitter Handle</span>
+            <span tw="mt-1 font-bold">Founder Twitter Link</span>
             <Input
               tw="w-full rounded-md border-solid border-gray-300"
               type="text"
@@ -829,7 +828,7 @@ export default function SiteInfoSettings(props) {
         </div>
         <div tw="mt-2">
           <label htmlFor="founderInstagram">
-            <span tw="mt-1 font-bold">Founder Instagram Handle</span>
+            <span tw="mt-1 font-bold">Founder Instagram Link</span>
             <Input
               tw="w-full rounded-md border-solid border-gray-300"
               type="text"
@@ -841,7 +840,7 @@ export default function SiteInfoSettings(props) {
         </div>
         <div tw="mt-2">
           <label htmlFor="founderFacebook">
-            <span tw="mt-1 font-bold">Founder Facebook Page</span>
+            <span tw="mt-1 font-bold">Founder Facebook Page Link</span>
             <Input
               tw="w-full rounded-md border-solid border-gray-300"
               type="text"
