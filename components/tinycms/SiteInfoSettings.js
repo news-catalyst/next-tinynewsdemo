@@ -237,14 +237,6 @@ export default function SiteInfoSettings(props) {
     setDefaultSocialImage(props.parsedData['defaultSocialImage']);
   }, [props.parsedData]);
 
-  const handleKeyPress = function (e) {
-    let keyPressed = e.key;
-
-    if (/[0-9]/.test(keyPressed)) {
-      e.preventDefault();
-    }
-  };
-
   return (
     <div tw="space-x-4 space-y-8">
       <SettingsHeader ref={props.siteInfoRef} id="siteInfo">
@@ -326,7 +318,6 @@ export default function SiteInfoSettings(props) {
                 cols="50"
                 name="landingPageDek"
                 onChange={props.handleChange}
-                onKeyPress={handleKeyPress}
                 value={landingPageDek}
               />
             </div>
