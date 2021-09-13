@@ -155,6 +155,10 @@ export default function SiteInfoSettings(props) {
     props.parsedData['landingPage']
   );
 
+  const [landingPageDek, setLandingPageDek] = useState(
+    props.parsedData['landingPageDek']
+  );
+
   const [commenting, setCommenting] = useState(props.parsedData['commenting']);
 
   const [shortName, setShortName] = useState(props.parsedData['shortName']);
@@ -206,6 +210,7 @@ export default function SiteInfoSettings(props) {
     setTwitterTitle(props.parsedData['twitterTitle']);
     setTwitterDescription(props.parsedData['twitterDescription']);
     setLandingPage(props.parsedData['landingPage']);
+    setLandingPageDek(props.parsedData['landingPageDek']);
     setCommenting(props.parsedData['commenting']);
     setShortName(props.parsedData['shortName']);
     setSiteUrl(props.parsedData['siteUrl']);
@@ -231,6 +236,14 @@ export default function SiteInfoSettings(props) {
     setLogo(props.parsedData['logo']);
     setDefaultSocialImage(props.parsedData['defaultSocialImage']);
   }, [props.parsedData]);
+
+  const handleKeyPress = function (e) {
+    let keyPressed = e.key;
+
+    if (/[0-9]/.test(keyPressed)) {
+      e.preventDefault();
+    }
+  };
 
   return (
     <div tw="space-x-4 space-y-8">
@@ -302,6 +315,24 @@ export default function SiteInfoSettings(props) {
           </label>
         </div>
       </SiteInfoFieldsContainer>
+
+      {landingPage && (
+        <>
+          <SettingsHeader id="landingPageDek">Landing Page Dek</SettingsHeader>
+          <SiteInfoFieldsContainer>
+            <div>
+              <textarea
+                rows="4"
+                cols="50"
+                name="landingPageDek"
+                onChange={props.handleChange}
+                onKeyPress={handleKeyPress}
+                value={landingPageDek}
+              />
+            </div>
+          </SiteInfoFieldsContainer>
+        </>
+      )}
 
       <SettingsHeader ref={props.commentsRef} id="comments">
         Comments
