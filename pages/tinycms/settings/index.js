@@ -97,6 +97,7 @@ export default function Settings({
           [name]: value,
         }));
       } else {
+        console.log('setting parsed data', name, value);
         setParsedData((prevState) => ({
           ...prevState,
           [name]: value,
@@ -112,6 +113,7 @@ export default function Settings({
       }));
     }
   };
+
   useEffect(() => {
     if (window.location.hash && window.location.hash === '#siteInfo') {
       if (siteInfoRef) {
