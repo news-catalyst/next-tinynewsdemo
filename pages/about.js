@@ -17,6 +17,7 @@ export async function getStaticProps({ locale }) {
   let sections;
   let siteMetadata = {};
   let authors = [];
+  let locales = [];
 
   const { errors, data } = await hasuraGetPage({
     url: apiUrl,
@@ -36,6 +37,18 @@ export async function getStaticProps({ locale }) {
       };
     }
     page = data.page_slug_versions[0].page;
+
+    var allPageLocales = data.pages[0].page_translations;
+    var distinctLocaleCodes = [];
+    var distinctLocales = [];
+    for (var i = 0; i < allPageLocales.length; i++) {
+      if (!distinctLocaleCodes.includes(allPageLocales[i].locale.code)) {
+        distinctLocaleCodes.push(allPageLocales[i].locale.code);
+        distinctLocales.push(allPageLocales[i]);
+      }
+    }
+    locales = distinctLocales;
+
     sections = data.categories;
     authors = data.authors;
     siteMetadata = data.site_metadatas[0].site_metadata_translations[0].data;
@@ -53,6 +66,8 @@ export async function getStaticProps({ locale }) {
       sections,
       siteMetadata,
       authors,
+      locales,
+      locale,
     },
   };
 }
