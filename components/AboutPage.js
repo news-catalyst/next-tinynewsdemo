@@ -1,6 +1,7 @@
 import tw from 'twin.macro';
 import { hasuraLocaliseText } from '../lib/utils';
 import Layout from './Layout';
+import ReadInOtherLanguage from './articles/ReadInOtherLanguage';
 import { renderBody } from '../lib/utils.js';
 import {
   ArticleTitle,
@@ -19,6 +20,8 @@ export default function AboutPage({
   siteMetadata,
   authors,
   isAmp,
+  locales,
+  locale,
 }) {
   // there will only be one translation returned for a given page + locale
   const localisedPage = page.page_translations[0];
@@ -53,6 +56,15 @@ export default function AboutPage({
             </PostText>
           </div>
         </SectionContainer>
+        {locales.length > 1 && (
+          <SectionLayout>
+            <SectionContainer>
+              <Block>
+                <ReadInOtherLanguage locales={locales} currentLocale={locale} />
+              </Block>
+            </SectionContainer>
+          </SectionLayout>
+        )}
       </article>
     </Layout>
   );
