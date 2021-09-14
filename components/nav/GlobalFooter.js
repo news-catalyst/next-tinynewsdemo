@@ -39,7 +39,7 @@ export default function GlobalFooter(props) {
           <FooterTitle>
             <strong>{title}</strong>
           </FooterTitle>
-          <FooterLinksDiv>
+          {/* <FooterLinksDiv>
             <FooterLink>
               <Link href="/about" passHref>
                 <FooterHoverUnderline>about</FooterHoverUnderline>
@@ -59,7 +59,7 @@ export default function GlobalFooter(props) {
                 </Link>{' '}
               </FooterLink>
             )}
-          </FooterLinksDiv>
+            </FooterLinksDiv>*/}
           <FounderSocialLinkWrapper>
             {founderFacebook && (
               <FooterLink>
