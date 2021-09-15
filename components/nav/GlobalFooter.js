@@ -94,16 +94,15 @@ export default function GlobalFooter(props) {
             {founderInstagram && (
               <FooterLink>
                 <Link href={founderInstagram}>
-                  <a
-                    href={founderInstagram}
-                    target="_blank"
-                    rel="noreferrer"
-                    style={{
-                      backgroundImage:
-                        "url(\"data:image/svg+xml,%3Csvg width='16' height='4' viewBox='0 0 16 4' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4 2C4 3.10467 3.10467 4 2 4C0.895333 4 0 3.10467 0 2C0 0.895333 0.895333 0 2 0C3.10467 0 4 0.895333 4 2ZM10 2C10 3.10467 9.10467 4 8 4C6.89533 4 6 3.10467 6 2C6 0.895333 6.89533 0 8 0C9.10467 0 10 0.895333 10 2ZM16 2C16 3.10467 15.1047 4 14 4C12.8953 4 12 3.10467 12 2C12 0.895333 12.8953 0 14 0C15.1047 0 16 0.895333 16 2Z' fill='black'/%3E%3C/svg%3E%0A\")",
-                      backgroundSize: '0.9375rem auto',
-                    }}
-                  />
+                  <a href={founderInstagram} target="_blank" rel="noreferrer">
+                    <SocialIcon
+                      style={{
+                        backgroundImage:
+                          "url(\"data:image/svg+xml,%3Csvg width='16' height='4' viewBox='0 0 16 4' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4 2C4 3.10467 3.10467 4 2 4C0.895333 4 0 3.10467 0 2C0 0.895333 0.895333 0 2 0C3.10467 0 4 0.895333 4 2ZM10 2C10 3.10467 9.10467 4 8 4C6.89533 4 6 3.10467 6 2C6 0.895333 6.89533 0 8 0C9.10467 0 10 0.895333 10 2ZM16 2C16 3.10467 15.1047 4 14 4C12.8953 4 12 3.10467 12 2C12 0.895333 12.8953 0 14 0C15.1047 0 16 0.895333 16 2Z' fill='black'/%3E%3C/svg%3E%0A\")",
+                        backgroundSize: '0.9375rem auto',
+                      }}
+                    />
+                  </a>
                 </Link>
               </FooterLink>
             )}
