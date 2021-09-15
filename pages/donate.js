@@ -83,13 +83,19 @@ export async function getStaticProps({ locale }) {
     }
     page = data.page_slug_versions[0].page;
 
-    var allPageLocales = data.pages[0].page_translations;
+    var allPageLocales = page.page_translations;
     var distinctLocaleCodes = [];
     var distinctLocales = [];
     for (var i = 0; i < allPageLocales.length; i++) {
-      if (!distinctLocaleCodes.includes(allPageLocales[i].locale.code)) {
-        distinctLocaleCodes.push(allPageLocales[i].locale.code);
-        distinctLocales.push(allPageLocales[i]);
+      let pageLocale = allPageLocales[i];
+
+      if (
+        pageLocale &&
+        pageLocale.locale &&
+        !distinctLocaleCodes.includes(pageLocale.locale.code)
+      ) {
+        distinctLocaleCodes.push(pageLocale.locale.code);
+        distinctLocales.push(pageLocale);
       }
     }
     locales = distinctLocales;
