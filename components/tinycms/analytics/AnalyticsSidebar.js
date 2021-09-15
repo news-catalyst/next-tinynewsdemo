@@ -14,4 +14,6 @@ const AnalyticsSidebar = (props) => {
   );
 };
 
+AnalyticsSidebar.displayName = 'AnalyticsSidebar';
+
 export default AnalyticsSidebar;

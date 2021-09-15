@@ -196,4 +196,6 @@ const NewsletterSignupFormData = (props) => {
     </>
   );
 };
+
+NewsletterSignupFormData.displayName = 'NewsletterSignupFormData';
 export default NewsletterSignupFormData;

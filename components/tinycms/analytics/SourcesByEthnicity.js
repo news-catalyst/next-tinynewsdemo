@@ -101,4 +101,6 @@ const SourcesByEthnicity = (props) => {
   );
 };
 
+SourcesByEthnicity.displayName = 'SourcesByEthnicity';
+
 export default SourcesByEthnicity;

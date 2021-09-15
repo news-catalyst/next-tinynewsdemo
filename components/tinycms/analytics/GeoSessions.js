@@ -86,4 +86,6 @@ const GeoSessions = (props) => {
   );
 };
 
+GeoSessions.displayName = 'GeoSessions';
+
 export default GeoSessions;

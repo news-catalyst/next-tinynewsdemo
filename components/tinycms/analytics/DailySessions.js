@@ -84,4 +84,6 @@ const DailySessions = (props) => {
   );
 };
 
+DailySessions.displayName = 'DailySessions';
+
 export default DailySessions;

@@ -78,4 +78,6 @@ const YesterdaysSubscriberViews = (props) => {
   );
 };
 
+YesterdaysSubscriberViews.displayName = 'YesterdaysSubscriberViews';
+
 export default YesterdaysSubscriberViews;
