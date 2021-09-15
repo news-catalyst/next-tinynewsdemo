@@ -91,4 +91,6 @@ const PageViews = (props) => {
   );
 };
 
+PageViews.displayName = 'PageViews';
+
 export default PageViews;

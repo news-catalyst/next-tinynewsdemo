@@ -103,4 +103,6 @@ const SourcesByGender = (props) => {
   );
 };
 
+SourcesByGender.displayName = 'SourcesByGender';
+
 export default SourcesByGender;

@@ -101,4 +101,6 @@ const SourcesByRace = (props) => {
   );
 };
 
+SourcesByRace.displayName = 'SourcesByRace';
+
 export default SourcesByRace;

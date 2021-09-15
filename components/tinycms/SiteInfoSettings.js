@@ -150,7 +150,15 @@ export default function SiteInfoSettings(props) {
   const [twitterDescription, setTwitterDescription] = useState(
     props.parsedData['twitterDescription']
   );
-
+  const [founderTwitter, setFounderTwitter] = useState(
+    props.parsedData['founderTwitter']
+  );
+  const [founderInstagram, setFounderInstagram] = useState(
+    props.parsedData['founderInstagram']
+  );
+  const [founderFacebook, setFounderFacebook] = useState(
+    props.parsedData['founderFacebook']
+  );
   const [landingPage, setLandingPage] = useState(
     props.parsedData['landingPage']
   );
@@ -228,6 +236,9 @@ export default function SiteInfoSettings(props) {
     setMembershipHed(props.parsedData['membershipHed']);
     setNewsletterDek(props.parsedData['newsletterDek']);
     setNewsletterHed(props.parsedData['newsletterHed']);
+    setFounderTwitter(props.parsedData['founderTwitter']);
+    setFounderInstagram(props.parsedData['founderInstagram']);
+    setFounderFacebook(props.parsedData['founderFacebook']);
     setDonationOptions(
       props.parsedData['donationOptions']
         ? JSON.parse(props.parsedData['donationOptions'])
@@ -821,6 +832,42 @@ export default function SiteInfoSettings(props) {
               type="text"
               name="twitterDescription"
               value={twitterDescription}
+              onChange={props.handleChange}
+            />
+          </label>
+        </div>
+        <div tw="mt-2">
+          <label htmlFor="founderTwitter">
+            <span tw="mt-1 font-bold">Founder Twitter Link</span>
+            <Input
+              tw="w-full rounded-md border-solid border-gray-300"
+              type="text"
+              name="founderTwitter"
+              value={founderTwitter}
+              onChange={props.handleChange}
+            />
+          </label>
+        </div>
+        <div tw="mt-2">
+          <label htmlFor="founderInstagram">
+            <span tw="mt-1 font-bold">Founder Instagram Link</span>
+            <Input
+              tw="w-full rounded-md border-solid border-gray-300"
+              type="text"
+              name="founderInstagram"
+              value={founderInstagram}
+              onChange={props.handleChange}
+            />
+          </label>
+        </div>
+        <div tw="mt-2">
+          <label htmlFor="founderFacebook">
+            <span tw="mt-1 font-bold">Founder Facebook Page Link</span>
+            <Input
+              tw="w-full rounded-md border-solid border-gray-300"
+              type="text"
+              name="founderFacebook"
+              value={founderFacebook}
               onChange={props.handleChange}
             />
           </label>

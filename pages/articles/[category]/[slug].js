@@ -114,6 +114,7 @@ export async function getStaticProps({ locale, params }) {
     let metadatas = data.site_metadatas;
     try {
       siteMetadata = metadatas[0].site_metadata_translations[0].data;
+      console.log('parsed siteMetadata:', siteMetadata);
     } catch (err) {
       console.log('failed finding site metadata for ', locale, metadatas);
     }

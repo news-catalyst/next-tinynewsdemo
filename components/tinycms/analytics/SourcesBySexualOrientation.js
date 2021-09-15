@@ -106,4 +106,5 @@ const SourcesBySexualOrientation = (props) => {
   );
 };
 
+SourcesBySexualOrientation.displayName = 'SourcesBySexualOrientation';
 export default SourcesBySexualOrientation;

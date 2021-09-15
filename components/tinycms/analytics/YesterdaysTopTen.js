@@ -112,4 +112,6 @@ const YesterdaysTopTen = (props) => {
   );
 };
 
+YesterdaysTopTen.displayName = 'YesterdaysTopTen';
+
 export default YesterdaysTopTen;
