@@ -25,6 +25,8 @@ export const FormHeader = ({ title, ...props }) => {
   );
 };
 
+FormHeader.displayName = 'FormHeader';
+
 export const TinySubmitCancelButtons = ({ destURL, ...props }) => {
   const router = useRouter();
   async function handleCancel(ev, url) {
@@ -41,6 +43,7 @@ export const TinySubmitCancelButtons = ({ destURL, ...props }) => {
     </ButtonsContainer>
   );
 };
+TinySubmitCancelButtons.displayName = 'TinySubmitCancelButtons';
 
 export const TinyInputField = ({ name, onChange, value, label, ...props }) => {
   return (
@@ -50,6 +53,7 @@ export const TinyInputField = ({ name, onChange, value, label, ...props }) => {
     </label>
   );
 };
+TinyInputField.displayName = 'TinyInputField';
 
 export const TinyCheckboxField = ({
   label,
@@ -70,6 +74,7 @@ export const TinyCheckboxField = ({
     </label>
   );
 };
+TinyCheckboxField.displayName = 'TinyCheckboxField';
 
 export const TinyYesNoField = ({
   name,
@@ -104,6 +109,7 @@ export const TinyYesNoField = ({
     </div>
   );
 };
+TinyYesNoField.displayName = 'TinyYesNoField';
 
 export const TinyTextArea = ({ name, label, value, onChange, ...props }) => {
   return (
@@ -119,3 +125,4 @@ export const TinyTextArea = ({ name, label, value, onChange, ...props }) => {
     </label>
   );
 };
+TinyTextArea.displayName = 'TinyTextArea';

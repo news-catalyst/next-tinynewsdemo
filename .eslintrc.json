@@ -52,7 +52,8 @@
     "react/react-in-jsx-scope": 0,
     "no-unused-vars": 0,
     "no-undef": 0,
-    "@next/next/no-page-custom-font": 0
+    "@next/next/no-page-custom-font": 0,
+    "react/display-name": 0
   },
   "globals": {
     "grecaptcha": "readonly"

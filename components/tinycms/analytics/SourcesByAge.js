@@ -99,4 +99,5 @@ const SourcesByAge = (props) => {
   );
 };
 
+SourcesByAge.displayName = 'SourcesByAge';
 export default SourcesByAge;
