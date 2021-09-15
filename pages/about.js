@@ -52,7 +52,7 @@ export async function getStaticProps({ locale }) {
     sections = data.categories;
     authors = data.authors;
     siteMetadata = data.site_metadatas[0].site_metadata_translations[0].data;
-    for (var i = 0; i < sections.length; i++) {
+    for (i = 0; i < sections.length; i++) {
       sections[i].title = hasuraLocaliseText(
         sections[i].category_translations,
         'title'
