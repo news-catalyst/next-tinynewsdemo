@@ -153,8 +153,13 @@ export default function Settings({
       let parsed = md;
       setParsedData(parsed);
       setRandomDataKey(Math.random());
-      let formattedJSON = JSON.stringify(parsed, null, 2);
-      setJsonData(formattedJSON);
+      let formattedJSON;
+      try {
+        formattedJSON = JSON.stringify(parsed, null, 2);
+        setJsonData(formattedJSON);
+      } catch (error) {
+        console.error(error);
+      }
     }
     if (action && action === 'edit') {
       setMessage('Successfully updated metadata.');
@@ -188,7 +193,7 @@ export default function Settings({
       localeCode: currentLocale,
     });
     if (errors) {
-      setNotificationMessage(JSON.stringify(errors));
+      setNotificationMessage(errors);
       setNotificationType('error');
       setShowNotification(true);
     } else {
@@ -197,9 +202,14 @@ export default function Settings({
       setNotificationType('success');
       setShowNotification(true);
 
-      let formattedJSON = JSON.stringify(parsed, null, 2);
-      setJsonData(formattedJSON);
-      setRandomDataKey(Math.random());
+      let formattedJSON;
+      try {
+        formattedJSON = JSON.stringify(parsed, null, 2);
+        setJsonData(formattedJSON);
+        setRandomDataKey(Math.random());
+      } catch (error) {
+        console.error(error);
+      }
     }
   }
   return (
