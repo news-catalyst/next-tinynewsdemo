@@ -132,4 +132,5 @@ const ReadingDepthData = (props) => {
   );
 };
 
+ReadingDepthData.displayName = 'ReadingDepthData';
 export default ReadingDepthData;

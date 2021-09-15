@@ -22,4 +22,6 @@ const Report = (props) => {
   );
 };
 
+Report.displayName = 'Report';
+
 export default Report;

@@ -13,7 +13,7 @@
     "status": "node script/status.js",
     "remove:org": "node script/remove.js",
     "test": "jest --runInBand",
-    "build": "next build",
+    "build": "NODE_OPTIONS='--trace-warnings' next build",
     "cypress:open": "cypress open",
     "build:rss": "node script/generate-rss.js",
     "build:newsletters": "node script/build-newsletter-editions.js",

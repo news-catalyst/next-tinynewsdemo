@@ -97,4 +97,5 @@ const ReferralSource = (props) => {
   );
 };
 
+ReferralSource.displayName = 'ReferralSource';
 export default ReferralSource;

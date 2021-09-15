@@ -16,4 +16,6 @@ const GlobalStyles = () => (
   </>
 );
 
+GlobalStyles.displayName = 'GlobalStyles';
+
 export default GlobalStyles;

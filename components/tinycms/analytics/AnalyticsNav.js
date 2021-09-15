@@ -352,4 +352,6 @@ const AnalyticsNav = (props) => {
   );
 };
 
+AnalyticsNav.displayName = 'AnalyticsNav';
+
 export default AnalyticsNav;

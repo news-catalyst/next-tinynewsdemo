@@ -158,4 +158,6 @@ const NewsletterSubscribe = ({ articleTitle, metadata }) => {
   );
 };
 
+NewsletterSubscribe.displayName = 'NewsletterSubscribe';
+
 export default NewsletterSubscribe;
