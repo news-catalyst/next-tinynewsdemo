@@ -87,4 +87,6 @@ const CustomDimensions = (props) => {
   );
 };
 
+CustomDimensions.displayName = 'CustomDimensions';
+
 export default CustomDimensions;
