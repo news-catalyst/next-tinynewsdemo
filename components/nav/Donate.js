@@ -52,4 +52,7 @@ const Donate = ({ label, metadata }) => {
     </Link>
   );
 };
+
+Donate.displayName = 'Donate';
+
 export default Donate;

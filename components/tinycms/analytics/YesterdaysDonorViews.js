@@ -78,4 +78,6 @@ const YesterdaysDonorViews = (props) => {
   );
 };
 
+YesterdaysDonorViews.displayName = 'YesterdaysDonorViews';
+
 export default YesterdaysDonorViews;
