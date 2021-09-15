@@ -152,8 +152,7 @@ export default async function Handler(req, res) {
   if (auditStatus === 'error') {
     return res.status(500).json({
       status: 'error',
-      errors:
-        'Failed logging data import audit: ' + JSON.stringify(auditResult),
+      errors: 'Failed logging data import audit: ' + auditResult,
     });
   }
 

@@ -43,4 +43,6 @@ const Advertise = ({ label, metadata }) => {
     </AdvertiseLink>
   );
 };
+Advertise.displayName = 'Advertise';
+
 export default Advertise;

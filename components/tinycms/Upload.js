@@ -43,7 +43,7 @@ export default function Upload(props) {
           console.log('failed uploading image:', data);
           props.setNotificationMessage(
             'An error occurred while uploading the image:',
-            JSON.stringify(data)
+            data
           );
           props.setNotificationType('error');
           props.setShowNotification(true);
@@ -60,7 +60,7 @@ export default function Upload(props) {
       </ImgWrapper>
       <div className="upload-steps">
         <input className="file-input" type="file" ref={fileInput} />
-        <UploadButton onClick={handleClick} value="Upload" />
+        <UploadButton onClick={handleClick} defaultValue="Upload" />
       </div>
     </>
   );

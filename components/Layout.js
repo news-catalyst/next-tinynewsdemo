@@ -41,6 +41,9 @@ export default function Layout({
     footerTitle: meta['footerTitle'],
     footerBylineLink: meta['footerBylineLink'],
     footerBylineName: meta['footerBylineName'],
+    founderTwitter: meta['founderTwitter'],
+    founderInstagram: meta['founderInstagram'],
+    founderFacebook: meta['founderFacebook'],
   };
 
   let pageTitle = meta['homepageTitle'];

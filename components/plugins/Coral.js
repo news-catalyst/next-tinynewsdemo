@@ -27,4 +27,6 @@ class Coral extends Component {
   }
 }
 
+Coral.displayName = 'Coral';
+
 export default Coral;

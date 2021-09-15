@@ -219,4 +219,5 @@ const DonateClicks = (props) => {
   );
 };
 
+DonateClicks.displayName = 'DonateClicks';
 export default DonateClicks;

@@ -24,7 +24,7 @@ export default function AddHomepageLayout({ apiUrl, apiToken }) {
 
     if (errors) {
       console.error('Error creating layout:', errors);
-      setNotificationMessage(JSON.stringify(errors));
+      setNotificationMessage(errors);
       setNotificationType('error');
       setShowNotification(true);
     } else {
