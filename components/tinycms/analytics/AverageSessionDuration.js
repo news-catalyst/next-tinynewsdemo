@@ -87,4 +87,6 @@ const AverageSessionDuration = (props) => {
   );
 };
 
+AverageSessionDuration.displayName = 'AverageSessionDuration';
+
 export default AverageSessionDuration;

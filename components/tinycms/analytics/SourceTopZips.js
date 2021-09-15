@@ -88,4 +88,5 @@ const SourceTopZips = (props) => {
   );
 };
 
+SourceTopZips.displayName = 'SourceTopZips';
 export default SourceTopZips;

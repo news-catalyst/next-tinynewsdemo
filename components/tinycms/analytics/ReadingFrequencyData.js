@@ -104,4 +104,6 @@ const ReadingFrequencyData = (props) => {
   );
 };
 
+ReadingFrequencyData.displayName = 'ReadingFrequencyData';
+
 export default ReadingFrequencyData;
