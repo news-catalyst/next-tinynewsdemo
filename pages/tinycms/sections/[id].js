@@ -65,7 +65,7 @@ export default function EditSection({
     const { errors, data } = await hasuraUpdateSection(params);
 
     if (errors) {
-      setNotificationMessage(JSON.stringify(errors));
+      setNotificationMessage(errors);
       setNotificationType('error');
       setShowNotification(true);
     } else {

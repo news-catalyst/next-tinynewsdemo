@@ -176,8 +176,7 @@ export default async function Handler(req, res) {
     return res.status(500).json({
       status: 'error',
       errors:
-        'Failed logging data import audit for donation clicks: ' +
-        JSON.stringify(auditResult),
+        'Failed logging data import audit for donation clicks: ' + auditResult,
     });
   }
 

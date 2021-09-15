@@ -98,7 +98,7 @@ export default function AddAuthor({
       setShowNotification(true);
     } else if (errors) {
       console.log(errors);
-      setNotificationMessage(JSON.stringify(errors));
+      setNotificationMessage(errors);
       setNotificationType('error');
       setShowNotification(true);
     }

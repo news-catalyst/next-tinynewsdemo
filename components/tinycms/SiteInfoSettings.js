@@ -4,6 +4,7 @@ import DonationBlock from '../plugins/DonationBlock';
 import NewsletterBlock from '../plugins/NewsletterBlock';
 import HomepagePromoBar from '../homepage/HomepagePromoBar';
 import DonationOptionsBlock from '../plugins/DonationOptionsBlock';
+import ControlledInput from './ControlledInput';
 import Upload from './Upload';
 
 const SettingsHeader = tw.h1`text-4xl font-bold leading-normal mt-0 mb-2 text-black`;
@@ -257,7 +258,7 @@ export default function SiteInfoSettings(props) {
       <SiteInfoFieldsContainer>
         <label htmlFor="shortName">
           <span tw="mt-1 font-bold">Site name</span>
-          <Input
+          <ControlledInput
             type="text"
             name="shortName"
             value={shortName}
@@ -266,7 +267,7 @@ export default function SiteInfoSettings(props) {
         </label>
         <label htmlFor="siteUrl">
           <span tw="mt-1 font-bold">Site URL</span>
-          <Input
+          <ControlledInput
             type="text"
             name="siteUrl"
             value={siteUrl}
@@ -513,14 +514,14 @@ export default function SiteInfoSettings(props) {
               <div tw="grid grid-cols-1">
                 <span>Custom</span>
                 <label htmlFor="primaryColor">
-                  <Input
+                  <ControlledInput
                     type="text"
                     name="primaryColor"
                     placeholder="Primary color (use hex code)"
                     value={primaryColor}
                     onChange={props.handleChange}
                   />
-                  <Input
+                  <ControlledInput
                     type="text"
                     name="secondaryColor"
                     placeholder="Secondary color (use hex code)"
@@ -538,7 +539,7 @@ export default function SiteInfoSettings(props) {
         <div>
           <label htmlFor="heading">
             <span tw="w-full mt-1 font-bold">About promo heading</span>
-            <Input
+            <ControlledInput
               type="text"
               name="aboutHed"
               value={aboutHed}
@@ -547,7 +548,7 @@ export default function SiteInfoSettings(props) {
           </label>
           <label htmlFor="description">
             <span tw="mt-1 font-bold">About promo description</span>
-            <Input
+            <ControlledInput
               type="text"
               name="aboutDek"
               value={aboutDek}
@@ -556,7 +557,7 @@ export default function SiteInfoSettings(props) {
           </label>
           <label htmlFor="cta">
             <span tw="mt-1 font-bold">About call to action</span>
-            <Input
+            <ControlledInput
               type="text"
               name="aboutCTA"
               value={aboutCTA}
@@ -567,7 +568,7 @@ export default function SiteInfoSettings(props) {
         <div>
           <label htmlFor="heading">
             <span tw="w-full mt-1 font-bold">Support promo heading</span>
-            <Input
+            <ControlledInput
               type="text"
               name="supportHed"
               value={supportHed}
@@ -576,7 +577,7 @@ export default function SiteInfoSettings(props) {
           </label>
           <label htmlFor="description">
             <span tw="mt-1 font-bold">Support promo description</span>
-            <Input
+            <ControlledInput
               type="text"
               name="supportDek"
               value={supportDek}
@@ -585,7 +586,7 @@ export default function SiteInfoSettings(props) {
           </label>
           <label htmlFor="description">
             <span tw="mt-1 font-bold">Support call to action</span>
-            <Input
+            <ControlledInput
               type="text"
               name="supportCTA"
               value={supportCTA}
@@ -606,7 +607,7 @@ export default function SiteInfoSettings(props) {
         <div tw="col-span-2">
           <label htmlFor="heading">
             <span tw="w-full mt-1 font-bold">Heading</span>
-            <Input
+            <ControlledInput
               type="text"
               name="newsletterHed"
               value={newsletterHed}
@@ -615,7 +616,7 @@ export default function SiteInfoSettings(props) {
           </label>
           <label htmlFor="description">
             <span tw="mt-1 font-bold">Description</span>
-            <Input
+            <ControlledInput
               type="text"
               name="newsletterDek"
               value={newsletterDek}
@@ -638,7 +639,7 @@ export default function SiteInfoSettings(props) {
         <div tw="col-span-2">
           <label htmlFor="heading">
             <span tw="w-full mt-1 font-bold">Heading</span>
-            <Input
+            <ControlledInput
               type="text"
               name="membershipHed"
               value={membershipHed}
@@ -647,7 +648,7 @@ export default function SiteInfoSettings(props) {
           </label>
           <label htmlFor="description">
             <span tw="mt-1 font-bold">Description</span>
-            <Input
+            <ControlledInput
               type="text"
               name="membershipDek"
               value={membershipDek}
@@ -656,7 +657,7 @@ export default function SiteInfoSettings(props) {
           </label>
           <label htmlFor="CTA">
             <span tw="mt-1 font-bold">CTA</span>
-            <Input
+            <ControlledInput
               type="text"
               name="membershipCTA"
               value={membershipCTA}
@@ -679,7 +680,7 @@ export default function SiteInfoSettings(props) {
               <div tw="mt-2">
                 <label htmlFor={`donationOptions-${i}-name`}>
                   <span tw="mt-1 font-bold">Option name</span>
-                  <Input
+                  <ControlledInput
                     tw="w-full rounded-md border-solid border-gray-300"
                     type="text"
                     name={`donationOptions-${i}-name`}
@@ -703,7 +704,7 @@ export default function SiteInfoSettings(props) {
               <div tw="mt-2">
                 <label htmlFor={`donationOptions-${i}-description`}>
                   <span tw="mt-1 font-bold">Option Description</span>
-                  <Input
+                  <ControlledInput
                     tw="w-full rounded-md border-solid border-gray-300"
                     type="text"
                     name={`donationOptions-${i}-description`}
@@ -715,7 +716,7 @@ export default function SiteInfoSettings(props) {
               <div tw="mt-2">
                 <label htmlFor={`donationOptions-${i}-cta`}>
                   <span tw="mt-1 font-bold">Option CTA</span>
-                  <Input
+                  <ControlledInput
                     tw="w-full rounded-md border-solid border-gray-300"
                     type="text"
                     name={`donationOptions-${i}-cta`}
@@ -767,7 +768,7 @@ export default function SiteInfoSettings(props) {
         <div tw="mt-2">
           <label htmlFor="searchTitle">
             <span tw="mt-1 font-bold">Search title</span>
-            <Input
+            <ControlledInput
               tw="w-full rounded-md border-solid border-gray-300"
               type="text"
               name="searchTitle"
@@ -779,7 +780,7 @@ export default function SiteInfoSettings(props) {
         <div tw="mt-2">
           <label htmlFor="searchDescription">
             <span tw="mt-1 font-bold">Search description</span>
-            <Input
+            <ControlledInput
               tw="w-full"
               type="text"
               name="searchDescription"
@@ -791,7 +792,7 @@ export default function SiteInfoSettings(props) {
         <div tw="mt-2">
           <label htmlFor="facebookTitle">
             <span tw="mt-1 font-bold">Facebook title</span>
-            <Input
+            <ControlledInput
               tw="w-full"
               type="text"
               name="facebookTitle"
@@ -803,7 +804,7 @@ export default function SiteInfoSettings(props) {
         <div tw="mt-2">
           <label htmlFor="facebookDescription">
             <span tw="mt-1 font-bold">Facebook description</span>
-            <Input
+            <ControlledInput
               tw="w-full"
               type="text"
               name="facebookDescription"
@@ -815,7 +816,7 @@ export default function SiteInfoSettings(props) {
         <div tw="mt-2">
           <label htmlFor="twitterTitle">
             <span tw="mt-1 font-bold">Twitter title</span>
-            <Input
+            <ControlledInput
               tw="w-full"
               type="text"
               name="twitterTitle"
@@ -827,7 +828,7 @@ export default function SiteInfoSettings(props) {
         <div tw="mt-2">
           <label htmlFor="twitterDescription">
             <span tw="mt-1 font-bold">Twitter description</span>
-            <Input
+            <ControlledInput
               tw="w-full"
               type="text"
               name="twitterDescription"
@@ -839,7 +840,7 @@ export default function SiteInfoSettings(props) {
         <div tw="mt-2">
           <label htmlFor="founderTwitter">
             <span tw="mt-1 font-bold">Founder Twitter Link</span>
-            <Input
+            <ControlledInput
               tw="w-full rounded-md border-solid border-gray-300"
               type="text"
               name="founderTwitter"
@@ -851,7 +852,7 @@ export default function SiteInfoSettings(props) {
         <div tw="mt-2">
           <label htmlFor="founderInstagram">
             <span tw="mt-1 font-bold">Founder Instagram Link</span>
-            <Input
+            <ControlledInput
               tw="w-full rounded-md border-solid border-gray-300"
               type="text"
               name="founderInstagram"
@@ -863,7 +864,7 @@ export default function SiteInfoSettings(props) {
         <div tw="mt-2">
           <label htmlFor="founderFacebook">
             <span tw="mt-1 font-bold">Founder Facebook Page Link</span>
-            <Input
+            <ControlledInput
               tw="w-full rounded-md border-solid border-gray-300"
               type="text"
               name="founderFacebook"
