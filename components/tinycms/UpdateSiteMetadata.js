@@ -35,14 +35,18 @@ export default function UpdateMetadata(props) {
   };
 
   useEffect(() => {
-    if (props.metadata) {
-      let parsed = props.metadata;
-      console.log('props.metadata:', props.metadata);
-      setParsedData(parsed);
-      console.log('parsedData donation options:', parsed['donationOptions']);
-      setRandomDataKey(Math.random());
-      let formattedJSON = JSON.stringify(parsed, null, 2);
-      setJsonData(formattedJSON);
+    try {
+      if (props.metadata) {
+        let parsed = props.metadata;
+        console.log('props.metadata:', props.metadata);
+        setParsedData(parsed);
+        console.log('parsedData donation options:', parsed['donationOptions']);
+        setRandomDataKey(Math.random());
+        let formattedJSON = JSON.stringify(parsed, null, 2);
+        setJsonData(formattedJSON);
+      }
+    } catch (error) {
+      console.error('error setting up site metadata in tinycms:', error);
     }
   }, [props.metadata]);
 
@@ -69,7 +73,7 @@ export default function UpdateMetadata(props) {
       localeCode: props.currentLocale,
     });
     if (errors) {
-      setNotificationMessage(JSON.stringify(errors));
+      setNotificationMessage(errors);
       setNotificationType('error');
       setShowNotification(true);
     } else {
@@ -78,9 +82,13 @@ export default function UpdateMetadata(props) {
       setNotificationType('success');
       setShowNotification(true);
 
-      let formattedJSON = JSON.stringify(parsed, null, 2);
-      setJsonData(formattedJSON);
-      setRandomDataKey(Math.random());
+      try {
+        let formattedJSON = JSON.stringify(parsed, null, 2);
+        setJsonData(formattedJSON);
+        setRandomDataKey(Math.random());
+      } catch (error) {
+        console.error('error stringifying json:', error);
+      }
     }
   }
 
