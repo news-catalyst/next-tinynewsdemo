@@ -11,6 +11,8 @@ import {
   ArticleTitle,
   PostTextContainer,
   PostText,
+  SectionLayout,
+  Block,
 } from '../components/common/CommonStyles.js';
 
 const SectionContainer = tw.div`flex flex-col flex-nowrap items-center px-5 mx-auto max-w-7xl w-full`;
@@ -114,7 +116,7 @@ export async function getServerSideProps(context) {
 
     sections = data.categories;
     siteMetadata = data.site_metadatas[0].site_metadata_translations[0].data;
-    for (var i = 0; i < sections.length; i++) {
+    for (i = 0; i < sections.length; i++) {
       sections[i].title = hasuraLocaliseText(
         sections[i].category_translations,
         'title'
