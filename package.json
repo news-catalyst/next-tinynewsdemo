@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "dev:test": "ORG_SLUG=test-org NEXT_PUBLIC_CYPRESS_TESTING=true HASURA_API_URL=https://tinynews-testing.hasura.app/v1/graphql next dev",
     "clear": "node script/clear.js",
     "populate": "node script/populate.js",
     "data:import": "node script/data-import.js",
