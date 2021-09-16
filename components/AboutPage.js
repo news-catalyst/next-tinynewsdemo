@@ -13,13 +13,7 @@ import {
 
 const SectionContainer = tw.div`flex flex-col flex-nowrap items-center px-5 mx-auto max-w-7xl w-full`;
 
-export default function AboutPage({
-  page,
-  sections,
-  siteMetadata,
-  authors,
-  isAmp,
-}) {
+export default function AboutPage({ page, sections, siteMetadata, isAmp }) {
   // there will only be one translation returned for a given page + locale
   const localisedPage = page.page_translations[0];
   const body = renderBody(page.page_translations, [], isAmp, siteMetadata);
@@ -35,21 +29,7 @@ export default function AboutPage({
           </div>
           <div className="section post__body rich-text" key="body">
             <PostText>
-              <PostTextContainer>
-                {body}
-                <H2>Our Staff</H2>
-                {authors.map((author) => (
-                  <div className="author mb-4" key={author.name}>
-                    <H3>
-                      {author.name},{' '}
-                      {hasuraLocaliseText(author.author_translations, 'title')}
-                    </H3>
-                    <Paragraph>
-                      {hasuraLocaliseText(author.author_translations, 'bio')}
-                    </Paragraph>
-                  </div>
-                ))}
-              </PostTextContainer>
+              <PostTextContainer>{body}</PostTextContainer>
             </PostText>
           </div>
         </SectionContainer>
