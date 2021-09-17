@@ -13,7 +13,8 @@ describe('tinycms authors', () => {
     cy.task('db:authors');
     cy.visit('/tinycms/authors/add');
     cy.location('pathname').should('eq', '/tinycms/authors/add');
-    cy.get('input[name="name"').type('New AuthorName');
+    cy.get('input[name="first_names"').type('New');
+    cy.get('input[name="last_name"').type('AuthorName');
     cy.get('input[name="title"').type('Staff Editor');
     cy.get('input[name="twitter"').type('@twitterHandle');
     // cy.get('input[name="slug"').type("new-author-name")
