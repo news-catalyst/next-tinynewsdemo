@@ -25,6 +25,7 @@ export async function getStaticProps({ locale }) {
     localeCode: locale,
   });
   if (errors || !data) {
+    console.log(errors);
     return {
       notFound: true,
     };
@@ -49,7 +50,6 @@ export async function getStaticProps({ locale }) {
 
   return {
     props: {
-      page,
       sections,
       siteMetadata,
       authors,

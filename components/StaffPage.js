@@ -1,7 +1,6 @@
 import tw from 'twin.macro';
-import { hasuraLocaliseText } from '../lib/utils';
+import { displayAuthorName, hasuraLocaliseText } from '../lib/utils';
 import Layout from './Layout';
-import { renderBody } from '../lib/utils.js';
 import {
   ArticleTitle,
   PostTextContainer,
@@ -13,17 +12,7 @@ import {
 
 const SectionContainer = tw.div`flex flex-col flex-nowrap items-center px-5 mx-auto max-w-7xl w-full`;
 
-export default function StaffPage({
-  page,
-  sections,
-  siteMetadata,
-  authors,
-  isAmp,
-}) {
-  // // there will only be one translation returned for a given page + locale
-  // const localisedPage = page.page_translations[0];
-  // const body = renderBody(page.page_translations, [], isAmp, siteMetadata);
-
+export default function StaffPage({ sections, siteMetadata, authors }) {
   return (
     <Layout meta={siteMetadata} sections={sections}>
       <article className="container">
@@ -35,9 +24,9 @@ export default function StaffPage({
             <PostText>
               <PostTextContainer>
                 {authors.map((author) => (
-                  <div className="author mb-4" key={author.name}>
+                  <div className="author mb-4" key={author.last_name}>
                     <H3>
-                      {author.name},{' '}
+                      {displayAuthorName(author.first_names, author.last_name)},{' '}
                       {hasuraLocaliseText(author.author_translations, 'title')}
                     </H3>
                     <Paragraph>

@@ -14,7 +14,11 @@ import Notification from '../../../components/tinycms/Notification';
 import Upload from '../../../components/tinycms/Upload';
 import { hasuraListLocales } from '../../../lib/articles.js';
 import { hasuraCreateAuthor } from '../../../lib/authors';
-import { validateAuthorName, slugify } from '../../../lib/utils.js';
+import {
+  displayAuthorName,
+  validateAuthorName,
+  slugify,
+} from '../../../lib/utils.js';
 
 const UploadContainer = tw.div`container mx-auto min-w-0 flex-auto px-4 sm:px-6 xl:px-8 pt-10`;
 
@@ -29,7 +33,8 @@ export default function AddAuthor({
   const [notificationType, setNotificationType] = useState('');
   const [showNotification, setShowNotification] = useState(false);
 
-  const [name, setName] = useState('');
+  const [firstNames, setFirstNames] = useState('');
+  const [lastName, setLastName] = useState('');
   const [title, setTitle] = useState('');
   const [twitter, setTwitter] = useState('');
   const [slug, setSlug] = useState('');
@@ -45,11 +50,18 @@ export default function AddAuthor({
   }
 
   // slugifies the name and stores slug plus name values
-  function updateName(val) {
-    setName(val);
-    let slugifiedVal = slugify(val);
+  function updateFirstNames(val) {
+    setFirstNames(val);
+    let displayName = displayAuthorName(val, lastName);
+    let slugifiedVal = slugify(displayName);
     setSlug(slugifiedVal);
+    setDisplayUpload(true);
+  }
 
+  function updateLastName(val) {
+    setLastName(val);
+    let slugifiedVal = slugify(displayAuthorName(firstNames, val));
+    setSlug(slugifiedVal);
     setDisplayUpload(true);
   }
 
@@ -58,15 +70,17 @@ export default function AddAuthor({
   async function handleSubmit(ev) {
     ev.preventDefault();
 
-    let nameIsValid = validateAuthorName(name);
+    let nameIsValid = validateAuthorName(firstNames, lastName);
     if (!nameIsValid) {
       setNotificationMessage(
         'Please use a real name of an actual person - editorial guidelines prohibit fake bylines: ' +
-          name
+          displayAuthorName(firstNames, lastName)
       );
       setShowNotification(true);
       setNotificationType('error');
-      setName('');
+      setFirstNames('');
+      setLastName('');
+
       setSlug('');
       setDisplayUpload(false);
       return false;
@@ -83,7 +97,8 @@ export default function AddAuthor({
       localeCode: currentLocale,
       bio: bio,
       title: title,
-      name: name,
+      first_names: firstNames,
+      last_name: lastName,
       published: published,
       slug: slug,
       staff: staffBool,
@@ -97,8 +112,8 @@ export default function AddAuthor({
       setNotificationType('success');
       setShowNotification(true);
     } else if (errors) {
-      console.log(errors);
-      setNotificationMessage(errors);
+      console.log('error creating author:', errors);
+      setNotificationMessage(JSON.stringify(errors));
       setNotificationType('error');
       setShowNotification(true);
     }
@@ -127,10 +142,16 @@ export default function AddAuthor({
 
         <form onSubmit={handleSubmit}>
           <TinyInputField
-            name="name"
-            value={name}
-            onChange={(ev) => updateName(ev.target.value)}
-            label="Name"
+            name="first_names"
+            value={firstNames}
+            onChange={(ev) => updateFirstNames(ev.target.value)}
+            label="First names"
+          />
+          <TinyInputField
+            name="last_name"
+            value={lastName}
+            onChange={(ev) => updateLastName(ev.target.value)}
+            label="Last name (staff page sorts by this value)"
           />
           <TinyInputField
             name="title"
