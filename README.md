@@ -28,7 +28,7 @@ yarn
 
 **Step 4**
 
-To start up a new tiny news org, set up an environment file (see below) then bootstrap the initial content with `yarn bootstrap`. 
+To start up a new tiny news org, set up an environment file (see below) then bootstrap the initial content with `yarn bootstrap`.
 
 **Step 5 - Pre-Start Notes**
 
@@ -68,6 +68,12 @@ Note: these commands expect `.env.local-$name` to exist in order to work.
 ## Bootstrap a new org
 
 The [latest instructions on how to launch a new organisation are in a Google Doc](https://docs.google.com/document/d/1sSvtRTYkk2PoixMrWPT3FSM6qO_5zseqdCXv4LmP7Rc/edit?usp=sharing) and subject to change; please reference that for info.
+
+## Run tests
+
+In one terminal window, run `npm run dev:test` to start up the local front-end app in test mode. This will start the server using the appropriate hasura API url and test organization slug.
+
+In another terminal window, run `npm run cypress:open` to open the cypress test runner window, which will then let you run one or all test files.
 
 ## Setup the test environment
 

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import tw from 'twin.macro';
 import Link from 'next/link';
 import LocaleSwitcher from '../tinycms/LocaleSwitcher';
-import { signOut } from 'next-auth/client';
+// import { signOut } from 'next-auth/client';
 
 const NavBar = tw.header`flex h-12 items-center bg-gray-100`;
 const HomepageNavBar = tw.header`flex pt-3 px-2 h-12 w-full justify-end bg-blue-100`;
@@ -14,7 +14,7 @@ const BrandContainer = tw.div`w-full md:w-1/5 text-center md:text-left font-bold
 const NavItemsDiv = tw.div`flex justify-center items-center w-full md:w-4/5`;
 const HomepageNavItemsDiv = tw.div`flex justify-end items-center w-full md:w-3/5`;
 const NavItem = tw.a`mx-4 cursor-pointer`;
-const SignoutButton = tw.a`hidden md:flex h-10 w-full md:w-auto px-4 py-2 text-right bg-blue-900 hover:bg-blue-500 text-white md:rounded`;
+// const SignoutButton = tw.a`hidden md:flex h-10 w-full md:w-auto px-4 py-2 text-right bg-blue-900 hover:bg-blue-500 text-white md:rounded`;
 const SaveButton = tw.a`hidden md:flex justify-end text-center h-8 w-full md:w-auto px-3 py-2 text-right bg-green-900 hover:bg-green-500 text-white md:rounded`;
 
 export default function NewAdminNav(props) {
@@ -35,7 +35,7 @@ export default function NewAdminNav(props) {
     } else if (props.homePageEditor) {
       console.log('is homepage editor AND missing hp data/schema', props);
     }
-  }, [props]);
+  }, []);
 
   return (
     <div>

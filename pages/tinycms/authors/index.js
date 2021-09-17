@@ -9,7 +9,7 @@ import {
   deleteSingleAuthor,
   hasuraListAllAuthors,
 } from '../../../lib/authors.js';
-import { hasuraLocaliseText } from '../../../lib/utils.js';
+import { displayAuthorName, hasuraLocaliseText } from '../../../lib/utils.js';
 
 const Table = tw.table`table-auto w-full`;
 const TableHead = tw.thead``;
@@ -99,7 +99,11 @@ export default function Authors({
     return (
       <TableRow key={author.id}>
         <TableCell>
-          <Link href={`/tinycms/authors/${author.id}`}>{author.name}</Link>
+          <Link href={`/tinycms/authors/${author.id}`}>
+            <a href={`/tinycms/authors/${author.id}`}>
+              {displayAuthorName(author.first_names, author.last_name)}
+            </a>
+          </Link>
         </TableCell>
         <TableCell tw="content-center">{staff}</TableCell>
         <TableCell>{title}</TableCell>

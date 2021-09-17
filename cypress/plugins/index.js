@@ -1,6 +1,5 @@
 /// <reference types="cypress" />
-const fetch = require("node-fetch");
-
+const fetch = require('node-fetch');
 
 async function fetchGraphQL(params) {
   let url = params['url'];
@@ -86,40 +85,41 @@ function deleteAllTags(params) {
 module.exports = (on, config) => {
   const apiGraphQL = config.env.apiUrl;
 
-  on("task", {
-    async "db:authors"() {
+  on('task', {
+    async 'db:authors'() {
       // seed database with test data
       const { errors, data } = await deleteAllAuthors({
-        "url": apiGraphQL,
-        "orgSlug": "test-org"
-      })
+        url: apiGraphQL,
+        orgSlug: 'test-org',
+      });
       if (errors) {
-        console.error("errors:", errors);
+        console.error('errors:', errors);
       }
-      console.log("data:", data);
+      console.log('data:', data);
       return data;
     },
-    async "db:tags"() {
+    async 'db:tags'() {
+      console.log('DELETING ALL TAGS!', apiGraphQL);
       // seed database with test data
       const { errors, data } = await deleteAllTags({
-        "url": apiGraphQL,
-        "orgSlug": "test-org"
-      })
+        url: apiGraphQL,
+        orgSlug: 'test-org',
+      });
       if (errors) {
-        console.error("errors:", errors);
+        console.error('errors:', errors);
       }
-      console.log("data:", data);
+      console.log('data:', data);
       return data;
     },
-    async "db:articles"() {
+    async 'db:articles'() {
       // clear out existing articles
       const { errors, data } = await hasuraDeleteArticles(orgParams);
       if (errors) {
-        console.error("errors deleting articles:", errors);
+        console.error('errors deleting articles:', errors);
       }
-      console.log("data:", data);
+      console.log('data:', data);
       return data;
-    }
-  })
-}
+    },
+  });
+};
 // eslint-disable-next-line no-unused-vars
