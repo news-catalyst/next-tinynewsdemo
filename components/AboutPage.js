@@ -1,4 +1,5 @@
 import tw from 'twin.macro';
+import Link from 'next/link';
 import Layout from './Layout';
 import ReadInOtherLanguage from './articles/ReadInOtherLanguage';
 import { renderBody } from '../lib/utils.js';
@@ -50,6 +51,16 @@ export default function AboutPage({
               <PostTextContainer>{body}</PostTextContainer>
             </PostText>
           </div>
+
+          <SectionLayout>
+            <SectionContainer>
+              <Block>
+                <Link href="/staff">
+                  <a href="/staff">Staff</a>
+                </Link>
+              </Block>
+            </SectionContainer>
+          </SectionLayout>
         </SectionContainer>
       </article>
     </Layout>
