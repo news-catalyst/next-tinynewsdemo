@@ -217,7 +217,7 @@ export default function EditAuthor({
                     awsConfig={awsConfig}
                     slug={slug}
                     image={bioImage}
-                    setBioImage={setBioImage}
+                    setter={setBioImage}
                     setNotificationMessage={setNotificationMessage}
                     setNotificationType={setNotificationType}
                     setShowNotification={setShowNotification}
