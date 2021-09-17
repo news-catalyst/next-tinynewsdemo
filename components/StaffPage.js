@@ -7,8 +7,6 @@ import {
   PostTextContainer,
   PostText,
   Paragraph,
-  H2,
-  H3,
 } from './common/CommonStyles.js';
 
 const SectionContainer = tw.div`flex flex-col flex-nowrap items-center px-5 mx-auto max-w-7xl w-full`;
