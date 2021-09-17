@@ -3,6 +3,7 @@ import tw from 'twin.macro';
 import { hasuraGetPage } from '../lib/articles.js';
 import { useAnalytics } from '../lib/hooks/useAnalytics.js';
 import { hasuraLocaliseText } from '../lib/utils';
+import ReadInOtherLanguage from '../components/articles/ReadInOtherLanguage';
 import Layout from '../components/Layout';
 import NewsletterBlock from '../components/plugins/NewsletterBlock';
 import { renderBody } from '../lib/utils.js';
@@ -10,11 +11,20 @@ import {
   ArticleTitle,
   PostTextContainer,
   PostText,
+  SectionLayout,
+  Block,
 } from '../components/common/CommonStyles.js';
 
 const SectionContainer = tw.div`flex flex-col flex-nowrap items-center px-5 mx-auto max-w-7xl w-full`;
 
-export default function ThankYou({ referrer, page, sections, siteMetadata }) {
+export default function ThankYou({
+  referrer,
+  page,
+  sections,
+  siteMetadata,
+  locales,
+  locale,
+}) {
   const isAmp = useAmp();
 
   // sets a cookie if request comes from monkeypod.io marking this browser as a donor
@@ -51,6 +61,15 @@ export default function ThankYou({ referrer, page, sections, siteMetadata }) {
           wrap={false}
         />
       </SectionContainer>
+      {locales.length > 1 && (
+        <SectionLayout>
+          <SectionContainer>
+            <Block>
+              <ReadInOtherLanguage locales={locales} currentLocale={locale} />
+            </Block>
+          </SectionContainer>
+        </SectionLayout>
+      )}
     </Layout>
   );
 }
@@ -63,6 +82,7 @@ export async function getServerSideProps(context) {
   let page = {};
   let sections;
   let siteMetadata = {};
+  let locales = [];
 
   const { errors, data } = await hasuraGetPage({
     url: apiUrl,
@@ -82,9 +102,21 @@ export async function getServerSideProps(context) {
       };
     }
     page = data.page_slug_versions[0].page;
+
+    var allPageLocales = data.pages[0].page_translations;
+    var distinctLocaleCodes = [];
+    var distinctLocales = [];
+    for (var i = 0; i < allPageLocales.length; i++) {
+      if (!distinctLocaleCodes.includes(allPageLocales[i].locale.code)) {
+        distinctLocaleCodes.push(allPageLocales[i].locale.code);
+        distinctLocales.push(allPageLocales[i]);
+      }
+    }
+    locales = distinctLocales;
+
     sections = data.categories;
     siteMetadata = data.site_metadatas[0].site_metadata_translations[0].data;
-    for (var i = 0; i < sections.length; i++) {
+    for (i = 0; i < sections.length; i++) {
       sections[i].title = hasuraLocaliseText(
         sections[i].category_translations,
         'title'
@@ -98,6 +130,8 @@ export async function getServerSideProps(context) {
       page,
       sections,
       siteMetadata,
+      locales,
+      locale,
     },
   };
 }

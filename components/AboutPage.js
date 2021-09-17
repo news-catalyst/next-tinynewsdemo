@@ -1,14 +1,14 @@
 import tw from 'twin.macro';
-import { hasuraLocaliseText } from '../lib/utils';
+import Link from 'next/link';
 import Layout from './Layout';
+import ReadInOtherLanguage from './articles/ReadInOtherLanguage';
 import { renderBody } from '../lib/utils.js';
 import {
   ArticleTitle,
   PostTextContainer,
   PostText,
-  Paragraph,
-  H2,
-  H3,
+  SectionLayout,
+  Block,
 } from './common/CommonStyles.js';
 
 const SectionContainer = tw.div`flex flex-col flex-nowrap items-center px-5 mx-auto max-w-7xl w-full`;
@@ -17,7 +17,8 @@ export default function AboutPage({
   page,
   sections,
   siteMetadata,
-  authors,
+  locales,
+  locale,
   isAmp,
 }) {
   // there will only be one translation returned for a given page + locale
@@ -33,25 +34,33 @@ export default function AboutPage({
               {localisedPage.headline}
             </ArticleTitle>
           </div>
+          {locales.length > 1 && (
+            <SectionLayout>
+              <SectionContainer>
+                <Block>
+                  <ReadInOtherLanguage
+                    locales={locales}
+                    currentLocale={locale}
+                  />
+                </Block>
+              </SectionContainer>
+            </SectionLayout>
+          )}
           <div className="section post__body rich-text" key="body">
             <PostText>
-              <PostTextContainer>
-                {body}
-                <H2>Our Staff</H2>
-                {authors.map((author) => (
-                  <div className="author mb-4" key={author.name}>
-                    <H3>
-                      {author.name},{' '}
-                      {hasuraLocaliseText(author.author_translations, 'title')}
-                    </H3>
-                    <Paragraph>
-                      {hasuraLocaliseText(author.author_translations, 'bio')}
-                    </Paragraph>
-                  </div>
-                ))}
-              </PostTextContainer>
+              <PostTextContainer>{body}</PostTextContainer>
             </PostText>
           </div>
+
+          <SectionLayout>
+            <SectionContainer>
+              <Block>
+                <Link href="/staff">
+                  <a href="/staff">Staff</a>
+                </Link>
+              </Block>
+            </SectionContainer>
+          </SectionLayout>
         </SectionContainer>
       </article>
     </Layout>

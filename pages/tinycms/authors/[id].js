@@ -14,6 +14,7 @@ import Notification from '../../../components/tinycms/Notification';
 import Upload from '../../../components/tinycms/Upload';
 import { hasuraGetAuthorById, hasuraUpdateAuthor } from '../../../lib/authors';
 import {
+  displayAuthorName,
   hasuraLocaliseText,
   slugify,
   validateAuthorName,
@@ -34,7 +35,9 @@ export default function EditAuthor({
   const [showNotification, setShowNotification] = useState(false);
   const [displayUpload, setDisplayUpload] = useState(true);
 
-  const [name, setName] = useState(author.name);
+  const [firstNames, setFirstNames] = useState(author.first_names);
+  const [lastName, setLastName] = useState(author.last_name);
+
   const [title, setTitle] = useState(
     hasuraLocaliseText(author.author_translations, 'title')
   );
@@ -68,9 +71,17 @@ export default function EditAuthor({
   };
 
   // slugifies the name and stores slug plus name values
-  function updateName(val) {
-    setName(val);
-    let slugifiedVal = slugify(val);
+  function updateFirstNames(val) {
+    setFirstNames(val);
+    let displayName = displayAuthorName(val, lastName);
+    let slugifiedVal = slugify(displayName);
+    setSlug(slugifiedVal);
+    setDisplayUpload(true);
+  }
+
+  function updateLastName(val) {
+    setLastName(val);
+    let slugifiedVal = slugify(displayAuthorName(firstNames, val));
     setSlug(slugifiedVal);
     setDisplayUpload(true);
   }
@@ -85,15 +96,16 @@ export default function EditAuthor({
     let published = true;
     ev.preventDefault();
 
-    let nameIsValid = validateAuthorName(name);
+    let nameIsValid = validateAuthorName(firstNames, lastName);
     if (!nameIsValid) {
       setNotificationMessage(
         'Please use a real name of an actual person - editorial guidelines prohibit fake bylines: ' +
-          name
+          displayAuthorName(firstNames, lastName)
       );
       setShowNotification(true);
       setNotificationType('error');
-      setName('');
+      setFirstNames('');
+      setLastName('');
       setSlug('');
       setDisplayUpload(false);
       return false;
@@ -106,13 +118,15 @@ export default function EditAuthor({
       localeCode: currentLocale,
       bio: bio,
       title: title,
-      name: name,
+      first_names: firstNames,
+      last_name: lastName,
       published: published,
       slug: slug,
       staff: staff,
       twitter: twitter,
       photoUrl: bioImage,
     };
+
     const { errors, data } = await hasuraUpdateAuthor(params);
 
     if (errors) {
@@ -151,10 +165,16 @@ export default function EditAuthor({
 
         <form onSubmit={handleSubmit}>
           <TinyInputField
-            name="name"
-            value={name}
-            onChange={(ev) => updateName(ev.target.value)}
-            label="Name"
+            name="first_names"
+            value={firstNames}
+            onChange={(ev) => updateFirstNames(ev.target.value)}
+            label="First names"
+          />
+          <TinyInputField
+            name="last_name"
+            value={lastName}
+            onChange={(ev) => updateLastName(ev.target.value)}
+            label="Last name (staff page sorts by this value)"
           />
           <TinyInputField
             name="title"
@@ -183,7 +203,7 @@ export default function EditAuthor({
           />
           <TinyYesNoField
             name="staff"
-            value={staff}
+            value={staffYesNo}
             onChange={handleChange}
             labelYes="Staff"
             labelNo="Not Staff"
@@ -197,7 +217,7 @@ export default function EditAuthor({
                     awsConfig={awsConfig}
                     slug={slug}
                     image={bioImage}
-                    setBioImage={setBioImage}
+                    setter={setBioImage}
                     setNotificationMessage={setNotificationMessage}
                     setNotificationType={setNotificationType}
                     setShowNotification={setShowNotification}
