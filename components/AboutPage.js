@@ -1,14 +1,11 @@
 import tw from 'twin.macro';
-import { hasuraLocaliseText } from '../lib/utils';
+import Link from 'next/link';
 import Layout from './Layout';
 import { renderBody } from '../lib/utils.js';
 import {
   ArticleTitle,
   PostTextContainer,
   PostText,
-  Paragraph,
-  H2,
-  H3,
 } from './common/CommonStyles.js';
 
 const SectionContainer = tw.div`flex flex-col flex-nowrap items-center px-5 mx-auto max-w-7xl w-full`;
@@ -32,6 +29,16 @@ export default function AboutPage({ page, sections, siteMetadata, isAmp }) {
               <PostTextContainer>{body}</PostTextContainer>
             </PostText>
           </div>
+
+          <SectionLayout>
+            <SectionContainer>
+              <Block>
+                <Link href="/staff">
+                  <a href="/staff">Staff</a>
+                </Link>
+              </Block>
+            </SectionContainer>
+          </SectionLayout>
         </SectionContainer>
       </article>
     </Layout>
