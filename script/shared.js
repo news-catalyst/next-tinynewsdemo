@@ -1,4 +1,4 @@
-const fetch = require("node-fetch");
+const fetch = require('node-fetch');
 
 const INSERT_LOCALE = `mutation FrontendInsertLocale($code: String!, $name: String!) {
   insert_locales_one(object: {code: $code, name: $name}) {
@@ -14,7 +14,7 @@ function hasuraInsertLocale(params) {
     name: 'FrontendInsertLocale',
     variables: {
       code: params['code'],
-      name: params['name']
+      name: params['name'],
     },
   });
 }
@@ -132,7 +132,7 @@ const INSERT_ORG_LOCALES_MUTATION = `mutation FrontendInsertOrgLocales($objects:
   ) {
     affected_rows
   }
-}`
+}`;
 
 function hasuraInsertOrgLocales(params) {
   return fetchGraphQL({
@@ -140,7 +140,7 @@ function hasuraInsertOrgLocales(params) {
     adminSecret: params['adminSecret'],
     query: INSERT_ORG_LOCALES_MUTATION,
     name: 'FrontendInsertOrgLocales',
-    variables: {"objects": params['orgLocales']}
+    variables: { objects: params['orgLocales'] },
   });
 }
 
@@ -166,7 +166,7 @@ const HASURA_UPSERT_METADATA = `mutation FrontendUpsertMetadata($published: Bool
 }`;
 
 function hasuraUpsertMetadata(params) {
-  console.log("upsert metadata:", params);
+  console.log('upsert metadata:', params);
   return fetchGraphQL({
     url: params['url'],
     adminSecret: params['adminSecret'],
@@ -176,7 +176,7 @@ function hasuraUpsertMetadata(params) {
       organization_id: params['organization_id'],
       data: params['data'],
       published: params['published'],
-      locale_code: params['locale_code']
+      locale_code: params['locale_code'],
     },
   });
 }
@@ -257,8 +257,8 @@ function hasuraInsertSections(params) {
     query: HASURA_INSERT_SECTIONS,
     name: 'FrontendInsertSections',
     variables: {
-      objects: params['objects']
-    }
+      objects: params['objects'],
+    },
   });
 }
 
@@ -313,7 +313,7 @@ function hasuraListAllLocales(params) {
     url: params['url'],
     adminSecret: params['adminSecret'],
     query: HASURA_LIST_ALL_LOCALES,
-    name: 'FrontendListAllLocales'
+    name: 'FrontendListAllLocales',
   });
 }
 const HASURA_LIST_ORG_LOCALES = `query FrontendListOrgLocales {
@@ -354,7 +354,6 @@ function hasuraListOrganizations(params) {
     name: 'FrontendListOrganizations',
   });
 }
-
 
 const HASURA_INSERT_PAGE_VIEW_DATA = `mutation FrontendInsertPageView($count: Int!, $date: date!, $path: String!) {
   insert_ga_page_views_one(object: {count: $count, date: $date, path: $path}, on_conflict: {constraint: ga_page_views_organization_id_date_path_key, update_columns: count}) {
@@ -661,7 +660,7 @@ function hasuraDeleteAnalytics(params) {
     orgSlug: params['orgSlug'],
     query: HASURA_DELETE_ANALYTICS,
     name: 'FrontendDeleteAnalytics',
-  })
+  });
 }
 
 const HASURA_GET_ARTICLES_RSS = `query FrontendGetArticlesRSS($locale_code: String!) {
@@ -679,7 +678,8 @@ const HASURA_GET_ARTICLES_RSS = `query FrontendGetArticlesRSS($locale_code: Stri
     }
     author_articles {
       author {
-        name
+        first_names
+        last_name
         photoUrl
         slug
         twitter
@@ -724,11 +724,11 @@ async function fetchGraphQL(params) {
   if (params.hasOwnProperty('orgSlug')) {
     orgSlug = params['orgSlug'];
     requestHeaders = {
-      'TNC-Organization': orgSlug
+      'TNC-Organization': orgSlug,
     };
   } else if (params.hasOwnProperty('adminSecret')) {
     requestHeaders = {
-      "x-hasura-admin-secret": params['adminSecret']
+      'x-hasura-admin-secret': params['adminSecret'],
     };
   }
 
@@ -788,5 +788,5 @@ module.exports = {
   hasuraInsertDonorReadingFrequency,
   hasuraGetArticlesRss,
   fetchGraphQL,
-  sanitizePath
-}
+  sanitizePath,
+};
