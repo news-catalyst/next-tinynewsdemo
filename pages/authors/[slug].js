@@ -4,7 +4,7 @@ import {
   hasuraListAllAuthorPaths,
   hasuraAuthorPage,
 } from '../../lib/articles.js';
-import { hasuraLocaliseText } from '../../lib/utils';
+import { displayAuthorName, hasuraLocaliseText } from '../../lib/utils';
 import { cachedContents } from '../../lib/cached';
 import { getArticleAds } from '../../lib/ads.js';
 import { useAmp } from 'next/amp';
@@ -41,7 +41,7 @@ export default function AuthorPage({
   let authorBio;
   let authorTwitter;
   if (author) {
-    authorName = author.name;
+    authorName = displayAuthorName(author.first_names, author.last_name);
     authorPhoto = author.photoUrl;
     authorTitle = hasuraLocaliseText(author.author_translations, 'title');
     authorBio = hasuraLocaliseText(author.author_translations, 'bio');
