@@ -56,7 +56,7 @@ export default function AboutPage({
             <SectionContainer>
               <Block>
                 <Link href="/staff">
-                  <a href="/staff">Staff</a>
+                  <a>Staff</a>
                 </Link>
               </Block>
             </SectionContainer>
