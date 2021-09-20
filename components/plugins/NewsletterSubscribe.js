@@ -111,47 +111,50 @@ const NewsletterSubscribe = ({ articleTitle, metadata }) => {
               dangerouslySetInnerHTML={{ __html: message }}
             />
           )}
-          <Group>
-            <Input
-              type="text"
-              placeholder="Your name"
-              className="input"
-              onChange={(ev) => setName(ev.target.value)}
-              value={name}
-              style={{
-                borderTop: 'none',
-                borderLeft: 'none',
-                borderRight: 'none',
-                marginBottom: '.25rem',
-              }}
-            />
 
-            <Input
-              type="email"
-              placeholder="Your email"
-              className="input"
-              onChange={(ev) => setEmail(ev.target.value)}
-              value={email}
-              style={{
-                borderTop: 'none',
-                borderLeft: 'none',
-                borderRight: 'none',
-              }}
-            />
-            <span className="bar"></span>
-            <Submit
-              type="submit"
-              value="→"
-              style={{
-                bottom: '0.3125rem',
-                paddingTop: '0.375rem',
-                fontSize: '20px',
-                padding: '5px 5px 10px 5px',
-              }}
-              textColor={textColor}
-              backgroundColor={backgroundColor}
-            />
-          </Group>
+          {status !== 'success' && (
+            <Group>
+              <Input
+                type="text"
+                placeholder="Your name"
+                className="input"
+                onChange={(ev) => setName(ev.target.value)}
+                value={name}
+                style={{
+                  borderTop: 'none',
+                  borderLeft: 'none',
+                  borderRight: 'none',
+                  marginBottom: '.25rem',
+                }}
+              />
+
+              <Input
+                type="email"
+                placeholder="Your email"
+                className="input"
+                onChange={(ev) => setEmail(ev.target.value)}
+                value={email}
+                style={{
+                  borderTop: 'none',
+                  borderLeft: 'none',
+                  borderRight: 'none',
+                }}
+              />
+              <span className="bar"></span>
+              <Submit
+                type="submit"
+                value="→"
+                style={{
+                  bottom: '0.3125rem',
+                  paddingTop: '0.375rem',
+                  fontSize: '20px',
+                  padding: '5px 5px 10px 5px',
+                }}
+                textColor={textColor}
+                backgroundColor={backgroundColor}
+              />
+            </Group>
+          )}
         </div>
       </form>
     </div>
