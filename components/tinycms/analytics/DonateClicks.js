@@ -1,6 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
 import tw from 'twin.macro';
 import { hasuraGetDonationClicks } from '../../../lib/analytics';
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+} from 'recharts';
 
 const SubHeaderContainer = tw.div`pt-3 pb-5`;
 const SubHeader = tw.h1`inline-block text-xl font-extrabold text-gray-900 tracking-tight`;
@@ -10,8 +19,7 @@ const DonateClicks = (props) => {
   const donationsRef = useRef();
 
   const [donateTableRows, setDonateTableRows] = useState([]);
-  const [donorFrequencyRows, setDonorFrequencyRows] = useState([]);
-  const [totalClickDatas, setTotalClickDatas] = useState({});
+  const [chartData, setChartData] = useState([]);
 
   useEffect(() => {
     const fetchDonationClicks = async () => {
@@ -111,49 +119,48 @@ const DonateClicks = (props) => {
         );
       });
       setDonateTableRows(donateRows);
-      setTotalClickDatas(totalClicks);
 
-      let donorFreqRows = [];
+      let chartDataItems = [];
+      let chartDataPerPost = {
+        '1 Post': 0,
+        '2-3 Posts': 0,
+        '4-5 Posts': 0,
+        '6-8 Posts': 0,
+        '9-13 Posts': 0,
+        '14-21 Posts': 0,
+        '22-34 Posts': 0,
+        '35-55 Posts': 0,
+        '56+': 0,
+      };
       Object.keys(donorFrequency)
         .sort()
         .map((date, i) => {
-          let uniqueRowKey = `frequency-table-row-${i}`;
-          donorFreqRows.push(
-            <tr key={uniqueRowKey}>
-              <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-                {date}
-              </td>
-              <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-                {donorFrequency[date]['1 post'] || 0}
-              </td>
-              <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-                {donorFrequency[date]['2-3 posts'] || 0}
-              </td>
-              <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-                {donorFrequency[date]['4-5 posts'] || 0}
-              </td>
-              <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-                {donorFrequency[date]['6-8 posts'] || 0}
-              </td>
-              <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-                {donorFrequency[date]['9-13 posts'] || 0}
-              </td>
-              <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-                {donorFrequency[date]['14-21 posts'] || 0}
-              </td>
-              <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-                {donorFrequency[date]['22-34 posts'] || 0}
-              </td>
-              <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-                {donorFrequency[date]['35-55 posts'] || 0}
-              </td>
-              <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-                {donorFrequency[date]['56+'] || 0}
-              </td>
-            </tr>
-          );
+          chartDataPerPost['1 Post'] += donorFrequency[date]['1 post'] || 0;
+          chartDataPerPost['2-3 Posts'] +=
+            donorFrequency[date]['2-3 posts'] || 0;
+          chartDataPerPost['4-5 Posts'] +=
+            donorFrequency[date]['4-5 posts'] || 0;
+          chartDataPerPost['6-8 Posts'] +=
+            donorFrequency[date]['6-8 posts'] || 0;
+          chartDataPerPost['9-13 Posts'] +=
+            donorFrequency[date]['9-13 posts'] || 0;
+          chartDataPerPost['14-21 Posts'] +=
+            donorFrequency[date]['14-21 posts'] || 0;
+          chartDataPerPost['22-34 Posts'] +=
+            donorFrequency[date]['22-34 posts'] || 0;
+          chartDataPerPost['35-55 Posts'] +=
+            donorFrequency[date]['35-55 posts'] || 0;
+          chartDataPerPost['56+ Posts'] +=
+            donorFrequency[date]['56+ posts'] || 0;
         });
-      setDonorFrequencyRows(donorFreqRows);
+
+      Object.keys(chartDataPerPost).map((key) => {
+        chartDataItems.push({
+          name: key,
+          count: chartDataPerPost[key] || 0,
+        });
+      });
+      setChartData(chartDataItems);
     };
     fetchDonationClicks();
 
@@ -198,23 +205,30 @@ const DonateClicks = (props) => {
           likely to click your donate buttons across your site.
         </SubDek>
       </SubHeaderContainer>
-      <table tw="pt-10 mt-10 w-full table-auto">
-        <thead>
-          <tr>
-            <th tw="px-4">Date</th>
-            <th tw="px-4">1 Post</th>
-            <th tw="px-4">2-3 Posts</th>
-            <th tw="px-4">4-5 Posts</th>
-            <th tw="px-4">6-8 Posts</th>
-            <th tw="px-4">9-13 Posts</th>
-            <th tw="px-4">14-21 Posts</th>
-            <th tw="px-4">22-34 Posts</th>
-            <th tw="px-4">35-55 Posts</th>
-            <th tw="px-4">56+</th>
-          </tr>
-        </thead>
-        <tbody>{donorFrequencyRows}</tbody>
-      </table>
+
+      <p tw="p-2">
+        {props.startDate.format('dddd, MMMM Do YYYY')} -{' '}
+        {props.endDate.format('dddd, MMMM Do YYYY')}
+      </p>
+
+      <BarChart
+        width={740}
+        height={400}
+        data={chartData}
+        margin={{
+          top: 5,
+          right: 30,
+          left: 20,
+          bottom: 5,
+        }}
+      >
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey="name" />
+        <YAxis />
+        <Tooltip />
+        <Legend />
+        <Bar dataKey="count" fill="#8884d8" />
+      </BarChart>
     </>
   );
 };
