@@ -168,7 +168,7 @@ async function createGitHubEnv(slug) {
 
     for await (let secretName of secrets) {
       let plainValue = currentEnv.parsed[secretName];
-      console.log(`\t* setting secret: ${secretName} ${plainValue}`);
+      // console.log(`\t* setting secret: ${secretName} ${plainValue}`);
 
       let encryptedValue = encryptSecret(pubKey, plainValue);
 
@@ -263,7 +263,7 @@ async function setupGoogleAnalytics(name, url) {
 }
 
 // sets up org-specific ENV values
-function configureNext(name, slug, locales, url, gaTrackingId) {
+async function configureNext(name, slug, locales, url, gaTrackingId) {
   const currentEnv = require('dotenv').config({ path: '.env.local' });
 
   if (currentEnv.error) {
@@ -317,12 +317,12 @@ async function createOrganization(opts) {
   let locales = opts.locales[0].split(',');
   let url = opts.url;
 
-  console.log('locales:', typeof locales, locales);
+  // console.log('locales:', typeof locales, locales);
 
   let gaTrackingId = await setupGoogleAnalytics(name, url);
   console.log('GA Tracking ID: ', gaTrackingId);
 
-  configureNext(name, slug, locales, url, gaTrackingId);
+  await configureNext(name, slug, locales, url, gaTrackingId);
 
   const { errors, data } = await shared.hasuraInsertOrganization({
     url: apiUrl,
@@ -517,7 +517,7 @@ async function createOrganization(opts) {
                     console.error(res.errors);
                   } else {
                     console.log('Created site metadata in locale ' + locale);
-                    console.log(JSON.stringify(res));
+                    // console.log(JSON.stringify(res));
                   }
                 });
             });
@@ -558,8 +558,13 @@ program
   )
   .description('sets up a new organization in Hasura and Google Drive')
   .action((opts) => {
-    createOrganization(opts);
-    vercel.createProject(opts.name, opts.slug);
+    (async () => {
+      console.log('Creating organization in the database and env... ');
+      await createOrganization(opts);
+      console.log('Done. Setting up project in Vercel... ');
+      await vercel.createProject(opts.name, opts.slug);
+      console.log('All done!');
+    })();
   });
 
 program.parse(process.argv);
