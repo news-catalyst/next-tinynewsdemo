@@ -133,5 +133,6 @@ export async function getServerSideProps(context) {
       locales,
       locale,
     },
+    revalidate: 1,
   };
 }
