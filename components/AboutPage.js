@@ -2,6 +2,7 @@ import tw from 'twin.macro';
 import Link from 'next/link';
 import Layout from './Layout';
 import ReadInOtherLanguage from './articles/ReadInOtherLanguage';
+import StaticMainImage from './articles/StaticMainImage';
 import { renderBody } from '../lib/utils.js';
 import {
   ArticleTitle,
@@ -46,6 +47,8 @@ export default function AboutPage({
               </SectionContainer>
             </SectionLayout>
           )}
+          <StaticMainImage isAmp={isAmp} page={page} />
+
           <div className="section post__body rich-text" key="body">
             <PostText>
               <PostTextContainer>{body}</PostTextContainer>
