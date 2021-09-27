@@ -4,6 +4,7 @@ import { hasuraGetPage } from '../lib/articles.js';
 import { hasuraLocaliseText } from '../lib/utils';
 import Layout from '../components/Layout';
 import ReadInOtherLanguage from '../components/articles/ReadInOtherLanguage';
+import StaticMainImage from '../components/articles/StaticMainImage';
 import { renderBody } from '../lib/utils.js';
 import DonationOptionsBlock from '../components/plugins/DonationOptionsBlock.js';
 import {
@@ -36,6 +37,7 @@ export default function Donate({
           <ArticleTitle meta={siteMetadata} tw="text-center">
             {localisedPage.headline}
           </ArticleTitle>
+          <StaticMainImage isAmp={isAmp} page={page} />
           <PostText>
             <PostTextContainer>{body}</PostTextContainer>
           </PostText>

@@ -51,6 +51,7 @@ export default function ArticleHeader({
   let headline;
   let postUrl;
   let searchDescription;
+  let articleContent;
 
   if (article && article.category) {
     categoryTitle = hasuraLocaliseText(
@@ -62,6 +63,11 @@ export default function ArticleHeader({
     searchDescription = hasuraLocaliseText(
       article.article_translations,
       'search_description'
+    );
+
+    articleContent = hasuraLocaliseText(
+      article.article_translations,
+      'content'
     );
   }
 
@@ -110,7 +116,9 @@ export default function ArticleHeader({
         <ArticleFeaturedMedia>
           <FeaturedMediaFigure>
             <FeaturedMediaWrapper>
-              {mainImage && <MainImage article={article} isAmp={isAmp} />}
+              {mainImage && (
+                <MainImage articleContent={articleContent} isAmp={isAmp} />
+              )}
             </FeaturedMediaWrapper>
             <FeaturedMediaCaption>
               {mainImage ? mainImage.imageAlt : null}
