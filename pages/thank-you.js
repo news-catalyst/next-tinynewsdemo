@@ -83,12 +83,13 @@ export async function getServerSideProps(context) {
   let sections;
   let siteMetadata = {};
   let locales = [];
+  let locale = context.locale;
 
   const { errors, data } = await hasuraGetPage({
     url: apiUrl,
     orgSlug: apiToken,
     slug: 'thank-you',
-    localeCode: context.locale,
+    localeCode: locale,
   });
   if (errors || !data) {
     return {
@@ -132,7 +133,7 @@ export async function getServerSideProps(context) {
       siteMetadata,
       locales,
       locale,
+      revalidate: 1,
     },
-    revalidate: 1,
   };
 }
