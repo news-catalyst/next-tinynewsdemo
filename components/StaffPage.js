@@ -21,6 +21,7 @@ export default function StaffPage({ sections, siteMetadata, authors, isAmp }) {
           <div key="title" className="section post__header">
             <ArticleTitle meta={siteMetadata}>Staff</ArticleTitle>
           </div>
+
           <div className="section post__body rich-text" key="body">
             <PostText>
               <PostTextContainer>

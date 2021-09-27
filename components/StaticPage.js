@@ -9,6 +9,7 @@ import {
   Block,
 } from './common/CommonStyles.js';
 import ReadInOtherLanguage from '../components/articles/ReadInOtherLanguage';
+import StaticMainImage from '../components/articles/StaticMainImage';
 
 const SectionContainer = tw.div`flex flex-col flex-nowrap items-center px-5 mx-auto max-w-7xl w-full`;
 
@@ -39,6 +40,9 @@ export default function StaticPage({
         <ArticleTitle meta={siteMetadata} tw="text-center">
           {localisedPage.headline}
         </ArticleTitle>
+
+        <StaticMainImage isAmp={isAmp} page={page} />
+
         <PostText>
           <PostTextContainer>{body}</PostTextContainer>
         </PostText>
