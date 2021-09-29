@@ -65,6 +65,7 @@ export default function GlobalNav({ metadata, sections, isAmp }) {
               objectFit="contain"
               objectPosition="left"
               alt={title}
+              priority={true}
             />
           )}
         </Logo>
