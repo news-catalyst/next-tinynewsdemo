@@ -6,7 +6,7 @@ import Typography from '../common/Typography';
 import Colors from '../common/Colors';
 
 const DonateLink = styled.a(({ meta }) => ({
-  ...tw`items-center flex font-bold leading-none px-5 ml-5 order-2 lg:ml-0 lg:order-none`,
+  ...tw`items-center flex font-bold leading-none px-5 ml-5 order-2 lg:ml-0`,
   fontFamily:
     Typography && Typography[meta.theme]
       ? Typography[meta.theme].DonateLink
