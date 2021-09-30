@@ -123,25 +123,30 @@ export default function ArticleLink({
         </AssetByline>
       </AssetMetaContainer>
       {mainImage && (
-        <AssetThumbnail>
-          {isAmp ? (
-            <amp-img
-              width={mainImage.width}
-              height={(mainImage.height / mainImage.width) * 400}
-              src={mainImage.imageUrl}
-              alt={mainImage.imageAlt}
-              layout="responsive"
-            />
-          ) : (
-            <Image
-              src={mainImage.imageUrl}
-              width={400}
-              height={(mainImage.height / mainImage.width) * 400}
-              alt={mainImage.imageAlt}
-              className="image"
-            />
-          )}
-        </AssetThumbnail>
+        <Link
+          href={`/articles/${article.category.slug}/${article.slug}`}
+          passHref
+        >
+          <AssetThumbnail>
+            {isAmp ? (
+              <amp-img
+                width={mainImage.width}
+                height={(mainImage.height / mainImage.width) * 400}
+                src={mainImage.imageUrl}
+                alt={mainImage.imageAlt}
+                layout="responsive"
+              />
+            ) : (
+              <Image
+                src={mainImage.imageUrl}
+                width={400}
+                height={(mainImage.height / mainImage.width) * 400}
+                alt={mainImage.imageAlt}
+                className="image"
+              />
+            )}
+          </AssetThumbnail>
+        </Link>
       )}
     </Asset>
   );
