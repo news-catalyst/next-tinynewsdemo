@@ -196,6 +196,9 @@ export default function SiteInfoSettings(props) {
   const [membershipDek, setMembershipDek] = useState(
     props.parsedData['membershipDek']
   );
+  const [staticMembershipDek, setStaticMembershipDek] = useState(
+    props.parsedData['membershipDek']
+  );
   const [membershipCTA, setMembershipCTA] = useState(
     props.parsedData['membershipCTA']
   );
@@ -205,6 +208,12 @@ export default function SiteInfoSettings(props) {
   const [newsletterDek, setNewsletterDek] = useState(
     props.parsedData['newsletterDek']
   );
+  // necessary to avoid weird issues with the rich text editor - the static version
+  // of this content is used to set the initial display value only
+  const [staticNewsletterDek, setStaticNewsletterDek] = useState(
+    props.parsedData['newsletterDek']
+  );
+
   const [logo, setLogo] = useState(props.parsedData['logo']);
   const [defaultSocialImage, setDefaultSocialImage] = useState(
     props.parsedData['defaultSocialImage']
@@ -215,7 +224,28 @@ export default function SiteInfoSettings(props) {
       : null
   );
 
+  const handleMembershipDekChange = (e) => {
+    let content = e.target.getContent();
+    setMembershipDek(content);
+
+    props.updateParsedData((prevState) => ({
+      ...prevState,
+      ['membershipDek']: content,
+    }));
+  };
+
+  const handleNewsletterDekChange = (e) => {
+    let content = e.target.getContent();
+    setNewsletterDek(content);
+
+    props.updateParsedData((prevState) => ({
+      ...prevState,
+      ['newsletterDek']: content,
+    }));
+  };
+
   const handleDekChange = (e) => {
+    console.log('handleDekChange incoming e is:', e);
     let content = e.target.getContent();
     setLandingPageDek(content);
 
@@ -234,7 +264,6 @@ export default function SiteInfoSettings(props) {
     setTwitterDescription(props.parsedData['twitterDescription']);
     setLandingPage(props.parsedData['landingPage']);
     setLandingPageDek(props.parsedData['landingPageDek']);
-    // setStaticLandingPageDek(props.parsedData['landingPageDek']);
     setCommenting(props.parsedData['commenting']);
     setShortName(props.parsedData['shortName']);
     setSiteUrl(props.parsedData['siteUrl']);
@@ -627,11 +656,10 @@ export default function SiteInfoSettings(props) {
           </label>
           <label htmlFor="description">
             <span tw="mt-1 font-bold">Description</span>
-            <ControlledInput
-              type="text"
-              name="newsletterDek"
-              value={newsletterDek}
-              onChange={props.handleChange}
+            <TinyEditor
+              tinyApiKey={props.tinyApiKey}
+              setValue={handleNewsletterDekChange}
+              value={staticNewsletterDek}
             />
           </label>
         </div>
@@ -659,11 +687,10 @@ export default function SiteInfoSettings(props) {
           </label>
           <label htmlFor="description">
             <span tw="mt-1 font-bold">Description</span>
-            <ControlledInput
-              type="text"
-              name="membershipDek"
-              value={membershipDek}
-              onChange={props.handleChange}
+            <TinyEditor
+              tinyApiKey={props.tinyApiKey}
+              setValue={handleMembershipDekChange}
+              value={staticMembershipDek}
             />
           </label>
           <label htmlFor="CTA">
