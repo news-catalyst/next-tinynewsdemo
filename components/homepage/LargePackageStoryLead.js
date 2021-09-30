@@ -10,13 +10,13 @@ const SectionLayout = tw.section`flex mb-8`;
 const SectionContainer = tw.div`flex flex-row flex-wrap md:grid mb-8 w-full md:grid-cols-packageLayoutTablet lg:grid-cols-packageLayoutDesktop px-5 max-w-7xl mx-auto`;
 const LeftBlock = tw.div`w-full`;
 const RightBlock = tw.div`w-full md:h-full flex lg:pl-8`;
-const Asset = tw.div`md:items-start flex flex-col-reverse flex-nowrap md:flex-row md:content-start border-b border-gray-200 mb-4 md:mb-0 pb-4 md:pb-0 w-full md:border-b-0`;
+const Asset = tw.div`md:items-start flex flex-col-reverse flex-nowrap md:flex-row md:content-start border-b border-gray-200 mb-4 md:mb-0 pb-4 md:pb-0 w-full md:border-b-0 pr-2`;
 const RightTopAsset = tw(
   Asset
-)`lg:border-l border-gray-200 lg:pl-2 lg:border-b pb-4`;
+)`lg:border-l border-gray-200 lg:pl-4 lg:border-b pb-4`;
 const RightBottomAsset = tw(
   Asset
-)`lg:border-l border-gray-200 lg:pl-2 lg:pt-4 border-b-0`;
+)`lg:border-l border-gray-200 lg:pl-4 lg:pt-4 border-b-0`;
 const AssetMetaContainer = tw.div`flex-1 relative w-full`;
 const AssetThumbnailContainer = tw.div`md:max-w-1/2`;
 
