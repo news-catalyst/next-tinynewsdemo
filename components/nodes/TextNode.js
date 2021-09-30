@@ -5,12 +5,8 @@ export default function TextNode({ node }) {
   const processChild = function (child, nextChild) {
     let supportedPunctuation = [',', '.', '?', '!', ';', ':'];
     let delimiterSpaceChar = ' ';
-    // if this is a link and the next node/child starts with one of the punctuation marks above, don't add a space
-    if (
-      child.link &&
-      nextChild &&
-      supportedPunctuation.includes(nextChild.content[0])
-    ) {
+    // if the next node/child starts with one of the punctuation marks above, don't add a space
+    if (nextChild && supportedPunctuation.includes(nextChild.content[0])) {
       delimiterSpaceChar = '';
     }
 
