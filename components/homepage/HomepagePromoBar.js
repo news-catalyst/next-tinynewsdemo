@@ -23,8 +23,8 @@ const Block = styled.div(() => ({
 }));
 const LeftBlock = tw(
   Block
-)`border-b md:border-r md:border-b-0 pb-8 mb-8 md:pb-0 border-gray-200 md:pr-4`;
-const RightBlock = tw(Block)``;
+)`border-b md:border-r md:border-b-0 pb-8 mb-8 md:pb-0 border-gray-200 md:pr-4 md:pl-0`;
+const RightBlock = tw(Block)`pr-0`;
 const BlockHeader = styled.h2(({ meta }) => ({
   ...tw`text-xl font-bold mb-5`,
   fontFamily: Typography[meta.theme || 'styleone'].HomepagePromoBlockHeader,
