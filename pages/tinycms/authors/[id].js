@@ -20,6 +20,10 @@ import {
   validateAuthorName,
 } from '../../../lib/utils.js';
 
+import dynamic from 'next/dynamic';
+const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
+import 'react-quill/dist/quill.snow.css';
+
 const UploadContainer = tw.div`container mx-auto min-w-0 flex-auto px-4 sm:px-6 xl:px-8 pt-10`;
 
 export default function EditAuthor({
@@ -195,12 +199,15 @@ export default function EditAuthor({
             onChange={(ev) => setSlug(ev.target.value)}
             label="Slug"
           />
-          <TinyTextArea
+
+          <ReactQuill theme="snow" value={bio} onChange={setBio} />
+
+          {/* <TinyTextArea
             name="bio"
             value={bio}
             onChange={(ev) => setBio(ev.target.value)}
             label="Bio"
-          />
+          /> */}
           <TinyYesNoField
             name="staff"
             value={staffYesNo}
