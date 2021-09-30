@@ -204,12 +204,6 @@ export default function EditAuthor({
             value={staticBio}
           />
 
-          {/* <TinyTextArea
-            name="bio"
-            value={bio}
-            onChange={(ev) => setBio(ev.target.value)}
-            label="Bio"
-          /> */}
           <TinyYesNoField
             name="staff"
             value={staffYesNo}
