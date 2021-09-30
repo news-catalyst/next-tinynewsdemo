@@ -60,6 +60,7 @@
     "@mailchimp/mailchimp_marketing": "^3.0.36",
     "@octokit/rest": "^18.5.3",
     "@tailwindcss/forms": "^0.3.2",
+    "@tinymce/tinymce-react": "^3.12.6",
     "bulma": "^0.9.0",
     "chart.js": "^2.9.4",
     "commander": "^7.1.0",

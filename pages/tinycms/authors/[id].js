@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import AdminLayout from '../../../components/AdminLayout';
 import AdminNav from '../../../components/nav/AdminNav';
 import tw from 'twin.macro';
@@ -20,9 +20,7 @@ import {
   validateAuthorName,
 } from '../../../lib/utils.js';
 
-import dynamic from 'next/dynamic';
-const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
-import 'react-quill/dist/quill.snow.css';
+import { Editor } from '@tinymce/tinymce-react';
 
 const UploadContainer = tw.div`container mx-auto min-w-0 flex-auto px-4 sm:px-6 xl:px-8 pt-10`;
 
@@ -54,6 +52,10 @@ export default function EditAuthor({
   const [bioImage, setBioImage] = useState(author.photoUrl);
   const [authorId, setAuthorId] = useState(author.id);
   const [staffYesNo, setStaffYesNo] = useState('no');
+
+  const handleEditorChange = (e) => {
+    setBio(e.target.getContent());
+  };
 
   useEffect(() => {
     if (author && author.staff) {
@@ -200,7 +202,25 @@ export default function EditAuthor({
             label="Slug"
           />
 
-          <ReactQuill theme="snow" value={bio} onChange={setBio} />
+          <Editor
+            apiKey="n9pstfbg9zt3p8s3q2gy1gkvlfvm9pcrc4sayynxk6j5exsy"
+            initialValue={bio}
+            init={{
+              height: 500,
+              menubar: false,
+              plugins: [
+                'advlist autolink lists link image',
+                'charmap print preview anchor help',
+                'searchreplace visualblocks code',
+                'insertdatetime media table paste wordcount',
+              ],
+              toolbar:
+                'undo redo | formatselect | bold italic | \
+            alignleft aligncenter alignright | \
+            bullist numlist outdent indent | help',
+            }}
+            onChange={handleEditorChange}
+          />
 
           {/* <TinyTextArea
             name="bio"
