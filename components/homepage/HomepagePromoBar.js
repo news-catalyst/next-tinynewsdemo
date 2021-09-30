@@ -34,7 +34,7 @@ const BlockDek = styled.p(({ meta }) => ({
   fontFamily: Typography[meta.theme || 'styleone'].HomepagePromoBlockDek,
 }));
 const BlockCTA = styled.a(({ meta }) => ({
-  ...tw`text-base font-bold cursor-pointer`,
+  ...tw`text-base font-bold cursor-pointer hover:underline`,
   fontFamily: Typography[meta.theme || 'styleone'].HomepagePromoBlockCTA,
   color:
     meta.color === 'custom'
@@ -42,7 +42,7 @@ const BlockCTA = styled.a(({ meta }) => ({
       : Colors[meta.color ? meta.color : 'colorone'].CTABackground,
 }));
 const DonateBlockCTA = styled.a(({ meta }) => ({
-  ...tw`inline-flex text-base font-bold cursor-pointer items-center px-5`,
+  ...tw`inline-flex text-base font-bold cursor-pointer items-center px-5 hover:underline`,
   fontFamily: Typography[meta.theme || 'styleone'].HomepagePromoBlockCTA,
   color:
     meta.color === 'custom'
