@@ -6,10 +6,10 @@ import {
   FormContainer,
   FormHeader,
   TinyYesNoField,
-  TinyTextArea,
   TinyInputField,
   TinySubmitCancelButtons,
 } from '../../../components/tinycms/TinyFormElements';
+import TinyEditor from '../../../components/tinycms/TinyEditor';
 import Notification from '../../../components/tinycms/Notification';
 import Upload from '../../../components/tinycms/Upload';
 import { hasuraGetAuthorById, hasuraUpdateAuthor } from '../../../lib/authors';
@@ -20,13 +20,12 @@ import {
   validateAuthorName,
 } from '../../../lib/utils.js';
 
-import { Editor } from '@tinymce/tinymce-react';
-
 const UploadContainer = tw.div`container mx-auto min-w-0 flex-auto px-4 sm:px-6 xl:px-8 pt-10`;
 
 export default function EditAuthor({
   apiUrl,
   apiToken,
+  tinyApiKey,
   author,
   currentLocale,
   locales,
@@ -46,6 +45,8 @@ export default function EditAuthor({
   const [bio, setBio] = useState(
     hasuraLocaliseText(author.author_translations, 'bio')
   );
+  const [staticBio, setStaticBio] = useState(undefined);
+
   const [twitter, setTwitter] = useState(author.twitter);
   const [slug, setSlug] = useState(author.slug);
   const [staff, setStaff] = useState(author.staff);
@@ -65,6 +66,7 @@ export default function EditAuthor({
       setStaffYesNo('no');
       setStaff(false);
     }
+    setStaticBio(bio);
   }, [author]);
 
   const handleChange = (ev) => {
@@ -90,12 +92,6 @@ export default function EditAuthor({
     let slugifiedVal = slugify(displayAuthorName(firstNames, val));
     setSlug(slugifiedVal);
     setDisplayUpload(true);
-  }
-
-  // removes leading @ from twitter handle before storing
-  function updateTwitter(val) {
-    let cleanedUpVal = val.replace(/@/, '');
-    setTwitter(cleanedUpVal);
   }
 
   async function handleSubmit(ev) {
@@ -202,24 +198,10 @@ export default function EditAuthor({
             label="Slug"
           />
 
-          <Editor
-            apiKey="n9pstfbg9zt3p8s3q2gy1gkvlfvm9pcrc4sayynxk6j5exsy"
-            initialValue={bio}
-            init={{
-              height: 500,
-              menubar: false,
-              plugins: [
-                'advlist autolink lists link image',
-                'charmap print preview anchor help',
-                'searchreplace visualblocks code',
-                'insertdatetime media table paste wordcount',
-              ],
-              toolbar:
-                'undo redo | formatselect | bold italic | \
-            alignleft aligncenter alignright | \
-            bullist numlist outdent indent | help',
-            }}
-            onChange={handleEditorChange}
+          <TinyEditor
+            tinyApiKey={tinyApiKey}
+            setValue={handleEditorChange}
+            value={staticBio}
           />
 
           {/* <TinyTextArea
@@ -265,6 +247,7 @@ export default function EditAuthor({
 export async function getServerSideProps(context) {
   const apiUrl = process.env.HASURA_API_URL;
   const apiToken = process.env.ORG_SLUG;
+  const tinyApiKey = process.env.TINYMCE_API_KEY;
 
   const awsConfig = {
     bucketName: process.env.TNC_AWS_BUCKET_NAME,
@@ -293,6 +276,7 @@ export async function getServerSideProps(context) {
     props: {
       apiUrl: apiUrl,
       apiToken: apiToken,
+      tinyApiKey: tinyApiKey,
       author: author,
       currentLocale: context.locale,
       locales: locales,
