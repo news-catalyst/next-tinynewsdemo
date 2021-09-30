@@ -25,7 +25,7 @@ const lineHeights = {
 
 const AssetDescriptor = tw.h5`block leading-4 mb-2 font-bold`;
 const AssetDescriptorLink = styled.a(({ big, meta }) => ({
-  ...tw`cursor-pointer`,
+  ...tw`cursor-pointer hover:underline`,
   fontSize: big ? fontSizes['sm'] : fontSizes['xs'],
   lineHeight: big ? lineHeights['sm'] : lineHeights['xs'],
   fontFamily: Typography[meta.theme].ArticleDescriptor,
@@ -46,7 +46,7 @@ const AssetByline = styled.p(({ big, meta }) => ({
 }));
 
 const AssetTitle = styled.h4(({ big, meta }) => ({
-  ...tw`font-bold tracking-tight leading-6`,
+  ...tw`font-bold tracking-tight leading-6 hover:underline`,
   fontSize: big ? fontSizes['fourxl'] : fontSizes['lg'],
   lineHeight: big ? lineHeights['fourxl'] : lineHeights['lg'],
   fontFamily: Typography[meta.theme].ArticleTitle,
