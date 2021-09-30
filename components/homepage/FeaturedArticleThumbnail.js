@@ -24,25 +24,27 @@ export default function FeaturedArticleThumbnail({ article, isAmp }) {
   }
 
   return (
-    <AssetThumbnail>
-      {isAmp ? (
-        <amp-img
-          width={1080}
-          height={(mainImage.height / mainImage.width) * 1080}
-          src={mainImage.imageUrl}
-          alt={mainImage.imageAlt}
-          layout="responsive"
-        />
-      ) : (
-        <Image
-          src={mainImage.imageUrl}
-          width={1080}
-          height={(mainImage.height / mainImage.width) * 1080}
-          alt={mainImage.imageAlt}
-          className="image"
-          priority={true}
-        />
-      )}
-    </AssetThumbnail>
+    <Link href={`/articles/${article.category.slug}/${article.slug}`} passHref>
+      <AssetThumbnail>
+        {isAmp ? (
+          <amp-img
+            width={1080}
+            height={(mainImage.height / mainImage.width) * 1080}
+            src={mainImage.imageUrl}
+            alt={mainImage.imageAlt}
+            layout="responsive"
+          />
+        ) : (
+          <Image
+            src={mainImage.imageUrl}
+            width={1080}
+            height={(mainImage.height / mainImage.width) * 1080}
+            alt={mainImage.imageAlt}
+            className="image"
+            priority={true}
+          />
+        )}
+      </AssetThumbnail>
+    </Link>
   );
 }
