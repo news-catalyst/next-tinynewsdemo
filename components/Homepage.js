@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import dynamic from 'next/dynamic';
-import tw from 'twin.macro';
+import Link from 'next/link';
+import tw, { styled } from 'twin.macro';
+import Typography from './common/Typography';
 
 const BigFeaturedStory = dynamic(() => import(`./homepage/BigFeaturedStory`));
 const LargePackageStoryLead = dynamic(() =>
@@ -13,7 +15,10 @@ import ArticleStream from './homepage/ArticleStream';
 import Placeholder from './homepage/Placeholder';
 
 const SectionContainer = tw.div`px-5 flex flex-row flex-wrap mx-auto w-full max-w-7xl`;
-const ViewMoreLink = tw.a`text-base font-bold cursor-pointer`;
+const ViewMoreLink = styled.a(({ meta }) => ({
+  ...tw`text-base font-bold cursor-pointer hover:underline`,
+  fontFamily: Typography[meta.theme || 'styleone'].ArticleMetaTop,
+}));
 
 export default function Homepage({
   selectedLayout,
@@ -73,10 +78,9 @@ export default function Homepage({
           ads={expandedAds}
         />
         <SectionContainer>
-          <ViewMoreLink href={`/articles/archive/1`}>
-            View more stories
-          </ViewMoreLink>
-          .
+          <Link href="/articles/archive/1" passHref>
+            <ViewMoreLink meta={siteMetadata}>All stories →</ViewMoreLink>
+          </Link>
         </SectionContainer>
       </Layout>
     </div>
