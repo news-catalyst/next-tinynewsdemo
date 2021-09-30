@@ -45,6 +45,7 @@ const typographyOptions = {
 export default function Settings({
   apiUrl,
   apiToken,
+  tinyApiKey,
   currentLocale,
   siteMetadata,
   locales,
@@ -97,7 +98,7 @@ export default function Settings({
           [name]: value,
         }));
       } else {
-        console.log('setting parsed data', name, value);
+        // console.log('setting parsed data', name, value);
         setParsedData((prevState) => ({
           ...prevState,
           [name]: value,
@@ -181,7 +182,6 @@ export default function Settings({
 
     if (jsonData && (Object.keys(parsedData).length === 0 || editData)) {
       parsed = JSON.parse(jsonData);
-      console.log('parsed:', parsed);
       setParsedData(parsed);
     }
 
@@ -294,6 +294,7 @@ export default function Settings({
             )}
             <SettingsContainer>
               <SiteInfoSettings
+                tinyApiKey={tinyApiKey}
                 siteInfoRef={siteInfoRef}
                 commentsRef={commentsRef}
                 landingPageRef={landingPageRef}
@@ -322,6 +323,7 @@ export default function Settings({
 export async function getServerSideProps(context) {
   const apiUrl = process.env.HASURA_API_URL;
   const apiToken = process.env.ORG_SLUG;
+  const tinyApiKey = process.env.TINYMCE_API_KEY;
 
   let siteMetadata;
   let locales;
@@ -355,6 +357,7 @@ export async function getServerSideProps(context) {
     props: {
       apiUrl: apiUrl,
       apiToken: apiToken,
+      tinyApiKey: tinyApiKey,
       currentLocale: context.locale,
       siteMetadata: siteMetadata,
       locales: locales,

@@ -6,6 +6,7 @@ import HomepagePromoBar from '../homepage/HomepagePromoBar';
 import DonationOptionsBlock from '../plugins/DonationOptionsBlock';
 import ControlledInput from './ControlledInput';
 import Upload from './Upload';
+import TinyEditor from './TinyEditor';
 
 const SettingsHeader = tw.h1`text-4xl font-bold leading-normal mt-0 mb-2 text-black`;
 const SiteInfoFieldsContainer = tw.div`grid grid-cols-3 gap-4`;
@@ -167,6 +168,9 @@ export default function SiteInfoSettings(props) {
   const [landingPageDek, setLandingPageDek] = useState(
     props.parsedData['landingPageDek']
   );
+  const [staticLandingPageDek, setStaticLandingPageDek] = useState(
+    props.parsedData['landingPageDek']
+  );
 
   const [commenting, setCommenting] = useState(props.parsedData['commenting']);
 
@@ -211,6 +215,16 @@ export default function SiteInfoSettings(props) {
       : null
   );
 
+  const handleDekChange = (e) => {
+    let content = e.target.getContent();
+    setLandingPageDek(content);
+
+    props.updateParsedData((prevState) => ({
+      ...prevState,
+      ['landingPageDek']: content,
+    }));
+  };
+
   useEffect(() => {
     setSearchTitle(props.parsedData['searchTitle']);
     setSearchDescription(props.parsedData['searchDescription']);
@@ -220,6 +234,7 @@ export default function SiteInfoSettings(props) {
     setTwitterDescription(props.parsedData['twitterDescription']);
     setLandingPage(props.parsedData['landingPage']);
     setLandingPageDek(props.parsedData['landingPageDek']);
+    // setStaticLandingPageDek(props.parsedData['landingPageDek']);
     setCommenting(props.parsedData['commenting']);
     setShortName(props.parsedData['shortName']);
     setSiteUrl(props.parsedData['siteUrl']);
@@ -324,15 +339,11 @@ export default function SiteInfoSettings(props) {
         <>
           <SettingsHeader id="landingPageDek">Landing Page Dek</SettingsHeader>
           <SiteInfoFieldsContainer>
-            <div>
-              <textarea
-                rows="4"
-                cols="50"
-                name="landingPageDek"
-                onChange={props.handleChange}
-                value={landingPageDek}
-              />
-            </div>
+            <TinyEditor
+              tinyApiKey={props.tinyApiKey}
+              setValue={handleDekChange}
+              value={staticLandingPageDek}
+            />
           </SiteInfoFieldsContainer>
         </>
       )}
