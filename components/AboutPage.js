@@ -10,6 +10,7 @@ import {
   PostText,
   SectionLayout,
   Block,
+  Paragraph,
 } from './common/CommonStyles.js';
 
 const SectionContainer = tw.div`flex flex-col flex-nowrap items-center px-5 mx-auto max-w-7xl w-full`;
@@ -51,17 +52,20 @@ export default function AboutPage({
 
           <div className="section post__body rich-text" key="body">
             <PostText>
-              <PostTextContainer>{body}</PostTextContainer>
+              <PostTextContainer>
+                {body}
+                <Paragraph tw="underline">
+                  <Link href="/staff">
+                    <a>Learn about our staff →</a>
+                  </Link>
+                </Paragraph>
+              </PostTextContainer>
             </PostText>
           </div>
 
           <SectionLayout>
             <SectionContainer>
-              <Block>
-                <Link href="/staff">
-                  <a>Staff</a>
-                </Link>
-              </Block>
+              <Block></Block>
             </SectionContainer>
           </SectionLayout>
         </SectionContainer>
