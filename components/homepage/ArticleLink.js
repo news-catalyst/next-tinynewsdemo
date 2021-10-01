@@ -87,6 +87,13 @@ export default function ArticleLink({
     mainImage = mainImageNode.children[0];
   }
 
+  let siteTimeZone;
+  if (metadata.timeZone) {
+    siteTimeZone = metadata.timeZone;
+  } else {
+    siteTimeZone = 'US/Eastern';
+  }
+
   let firstPublishedAt;
   if (
     article.article_translations &&
@@ -118,7 +125,7 @@ export default function ArticleLink({
         <AssetByline meta={metadata}>
           By&nbsp;{renderAuthors(article)}&nbsp;
           <AssetTime>
-            <span>{renderDate(firstPublishedAt, false)}</span>
+            <span>{renderDate(firstPublishedAt, siteTimeZone, false)}</span>
           </AssetTime>
         </AssetByline>
       </AssetMetaContainer>
