@@ -39,6 +39,7 @@ export default function FeaturedArticleThumbnail({ article, isAmp }) {
           height={(mainImage.height / mainImage.width) * 1080}
           alt={mainImage.imageAlt}
           className="image"
+          priority={true}
         />
       )}
     </AssetThumbnail>
