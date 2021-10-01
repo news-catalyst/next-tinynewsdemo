@@ -300,7 +300,9 @@ export default function SiteInfoSettings(props) {
             onChange={props.handleChange}
           >
             {timeZoneOptions.map((option) => (
-              <option value={option}>{option}</option>
+              <option key={option} value={option}>
+                {option}
+              </option>
             ))}
           </Select>
         </label>
