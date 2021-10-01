@@ -96,7 +96,7 @@ export default function ArticleStream({
           <BlockList>{articleStream}</BlockList>
         </Block>
         <PromotionContainer>
-          <PromotionBlock metadata={metadata} prefer="donation" />
+          <PromotionBlock metadata={metadata} prefer="newsletter" />
         </PromotionContainer>
       </SectionContainer>
     </SectionLayout>
