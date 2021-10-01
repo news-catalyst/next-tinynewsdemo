@@ -604,7 +604,7 @@ export default function SiteInfoSettings(props) {
           Newsletter promotion block
         </SettingsHeader>
 
-        <div tw="col-span-2">
+        <div tw="col-span-1">
           <label htmlFor="heading">
             <span tw="w-full mt-1 font-bold">Heading</span>
             <ControlledInput
@@ -636,7 +636,7 @@ export default function SiteInfoSettings(props) {
           Membership promotion block
         </SettingsHeader>
 
-        <div tw="col-span-2">
+        <div tw="col-span-1">
           <label htmlFor="heading">
             <span tw="w-full mt-1 font-bold">Heading</span>
             <ControlledInput
