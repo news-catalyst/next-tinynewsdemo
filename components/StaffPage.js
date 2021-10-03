@@ -14,6 +14,8 @@ const AuthorName = tw.h3`font-bold text-xl leading-tight mt-5 mb-4`;
 const AuthorAvatar = tw.div`overflow-hidden relative w-full rounded-full h-12 w-12 mr-2 float-left`;
 
 export default function StaffPage({ sections, siteMetadata, authors, isAmp }) {
+  const staffers = authors.filter((a) => a.staff);
+
   return (
     <Layout meta={siteMetadata} sections={sections}>
       <article className="container">
@@ -25,7 +27,7 @@ export default function StaffPage({ sections, siteMetadata, authors, isAmp }) {
           <div className="section post__body rich-text" key="body">
             <PostText>
               <PostTextContainer>
-                {authors.map((author) => (
+                {staffers.map((author) => (
                   <div className="author mb-4" key={author.last_name}>
                     {author.photoUrl && (
                       <AuthorAvatar>
