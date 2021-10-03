@@ -13,11 +13,11 @@ const Asset = tw.li`border-b border-gray-200 items-start content-start flex flex
 const AssetMetaContainer = tw.div`flex-1 w-full relative`;
 const AssetDescriptor = tw.span`block leading-4 mb-2`;
 const AssetDescriptorLink = styled.a(({ meta }) => ({
-  ...tw`font-bold text-xs`,
+  ...tw`font-bold text-xs hover:underline`,
   fontFamily: Typography[meta.theme].ArticleDescriptor,
 }));
 const AssetTitle = styled.h4(({ meta }) => ({
-  ...tw`font-bold text-xl leading-5 tracking-tight`,
+  ...tw`font-bold text-xl leading-5 tracking-tight hover:underline`,
   fontFamily: Typography[meta.theme].ArticleTitle,
 }));
 const AssetByline = styled.div(({ meta }) => ({
@@ -25,7 +25,7 @@ const AssetByline = styled.div(({ meta }) => ({
   fontFamily: Typography[meta.theme].ArticleMetaTop,
 }));
 const AssetTime = tw.time`text-gray-500 block mb-4`;
-const AssetThumbnail = tw.figure`ml-5 order-2 w-1/3`;
+const AssetThumbnail = tw.figure`ml-5 order-2 w-1/3 cursor-pointer`;
 
 export default function ArticleLink({
   article,
@@ -123,25 +123,30 @@ export default function ArticleLink({
         </AssetByline>
       </AssetMetaContainer>
       {mainImage && (
-        <AssetThumbnail>
-          {isAmp ? (
-            <amp-img
-              width={mainImage.width}
-              height={(mainImage.height / mainImage.width) * 400}
-              src={mainImage.imageUrl}
-              alt={mainImage.imageAlt}
-              layout="responsive"
-            />
-          ) : (
-            <Image
-              src={mainImage.imageUrl}
-              width={400}
-              height={(mainImage.height / mainImage.width) * 400}
-              alt={mainImage.imageAlt}
-              className="image"
-            />
-          )}
-        </AssetThumbnail>
+        <Link
+          href={`/articles/${article.category.slug}/${article.slug}`}
+          passHref
+        >
+          <AssetThumbnail>
+            {isAmp ? (
+              <amp-img
+                width={mainImage.width}
+                height={(mainImage.height / mainImage.width) * 400}
+                src={mainImage.imageUrl}
+                alt={mainImage.imageAlt}
+                layout="responsive"
+              />
+            ) : (
+              <Image
+                src={mainImage.imageUrl}
+                width={400}
+                height={(mainImage.height / mainImage.width) * 400}
+                alt={mainImage.imageAlt}
+                className="image"
+              />
+            )}
+          </AssetThumbnail>
+        </Link>
       )}
     </Asset>
   );
