@@ -67,6 +67,12 @@ export default function FeaturedArticleMeta({ article, big, metadata }) {
     'search_description'
   );
 
+  let siteTimeZone;
+  if (metadata.timeZone) {
+    siteTimeZone = metadata.timeZone;
+  } else {
+    siteTimeZone = 'US/Eastern';
+  }
   let firstPublishedOn;
 
   const translation = article['article_translations'][0];
@@ -103,7 +109,7 @@ export default function FeaturedArticleMeta({ article, big, metadata }) {
         By&nbsp;{renderAuthors(article)}&nbsp;
         {firstPublishedOn && (
           <time>
-            <span>{renderDate(firstPublishedOn, false)}</span>
+            <span>{renderDate(firstPublishedOn, siteTimeZone, false)}</span>
           </time>
         )}
       </AssetByline>
