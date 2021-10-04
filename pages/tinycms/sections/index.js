@@ -7,6 +7,10 @@ import AdminNav from '../../../components/nav/AdminNav';
 import tw from 'twin.macro';
 import { hasuraLocaliseText } from '../../../lib/utils';
 import { hasuraListAllSectionsByLocale } from '../../../lib/section.js';
+import {
+  DeleteButton,
+  AddButton,
+} from '../../../components/common/CommonStyles.js';
 
 const Table = tw.table`table-auto w-full`;
 const TableHead = tw.thead``;
@@ -14,7 +18,6 @@ const TableBody = tw.tbody``;
 const TableRow = tw.tr``;
 const TableHeader = tw.th`px-4 py-2`;
 const TableCell = tw.td`border px-4 py-2`;
-const AddSectionButton = tw.a`hidden md:flex w-full md:w-auto px-4 py-2 text-right bg-blue-900 hover:bg-blue-500 text-white md:rounded`;
 
 export default function Sections({ sections, currentLocale, locales }) {
   const [message, setMessage] = useState(null);
@@ -40,7 +43,7 @@ export default function Sections({ sections, currentLocale, locales }) {
             key={`${section.id}-link`}
             href={`/tinycms/sections/${section.id}`}
           >
-            <a>{title}</a>
+            <a tw="underline">{title}</a>
           </Link>
         </TableCell>
         <TableCell>{section.slug}</TableCell>
@@ -71,7 +74,7 @@ export default function Sections({ sections, currentLocale, locales }) {
 
         <div tw="flex pt-8 justify-end">
           <Link href="/tinycms/sections/add" passHref>
-            <AddSectionButton>Add Section</AddSectionButton>
+            <AddButton>Add Section</AddButton>
           </Link>
         </div>
 
@@ -88,7 +91,7 @@ export default function Sections({ sections, currentLocale, locales }) {
 
         <div tw="flex pt-8 justify-end">
           <Link href="/tinycms/sections/add" passHref>
-            <AddSectionButton>Add Section</AddSectionButton>
+            <AddButton>Add Section</AddButton>
           </Link>
         </div>
       </div>

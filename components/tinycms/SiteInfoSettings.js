@@ -6,6 +6,7 @@ import HomepagePromoBar from '../homepage/HomepagePromoBar';
 import DonationOptionsBlock from '../plugins/DonationOptionsBlock';
 import ControlledInput from './ControlledInput';
 import Upload from './Upload';
+import TinyEditor from './TinyEditor';
 
 const SettingsHeader = tw.h1`text-4xl font-bold leading-normal mt-0 mb-2 text-black`;
 const SiteInfoFieldsContainer = tw.div`grid grid-cols-3 gap-4`;
@@ -184,6 +185,9 @@ export default function SiteInfoSettings(props) {
   const [landingPageDek, setLandingPageDek] = useState(
     props.parsedData['landingPageDek']
   );
+  const [staticLandingPageDek, setStaticLandingPageDek] = useState(
+    props.parsedData['landingPageDek']
+  );
 
   const [commenting, setCommenting] = useState(props.parsedData['commenting']);
 
@@ -198,15 +202,26 @@ export default function SiteInfoSettings(props) {
   );
   const [theme, setTheme] = useState(props.parsedData['theme']);
   const [aboutHed, setAboutHed] = useState(props.parsedData['aboutHed']);
+
   const [aboutDek, setAboutDek] = useState(props.parsedData['aboutDek']);
+  const [staticAboutDek, setStaticAboutDek] = useState(
+    props.parsedData['aboutDek']
+  );
   const [aboutCTA, setAboutCTA] = useState(props.parsedData['aboutCTA']);
   const [supportHed, setSupportHed] = useState(props.parsedData['supportHed']);
   const [supportDek, setSupportDek] = useState(props.parsedData['supportDek']);
+  const [staticSupportDek, setStaticSupportDek] = useState(
+    props.parsedData['supportDek']
+  );
   const [supportCTA, setSupportCTA] = useState(props.parsedData['supportCTA']);
+
   const [membershipHed, setMembershipHed] = useState(
     props.parsedData['membershipHed']
   );
   const [membershipDek, setMembershipDek] = useState(
+    props.parsedData['membershipDek']
+  );
+  const [staticMembershipDek, setStaticMembershipDek] = useState(
     props.parsedData['membershipDek']
   );
   const [membershipCTA, setMembershipCTA] = useState(
@@ -218,6 +233,12 @@ export default function SiteInfoSettings(props) {
   const [newsletterDek, setNewsletterDek] = useState(
     props.parsedData['newsletterDek']
   );
+  // necessary to avoid weird issues with the rich text editor - the static version
+  // of this content is used to set the initial display value only
+  const [staticNewsletterDek, setStaticNewsletterDek] = useState(
+    props.parsedData['newsletterDek']
+  );
+
   const [logo, setLogo] = useState(props.parsedData['logo']);
   const [defaultSocialImage, setDefaultSocialImage] = useState(
     props.parsedData['defaultSocialImage']
@@ -227,6 +248,57 @@ export default function SiteInfoSettings(props) {
       ? JSON.parse(props.parsedData['donationOptions'])
       : null
   );
+
+  const handleAboutDekChange = (e) => {
+    let content = e.target.getContent();
+    setAboutDek(content);
+
+    props.updateParsedData((prevState) => ({
+      ...prevState,
+      ['aboutDek']: content,
+    }));
+  };
+
+  const handleSupportDekChange = (e) => {
+    let content = e.target.getContent();
+    setSupportDek(content);
+
+    props.updateParsedData((prevState) => ({
+      ...prevState,
+      ['supportDek']: content,
+    }));
+  };
+
+  const handleMembershipDekChange = (e) => {
+    let content = e.target.getContent();
+    setMembershipDek(content);
+
+    props.updateParsedData((prevState) => ({
+      ...prevState,
+      ['membershipDek']: content,
+    }));
+  };
+
+  const handleNewsletterDekChange = (e) => {
+    let content = e.target.getContent();
+    setNewsletterDek(content);
+
+    props.updateParsedData((prevState) => ({
+      ...prevState,
+      ['newsletterDek']: content,
+    }));
+  };
+
+  const handleDekChange = (e) => {
+    console.log('handleDekChange incoming e is:', e);
+    let content = e.target.getContent();
+    setLandingPageDek(content);
+
+    props.updateParsedData((prevState) => ({
+      ...prevState,
+      ['landingPageDek']: content,
+    }));
+  };
 
   useEffect(() => {
     setTimeZone(props.parsedData['timeZone']);
@@ -245,13 +317,16 @@ export default function SiteInfoSettings(props) {
     setTheme(props.parsedData['theme']);
     setAboutHed(props.parsedData['aboutHed']);
     setAboutDek(props.parsedData['aboutDek']);
+    setStaticAboutDek(props.parsedData['aboutDek']);
     setAboutCTA(props.parsedData['aboutCTA']);
     setSupportHed(props.parsedData['supportHed']);
     setSupportDek(props.parsedData['supportDek']);
+    setStaticSupportDek(props.parsedData['supportDek']);
     setSupportCTA(props.parsedData['supportCTA']);
     setPrimaryColor(props.parsedData['primaryColor']);
     setSecondaryColor(props.parsedData['secondaryColor']);
     setMembershipDek(props.parsedData['membershipDek']);
+
     setMembershipHed(props.parsedData['membershipHed']);
     setNewsletterDek(props.parsedData['newsletterDek']);
     setNewsletterHed(props.parsedData['newsletterHed']);
@@ -356,15 +431,11 @@ export default function SiteInfoSettings(props) {
         <>
           <SettingsHeader id="landingPageDek">Landing Page Dek</SettingsHeader>
           <SiteInfoFieldsContainer>
-            <div>
-              <textarea
-                rows="4"
-                cols="50"
-                name="landingPageDek"
-                onChange={props.handleChange}
-                value={landingPageDek}
-              />
-            </div>
+            <TinyEditor
+              tinyApiKey={props.tinyApiKey}
+              setValue={handleDekChange}
+              value={staticLandingPageDek}
+            />
           </SiteInfoFieldsContainer>
         </>
       )}
@@ -580,11 +651,10 @@ export default function SiteInfoSettings(props) {
           </label>
           <label htmlFor="description">
             <span tw="mt-1 font-bold">About promo description</span>
-            <ControlledInput
-              type="text"
-              name="aboutDek"
-              value={aboutDek}
-              onChange={props.handleChange}
+            <TinyEditor
+              tinyApiKey={props.tinyApiKey}
+              setValue={handleAboutDekChange}
+              value={staticAboutDek}
             />
           </label>
           <label htmlFor="cta">
@@ -609,11 +679,10 @@ export default function SiteInfoSettings(props) {
           </label>
           <label htmlFor="description">
             <span tw="mt-1 font-bold">Support promo description</span>
-            <ControlledInput
-              type="text"
-              name="supportDek"
-              value={supportDek}
-              onChange={props.handleChange}
+            <TinyEditor
+              tinyApiKey={props.tinyApiKey}
+              setValue={handleSupportDekChange}
+              value={staticSupportDek}
             />
           </label>
           <label htmlFor="description">
@@ -648,11 +717,10 @@ export default function SiteInfoSettings(props) {
           </label>
           <label htmlFor="description">
             <span tw="mt-1 font-bold">Description</span>
-            <ControlledInput
-              type="text"
-              name="newsletterDek"
-              value={newsletterDek}
-              onChange={props.handleChange}
+            <TinyEditor
+              tinyApiKey={props.tinyApiKey}
+              setValue={handleNewsletterDekChange}
+              value={staticNewsletterDek}
             />
           </label>
         </div>
@@ -680,11 +748,10 @@ export default function SiteInfoSettings(props) {
           </label>
           <label htmlFor="description">
             <span tw="mt-1 font-bold">Description</span>
-            <ControlledInput
-              type="text"
-              name="membershipDek"
-              value={membershipDek}
-              onChange={props.handleChange}
+            <TinyEditor
+              tinyApiKey={props.tinyApiKey}
+              setValue={handleMembershipDekChange}
+              value={staticMembershipDek}
             />
           </label>
           <label htmlFor="CTA">

@@ -18,7 +18,6 @@ describe('tinycms authors', () => {
     cy.get('input[name="title"').type('Staff Editor');
     cy.get('input[name="twitter"').type('@twitterHandle');
     // cy.get('input[name="slug"').type("new-author-name")
-    cy.get('textarea[name="bio"]').type('New author bio copy tk.');
     cy.get('[type="radio"]').first().check(); // Check first radio element - staff
     cy.get('form').submit({
       timeout: 10000,
