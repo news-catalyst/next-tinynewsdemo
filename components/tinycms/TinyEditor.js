@@ -1,7 +1,6 @@
 import { Editor } from '@tinymce/tinymce-react';
 
 const TinyEditor = ({ tinyApiKey, value, setValue }) => {
-  console.log(typeof value, value);
   return (
     <Editor
       apiKey={tinyApiKey}
