@@ -7,6 +7,7 @@ const AuthorName = tw.h3`font-bold text-xl leading-tight mt-5 mb-4`;
 const AuthorAvatar = tw.div`overflow-hidden relative w-full rounded-full h-12 w-12 mr-2 float-left`;
 
 export default function Staffer({ author, isAmp }) {
+  const name = displayAuthorName(author.first_names, author.last_name);
   const bio = hasuraLocaliseText(author.author_translations, 'bio');
   const title = hasuraLocaliseText(author.author_translations, 'title');
 
@@ -37,7 +38,7 @@ export default function Staffer({ author, isAmp }) {
         </AuthorAvatar>
       )}
       <AuthorName>
-        {displayAuthorName(author.first_names, author.last_name)}, {title}
+        {name}, {title}
       </AuthorName>
       <div dangerouslySetInnerHTML={{ __html: bio }} />
       <style jsx global>{`
