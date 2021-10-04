@@ -8,6 +8,10 @@ import Notification from '../../../components/tinycms/Notification';
 import { hasuraListAllTags } from '../../../lib/articles.js';
 import { deleteSingleTag } from '../../../lib/section.js';
 import { hasuraLocaliseText } from '../../../lib/utils.js';
+import {
+  DeleteButton,
+  AddButton,
+} from '../../../components/common/CommonStyles.js';
 
 const Table = tw.table`table-auto w-full`;
 const TableHead = tw.thead``;
@@ -77,20 +81,20 @@ export default function Tags({
       <TableRow key={tag.id}>
         <TableCell>
           <Link key={`${tag.id}-link`} href={`/tinycms/tags/${tag.id}`}>
-            <a>{title}</a>
+            <a tw="underline">{title}</a>
           </Link>
         </TableCell>
         <TableCell>{tag.slug}</TableCell>
         <TableCell>
-          <button
+          <DeleteButton
             className="delete-tag"
             onClick={() => {
               if (window.confirm('Are you sure you wish to delete this tag?'))
                 deleteTag(tag.id);
             }}
           >
-            remove
-          </button>
+            Delete
+          </DeleteButton>
         </TableCell>
       </TableRow>
     );
@@ -121,7 +125,7 @@ export default function Tags({
 
         <div tw="flex pt-8 justify-end">
           <Link href="/tinycms/tags/add" passHref>
-            <AddTagButton>Add Tag</AddTagButton>
+            <AddButton>Add Tag</AddButton>
           </Link>
         </div>
 
@@ -138,7 +142,7 @@ export default function Tags({
 
         <div tw="flex pt-8 justify-end">
           <Link href="/tinycms/tags/add" passHref>
-            <AddTagButton>Add Tag</AddTagButton>
+            <AddButton>Add Tag</AddButton>
           </Link>
         </div>
       </div>
