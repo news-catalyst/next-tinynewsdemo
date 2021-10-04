@@ -36,14 +36,7 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: '16.5.0'
-      - name: Cache node modules
-        uses: actions/cache@v2
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-npm-dir
-          # loading an older version is fine here, since it will get an npm install
-          restore-keys: |
-            ${{ runner.os }}-npm-dir-
+          cache: 'npm'
       - name: Cache cypress binary
         uses: actions/cache@v2
         with:
@@ -96,12 +89,7 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: '16.5.0'
-      - name: Load node_modules
-        uses: actions/cache@v2
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-npm-dir
-          # no restore-keys here, so we only accept this exact version
+          cache: 'npm'
       - name: Load cypress binary
         uses: actions/cache@v2
         with:
