@@ -6,7 +6,7 @@ import { displayAuthorName, hasuraLocaliseText } from '../lib/utils';
 const AuthorName = tw.h3`font-bold text-xl leading-tight mt-5 mb-4`;
 const AuthorAvatar = tw.div`overflow-hidden relative w-full rounded-full h-12 w-12 mr-2 float-left`;
 
-export default function Staffer({ author }) {
+export default function Staffer({ author, isAmp }) {
   const bio = hasuraLocaliseText(author.author_translations, 'bio');
   const title = hasuraLocaliseText(author.author_translations, 'title');
 
