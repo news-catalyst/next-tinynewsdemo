@@ -59,7 +59,10 @@ export default function DonationBlock({ metadata }) {
   return (
     <DonationWrapper textColor={textColor} backgroundColor={backgroundColor}>
       <DonationHed meta={metadata}>{metadata.membershipHed}</DonationHed>
-      <DonationDek meta={metadata}>{metadata.membershipDek}</DonationDek>
+      <DonationDek
+        meta={metadata}
+        dangerouslySetInnerHTML={{ __html: metadata.membershipDek }}
+      />
       <Link href="/donate" passHref>
         <DonateLink
           textColor={backgroundColor}
