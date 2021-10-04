@@ -6,7 +6,7 @@ const TinyEditor = ({ tinyApiKey, value, setValue }) => {
       apiKey={tinyApiKey}
       initialValue={value}
       init={{
-        height: 500,
+        height: 250,
         menubar: false,
         plugins: [
           'advlist autolink lists link image',
