@@ -202,11 +202,19 @@ export default function SiteInfoSettings(props) {
   );
   const [theme, setTheme] = useState(props.parsedData['theme']);
   const [aboutHed, setAboutHed] = useState(props.parsedData['aboutHed']);
+
   const [aboutDek, setAboutDek] = useState(props.parsedData['aboutDek']);
+  const [staticAboutDek, setStaticAboutDek] = useState(
+    props.parsedData['aboutDek']
+  );
   const [aboutCTA, setAboutCTA] = useState(props.parsedData['aboutCTA']);
   const [supportHed, setSupportHed] = useState(props.parsedData['supportHed']);
   const [supportDek, setSupportDek] = useState(props.parsedData['supportDek']);
+  const [staticSupportDek, setStaticSupportDek] = useState(
+    props.parsedData['supportDek']
+  );
   const [supportCTA, setSupportCTA] = useState(props.parsedData['supportCTA']);
+
   const [membershipHed, setMembershipHed] = useState(
     props.parsedData['membershipHed']
   );
@@ -240,6 +248,26 @@ export default function SiteInfoSettings(props) {
       ? JSON.parse(props.parsedData['donationOptions'])
       : null
   );
+
+  const handleAboutDekChange = (e) => {
+    let content = e.target.getContent();
+    setAboutDek(content);
+
+    props.updateParsedData((prevState) => ({
+      ...prevState,
+      ['aboutDek']: content,
+    }));
+  };
+
+  const handleSupportDekChange = (e) => {
+    let content = e.target.getContent();
+    setSupportDek(content);
+
+    props.updateParsedData((prevState) => ({
+      ...prevState,
+      ['supportDek']: content,
+    }));
+  };
 
   const handleMembershipDekChange = (e) => {
     let content = e.target.getContent();
@@ -289,13 +317,16 @@ export default function SiteInfoSettings(props) {
     setTheme(props.parsedData['theme']);
     setAboutHed(props.parsedData['aboutHed']);
     setAboutDek(props.parsedData['aboutDek']);
+    setStaticAboutDek(props.parsedData['aboutDek']);
     setAboutCTA(props.parsedData['aboutCTA']);
     setSupportHed(props.parsedData['supportHed']);
     setSupportDek(props.parsedData['supportDek']);
+    setStaticSupportDek(props.parsedData['supportDek']);
     setSupportCTA(props.parsedData['supportCTA']);
     setPrimaryColor(props.parsedData['primaryColor']);
     setSecondaryColor(props.parsedData['secondaryColor']);
     setMembershipDek(props.parsedData['membershipDek']);
+
     setMembershipHed(props.parsedData['membershipHed']);
     setNewsletterDek(props.parsedData['newsletterDek']);
     setNewsletterHed(props.parsedData['newsletterHed']);
@@ -620,11 +651,10 @@ export default function SiteInfoSettings(props) {
           </label>
           <label htmlFor="description">
             <span tw="mt-1 font-bold">About promo description</span>
-            <ControlledInput
-              type="text"
-              name="aboutDek"
-              value={aboutDek}
-              onChange={props.handleChange}
+            <TinyEditor
+              tinyApiKey={props.tinyApiKey}
+              setValue={handleAboutDekChange}
+              value={staticAboutDek}
             />
           </label>
           <label htmlFor="cta">
@@ -649,11 +679,10 @@ export default function SiteInfoSettings(props) {
           </label>
           <label htmlFor="description">
             <span tw="mt-1 font-bold">Support promo description</span>
-            <ControlledInput
-              type="text"
-              name="supportDek"
-              value={supportDek}
-              onChange={props.handleChange}
+            <TinyEditor
+              tinyApiKey={props.tinyApiKey}
+              setValue={handleSupportDekChange}
+              value={staticSupportDek}
             />
           </label>
           <label htmlFor="description">

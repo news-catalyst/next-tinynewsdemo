@@ -66,7 +66,9 @@ export default function EditAuthor({
       setStaffYesNo('no');
       setStaff(false);
     }
-    setStaticBio(bio);
+    if (bio) {
+      setStaticBio(bio);
+    }
   }, [author]);
 
   const handleChange = (ev) => {
