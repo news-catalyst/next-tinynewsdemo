@@ -36,10 +36,10 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ~/.npm
-          key: npm-dir
+          key: ${{ runner.os }}-npm-dir
           # loading an older version is fine here, since it will get an npm install
           restore-keys: |
-            npm-dir-
+            ${{ runner.os }}-npm-dir-
       - name: Cache cypress binary
         uses: actions/cache@v2
         with:
@@ -92,7 +92,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ~/.npm
-          key: npm-dir
+          key: ${{ runner.os }}-npm-dir
           # no restore-keys here, so we only accept this exact version
       - name: Load cypress binary
         uses: actions/cache@v2
