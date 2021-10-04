@@ -9,6 +9,10 @@ import {
   deleteSingleAuthor,
   hasuraListAllAuthors,
 } from '../../../lib/authors.js';
+import {
+  DeleteButton,
+  AddButton,
+} from '../../../components/common/CommonStyles.js';
 import { displayAuthorName, hasuraLocaliseText } from '../../../lib/utils.js';
 
 const Table = tw.table`table-auto w-full`;
@@ -17,8 +21,6 @@ const TableBody = tw.tbody``;
 const TableRow = tw.tr``;
 const TableHeader = tw.th`px-4 py-2`;
 const TableCell = tw.td`border px-4 py-2`;
-const AddAuthorButton = tw.a`hidden md:flex w-full md:w-auto px-4 py-2 text-right bg-blue-900 hover:bg-blue-500 text-white md:rounded`;
-const DeleteButton = tw.button`bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded`;
 
 export default function Authors({
   apiUrl,
@@ -150,7 +152,7 @@ export default function Authors({
 
         <div tw="flex pt-8 justify-end">
           <Link href="/tinycms/authors/add" passHref>
-            <AddAuthorButton>Add Author</AddAuthorButton>
+            <AddButton>Add Author</AddButton>
           </Link>
         </div>
 
