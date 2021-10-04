@@ -11,15 +11,12 @@ const DekA = tw.a`text-black cursor-pointer border-b border-blue-500`;
 const BlockWrapper = tw.div`w-full`;
 
 export default function LandingPage({ siteMetadata, sections }) {
+  let landingDek = siteMetadata.landingPageDek || siteMetadata.aboutDek;
   return (
     <Layout meta={siteMetadata} sections={sections} renderNav={false}>
       <Container>
         <Title>{siteMetadata.shortName}</Title>
-        <Dek
-          dangerouslySetInnerHTML={
-            siteMetadata.landingPageDek || siteMetadata.aboutDek
-          }
-        />
+        <Dek dangerouslySetInnerHTML={{ __html: landingDek }} />
         <BlockWrapper>
           <NewsletterBlock metadata={siteMetadata} />
         </BlockWrapper>
