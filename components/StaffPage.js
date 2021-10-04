@@ -26,7 +26,7 @@ export default function StaffPage({ sections, siteMetadata, authors, isAmp }) {
             <PostText>
               <PostTextContainer>
                 {staffers.map((author) => (
-                  <Staffer key={author} author={author} />
+                  <Staffer key={author} author={author} isAmp={isAmp} />
                 ))}
               </PostTextContainer>
             </PostText>
