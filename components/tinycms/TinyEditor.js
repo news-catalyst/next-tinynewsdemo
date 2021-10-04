@@ -15,7 +15,7 @@ const TinyEditor = ({ tinyApiKey, value, setValue }) => {
           'insertdatetime media table paste wordcount',
         ],
         toolbar:
-          'undo redo | formatselect | bold italic | \
+          'undo redo | formatselect | bold italic link | \
             alignleft aligncenter alignright | \
             bullist numlist outdent indent | help',
       }}
