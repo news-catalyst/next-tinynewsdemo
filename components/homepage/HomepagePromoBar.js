@@ -60,14 +60,20 @@ export default function HomepagePromoBar({ metadata }) {
       <SectionContainer>
         <LeftBlock>
           <BlockHeader meta={metadata}>{metadata.aboutHed}</BlockHeader>
-          <BlockDek meta={metadata}>{metadata.aboutDek}</BlockDek>
+          <BlockDek
+            meta={metadata}
+            dangerouslySetInnerHTML={{ __html: metadata.aboutDek }}
+          />
           <Link href="/about" passHref>
             <BlockCTA meta={metadata}>{metadata.aboutCTA}</BlockCTA>
           </Link>
         </LeftBlock>
         <RightBlock>
           <BlockHeader meta={metadata}>{metadata.supportHed}</BlockHeader>
-          <BlockDek meta={metadata}>{metadata.supportDek}</BlockDek>
+          <BlockDek
+            meta={metadata}
+            dangerouslySetInnerHTML={{ __html: metadata.supportDek }}
+          />
           <Link href="/donate" passHref>
             <DonateBlockCTA
               style={{

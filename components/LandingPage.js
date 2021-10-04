@@ -1,5 +1,5 @@
 import tw from 'twin.macro';
-import Markdown from 'markdown-to-jsx';
+// import Markdown from 'markdown-to-jsx';
 import Layout from './Layout';
 import NewsletterBlock from './plugins/NewsletterBlock';
 
@@ -11,26 +11,12 @@ const DekA = tw.a`text-black cursor-pointer border-b border-blue-500`;
 const BlockWrapper = tw.div`w-full`;
 
 export default function LandingPage({ siteMetadata, sections }) {
+  let landingDek = siteMetadata.landingPageDek || siteMetadata.aboutDek;
   return (
     <Layout meta={siteMetadata} sections={sections} renderNav={false}>
       <Container>
         <Title>{siteMetadata.shortName}</Title>
-        <Dek>
-          <Markdown
-            options={{
-              overrides: {
-                p: {
-                  component: DekP,
-                },
-                a: {
-                  component: DekA,
-                },
-              },
-            }}
-          >
-            {siteMetadata.landingPageDek || siteMetadata.aboutDek}
-          </Markdown>
-        </Dek>
+        <Dek dangerouslySetInnerHTML={{ __html: landingDek }} />
         <BlockWrapper>
           <NewsletterBlock metadata={siteMetadata} />
         </BlockWrapper>

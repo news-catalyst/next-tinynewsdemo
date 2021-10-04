@@ -77,7 +77,7 @@ export default function AuthorPage({
           </ProfileHeadingText>
           <ProfileTitle>{authorTitle}</ProfileTitle>
           <ProfileDiv></ProfileDiv>
-          <ProfileBio>{authorBio}</ProfileBio>
+          <ProfileBio dangerouslySetInnerHTML={{ __html: authorBio }} />
           <ProfileTwitter>
             <em>
               {twitterCall}

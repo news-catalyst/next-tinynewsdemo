@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import tw from 'twin.macro';
 import {
   FormContainer,
   FormHeader,
   TinyYesNoField,
-  TinyTextArea,
   TinyInputField,
   TinySubmitCancelButtons,
 } from '../../../components/tinycms/TinyFormElements';
+import TinyEditor from '../../../components/tinycms/TinyEditor';
 import AdminLayout from '../../../components/AdminLayout';
 import AdminNav from '../../../components/nav/AdminNav';
 import Notification from '../../../components/tinycms/Notification';
@@ -25,6 +25,7 @@ const UploadContainer = tw.div`container mx-auto min-w-0 flex-auto px-4 sm:px-6 
 export default function AddAuthor({
   apiUrl,
   apiToken,
+  tinyApiKey,
   currentLocale,
   locales,
   awsConfig,
@@ -43,11 +44,9 @@ export default function AddAuthor({
   const [bioImage, setBioImage] = useState('');
   const [displayUpload, setDisplayUpload] = useState(false);
 
-  // removes leading @ from twitter handle before storing
-  function updateTwitter(val) {
-    let cleanedUpVal = val.replace(/@/, '');
-    setTwitter(cleanedUpVal);
-  }
+  const handleEditorChange = (e) => {
+    setBio(e.target.getContent());
+  };
 
   // slugifies the name and stores slug plus name values
   function updateFirstNames(val) {
@@ -172,12 +171,13 @@ export default function AddAuthor({
             onChange={(ev) => setSlug(ev.target.value)}
             label="Slug"
           />
-          <TinyTextArea
-            name="bio"
-            value={bio}
-            onChange={(ev) => setBio(ev.target.value)}
-            label="Bio"
+
+          <TinyEditor
+            tinyApiKey={tinyApiKey}
+            setValue={handleEditorChange}
+            value={''}
           />
+
           <TinyYesNoField
             name="staff"
             value={staff}
@@ -209,6 +209,8 @@ export default function AddAuthor({
 export async function getServerSideProps(context) {
   const apiUrl = process.env.HASURA_API_URL;
   const apiToken = process.env.ORG_SLUG;
+  const tinyApiKey = process.env.TINYMCE_API_KEY;
+
   const { errors, data } = await hasuraListLocales({
     url: apiUrl,
     orgSlug: apiToken,
@@ -237,6 +239,7 @@ export async function getServerSideProps(context) {
     props: {
       apiUrl: apiUrl,
       apiToken: apiToken,
+      tinyApiKey: tinyApiKey,
       currentLocale: context.locale,
       locales: locales,
       awsConfig: awsConfig,

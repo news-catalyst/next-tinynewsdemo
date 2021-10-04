@@ -10,7 +10,7 @@ jobs:
   install:
     name: Build and upload front-end site
     runs-on: ubuntu-latest
-    container: 
+    container:
       image: cypress/browsers:node14.16.0-chrome89-ff86
       options: --user 1001
     environment: cypress_tests
@@ -28,17 +28,15 @@ jobs:
       LETTERHEAD_API_KEY: ${{ secrets.LETTERHEAD_API_KEY }}
       LETTERHEAD_API_URL: ${{ secrets.LETTERHEAD_API_URL }}
       LETTERHEAD_CHANNEL_SLUG: ${{ secrets.LETTERHEAD_CHANNEL_SLUG }}
+      TINYMCE_API_KEY: ${{ secrets.TINYMCE_API_KEY }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Cache node modules
-        uses: actions/cache@v2
+      - name: Setup node
+        uses: actions/setup-node@v2
         with:
-          path: ~/.npm
-          key: npm-dir
-          # loading an older version is fine here, since it will get an npm install
-          restore-keys: |
-            npm-dir-
+          node-version: '16.5.0'
+          cache: 'npm'
       - name: Cache cypress binary
         uses: actions/cache@v2
         with:
@@ -64,7 +62,7 @@ jobs:
     name: Run Cypress tests
     needs: install
     runs-on: ubuntu-latest
-    container: 
+    container:
       image: cypress/browsers:node14.16.0-chrome89-ff86
       options: --user 1001
     environment: cypress_tests
@@ -83,15 +81,15 @@ jobs:
       LETTERHEAD_API_KEY: ${{ secrets.LETTERHEAD_API_KEY }}
       LETTERHEAD_API_URL: ${{ secrets.LETTERHEAD_API_URL }}
       LETTERHEAD_CHANNEL_SLUG: ${{ secrets.LETTERHEAD_CHANNEL_SLUG }}
+      TINYMCE_API_KEY: ${{ secrets.TINYMCE_API_KEY }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Load node_modules
-        uses: actions/cache@v2
+      - name: Setup node
+        uses: actions/setup-node@v2
         with:
-          path: ~/.npm
-          key: npm-dir
-          # no restore-keys here, so we only accept this exact version
+          node-version: '16.5.0'
+          cache: 'npm'
       - name: Load cypress binary
         uses: actions/cache@v2
         with:

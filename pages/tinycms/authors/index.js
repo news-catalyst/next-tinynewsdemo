@@ -9,6 +9,10 @@ import {
   deleteSingleAuthor,
   hasuraListAllAuthors,
 } from '../../../lib/authors.js';
+import {
+  DeleteButton,
+  AddButton,
+} from '../../../components/common/CommonStyles.js';
 import { displayAuthorName, hasuraLocaliseText } from '../../../lib/utils.js';
 
 const Table = tw.table`table-auto w-full`;
@@ -17,7 +21,6 @@ const TableBody = tw.tbody``;
 const TableRow = tw.tr``;
 const TableHeader = tw.th`px-4 py-2`;
 const TableCell = tw.td`border px-4 py-2`;
-const AddAuthorButton = tw.a`hidden md:flex w-full md:w-auto px-4 py-2 text-right bg-blue-900 hover:bg-blue-500 text-white md:rounded`;
 
 export default function Authors({
   apiUrl,
@@ -74,7 +77,6 @@ export default function Authors({
 
   const listItems = authors.map((author) => {
     let title = hasuraLocaliseText(author.author_translations, 'title');
-    let bio = hasuraLocaliseText(author.author_translations, 'bio');
     let staff = author.staff ? (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -100,7 +102,7 @@ export default function Authors({
       <TableRow key={author.id}>
         <TableCell>
           <Link href={`/tinycms/authors/${author.id}`}>
-            <a href={`/tinycms/authors/${author.id}`}>
+            <a tw="underline" href={`/tinycms/authors/${author.id}`}>
               {displayAuthorName(author.first_names, author.last_name)}
             </a>
           </Link>
@@ -108,9 +110,8 @@ export default function Authors({
         <TableCell tw="content-center">{staff}</TableCell>
         <TableCell>{title}</TableCell>
         <TableCell>{author.twitter}</TableCell>
-        <TableCell>{bio}</TableCell>
         <TableCell>
-          <button
+          <DeleteButton
             className="delete-author"
             onClick={() => {
               if (
@@ -119,8 +120,8 @@ export default function Authors({
                 deleteAuthor(author.id);
             }}
           >
-            remove
-          </button>
+            Delete
+          </DeleteButton>
         </TableCell>
       </TableRow>
     );
@@ -151,7 +152,7 @@ export default function Authors({
 
         <div tw="flex pt-8 justify-end">
           <Link href="/tinycms/authors/add" passHref>
-            <AddAuthorButton>Add Author</AddAuthorButton>
+            <AddButton>Add Author</AddButton>
           </Link>
         </div>
 
@@ -162,7 +163,6 @@ export default function Authors({
               <TableHeader>Staff</TableHeader>
               <TableHeader>Title</TableHeader>
               <TableHeader>Twitter</TableHeader>
-              <TableHeader>Bio</TableHeader>
               <TableHeader></TableHeader>
             </TableRow>
           </TableHead>
