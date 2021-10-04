@@ -41,7 +41,10 @@ export default function NewsletterBlock({ metadata, headline }) {
   return (
     <NewsletterWrapper textColor={textColor} backgroundColor={backgroundColor}>
       <NewsletterHed meta={metadata}>{metadata.newsletterHed}</NewsletterHed>
-      <NewsletterDek meta={metadata}>{metadata.newsletterDek}</NewsletterDek>
+      <NewsletterDek
+        meta={metadata}
+        dangerouslySetInnerHTML={{ __html: metadata.newsletterDek }}
+      />
       <br />
       <NewsletterSubscribe metadata={metadata} articleTitle={headline} />
     </NewsletterWrapper>
