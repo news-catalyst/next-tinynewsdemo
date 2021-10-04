@@ -16,11 +16,26 @@ export default function LandingPage({ siteMetadata, sections }) {
     <Layout meta={siteMetadata} sections={sections} renderNav={false}>
       <Container>
         <Title>{siteMetadata.shortName}</Title>
-        <Dek dangerouslySetInnerHTML={{ __html: landingDek }} />
+        <Dek className="dek" dangerouslySetInnerHTML={{ __html: landingDek }} />
         <BlockWrapper>
           <NewsletterBlock metadata={siteMetadata} />
         </BlockWrapper>
       </Container>
+      <style jsx global>{`
+        .dek p {
+          margin-bottom: 1.25rem;
+          font-size: 1.25rem;
+          line-height: 1.625;
+        }
+        .dek a {
+          color: black;
+          cursor: pointer;
+          border-bottom: 1px solid rgb(59, 130, 246);
+        }
+        .dek {
+          margin-bottom: 1.5rem;
+        }
+      `}</style>
     </Layout>
   );
 }
