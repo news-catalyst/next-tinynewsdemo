@@ -15,3 +15,5 @@ export const Anchor = tw.a`text-black cursor-pointer border-b border-blue-500`;
 export const SectionLayout = tw.section`flex mb-8`;
 export const SectionContainer = tw.div`md:grid md:grid-cols-packageLayoutTablet lg:grid-cols-packageLayoutDesktop flex flex-row flex-wrap grid-rows-1 w-full px-5 mx-auto max-w-7xl`;
 export const Block = tw.div`w-full`;
+export const AddButton = tw.a`hidden md:flex w-full md:w-auto px-4 py-2 text-right bg-blue-900 hover:bg-blue-500 text-white md:rounded`;
+export const DeleteButton = tw.button`bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded`;
