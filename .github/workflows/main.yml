@@ -10,7 +10,7 @@ jobs:
   install:
     name: Build and upload front-end site
     runs-on: ubuntu-latest
-    container: 
+    container:
       image: cypress/browsers:node14.16.0-chrome89-ff86
       options: --user 1001
     environment: cypress_tests
@@ -28,6 +28,7 @@ jobs:
       LETTERHEAD_API_KEY: ${{ secrets.LETTERHEAD_API_KEY }}
       LETTERHEAD_API_URL: ${{ secrets.LETTERHEAD_API_URL }}
       LETTERHEAD_CHANNEL_SLUG: ${{ secrets.LETTERHEAD_CHANNEL_SLUG }}
+      TINYMCE_API_KEY: ${{ secrets.TINYMCE_API_KEY }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -64,7 +65,7 @@ jobs:
     name: Run Cypress tests
     needs: install
     runs-on: ubuntu-latest
-    container: 
+    container:
       image: cypress/browsers:node14.16.0-chrome89-ff86
       options: --user 1001
     environment: cypress_tests
@@ -83,6 +84,7 @@ jobs:
       LETTERHEAD_API_KEY: ${{ secrets.LETTERHEAD_API_KEY }}
       LETTERHEAD_API_URL: ${{ secrets.LETTERHEAD_API_URL }}
       LETTERHEAD_CHANNEL_SLUG: ${{ secrets.LETTERHEAD_CHANNEL_SLUG }}
+      TINYMCE_API_KEY: ${{ secrets.TINYMCE_API_KEY }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
