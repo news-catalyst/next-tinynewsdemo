@@ -18,6 +18,7 @@ const HomepagePromoContainer = tw.div`grid grid-cols-2 gap-8`;
 const DonationOptionsEditor = tw.div`grid grid-cols-3 gap-4`;
 const DonationOptionsContainer = tw.div``;
 const DesignHeader = tw.h1`text-2xl font-bold leading-normal mt-0 mb-2 text-black`;
+const Select = tw.select`mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`;
 const SingleColumnContainer = tw.div`grid grid-cols-1 gap-4`;
 const StyleOneHead = styled.span`
   font-family: 'Libre Franklin', sans-serif;
@@ -134,6 +135,22 @@ const Input = styled.input`
 `;
 
 export default function SiteInfoSettings(props) {
+  const [timeZone, setTimeZone] = useState(props.parsedData['timeZone']);
+  const [timeZoneOptions, setTimeZoneOptions] = useState([
+    'US/Alaska',
+    'US/Aleutian',
+    'US/Arizona',
+    'US/Central',
+    'US/East-Indiana',
+    'US/Eastern',
+    'US/Hawaii',
+    'US/Indiana-Starke',
+    'US/Michigan',
+    'US/Mountain',
+    'US/Pacific',
+    'US/Samoa',
+  ]);
+
   const [searchTitle, setSearchTitle] = useState(
     props.parsedData['searchTitle']
   );
@@ -256,6 +273,7 @@ export default function SiteInfoSettings(props) {
   };
 
   useEffect(() => {
+    setTimeZone(props.parsedData['timeZone']);
     setSearchTitle(props.parsedData['searchTitle']);
     setSearchDescription(props.parsedData['searchDescription']);
     setFacebookTitle(props.parsedData['facebookTitle']);
@@ -317,6 +335,20 @@ export default function SiteInfoSettings(props) {
             value={siteUrl}
             onChange={props.handleChange}
           />
+        </label>
+        <label htmlFor="timeZone">
+          <span tw="mt-1 font-bold">Time Zone</span>
+          <Select
+            value={timeZone}
+            name="timeZone"
+            onChange={props.handleChange}
+          >
+            {timeZoneOptions.map((option) => (
+              <option key={option} value={option}>
+                {option}
+              </option>
+            ))}
+          </Select>
         </label>
         <label htmlFor="logo">
           <span tw="mt-1 font-bold">Logo</span>
@@ -644,7 +676,7 @@ export default function SiteInfoSettings(props) {
           Newsletter promotion block
         </SettingsHeader>
 
-        <div tw="col-span-2">
+        <div tw="col-span-1">
           <label htmlFor="heading">
             <span tw="w-full mt-1 font-bold">Heading</span>
             <ControlledInput
@@ -675,7 +707,7 @@ export default function SiteInfoSettings(props) {
           Membership promotion block
         </SettingsHeader>
 
-        <div tw="col-span-2">
+        <div tw="col-span-1">
           <label htmlFor="heading">
             <span tw="w-full mt-1 font-bold">Heading</span>
             <ControlledInput

@@ -8,6 +8,13 @@ const ArticlePublishDate = styled.time(({ meta }) => ({
 }));
 
 export default function PublishDate({ article, meta }) {
+  let siteTimeZone;
+  if (meta.timeZone) {
+    siteTimeZone = meta.timeZone;
+  } else {
+    siteTimeZone = 'US/Eastern';
+  }
+
   let firstPublishedOn = null;
   let lastPublishedOn = null;
   if (
@@ -16,17 +23,23 @@ export default function PublishDate({ article, meta }) {
     article.article_translations[0].first_published_at !== null
   ) {
     firstPublishedOn = renderDate(
-      article.article_translations[0].first_published_at
+      article.article_translations[0].first_published_at,
+      siteTimeZone,
+      true
     );
   }
 
   if (
     article.article_translations &&
     article.article_translations[0] &&
-    article.article_translations[0].last_published_at !== null
+    article.article_translations[0].last_published_at !== null &&
+    article.article_translations[0].last_published_at !==
+      article.article_translations[0].first_published_at
   ) {
     lastPublishedOn = renderDate(
-      article.article_translations[0].last_published_at
+      article.article_translations[0].last_published_at,
+      siteTimeZone,
+      true
     );
   }
 
@@ -39,11 +52,13 @@ export default function PublishDate({ article, meta }) {
   ) {
     firstPublishedOn = renderDate(
       article.published_article_translations[0].article_translation
-        .first_published_at
+        .first_published_at,
+      siteTimeZone
     );
     lastPublishedOn = renderDate(
       article.published_article_translations[0].article_translation
-        .last_published_at
+        .last_published_at,
+      siteTimeZone
     );
   }
   return (

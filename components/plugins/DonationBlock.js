@@ -22,7 +22,7 @@ const DonationDek = styled.p(({ meta }) => ({
   fontFamily: Typography[meta.theme || 'styleone'].PromotionBlockDek,
 }));
 const DonateLink = styled.a(({ textColor, backgroundColor, meta }) => ({
-  ...tw`py-2 px-4 font-bold cursor-pointer border border-transparent hover:bg-transparent hover:text-white hover:border-white`,
+  ...tw`py-2 px-4 font-bold cursor-pointer hover:underline`,
   backgroundColor: backgroundColor,
   color: textColor,
   fontFamily: Typography[meta.theme || 'styleone'].PromotionBlockCTA,
