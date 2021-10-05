@@ -18,3 +18,4 @@ export const Block = tw.div`w-full`;
 export const AddButton = tw.a`hidden md:flex w-full md:w-auto px-4 py-2 text-right bg-blue-900 hover:bg-blue-500 text-white md:rounded`;
 export const DeleteButton = tw.button`bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded`;
 export const Blockquote = tw.blockquote`text-lg p-2 mx-6 bg-gray-100 mb-4 border-l-4 border-gray-400 italic`;
+export const HorizontalRule = tw.hr`border-0 bg-gray-500 text-gray-500 h-px max-w-full my-4`;
