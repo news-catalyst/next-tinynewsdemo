@@ -37,7 +37,11 @@ export default function Donate({
           <ArticleTitle meta={siteMetadata} tw="text-center">
             {localisedPage.headline}
           </ArticleTitle>
-          <StaticMainImage isAmp={isAmp} page={page} />
+          <StaticMainImage
+            isAmp={isAmp}
+            page={page}
+            siteMetadata={siteMetadata}
+          />
           <PostText>
             <PostTextContainer>{body}</PostTextContainer>
           </PostText>
