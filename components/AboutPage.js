@@ -48,7 +48,11 @@ export default function AboutPage({
               </SectionContainer>
             </SectionLayout>
           )}
-          <StaticMainImage isAmp={isAmp} page={page} />
+          <StaticMainImage
+            isAmp={isAmp}
+            page={page}
+            siteMetadata={siteMetadata}
+          />
 
           <div className="section post__body rich-text" key="body">
             <PostText>
