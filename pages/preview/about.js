@@ -24,6 +24,7 @@ export async function getStaticProps(context) {
   let page = {};
   let sections;
   let siteMetadata = {};
+  let locales = [];
 
   const { errors, data } = await hasuraGetPage({
     url: apiUrl,
@@ -37,8 +38,25 @@ export async function getStaticProps(context) {
     };
     // throw errors;
   } else {
+    if (!data.page_slug_versions || !data.page_slug_versions[0]) {
+      return {
+        notFound: true,
+      };
+    }
+    page = data.page_slug_versions[0].page;
+
+    var allPageLocales = data.pages[0].page_translations;
+    var distinctLocaleCodes = [];
+    var distinctLocales = [];
+    for (var i = 0; i < allPageLocales.length; i++) {
+      if (!distinctLocaleCodes.includes(allPageLocales[i].locale.code)) {
+        distinctLocaleCodes.push(allPageLocales[i].locale.code);
+        distinctLocales.push(allPageLocales[i]);
+      }
+    }
+    locales = distinctLocales;
+
     sections = data.categories;
-    page = data.pages[0];
     siteMetadata = data.site_metadatas[0].site_metadata_translations[0].data;
     for (var i = 0; i < sections.length; i++) {
       sections[i].title = hasuraLocaliseText(
@@ -53,6 +71,8 @@ export async function getStaticProps(context) {
       page,
       sections,
       siteMetadata,
+      locales,
+      locale,
     },
   };
 }

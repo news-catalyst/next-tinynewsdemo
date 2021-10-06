@@ -36,7 +36,7 @@ export default function AboutPage({
               {localisedPage.headline}
             </ArticleTitle>
           </div>
-          {locales.length > 1 && (
+          {locales && locales.length > 1 && (
             <SectionLayout>
               <SectionContainer>
                 <Block>
