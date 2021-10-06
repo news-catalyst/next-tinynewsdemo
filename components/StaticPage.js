@@ -41,7 +41,11 @@ export default function StaticPage({
           {localisedPage.headline}
         </ArticleTitle>
 
-        <StaticMainImage isAmp={isAmp} page={page} />
+        <StaticMainImage
+          isAmp={isAmp}
+          page={page}
+          siteMetadata={siteMetadata}
+        />
 
         <PostText>
           <PostTextContainer>{body}</PostTextContainer>
