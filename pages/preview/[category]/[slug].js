@@ -10,7 +10,6 @@ import Article from '../../../components/Article.js';
 
 export default function PreviewArticle(props) {
   if (!props.article) {
-    console.log('no article prop: ', props);
     return (
       <div>
         <DefaultErrorPage statusCode={404} />
@@ -63,6 +62,8 @@ export async function getStaticProps(context) {
   let sectionArticles = [];
   let sections = [];
   let tags = [];
+  let locales = [];
+  let publishedLocales = [];
   let siteMetadata;
 
   const { errors, data } = await hasuraPreviewArticlePage({
@@ -78,10 +79,14 @@ export async function getStaticProps(context) {
       notFound: true,
     };
   } else {
+    locales = data.organization_locales;
+    publishedLocales = data.published_article_translations;
+
     tags = data.tags;
     for (var i = 0; i < tags.length; i++) {
       tags[i].title = hasuraLocaliseText(tags[i].tag_translations, 'title');
     }
+
     sections = data.categories;
     for (var j = 0; j < sections.length; j++) {
       sections[j].title = hasuraLocaliseText(
@@ -125,6 +130,8 @@ export async function getStaticProps(context) {
       article,
       sections,
       ads,
+      locales,
+      publishedLocales,
       siteMetadata,
       sectionArticles,
       tags,
