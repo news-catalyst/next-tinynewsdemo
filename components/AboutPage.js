@@ -36,7 +36,7 @@ export default function AboutPage({
               {localisedPage.headline}
             </ArticleTitle>
           </div>
-          {locales.length > 1 && (
+          {locales && locales.length > 1 && (
             <SectionLayout>
               <SectionContainer>
                 <Block>
@@ -48,7 +48,11 @@ export default function AboutPage({
               </SectionContainer>
             </SectionLayout>
           )}
-          <StaticMainImage isAmp={isAmp} page={page} />
+          <StaticMainImage
+            isAmp={isAmp}
+            page={page}
+            siteMetadata={siteMetadata}
+          />
 
           <div className="section post__body rich-text" key="body">
             <PostText>

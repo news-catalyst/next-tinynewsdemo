@@ -7,7 +7,7 @@ const StaticFeaturedMediaFigure = tw.figure`flex flex-row flex-wrap w-full`;
 const StaticFeaturedMediaWrapper = tw.div`w-full`;
 const StaticFeaturedMediaCaption = tw.figcaption`text-sm text-gray-700 pt-1 inline-block`;
 
-export default function StaticMainImage({ page, isAmp }) {
+export default function StaticMainImage({ page, isAmp, siteMetadata }) {
   // main image handling
   let mainImageNode;
   let mainImage = null;
