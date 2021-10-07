@@ -28,7 +28,7 @@ export default function AboutPage({
   const body = renderBody(page.page_translations, [], isAmp, siteMetadata);
 
   return (
-    <Layout meta={siteMetadata} sections={sections}>
+    <Layout meta={siteMetadata} page={page} sections={sections}>
       <article className="container">
         <SectionContainer>
           <div key="title" className="section post__header">
