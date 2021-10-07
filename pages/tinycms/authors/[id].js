@@ -36,8 +36,8 @@ export default function EditAuthor({
   const [showNotification, setShowNotification] = useState(false);
   const [displayUpload, setDisplayUpload] = useState(true);
 
-  const [firstNames, setFirstNames] = useState(author.first_names);
-  const [lastName, setLastName] = useState(author.last_name);
+  const [firstNames, setFirstNames] = useState('');
+  const [lastName, setLastName] = useState('');
 
   const [title, setTitle] = useState(
     hasuraLocaliseText(author.author_translations, 'title')
@@ -68,6 +68,12 @@ export default function EditAuthor({
     }
     if (bio) {
       setStaticBio(bio);
+    }
+    if (author.first_names) {
+      setFirstNames(author.first_names);
+    }
+    if (author.last_name) {
+      setLastName(author.last_names);
     }
   }, [author]);
 
@@ -100,10 +106,18 @@ export default function EditAuthor({
     let published = true;
     ev.preventDefault();
 
+    if (!firstNames || !lastName) {
+      setNotificationMessage('First and last names are required.');
+      setNotificationType('error');
+      setDisplayUpload(false);
+      setShowNotification(true);
+      return false;
+    }
+
     let nameIsValid = validateAuthorName(firstNames, lastName);
     if (!nameIsValid) {
       setNotificationMessage(
-        'Please use a real name of an actual person - editorial guidelines prohibit fake bylines: ' +
+        ' Please use a real name of an actual person - editorial guidelines prohibit fake bylines: ' +
           displayAuthorName(firstNames, lastName)
       );
       setShowNotification(true);
