@@ -20,6 +20,7 @@ export default function Layout({
   children,
   meta,
   article,
+  page,
   sections,
   renderNav = true,
   renderFooter = true,
@@ -44,43 +45,50 @@ export default function Layout({
     founderTwitter: meta['founderTwitter'],
     founderInstagram: meta['founderInstagram'],
     founderFacebook: meta['founderFacebook'],
+    documentType: 'article',
   };
 
   let pageTitle = meta['homepageTitle'];
 
+  let author;
+  let translations;
   if (article) {
-    pageTitle = hasuraLocaliseText(
-      article.article_translations,
-      'search_title'
-    );
+    translations = article.article_translations;
+    if (article.author_articles) {
+      author = article.author_articles[0].author;
+    }
+  }
+
+  if (page) {
+    translations = page.page_translations;
+    metaValues['documentType'] = 'website';
+  }
+  if (translations && translations.length > 0) {
+    pageTitle = hasuraLocaliseText(translations, 'search_title');
     pageTitle += ' | ' + metaValues.siteName;
 
-    metaValues.section = hasuraLocaliseText(
-      article.category.category_translations,
-      'title'
-    );
-    metaValues.searchTitle = hasuraLocaliseText(
-      article.article_translations,
-      'search_title'
-    );
+    if (article && article.category) {
+      metaValues.section = hasuraLocaliseText(
+        article.category.category_translations,
+        'title'
+      );
+    }
+    metaValues.searchTitle = hasuraLocaliseText(translations, 'search_title');
     metaValues.searchDescription = hasuraLocaliseText(
-      article.article_translations,
+      translations,
       'search_description'
     );
-    metaValues.twitterTitle = hasuraLocaliseText(
-      article.article_translations,
-      'twitter_title'
-    );
+    metaValues.twitterTitle = hasuraLocaliseText(translations, 'twitter_title');
     metaValues.twitterDescription = hasuraLocaliseText(
-      article.article_translations,
+      translations,
       'twitter_description'
     );
     metaValues.facebookTitle = hasuraLocaliseText(
-      article.article_translations,
+      translations,
       'facebook_title'
     );
     metaValues.facebookDescription = hasuraLocaliseText(
-      article.article_translations,
+      translations,
       'facebook_description'
     );
   }
@@ -92,6 +100,9 @@ export default function Layout({
     metaValues['lastPublishedOn'] = article.lastPublishedOn;
   }
 
+  if (author && author.twitter) {
+    metaValues['authorTwitter'] = '@' + author.twitter;
+  }
   let tagList = [];
   if (article && article.tags) {
     article.tags.map((tag) => {
@@ -125,12 +136,14 @@ export default function Layout({
           name="twitter:description"
           content={metaValues.twitterDescription}
         />
-        <meta name="twitter:creator" content="@author_handle" />
+        {metaValues.authorTwitter && (
+          <meta name="twitter:creator" content={metaValues.authorTwitter} />
+        )}
         <meta name="twitter:image:src" content={metaValues.coverImage} />
 
         {/* Facebook data */}
         <meta property="og:title" content={metaValues.facebookTitle} />
-        <meta property="og:type" content="article" />
+        <meta property="og:type" content={metaValues.documentType} />
         <meta property="og:url" content={metaValues.canonical} />
         <meta property="og:image" content={metaValues.coverImage} />
         <meta
@@ -138,16 +151,22 @@ export default function Layout({
           content={metaValues.facebookDescription}
         />
         <meta property="og:site_name" content={metaValues.siteName} />
-        <meta
-          property="article:published_time"
-          content={metaValues.firstPublishedOn}
-        />
-        <meta
-          property="article:modified_time"
-          content={metaValues.lastPublishedOn}
-        />
-        <meta property="article:section" content={metaValues.section} />
 
+        {metaValues.firstPublishedOn && (
+          <meta
+            property="article:published_time"
+            content={metaValues.firstPublishedOn}
+          />
+        )}
+        {metaValues.lastPublishedOn && (
+          <meta
+            property="article:modified_time"
+            content={metaValues.lastPublishedOn}
+          />
+        )}
+        {metaValues.section && (
+          <meta property="article:section" content={metaValues.section} />
+        )}
         {article !== undefined &&
           article.tags !== undefined &&
           article.tags.map((tag) => (
