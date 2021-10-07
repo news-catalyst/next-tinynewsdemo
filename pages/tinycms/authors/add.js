@@ -69,6 +69,14 @@ export default function AddAuthor({
   async function handleSubmit(ev) {
     ev.preventDefault();
 
+    if (!firstNames || !lastName) {
+      setNotificationMessage('First and last names are required.');
+      setNotificationType('error');
+      setDisplayUpload(false);
+      setShowNotification(true);
+      return false;
+    }
+
     let nameIsValid = validateAuthorName(firstNames, lastName);
     if (!nameIsValid) {
       setNotificationMessage(
