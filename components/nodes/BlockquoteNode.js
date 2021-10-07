@@ -1,3 +1,4 @@
+import tw from 'twin.macro';
 import { Blockquote, Paragraph, Anchor } from '../common/CommonStyles';
 
 export default function BlockquoteNode({ node, metadata }) {
