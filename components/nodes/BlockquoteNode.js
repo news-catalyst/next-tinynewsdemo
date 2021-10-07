@@ -1,6 +1,6 @@
 import { Blockquote, Paragraph, Anchor } from '../common/CommonStyles';
 
-export default function BlockquoteNode({ node }) {
+export default function BlockquoteNode({ node, metadata }) {
   const processChild = function (child, nextChild) {
     let text = (
       <span key={child.index ? child.index : child.content}>
@@ -24,8 +24,8 @@ export default function BlockquoteNode({ node }) {
   );
 
   let quotedContent = (
-    <Blockquote>
-      <Paragraph>{children}</Paragraph>
+    <Blockquote meta={metadata}>
+      <p tw="text-lg leading-relaxed">{children}</p>
     </Blockquote>
   );
 
