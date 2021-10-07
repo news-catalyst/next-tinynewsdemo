@@ -28,6 +28,8 @@ describe('tinycms authors', () => {
   it('updates an existing author', () => {
     cy.visit('/tinycms/authors');
     cy.get('table>tbody>tr:first>td>a').click();
+    cy.get('input[name="first_names"').clear().type('New');
+    cy.get('input[name="last_name"').clear().type('AuthorName');
 
     cy.get('input[name="title"').clear().type('Staff Writer');
     cy.get('form').submit();
