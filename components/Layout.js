@@ -54,7 +54,11 @@ export default function Layout({
   let translations;
   if (article) {
     translations = article.article_translations;
-    if (article.author_articles) {
+    if (
+      article.author_articles &&
+      article.author_articles[0] &&
+      article.author_articles[0].author
+    ) {
       author = article.author_articles[0].author;
     }
   }
