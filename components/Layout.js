@@ -46,6 +46,9 @@ export default function Layout({
     founderInstagram: meta['founderInstagram'],
     founderFacebook: meta['founderFacebook'],
     documentType: 'article',
+    facebookAdmins: meta['facebookAdmins'],
+    facebookAppId: meta['facebookAppId'],
+    siteTwitter: meta['siteTwitter'],
   };
 
   let pageTitle = meta['homepageTitle'];
@@ -78,6 +81,7 @@ export default function Layout({
       translations,
       'search_description'
     );
+
     metaValues.twitterTitle = hasuraLocaliseText(translations, 'twitter_title');
     metaValues.twitterDescription = hasuraLocaliseText(
       translations,
@@ -130,12 +134,14 @@ export default function Layout({
         <link rel="canonical" href={metaValues.canonical} />
         {/* Twitter Card data */}
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:site" content="@publisher_handle" />
         <meta name="twitter:title" content={metaValues.twitterTitle} />
         <meta
           name="twitter:description"
           content={metaValues.twitterDescription}
         />
+        {metaValues.siteTwitter && (
+          <meta name="twitter:site" content={'@' + metaValues.siteTwitter} />
+        )}
         {metaValues.authorTwitter && (
           <meta name="twitter:creator" content={metaValues.authorTwitter} />
         )}
@@ -176,7 +182,12 @@ export default function Layout({
               content={hasuraLocaliseText(tag.tag_translations, 'title')}
             />
           ))}
-        <meta property="fb:admins" content="Facebook numeric ID" />
+        {metaValues.facebookAppId && (
+          <meta property="fb:app_id" content={metaValues.facebookAppId} />
+        )}
+        {metaValues.facebookAdmins && (
+          <meta property="fb:admins" content={metaValues.facebookAdmins} />
+        )}
 
         <link rel="preconnect" href="https://fonts.gstatic.com" />
 
