@@ -157,6 +157,7 @@ async function createGitHubEnv(slug) {
       'LETTERHEAD_API_KEY',
       'LETTERHEAD_CHANNEL_SLUG',
       'AUTHORIZED_EMAIL_DOMAINS',
+      'VERCEL_DEPLOY_HOOK',
     ];
 
     const pubKeyResult = await octokit.rest.actions.getRepoPublicKey({
@@ -286,7 +287,6 @@ async function configureNext(name, slug, locales, url, gaTrackingId) {
   currentEnv.parsed['ORG_SLUG'] = slug;
   currentEnv.parsed['TNC_AWS_DIR_NAME'] = slug;
   currentEnv.parsed['NEXT_PUBLIC_GA_TRACKING_ID'] = gaTrackingId;
-
   currentEnv.parsed['LOCALES'] = arrayUnique(locales).join(',');
 
   console.log('Creating new environment file using the following settings:');
