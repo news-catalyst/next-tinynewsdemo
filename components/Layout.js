@@ -30,6 +30,7 @@ export default function Layout({
 
   const metaValues = {
     canonical: meta['canonicalUrl'] || meta['siteUrl'],
+    favicon: meta['favicon'],
     siteName: meta['shortName'],
     searchTitle: meta['searchTitle'],
     searchDescription: meta['searchDescription'],
@@ -113,7 +114,7 @@ export default function Layout({
     <>
       <Head>
         <title>{pageTitle}</title>
-        <link rel="icon" href="/favicon.ico" />
+        {metaValues.favicon && <link rel="icon" href={metaValues.favicon} />}
         <meta property="description" content={metaValues.searchDescription} />
         {tagList}
         <link rel="canonical" href={metaValues.canonical} />
