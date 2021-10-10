@@ -68,7 +68,6 @@ export default function Settings({
   const [jsonData, setJsonData] = useState('');
   const [parsedData, setParsedData] = useState({});
   const [editData, setEditData] = useState(false);
-  const [randomDataKey, setRandomDataKey] = useState(Math.random());
 
   const router = useRouter();
   const { action } = router.query;
@@ -153,7 +152,6 @@ export default function Settings({
       setMetadata(md);
       let parsed = md;
       setParsedData(parsed);
-      setRandomDataKey(Math.random());
       let formattedJSON;
       try {
         formattedJSON = JSON.stringify(parsed, null, 2);
@@ -169,11 +167,6 @@ export default function Settings({
       setMessage('Successfully created metadata.');
     }
   }, [action, siteMetadata]);
-
-  async function handleCancel(ev) {
-    ev.preventDefault();
-    router.push('/tinycms');
-  }
 
   async function handleSubmit(ev) {
     ev.preventDefault();
@@ -206,7 +199,6 @@ export default function Settings({
       try {
         formattedJSON = JSON.stringify(parsed, null, 2);
         setJsonData(formattedJSON);
-        setRandomDataKey(Math.random());
       } catch (error) {
         console.error(error);
       }
