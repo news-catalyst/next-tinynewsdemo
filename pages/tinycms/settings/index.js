@@ -16,8 +16,8 @@ const LightSidebar = tw.div`bg-gray-100 text-black p-2`;
 const SidebarContent = tw.div`mt-6 ml-2`;
 const MainContent = tw.div`w-full lg:w-3/4 px-4 py-4`;
 const SettingsContainer = tw.div`min-w-0 w-full flex-auto lg:static lg:max-h-full lg:overflow-visible p-2`;
-const SaveContainer = tw.div`absolute bottom-10 h-16 w-72`;
-const SaveButton = tw.button`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded align-bottom w-full`;
+const SaveContainer = tw.div`absolute bottom-10 h-16 w-72 justify-center`;
+const SaveButton = tw.button`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded align-bottom w-56`;
 
 const typographyOptions = {
   styleone: {
@@ -50,6 +50,7 @@ export default function Settings({
   siteMetadata,
   locales,
   awsConfig,
+  vercelHook,
 }) {
   const siteInfoRef = useRef();
   const designRef = useRef();
@@ -190,9 +191,31 @@ export default function Settings({
       setNotificationType('error');
       setShowNotification(true);
     } else {
-      // display success message
-      setNotificationMessage('Successfully saved and published the metadata!');
-      setNotificationType('success');
+      // rebuild the site
+      if (!vercelHook) {
+        setNotificationMessage(
+          'Successfully saved, but no deploy hook defined so unable to republish the site.'
+        );
+        setNotificationType('success');
+      } else {
+        const response = await fetch(vercelHook, {
+          method: 'POST',
+        });
+        const statusCode = response.status;
+        const data = await response.json();
+        console.log(statusCode, 'vercel data:', data);
+        if (statusCode < 200 || statusCode > 299) {
+          setNotificationType('error');
+          setNotificationMessage(
+            'An error occurred republishing the site: ' + JSON.stringify(data)
+          );
+        } else {
+          setNotificationType('success');
+          setNotificationMessage(
+            'Successfully saved settings, republishing the site now!'
+          );
+        }
+      }
       setShowNotification(true);
 
       let formattedJSON;
@@ -354,6 +377,7 @@ export async function getServerSideProps(context) {
       siteMetadata: siteMetadata,
       locales: locales,
       awsConfig: awsConfig,
+      vercelHook: process.env.VERCEL_DEPLOY_HOOK,
     },
   };
 }
