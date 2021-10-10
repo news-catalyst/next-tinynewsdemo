@@ -9,7 +9,6 @@ import NewsletterBlock from './../plugins/NewsletterBlock';
 import ColorStylePreview from './ColorStylePreview';
 
 export default function UpdateMetadata(props) {
-  const [randomDataKey, setRandomDataKey] = useState(Math.random());
   const [notificationMessage, setNotificationMessage] = useState('');
   const [notificationType, setNotificationType] = useState('');
   const [showNotification, setShowNotification] = useState(false);
@@ -41,7 +40,6 @@ export default function UpdateMetadata(props) {
         console.log('props.metadata:', props.metadata);
         setParsedData(parsed);
         console.log('parsedData donation options:', parsed['donationOptions']);
-        setRandomDataKey(Math.random());
         let formattedJSON = JSON.stringify(parsed, null, 2);
         setJsonData(formattedJSON);
       }
@@ -85,7 +83,6 @@ export default function UpdateMetadata(props) {
       try {
         let formattedJSON = JSON.stringify(parsed, null, 2);
         setJsonData(formattedJSON);
-        setRandomDataKey(Math.random());
       } catch (error) {
         console.error('error stringifying json:', error);
       }
