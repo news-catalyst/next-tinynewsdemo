@@ -11,7 +11,7 @@ export default function BlockquoteNode({ node, metadata }) {
 
     if (child.link) {
       text = (
-        <Anchor key={child.link} href={child.link}>
+        <Anchor meta={metadata} key={child.link} href={child.link}>
           {text}
         </Anchor>
       );
