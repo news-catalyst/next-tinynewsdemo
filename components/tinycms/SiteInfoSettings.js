@@ -249,6 +249,7 @@ export default function SiteInfoSettings(props) {
   );
 
   const [logo, setLogo] = useState(props.parsedData['logo']);
+  const [favicon, setFavicon] = useState(props.parsedData['favicon']);
   const [defaultSocialImage, setDefaultSocialImage] = useState(
     props.parsedData['defaultSocialImage']
   );
@@ -351,6 +352,7 @@ export default function SiteInfoSettings(props) {
         : null
     );
     setLogo(props.parsedData['logo']);
+    setFavicon(props.parsedData['favicon']);
     setDefaultSocialImage(props.parsedData['defaultSocialImage']);
   }, [props.parsedData]);
 
@@ -407,6 +409,22 @@ export default function SiteInfoSettings(props) {
             setNotificationType={props.setNotificationType}
             setShowNotification={props.setShowNotification}
             folderName="logos"
+          />
+        </label>
+        <label htmlFor="logo">
+          <span tw="mt-1 font-bold">Favicon</span>
+          <Upload
+            awsConfig={props.awsConfig}
+            slug={shortName}
+            image={favicon}
+            imageKey="favicon"
+            updateParsedData={props.updateParsedData}
+            parsedData={props.parsedData}
+            setter={setFavicon}
+            setNotificationMessage={props.setNotificationMessage}
+            setNotificationType={props.setNotificationType}
+            setShowNotification={props.setShowNotification}
+            folderName="favicon"
           />
         </label>
       </SiteInfoFieldsContainer>
