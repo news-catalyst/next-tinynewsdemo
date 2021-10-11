@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import Router from 'next/router';
+import { getCookieConsentValue } from 'react-cookie-consent';
 import { useAnalytics } from '../lib/hooks/useAnalytics.js';
 import { Provider } from 'next-auth/client';
 import { useAmp } from 'next/amp';
@@ -33,7 +34,8 @@ const App = ({ Component, pageProps }) => {
   } = useAnalytics();
   const isAmp = useAmp();
   useEffect(() => {
-    if (isAmp) {
+    console.log(getCookieConsentValue());
+    if (isAmp || !getCookieConsentValue()) {
       return true;
     }
 
