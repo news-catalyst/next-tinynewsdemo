@@ -1,7 +1,7 @@
 import tw from 'twin.macro';
 import { Paragraph, H1, H2, H3, Anchor } from '../common/CommonStyles';
 
-export default function TextNode({ node }) {
+export default function TextNode({ node, metadata }) {
   const processChild = function (child, nextChild) {
     let supportedPunctuation = [',', '.', '?', '!', ';', ':'];
     let delimiterSpaceChar = ' ';
@@ -31,7 +31,7 @@ export default function TextNode({ node }) {
 
     if (child.link) {
       text = (
-        <Anchor key={child.link} href={child.link}>
+        <Anchor key={child.link} href={child.link} meta={metadata}>
           {text}
         </Anchor>
       );
