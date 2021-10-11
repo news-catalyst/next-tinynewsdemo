@@ -81,7 +81,9 @@ export default function AuthorPage({
           <ProfileTwitter>
             <em>
               {twitterCall}
-              <Anchor href={twitterLink}>{authorTwitter}</Anchor>
+              <Anchor meta={siteMetadata} href={twitterLink}>
+                {authorTwitter}
+              </Anchor>
             </em>
           </ProfileTwitter>
         </div>

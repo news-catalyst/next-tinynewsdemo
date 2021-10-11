@@ -1,7 +1,10 @@
 import React from 'react';
 import { hasuraStreamArticles } from '../lib/homepage.js';
 import { cachedContents } from '../lib/cached';
-import { hasuraGetHomepageEditor } from '../lib/articles.js';
+import {
+  hasuraGetHomepageEditor,
+  hasuraListAllPageSlugs,
+} from '../lib/articles.js';
 import { getArticleAds } from '../lib/ads.js';
 import { hasuraLocaliseText } from '../lib/utils.js';
 import Homepage from '../components/Homepage';
@@ -46,11 +49,14 @@ export async function getStaticProps({ locale }) {
     console.log('failed finding site metadata for ', locale, metadatas);
   }
 
+  let pages = data.pages;
+
   if (siteMetadata && siteMetadata.landingPage === 'on') {
     return {
       props: {
         locale,
         siteMetadata,
+        pages,
       },
       revalidate: 1,
     };
