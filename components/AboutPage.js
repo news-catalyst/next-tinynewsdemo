@@ -11,6 +11,7 @@ import {
   SectionLayout,
   Block,
   Paragraph,
+  Anchor,
 } from './common/CommonStyles.js';
 
 const SectionContainer = tw.div`flex flex-col flex-nowrap items-center px-5 mx-auto max-w-7xl w-full`;
@@ -58,9 +59,9 @@ export default function AboutPage({
             <PostText>
               <PostTextContainer>
                 {body}
-                <Paragraph tw="underline">
-                  <Link href="/staff">
-                    <a>Learn about our staff →</a>
+                <Paragraph>
+                  <Link href="/staff" passHref>
+                    <Anchor meta={siteMetadata}>Learn about our staff →</Anchor>
                   </Link>
                 </Paragraph>
               </PostTextContainer>
