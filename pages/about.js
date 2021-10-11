@@ -48,8 +48,9 @@ export async function getStaticProps({ locale }) {
     }
     locales = distinctLocales;
 
-    sections = data.categories;
     siteMetadata = data.site_metadatas[0].site_metadata_translations[0].data;
+
+    sections = data.categories;
     for (i = 0; i < sections.length; i++) {
       sections[i].title = hasuraLocaliseText(
         sections[i].category_translations,

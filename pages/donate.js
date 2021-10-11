@@ -31,7 +31,7 @@ export default function Donate({
   const body = renderBody(page.page_translations, [], isAmp, siteMetadata);
 
   return (
-    <Layout meta={siteMetadata} sections={sections}>
+    <Layout meta={siteMetadata} page={page} sections={sections}>
       <SectionContainer>
         <article className="container">
           <ArticleTitle meta={siteMetadata} tw="text-center">
