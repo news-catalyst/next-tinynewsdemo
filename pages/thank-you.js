@@ -47,7 +47,7 @@ export default function ThankYou({
   const body = renderBody(page.page_translations, [], isAmp, siteMetadata);
 
   return (
-    <Layout meta={siteMetadata} sections={sections}>
+    <Layout meta={siteMetadata} page={page} sections={sections}>
       <SectionContainer>
         <ArticleTitle meta={siteMetadata} tw="text-center">
           {localisedPage.headline}
