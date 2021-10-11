@@ -57,6 +57,8 @@ export default function TextNode({ node }) {
     wrapper = <H3>{children}</H3>;
   } else if (node.style == 'NORMAL_TEXT') {
     wrapper = <Paragraph>{children}</Paragraph>;
+  } else if (node.style == 'FORMATTED_TEXT') {
+    wrapper = <pre>{children}</pre>;
   } else {
     wrapper = <>{children}</>;
   }
