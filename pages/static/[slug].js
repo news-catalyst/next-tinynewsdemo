@@ -121,5 +121,6 @@ export async function getStaticProps({ locale, params }) {
       locales,
       locale,
     },
+    revalidate: 1,
   };
 }
