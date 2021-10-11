@@ -35,7 +35,7 @@ export default function StaticPage({
   }
 
   return (
-    <Layout meta={siteMetadata} sections={sections}>
+    <Layout meta={siteMetadata} page={page} sections={sections}>
       <SectionContainer>
         <ArticleTitle meta={siteMetadata} tw="text-center">
           {localisedPage.headline}

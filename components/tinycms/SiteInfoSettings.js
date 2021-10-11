@@ -151,6 +151,15 @@ export default function SiteInfoSettings(props) {
     'US/Samoa',
   ]);
 
+  const [siteTwitter, setSiteTwitter] = useState(
+    props.parsedData['siteTwitter']
+  );
+  const [facebookAdmins, setFacebookAdmins] = useState(
+    props.parsedData['facebookAdmins']
+  );
+  const [facebookAppId, setFacebookAppId] = useState(
+    props.parsedData['facebookAppId']
+  );
   const [searchTitle, setSearchTitle] = useState(
     props.parsedData['searchTitle']
   );
@@ -302,6 +311,9 @@ export default function SiteInfoSettings(props) {
 
   useEffect(() => {
     setTimeZone(props.parsedData['timeZone']);
+    setSiteTwitter(props.parsedData['siteTwitter']);
+    setFacebookAdmins(props.parsedData['facebookAdmins']);
+    setFacebookAppId(props.parsedData['facebookAppId']);
     setSearchTitle(props.parsedData['searchTitle']);
     setSearchDescription(props.parsedData['searchDescription']);
     setFacebookTitle(props.parsedData['facebookTitle']);
@@ -889,6 +901,34 @@ export default function SiteInfoSettings(props) {
           </label>
         </div>
         <div tw="mt-2">
+          <label htmlFor="facebookAdmins">
+            <span tw="mt-1 font-bold">
+              Facebook admin IDs (comma separated list of one or more user ids)
+            </span>
+            <ControlledInput
+              tw="w-full"
+              type="text"
+              name="facebookAdmins"
+              value={facebookAdmins}
+              onChange={props.handleChange}
+            />
+          </label>
+        </div>
+        <div tw="mt-2">
+          <label htmlFor="facebookAppId">
+            <span tw="mt-1 font-bold">
+              Facebook App ID (single application ID)
+            </span>
+            <ControlledInput
+              tw="w-full"
+              type="text"
+              name="facebookAppId"
+              value={facebookAppId}
+              onChange={props.handleChange}
+            />
+          </label>
+        </div>
+        <div tw="mt-2">
           <label htmlFor="facebookTitle">
             <span tw="mt-1 font-bold">Facebook title</span>
             <ControlledInput
@@ -908,6 +948,18 @@ export default function SiteInfoSettings(props) {
               type="text"
               name="facebookDescription"
               value={facebookDescription}
+              onChange={props.handleChange}
+            />
+          </label>
+        </div>
+        <div tw="mt-2">
+          <label htmlFor="siteTwitter">
+            <span tw="mt-1 font-bold">Site Twitter handle</span>
+            <ControlledInput
+              tw="w-full"
+              type="text"
+              name="siteTwitter"
+              value={siteTwitter}
               onChange={props.handleChange}
             />
           </label>
