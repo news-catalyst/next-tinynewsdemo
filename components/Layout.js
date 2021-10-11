@@ -1,6 +1,7 @@
 import Head from 'next/head';
-import GlobalNav from '../components/nav/GlobalNav';
+import GlobalNav from './nav/GlobalNav';
 import GlobalFooter from './nav/GlobalFooter.js';
+import CookieConsentWrapper from './nav/CookieConsentWrapper.js';
 import { useAmp } from 'next/amp';
 import AmpAnalytics from './amp/AmpAnalytics.js';
 import { hasuraLocaliseText } from '../lib/utils';
@@ -229,6 +230,7 @@ export default function Layout({
           {children}
         </Main>
         {renderFooter && <GlobalFooter metadata={metaValues} />}
+        <CookieConsentWrapper meta={meta} />
       </ThemeWrapper>
     </>
   );
