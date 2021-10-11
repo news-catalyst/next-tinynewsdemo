@@ -19,7 +19,7 @@ export default function LandingPage({ siteMetadata, sections, pages }) {
         <BlockWrapper>
           <NewsletterBlock metadata={siteMetadata} />
         </BlockWrapper>
-        {pages.length > 0 && (
+        {pages && pages.length > 0 && (
           <LandingPageNav pages={pages} metadata={siteMetadata} />
         )}
       </Container>
