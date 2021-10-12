@@ -1,7 +1,10 @@
 import { useEffect } from 'react';
 import Router from 'next/router';
-import { getCookieConsentValue } from 'react-cookie-consent';
-import { useAnalytics } from '../lib/hooks/useAnalytics.js';
+import {
+  useAnalytics,
+  initialize,
+  trackReadingHistoryWithPageView,
+} from '../lib/hooks/useAnalytics.js';
 import { Provider } from 'next-auth/client';
 import { useAmp } from 'next/amp';
 import GlobalStyles from './../components/GlobalStyles';
@@ -22,69 +25,21 @@ export function reportWebVitals({ id, name, label, value }) {
 }
 
 const App = ({ Component, pageProps }) => {
-  const {
-    init,
-    trackPageViewedWithDimensions,
-    setDimension,
-    logReadingHistory,
-    summarizeReadingHistory,
-    donorStatusFromStorage,
-    newsletterStatusFromStorage,
-    trackMailChimpParams,
-  } = useAnalytics();
+  const hookObj = useAnalytics();
+
   const isAmp = useAmp();
   useEffect(() => {
-    console.log(getCookieConsentValue());
-    if (isAmp || !getCookieConsentValue()) {
+    if (isAmp) {
       return true;
     }
 
-    function trackNewsletterVisits(trackMailChimpParams) {
-      let hitFromSubscriber = trackMailChimpParams();
-      let isLoggedSubscriber = newsletterStatusFromStorage();
-      if (hitFromSubscriber || isLoggedSubscriber) {
-        setDimension('dimension5', true);
-        return {
-          dimension5: true,
-        };
-      } else {
-        return {};
-      }
-    }
-
-    function trackReadingHistoryWithPageView() {
-      logReadingHistory();
-      const readingHistory = summarizeReadingHistory();
-      setDimension('dimension2', readingHistory);
-      return {
-        dimension2: readingHistory,
-      };
-    }
-
-    init(process.env.NEXT_PUBLIC_GA_TRACKING_ID);
-    let readingDimensionsData = trackReadingHistoryWithPageView();
-    let newsletterDimensionsData = trackNewsletterVisits(trackMailChimpParams);
-
-    let dimensionsData = {
-      ...readingDimensionsData,
-      ...newsletterDimensionsData,
-    };
-
-    let donorStatus = donorStatusFromStorage();
-    if (donorStatus) {
-      setDimension('dimension4', true);
-      dimensionsData['dimension4'] = true;
-    }
+    initialize(hookObj);
 
     let pagePath = window.location.pathname + window.location.search;
-    if (!/tinycms/.test(pagePath)) {
-      trackPageViewedWithDimensions(pagePath, dimensionsData);
-    }
-
     const handleRouteChange = () => {
       if (!/tinycms/.test(pagePath)) {
-        let routeChangeData = trackReadingHistoryWithPageView();
-        trackPageViewedWithDimensions(pagePath, routeChangeData);
+        let routeChangeData = trackReadingHistoryWithPageView(hookObj);
+        hookObj.trackPageViewedWithDimensions(pagePath, routeChangeData);
       }
     };
     Router.events.on('routeChangeComplete', handleRouteChange);
