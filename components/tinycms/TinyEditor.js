@@ -19,7 +19,7 @@ const TinyEditor = ({ tinyApiKey, value, setValue }) => {
             alignleft aligncenter alignright | \
             bullist numlist outdent indent | help',
       }}
-      onChange={setValue}
+      onEditorChange={setValue}
     />
   );
 };

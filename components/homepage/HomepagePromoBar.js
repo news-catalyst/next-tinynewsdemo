@@ -29,7 +29,7 @@ const BlockHeader = styled.h2(({ meta }) => ({
   ...tw`text-xl font-bold mb-5`,
   fontFamily: Typography[meta.theme || 'styleone'].HomepagePromoBlockHeader,
 }));
-const BlockDek = styled.p(({ meta }) => ({
+const BlockDek = styled.div(({ meta }) => ({
   ...tw`text-base mb-3`,
   fontFamily: Typography[meta.theme || 'styleone'].HomepagePromoBlockDek,
 }));
