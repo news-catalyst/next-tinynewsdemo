@@ -31,7 +31,7 @@ export default function Recirculation({
           {articles &&
             articles.map((streamArticle) => (
               <ArticleLink
-                key={streamArticle.id}
+                key={streamArticle.slug}
                 article={streamArticle}
                 showCategory={false}
                 isAmp={isAmp}
