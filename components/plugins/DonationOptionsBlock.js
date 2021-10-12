@@ -18,7 +18,7 @@ const CardDonationAmount = styled.h5(({ meta }) => ({
   fontFamily: Typography[meta.theme || 'styleone'].PromotionBlockDek,
 }));
 const PerMonth = tw.span`text-sm`;
-const CardDonationDescription = styled.p(({ meta }) => ({
+const CardDonationDescription = styled.div(({ meta }) => ({
   ...tw`text-lg mt-8`,
   fontFamily: Typography[meta.theme || 'styleone'].PromotionBlockDek,
 }));

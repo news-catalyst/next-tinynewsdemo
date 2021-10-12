@@ -15,7 +15,7 @@ const NewsletterHed = styled.h4(({ meta }) => ({
   ...tw`text-2xl font-bold tracking-tight leading-5 mb-2`,
   fontFamily: Typography[meta.theme || 'styleone'].PromotionBlockHed,
 }));
-const NewsletterDek = styled.p(({ meta }) => ({
+const NewsletterDek = styled.div(({ meta }) => ({
   ...tw`mb-6`,
   fontFamily: Typography[meta.theme || 'styleone'].PromotionBlockDek,
 }));
