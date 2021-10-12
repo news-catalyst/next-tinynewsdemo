@@ -259,8 +259,8 @@ export default function SiteInfoSettings(props) {
       : null
   );
 
-  const handleAboutDekChange = (e) => {
-    let content = e.target.getContent();
+  const handleAboutDekEditorChange = (value) => {
+    let content = value;
     setAboutDek(content);
 
     props.updateParsedData((prevState) => ({
@@ -269,44 +269,39 @@ export default function SiteInfoSettings(props) {
     }));
   };
 
-  const handleSupportDekChange = (e) => {
-    let content = e.target.getContent();
-    setSupportDek(content);
+  const handleSupportDekChange = (value) => {
+    setSupportDek(value);
 
     props.updateParsedData((prevState) => ({
       ...prevState,
-      ['supportDek']: content,
+      ['supportDek']: value,
     }));
   };
 
-  const handleMembershipDekChange = (e) => {
-    let content = e.target.getContent();
-    setMembershipDek(content);
+  const handleMembershipDekChange = (value) => {
+    setMembershipDek(value);
 
     props.updateParsedData((prevState) => ({
       ...prevState,
-      ['membershipDek']: content,
+      ['membershipDek']: value,
     }));
   };
 
-  const handleNewsletterDekChange = (e) => {
-    let content = e.target.getContent();
-    setNewsletterDek(content);
+  const handleNewsletterDekChange = (value) => {
+    setNewsletterDek(value);
 
     props.updateParsedData((prevState) => ({
       ...prevState,
-      ['newsletterDek']: content,
+      ['newsletterDek']: value,
     }));
   };
 
-  const handleDekChange = (e) => {
-    console.log('handleDekChange incoming e is:', e);
-    let content = e.target.getContent();
-    setLandingPageDek(content);
+  const handleDekChange = (value) => {
+    setLandingPageDek(value);
 
     props.updateParsedData((prevState) => ({
       ...prevState,
-      ['landingPageDek']: content,
+      ['landingPageDek']: value,
     }));
   };
 
@@ -354,7 +349,7 @@ export default function SiteInfoSettings(props) {
     setLogo(props.parsedData['logo']);
     setFavicon(props.parsedData['favicon']);
     setDefaultSocialImage(props.parsedData['defaultSocialImage']);
-  }, [props.parsedData]);
+  }, []);
 
   return (
     <div tw="space-x-4 space-y-8">
@@ -683,7 +678,7 @@ export default function SiteInfoSettings(props) {
             <span tw="mt-1 font-bold">About promo description</span>
             <TinyEditor
               tinyApiKey={props.tinyApiKey}
-              setValue={handleAboutDekChange}
+              setValue={handleAboutDekEditorChange}
               value={staticAboutDek}
             />
           </label>
