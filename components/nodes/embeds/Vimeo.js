@@ -23,7 +23,7 @@ export default function Vimeo({ node, amp, url }) {
           url={node.link}
           width="100%"
           height="100%"
-          controls="true"
+          controls={true}
           style={{
             position: 'absolute',
             top: 0,
