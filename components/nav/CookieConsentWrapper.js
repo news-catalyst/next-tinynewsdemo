@@ -18,12 +18,12 @@ export default function CookieConsentWrapper({ meta }) {
       flipButtons
       declineButtonText="Decline"
       style={{
-        backgroundColor: meta.secondaryColor,
-        color: determineTextColor(meta.secondaryColor),
+        backgroundColor: meta.secondaryColor || 'black',
+        color: determineTextColor(meta.secondaryColor) || 'white',
       }}
       buttonStyle={{
-        backgroundColor: determineTextColor(meta.primaryColor),
-        color: meta.primaryColor,
+        backgroundColor: determineTextColor(meta.primaryColor) || 'white',
+        color: meta.primaryColor || 'black',
         fontWeight: 'bold',
       }}
       location="bottom"
