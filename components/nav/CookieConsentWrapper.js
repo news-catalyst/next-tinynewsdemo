@@ -2,14 +2,21 @@ import Link from 'next/link';
 import tw from 'twin.macro';
 import CookieConsent from 'react-cookie-consent';
 import { determineTextColor } from '../../lib/utils';
+import { useAnalytics, initialize } from '../../lib/hooks/useAnalytics.js';
 
 export default function CookieConsentWrapper({ meta }) {
+  const hookObj = useAnalytics();
+
+  const initalizeAnalytics = function () {
+    initialize(hookObj);
+  };
+
   return (
     <CookieConsent
-      buttonText="I accept"
+      buttonText="Accept"
       enableDeclineButton
       flipButtons
-      declineButtonText="I decline"
+      declineButtonText="Decline"
       style={{
         backgroundColor: meta.secondaryColor,
         color: determineTextColor(meta.secondaryColor),
@@ -20,6 +27,7 @@ export default function CookieConsentWrapper({ meta }) {
         fontWeight: 'bold',
       }}
       location="bottom"
+      onAccept={initalizeAnalytics}
     >
       This website uses cookies. We use cookies to analyze our traffic and
       ensure our website functions correctly. Read our cookie policy{' '}
