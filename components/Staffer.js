@@ -4,7 +4,7 @@ import { Paragraph } from './common/CommonStyles.js';
 import { displayAuthorName, hasuraLocaliseText } from '../lib/utils';
 
 const AuthorName = tw.h3`font-bold text-xl leading-tight mt-5 mb-4`;
-const AuthorAvatar = tw.div`overflow-hidden relative w-full rounded-full h-12 w-12 mr-2 float-left`;
+const AuthorAvatar = tw.div`overflow-hidden relative w-full h-48 w-48 mr-4 md:float-left`;
 
 export default function Staffer({ author, isAmp }) {
   const name = displayAuthorName(author.first_names, author.last_name);
@@ -16,24 +16,23 @@ export default function Staffer({ author, isAmp }) {
       {author.photoUrl && (
         <AuthorAvatar>
           <figure>
-            <a className="content" href="#">
-              {isAmp ? (
-                <amp-img
-                  width={82}
-                  height={82}
-                  src={author.photoUrl}
-                  alt={name}
-                  layout="responsive"
-                />
-              ) : (
-                <Image
-                  src={author.photoUrl}
-                  width={82}
-                  height={82}
-                  alt={name}
-                />
-              )}
-            </a>
+            {isAmp ? (
+              <amp-img
+                width={164}
+                height={164}
+                src={author.photoUrl}
+                alt={name}
+                layout="responsive"
+              />
+            ) : (
+              <Image
+                src={author.photoUrl}
+                width={164}
+                height={164}
+                alt={name}
+                layout="responsive"
+              />
+            )}
           </figure>
         </AuthorAvatar>
       )}
