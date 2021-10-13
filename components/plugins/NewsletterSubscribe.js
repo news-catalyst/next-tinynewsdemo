@@ -27,6 +27,8 @@ const NewsletterSubscribe = ({ articleTitle, metadata }) => {
   const [status, setStatus] = useState(null);
   const [message, setMessage] = useState(null);
 
+  const [redirectURL, setRedirectURL] = useState(metadata.newsletterRedirect);
+
   useEffect(() => {
     if (inView) {
       trackEvent({
@@ -80,6 +82,9 @@ const NewsletterSubscribe = ({ articleTitle, metadata }) => {
           label: 'success',
           non_interaction: false,
         });
+        if (redirectURL) {
+          window.location.href = redirectURL;
+        }
       }
     } catch (error) {
       setStatus('error');
