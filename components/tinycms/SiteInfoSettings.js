@@ -242,6 +242,11 @@ export default function SiteInfoSettings(props) {
   const [newsletterDek, setNewsletterDek] = useState(
     props.parsedData['newsletterDek']
   );
+
+  const [newsletterRedirect, setNewsletterRedirect] = useState(
+    props.parsedData['newsletterRedirect']
+  );
+
   // necessary to avoid weird issues with the rich text editor - the static version
   // of this content is used to set the initial display value only
   const [staticNewsletterDek, setStaticNewsletterDek] = useState(
@@ -336,8 +341,11 @@ export default function SiteInfoSettings(props) {
     setMembershipDek(props.parsedData['membershipDek']);
 
     setMembershipHed(props.parsedData['membershipHed']);
-    setNewsletterDek(props.parsedData['newsletterDek']);
+    if (props.parsedData['newsletterDek']) {
+      setNewsletterDek(props.parsedData['newsletterDek']);
+    }
     setNewsletterHed(props.parsedData['newsletterHed']);
+    setNewsletterRedirect(props.parsedData['newsletterRedirect']);
     setFounderTwitter(props.parsedData['founderTwitter']);
     setFounderInstagram(props.parsedData['founderInstagram']);
     setFounderFacebook(props.parsedData['founderFacebook']);
@@ -349,7 +357,7 @@ export default function SiteInfoSettings(props) {
     setLogo(props.parsedData['logo']);
     setFavicon(props.parsedData['favicon']);
     setDefaultSocialImage(props.parsedData['defaultSocialImage']);
-  }, []);
+  }, [props.parsedData]);
 
   return (
     <div tw="space-x-4 space-y-8">
@@ -746,6 +754,15 @@ export default function SiteInfoSettings(props) {
               tinyApiKey={props.tinyApiKey}
               setValue={handleNewsletterDekChange}
               value={staticNewsletterDek}
+            />
+          </label>
+          <label htmlFor="newsletterRedirect">
+            <span tw="w-full mt-1 font-bold">Redirect URL</span>
+            <ControlledInput
+              type="text"
+              name="newsletterRedirect"
+              value={newsletterRedirect}
+              onChange={props.handleChange}
             />
           </label>
         </div>
