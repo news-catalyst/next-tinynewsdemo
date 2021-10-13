@@ -258,10 +258,14 @@ export default function SiteInfoSettings(props) {
   const [defaultSocialImage, setDefaultSocialImage] = useState(
     props.parsedData['defaultSocialImage']
   );
+  let parsedDonationOptions;
+  try {
+    parsedDonationOptions = JSON.parse(props.parsedData['donationOptions']);
+  } catch (e) {
+    console.error('Failed to parse donation options json:', e);
+  }
   const [donationOptions, setDonationOptions] = useState(
-    props.parsedData['donationOptions']
-      ? JSON.parse(props.parsedData['donationOptions'])
-      : null
+    props.parsedData['donationOptions'] ? parsedDonationOptions : null
   );
 
   const handleAboutDekEditorChange = (value) => {
@@ -349,10 +353,14 @@ export default function SiteInfoSettings(props) {
     setFounderTwitter(props.parsedData['founderTwitter']);
     setFounderInstagram(props.parsedData['founderInstagram']);
     setFounderFacebook(props.parsedData['founderFacebook']);
+    let parsedDonationOptions;
+    try {
+      parsedDonationOptions = JSON.parse(props.parsedData['donationOptions']);
+    } catch (e) {
+      console.error('Failed to parse donation options json:', e);
+    }
     setDonationOptions(
-      props.parsedData['donationOptions']
-        ? JSON.parse(props.parsedData['donationOptions'])
-        : null
+      props.parsedData['donationOptions'] ? parsedDonationOptions : null
     );
     setLogo(props.parsedData['logo']);
     setFavicon(props.parsedData['favicon']);
