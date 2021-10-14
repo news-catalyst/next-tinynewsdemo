@@ -41,7 +41,7 @@ async function createProject(name, slug) {
     "Content-Type": "application/json"
   }
 
-  let teamsUrl = BASE_URL + "/teams";
+  let teamsUrl = 'https://api.vercel.com/v1/teams';
   let teamsResult = await fetch(teamsUrl, {
     method: "GET",
     headers: requestHeaders,
@@ -174,7 +174,7 @@ async function deleteProject(name) {
     "Content-Type": "application/json"
   }
 
-  let teamsUrl = BASE_URL + "/teams";
+  let teamsUrl = 'https://api.vercel.com/v1/teams';
   let teamsResult = await fetch(teamsUrl, {
     method: "GET",
     headers: requestHeaders,
