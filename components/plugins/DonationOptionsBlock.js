@@ -56,7 +56,7 @@ export default function DonationOptionsBlock({ metadata, wrap = true }) {
   try {
     parsedOptions = JSON.parse(metadata.donationOptions);
   } catch (e) {
-    console.error(e);
+    console.log(e);
   }
 
   const block = parsedOptions
