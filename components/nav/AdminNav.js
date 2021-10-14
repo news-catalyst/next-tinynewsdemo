@@ -43,7 +43,7 @@ export default function NewAdminNav(props) {
         <NavBarContainer>
           <NavBarInnerContainer>
             <BrandContainer>
-              <Link href="/tinycms">
+              <Link href="/tinycms" passHref>
                 <a tw="text-4xl">TinyCMS</a>
               </Link>
             </BrandContainer>
