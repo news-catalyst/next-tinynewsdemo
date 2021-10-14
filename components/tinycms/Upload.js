@@ -26,15 +26,18 @@ export default function Upload(props) {
     ReactS3Client.uploadFile(file, newFilename)
       .then((data) => {
         if (data.status === 204) {
-          props.setter(data.location);
+          let uploadedS3Url = new URL(data.location);
+          let assetUrl =
+            'https://assets.tinynewsco.org' + uploadedS3Url.pathname;
+          props.setter(assetUrl);
 
           if (props.parsedData) {
             let updatedParsedData = props.parsedData;
-            updatedParsedData[props.imageKey] = data.location;
+            updatedParsedData[props.imageKey] = assetUrl;
             props.updateParsedData(updatedParsedData);
           }
 
-          setImageSrc(data.location + '?' + Math.random());
+          setImageSrc(assetUrl + '?' + Math.random());
           setRandomKey(Math.random());
           props.setNotificationMessage('Successfully uploaded the image');
           props.setNotificationType('success');
