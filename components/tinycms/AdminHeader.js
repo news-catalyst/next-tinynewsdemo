@@ -1,6 +1,5 @@
 import React from 'react';
 import LocaleSwitcher from './LocaleSwitcher';
-import tw from 'twin.macro';
 
 export default function AdminHeader(props) {
   return (
