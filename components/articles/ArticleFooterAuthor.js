@@ -69,7 +69,7 @@ export default function ArticleFooterAuthor({
           </span>
         </div>
         <AuthorTitle>{authorTitle}</AuthorTitle>
-        <p>{authorBio}</p>
+        <p dangerouslySetInnerHTML={{ __html: authorBio }} />
       </AuthorMeta>
     </AuthorWrapper>
   );
