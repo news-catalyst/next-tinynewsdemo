@@ -73,7 +73,7 @@ export default function EditAuthor({
       setFirstNames(author.first_names);
     }
     if (author.last_name) {
-      setLastName(author.last_names);
+      setLastName(author.last_name);
     }
   }, [author]);
 
