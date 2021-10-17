@@ -44,8 +44,8 @@ export default function AddAuthor({
   const [bioImage, setBioImage] = useState('');
   const [displayUpload, setDisplayUpload] = useState(false);
 
-  const handleEditorChange = (e) => {
-    setBio(e.target.getContent());
+  const handleEditorChange = (value) => {
+    setBio(value);
   };
 
   // slugifies the name and stores slug plus name values
