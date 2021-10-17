@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
+import Link from 'next/link';
 import AdminLayout from '../../../components/AdminLayout';
 import AdminNav from '../../../components/nav/AdminNav';
 import tw from 'twin.macro';
@@ -21,6 +22,7 @@ import {
 } from '../../../lib/utils.js';
 
 const UploadContainer = tw.div`container mx-auto min-w-0 flex-auto px-4 sm:px-6 xl:px-8 pt-10`;
+const ArticleAuthorLink = tw.a`font-bold cursor-pointer hover:underline`;
 
 export default function EditAuthor({
   apiUrl,
@@ -180,7 +182,15 @@ export default function EditAuthor({
 
       <FormContainer>
         <FormHeader title="Edit Author" />
-
+        {slug && (
+          <div tw="relative">
+            <p tw="absolute right-0">
+              <Link href={`/authors/${slug}`} key={`${slug}`} passHref>
+                <ArticleAuthorLink>View on site</ArticleAuthorLink>
+              </Link>
+            </p>
+          </div>
+        )}
         <form onSubmit={handleSubmit}>
           <TinyInputField
             name="first_names"
