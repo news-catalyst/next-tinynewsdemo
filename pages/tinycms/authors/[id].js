@@ -54,8 +54,8 @@ export default function EditAuthor({
   const [authorId, setAuthorId] = useState(author.id);
   const [staffYesNo, setStaffYesNo] = useState('no');
 
-  const handleEditorChange = (e) => {
-    setBio(e.target.getContent());
+  const handleEditorChange = (content) => {
+    setBio(content);
   };
 
   useEffect(() => {
