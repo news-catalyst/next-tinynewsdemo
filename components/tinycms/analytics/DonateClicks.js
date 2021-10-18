@@ -11,7 +11,7 @@ import {
   Legend,
 } from 'recharts';
 
-const SubHeaderContainer = tw.div`pt-3 pb-5`;
+const SubHeaderContainer = tw.div`pt-5 pb-5`;
 const SubHeader = tw.h1`inline-block text-xl font-extrabold text-gray-900 tracking-tight`;
 const SubDek = tw.p`max-w-3xl`;
 
@@ -20,6 +20,9 @@ const DonateClicks = (props) => {
 
   const [donateTableRows, setDonateTableRows] = useState([]);
   const [chartData, setChartData] = useState([]);
+
+  const [donateClicksByCategory, setDonateClicksByCategory] = useState({});
+  const [categoryTableRows, setCategoryTableRows] = useState([]);
 
   useEffect(() => {
     const fetchDonationClicks = async () => {
@@ -46,8 +49,17 @@ const DonateClicks = (props) => {
             read_50: 0,
             read_75: 0,
             read_100: 0,
+            category: null,
           };
         }
+
+        if (row.path.match(/\/articles\//)) {
+          let pathParts = row.path.split('/');
+          if (pathParts && pathParts[2]) {
+            totalClicks[row.path]['category'] = pathParts[2];
+          }
+        }
+
         totalClicks[row.path]['clicks'] = parseInt(row.count);
       });
       data.ga_page_views.map((pv) => {
@@ -71,7 +83,29 @@ const DonateClicks = (props) => {
         }
       });
 
+      let clicksByCategory = {};
       Object.keys(totalClicks).map((path) => {
+        if (totalClicks[path]['category']) {
+          let category = totalClicks[path]['category'];
+          console.log(
+            totalClicks[path]['category'],
+            totalClicks[path]['clicks']
+          );
+          if (!clicksByCategory[category]) {
+            clicksByCategory[category] = {
+              clicks: 0,
+              pageviews: 0,
+              conversion: 0,
+            };
+          }
+          clicksByCategory[category]['clicks'] += parseInt(
+            totalClicks[path]['clicks']
+          );
+          clicksByCategory[category]['pageviews'] += parseInt(
+            totalClicks[path]['pageviews']
+          );
+        }
+
         if (totalClicks[path]['pageviews'] > 0) {
           let conversion =
             (totalClicks[path]['clicks'] / totalClicks[path]['pageviews']) *
@@ -79,6 +113,26 @@ const DonateClicks = (props) => {
           totalClicks[path]['conversion'] = conversion.toFixed(2);
         }
       });
+      Object.keys(clicksByCategory).map((category) => {
+        if (clicksByCategory[category]['pageviews'] > 0) {
+          let conversion =
+            (clicksByCategory[category]['clicks'] /
+              clicksByCategory[category]['pageviews']) *
+            100;
+          clicksByCategory[category]['conversion'] = conversion.toFixed(2);
+        }
+      });
+      setDonateClicksByCategory(clicksByCategory);
+      console.log('clicksByCategory:', clicksByCategory);
+
+      var categorySortable = [];
+      Object.keys(clicksByCategory).forEach((key) => {
+        categorySortable.push([key, clicksByCategory[key]['conversion']]);
+      });
+      categorySortable.sort(function (a, b) {
+        return b[1] - a[1];
+      });
+
       var sortable = [];
       Object.keys(totalClicks).forEach((key) => {
         sortable.push([key, totalClicks[key]['conversion']]);
@@ -119,6 +173,38 @@ const DonateClicks = (props) => {
         );
       });
       setDonateTableRows(donateRows);
+
+      let categoryRows = [];
+      categorySortable.map((item, i) => {
+        let key = item[0];
+        let uniqueRowKey = `category-table-row-${i}`;
+        categoryRows.push(
+          <tr key={uniqueRowKey}>
+            <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+              {key}
+            </td>
+            <td
+              key={`donate-cell-count-${i}`}
+              tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium"
+            >
+              {clicksByCategory[key]['clicks']}
+            </td>
+            <td
+              key={`donate-cell-pageviews-${i}`}
+              tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium"
+            >
+              {clicksByCategory[key]['pageviews']}
+            </td>
+            <td
+              key={`donate-cell-conversion-${i}`}
+              tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium"
+            >
+              {clicksByCategory[key]['conversion']}%
+            </td>
+          </tr>
+        );
+      });
+      setCategoryTableRows(categoryRows);
 
       let chartDataItems = [];
       let chartDataPerPost = {
@@ -198,6 +284,30 @@ const DonateClicks = (props) => {
         <tbody>{donateTableRows}</tbody>
       </table>
 
+      <SubHeaderContainer ref={donationsRef}>
+        <SubHeader>Donate Button Conversions by Section</SubHeader>
+        <SubDek>
+          This table shows you which article sections, or categories, are best
+          performing for donations.
+        </SubDek>
+      </SubHeaderContainer>
+
+      <p tw="p-2">
+        {props.startDate.format('dddd, MMMM Do YYYY')} -{' '}
+        {props.endDate.format('dddd, MMMM Do YYYY')}
+      </p>
+
+      <table tw="w-full table-auto">
+        <thead>
+          <tr key="header-row">
+            <th tw="px-4">Category</th>
+            <th tw="px-4">Clicks</th>
+            <th tw="px-4">Views</th>
+            <th tw="px-4">Conversion</th>
+          </tr>
+        </thead>
+        <tbody>{categoryTableRows}</tbody>
+      </table>
       <SubHeaderContainer>
         <SubHeader>Donate Button Clicks by Reading Frequency</SubHeader>
         <SubDek>
