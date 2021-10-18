@@ -327,6 +327,9 @@ export default function SiteInfoSettings(props) {
     setTwitterDescription(props.parsedData['twitterDescription']);
     setLandingPage(props.parsedData['landingPage']);
     setLandingPageDek(props.parsedData['landingPageDek']);
+    if (!staticLandingPageDek) {
+      setStaticLandingPageDek(props.parsedData['landingPageDek']);
+    }
     setCommenting(props.parsedData['commenting']);
     setShortName(props.parsedData['shortName']);
     setSiteUrl(props.parsedData['siteUrl']);
@@ -334,11 +337,15 @@ export default function SiteInfoSettings(props) {
     setTheme(props.parsedData['theme']);
     setAboutHed(props.parsedData['aboutHed']);
     setAboutDek(props.parsedData['aboutDek']);
-    setStaticAboutDek(props.parsedData['aboutDek']);
+    if (!staticAboutDek) {
+      setStaticAboutDek(props.parsedData['aboutDek']);
+    }
     setAboutCTA(props.parsedData['aboutCTA']);
     setSupportHed(props.parsedData['supportHed']);
     setSupportDek(props.parsedData['supportDek']);
-    setStaticSupportDek(props.parsedData['supportDek']);
+    if (!staticSupportDek) {
+      setStaticSupportDek(props.parsedData['supportDek']);
+    }
     setSupportCTA(props.parsedData['supportCTA']);
     setPrimaryColor(props.parsedData['primaryColor']);
     setSecondaryColor(props.parsedData['secondaryColor']);
