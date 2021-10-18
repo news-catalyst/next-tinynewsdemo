@@ -107,7 +107,7 @@ export default function EditSection({
           <TinyInputField
             name="title"
             value={title}
-            onChange={(ev) => updateTitleAndSlug(ev.target.value)}
+            onChange={(ev) => setTitle(ev.target.value)}
             label="Title"
           />
           {slug && (
