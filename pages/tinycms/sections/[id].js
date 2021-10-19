@@ -141,6 +141,7 @@ export async function getServerSideProps(context) {
     url: apiUrl,
     orgSlug: apiToken,
     id: context.params.id,
+    locale_code: context.locale,
   });
   if (errors) {
     throw errors;
