@@ -381,6 +381,36 @@ function hasuraInsertPageView(params) {
   });
 }
 
+const HASURA_INSERT_ARTICLE_SESSION_DATA = `mutation FrontendInsertArticleSession($count: Int!, $date: date!, $path: String!, $category: String!, $document_type: String!) {
+  insert_ga_article_sessions_one(object: {category: $category, count: $count, date: $date, document_type: $document_type, path: $path}, on_conflict: {constraint: ga_article_sessions_date_organization_id_path_key, update_columns: count}) {
+    id
+    created_at
+    category
+    count
+    date
+    document_type
+    organization_id
+    path
+    updated_at
+  }
+}`;
+
+function hasuraInsertArticleSession(params) {
+  return fetchGraphQL({
+    url: params['url'],
+    orgSlug: params['orgSlug'],
+    query: HASURA_INSERT_ARTICLE_SESSION_DATA,
+    name: 'FrontendInsertArticleSession',
+    variables: {
+      count: params['count'],
+      date: params['date'],
+      path: params['path'],
+      category: params['category'],
+      document_type: params['document_type'],
+    },
+  });
+}
+
 const HASURA_INSERT_GEO_SESSION_DATA = `mutation FrontendInsertGeoSession($count: Int!, $date: date!, $region: String!) {
   insert_ga_geo_sessions_one(object: {region: $region, count: $count, date: $date}, on_conflict: {constraint: ga_geo_sessions_organization_id_date_region_key, update_columns: count}) {
     updated_at
@@ -765,6 +795,7 @@ module.exports = {
   hasuraInsertOrganization,
   hasuraInsertOrgLocales,
   hasuraInsertPageView,
+  hasuraInsertArticleSession,
   hasuraInsertSession,
   hasuraInsertSessionDuration,
   hasuraInsertGeoSession,
