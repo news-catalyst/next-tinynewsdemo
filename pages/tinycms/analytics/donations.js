@@ -4,7 +4,6 @@ import moment from 'moment';
 import AdminLayout from '../../../components/AdminLayout';
 import AdminNav from '../../../components/nav/AdminNav';
 import CustomDimensions from '../../../components/tinycms/analytics/CustomDimensions';
-import NewsletterSignupFormData from '../../../components/tinycms/analytics/NewsletterSignupFormData';
 import DateRangePickerWrapper from '../../../components/tinycms/analytics/DateRangePickerWrapper';
 import datePickerStyles from '../../../styles/datepicker.js';
 import DonateClicks from '../../../components/tinycms/analytics/DonateClicks';
@@ -20,7 +19,7 @@ const SettingsContainer = tw.div`min-w-0 w-full flex-auto lg:static lg:max-h-ful
 const HeaderContainer = tw.div`pt-5 pb-10`;
 const Header = tw.h1`inline-block text-3xl font-extrabold text-gray-900 tracking-tight`;
 
-export default function Audience(props) {
+export default function Donations(props) {
   const [startDate, setStartDate] = useState(moment().subtract(30, 'days'));
   const [endDate, setEndDate] = useState(moment());
   const [focusedInput, setFocusedInput] = useState(null);
@@ -44,7 +43,7 @@ export default function Audience(props) {
         <MainContent>
           <SettingsContainer>
             <HeaderContainer>
-              <Header>Analytics: Audience Overview</Header>
+              <Header>Analytics: Donations Overview</Header>
             </HeaderContainer>
             <AnalyticsSidebar title="About this Data">
               <p tw="p-2">
@@ -55,10 +54,6 @@ export default function Audience(props) {
                 Reading frequency is tracked through a custom dimension in
                 Google Analytics, and compared against donation activity via the
                 article path.
-              </p>
-              <p tw="p-2">
-                Sessions by audience segment are all measured using Google
-                Analytics custom dimensions and are currently TBD.
               </p>
             </AnalyticsSidebar>
 
@@ -77,30 +72,12 @@ export default function Audience(props) {
               apiToken={props.apiToken}
             />
 
-            <NewsletterSignupFormData
-              startDate={startDate}
-              endDate={endDate}
-              apiUrl={props.apiUrl}
-              apiToken={props.apiToken}
-              dimension="dimension2"
-            />
-
             <CustomDimensions
               startDate={startDate}
               endDate={endDate}
               dimension="dimension4"
               label="Donor"
               dek="This chart shows you how many sessions have occurred from users who have already donated to your website. Note: we track this via cookies, meaning a user must use the same browser as when they donated for this to track."
-              apiUrl={props.apiUrl}
-              apiToken={props.apiToken}
-            />
-
-            <CustomDimensions
-              startDate={startDate}
-              endDate={endDate}
-              dimension="dimension5"
-              label="Subscriber"
-              dek="This chart shows you have many sessions have occurred from user who have subscribed to your newsletter. Note: we track this via cookies, meaning a user must use the same browser as when they donated for this to track."
               apiUrl={props.apiUrl}
               apiToken={props.apiToken}
             />
