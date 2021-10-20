@@ -6,12 +6,12 @@ const AnalyticsNav = (props) => {
   return (
     <ul>
       <li>
-        <Link href="/tinycms/analytics/audience">
-          <a tw="cursor-pointer">Audience</a>
+        <Link href="/tinycms/analytics/donations">
+          <a tw="cursor-pointer">Donations</a>
         </Link>
         <ul>
           <li>
-            <Link href="/tinycms/analytics/audience#donations">
+            <Link href="/tinycms/analytics/donations#clicks">
               <a tw="w-full flex align-bottom cursor-pointer">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -27,12 +27,12 @@ const AnalyticsNav = (props) => {
                     d="M9 5l7 7-7 7"
                   />
                 </svg>
-                Donations
+                Clicks
               </a>
             </Link>
           </li>
           <li>
-            <Link href="/tinycms/analytics/audience#signups">
+            <Link href="/tinycms/analytics/donations#conversions">
               <a tw="w-full flex align-bottom cursor-pointer">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -48,12 +48,12 @@ const AnalyticsNav = (props) => {
                     d="M9 5l7 7-7 7"
                   />
                 </svg>
-                Signups
+                Conversions
               </a>
             </Link>
           </li>
           <li>
-            <Link href="/tinycms/analytics/audience#subscriptions">
+            <Link href="/tinycms/analytics/donations#frequency">
               <a tw="w-full flex align-bottom cursor-pointer">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -69,7 +69,28 @@ const AnalyticsNav = (props) => {
                     d="M9 5l7 7-7 7"
                   />
                 </svg>
-                Subscriptions
+                Reading Frequency
+              </a>
+            </Link>
+          </li>
+          <li>
+            <Link href="/tinycms/analytics/donations#sessions">
+              <a tw="w-full flex align-bottom cursor-pointer">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  tw="float-left align-bottom h-6 w-3"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+                Sessions
               </a>
             </Link>
           </li>
