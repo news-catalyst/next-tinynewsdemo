@@ -16,7 +16,9 @@ const SubHeader = tw.h1`inline-block text-xl font-extrabold text-gray-900 tracki
 const SubDek = tw.p`max-w-3xl`;
 
 const DonateClicks = (props) => {
-  const donationsRef = useRef();
+  const clicksRef = useRef();
+  const conversionsRef = useRef();
+  const frequencyRef = useRef();
 
   const [donateTableRows, setDonateTableRows] = useState([]);
   const [chartData, setChartData] = useState([]);
@@ -87,10 +89,10 @@ const DonateClicks = (props) => {
       Object.keys(totalClicks).map((path) => {
         if (totalClicks[path]['category']) {
           let category = totalClicks[path]['category'];
-          console.log(
-            totalClicks[path]['category'],
-            totalClicks[path]['clicks']
-          );
+          // console.log(
+          //   totalClicks[path]['category'],
+          //   totalClicks[path]['clicks']
+          // );
           if (!clicksByCategory[category]) {
             clicksByCategory[category] = {
               clicks: 0,
@@ -123,7 +125,7 @@ const DonateClicks = (props) => {
         }
       });
       setDonateClicksByCategory(clicksByCategory);
-      console.log('clicksByCategory:', clicksByCategory);
+      // console.log('clicksByCategory:', clicksByCategory);
 
       var categorySortable = [];
       Object.keys(clicksByCategory).forEach((key) => {
@@ -250,16 +252,26 @@ const DonateClicks = (props) => {
     };
     fetchDonationClicks();
 
-    if (window.location.hash && window.location.hash === '#donations') {
-      if (donationsRef) {
-        donationsRef.current.scrollIntoView({ behavior: 'smooth' });
+    if (window.location.hash && window.location.hash === '#clicks') {
+      if (clicksRef) {
+        clicksRef.current.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+    if (window.location.hash && window.location.hash === '#conversions') {
+      if (conversionsRef) {
+        conversionsRef.current.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+    if (window.location.hash && window.location.hash === '#frequency') {
+      if (frequencyRef) {
+        frequencyRef.current.scrollIntoView({ behavior: 'smooth' });
       }
     }
   }, [props.startDate, props.endDate, props.apiToken, props.apiUrl]);
 
   return (
     <>
-      <SubHeaderContainer ref={donationsRef}>
+      <SubHeaderContainer ref={clicksRef}>
         <SubHeader>Donate Button Clicks with Page Views</SubHeader>
         <SubDek>
           This table shows you which of your pages are getting people to click
@@ -284,7 +296,7 @@ const DonateClicks = (props) => {
         <tbody>{donateTableRows}</tbody>
       </table>
 
-      <SubHeaderContainer ref={donationsRef}>
+      <SubHeaderContainer ref={conversionsRef}>
         <SubHeader>Donate Button Conversions by Section</SubHeader>
         <SubDek>
           This table shows you which article sections, or categories, are best
@@ -308,7 +320,8 @@ const DonateClicks = (props) => {
         </thead>
         <tbody>{categoryTableRows}</tbody>
       </table>
-      <SubHeaderContainer>
+
+      <SubHeaderContainer ref={frequencyRef}>
         <SubHeader>Donate Button Clicks by Reading Frequency</SubHeader>
         <SubDek>
           This table shows you whether frequent readers or new readers or more
