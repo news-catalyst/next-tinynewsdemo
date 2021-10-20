@@ -2,8 +2,8 @@ const { program } = require('commander');
 program.version('0.0.1');
 
 const core = require('@actions/core');
-const shared = require("./shared");
-const {format} = require('date-fns');
+const shared = require('./shared');
+const { format } = require('date-fns');
 
 const { google } = require('googleapis');
 const scopes = [
@@ -14,11 +14,14 @@ const scopes = [
 
 async function getData(params) {
   if (params['requireDotEnv']) {
-    require('dotenv').config({ path: '.env.local' })
+    require('dotenv').config({ path: '.env.local' });
   }
   const googleAnalyticsViewID = process.env.NEXT_PUBLIC_ANALYTICS_VIEW_ID;
   const credsEmail = process.env.GOOGLE_CREDENTIALS_EMAIL;
-  const credsPrivateKey = process.env.GOOGLE_CREDENTIALS_PRIVATE_KEY.replace(/\\n/gm, '\n')
+  const credsPrivateKey = process.env.GOOGLE_CREDENTIALS_PRIVATE_KEY.replace(
+    /\\n/gm,
+    '\n'
+  );
 
   // console.log("authenticating with google:", credsEmail, credsPrivateKey, scopes);
   const auth = new google.auth.JWT(credsEmail, null, credsPrivateKey, scopes);
@@ -33,13 +36,17 @@ async function getData(params) {
         startDate: startDate,
         endDate: endDate,
       },
-    ]
+    ],
   };
 
-  if (params['data'] === 'donate-clicks') {
-    reportRequest['metrics'] = [
-      { expression: 'ga:totalEvents' },
+  if (params['data'] === 'article-sessions') {
+    reportRequest['metrics'] = [{ expression: 'ga:sessions' }];
+    reportRequest['dimensions'] = [
+      { name: 'ga:pagePath' },
+      { name: 'ga:date' },
     ];
+  } else if (params['data'] === 'donate-clicks') {
+    reportRequest['metrics'] = [{ expression: 'ga:totalEvents' }];
     reportRequest['dimensions'] = [
       { name: 'ga:eventAction' },
       { name: 'ga:eventCategory' },
@@ -48,11 +55,8 @@ async function getData(params) {
       { name: 'ga:date' },
     ];
     reportRequest['filtersExpression'] = 'ga:eventCategory==Donate';
-
   } else if (params['data'] === 'donor-reading-frequency') {
-    reportRequest['metrics'] = [
-      { expression: 'ga:totalEvents', },
-    ];
+    reportRequest['metrics'] = [{ expression: 'ga:totalEvents' }];
     reportRequest['dimensions'] = [
       { name: 'ga:eventCategory' },
       { name: 'ga:eventAction' },
@@ -61,30 +65,21 @@ async function getData(params) {
       { name: 'ga:date' },
     ];
     reportRequest['filtersExpression'] = 'ga:eventCategory==Donate';
-
   } else if (params['data'] === 'donors') {
-    reportRequest['metrics'] = [
-      { expression: 'ga:sessions', },
-    ];
+    reportRequest['metrics'] = [{ expression: 'ga:sessions' }];
     reportRequest['dimensions'] = [
-      { name: 'ga:dimension4', },
-      { name: 'ga:date', },
+      { name: 'ga:dimension4' },
+      { name: 'ga:date' },
     ];
-
   } else if (params['data'] === 'geo-sessions') {
-    reportRequest['metrics'] = [
-      { expression: 'ga:sessions', },
-    ];
+    reportRequest['metrics'] = [{ expression: 'ga:sessions' }];
     reportRequest['dimensions'] = [
-      { name: 'ga:country', },
-      { name: 'ga:region', },
-      { name: 'ga:date', },
+      { name: 'ga:country' },
+      { name: 'ga:region' },
+      { name: 'ga:date' },
     ];
-
   } else if (params['data'] === 'newsletter-impressions') {
-    reportRequest['metrics'] = [
-      { expression: 'ga:totalEvents', },
-    ];
+    reportRequest['metrics'] = [{ expression: 'ga:totalEvents' }];
     reportRequest['dimensions'] = [
       { name: 'ga:eventAction' },
       { name: 'ga:eventCategory' },
@@ -93,11 +88,8 @@ async function getData(params) {
       { name: 'ga:date' },
     ];
     reportRequest['filtersExpression'] = 'ga:eventCategory==NTG Newsletter';
-
   } else if (params['data'] === 'newsletters') {
-    reportRequest['metrics'] = [
-      { expression: 'ga:totalEvents', },
-    ];
+    reportRequest['metrics'] = [{ expression: 'ga:totalEvents' }];
     reportRequest['dimensions'] = [
       { name: 'ga:eventCategory' },
       { name: 'ga:eventAction' },
@@ -105,21 +97,16 @@ async function getData(params) {
       { name: 'ga:dimension2' },
       { name: 'ga:date' },
     ];
-    reportRequest['filtersExpression'] = 'ga:eventCategory==NTG Newsletter;ga:eventAction==Newsletter Signup';
-
+    reportRequest['filtersExpression'] =
+      'ga:eventCategory==NTG Newsletter;ga:eventAction==Newsletter Signup';
   } else if (params['data'] === 'page-views') {
-    reportRequest['metrics'] = [
-      { expression: 'ga:pageViews', },
-    ];
+    reportRequest['metrics'] = [{ expression: 'ga:pageViews' }];
     reportRequest['dimensions'] = [
-      { name: 'ga:pagePath', },
-      { name: 'ga:date', },
+      { name: 'ga:pagePath' },
+      { name: 'ga:date' },
     ];
-    
   } else if (params['data'] === 'reading-depth') {
-    reportRequest['metrics'] = [
-      { expression: 'ga:totalEvents', },
-    ];
+    reportRequest['metrics'] = [{ expression: 'ga:totalEvents' }];
     reportRequest['dimensions'] = [
       { name: 'ga:eventAction' },
       { name: 'ga:eventCategory' },
@@ -127,55 +114,36 @@ async function getData(params) {
       { name: 'ga:pagePath' },
       { name: 'ga:date' },
     ];
-    reportRequest['filtersExpression'] = 'ga:eventCategory==NTG Article Milestone';
-
+    reportRequest['filtersExpression'] =
+      'ga:eventCategory==NTG Article Milestone';
   } else if (params['data'] === 'reading-frequency') {
-    reportRequest['metrics'] = [
-      { expression: 'ga:pageviews', },
-    ];
+    reportRequest['metrics'] = [{ expression: 'ga:pageviews' }];
     reportRequest['dimensions'] = [
-      { name: 'ga:dimension2', },
-      { name: 'ga:date', },
+      { name: 'ga:dimension2' },
+      { name: 'ga:date' },
     ];
-
   } else if (params['data'] === 'referral-sessions') {
-    reportRequest['metrics'] = [
-      { expression: 'ga:sessions', },
-    ];
-    reportRequest['dimensions'] = [
-      { name: 'ga:source', },
-      { name: 'ga:date', },
-    ];
-
+    reportRequest['metrics'] = [{ expression: 'ga:sessions' }];
+    reportRequest['dimensions'] = [{ name: 'ga:source' }, { name: 'ga:date' }];
   } else if (params['data'] === 'session-duration') {
-    reportRequest['metrics'] = [
-      { expression: 'ga:avgSessionDuration', },
-    ];
-    reportRequest['dimensions'] = [
-      { name: 'ga:date', },
-    ];
-
+    reportRequest['metrics'] = [{ expression: 'ga:avgSessionDuration' }];
+    reportRequest['dimensions'] = [{ name: 'ga:date' }];
   } else if (params['data'] === 'sessions') {
-    reportRequest['metrics'] = [
-      { expression: 'ga:sessions', },
-    ];
-    reportRequest['dimensions'] = [
-      { name: 'ga:date', },
-    ];
-
+    reportRequest['metrics'] = [{ expression: 'ga:sessions' }];
+    reportRequest['dimensions'] = [{ name: 'ga:date' }];
   } else if (params['data'] === 'subscribers') {
-    reportRequest['metrics'] = [
-      { expression: 'ga:sessions', },
-    ];
+    reportRequest['metrics'] = [{ expression: 'ga:sessions' }];
     reportRequest['dimensions'] = [
-      { name: 'ga:dimension5', },
-      { name: 'ga:date', },
+      { name: 'ga:dimension5' },
+      { name: 'ga:date' },
     ];
+  } else {
+    throw Error('Unknown table:', params['data']);
   }
 
   const response = await analyticsreporting.reports.batchGet({
     requestBody: {
-      reportRequests: [ reportRequest ],
+      reportRequests: [reportRequest],
     },
   });
 
@@ -212,11 +180,11 @@ async function getData(params) {
 
 function storeData(params, rows) {
   if (params['requireDotEnv']) {
-    require('dotenv').config({ path: '.env.local' })
+    require('dotenv').config({ path: '.env.local' });
   }
   const apiUrl = process.env.HASURA_API_URL;
   const apiToken = process.env.ORG_SLUG;
- 
+
   if (params['data'] === 'reading-frequency') {
     let objects = [];
     rows.forEach((row) => {
@@ -227,23 +195,25 @@ function storeData(params, rows) {
       });
     });
 
-    shared.hasuraInsertReadingFrequency({
-      url: apiUrl,
-      orgSlug: apiToken,
-      objects: objects,
-    }).then((result) => {
-      console.log('hasura insert result:', result);
-      if (result.errors) {
-        const error = new Error(
-          'Error inserting data into hasura',
-          result.errors
-        );
-        error.code = '500';
-        throw error;
-      } else {
-        console.log('data import ok');
-      }
-    });
+    shared
+      .hasuraInsertReadingFrequency({
+        url: apiUrl,
+        orgSlug: apiToken,
+        objects: objects,
+      })
+      .then((result) => {
+        console.log('hasura insert result:', result);
+        if (result.errors) {
+          const error = new Error(
+            'Error inserting data into hasura',
+            result.errors
+          );
+          error.code = '500';
+          throw error;
+        } else {
+          console.log('data import ok');
+        }
+      });
     return;
   }
 
@@ -276,255 +246,315 @@ function storeData(params, rows) {
       let read50 = cd['read_50'] || 0;
       let read75 = cd['read_75'] || 0;
       let read100 = cd['read_100'] || 0;
-      shared.hasuraInsertReadingDepth({
-        url: apiUrl,
-        orgSlug: apiToken,
-        date: cd['date'],
-        path: path,
-        read_25: read25,
-        read_50: read50,
-        read_75: read75,
-        read_100: read100,
-      }).then((result) => {
-        console.log('hasura insert result:', result);
-        if (result.errors) {
-          const error = new Error(
-            'Error inserting data into hasura',
-            result.errors
-          );
-          error.code = '500';
-          throw error;
-        } else {
-          console.log('data import ok');
-        }
-      });
+      shared
+        .hasuraInsertReadingDepth({
+          url: apiUrl,
+          orgSlug: apiToken,
+          date: cd['date'],
+          path: path,
+          read_25: read25,
+          read_50: read50,
+          read_75: read75,
+          read_100: read100,
+        })
+        .then((result) => {
+          console.log('hasura insert result:', result);
+          if (result.errors) {
+            const error = new Error(
+              'Error inserting data into hasura',
+              result.errors
+            );
+            error.code = '500';
+            throw error;
+          } else {
+            console.log('data import ok');
+          }
+        });
     });
     return;
   }
 
   rows.forEach((row) => {
     if (params['data'] === 'donate-clicks') {
-      shared.hasuraInsertDonationClick({
-        url: apiUrl,
-        orgSlug: apiToken,
-        count: row.metrics[0].values[0],
-        path: shared.sanitizePath(row.dimensions[3]),
-        date: row.dimensions[4],
-        action: row.dimensions[0],
-      }).then((result) => {
-        console.log('hasura insert result:', result);
-        if (result.errors) {
-          const error = new Error(
-            'Error inserting data into hasura',
-            result.errors
-          );
-          error.code = '500';
-          throw error;
-        } else {
-          console.log('data insert ok');
-        }
-      });
+      shared
+        .hasuraInsertDonationClick({
+          url: apiUrl,
+          orgSlug: apiToken,
+          count: row.metrics[0].values[0],
+          path: shared.sanitizePath(row.dimensions[3]),
+          date: row.dimensions[4],
+          action: row.dimensions[0],
+        })
+        .then((result) => {
+          console.log('hasura insert result:', result);
+          if (result.errors) {
+            const error = new Error(
+              'Error inserting data into hasura',
+              result.errors
+            );
+            error.code = '500';
+            throw error;
+          } else {
+            console.log('data insert ok');
+          }
+        });
     } else if (params['data'] === 'donors') {
-      shared.hasuraInsertCustomDimension({
-        url: apiUrl,
-        orgSlug: apiToken,
-        count: 0,
-        label: 'isDonor',
-        dimension: 'dimension4',
-        date: startDate,
-      }).then((result) => {
-        console.log('hasura insert result:', result);
-        if (result.errors) {
-          const error = new Error(
-            'Error inserting data into hasura',
-            result.errors
-          );
-          error.code = '500';
-          throw error;
-        } else {
-          console.log('data insert ok');
-        }
-      });
+      shared
+        .hasuraInsertCustomDimension({
+          url: apiUrl,
+          orgSlug: apiToken,
+          count: 0,
+          label: 'isDonor',
+          dimension: 'dimension4',
+          date: startDate,
+        })
+        .then((result) => {
+          console.log('hasura insert result:', result);
+          if (result.errors) {
+            const error = new Error(
+              'Error inserting data into hasura',
+              result.errors
+            );
+            error.code = '500';
+            throw error;
+          } else {
+            console.log('data insert ok');
+          }
+        });
     } else if (params['data'] === 'geo-sessions') {
-      shared.hasuraInsertGeoSession({
-        url: apiUrl,
-        orgSlug: apiToken,
-        region: `${row.dimensions[0]}-${row.dimensions[1]}`,
-        count: row.metrics[0].values[0],
-        date: row.dimensions[2],
-      }).then((result) => {
-        console.log('hasura insert result:', result);
-        if (result.errors) {
-          const error = new Error(
-            'Error inserting data into hasura',
-            result.errors
-          );
-          error.code = '500';
-          throw error;
-        } else {
-          console.log('data import ok');
-        }
-      });
+      shared
+        .hasuraInsertGeoSession({
+          url: apiUrl,
+          orgSlug: apiToken,
+          region: `${row.dimensions[0]}-${row.dimensions[1]}`,
+          count: row.metrics[0].values[0],
+          date: row.dimensions[2],
+        })
+        .then((result) => {
+          console.log('hasura insert result:', result);
+          if (result.errors) {
+            const error = new Error(
+              'Error inserting data into hasura',
+              result.errors
+            );
+            error.code = '500';
+            throw error;
+          } else {
+            console.log('data import ok');
+          }
+        });
     } else if (params['data'] === 'newsletter-impressions') {
-      shared.hasuraInsertNewsletterImpression({
-        url: apiUrl,
-        orgSlug: apiToken,
-        impressions: row.metrics[0].values[0],
-        path: shared.sanitizePath(row.dimensions[3]),
-        date: row.dimensions[4],
-        action: row.dimensions[0],
-      }).then((result) => {
-        console.log('hasura insert result:', result);
-        if (result.errors) {
-          const error = new Error(
-            'Error inserting data into hasura',
-            result.errors
-          );
-          error.code = '500';
-          throw error;
-        } else {
-          console.log('data import ok');
-        }
-      });
+      shared
+        .hasuraInsertNewsletterImpression({
+          url: apiUrl,
+          orgSlug: apiToken,
+          impressions: row.metrics[0].values[0],
+          path: shared.sanitizePath(row.dimensions[3]),
+          date: row.dimensions[4],
+          action: row.dimensions[0],
+        })
+        .then((result) => {
+          console.log('hasura insert result:', result);
+          if (result.errors) {
+            const error = new Error(
+              'Error inserting data into hasura',
+              result.errors
+            );
+            error.code = '500';
+            throw error;
+          } else {
+            console.log('data import ok');
+          }
+        });
     } else if (params['data'] === 'newsletters') {
-      shared.hasuraInsertCustomDimension({
-        url: apiUrl,
-        orgSlug: apiToken,
-        count: row.metrics[0].values[0],
-        date: row.dimensions[4],
-        label: row.dimensions[3],
-        dimension: 'dimension2',
-      }).then((result) => {
-        console.log('hasura insert result:', result);
-        if (result.errors) {
-          const error = new Error(
-            'Error inserting data into hasura',
-            result.errors
-          );
-          error.code = '500';
-          throw error;
-        } else {
-          console.log('data import ok');
-        }
-      });
+      shared
+        .hasuraInsertCustomDimension({
+          url: apiUrl,
+          orgSlug: apiToken,
+          count: row.metrics[0].values[0],
+          date: row.dimensions[4],
+          label: row.dimensions[3],
+          dimension: 'dimension2',
+        })
+        .then((result) => {
+          console.log('hasura insert result:', result);
+          if (result.errors) {
+            const error = new Error(
+              'Error inserting data into hasura',
+              result.errors
+            );
+            error.code = '500';
+            throw error;
+          } else {
+            console.log('data import ok');
+          }
+        });
     } else if (params['data'] === 'page-views') {
-      shared.hasuraInsertPageView({
-        url: apiUrl,
-        orgSlug: apiToken,
-        count: row.metrics[0].values[0],
-        date: row.dimensions[1],
-        path: shared.sanitizePath(row.dimensions[0]),
-      }).then((result) => {
-        console.log('hasura insert result:', result);
-        if (result.errors) {
-          const error = new Error(
-            'Error inserting data into hasura',
-            result.errors
-          );
-          error.code = '500';
-          throw error;
-        } else {
-          console.log('data import ok');
-        }
-      });
+      shared
+        .hasuraInsertPageView({
+          url: apiUrl,
+          orgSlug: apiToken,
+          count: row.metrics[0].values[0],
+          date: row.dimensions[1],
+          path: shared.sanitizePath(row.dimensions[0]),
+        })
+        .then((result) => {
+          console.log('hasura insert result:', result);
+          if (result.errors) {
+            const error = new Error(
+              'Error inserting data into hasura',
+              result.errors
+            );
+            error.code = '500';
+            throw error;
+          } else {
+            console.log('data import ok');
+          }
+        });
+    } else if (params['data'] === 'article-sessions') {
+      let path = shared.sanitizePath(row.dimensions[0]);
+      let sessionDate = row.dimensions[1];
+      let sessionCount = row.metrics[0].values[0];
+      let category;
 
+      if (path.match(/^\/articles/)) {
+        let documentType = 'article';
+        // parse the category (slug) out of the article path
+        let pathMatcher = new RegExp(/^\/articles\/([^\/]+)\//, 'mi');
+        const matches = path.match(pathMatcher);
+        if (matches) {
+          category = matches[1];
+          // console.log(sessionDate, category, sessionCount, path);
+          shared
+            .hasuraInsertArticleSession({
+              url: apiUrl,
+              orgSlug: apiToken,
+              count: sessionCount,
+              date: sessionDate,
+              path: path,
+              category: category,
+              document_type: documentType,
+            })
+            .then((result) => {
+              console.log('hasura insert result:', result);
+              if (result.errors) {
+                const error = new Error(
+                  'Error inserting data into hasura',
+                  result.errors
+                );
+                error.code = '500';
+                throw error;
+              } else {
+                console.log('data import ok');
+              }
+            });
+        }
+      }
     } else if (params['data'] === 'referral-sessions') {
-      shared.hasuraInsertReferralSession({
-        url: apiUrl,
-        orgSlug: apiToken,
-        count: row.metrics[0].values[0],
-        date: row.dimensions[1],
-        source: row.dimensions[0],
-      }).then((result) => {
-        if (result.errors) {
-          const error = new Error(
-            'Error inserting data into hasura',
-            result.errors
-          );
-          error.code = '500';
-          throw error;
-        } else {
-          console.log('data import ok');
-        }
-      });
-
+      shared
+        .hasuraInsertReferralSession({
+          url: apiUrl,
+          orgSlug: apiToken,
+          count: row.metrics[0].values[0],
+          date: row.dimensions[1],
+          source: row.dimensions[0],
+        })
+        .then((result) => {
+          if (result.errors) {
+            const error = new Error(
+              'Error inserting data into hasura',
+              result.errors
+            );
+            error.code = '500';
+            throw error;
+          } else {
+            console.log('data import ok');
+          }
+        });
     } else if (params['data'] === 'session-duration') {
-      shared.hasuraInsertSessionDuration({
-        url: apiUrl,
-        orgSlug: apiToken,
-        seconds: row.metrics[0].values[0],
-        date: row.dimensions[0],
-      }).then((result) => {
-        console.log('hasura insert result:', result);
-        if (result.errors) {
-          const error = new Error(
-            'Error inserting data into hasura',
-            result.errors
-          );
-          error.code = '500';
-          throw error;
-        } else {
-          console.log('data import ok');
-        }
-      });
+      shared
+        .hasuraInsertSessionDuration({
+          url: apiUrl,
+          orgSlug: apiToken,
+          seconds: row.metrics[0].values[0],
+          date: row.dimensions[0],
+        })
+        .then((result) => {
+          console.log('hasura insert result:', result);
+          if (result.errors) {
+            const error = new Error(
+              'Error inserting data into hasura',
+              result.errors
+            );
+            error.code = '500';
+            throw error;
+          } else {
+            console.log('data import ok');
+          }
+        });
     } else if (params['data'] === 'sessions') {
-      shared.hasuraInsertSession({
-        url: apiUrl,
-        orgSlug: apiToken,
-        count: row.metrics[0].values[0],
-        date: row.dimensions[0],
-      }).then((result) => {
-        if (result.errors) {
-          const error = new Error(
-            'Error inserting data into hasura',
-            result.errors
-          );
-          error.code = '500';
-          throw error;
-        } else {
-          console.log('data import ok');
-        }
-      });
+      shared
+        .hasuraInsertSession({
+          url: apiUrl,
+          orgSlug: apiToken,
+          count: row.metrics[0].values[0],
+          date: row.dimensions[0],
+        })
+        .then((result) => {
+          if (result.errors) {
+            const error = new Error(
+              'Error inserting data into hasura',
+              result.errors
+            );
+            error.code = '500';
+            throw error;
+          } else {
+            console.log('data import ok');
+          }
+        });
     } else if (params['data'] === 'subscribers') {
-      shared.hasuraInsertCustomDimension({
-        url: apiUrl,
-        orgSlug: apiToken,
-        count: row.metrics[0].values[0],
-        label: 'isSubscriber',
-        dimension: 'dimension5',
-        date: row.dimensions[1],
-      }).then((result) => {
-        if (result.errors) {
-          const error = new Error(
-            'Error inserting data into hasura',
-            result.errors
-          );
-          error.code = '500';
-          throw error;
-        } else {
-          console.log('data import ok');
-        }
-      });
-
+      shared
+        .hasuraInsertCustomDimension({
+          url: apiUrl,
+          orgSlug: apiToken,
+          count: row.metrics[0].values[0],
+          label: 'isSubscriber',
+          dimension: 'dimension5',
+          date: row.dimensions[1],
+        })
+        .then((result) => {
+          if (result.errors) {
+            const error = new Error(
+              'Error inserting data into hasura',
+              result.errors
+            );
+            error.code = '500';
+            throw error;
+          } else {
+            console.log('data import ok');
+          }
+        });
     } else if (params['data'] === 'donor-reading-frequency') {
-      shared.hasuraInsertDonorReadingFrequency({
-        url: apiUrl,
-        orgSlug: apiToken,
-        count: row.metrics[0].values[0],
-        label: row.dimensions[3],
-        date: row.dimensions[4],
-      }).then((result) => {
-        if (result.errors) {
-          const error = new Error(
-            'Error inserting data into hasura',
-            result.errors
-          );
-          error.code = '500';
-          throw error;
-        } else {
-          console.log('data insert ok');
-        }
-      })
+      shared
+        .hasuraInsertDonorReadingFrequency({
+          url: apiUrl,
+          orgSlug: apiToken,
+          count: row.metrics[0].values[0],
+          label: row.dimensions[3],
+          date: row.dimensions[4],
+        })
+        .then((result) => {
+          if (result.errors) {
+            const error = new Error(
+              'Error inserting data into hasura',
+              result.errors
+            );
+            error.code = '500';
+            throw error;
+          } else {
+            console.log('data insert ok');
+          }
+        });
     }
   });
 }
@@ -553,7 +583,7 @@ async function importDataFromGA(params) {
       data: params['data'],
       // viewID: googleAnalyticsViewID,
       // apiUrl: apiUrl,
-      requireDotEnv: params['requireDotEnv']
+      requireDotEnv: params['requireDotEnv'],
     });
   } catch (e) {
     console.log('error getting data from GA:', e);
@@ -572,18 +602,30 @@ async function importDataFromGA(params) {
     console.error('error importing data into hasura:', e);
     throw e;
   }
-};
+}
 
 program
-  .requiredOption('-d, --data <data>', 'required, data to import, ex: donate-clicks')
-  .option('-r, --requireDotEnv', 'optional, require dotenv when running on localhost')
-  .option('-s, --start-date <startDate>', 'optional, start date for analytics report from GA (YYYY-MM-DD)')
-  .option('-e, --end-date <endDate>', 'optional, end date for analytics report from GA (YYYY-MM-DD)')
-  .description("imports data from google analytics")
-  .action( (opts) => {
+  .requiredOption(
+    '-d, --data <data>',
+    'required, data to import, ex: donate-clicks'
+  )
+  .option(
+    '-r, --requireDotEnv',
+    'optional, require dotenv when running on localhost'
+  )
+  .option(
+    '-s, --start-date <startDate>',
+    'optional, start date for analytics report from GA (YYYY-MM-DD)'
+  )
+  .option(
+    '-e, --end-date <endDate>',
+    'optional, end date for analytics report from GA (YYYY-MM-DD)'
+  )
+  .description('imports data from google analytics')
+  .action((opts) => {
     try {
       importDataFromGA(opts);
-    } catch(e) {
+    } catch (e) {
       core.setFailed(`Action failed with error ${e}`);
     }
   });
