@@ -1,6 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import tw from 'twin.macro';
-import { hasuraGetDonationClicks } from '../../../lib/analytics';
+import {
+  hasuraGetDonationClicks,
+  hasuraGetArticleSessions,
+} from '../../../lib/analytics';
 import {
   BarChart,
   Bar,
@@ -23,10 +26,35 @@ const DonateClicks = (props) => {
   const [donateTableRows, setDonateTableRows] = useState([]);
   const [chartData, setChartData] = useState([]);
 
+  const [sessionsByCategory, setSessionsByCategory] = useState({});
   const [donateClicksByCategory, setDonateClicksByCategory] = useState({});
   const [categoryTableRows, setCategoryTableRows] = useState([]);
 
   useEffect(() => {
+    const fetchArticleSessions = async () => {
+      let params = {
+        url: props.apiUrl,
+        orgSlug: props.apiToken,
+        startDate: props.startDate.format('YYYY-MM-DD'),
+        endDate: props.endDate.format('YYYY-MM-DD'),
+      };
+      const { errors, data } = await hasuraGetArticleSessions(params);
+
+      if (errors && !data) {
+        console.error(errors);
+      }
+
+      let articleSessions = {};
+      data.ga_article_sessions.map((item, i) => {
+        if (!articleSessions[item.category]) {
+          articleSessions[item.category] = 0;
+        }
+        articleSessions[item.category] += parseInt(item.count);
+      });
+      setSessionsByCategory(articleSessions);
+    };
+    fetchArticleSessions();
+
     const fetchDonationClicks = async () => {
       let params = {
         url: props.apiUrl,
@@ -98,6 +126,8 @@ const DonateClicks = (props) => {
               clicks: 0,
               pageviews: 0,
               conversion: 0,
+              sessionConversion: 0,
+              sessions: 0,
             };
           }
           clicksByCategory[category]['clicks'] += parseInt(
@@ -106,6 +136,17 @@ const DonateClicks = (props) => {
           clicksByCategory[category]['pageviews'] += parseInt(
             totalClicks[path]['pageviews']
           );
+
+          if (sessionsByCategory[category]) {
+            // console.log(
+            //   category,
+            //   'sessionsByCategory:',
+            //   sessionsByCategory[category]
+            // );
+            clicksByCategory[category]['sessions'] = parseInt(
+              sessionsByCategory[category]
+            );
+          }
         }
 
         if (totalClicks[path]['pageviews'] > 0) {
@@ -122,6 +163,15 @@ const DonateClicks = (props) => {
               clicksByCategory[category]['pageviews']) *
             100;
           clicksByCategory[category]['conversion'] = conversion.toFixed(2);
+        }
+        if (clicksByCategory[category]['sessions'] > 0) {
+          let sessionConversion =
+            (clicksByCategory[category]['clicks'] /
+              clicksByCategory[category]['sessions']) *
+            100;
+          clicksByCategory[category][
+            'sessionConversion'
+          ] = sessionConversion.toFixed(2);
         }
       });
       setDonateClicksByCategory(clicksByCategory);
@@ -192,6 +242,12 @@ const DonateClicks = (props) => {
               {clicksByCategory[key]['clicks']}
             </td>
             <td
+              key={`donate-cell-sessions-${i}`}
+              tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium"
+            >
+              {clicksByCategory[key]['sessions']}
+            </td>
+            <td
               key={`donate-cell-pageviews-${i}`}
               tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium"
             >
@@ -202,6 +258,14 @@ const DonateClicks = (props) => {
               tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium"
             >
               {clicksByCategory[key]['conversion']}%
+            </td>
+            <td
+              key={`donate-cell-session-conversion-${i}`}
+              tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium"
+            >
+              {clicksByCategory[key]['sessionConversion'] > 0 &&
+                `${clicksByCategory[key]['sessionConversion']}%`}
+              {clicksByCategory[key]['sessionConversion'] <= 0 && `N/A`}
             </td>
           </tr>
         );
@@ -314,8 +378,10 @@ const DonateClicks = (props) => {
           <tr key="header-row">
             <th tw="px-4">Category</th>
             <th tw="px-4">Clicks</th>
+            <th tw="px-4">Total Sessions</th>
             <th tw="px-4">Views</th>
-            <th tw="px-4">Conversion</th>
+            <th tw="px-4">Conversion by View</th>
+            <th tw="px-4">Conversion by Session</th>
           </tr>
         </thead>
         <tbody>{categoryTableRows}</tbody>

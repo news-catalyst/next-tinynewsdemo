@@ -3,7 +3,6 @@ import tw from 'twin.macro';
 import {
   BarChart,
   Bar,
-  Cell,
   XAxis,
   YAxis,
   CartesianGrid,
