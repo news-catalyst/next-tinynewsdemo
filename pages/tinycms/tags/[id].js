@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import tw from 'twin.macro';
+import Link from 'next/link';
 import {
   FormContainer,
   FormHeader,
@@ -13,6 +15,8 @@ import Notification from '../../../components/tinycms/Notification';
 import { hasuraGetTagById, hasuraUpdateTag } from '../../../lib/section.js';
 import { hasuraLocaliseText } from '../../../lib/utils.js';
 import { slugify } from '../../../lib/utils';
+
+const ViewOnSiteLink = tw.a`font-bold cursor-pointer hover:underline`;
 
 export default function EditTag({
   apiUrl,
@@ -92,7 +96,15 @@ export default function EditTag({
 
       <FormContainer>
         <FormHeader title="Edit Tag" />
-
+        {slug && (
+          <div tw="relative">
+            <p tw="absolute right-0">
+              <Link href={`/tags/${slug}`} key={`${slug}`} passHref>
+                <ViewOnSiteLink>View on site</ViewOnSiteLink>
+              </Link>
+            </p>
+          </div>
+        )}
         <form onSubmit={handleSubmit}>
           <TinyInputField
             name="title"
