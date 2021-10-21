@@ -16,11 +16,13 @@ import {
   hasuraGetArticleSessions,
 } from '../../../lib/analytics';
 
-const SubHeaderContainer = tw.div`pt-3 pb-5`;
+const SubHeaderContainer = tw.div`pt-5 pb-5`;
 const SubHeader = tw.h1`inline-block text-xl font-extrabold text-gray-900 tracking-tight`;
 
 const NewsletterSignupFormData = (props) => {
   const signupRef = useRef();
+  const sectionRef = useRef();
+  const frequencyRef = useRef();
 
   const [chartData, setChartData] = useState([]);
   const [sessionsByCategory, setSessionsByCategory] = useState({});
@@ -199,6 +201,16 @@ const NewsletterSignupFormData = (props) => {
         signupRef.current.scrollIntoView({ behavior: 'smooth' });
       }
     }
+    if (window.location.hash && window.location.hash === '#section') {
+      if (sectionRef) {
+        sectionRef.current.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+    if (window.location.hash && window.location.hash === '#frequency') {
+      if (frequencyRef) {
+        frequencyRef.current.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
   }, [
     props.startDate,
     props.endDate,
@@ -246,7 +258,7 @@ const NewsletterSignupFormData = (props) => {
         </tbody>
       </table>
 
-      <SubHeaderContainer ref={signupRef}>
+      <SubHeaderContainer ref={sectionRef}>
         <SubHeader>Signups by Section</SubHeader>
       </SubHeaderContainer>
       <p tw="p-2">
@@ -288,11 +300,12 @@ const NewsletterSignupFormData = (props) => {
                 %
               </td>
               <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-                {(
-                  (categoryImpressions[impressionData[0]]['signups'] /
-                    categoryImpressions[impressionData[0]]['sessions']) *
-                  100
-                ).toFixed(2)}
+                {categoryImpressions[impressionData[0]]['sessions'] > 0 &&
+                  (
+                    (categoryImpressions[impressionData[0]]['signups'] /
+                      categoryImpressions[impressionData[0]]['sessions']) *
+                    100
+                  ).toFixed(2)}
                 %
               </td>
             </tr>
@@ -300,7 +313,7 @@ const NewsletterSignupFormData = (props) => {
         </tbody>
       </table>
 
-      <SubHeaderContainer>
+      <SubHeaderContainer ref={frequencyRef}>
         <SubHeader>Signups by Reading Frequency</SubHeader>
       </SubHeaderContainer>
 
