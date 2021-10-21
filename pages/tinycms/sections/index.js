@@ -42,11 +42,13 @@ export default function Sections({ sections, currentLocale, locales }) {
           <Link
             key={`${section.id}-link`}
             href={`/tinycms/sections/${section.id}`}
+            passHref
           >
             <a tw="underline">{title}</a>
           </Link>
         </TableCell>
         <TableCell>{section.slug}</TableCell>
+        <TableCell>{section.articles_aggregate.aggregate.count}</TableCell>
         <TableCell>
           {section.published ? <CheckIcon tw="w-4" /> : <XIcon tw="w-4" />}
         </TableCell>
@@ -83,6 +85,7 @@ export default function Sections({ sections, currentLocale, locales }) {
             <TableRow>
               <TableHeader>Name</TableHeader>
               <TableHeader>Slug</TableHeader>
+              <TableHeader>Article Count</TableHeader>
               <TableHeader>Show in nav?</TableHeader>
             </TableRow>
           </TableHead>
