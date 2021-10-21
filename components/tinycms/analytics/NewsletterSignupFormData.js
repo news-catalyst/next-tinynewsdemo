@@ -300,13 +300,14 @@ const NewsletterSignupFormData = (props) => {
                 %
               </td>
               <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                {categoryImpressions[impressionData[0]]['sessions'] <= 0 &&
+                  'N/A'}
                 {categoryImpressions[impressionData[0]]['sessions'] > 0 &&
-                  (
+                  `${(
                     (categoryImpressions[impressionData[0]]['signups'] /
                       categoryImpressions[impressionData[0]]['sessions']) *
                     100
-                  ).toFixed(2)}
-                %
+                  ).toFixed(2)}%`}
               </td>
             </tr>
           ))}
