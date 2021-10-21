@@ -6,6 +6,7 @@ import HomepagePromoBar from '../homepage/HomepagePromoBar';
 import DonationOptionsBlock from '../plugins/DonationOptionsBlock';
 import ControlledInput from './ControlledInput';
 import Upload from './Upload';
+import TinyEditor from './TinyEditor';
 
 const SettingsHeader = tw.h1`text-4xl font-bold leading-normal mt-0 mb-2 text-black`;
 const SiteInfoFieldsContainer = tw.div`grid grid-cols-3 gap-4`;
@@ -17,6 +18,7 @@ const HomepagePromoContainer = tw.div`grid grid-cols-2 gap-8`;
 const DonationOptionsEditor = tw.div`grid grid-cols-3 gap-4`;
 const DonationOptionsContainer = tw.div``;
 const DesignHeader = tw.h1`text-2xl font-bold leading-normal mt-0 mb-2 text-black`;
+const Select = tw.select`mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`;
 const SingleColumnContainer = tw.div`grid grid-cols-1 gap-4`;
 const StyleOneHead = styled.span`
   font-family: 'Libre Franklin', sans-serif;
@@ -133,6 +135,31 @@ const Input = styled.input`
 `;
 
 export default function SiteInfoSettings(props) {
+  const [timeZone, setTimeZone] = useState(props.parsedData['timeZone']);
+  const [timeZoneOptions, setTimeZoneOptions] = useState([
+    'US/Alaska',
+    'US/Aleutian',
+    'US/Arizona',
+    'US/Central',
+    'US/East-Indiana',
+    'US/Eastern',
+    'US/Hawaii',
+    'US/Indiana-Starke',
+    'US/Michigan',
+    'US/Mountain',
+    'US/Pacific',
+    'US/Samoa',
+  ]);
+
+  const [siteTwitter, setSiteTwitter] = useState(
+    props.parsedData['siteTwitter']
+  );
+  const [facebookAdmins, setFacebookAdmins] = useState(
+    props.parsedData['facebookAdmins']
+  );
+  const [facebookAppId, setFacebookAppId] = useState(
+    props.parsedData['facebookAppId']
+  );
   const [searchTitle, setSearchTitle] = useState(
     props.parsedData['searchTitle']
   );
@@ -167,6 +194,9 @@ export default function SiteInfoSettings(props) {
   const [landingPageDek, setLandingPageDek] = useState(
     props.parsedData['landingPageDek']
   );
+  const [staticLandingPageDek, setStaticLandingPageDek] = useState(
+    props.parsedData['landingPageDek']
+  );
 
   const [commenting, setCommenting] = useState(props.parsedData['commenting']);
 
@@ -181,15 +211,26 @@ export default function SiteInfoSettings(props) {
   );
   const [theme, setTheme] = useState(props.parsedData['theme']);
   const [aboutHed, setAboutHed] = useState(props.parsedData['aboutHed']);
+
   const [aboutDek, setAboutDek] = useState(props.parsedData['aboutDek']);
+  const [staticAboutDek, setStaticAboutDek] = useState(
+    props.parsedData['aboutDek']
+  );
   const [aboutCTA, setAboutCTA] = useState(props.parsedData['aboutCTA']);
   const [supportHed, setSupportHed] = useState(props.parsedData['supportHed']);
   const [supportDek, setSupportDek] = useState(props.parsedData['supportDek']);
+  const [staticSupportDek, setStaticSupportDek] = useState(
+    props.parsedData['supportDek']
+  );
   const [supportCTA, setSupportCTA] = useState(props.parsedData['supportCTA']);
+
   const [membershipHed, setMembershipHed] = useState(
     props.parsedData['membershipHed']
   );
   const [membershipDek, setMembershipDek] = useState(
+    props.parsedData['membershipDek']
+  );
+  const [staticMembershipDek, setStaticMembershipDek] = useState(
     props.parsedData['membershipDek']
   );
   const [membershipCTA, setMembershipCTA] = useState(
@@ -201,17 +242,83 @@ export default function SiteInfoSettings(props) {
   const [newsletterDek, setNewsletterDek] = useState(
     props.parsedData['newsletterDek']
   );
+
+  const [newsletterRedirect, setNewsletterRedirect] = useState(
+    props.parsedData['newsletterRedirect']
+  );
+
+  // necessary to avoid weird issues with the rich text editor - the static version
+  // of this content is used to set the initial display value only
+  const [staticNewsletterDek, setStaticNewsletterDek] = useState(
+    props.parsedData['newsletterDek']
+  );
+
   const [logo, setLogo] = useState(props.parsedData['logo']);
+  const [favicon, setFavicon] = useState(props.parsedData['favicon']);
   const [defaultSocialImage, setDefaultSocialImage] = useState(
     props.parsedData['defaultSocialImage']
   );
+  let parsedDonationOptions;
+  try {
+    parsedDonationOptions = JSON.parse(props.parsedData['donationOptions']);
+  } catch (e) {
+    console.log('Failed to parse donation options json:', e);
+  }
   const [donationOptions, setDonationOptions] = useState(
-    props.parsedData['donationOptions']
-      ? JSON.parse(props.parsedData['donationOptions'])
-      : null
+    props.parsedData['donationOptions'] ? parsedDonationOptions : null
   );
 
+  const handleAboutDekEditorChange = (value) => {
+    let content = value;
+    setAboutDek(content);
+
+    props.updateParsedData((prevState) => ({
+      ...prevState,
+      ['aboutDek']: content,
+    }));
+  };
+
+  const handleSupportDekChange = (value) => {
+    setSupportDek(value);
+
+    props.updateParsedData((prevState) => ({
+      ...prevState,
+      ['supportDek']: value,
+    }));
+  };
+
+  const handleMembershipDekChange = (value) => {
+    setMembershipDek(value);
+
+    props.updateParsedData((prevState) => ({
+      ...prevState,
+      ['membershipDek']: value,
+    }));
+  };
+
+  const handleNewsletterDekChange = (value) => {
+    setNewsletterDek(value);
+
+    props.updateParsedData((prevState) => ({
+      ...prevState,
+      ['newsletterDek']: value,
+    }));
+  };
+
+  const handleDekChange = (value) => {
+    setLandingPageDek(value);
+
+    props.updateParsedData((prevState) => ({
+      ...prevState,
+      ['landingPageDek']: value,
+    }));
+  };
+
   useEffect(() => {
+    setTimeZone(props.parsedData['timeZone']);
+    setSiteTwitter(props.parsedData['siteTwitter']);
+    setFacebookAdmins(props.parsedData['facebookAdmins']);
+    setFacebookAppId(props.parsedData['facebookAppId']);
     setSearchTitle(props.parsedData['searchTitle']);
     setSearchDescription(props.parsedData['searchDescription']);
     setFacebookTitle(props.parsedData['facebookTitle']);
@@ -220,6 +327,9 @@ export default function SiteInfoSettings(props) {
     setTwitterDescription(props.parsedData['twitterDescription']);
     setLandingPage(props.parsedData['landingPage']);
     setLandingPageDek(props.parsedData['landingPageDek']);
+    if (!staticLandingPageDek) {
+      setStaticLandingPageDek(props.parsedData['landingPageDek']);
+    }
     setCommenting(props.parsedData['commenting']);
     setShortName(props.parsedData['shortName']);
     setSiteUrl(props.parsedData['siteUrl']);
@@ -227,25 +337,40 @@ export default function SiteInfoSettings(props) {
     setTheme(props.parsedData['theme']);
     setAboutHed(props.parsedData['aboutHed']);
     setAboutDek(props.parsedData['aboutDek']);
+    if (!staticAboutDek) {
+      setStaticAboutDek(props.parsedData['aboutDek']);
+    }
     setAboutCTA(props.parsedData['aboutCTA']);
     setSupportHed(props.parsedData['supportHed']);
     setSupportDek(props.parsedData['supportDek']);
+    if (!staticSupportDek) {
+      setStaticSupportDek(props.parsedData['supportDek']);
+    }
     setSupportCTA(props.parsedData['supportCTA']);
     setPrimaryColor(props.parsedData['primaryColor']);
     setSecondaryColor(props.parsedData['secondaryColor']);
     setMembershipDek(props.parsedData['membershipDek']);
+
     setMembershipHed(props.parsedData['membershipHed']);
-    setNewsletterDek(props.parsedData['newsletterDek']);
+    if (props.parsedData['newsletterDek']) {
+      setNewsletterDek(props.parsedData['newsletterDek']);
+    }
     setNewsletterHed(props.parsedData['newsletterHed']);
+    setNewsletterRedirect(props.parsedData['newsletterRedirect']);
     setFounderTwitter(props.parsedData['founderTwitter']);
     setFounderInstagram(props.parsedData['founderInstagram']);
     setFounderFacebook(props.parsedData['founderFacebook']);
+    let parsedDonationOptions;
+    try {
+      parsedDonationOptions = JSON.parse(props.parsedData['donationOptions']);
+    } catch (e) {
+      console.log('Failed to parse donation options json:', e);
+    }
     setDonationOptions(
-      props.parsedData['donationOptions']
-        ? JSON.parse(props.parsedData['donationOptions'])
-        : null
+      props.parsedData['donationOptions'] ? parsedDonationOptions : null
     );
     setLogo(props.parsedData['logo']);
+    setFavicon(props.parsedData['favicon']);
     setDefaultSocialImage(props.parsedData['defaultSocialImage']);
   }, [props.parsedData]);
 
@@ -274,6 +399,20 @@ export default function SiteInfoSettings(props) {
             onChange={props.handleChange}
           />
         </label>
+        <label htmlFor="timeZone">
+          <span tw="mt-1 font-bold">Time Zone</span>
+          <Select
+            value={timeZone}
+            name="timeZone"
+            onChange={props.handleChange}
+          >
+            {timeZoneOptions.map((option) => (
+              <option key={option} value={option}>
+                {option}
+              </option>
+            ))}
+          </Select>
+        </label>
         <label htmlFor="logo">
           <span tw="mt-1 font-bold">Logo</span>
           <Upload
@@ -288,6 +427,22 @@ export default function SiteInfoSettings(props) {
             setNotificationType={props.setNotificationType}
             setShowNotification={props.setShowNotification}
             folderName="logos"
+          />
+        </label>
+        <label htmlFor="logo">
+          <span tw="mt-1 font-bold">Favicon</span>
+          <Upload
+            awsConfig={props.awsConfig}
+            slug={shortName}
+            image={favicon}
+            imageKey="favicon"
+            updateParsedData={props.updateParsedData}
+            parsedData={props.parsedData}
+            setter={setFavicon}
+            setNotificationMessage={props.setNotificationMessage}
+            setNotificationType={props.setNotificationType}
+            setShowNotification={props.setShowNotification}
+            folderName="favicon"
           />
         </label>
       </SiteInfoFieldsContainer>
@@ -324,15 +479,11 @@ export default function SiteInfoSettings(props) {
         <>
           <SettingsHeader id="landingPageDek">Landing Page Dek</SettingsHeader>
           <SiteInfoFieldsContainer>
-            <div>
-              <textarea
-                rows="4"
-                cols="50"
-                name="landingPageDek"
-                onChange={props.handleChange}
-                value={landingPageDek}
-              />
-            </div>
+            <TinyEditor
+              tinyApiKey={props.tinyApiKey}
+              setValue={handleDekChange}
+              value={staticLandingPageDek}
+            />
           </SiteInfoFieldsContainer>
         </>
       )}
@@ -548,11 +699,10 @@ export default function SiteInfoSettings(props) {
           </label>
           <label htmlFor="description">
             <span tw="mt-1 font-bold">About promo description</span>
-            <ControlledInput
-              type="text"
-              name="aboutDek"
-              value={aboutDek}
-              onChange={props.handleChange}
+            <TinyEditor
+              tinyApiKey={props.tinyApiKey}
+              setValue={handleAboutDekEditorChange}
+              value={staticAboutDek}
             />
           </label>
           <label htmlFor="cta">
@@ -577,11 +727,10 @@ export default function SiteInfoSettings(props) {
           </label>
           <label htmlFor="description">
             <span tw="mt-1 font-bold">Support promo description</span>
-            <ControlledInput
-              type="text"
-              name="supportDek"
-              value={supportDek}
-              onChange={props.handleChange}
+            <TinyEditor
+              tinyApiKey={props.tinyApiKey}
+              setValue={handleSupportDekChange}
+              value={staticSupportDek}
             />
           </label>
           <label htmlFor="description">
@@ -604,7 +753,7 @@ export default function SiteInfoSettings(props) {
           Newsletter promotion block
         </SettingsHeader>
 
-        <div tw="col-span-2">
+        <div tw="col-span-1">
           <label htmlFor="heading">
             <span tw="w-full mt-1 font-bold">Heading</span>
             <ControlledInput
@@ -616,10 +765,18 @@ export default function SiteInfoSettings(props) {
           </label>
           <label htmlFor="description">
             <span tw="mt-1 font-bold">Description</span>
+            <TinyEditor
+              tinyApiKey={props.tinyApiKey}
+              setValue={handleNewsletterDekChange}
+              value={staticNewsletterDek}
+            />
+          </label>
+          <label htmlFor="newsletterRedirect">
+            <span tw="w-full mt-1 font-bold">Redirect URL</span>
             <ControlledInput
               type="text"
-              name="newsletterDek"
-              value={newsletterDek}
+              name="newsletterRedirect"
+              value={newsletterRedirect}
               onChange={props.handleChange}
             />
           </label>
@@ -636,7 +793,7 @@ export default function SiteInfoSettings(props) {
           Membership promotion block
         </SettingsHeader>
 
-        <div tw="col-span-2">
+        <div tw="col-span-1">
           <label htmlFor="heading">
             <span tw="w-full mt-1 font-bold">Heading</span>
             <ControlledInput
@@ -648,11 +805,10 @@ export default function SiteInfoSettings(props) {
           </label>
           <label htmlFor="description">
             <span tw="mt-1 font-bold">Description</span>
-            <ControlledInput
-              type="text"
-              name="membershipDek"
-              value={membershipDek}
-              onChange={props.handleChange}
+            <TinyEditor
+              tinyApiKey={props.tinyApiKey}
+              setValue={handleMembershipDekChange}
+              value={staticMembershipDek}
             />
           </label>
           <label htmlFor="CTA">
@@ -790,6 +946,34 @@ export default function SiteInfoSettings(props) {
           </label>
         </div>
         <div tw="mt-2">
+          <label htmlFor="facebookAdmins">
+            <span tw="mt-1 font-bold">
+              Facebook admin IDs (comma separated list of one or more user ids)
+            </span>
+            <ControlledInput
+              tw="w-full"
+              type="text"
+              name="facebookAdmins"
+              value={facebookAdmins}
+              onChange={props.handleChange}
+            />
+          </label>
+        </div>
+        <div tw="mt-2">
+          <label htmlFor="facebookAppId">
+            <span tw="mt-1 font-bold">
+              Facebook App ID (single application ID)
+            </span>
+            <ControlledInput
+              tw="w-full"
+              type="text"
+              name="facebookAppId"
+              value={facebookAppId}
+              onChange={props.handleChange}
+            />
+          </label>
+        </div>
+        <div tw="mt-2">
           <label htmlFor="facebookTitle">
             <span tw="mt-1 font-bold">Facebook title</span>
             <ControlledInput
@@ -809,6 +993,18 @@ export default function SiteInfoSettings(props) {
               type="text"
               name="facebookDescription"
               value={facebookDescription}
+              onChange={props.handleChange}
+            />
+          </label>
+        </div>
+        <div tw="mt-2">
+          <label htmlFor="siteTwitter">
+            <span tw="mt-1 font-bold">Site Twitter handle</span>
+            <ControlledInput
+              tw="w-full"
+              type="text"
+              name="siteTwitter"
+              value={siteTwitter}
               onChange={props.handleChange}
             />
           </label>

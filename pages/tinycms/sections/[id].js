@@ -107,7 +107,7 @@ export default function EditSection({
           <TinyInputField
             name="title"
             value={title}
-            onChange={(ev) => updateTitleAndSlug(ev.target.value)}
+            onChange={(ev) => setTitle(ev.target.value)}
             label="Title"
           />
           {slug && (
@@ -141,6 +141,7 @@ export async function getServerSideProps(context) {
     url: apiUrl,
     orgSlug: apiToken,
     id: context.params.id,
+    locale_code: context.locale,
   });
   if (errors) {
     throw errors;

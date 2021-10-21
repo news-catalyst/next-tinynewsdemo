@@ -5,7 +5,7 @@ const UnorderedList = tw.ul`mb-4 list-outside list-disc`;
 const OrderedList = tw.ol`mb-4 list-outside list-decimal`;
 const ListItem = tw.li`mb-1 pl-2 ml-2 text-lg`;
 
-export default function ListNode({ node }) {
+export default function ListNode({ node, metadata }) {
   let items = [];
   node.items.map(function (item) {
     if (item.nestingLevel === 1) {
@@ -13,7 +13,7 @@ export default function ListNode({ node }) {
         <ListItem key={item.index} style={{ listStyle: 'none' }}>
           <UnorderedList>
             <ListItem>
-              <TextNode node={item} />
+              <TextNode metadata={metadata} node={item} />
             </ListItem>
           </UnorderedList>
         </ListItem>
@@ -25,7 +25,7 @@ export default function ListNode({ node }) {
             <ListItem style={{ listStyle: 'none' }}>
               <UnorderedList>
                 <ListItem>
-                  <TextNode node={item} />
+                  <TextNode metadata={metadata} node={item} />
                 </ListItem>
               </UnorderedList>
             </ListItem>
@@ -41,7 +41,7 @@ export default function ListNode({ node }) {
                 <ListItem style={{ listStyle: 'none' }}>
                   <UnorderedList>
                     <ListItem>
-                      <TextNode node={item} />
+                      <TextNode metadata={metadata} node={item} />
                     </ListItem>
                   </UnorderedList>
                 </ListItem>
@@ -53,7 +53,7 @@ export default function ListNode({ node }) {
     } else {
       items.push(
         <ListItem key={item.index}>
-          <TextNode node={item} />
+          <TextNode metadata={metadata} node={item} />
         </ListItem>
       );
     }

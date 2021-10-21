@@ -18,7 +18,6 @@ describe('tinycms authors', () => {
     cy.get('input[name="title"').type('Staff Editor');
     cy.get('input[name="twitter"').type('@twitterHandle');
     // cy.get('input[name="slug"').type("new-author-name")
-    cy.get('textarea[name="bio"]').type('New author bio copy tk.');
     cy.get('[type="radio"]').first().check(); // Check first radio element - staff
     cy.get('form').submit({
       timeout: 10000,
@@ -29,6 +28,8 @@ describe('tinycms authors', () => {
   it('updates an existing author', () => {
     cy.visit('/tinycms/authors');
     cy.get('table>tbody>tr:first>td>a').click();
+    cy.get('input[name="first_names"').clear().type('New');
+    cy.get('input[name="last_name"').clear().type('AuthorName');
 
     cy.get('input[name="title"').clear().type('Staff Writer');
     cy.get('form').submit();

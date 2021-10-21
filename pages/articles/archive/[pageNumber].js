@@ -1,6 +1,7 @@
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
-import tw from 'twin.macro';
+import tw, { styled } from 'twin.macro';
+import Typography from '../../../components/common/Typography';
 import Layout from '../../../components/Layout.js';
 import {
   hasuraArticlesArchivePage,
@@ -14,7 +15,10 @@ import ArticleStream from '../../../components/homepage/ArticleStream';
 import paginationStyles from '../../../styles/pagination.js';
 
 const PaginationSection = tw.section`flex mb-8`;
-const PaginationContainer = tw.div`md:grid md:grid-cols-packageLayoutTablet lg:grid-cols-packageLayoutDesktop flex flex-row flex-wrap grid-rows-1 w-full px-5 mx-auto max-w-7xl items-center justify-between`;
+const PaginationContainer = styled.div(({ meta }) => ({
+  ...tw`md:grid md:grid-cols-packageLayoutTablet lg:grid-cols-packageLayoutDesktop flex flex-row flex-wrap grid-rows-1 w-full px-5 mx-auto max-w-7xl items-center justify-between`,
+  fontFamily: Typography[meta.theme || 'styleone'].ArticleMetaTop,
+}));
 
 export default function ArticlesArchivePage({
   sections,
@@ -68,14 +72,14 @@ export default function ArticlesArchivePage({
       <ArticleStream
         sections={sections}
         articles={currentArticles}
-        title={`Articles Archive`}
+        title={`All Stories`}
         showCategory={true}
         isAmp={isAmp}
         metadata={siteMetadata}
         ads={expandedAds}
       />
       <PaginationSection>
-        <PaginationContainer>
+        <PaginationContainer meta={siteMetadata}>
           <ul className="pagination">
             {paginationLinks.map((pageLink) => (
               <li key={`page-link-${pageLink.name}`} className={pageLink.class}>

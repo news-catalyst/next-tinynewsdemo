@@ -27,14 +27,21 @@ const NewsletterSubscribe = ({ articleTitle, metadata }) => {
   const [status, setStatus] = useState(null);
   const [message, setMessage] = useState(null);
 
+  const [
+    trackedNewsletterImpression,
+    setTrackedNewsletterImpression,
+  ] = useState(false);
+  const [redirectURL, setRedirectURL] = useState(metadata.newsletterRedirect);
+
   useEffect(() => {
-    if (inView) {
+    if (inView && !trackedNewsletterImpression) {
       trackEvent({
         action: 'newsletter modal impression 1',
         category: 'NTG newsletter',
         label: articleTitle,
         non_interaction: true,
       });
+      setTrackedNewsletterImpression(true);
     }
 
     let bgc;
@@ -80,6 +87,9 @@ const NewsletterSubscribe = ({ articleTitle, metadata }) => {
           label: 'success',
           non_interaction: false,
         });
+        if (redirectURL) {
+          window.location.href = redirectURL;
+        }
       }
     } catch (error) {
       setStatus('error');

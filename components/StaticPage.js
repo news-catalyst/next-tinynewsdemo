@@ -35,13 +35,17 @@ export default function StaticPage({
   }
 
   return (
-    <Layout meta={siteMetadata} sections={sections}>
+    <Layout meta={siteMetadata} page={page} sections={sections}>
       <SectionContainer>
         <ArticleTitle meta={siteMetadata} tw="text-center">
           {localisedPage.headline}
         </ArticleTitle>
 
-        <StaticMainImage isAmp={isAmp} page={page} />
+        <StaticMainImage
+          isAmp={isAmp}
+          page={page}
+          siteMetadata={siteMetadata}
+        />
 
         <PostText>
           <PostTextContainer>{body}</PostTextContainer>

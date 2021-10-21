@@ -1,6 +1,7 @@
 import Head from 'next/head';
-import GlobalNav from '../components/nav/GlobalNav';
+import GlobalNav from './nav/GlobalNav';
 import GlobalFooter from './nav/GlobalFooter.js';
+import CookieConsentWrapper from './nav/CookieConsentWrapper.js';
 import { useAmp } from 'next/amp';
 import AmpAnalytics from './amp/AmpAnalytics.js';
 import { hasuraLocaliseText } from '../lib/utils';
@@ -20,6 +21,7 @@ export default function Layout({
   children,
   meta,
   article,
+  page,
   sections,
   renderNav = true,
   renderFooter = true,
@@ -30,6 +32,7 @@ export default function Layout({
 
   const metaValues = {
     canonical: meta['canonicalUrl'] || meta['siteUrl'],
+    favicon: meta['favicon'],
     siteName: meta['shortName'],
     searchTitle: meta['searchTitle'],
     searchDescription: meta['searchDescription'],
@@ -44,43 +47,58 @@ export default function Layout({
     founderTwitter: meta['founderTwitter'],
     founderInstagram: meta['founderInstagram'],
     founderFacebook: meta['founderFacebook'],
+    documentType: 'article',
+    facebookAdmins: meta['facebookAdmins'],
+    facebookAppId: meta['facebookAppId'],
+    siteTwitter: meta['siteTwitter'],
   };
 
   let pageTitle = meta['homepageTitle'];
 
+  let author;
+  let translations;
   if (article) {
-    pageTitle = hasuraLocaliseText(
-      article.article_translations,
-      'search_title'
-    );
+    translations = article.article_translations;
+    if (
+      article.author_articles &&
+      article.author_articles[0] &&
+      article.author_articles[0].author
+    ) {
+      author = article.author_articles[0].author;
+    }
+  }
+
+  if (page) {
+    translations = page.page_translations;
+    metaValues['documentType'] = 'website';
+  }
+  if (translations && translations.length > 0) {
+    pageTitle = hasuraLocaliseText(translations, 'search_title');
     pageTitle += ' | ' + metaValues.siteName;
 
-    metaValues.section = hasuraLocaliseText(
-      article.category.category_translations,
-      'title'
-    );
-    metaValues.searchTitle = hasuraLocaliseText(
-      article.article_translations,
-      'search_title'
-    );
+    if (article && article.category) {
+      metaValues.section = hasuraLocaliseText(
+        article.category.category_translations,
+        'title'
+      );
+    }
+    metaValues.searchTitle = hasuraLocaliseText(translations, 'search_title');
     metaValues.searchDescription = hasuraLocaliseText(
-      article.article_translations,
+      translations,
       'search_description'
     );
-    metaValues.twitterTitle = hasuraLocaliseText(
-      article.article_translations,
-      'twitter_title'
-    );
+
+    metaValues.twitterTitle = hasuraLocaliseText(translations, 'twitter_title');
     metaValues.twitterDescription = hasuraLocaliseText(
-      article.article_translations,
+      translations,
       'twitter_description'
     );
     metaValues.facebookTitle = hasuraLocaliseText(
-      article.article_translations,
+      translations,
       'facebook_title'
     );
     metaValues.facebookDescription = hasuraLocaliseText(
-      article.article_translations,
+      translations,
       'facebook_description'
     );
   }
@@ -92,6 +110,9 @@ export default function Layout({
     metaValues['lastPublishedOn'] = article.lastPublishedOn;
   }
 
+  if (author && author.twitter) {
+    metaValues['authorTwitter'] = '@' + author.twitter;
+  }
   let tagList = [];
   if (article && article.tags) {
     article.tags.map((tag) => {
@@ -113,24 +134,28 @@ export default function Layout({
     <>
       <Head>
         <title>{pageTitle}</title>
-        <link rel="icon" href="/favicon.ico" />
+        {metaValues.favicon && <link rel="icon" href={metaValues.favicon} />}
         <meta property="description" content={metaValues.searchDescription} />
         {tagList}
         <link rel="canonical" href={metaValues.canonical} />
         {/* Twitter Card data */}
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:site" content="@publisher_handle" />
         <meta name="twitter:title" content={metaValues.twitterTitle} />
         <meta
           name="twitter:description"
           content={metaValues.twitterDescription}
         />
-        <meta name="twitter:creator" content="@author_handle" />
+        {metaValues.siteTwitter && (
+          <meta name="twitter:site" content={'@' + metaValues.siteTwitter} />
+        )}
+        {metaValues.authorTwitter && (
+          <meta name="twitter:creator" content={metaValues.authorTwitter} />
+        )}
         <meta name="twitter:image:src" content={metaValues.coverImage} />
 
         {/* Facebook data */}
         <meta property="og:title" content={metaValues.facebookTitle} />
-        <meta property="og:type" content="article" />
+        <meta property="og:type" content={metaValues.documentType} />
         <meta property="og:url" content={metaValues.canonical} />
         <meta property="og:image" content={metaValues.coverImage} />
         <meta
@@ -138,16 +163,22 @@ export default function Layout({
           content={metaValues.facebookDescription}
         />
         <meta property="og:site_name" content={metaValues.siteName} />
-        <meta
-          property="article:published_time"
-          content={metaValues.firstPublishedOn}
-        />
-        <meta
-          property="article:modified_time"
-          content={metaValues.lastPublishedOn}
-        />
-        <meta property="article:section" content={metaValues.section} />
 
+        {metaValues.firstPublishedOn && (
+          <meta
+            property="article:published_time"
+            content={metaValues.firstPublishedOn}
+          />
+        )}
+        {metaValues.lastPublishedOn && (
+          <meta
+            property="article:modified_time"
+            content={metaValues.lastPublishedOn}
+          />
+        )}
+        {metaValues.section && (
+          <meta property="article:section" content={metaValues.section} />
+        )}
         {article !== undefined &&
           article.tags !== undefined &&
           article.tags.map((tag) => (
@@ -157,7 +188,12 @@ export default function Layout({
               content={hasuraLocaliseText(tag.tag_translations, 'title')}
             />
           ))}
-        <meta property="fb:admins" content="Facebook numeric ID" />
+        {metaValues.facebookAppId && (
+          <meta property="fb:app_id" content={metaValues.facebookAppId} />
+        )}
+        {metaValues.facebookAdmins && (
+          <meta property="fb:admins" content={metaValues.facebookAdmins} />
+        )}
 
         <link rel="preconnect" href="https://fonts.gstatic.com" />
 
@@ -229,6 +265,7 @@ export default function Layout({
           {children}
         </Main>
         {renderFooter && <GlobalFooter metadata={metaValues} />}
+        <CookieConsentWrapper meta={meta} />
       </ThemeWrapper>
     </>
   );

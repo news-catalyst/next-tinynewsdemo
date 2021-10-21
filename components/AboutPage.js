@@ -10,6 +10,8 @@ import {
   PostText,
   SectionLayout,
   Block,
+  Paragraph,
+  Anchor,
 } from './common/CommonStyles.js';
 
 const SectionContainer = tw.div`flex flex-col flex-nowrap items-center px-5 mx-auto max-w-7xl w-full`;
@@ -27,7 +29,7 @@ export default function AboutPage({
   const body = renderBody(page.page_translations, [], isAmp, siteMetadata);
 
   return (
-    <Layout meta={siteMetadata} sections={sections}>
+    <Layout meta={siteMetadata} page={page} sections={sections}>
       <article className="container">
         <SectionContainer>
           <div key="title" className="section post__header">
@@ -35,7 +37,7 @@ export default function AboutPage({
               {localisedPage.headline}
             </ArticleTitle>
           </div>
-          {locales.length > 1 && (
+          {locales && locales.length > 1 && (
             <SectionLayout>
               <SectionContainer>
                 <Block>
@@ -47,21 +49,28 @@ export default function AboutPage({
               </SectionContainer>
             </SectionLayout>
           )}
-          <StaticMainImage isAmp={isAmp} page={page} />
+          <StaticMainImage
+            isAmp={isAmp}
+            page={page}
+            siteMetadata={siteMetadata}
+          />
 
           <div className="section post__body rich-text" key="body">
             <PostText>
-              <PostTextContainer>{body}</PostTextContainer>
+              <PostTextContainer>
+                {body}
+                <Paragraph>
+                  <Link href="/staff" passHref>
+                    <Anchor meta={siteMetadata}>Learn about our staff →</Anchor>
+                  </Link>
+                </Paragraph>
+              </PostTextContainer>
             </PostText>
           </div>
 
           <SectionLayout>
             <SectionContainer>
-              <Block>
-                <Link href="/staff">
-                  <a>Staff</a>
-                </Link>
-              </Block>
+              <Block></Block>
             </SectionContainer>
           </SectionLayout>
         </SectionContainer>

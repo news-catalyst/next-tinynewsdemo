@@ -9,8 +9,8 @@ const ArticleMetaBottom = styled.section(({ meta }) => ({
   fontFamily: Typography[meta.theme].ArticleMetaTop,
 }));
 const SectionContainer = tw.div`flex mx-auto flex-col flex-nowrap items-center px-5 max-w-7xl w-full`;
-const ArticleByline = tw.div`max-w-2xl w-full flex flex-col flex-nowrap border-t border-b border-gray-200 mb-4 pt-6`;
-const ArticleTags = tw.div`max-w-2xl w-full flex flex-row flex-nowrap mb-8`;
+const ArticleByline = tw.div`max-w-2xl w-full flex flex-col flex-nowrap border-t border-gray-200 mb-4 pt-6`;
+const ArticleTags = tw.div`max-w-2xl w-full flex flex-row flex-nowrap mb-8 border-t border-gray-200`;
 const TagsTitle = tw.div`flex-shrink-0 mb-4 py-2`;
 const TagsList = tw.ul`flex flex-row flex-wrap pb-6 mb-2 list-outside w-full`;
 const TagsListItem = tw.li`mb-4 ml-4`;
@@ -45,10 +45,12 @@ export default function ArticleFooter({ article, isAmp, metadata }) {
               />
             ))}
         </ArticleByline>
-        <ArticleTags>
-          {tagLinks && <TagsTitle>Read more:</TagsTitle>}
-          <TagsList>{tagLinks}</TagsList>
-        </ArticleTags>
+        {tagLinks.length > 0 && (
+          <ArticleTags>
+            <TagsTitle>Read more:</TagsTitle>
+            <TagsList>{tagLinks}</TagsList>
+          </ArticleTags>
+        )}
       </SectionContainer>
     </ArticleMetaBottom>
   );

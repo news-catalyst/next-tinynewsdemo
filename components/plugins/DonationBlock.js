@@ -17,12 +17,12 @@ const DonationHed = styled.h4(({ meta }) => ({
   ...tw`text-2xl font-bold tracking-tight leading-5 mb-2`,
   fontFamily: Typography[meta.theme || 'styleone'].PromotionBlockHed,
 }));
-const DonationDek = styled.p(({ meta }) => ({
+const DonationDek = styled.div(({ meta }) => ({
   ...tw`mb-6`,
   fontFamily: Typography[meta.theme || 'styleone'].PromotionBlockDek,
 }));
 const DonateLink = styled.a(({ textColor, backgroundColor, meta }) => ({
-  ...tw`py-2 px-4 font-bold cursor-pointer border border-transparent hover:bg-transparent hover:text-white hover:border-white`,
+  ...tw`py-2 px-4 font-bold cursor-pointer hover:underline`,
   backgroundColor: backgroundColor,
   color: textColor,
   fontFamily: Typography[meta.theme || 'styleone'].PromotionBlockCTA,
@@ -59,7 +59,10 @@ export default function DonationBlock({ metadata }) {
   return (
     <DonationWrapper textColor={textColor} backgroundColor={backgroundColor}>
       <DonationHed meta={metadata}>{metadata.membershipHed}</DonationHed>
-      <DonationDek meta={metadata}>{metadata.membershipDek}</DonationDek>
+      <DonationDek
+        meta={metadata}
+        dangerouslySetInnerHTML={{ __html: metadata.membershipDek }}
+      />
       <Link href="/donate" passHref>
         <DonateLink
           textColor={backgroundColor}

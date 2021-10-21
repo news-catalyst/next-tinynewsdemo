@@ -85,7 +85,7 @@ export async function getStaticProps({ locale, params }) {
     };
   } else {
     if (!data.page_slug_versions || !data.page_slug_versions[0]) {
-      console.log('No page slug versions found', data);
+      console.error('No page slug versions found', data);
       return {
         notFound: true,
       };
@@ -121,5 +121,6 @@ export async function getStaticProps({ locale, params }) {
       locales,
       locale,
     },
+    revalidate: 1,
   };
 }

@@ -77,11 +77,13 @@ export default function AuthorPage({
           </ProfileHeadingText>
           <ProfileTitle>{authorTitle}</ProfileTitle>
           <ProfileDiv></ProfileDiv>
-          <ProfileBio>{authorBio}</ProfileBio>
+          <ProfileBio dangerouslySetInnerHTML={{ __html: authorBio }} />
           <ProfileTwitter>
             <em>
               {twitterCall}
-              <Anchor href={twitterLink}>{authorTwitter}</Anchor>
+              <Anchor meta={siteMetadata} href={twitterLink}>
+                {authorTwitter}
+              </Anchor>
             </em>
           </ProfileTwitter>
         </div>

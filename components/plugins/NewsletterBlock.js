@@ -15,7 +15,7 @@ const NewsletterHed = styled.h4(({ meta }) => ({
   ...tw`text-2xl font-bold tracking-tight leading-5 mb-2`,
   fontFamily: Typography[meta.theme || 'styleone'].PromotionBlockHed,
 }));
-const NewsletterDek = styled.p(({ meta }) => ({
+const NewsletterDek = styled.div(({ meta }) => ({
   ...tw`mb-6`,
   fontFamily: Typography[meta.theme || 'styleone'].PromotionBlockDek,
 }));
@@ -41,7 +41,10 @@ export default function NewsletterBlock({ metadata, headline }) {
   return (
     <NewsletterWrapper textColor={textColor} backgroundColor={backgroundColor}>
       <NewsletterHed meta={metadata}>{metadata.newsletterHed}</NewsletterHed>
-      <NewsletterDek meta={metadata}>{metadata.newsletterDek}</NewsletterDek>
+      <NewsletterDek
+        meta={metadata}
+        dangerouslySetInnerHTML={{ __html: metadata.newsletterDek }}
+      />
       <br />
       <NewsletterSubscribe metadata={metadata} articleTitle={headline} />
     </NewsletterWrapper>

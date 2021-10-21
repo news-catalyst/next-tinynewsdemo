@@ -8,7 +8,7 @@ name: GA Data Importer
 jobs:
   GA-Data-Importer:
     runs-on: ubuntu-latest
-    environment: data_import_austin-vida
+    environment: data_import_five-wards-media
     env:
       NEXT_PUBLIC_SITE_URL: ${{ secrets.NEXT_PUBLIC_SITE_URL }}
       HASURA_API_URL: ${{ secrets.HASURA_API_URL }}

@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import tw, { styled } from 'twin.macro';
-import { renderAuthor } from '../../lib/utils';
+import { renderAuthor, hasuraLocaliseText } from '../../lib/utils';
 import Typography from '../common/Typography';
 
 const AuthorWrapper = styled.div(({ last }) => [
@@ -13,8 +13,9 @@ const AuthorMeta = styled.div(({ meta }) => ({
   ...tw`flex flex-col flex-nowrap flex-grow ml-3 pb-5`,
   fontFamily: Typography[meta.theme].ArticleMetaTop,
 }));
-const AuthorNameWrapper = tw.span`text-base`;
+const AuthorNameWrapper = tw.span`text-lg`;
 const AuthorContact = tw.a`text-xs font-normal cursor-pointer bg-no-repeat ml-2 pl-4`;
+const AuthorTitle = tw.p`mb-4 italic`;
 
 export default function ArticleFooterAuthor({
   author,
@@ -24,6 +25,8 @@ export default function ArticleFooterAuthor({
   metadata,
 }) {
   let authorPhoto = author.photoUrl;
+  let authorTitle = hasuraLocaliseText(author.author_translations, 'title');
+  let authorBio = hasuraLocaliseText(author.author_translations, 'bio');
   return (
     <AuthorWrapper last={last}>
       {authorPhoto && (
@@ -65,7 +68,8 @@ export default function ArticleFooterAuthor({
             )}
           </span>
         </div>
-        <p>{author.bio}</p>
+        <AuthorTitle>{authorTitle}</AuthorTitle>
+        <p dangerouslySetInnerHTML={{ __html: authorBio }} />
       </AuthorMeta>
     </AuthorWrapper>
   );

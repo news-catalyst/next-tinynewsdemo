@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
+import Link from 'next/link';
 import AdminLayout from '../../../components/AdminLayout';
 import AdminNav from '../../../components/nav/AdminNav';
 import tw from 'twin.macro';
@@ -6,10 +7,10 @@ import {
   FormContainer,
   FormHeader,
   TinyYesNoField,
-  TinyTextArea,
   TinyInputField,
   TinySubmitCancelButtons,
 } from '../../../components/tinycms/TinyFormElements';
+import TinyEditor from '../../../components/tinycms/TinyEditor';
 import Notification from '../../../components/tinycms/Notification';
 import Upload from '../../../components/tinycms/Upload';
 import { hasuraGetAuthorById, hasuraUpdateAuthor } from '../../../lib/authors';
@@ -21,10 +22,12 @@ import {
 } from '../../../lib/utils.js';
 
 const UploadContainer = tw.div`container mx-auto min-w-0 flex-auto px-4 sm:px-6 xl:px-8 pt-10`;
+const ArticleAuthorLink = tw.a`font-bold cursor-pointer hover:underline`;
 
 export default function EditAuthor({
   apiUrl,
   apiToken,
+  tinyApiKey,
   author,
   currentLocale,
   locales,
@@ -35,8 +38,8 @@ export default function EditAuthor({
   const [showNotification, setShowNotification] = useState(false);
   const [displayUpload, setDisplayUpload] = useState(true);
 
-  const [firstNames, setFirstNames] = useState(author.first_names);
-  const [lastName, setLastName] = useState(author.last_name);
+  const [firstNames, setFirstNames] = useState('');
+  const [lastName, setLastName] = useState('');
 
   const [title, setTitle] = useState(
     hasuraLocaliseText(author.author_translations, 'title')
@@ -44,12 +47,18 @@ export default function EditAuthor({
   const [bio, setBio] = useState(
     hasuraLocaliseText(author.author_translations, 'bio')
   );
+  const [staticBio, setStaticBio] = useState(undefined);
+
   const [twitter, setTwitter] = useState(author.twitter);
   const [slug, setSlug] = useState(author.slug);
   const [staff, setStaff] = useState(author.staff);
   const [bioImage, setBioImage] = useState(author.photoUrl);
   const [authorId, setAuthorId] = useState(author.id);
   const [staffYesNo, setStaffYesNo] = useState('no');
+
+  const handleEditorChange = (value) => {
+    setBio(value);
+  };
 
   useEffect(() => {
     if (author && author.staff) {
@@ -58,6 +67,15 @@ export default function EditAuthor({
     } else {
       setStaffYesNo('no');
       setStaff(false);
+    }
+    if (bio) {
+      setStaticBio(bio);
+    }
+    if (author.first_names) {
+      setFirstNames(author.first_names);
+    }
+    if (author.last_name) {
+      setLastName(author.last_name);
     }
   }, [author]);
 
@@ -86,20 +104,22 @@ export default function EditAuthor({
     setDisplayUpload(true);
   }
 
-  // removes leading @ from twitter handle before storing
-  function updateTwitter(val) {
-    let cleanedUpVal = val.replace(/@/, '');
-    setTwitter(cleanedUpVal);
-  }
-
   async function handleSubmit(ev) {
     let published = true;
     ev.preventDefault();
 
+    if (!firstNames || !lastName) {
+      setNotificationMessage('First and last names are required.');
+      setNotificationType('error');
+      setDisplayUpload(false);
+      setShowNotification(true);
+      return false;
+    }
+
     let nameIsValid = validateAuthorName(firstNames, lastName);
     if (!nameIsValid) {
       setNotificationMessage(
-        'Please use a real name of an actual person - editorial guidelines prohibit fake bylines: ' +
+        ' Please use a real name of an actual person - editorial guidelines prohibit fake bylines: ' +
           displayAuthorName(firstNames, lastName)
       );
       setShowNotification(true);
@@ -162,7 +182,15 @@ export default function EditAuthor({
 
       <FormContainer>
         <FormHeader title="Edit Author" />
-
+        {slug && (
+          <div tw="relative">
+            <p tw="absolute right-0">
+              <Link href={`/authors/${slug}`} key={`${slug}`} passHref>
+                <ArticleAuthorLink>View on site</ArticleAuthorLink>
+              </Link>
+            </p>
+          </div>
+        )}
         <form onSubmit={handleSubmit}>
           <TinyInputField
             name="first_names"
@@ -195,12 +223,13 @@ export default function EditAuthor({
             onChange={(ev) => setSlug(ev.target.value)}
             label="Slug"
           />
-          <TinyTextArea
-            name="bio"
-            value={bio}
-            onChange={(ev) => setBio(ev.target.value)}
-            label="Bio"
+
+          <TinyEditor
+            tinyApiKey={tinyApiKey}
+            setValue={handleEditorChange}
+            value={staticBio}
           />
+
           <TinyYesNoField
             name="staff"
             value={staffYesNo}
@@ -238,6 +267,7 @@ export default function EditAuthor({
 export async function getServerSideProps(context) {
   const apiUrl = process.env.HASURA_API_URL;
   const apiToken = process.env.ORG_SLUG;
+  const tinyApiKey = process.env.TINYMCE_API_KEY;
 
   const awsConfig = {
     bucketName: process.env.TNC_AWS_BUCKET_NAME,
@@ -266,6 +296,7 @@ export async function getServerSideProps(context) {
     props: {
       apiUrl: apiUrl,
       apiToken: apiToken,
+      tinyApiKey: tinyApiKey,
       author: author,
       currentLocale: context.locale,
       locales: locales,

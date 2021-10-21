@@ -3,7 +3,6 @@ import tw from 'twin.macro';
 import {
   BarChart,
   Bar,
-  Cell,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -13,17 +12,25 @@ import {
 import {
   hasuraGetCustomDimension,
   hasuraGetNewsletterImpressions,
+  hasuraGetArticleSessions,
 } from '../../../lib/analytics';
 
-const SubHeaderContainer = tw.div`pt-3 pb-5`;
+const SubHeaderContainer = tw.div`pt-5 pb-5`;
 const SubHeader = tw.h1`inline-block text-xl font-extrabold text-gray-900 tracking-tight`;
 
 const NewsletterSignupFormData = (props) => {
   const signupRef = useRef();
+  const sectionRef = useRef();
+  const frequencyRef = useRef();
 
   const [chartData, setChartData] = useState([]);
+  const [sessionsByCategory, setSessionsByCategory] = useState({});
   const [totalImpressions, setTotalImpressions] = useState({});
   const [sortedImpressions, setSortedImpressions] = useState([]);
+  const [categoryImpressions, setCategoryImpressions] = useState({});
+  const [sortedCategoryImpressions, setSortedCategoryImpressions] = useState(
+    []
+  );
 
   useEffect(() => {
     let params = {
@@ -68,37 +75,112 @@ const NewsletterSignupFormData = (props) => {
     };
     fetchCustomDimension();
 
+    const fetchArticleSessions = async () => {
+      const { errors, data } = await hasuraGetArticleSessions(params);
+
+      if (errors && !data) {
+        console.error(errors);
+      }
+
+      let articleSessions = {};
+      data.ga_article_sessions.map((item, i) => {
+        if (!articleSessions[item.category]) {
+          articleSessions[item.category] = 0;
+        }
+        articleSessions[item.category] += parseInt(item.count);
+      });
+      setSessionsByCategory(articleSessions);
+    };
+    fetchArticleSessions();
+
     const fetchNewsletterImpressions = async () => {
       const { errors, data } = await hasuraGetNewsletterImpressions(params);
 
       if (errors && !data) {
         console.error(errors);
       }
-
       let totalImps = {};
       data.ga_newsletter_impressions.map((row) => {
-        if (!totalImps[row.path]) {
-          totalImps[row.path] = { impressions: 0, signups: 0 };
-        }
+        if (row.path.match(/\/articles\//)) {
+          if (!totalImps[row.path]) {
+            totalImps[row.path] = {
+              impressions: 0,
+              signups: 0,
+              category: null,
+            };
+          }
 
-        if (row.action === 'Newsletter Modal Impression 1') {
-          totalImps[row.path]['impressions'] += parseInt(row.impressions);
-        } else if (row.action === 'Newsletter Signup') {
-          totalImps[row.path]['signups'] += parseInt(row.impressions);
+          let pathParts = row.path.split('/');
+          if (pathParts && pathParts[2]) {
+            totalImps[row.path]['category'] = pathParts[2];
+          }
+
+          if (row.action === 'Newsletter Modal Impression 1') {
+            totalImps[row.path]['impressions'] += parseInt(row.impressions);
+          } else if (row.action === 'Newsletter Signup') {
+            // console.log('sign up row:', row);
+            totalImps[row.path]['signups'] += parseInt(row.impressions);
+          }
         }
       });
+
+      let newsletterByCategory = {};
       Object.keys(totalImps).map((path) => {
         let conversion = 0;
         let signups = totalImps[path]['signups'];
         let impressions = totalImps[path]['impressions'];
         if (signups && impressions) {
           conversion = (signups / impressions) * 100;
-          totalImps[path]['conversion'] = conversion.toFixed(2);
+          totalImps[path]['conversion'] = conversion;
         } else {
-          totalImps[path]['conversion'] = 0;
+          totalImps[path]['conversion'] = 0.0;
+        }
+
+        if (totalImps[path]['category']) {
+          let category = totalImps[path]['category'];
+
+          if (!newsletterByCategory[category]) {
+            newsletterByCategory[category] = {
+              signups: 0,
+              impressions: 0,
+              sessions: 0,
+              conversion: 0.0,
+            };
+          }
+
+          newsletterByCategory[category]['signups'] += parseInt(
+            totalImps[path]['signups']
+          );
+          newsletterByCategory[category]['impressions'] += parseInt(
+            totalImps[path]['impressions']
+          );
+          newsletterByCategory[category]['conversion'] +=
+            totalImps[path]['conversion'];
+
+          if (sessionsByCategory[category]) {
+            newsletterByCategory[category]['sessions'] = parseInt(
+              sessionsByCategory[category]
+            );
+
+            // console.log(category, 'sessions:', newsletterByCategory[category]);
+          }
         }
       });
+
+      setCategoryImpressions(newsletterByCategory);
       setTotalImpressions(totalImps);
+
+      var categorySortable = [];
+      Object.keys(newsletterByCategory).forEach((key) => {
+        if (newsletterByCategory[key]['signups'] > 0) {
+          categorySortable.push([key, newsletterByCategory[key]['signups']]);
+        }
+      });
+
+      categorySortable.sort(function (a, b) {
+        return b[1] - a[1];
+      });
+      setSortedCategoryImpressions(categorySortable);
 
       var sortable = [];
       Object.keys(totalImps).forEach((key) => {
@@ -108,7 +190,6 @@ const NewsletterSignupFormData = (props) => {
       sortable.sort(function (a, b) {
         return b[1] - a[1];
       });
-      console.log('total:', totalImps, 'sorted:', sortable);
       setSortedImpressions(sortable);
       // setNewsletterImpressions(data.ga_newsletter_impressions);
     };
@@ -117,6 +198,16 @@ const NewsletterSignupFormData = (props) => {
     if (window.location.hash && window.location.hash === '#signups') {
       if (signupRef) {
         signupRef.current.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+    if (window.location.hash && window.location.hash === '#section') {
+      if (sectionRef) {
+        sectionRef.current.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+    if (window.location.hash && window.location.hash === '#frequency') {
+      if (frequencyRef) {
+        frequencyRef.current.scrollIntoView({ behavior: 'smooth' });
       }
     }
   }, [
@@ -159,14 +250,70 @@ const NewsletterSignupFormData = (props) => {
                 {totalImpressions[impressionData[0]]['signups']}
               </td>
               <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-                {totalImpressions[impressionData[0]]['conversion']}%
+                {totalImpressions[impressionData[0]]['conversion'].toFixed(2)}%
               </td>
             </tr>
           ))}
         </tbody>
       </table>
 
-      <SubHeaderContainer>
+      <SubHeaderContainer ref={sectionRef}>
+        <SubHeader>Signups by Section</SubHeader>
+      </SubHeaderContainer>
+      <p tw="p-2">
+        {props.startDate.format('dddd, MMMM Do YYYY')} -{' '}
+        {props.endDate.format('dddd, MMMM Do YYYY')}
+      </p>
+
+      <table tw="w-full table-auto">
+        <thead>
+          <tr>
+            <th tw="p-4">Category</th>
+            <th tw="p-4">Signups</th>
+            <th tw="p-4">Total Sessions</th>
+            <th tw="p-4">Views</th>
+            <th tw="p-4">Conversion by View</th>
+            <th tw="p-4">Conversion by Session</th>
+          </tr>
+        </thead>
+        <tbody>
+          {sortedCategoryImpressions.map((impressionData, i) => (
+            <tr key={`newsletter-category-signup-row-${i}`}>
+              <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                {impressionData[0]}
+              </td>
+              <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                {categoryImpressions[impressionData[0]]['signups']}
+              </td>
+              <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                {categoryImpressions[impressionData[0]]['sessions']}
+              </td>
+              <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                {categoryImpressions[impressionData[0]]['impressions']}
+              </td>
+
+              <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                {categoryImpressions[impressionData[0]]['conversion'].toFixed(
+                  2
+                )}
+                %
+              </td>
+              <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
+                {categoryImpressions[impressionData[0]]['sessions'] <= 0 &&
+                  'N/A'}
+                {categoryImpressions[impressionData[0]]['sessions'] > 0 &&
+                  `${(
+                    (categoryImpressions[impressionData[0]]['signups'] /
+                      categoryImpressions[impressionData[0]]['sessions']) *
+                    100
+                  ).toFixed(2)}%`}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      <SubHeaderContainer ref={frequencyRef}>
         <SubHeader>Signups by Reading Frequency</SubHeader>
       </SubHeaderContainer>
 

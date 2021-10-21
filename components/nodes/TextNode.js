@@ -1,16 +1,12 @@
 import tw from 'twin.macro';
 import { Paragraph, H1, H2, H3, Anchor } from '../common/CommonStyles';
 
-export default function TextNode({ node }) {
+export default function TextNode({ node, metadata }) {
   const processChild = function (child, nextChild) {
     let supportedPunctuation = [',', '.', '?', '!', ';', ':'];
     let delimiterSpaceChar = ' ';
-    // if this is a link and the next node/child starts with one of the punctuation marks above, don't add a space
-    if (
-      child.link &&
-      nextChild &&
-      supportedPunctuation.includes(nextChild.content[0])
-    ) {
+    // if the next node/child starts with one of the punctuation marks above, don't add a space
+    if (nextChild && supportedPunctuation.includes(nextChild.content[0])) {
       delimiterSpaceChar = '';
     }
 
@@ -35,7 +31,7 @@ export default function TextNode({ node }) {
 
     if (child.link) {
       text = (
-        <Anchor key={child.link} href={child.link}>
+        <Anchor key={child.link} href={child.link} meta={metadata}>
           {text}
         </Anchor>
       );
@@ -61,6 +57,8 @@ export default function TextNode({ node }) {
     wrapper = <H3>{children}</H3>;
   } else if (node.style == 'NORMAL_TEXT') {
     wrapper = <Paragraph>{children}</Paragraph>;
+  } else if (node.style == 'FORMATTED_TEXT') {
+    wrapper = <pre>{children}</pre>;
   } else {
     wrapper = <>{children}</>;
   }
