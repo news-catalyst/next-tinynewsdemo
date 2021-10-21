@@ -46,7 +46,7 @@ const CustomDimensions = (props) => {
     };
     fetchCustomDimension();
 
-    if (window.location.hash && window.location.hash === '#subscriptions') {
+    if (window.location.hash && window.location.hash === '#sessions') {
       if (customRef) {
         customRef.current.scrollIntoView({ behavior: 'smooth' });
       }
