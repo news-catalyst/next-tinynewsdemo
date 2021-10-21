@@ -6,12 +6,12 @@ const AnalyticsNav = (props) => {
   return (
     <ul>
       <li>
-        <Link href="/tinycms/analytics/audience">
-          <a tw="cursor-pointer">Audience</a>
+        <Link href="/tinycms/analytics/donations">
+          <a tw="cursor-pointer">Donations</a>
         </Link>
         <ul>
           <li>
-            <Link href="/tinycms/analytics/audience#donations">
+            <Link href="/tinycms/analytics/donations#clicks">
               <a tw="w-full flex align-bottom cursor-pointer">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -27,12 +27,145 @@ const AnalyticsNav = (props) => {
                     d="M9 5l7 7-7 7"
                   />
                 </svg>
-                Donations
+                Clicks
               </a>
             </Link>
           </li>
           <li>
-            <Link href="/tinycms/analytics/audience#signups">
+            <Link href="/tinycms/analytics/donations#conversions">
+              <a tw="w-full flex align-bottom cursor-pointer">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  tw="float-left align-bottom h-6 w-3"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+                Conversions
+              </a>
+            </Link>
+          </li>
+          <li>
+            <Link href="/tinycms/analytics/donations#frequency">
+              <a tw="w-full flex align-bottom cursor-pointer">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  tw="float-left align-bottom h-6 w-3"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+                Reading Frequency
+              </a>
+            </Link>
+          </li>
+          <li>
+            <Link href="/tinycms/analytics/donations#sessions">
+              <a tw="w-full flex align-bottom cursor-pointer">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  tw="float-left align-bottom h-6 w-3"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+                Sessions
+              </a>
+            </Link>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <Link href="/tinycms/analytics/newsletter">
+          <a tw="cursor-pointer">Newsletter</a>
+        </Link>
+        <ul>
+          <li>
+            <Link href="/tinycms/analytics/newsletter#frequency">
+              <a tw="w-full flex align-bottom cursor-pointer">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  tw="float-left align-bottom h-6 w-3"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+                Reading Frequency
+              </a>
+            </Link>
+          </li>
+          <li>
+            <Link href="/tinycms/analytics/newsletter#section">
+              <a tw="w-full flex align-bottom cursor-pointer">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  tw="float-left align-bottom h-6 w-3"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+                Section
+              </a>
+            </Link>
+          </li>
+          <li>
+            <Link href="/tinycms/analytics/newsletter#sessions">
+              <a tw="w-full flex align-bottom cursor-pointer">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  tw="float-left align-bottom h-6 w-3"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+                Sessions
+              </a>
+            </Link>
+          </li>
+          <li>
+            <Link href="/tinycms/analytics/newsletter#signups">
               <a tw="w-full flex align-bottom cursor-pointer">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -49,27 +182,6 @@ const AnalyticsNav = (props) => {
                   />
                 </svg>
                 Signups
-              </a>
-            </Link>
-          </li>
-          <li>
-            <Link href="/tinycms/analytics/audience#subscriptions">
-              <a tw="w-full flex align-bottom cursor-pointer">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  tw="float-left align-bottom h-6 w-3"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
-                Subscriptions
               </a>
             </Link>
           </li>
