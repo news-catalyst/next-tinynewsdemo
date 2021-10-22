@@ -25,6 +25,7 @@ export default function EditSection({
   currentLocale,
   section,
   locales,
+  vercelHook,
 }) {
   const [notificationMessage, setNotificationMessage] = useState('');
   const [notificationType, setNotificationType] = useState('');
@@ -82,12 +83,31 @@ export default function EditSection({
           }
         );
         params['objects'] = articleSlugVersions;
-        console.log('params:', params);
         const response = await hasuraInsertArticleSlugVersions(params);
         if (response.errors) {
           console.error('error:', response.errors);
         } else {
           console.log('response:', response.data);
+
+          const rebuildResponse = await fetch(vercelHook, {
+            method: 'POST',
+          });
+          const statusCode = rebuildResponse.status;
+          console.log(statusCode, 'vercel data:', rebuildResponse);
+
+          setCurrentSlug(slug);
+
+          // if (statusCode < 200 || statusCode > 299) {
+          //   setNotificationType('error');
+          //   setNotificationMessage(
+          //     'An error occurred republishing the site: ' + JSON.stringify(data)
+          //   );
+          // } else {
+          //   setNotificationType('success');
+          //   setNotificationMessage(
+          //     'Successfully saved settings, republishing the site now!'
+          //   );
+          // }
         }
       }
 
@@ -209,6 +229,7 @@ export async function getServerSideProps(context) {
       currentLocale: context.locale,
       section: section,
       locales: locales,
+      vercelHook: process.env.VERCEL_DEPLOY_HOOK,
     },
   };
 }
