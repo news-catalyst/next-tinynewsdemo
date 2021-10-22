@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Link from 'next/link';
 import {
   FormContainer,
   FormHeader,
@@ -13,6 +14,7 @@ import {
   hasuraGetSectionById,
   hasuraUpdateSection,
 } from '../../../lib/section';
+import { hasuraInsertArticleSlugVersions } from '../../../lib/articles';
 import AdminNav from '../../../components/nav/AdminNav';
 import Notification from '../../../components/tinycms/Notification';
 import { hasuraLocaliseText } from '../../../lib/utils';
@@ -27,12 +29,17 @@ export default function EditSection({
   const [notificationMessage, setNotificationMessage] = useState('');
   const [notificationType, setNotificationType] = useState('');
   const [showNotification, setShowNotification] = useState(false);
+
   const [sectionId, setSectionId] = useState(section.id);
+  const [articleCount, setArticleCount] = useState(
+    section.articles_aggregate.aggregate.count
+  );
 
   const [title, setTitle] = useState(
     hasuraLocaliseText(section.category_translations, 'title')
   );
   const [slug, setSlug] = useState(section.slug);
+  const [currentSlug, setCurrentSlug] = useState(section.slug);
   const [published, setPublished] = useState(section.published);
 
   function handlePublished(event) {
@@ -63,6 +70,27 @@ export default function EditSection({
       setNotificationType('error');
       setShowNotification(true);
     } else {
+      // add entries to the article_slug_versions table if the slug has changed
+      if (currentSlug !== slug) {
+        let articleSlugVersions = section.articles_aggregate.nodes.map(
+          (node) => {
+            return {
+              article_id: node.id,
+              slug: node.slug,
+              category_slug: slug,
+            };
+          }
+        );
+        params['objects'] = articleSlugVersions;
+        console.log('params:', params);
+        const response = await hasuraInsertArticleSlugVersions(params);
+        if (response.errors) {
+          console.error('error:', response.errors);
+        } else {
+          console.log('response:', response.data);
+        }
+      }
+
       // display success message
       let message = 'The section is updated.';
       if (published) {
@@ -96,7 +124,11 @@ export default function EditSection({
       )}
 
       <FormContainer>
-        <FormHeader title="Edit Section" />
+        <FormHeader
+          title={`Edit Section (${articleCount} article${
+            articleCount === 1 ? '' : 's'
+          })`}
+        />
 
         <form onSubmit={handleSubmit}>
           <TinyInputField
@@ -129,6 +161,23 @@ export default function EditSection({
 
           <TinySubmitCancelButtons destURL="/tinycms/sections" />
         </form>
+      </FormContainer>
+
+      <FormContainer>
+        <FormHeader title="Articles in this category" />
+        <ul>
+          {section.articles_aggregate.nodes.map((node) => (
+            <li>
+              <Link
+                href="/articles/[category]/[slug]"
+                as={`/articles/${slug}/${node.slug}`}
+                passHref
+              >
+                <a>{node.article_translations[0].headline}</a>
+              </Link>
+            </li>
+          ))}
+        </ul>
       </FormContainer>
     </AdminLayout>
   );
