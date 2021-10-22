@@ -8,6 +8,7 @@ export default async function Handler(req, res) {
     'Not Subscribed': 0,
     Subscribed: 1,
     Unsubscribed: 2,
+    'Needs Verification': 4,
   };
 
   const { email, name } = JSON.parse(req.body);
@@ -20,10 +21,11 @@ export default async function Handler(req, res) {
         Authorization: `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        channelSubscriberStatus: channelSubscriberStatusValues['Subscribed'],
+        channelSubscriberStatus:
+          channelSubscriberStatusValues['Needs Verification'],
         email: email,
         name: name,
-        sendOptin: true,
+        optin: true,
       }),
     });
 
