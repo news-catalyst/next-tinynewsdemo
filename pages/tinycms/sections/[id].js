@@ -16,7 +16,6 @@ import {
 import AdminNav from '../../../components/nav/AdminNav';
 import Notification from '../../../components/tinycms/Notification';
 import { hasuraLocaliseText } from '../../../lib/utils';
-import { slugify } from '../../../lib/utils';
 
 export default function EditSection({
   apiUrl,
@@ -35,11 +34,6 @@ export default function EditSection({
   );
   const [slug, setSlug] = useState(section.slug);
   const [published, setPublished] = useState(section.published);
-
-  function updateTitleAndSlug(value) {
-    setTitle(value);
-    setSlug(slugify(value));
-  }
 
   function handlePublished(event) {
     const value =
@@ -90,6 +84,7 @@ export default function EditSection({
         locales={locales}
         homePageEditor={false}
         showConfigOptions={true}
+        id={sectionId}
       />
 
       {showNotification && (
@@ -110,9 +105,17 @@ export default function EditSection({
             onChange={(ev) => setTitle(ev.target.value)}
             label="Title"
           />
-          {slug && (
+          {currentLocale === 'en-US' && (
+            <TinyInputField
+              name="slug"
+              value={slug}
+              onChange={(ev) => setSlug(ev.target.value)}
+              label="URL Slug"
+            />
+          )}
+          {currentLocale !== 'en-US' && (
             <label>
-              <UrlSlugLabel>URL Slug</UrlSlugLabel>
+              <UrlSlugLabel>URL Slug (edit in English)</UrlSlugLabel>
               <UrlSlugValue>{slug}</UrlSlugValue>
             </label>
           )}
