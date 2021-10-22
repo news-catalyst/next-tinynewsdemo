@@ -187,7 +187,7 @@ export default function EditSection({
         <FormHeader title="Articles in this category" />
         <ul>
           {section.articles_aggregate.nodes.map((node) => (
-            <li>
+            <li key={`li-category-article-${node.slug}`}>
               <Link
                 href="/articles/[category]/[slug]"
                 as={`/articles/${slug}/${node.slug}`}
