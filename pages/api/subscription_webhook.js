@@ -10,6 +10,7 @@ export default async function handler(req, res) {
     let signature = req.headers['stripe-signature'];
 
     try {
+      console.log(signature, webhookSecret);
       event = stripe.webhooks.constructEvent(
         req.body,
         signature,
@@ -17,7 +18,7 @@ export default async function handler(req, res) {
       );
     } catch (err) {
       console.log('Webhook signature verification failed');
-      return res.sendStatus(400);
+      return res.status(400).send('Webhook signature verification failed');
     }
 
     data = event.data;
@@ -27,60 +28,32 @@ export default async function handler(req, res) {
     eventType = req.body.type;
   }
 
-  let subscription;
-  let status;
-
   switch (eventType) {
-    case 'customer.subscription.deleted':
-      subscription = event.data.object;
-      status = subscription.status;
-      console.log(`Subscription status is ${status}.`);
-      // Then define and call a method to handle the subscription deleted.
-      // handleSubscriptionDeleted(subscriptionDeleted);
+    case 'checkout.session.completed':
+      let customer = data.object.customer_details;
+      let amountSubtotal = data.object.amount_subtotal;
+      let amountTotal = data.object.amount_total;
+
+      // handle these with a spreadsheet?
       break;
 
-    case 'customer.subscription.created':
-      subscription = event.data.object;
-      status = subscription.status;
-      console.log(`Subscription status is ${status}.`);
+    case 'invoice.paid':
+      console.log(data);
       // Then define and call a method to handle the subscription created.
       // handleSubscriptionCreated(subscription);
       break;
 
-    case 'customer.subscription.updated':
-      subscription = event.data.object;
+    case 'invoice.payment_failed':
+      subscription = data.object;
       status = subscription.status;
       console.log(`Subscription status is ${status}.`);
       // Then define and call a method to handle the subscription update.
       // handleSubscriptionUpdated(subscription);
       break;
-    case 'checkout.session.completed':
-      subscription = event.data.object;
-      status = subscription.status;
-      console.log(`Subscription status is ${status}.`);
-      // Payment is successful and the subscription is created.
-      // You should provision the subscription and save the customer ID to your database.
-      break;
-    case 'invoice.paid':
-      subscription = event.data.object;
-      status = subscription.status;
-      console.log(`Subscription status is ${status}.`);
-      // Continue to provision the subscription as payments continue to be made.
-      // Store the status in your database and check when a user accesses your service.
-      // This approach helps you avoid hitting rate limits.
-      break;
-    case 'invoice.payment_failed':
-      subscription = event.data.object;
-      status = subscription.status;
-      console.log(`Subscription status is ${status}.`);
-      // The payment failed or the customer does not have a valid payment method.
-      // The subscription becomes past_due. Notify your customer and send them to the
-      // customer portal to update their payment information.
-      break;
     default:
       // Unexpected event type
-      console.log(`Unhandled event type ${event.type}.`);
+      console.log(`Unhandled event type ${eventType}.`);
   }
 
-  res.sendStatus(200);
+  res.status(200).send('Webhook processed');
 }
