@@ -18,9 +18,9 @@ describe('tinycms tags', () => {
   });
 
   it('adds a new tag', () => {
-    console.log('deleting tags....');
+    // console.log('deleting tags....');
     cy.task('db:tags');
-    console.log('done deleting tags, visiting add tag page');
+    // console.log('done deleting tags, visiting add tag page');
     cy.visit('/tinycms/tags/add');
     cy.get('input[name="title"').type('New Tag');
     cy.get('form')

@@ -82,7 +82,7 @@ export default function HomePageEditor({
     });
 
     if (errors) {
-      console.log(errors);
+      console.error(errors);
       setNotificationMessage(
         'An error occured while trying to create the new layout config:',
         errors
@@ -90,7 +90,7 @@ export default function HomePageEditor({
       setNotificationType('error');
       setShowNotification(true);
     } else {
-      console.log('data:', data);
+      // console.log('data:', data);
       setNotificationMessage('Successfully published homepage!');
       setNotificationType('success');
       setShowNotification(true);
@@ -215,7 +215,7 @@ export async function getServerSideProps({ locale }) {
   try {
     siteMetadata = metadatas[0].site_metadata_translations[0].data;
   } catch (err) {
-    console.log('failed finding site metadata for ', locale, metadatas);
+    console.error('failed finding site metadata for ', locale, metadatas);
   }
 
   return {

@@ -78,7 +78,7 @@ export async function getStaticProps({ locale, params }) {
   });
 
   if (errors || !data) {
-    console.log('Failed finding page ', params);
+    console.error('Failed finding page ', params);
 
     return {
       notFound: true,

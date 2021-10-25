@@ -95,11 +95,11 @@ module.exports = (on, config) => {
       if (errors) {
         console.error('errors:', errors);
       }
-      console.log('data:', data);
+      // console.log('data:', data);
       return data;
     },
     async 'db:tags'() {
-      console.log('DELETING ALL TAGS!', apiGraphQL);
+      // console.log('DELETING ALL TAGS!', apiGraphQL);
       // seed database with test data
       const { errors, data } = await deleteAllTags({
         url: apiGraphQL,
@@ -108,7 +108,7 @@ module.exports = (on, config) => {
       if (errors) {
         console.error('errors:', errors);
       }
-      console.log('data:', data);
+      // console.log('data:', data);
       return data;
     },
     async 'db:articles'() {
@@ -117,7 +117,7 @@ module.exports = (on, config) => {
       if (errors) {
         console.error('errors deleting articles:', errors);
       }
-      console.log('data:', data);
+      // console.log('data:', data);
       return data;
     },
   });
