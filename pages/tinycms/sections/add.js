@@ -62,7 +62,7 @@ export default function AddSection({
 
     if (!formIsValid) {
       setNotificationMessage(errors);
-      console.log(notificationMessage);
+      console.error(errors, notificationMessage);
       setNotificationType('error');
       setShowNotification(true);
       return;
@@ -151,7 +151,7 @@ export async function getServerSideProps(context) {
   let locales;
 
   if (errors || !data) {
-    console.log('error listing locales:', errors);
+    console.error('error listing locales:', errors);
     return {
       notFound: true,
     };

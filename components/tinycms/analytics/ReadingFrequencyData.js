@@ -36,7 +36,7 @@ const ReadingFrequencyData = (props) => {
       }
       let totalRF = {};
       data.ga_reading_frequency.map((rf) => {
-        console.log(rf.category, rf.count);
+        // console.log(rf.category, rf.count);
         if (totalRF[rf.category]) {
           totalRF[rf.category] += parseInt(rf.count);
         } else {

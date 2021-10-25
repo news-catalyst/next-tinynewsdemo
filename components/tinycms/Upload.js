@@ -43,7 +43,7 @@ export default function Upload(props) {
           props.setNotificationType('success');
           props.setShowNotification(true);
         } else {
-          console.log('failed uploading image:', data);
+          console.error('failed uploading image:', data);
           props.setNotificationMessage(
             'An error occurred while uploading the image:',
             data

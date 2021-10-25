@@ -42,7 +42,7 @@ export default function AddTag({ apiUrl, apiToken, currentLocale, locales }) {
       published: published,
       slug: slug,
     };
-    console.log('params:', params);
+
     const { errors, data } = await hasuraCreateTag(params);
 
     if (data && data.insert_tags_one) {
@@ -110,7 +110,7 @@ export async function getServerSideProps(context) {
   let locales;
 
   if (errors || !data) {
-    console.log('error listing locales:', errors);
+    console.error('error listing locales:', errors);
     return {
       notFound: true,
     };
