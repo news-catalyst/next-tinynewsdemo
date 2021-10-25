@@ -47,7 +47,7 @@ export default function Article({
         siteMetadata['coverImage'] = mainImage.imageUrl;
       }
     } catch (err) {
-      console.log('error finding main image: ', err);
+      console.error('error finding main image: ', err);
     }
   }
 

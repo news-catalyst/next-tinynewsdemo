@@ -54,7 +54,7 @@ const AssetTitle = styled.h4(({ big, meta }) => ({
 
 export default function FeaturedArticleMeta({ article, big, metadata }) {
   if (article === null || article === undefined || !article) {
-    console.log('FeaturedArticleMeta missing article:', article);
+    console.error('FeaturedArticleMeta missing article:', article);
   }
 
   let categoryTitle = hasuraLocaliseText(
