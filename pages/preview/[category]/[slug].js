@@ -74,7 +74,7 @@ export async function getStaticProps(context) {
     categorySlug: params.category,
   });
   if (errors || !data) {
-    console.log('error getting article page:', errors);
+    console.error('error getting article page:', errors);
     return {
       notFound: true,
     };
@@ -98,10 +98,10 @@ export async function getStaticProps(context) {
     article = data.articles.find((a) => a.slug === params.slug);
     if (article && article.article_translations.length > 1) {
       // let mostRecentContent = article.article_translations.map(function(e) { return e.updated_at; }).sort().reverse()[0]
-      console.log(
-        'found more than 1 translation: ',
-        article.article_translations
-      );
+      // console.log(
+      //   'found more than 1 translation: ',
+      //   article.article_translations
+      // );
       let mostRecentContents = article.article_translations.sort((a, b) => {
         return new Date(b.updated_at) - new Date(a.updated_at);
       });
@@ -115,7 +115,7 @@ export async function getStaticProps(context) {
     try {
       siteMetadata = metadatas[0].site_metadata_translations[0].data;
     } catch (err) {
-      console.log('failed finding site metadata for ', locale, metadatas);
+      console.error('failed finding site metadata for ', locale, metadatas);
     }
   }
 

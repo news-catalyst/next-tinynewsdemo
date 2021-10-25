@@ -43,8 +43,6 @@ const SourcesByGender = (props) => {
         nodeCounter[label] += 1;
       });
 
-      console.log('node counter:', nodeCounter);
-
       Object.keys(nodeCounter)
         .sort()
         .map((key) => {

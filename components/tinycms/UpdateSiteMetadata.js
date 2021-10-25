@@ -37,9 +37,9 @@ export default function UpdateMetadata(props) {
     try {
       if (props.metadata) {
         let parsed = props.metadata;
-        console.log('props.metadata:', props.metadata);
+        // console.log('props.metadata:', props.metadata);
         setParsedData(parsed);
-        console.log('parsedData donation options:', parsed['donationOptions']);
+        // console.log('parsedData donation options:', parsed['donationOptions']);
         let formattedJSON = JSON.stringify(parsed, null, 2);
         setJsonData(formattedJSON);
       }

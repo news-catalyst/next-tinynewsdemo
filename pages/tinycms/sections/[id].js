@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import tw from 'twin.macro';
 import Link from 'next/link';
 import {
   FormContainer,
@@ -18,6 +19,8 @@ import { hasuraInsertArticleSlugVersions } from '../../../lib/articles';
 import AdminNav from '../../../components/nav/AdminNav';
 import Notification from '../../../components/tinycms/Notification';
 import { hasuraLocaliseText } from '../../../lib/utils';
+
+const ViewOnSiteLink = tw.a`font-bold cursor-pointer hover:underline`;
 
 export default function EditSection({
   apiUrl,
@@ -149,6 +152,16 @@ export default function EditSection({
             articleCount === 1 ? '' : 's'
           })`}
         />
+
+        {slug && (
+          <div tw="relative">
+            <p tw="absolute right-0">
+              <Link href={`/categories/${slug}`} key={`${slug}`} passHref>
+                <ViewOnSiteLink>View on site</ViewOnSiteLink>
+              </Link>
+            </p>
+          </div>
+        )}
 
         <form onSubmit={handleSubmit}>
           <TinyInputField
