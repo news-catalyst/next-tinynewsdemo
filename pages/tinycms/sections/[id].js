@@ -58,6 +58,20 @@ export default function EditSection({
   async function handleSubmit(ev) {
     ev.preventDefault();
 
+    if (currentSlug !== slug && articleCount > 0) {
+      if (
+        !window.confirm(
+          `You're going to change the URL for ${articleCount} articles in this category. Are you sure?`
+        )
+      ) {
+        setNotificationType('warning');
+        setNotificationMessage('Okay, we cancelled the section update.');
+        setShowNotification(true);
+
+        return false;
+      }
+    }
+
     let params = {
       url: apiUrl,
       orgSlug: apiToken,
@@ -90,27 +104,26 @@ export default function EditSection({
         if (response.errors) {
           console.error('error:', response.errors);
         } else {
-          console.log('response:', response.data);
-
           const rebuildResponse = await fetch(vercelHook, {
             method: 'POST',
           });
           const statusCode = rebuildResponse.status;
-          console.log(statusCode, 'vercel data:', rebuildResponse);
 
           setCurrentSlug(slug);
 
-          // if (statusCode < 200 || statusCode > 299) {
-          //   setNotificationType('error');
-          //   setNotificationMessage(
-          //     'An error occurred republishing the site: ' + JSON.stringify(data)
-          //   );
-          // } else {
-          //   setNotificationType('success');
-          //   setNotificationMessage(
-          //     'Successfully saved settings, republishing the site now!'
-          //   );
-          // }
+          if (statusCode < 200 || statusCode > 299) {
+            setNotificationType('error');
+            setNotificationMessage(
+              'An error occurred republishing the site: ' + JSON.stringify(data)
+            );
+            setShowNotification(true);
+          } else {
+            setNotificationType('success');
+            setNotificationMessage(
+              'Successfully saved settings, republishing the site now!'
+            );
+            setShowNotification(true);
+          }
         }
       }
 
