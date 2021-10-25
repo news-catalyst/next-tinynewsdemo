@@ -73,6 +73,14 @@ export default function Settings({
   const router = useRouter();
   const { action } = router.query;
 
+  const validateUrl = (value) => {
+    try {
+      new URL(value);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  };
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
 
@@ -177,6 +185,39 @@ export default function Settings({
     if (jsonData && (Object.keys(parsedData).length === 0 || editData)) {
       parsed = JSON.parse(jsonData);
       setParsedData(parsed);
+    }
+
+    // ensure founder twitter link is a fully formed url
+    if (parsed['founderTwitter'] && !validateUrl(parsed['founderTwitter'])) {
+      let prependedUrl = new URL(
+        `https://twitter.com/${parsed['founderTwitter']}`
+      );
+      if (validateUrl(prependedUrl)) {
+        parsed['founderTwitter'] = prependedUrl;
+      }
+    }
+
+    // ensure founder Instagram link is a fully formed url
+    if (
+      parsed['founderInstagram'] &&
+      !validateUrl(parsed['founderInstagram'])
+    ) {
+      let prependedUrl = new URL(
+        `https://instagram.com/${parsed['founderInstagram']}`
+      );
+      if (validateUrl(prependedUrl)) {
+        parsed['founderInstagram'] = prependedUrl;
+      }
+    }
+
+    // ensure founder Facebook link is a fully formed url
+    if (parsed['founderFacebook'] && !validateUrl(parsed['founderFacebook'])) {
+      let prependedUrl = new URL(
+        `https://facebook.com/${parsed['founderFacebook']}`
+      );
+      if (validateUrl(prependedUrl)) {
+        parsed['founderFacebook'] = prependedUrl;
+      }
     }
 
     const { errors, data } = await hasuraUpsertMetadata({
