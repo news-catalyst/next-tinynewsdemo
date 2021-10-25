@@ -25,7 +25,7 @@ export default function StaticMainImage({ page, isAmp, siteMetadata }) {
         siteMetadata['coverImage'] = mainImage.imageUrl;
       }
     } catch (err) {
-      console.log('error finding main image: ', err);
+      console.error('error finding main image: ', err);
     }
   }
 

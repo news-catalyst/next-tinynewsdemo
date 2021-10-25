@@ -203,7 +203,7 @@ export default function Settings({
         });
         const statusCode = response.status;
         const data = await response.json();
-        console.log(statusCode, 'vercel data:', data);
+        // console.log(statusCode, 'vercel data:', data);
         if (statusCode < 200 || statusCode > 299) {
           setNotificationType('error');
           setNotificationMessage(

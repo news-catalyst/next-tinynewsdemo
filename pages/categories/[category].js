@@ -128,7 +128,7 @@ export async function getStaticProps({ locale, params }) {
   });
 
   if (errors || !data) {
-    console.log('error listing articles:', errors);
+    console.error('error listing articles:', errors);
     return {
       notFound: true,
     };
@@ -156,7 +156,7 @@ export async function getStaticProps({ locale, params }) {
     try {
       siteMetadata = metadatas[0].site_metadata_translations[0].data;
     } catch (err) {
-      console.log('failed finding site metadata for ', locale, metadatas);
+      console.error('failed finding site metadata for ', locale, metadatas);
     }
   }
 
