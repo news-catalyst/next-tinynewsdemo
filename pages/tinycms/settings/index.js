@@ -73,6 +73,16 @@ export default function Settings({
   const router = useRouter();
   const { action } = router.query;
 
+  const validateUrl = (value) => {
+    try {
+      let testUrl = new URL(value);
+      console.log(value, 'is a valid url');
+      return true;
+    } catch (e) {
+      console.log(value, 'is not a valid url:', e);
+      return false;
+    }
+  };
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
 
@@ -177,6 +187,17 @@ export default function Settings({
     if (jsonData && (Object.keys(parsedData).length === 0 || editData)) {
       parsed = JSON.parse(jsonData);
       setParsedData(parsed);
+    }
+
+    // ensure founder twitter link is a fully formed url
+    // let founderTwitterLink = value;
+    if (parsed['founderTwitter'] && !validateUrl(parsed['founderTwitter'])) {
+      let prependedUrl = new URL(
+        `https://twitter.com/${parsed['founderTwitter']}`
+      );
+      if (validateUrl(prependedUrl)) {
+        parsed['founderTwitter'] = prependedUrl;
+      }
     }
 
     const { errors, data } = await hasuraUpsertMetadata({
