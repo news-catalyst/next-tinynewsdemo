@@ -262,7 +262,7 @@ export default function SiteInfoSettings(props) {
   try {
     parsedDonationOptions = JSON.parse(props.parsedData['donationOptions']);
   } catch (e) {
-    console.log('Failed to parse donation options json:', e);
+    console.error('Failed to parse donation options json:', e);
   }
   const [donationOptions, setDonationOptions] = useState(
     props.parsedData['donationOptions'] ? parsedDonationOptions : null
@@ -364,7 +364,7 @@ export default function SiteInfoSettings(props) {
     try {
       parsedDonationOptions = JSON.parse(props.parsedData['donationOptions']);
     } catch (e) {
-      console.log('Failed to parse donation options json:', e);
+      console.error('Failed to parse donation options json:', e);
     }
     setDonationOptions(
       props.parsedData['donationOptions'] ? parsedDonationOptions : null

@@ -54,7 +54,7 @@ export async function getStaticProps({ locale }) {
     localeCode: locale,
   });
   if (errors || !data) {
-    console.log('an error occurred');
+    console.error('an error occurred');
     throw errors;
   } else {
     sections = data.categories;

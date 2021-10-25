@@ -6,7 +6,7 @@ export default function Notification(props) {
     messages = [props.message];
   }
   let alertBox;
-  console.log('props:', props);
+  // console.log('props:', props);
   if (props.notificationType === 'success') {
     alertBox = (
       <div tw="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative">
