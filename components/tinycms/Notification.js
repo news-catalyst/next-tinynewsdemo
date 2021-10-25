@@ -17,10 +17,21 @@ export default function Notification(props) {
         ))}
       </div>
     );
+  } else if (props.notificationType === 'warning') {
+    alertBox = (
+      <div tw="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded relative">
+        <strong tw="font-bold">Warning: </strong>{' '}
+        {messages.map((msg) => (
+          <span key={msg} tw="block sm:inline">
+            {msg}
+          </span>
+        ))}
+      </div>
+    );
   } else {
     alertBox = (
       <div tw="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
-        <strong tw="font-bold">Uh oh!</strong>
+        <strong tw="font-bold">Uh oh!</strong>{' '}
         <span tw="block sm:inline">Something went wrong...</span>
         {messages.map((msg) => (
           <span key={msg} tw="block sm:inline">
