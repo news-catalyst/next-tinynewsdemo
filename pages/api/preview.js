@@ -21,11 +21,11 @@ export default async function Handler(req, res) {
   });
 
   if (errors || !data || !data.articles) {
-    console.log(errors);
+    console.error(errors);
     return res.status(500).json({ message: 'Error looking up article' });
   } else {
     article = data.articles[0];
-    console.log(article.category.slug, 'article: ', article);
+    // console.log(article.category.slug, 'article: ', article);
   }
 
   // If the slug doesn't exist prevent preview mode from being enabled

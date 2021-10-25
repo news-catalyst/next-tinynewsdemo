@@ -25,7 +25,7 @@ export async function getStaticProps({ locale }) {
     localeCode: locale,
   });
   if (errors || !data) {
-    console.log(errors);
+    console.error(errors);
     return {
       notFound: true,
     };
