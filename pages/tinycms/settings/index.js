@@ -75,11 +75,9 @@ export default function Settings({
 
   const validateUrl = (value) => {
     try {
-      let testUrl = new URL(value);
-      console.log(value, 'is a valid url');
+      new URL(value);
       return true;
     } catch (e) {
-      console.log(value, 'is not a valid url:', e);
       return false;
     }
   };
@@ -190,13 +188,35 @@ export default function Settings({
     }
 
     // ensure founder twitter link is a fully formed url
-    // let founderTwitterLink = value;
     if (parsed['founderTwitter'] && !validateUrl(parsed['founderTwitter'])) {
       let prependedUrl = new URL(
         `https://twitter.com/${parsed['founderTwitter']}`
       );
       if (validateUrl(prependedUrl)) {
         parsed['founderTwitter'] = prependedUrl;
+      }
+    }
+
+    // ensure founder Instagram link is a fully formed url
+    if (
+      parsed['founderInstagram'] &&
+      !validateUrl(parsed['founderInstagram'])
+    ) {
+      let prependedUrl = new URL(
+        `https://instagram.com/${parsed['founderInstagram']}`
+      );
+      if (validateUrl(prependedUrl)) {
+        parsed['founderInstagram'] = prependedUrl;
+      }
+    }
+
+    // ensure founder Facebook link is a fully formed url
+    if (parsed['founderFacebook'] && !validateUrl(parsed['founderFacebook'])) {
+      let prependedUrl = new URL(
+        `https://facebook.com/${parsed['founderFacebook']}`
+      );
+      if (validateUrl(prependedUrl)) {
+        parsed['founderFacebook'] = prependedUrl;
       }
     }
 
