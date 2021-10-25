@@ -28,7 +28,7 @@ export default function AddHomepageLayout({ apiUrl, apiToken }) {
       setNotificationType('error');
       setShowNotification(true);
     } else {
-      console.log('Created layout:', data);
+      console.error('Created layout:', data);
       // display success message
       setNotificationMessage(
         'Successfully saved and published the homepage layout!'

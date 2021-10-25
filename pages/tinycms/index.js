@@ -107,7 +107,7 @@ export async function getServerSideProps(context) {
   let locales;
 
   if (errors || !data) {
-    console.log('error listing locales:', errors);
+    console.error('error listing locales:', errors);
     return {
       notFound: true,
     };
