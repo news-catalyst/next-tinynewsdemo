@@ -119,7 +119,7 @@ export default function AddAuthor({
       setNotificationType('success');
       setShowNotification(true);
     } else if (errors) {
-      console.log('error creating author:', errors);
+      console.error('error creating author:', errors);
       setNotificationMessage(JSON.stringify(errors));
       setNotificationType('error');
       setShowNotification(true);

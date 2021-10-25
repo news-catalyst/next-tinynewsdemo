@@ -59,12 +59,11 @@ export default function EditTag({
     const { errors, data } = await hasuraUpdateTag(params);
 
     if (errors) {
-      console.log(errors);
+      console.error(errors);
       setNotificationMessage(errors);
       setNotificationType('error');
       setShowNotification(true);
     } else {
-      console.log(data);
       // display success message
       setNotificationMessage('The tag is updated.');
       setNotificationType('success');

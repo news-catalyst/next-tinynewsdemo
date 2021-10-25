@@ -45,8 +45,6 @@ const SourcesByAge = (props) => {
         nodeCounter[ageLabel] += 1;
       });
 
-      console.log('node counter:', nodeCounter);
-
       Object.keys(nodeCounter)
         .sort()
         .map((key) => {
