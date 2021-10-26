@@ -15,10 +15,10 @@ import {
   hasuraGetSectionById,
   hasuraUpdateSection,
 } from '../../../lib/section';
+import { hasuraInsertArticleSlugVersions } from '../../../lib/articles';
 import AdminNav from '../../../components/nav/AdminNav';
 import Notification from '../../../components/tinycms/Notification';
 import { hasuraLocaliseText } from '../../../lib/utils';
-import { slugify } from '../../../lib/utils';
 
 const ViewOnSiteLink = tw.a`font-bold cursor-pointer hover:underline`;
 
@@ -28,22 +28,23 @@ export default function EditSection({
   currentLocale,
   section,
   locales,
+  vercelHook,
 }) {
   const [notificationMessage, setNotificationMessage] = useState('');
   const [notificationType, setNotificationType] = useState('');
   const [showNotification, setShowNotification] = useState(false);
+
   const [sectionId, setSectionId] = useState(section.id);
+  const [articleCount, setArticleCount] = useState(
+    section.articles_aggregate.aggregate.count
+  );
 
   const [title, setTitle] = useState(
     hasuraLocaliseText(section.category_translations, 'title')
   );
   const [slug, setSlug] = useState(section.slug);
+  const [currentSlug, setCurrentSlug] = useState(section.slug);
   const [published, setPublished] = useState(section.published);
-
-  function updateTitleAndSlug(value) {
-    setTitle(value);
-    setSlug(slugify(value));
-  }
 
   function handlePublished(event) {
     const value =
@@ -56,6 +57,20 @@ export default function EditSection({
 
   async function handleSubmit(ev) {
     ev.preventDefault();
+
+    if (currentSlug !== slug && articleCount > 0) {
+      if (
+        !window.confirm(
+          `You're going to change the URL for ${articleCount} articles in this category. Are you sure?`
+        )
+      ) {
+        setNotificationType('warning');
+        setNotificationMessage('Okay, we cancelled the section update.');
+        setShowNotification(true);
+
+        return false;
+      }
+    }
 
     let params = {
       url: apiUrl,
@@ -73,6 +88,45 @@ export default function EditSection({
       setNotificationType('error');
       setShowNotification(true);
     } else {
+      // add entries to the article_slug_versions table if the slug has changed
+      if (currentSlug !== slug) {
+        let articleSlugVersions = section.articles_aggregate.nodes.map(
+          (node) => {
+            return {
+              article_id: node.id,
+              slug: node.slug,
+              category_slug: slug,
+            };
+          }
+        );
+        params['objects'] = articleSlugVersions;
+        const response = await hasuraInsertArticleSlugVersions(params);
+        if (response.errors) {
+          console.error('error:', response.errors);
+        } else {
+          const rebuildResponse = await fetch(vercelHook, {
+            method: 'POST',
+          });
+          const statusCode = rebuildResponse.status;
+
+          setCurrentSlug(slug);
+
+          if (statusCode < 200 || statusCode > 299) {
+            setNotificationType('error');
+            setNotificationMessage(
+              'An error occurred republishing the site: ' + JSON.stringify(data)
+            );
+            setShowNotification(true);
+          } else {
+            setNotificationType('success');
+            setNotificationMessage(
+              'Successfully saved settings, republishing the site now!'
+            );
+            setShowNotification(true);
+          }
+        }
+      }
+
       // display success message
       let message = 'The section is updated.';
       if (published) {
@@ -94,6 +148,7 @@ export default function EditSection({
         locales={locales}
         homePageEditor={false}
         showConfigOptions={true}
+        id={sectionId}
       />
 
       {showNotification && (
@@ -105,7 +160,11 @@ export default function EditSection({
       )}
 
       <FormContainer>
-        <FormHeader title="Edit Section" />
+        <FormHeader
+          title={`Edit Section (${articleCount} article${
+            articleCount === 1 ? '' : 's'
+          })`}
+        />
 
         {slug && (
           <div tw="relative">
@@ -124,9 +183,17 @@ export default function EditSection({
             onChange={(ev) => setTitle(ev.target.value)}
             label="Title"
           />
-          {slug && (
+          {currentLocale === 'en-US' && (
+            <TinyInputField
+              name="slug"
+              value={slug}
+              onChange={(ev) => setSlug(ev.target.value)}
+              label="URL Slug"
+            />
+          )}
+          {currentLocale !== 'en-US' && (
             <label>
-              <UrlSlugLabel>URL Slug</UrlSlugLabel>
+              <UrlSlugLabel>URL Slug (edit in English)</UrlSlugLabel>
               <UrlSlugValue>{slug}</UrlSlugValue>
             </label>
           )}
@@ -140,6 +207,23 @@ export default function EditSection({
 
           <TinySubmitCancelButtons destURL="/tinycms/sections" />
         </form>
+      </FormContainer>
+
+      <FormContainer>
+        <FormHeader title="Articles in this category" />
+        <ul>
+          {section.articles_aggregate.nodes.map((node) => (
+            <li key={`li-category-article-${node.slug}`}>
+              <Link
+                href="/articles/[category]/[slug]"
+                as={`/articles/${slug}/${node.slug}`}
+                passHref
+              >
+                <a>{node.article_translations[0].headline}</a>
+              </Link>
+            </li>
+          ))}
+        </ul>
       </FormContainer>
     </AdminLayout>
   );
@@ -171,6 +255,7 @@ export async function getServerSideProps(context) {
       currentLocale: context.locale,
       section: section,
       locales: locales,
+      vercelHook: process.env.VERCEL_DEPLOY_HOOK,
     },
   };
 }
