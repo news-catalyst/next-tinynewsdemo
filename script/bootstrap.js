@@ -353,12 +353,16 @@ async function createOrganization(opts) {
         let orgLocaleObjects = [];
         allLocales.forEach((aLocale) => {
           let foundLocale = locales.find((l) => l === aLocale.code);
-          if (foundLocale) {
-            orgLocaleObjects.push({
-              locale_id: aLocale.id,
-              organization_id: organizationID,
-            });
+          if (!foundLocale) {
+            // console.log(`${aLocale.code} skip`);
+            return;
           }
+
+          orgLocaleObjects.push({
+            locale_id: aLocale.id,
+            organization_id: organizationID,
+          });
+
           shared
             .hasuraInsertSections({
               url: apiUrl,
@@ -418,7 +422,10 @@ async function createOrganization(opts) {
               ],
             })
             .then((res) => {
-              console.log('Created the default sections:', res);
+              console.log(
+                `[${aLocale.code}] created the default sections:`,
+                res
+              );
               shared
                 .hasuraUpsertHomepageLayout({
                   url: apiUrl,
@@ -430,7 +437,7 @@ async function createOrganization(opts) {
                 })
                 .then((res) => {
                   console.log(
-                    'Created the Large Package Story Lead homepage layout:',
+                    `[${aLocale.code}] created the Large Package Story Lead homepage layout:`,
                     res
                   );
                   shared
@@ -443,7 +450,7 @@ async function createOrganization(opts) {
                     })
                     .then((res) => {
                       console.log(
-                        'Created the Big Featured Story homepage layout:',
+                        `[${aLocale.code}] created the Big Featured Story homepage layout:`,
                         res
                       );
                     });
@@ -512,11 +519,11 @@ async function createOrganization(opts) {
                 .then((res) => {
                   if (res.errors) {
                     console.error(
-                      '! Failed creating site metadata in locale: ' + locale
+                      `[${locale}] ! Failed creating site metadata`
                     );
                     console.error(res.errors);
                   } else {
-                    console.log('Created site metadata in locale ' + locale);
+                    console.log(`[${locale}] created site metadata`);
                     // console.log(JSON.stringify(res));
                   }
                 });
