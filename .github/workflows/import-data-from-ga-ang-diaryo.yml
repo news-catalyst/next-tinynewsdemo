@@ -1,0 +1,54 @@
+name: GA Data Importer
+'on':
+  schedule:
+    - cron: 5 9 * * *
+  push:
+    branches:
+      - main
+jobs:
+  GA-Data-Importer:
+    runs-on: ubuntu-latest
+    environment: data_import_ang-diaryo
+    env:
+      NEXT_PUBLIC_SITE_URL: ${{ secrets.NEXT_PUBLIC_SITE_URL }}
+      HASURA_API_URL: ${{ secrets.HASURA_API_URL }}
+      ORG_SLUG: ${{ secrets.ORG_SLUG }}
+      GOOGLE_CREDENTIALS_EMAIL: ${{ secrets.GOOGLE_CREDENTIALS_EMAIL }}
+      GOOGLE_CREDENTIALS_PRIVATE_KEY: ${{ secrets.GOOGLE_CREDENTIALS_PRIVATE_KEY }}
+      NEXT_PUBLIC_ANALYTICS_VIEW_ID: ${{ secrets.NEXT_PUBLIC_ANALYTICS_VIEW_ID }}
+      TINYMCE_API_KEY: ${{ secrets.TINYMCE_API_KEY }}
+    steps:
+      - run: echo "🔎 Running GA data importer"
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+      - run: npm install
+      - run: echo "🖥️ repo and node are setup"
+      - name: article-sessions
+        run: node script/ga.js -d article-sessions
+      - name: donate-clicks
+        run: node script/ga.js -d donate-clicks
+      - name: donor-reading-frequency
+        run: node script/ga.js -d donor-reading-frequency
+      - name: donors
+        run: node script/ga.js -d donors
+      - name: geo-sessions
+        run: node script/ga.js -d geo-sessions
+      - name: newsletter-impressions
+        run: node script/ga.js -d newsletter-impressions
+      - name: newsletters
+        run: node script/ga.js -d newsletters
+      - name: page-views
+        run: node script/ga.js -d page-views
+      - name: reading-depth
+        run: node script/ga.js -d reading-depth
+      - name: reading-frequency
+        run: node script/ga.js -d reading-frequency
+      - name: referral-sessions
+        run: node script/ga.js -d referral-sessions
+      - name: session-duration
+        run: node script/ga.js -d session-duration
+      - name: sessions
+        run: node script/ga.js -d sessions
+      - name: subscribers
+        run: node script/ga.js -d subscribers
+      - run: echo "🍏 This job's status is ${{ job.status }}."
