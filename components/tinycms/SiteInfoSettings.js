@@ -746,7 +746,7 @@ export default function SiteInfoSettings(props) {
       </HomepagePromoContainer>
       <div>
         <span tw="mt-1 font-bold">Preview</span>
-        <HomepagePromoBar metadata={props.parsedData} />
+        <HomepagePromoBar metadata={props.parsedData} tinycms={true} />
       </div>
       <NewsletterContainer ref={props.newsletterRef} id="newsletter">
         <SettingsHeader tw="col-span-3 mt-5">
@@ -784,7 +784,7 @@ export default function SiteInfoSettings(props) {
         <div tw="col-span-1">
           <span tw="mt-1 font-bold">Preview</span>
 
-          <NewsletterBlock metadata={props.parsedData} />
+          <NewsletterBlock metadata={props.parsedData} tinycms={true} />
         </div>
       </NewsletterContainer>
 
@@ -824,7 +824,7 @@ export default function SiteInfoSettings(props) {
         <div tw="col-span-1">
           <span tw="mt-1 font-bold">Preview</span>
 
-          <DonationBlock metadata={props.parsedData} />
+          <DonationBlock metadata={props.parsedData} tinycms={true} />
         </div>
       </MembershipContainer>
 
@@ -887,7 +887,7 @@ export default function SiteInfoSettings(props) {
 
       <DonationOptionsContainer>
         <span tw="mt-1 font-bold">Preview</span>
-        <DonationOptionsBlock metadata={props.parsedData} />
+        <DonationOptionsBlock metadata={props.parsedData} tinycms={true} />
       </DonationOptionsContainer>
 
       <SeoContainer ref={props.seoRef}>
