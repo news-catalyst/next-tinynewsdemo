@@ -7,7 +7,7 @@ import {
   hasuraListAllSections,
 } from '../../lib/articles.js';
 import { getArticleAds } from '../../lib/ads.js';
-import { hasuraLocaliseText } from '../../lib/utils.js';
+import { hasuraLocalizeText } from '../../lib/utils.js';
 import { useAmp } from 'next/amp';
 import ArticleStream from '../../components/homepage/ArticleStream';
 import ReadInOtherLanguage from '../../components/articles/ReadInOtherLanguage';
@@ -44,6 +44,7 @@ export default function CategoryPage(props) {
       meta={siteMetadata}
       sections={props.sections}
       renderFooter={props.renderFooter}
+      locale={props.locale}
     >
       <ArticleStream
         articles={props.articles}
@@ -53,6 +54,7 @@ export default function CategoryPage(props) {
         title={props.title}
         metadata={props.siteMetadata}
         ads={props.expandedAds}
+        locale={props.locale}
       />
       {props.locales.length > 1 && (
         <SectionLayout>
@@ -124,7 +126,6 @@ export async function getStaticProps({ locale, params }) {
     url: apiUrl,
     orgSlug: apiToken,
     categorySlug: params.category,
-    localeCode: locale,
   });
 
   if (errors || !data) {
@@ -138,18 +139,27 @@ export async function getStaticProps({ locale, params }) {
     locales = data.organization_locales;
 
     for (var i = 0; i < sections.length; i++) {
-      sections[i].title = hasuraLocaliseText(
+      sections[i].title = hasuraLocalizeText(
+        locale,
         sections[i].category_translations,
         'title'
       );
       if (sections[i].slug == params.category) {
         categoryExists = true;
-        title = hasuraLocaliseText(sections[i].category_translations, 'title');
+        title = hasuraLocalizeText(
+          locale,
+          sections[i].category_translations,
+          'title'
+        );
       }
     }
 
     for (var j = 0; j < tags.length; j++) {
-      tags[j].title = hasuraLocaliseText(tags[j].tag_translations, 'title');
+      tags[j].title = hasuraLocalizeText(
+        locale,
+        tags[j].tag_translations,
+        'title'
+      );
     }
 
     let metadatas = data.site_metadatas;
