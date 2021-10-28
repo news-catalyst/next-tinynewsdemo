@@ -6,7 +6,7 @@ import { determineTextColor } from '../../lib/utils';
 import { useEffect, useState } from 'react';
 
 const OptionsBlockContainer = tw.div`md:flex md:grid-cols-3 md:gap-4`;
-const Card = tw.div`rounded overflow-hidden shadow-lg w-full border-gray-200 border my-8 md:my-0`;
+const Card = tw.div`rounded overflow-hidden shadow-lg w-full border-gray-200 border my-8 md:my-0 relative`;
 const CardHeader = tw.header`border-b border-gray-200 pb-4 mb-4`;
 const CardHeading = styled.h4(({ meta }) => ({
   ...tw`text-2xl leading-none font-bold text-center px-8 pt-4`,
@@ -18,14 +18,15 @@ const CardDonationAmount = styled.h5(({ meta }) => ({
   fontFamily: Typography[meta.theme || 'styleone'].PromotionBlockDek,
 }));
 const PerMonth = tw.span`text-sm`;
+const OneTimePayment = tw.p`text-sm text-center`;
 const CardDonationDescription = styled.div(({ meta }) => ({
   ...tw`text-lg mt-8`,
   fontFamily: Typography[meta.theme || 'styleone'].PromotionBlockDek,
 }));
-const CardFooter = tw.footer`border-t border-gray-200 mt-4`;
+const CardFooter = tw.footer`mt-4`;
 const DonateFooterLink = styled.a(
   ({ meta, backgroundColor, textColor, tinycms }) => ({
-    ...tw`items-center justify-center flex font-bold w-full py-4 h-full`,
+    ...tw`items-center justify-center flex font-bold w-full py-4 absolute bottom-0`,
     fontFamily: Typography[meta.theme || 'styleone'].PromotionBlockDek,
     color: textColor,
     pointerEvents: tinycms ? 'none' : '',
@@ -77,8 +78,11 @@ export default function DonationOptionsBlock({
           <div className="content">
             <CardDonationAmount meta={metadata}>
               ${option.amount}
-              <PerMonth>/month</PerMonth>
+              {option.paymentType === 'monthly' && <PerMonth>/month</PerMonth>}
             </CardDonationAmount>
+            {option.paymentType === 'one-time' && (
+              <OneTimePayment>One-time payment</OneTimePayment>
+            )}
             <CardDonationDescription meta={metadata}>
               {option.description}
             </CardDonationDescription>
@@ -90,7 +94,7 @@ export default function DonationOptionsBlock({
           }}
         >
           <DonateFooterLink
-            href={`${process.env.NEXT_PUBLIC_MONKEYPOD_URL}&option_id=${process.env.NEXT_PUBLIC_MONKEYPOD_UUID}&amount=${option.amount}`}
+            href={`${process.env.NEXT_PUBLIC_MONKEYPOD_URL}?option_id=${option.monkeypodId}`}
             meta={metadata}
             backgroundColor={backgroundColor}
             textColor={textColor}
