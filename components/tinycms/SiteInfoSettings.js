@@ -857,6 +857,28 @@ export default function SiteInfoSettings(props) {
                   />
                 </label>
               </div>
+              <div tw="mt-2 mb-8">
+                <label>
+                  <input
+                    type="radio"
+                    name={`donationOptions-${i}-paymentType`}
+                    value="monthly"
+                    checked={option.paymentType === 'monthly'}
+                    onChange={props.handleChange}
+                  />
+                  <span tw="p-2 mt-1 font-bold">Monthly</span>
+                </label>
+                <label>
+                  <input
+                    type="radio"
+                    name={`donationOptions-${i}-paymentType`}
+                    value="one-time"
+                    checked={option.paymentType === 'one-time'}
+                    onChange={props.handleChange}
+                  />
+                  <span tw="p-2 mt-1 font-bold">One-time payment</span>
+                </label>
+              </div>
               <div tw="mt-2">
                 <label htmlFor={`donationOptions-${i}-description`}>
                   <span tw="mt-1 font-bold">Option Description</span>
@@ -877,6 +899,18 @@ export default function SiteInfoSettings(props) {
                     type="text"
                     name={`donationOptions-${i}-cta`}
                     value={option.cta}
+                    onChange={props.handleChange}
+                  />
+                </label>
+              </div>
+              <div tw="mt-2">
+                <label htmlFor={`donationOptions-${i}-monkeypodId`}>
+                  <span tw="mt-1 font-bold">Option MonkeyPod ID</span>
+                  <ControlledInput
+                    tw="w-full rounded-md border-solid border-gray-300"
+                    type="text"
+                    name={`donationOptions-${i}-monkeypodId`}
+                    value={option.monkeypodId}
                     onChange={props.handleChange}
                   />
                 </label>
