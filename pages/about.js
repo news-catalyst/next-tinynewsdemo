@@ -1,11 +1,19 @@
 import { useAmp } from 'next/amp';
+import { useRouter } from 'next/router';
 import { hasuraGetPage } from '../lib/articles.js';
 import { hasuraLocaliseText } from '../lib/utils';
 import AboutPage from '../components/AboutPage';
 
 export default function About(props) {
   const isAmp = useAmp();
+  const router = useRouter();
 
+  // If the page is not yet generated, this will be displayed
+  // initially until getStaticProps() finishes running
+  // See: https://nextjs.org/docs/basic-features/data-fetching#the-fallback-key-required
+  if (router.isFallback) {
+    return <div>Loading...</div>;
+  }
   return <AboutPage {...props} isAmp={isAmp} />;
 }
 
@@ -31,6 +39,8 @@ export async function getStaticProps({ locale }) {
     // throw errors;
   } else {
     if (!data.page_slug_versions || !data.page_slug_versions[0]) {
+      console.log('Returning a 404 - page slug version not found:', data);
+      console.log(JSON.stringify(data.pages));
       return {
         notFound: true,
       };
