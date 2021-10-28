@@ -6,7 +6,7 @@ import Typography from '../common/Typography';
 import Colors from '../common/Colors';
 
 const AdvertiseLink = styled.a(({ meta }) => ({
-  ...tw`items-center flex font-bold leading-none px-5 ml-5 order-2 lg:ml-0 lg:order-none`,
+  ...tw`inline-flex text-base font-bold cursor-pointer items-center px-5 hover:underline`,
   fontFamily: Typography[meta.theme].AdvertiseLink,
   backgroundColor:
     meta.color === 'custom'
@@ -25,7 +25,7 @@ const Advertise = ({ label, metadata }) => {
     trackEvent({
       action: 'Clicked',
       category: 'Advertise',
-      label: 'Global Nav',
+      label: 'Article promotion',
       non_interaction: false,
     });
   };
@@ -34,10 +34,9 @@ const Advertise = ({ label, metadata }) => {
       style={{
         minHeight: '2.375rem',
       }}
-      className="site__cta button Advertise"
       onClick={trackClick}
       meta={metadata}
-      href="https://store.tryletterhead.com/catalyst-test"
+      href={process.env.NEXT_PUBLIC_LETTERHEAD_ADVERTISING_STORE}
     >
       {label}
     </AdvertiseLink>

@@ -59,6 +59,7 @@ export default function Settings({
   const homepagePromoRef = useRef();
   const newsletterRef = useRef();
   const membershipRef = useRef();
+  const advertisingRef = useRef();
   const paymentRef = useRef();
   const seoRef = useRef();
   const [message, setMessage] = useState(null);
@@ -150,6 +151,13 @@ export default function Settings({
     } else if (window.location.hash && window.location.hash === '#membership') {
       if (membershipRef) {
         membershipRef.current.scrollIntoView({ behavior: 'smooth' });
+      }
+    } else if (
+      window.location.hash &&
+      window.location.hash === '#advertising'
+    ) {
+      if (advertisingRef) {
+        advertisingRef.current.scrollIntoView({ behavior: 'smooth' });
       }
     } else if (window.location.hash && window.location.hash === '#seo') {
       if (seoRef) {
@@ -320,6 +328,11 @@ export default function Settings({
                   </Link>
                 </li>
                 <li>
+                  <Link href="/tinycms/settings#advertising">
+                    <a>Advertising Block</a>
+                  </Link>
+                </li>
+                <li>
                   <Link href="/tinycms/settings#payment-options">
                     <a>Payment options</a>
                   </Link>
@@ -357,6 +370,7 @@ export default function Settings({
                 seoRef={seoRef}
                 newsletterRef={newsletterRef}
                 membershipRef={membershipRef}
+                advertisingRef={advertisingRef}
                 designRef={designRef}
                 homepagePromoRef={homepagePromoRef}
                 paymentRef={paymentRef}
