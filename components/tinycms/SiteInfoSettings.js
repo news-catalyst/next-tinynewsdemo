@@ -3,6 +3,7 @@ import tw, { css, styled } from 'twin.macro';
 import DonationBlock from '../plugins/DonationBlock';
 import NewsletterBlock from '../plugins/NewsletterBlock';
 import HomepagePromoBar from '../homepage/HomepagePromoBar';
+import AdPromotion from '../ads/AdPromotion';
 import DonationOptionsBlock from '../plugins/DonationOptionsBlock';
 import ControlledInput from './ControlledInput';
 import Upload from './Upload';
@@ -13,6 +14,7 @@ const SiteInfoFieldsContainer = tw.div`grid grid-cols-3 gap-4`;
 const SeoContainer = tw.div``;
 const DesignContainer = tw.div`grid grid-cols-2 gap-4`;
 const MembershipContainer = tw.div`grid grid-cols-2 gap-8`;
+const AdvertisingContainer = tw.div`grid grid-cols-2 gap-8`;
 const NewsletterContainer = tw.div`grid grid-cols-2 gap-8`;
 const HomepagePromoContainer = tw.div`grid grid-cols-2 gap-8`;
 const DonationOptionsEditor = tw.div`grid grid-cols-3 gap-4`;
@@ -253,6 +255,19 @@ export default function SiteInfoSettings(props) {
     props.parsedData['newsletterDek']
   );
 
+  const [advertisingHed, setAdvertisingHed] = useState(
+    props.parsedData['advertisingHed']
+  );
+  const [advertisingDek, setAdvertisingDek] = useState(
+    props.parsedData['advertisingDek']
+  );
+  const [staticAdvertisingDek, setStaticAdvertisingDek] = useState(
+    props.parsedData['advertisingDek']
+  );
+  const [advertisingCTA, setAdvertisingCTA] = useState(
+    props.parsedData['advertisingCTA']
+  );
+
   const [logo, setLogo] = useState(props.parsedData['logo']);
   const [favicon, setFavicon] = useState(props.parsedData['favicon']);
   const [defaultSocialImage, setDefaultSocialImage] = useState(
@@ -314,6 +329,15 @@ export default function SiteInfoSettings(props) {
     }));
   };
 
+  const handleAdvertisingDekChange = (value) => {
+    setAdvertisingDek(value);
+
+    props.updateParsedData((prevState) => ({
+      ...prevState,
+      ['advertisingDek']: value,
+    }));
+  };
+
   useEffect(() => {
     setTimeZone(props.parsedData['timeZone']);
     setSiteTwitter(props.parsedData['siteTwitter']);
@@ -347,13 +371,19 @@ export default function SiteInfoSettings(props) {
       setStaticSupportDek(props.parsedData['supportDek']);
     }
     setSupportCTA(props.parsedData['supportCTA']);
+    setAdvertisingHed(props.parsedData['advertisingHed']);
+    setAdvertisingDek(props.parsedData['advertisingDek']);
+    if (!staticAdvertisingDek) {
+      setStaticAdvertisingDek(props.parsedData['advertisingDek']);
+    }
+    setAdvertisingCTA(props.parsedData['advertisingCTA']);
     setPrimaryColor(props.parsedData['primaryColor']);
     setSecondaryColor(props.parsedData['secondaryColor']);
     setMembershipDek(props.parsedData['membershipDek']);
 
     setMembershipHed(props.parsedData['membershipHed']);
-    if (props.parsedData['newsletterDek']) {
-      setNewsletterDek(props.parsedData['newsletterDek']);
+    if (!staticNewsletterDek) {
+      setStaticNewsletterDek(props.parsedData['newsletterDek']);
     }
     setNewsletterHed(props.parsedData['newsletterHed']);
     setNewsletterRedirect(props.parsedData['newsletterRedirect']);
@@ -827,6 +857,52 @@ export default function SiteInfoSettings(props) {
           <DonationBlock metadata={props.parsedData} tinycms={true} />
         </div>
       </MembershipContainer>
+
+      <AdvertisingContainer ref={props.advertisingRef} id="advertising">
+        <SettingsHeader tw="col-span-3 mt-5 mb-0 leading-none">
+          Advertising promotion block
+        </SettingsHeader>
+        <p tw="col-span-3 mt-0 mb-2">
+          <em>
+            Note: this promotion block will only appear if you have launched
+            your Letterhead advertising store.
+          </em>
+        </p>
+
+        <div tw="col-span-1">
+          <label htmlFor="heading">
+            <span tw="w-full mt-1 font-bold">Heading</span>
+            <ControlledInput
+              type="text"
+              name="advertisingHed"
+              value={advertisingHed}
+              onChange={props.handleChange}
+            />
+          </label>
+          <label htmlFor="description">
+            <span tw="mt-1 font-bold">Description</span>
+            <TinyEditor
+              tinyApiKey={props.tinyApiKey}
+              setValue={handleAdvertisingDekChange}
+              value={staticAdvertisingDek}
+            />
+          </label>
+          <label htmlFor="CTA">
+            <span tw="mt-1 font-bold">CTA</span>
+            <ControlledInput
+              type="text"
+              name="advertisingCTA"
+              value={advertisingCTA}
+              onChange={props.handleChange}
+            />
+          </label>
+        </div>
+        <div tw="col-span-1">
+          <span tw="mt-1 font-bold">Preview</span>
+
+          <AdPromotion metadata={props.parsedData} tinycms={true} />
+        </div>
+      </AdvertisingContainer>
 
       <DonationOptionsEditor ref={props.paymentRef} id="payment-options">
         <SettingsHeader tw="col-span-3 mt-5">Payment options</SettingsHeader>

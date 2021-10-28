@@ -497,13 +497,16 @@ async function createOrganization(opts) {
               donateBlockHed: 'Donate',
               secondaryColor: '#002c57',
               donationOptions:
-                '[{\n"amount": 5,\n"name": "Member",\n"description": "This is a description."\n},\n{\n"amount": 10,\n"name": "Supporter",\n"description": "This is a description."\n},\n{\n"amount": 20,\n"name": "Superuser",\n"description": "This is a description."\n}]',
+                '[{\n"amount": 5,\n"name": "Member",\n"description": "This is a description.",\n"cta": "Donate"\n},\n{\n"amount": 10,\n"name": "Supporter",\n"description": "This is a description.",\n"cta": "Donate"\n},\n{\n"amount": 20,\n"name": "Superuser",\n"description": "This is a description.",\n"cta": "Donate"\n}]',
               footerBylineLink: url,
               footerBylineName: name,
               searchDescription: 'Page description',
               twitterDescription: 'Twitter description',
               facebookDescription: 'Facebook description',
               commenting: 'on',
+              advertisingHed: `Advertise with ${name}`,
+              advertisingDek: 'Want to reach our engaged, connected audience? Advertise within our weekly newsletter!',
+              advertisingCTA: 'Buy an advertisement',
             };
 
             locales.map((locale) => {
