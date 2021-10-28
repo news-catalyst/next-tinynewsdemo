@@ -71,7 +71,6 @@ export async function getStaticProps({ locale, params }) {
   const { errors, data } = await hasuraArticlePage({
     url: apiUrl,
     orgSlug: apiToken,
-    localeCode: locale,
     categorySlug: params.category,
     slug: params.slug,
   });
@@ -81,6 +80,7 @@ export async function getStaticProps({ locale, params }) {
     !data.article_slug_versions ||
     data.article_slug_versions.length === 0
   ) {
+    console.log('not found:', errors, data);
     return {
       notFound: true,
     };
@@ -140,6 +140,7 @@ export async function getStaticProps({ locale, params }) {
       renderFooter,
       locales,
       publishedLocales,
+      locale,
     },
     // Re-generate the post at most once per second
     // if a request comes in
