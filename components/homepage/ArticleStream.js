@@ -18,6 +18,7 @@ export default function ArticleStream({
   title,
   metadata,
   ads,
+  locale,
 }) {
   const AD_PLACEMENT_INDEX = 3;
 
@@ -29,6 +30,7 @@ export default function ArticleStream({
         amp={isAmp}
         showCategory={showCategory}
         metadata={metadata}
+        locale={locale}
       />
     );
   };
