@@ -1,5 +1,6 @@
 import { useAmp } from 'next/amp';
 import tw from 'twin.macro';
+import { useRouter } from 'next/router';
 import { hasuraGetPage } from '../lib/articles.js';
 import { hasuraLocaliseText } from '../lib/utils';
 import Layout from '../components/Layout';
@@ -25,6 +26,14 @@ export default function Donate({
   locale,
 }) {
   const isAmp = useAmp();
+  const router = useRouter();
+
+  // If the page is not yet generated, this will be displayed
+  // initially until getStaticProps() finishes running
+  // See: https://nextjs.org/docs/basic-features/data-fetching#the-fallback-key-required
+  if (router.isFallback) {
+    return <div>Loading...</div>;
+  }
 
   // there will only be one translation returned for a given page + locale
   const localisedPage = page.page_translations[0];
@@ -77,12 +86,17 @@ export async function getStaticProps({ locale }) {
     localeCode: locale,
   });
   if (errors || !data) {
+    console.log('Returning a 404 - errors:', errors);
+    console.log('Returning a 404 - data:', data);
+
     return {
       notFound: true,
     };
     // throw errors;
   } else {
     if (!data.page_slug_versions || !data.page_slug_versions[0]) {
+      console.log('Returning a 404 - page slug version not found:', data);
+      console.log(JSON.stringify(data.pages));
       return {
         notFound: true,
       };
