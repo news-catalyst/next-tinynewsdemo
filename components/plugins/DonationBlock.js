@@ -21,14 +21,17 @@ const DonationDek = styled.div(({ meta }) => ({
   ...tw`mb-6`,
   fontFamily: Typography[meta.theme || 'styleone'].PromotionBlockDek,
 }));
-const DonateLink = styled.a(({ textColor, backgroundColor, meta }) => ({
-  ...tw`py-2 px-4 font-bold cursor-pointer hover:underline`,
-  backgroundColor: backgroundColor,
-  color: textColor,
-  fontFamily: Typography[meta.theme || 'styleone'].PromotionBlockCTA,
-}));
+const DonateLink = styled.a(
+  ({ textColor, backgroundColor, meta, tinycms }) => ({
+    ...tw`py-2 px-4 font-bold cursor-pointer hover:underline`,
+    backgroundColor: backgroundColor,
+    pointerEvents: tinycms ? 'none' : '',
+    color: textColor,
+    fontFamily: Typography[meta.theme || 'styleone'].PromotionBlockCTA,
+  })
+);
 
-export default function DonationBlock({ metadata }) {
+export default function DonationBlock({ metadata, tinycms }) {
   const [textColor, setTextColor] = useState(null);
   const [backgroundColor, setBackgroundColor] = useState(null);
   const { trackEvent } = useAnalytics();
@@ -69,6 +72,7 @@ export default function DonationBlock({ metadata }) {
           backgroundColor={textColor}
           meta={metadata}
           onClick={trackClick}
+          tinycms={tinycms}
           style={{
             minHeight: '2.375rem',
           }}

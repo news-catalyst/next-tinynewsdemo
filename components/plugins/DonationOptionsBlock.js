@@ -23,14 +23,21 @@ const CardDonationDescription = styled.div(({ meta }) => ({
   fontFamily: Typography[meta.theme || 'styleone'].PromotionBlockDek,
 }));
 const CardFooter = tw.footer`border-t border-gray-200 mt-4`;
-const DonateFooterLink = styled.a(({ meta, backgroundColor, textColor }) => ({
-  ...tw`items-center justify-center flex font-bold w-full py-4 h-full`,
-  fontFamily: Typography[meta.theme || 'styleone'].PromotionBlockDek,
-  color: textColor,
-  backgroundColor: backgroundColor,
-}));
+const DonateFooterLink = styled.a(
+  ({ meta, backgroundColor, textColor, tinycms }) => ({
+    ...tw`items-center justify-center flex font-bold w-full py-4 h-full`,
+    fontFamily: Typography[meta.theme || 'styleone'].PromotionBlockDek,
+    color: textColor,
+    pointerEvents: tinycms ? 'none' : '',
+    backgroundColor: backgroundColor,
+  })
+);
 
-export default function DonationOptionsBlock({ metadata, wrap = true }) {
+export default function DonationOptionsBlock({
+  metadata,
+  tinycms,
+  wrap = true,
+}) {
   const [textColor, setTextColor] = useState(null);
   const [backgroundColor, setBackgroundColor] = useState(null);
 
@@ -87,6 +94,7 @@ export default function DonationOptionsBlock({ metadata, wrap = true }) {
             meta={metadata}
             backgroundColor={backgroundColor}
             textColor={textColor}
+            tinycms={tinycms}
           >
             {option.cta}
           </DonateFooterLink>
