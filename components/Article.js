@@ -16,6 +16,7 @@ export default function Article({
   renderFooter,
   locales,
   publishedLocales,
+  locale,
 }) {
   const isAmp = useAmp();
 
@@ -57,6 +58,7 @@ export default function Article({
       article={article}
       sections={sections}
       renderFooter={renderFooter}
+      locale={locale}
     >
       <div className="post">
         <ArticleHeader
@@ -78,6 +80,7 @@ export default function Article({
             article={article}
             isAmp={isAmp}
             metadata={siteMetadata}
+            locale={locale}
           />
         </section>
         {displayComments && <Comments article={article} isAmp={isAmp} />}

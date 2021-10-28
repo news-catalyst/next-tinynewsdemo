@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import tw, { styled } from 'twin.macro';
-import { hasuraLocaliseText } from '../../lib/utils';
+import { hasuraLocaliseText, hasuraLocalizeText } from '../../lib/utils';
 import ArticleFooterAuthor from './ArticleFooterAuthor';
 import Typography from '../common/Typography';
 
@@ -16,14 +16,18 @@ const TagsList = tw.ul`flex flex-row flex-wrap pb-6 mb-2 list-outside w-full`;
 const TagsListItem = tw.li`mb-4 ml-4`;
 const TagsListLink = tw.a`text-gray-700 uppercase text-xs bg-gray-200 rounded flex justify-center p-3 cursor-pointer hover:bg-blue-500 hover:text-white`;
 
-export default function ArticleFooter({ article, isAmp, metadata }) {
+export default function ArticleFooter({ article, isAmp, locale, metadata }) {
   let tagLinks;
   if (article.tag_articles) {
     tagLinks = article.tag_articles.map((tag_article) => (
       <TagsListItem key={tag_article.tag.slug}>
         <Link href={`/tags/${tag_article.tag.slug}`} passHref>
           <TagsListLink>
-            {hasuraLocaliseText(tag_article.tag.tag_translations, 'title')}
+            {hasuraLocalizeText(
+              locale,
+              tag_article.tag.tag_translations,
+              'title'
+            )}
           </TagsListLink>
         </Link>
       </TagsListItem>

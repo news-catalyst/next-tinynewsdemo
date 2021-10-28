@@ -31,6 +31,8 @@ export default function Layout({
     meta = {};
   }
 
+  console.log('Layout locale:', locale);
+
   const metaValues = {
     canonical: meta['canonicalUrl'] || meta['siteUrl'],
     favicon: meta['favicon'],
@@ -90,6 +92,7 @@ export default function Layout({
       'search_title'
     );
     metaValues.searchDescription = hasuraLocalizeText(
+      locale,
       translations,
       'search_description'
     );
@@ -256,7 +259,12 @@ export default function Layout({
       </Head>
       <ThemeWrapper meta={meta}>
         {renderNav && (
-          <GlobalNav metadata={meta} sections={sections} isAmp={isAmp} />
+          <GlobalNav
+            locale={locale}
+            metadata={meta}
+            sections={sections}
+            isAmp={isAmp}
+          />
         )}
         <Main>
           {isAmp && (
