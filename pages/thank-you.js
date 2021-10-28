@@ -1,5 +1,6 @@
 import { useAmp } from 'next/amp';
 import tw from 'twin.macro';
+import { useRouter } from 'next/router';
 import { hasuraGetPage } from '../lib/articles.js';
 import { useAnalytics } from '../lib/hooks/useAnalytics.js';
 import { hasuraLocaliseText } from '../lib/utils';
@@ -26,9 +27,18 @@ export default function ThankYou({
   locale,
 }) {
   const isAmp = useAmp();
-
+  const router = useRouter();
   // sets a cookie if request comes from monkeypod.io marking this browser as a donor
   const { checkReferrer, trackEvent } = useAnalytics();
+
+  // If the page is not yet generated, this will be displayed
+  // initially until getStaticProps() finishes running
+  // See: https://nextjs.org/docs/basic-features/data-fetching#the-fallback-key-required
+  if (router.isFallback) {
+    console.log('router.isFallback on thank you page');
+    return <div>Loading...</div>;
+  }
+
   // this will return true if the request came from monkeypod, false otherwise
   let isDonor = checkReferrer(referrer);
   if (isDonor) {
@@ -133,7 +143,6 @@ export async function getServerSideProps(context) {
       siteMetadata,
       locales,
       locale,
-      revalidate: 1,
     },
   };
 }
