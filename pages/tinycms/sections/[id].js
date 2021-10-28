@@ -219,7 +219,9 @@ export default function EditSection({
                 as={`/articles/${slug}/${node.slug}`}
                 passHref
               >
-                <a>{node.article_translations[0].headline}</a>
+                <a>
+                  {hasuraLocaliseText(node.article_translations, 'headline')}
+                </a>
               </Link>
             </li>
           ))}
