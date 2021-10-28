@@ -4,7 +4,7 @@ import GlobalFooter from './nav/GlobalFooter.js';
 import CookieConsentWrapper from './nav/CookieConsentWrapper.js';
 import { useAmp } from 'next/amp';
 import AmpAnalytics from './amp/AmpAnalytics.js';
-import { hasuraLocaliseText } from '../lib/utils';
+import { hasuraLocalizeText } from '../lib/utils';
 import tw, { styled } from 'twin.macro';
 
 const Main = tw.main`pt-8 pb-24`;
@@ -23,6 +23,7 @@ export default function Layout({
   article,
   page,
   sections,
+  locale,
   renderNav = true,
   renderFooter = true,
 }) {
@@ -73,31 +74,43 @@ export default function Layout({
     metaValues['documentType'] = 'website';
   }
   if (translations && translations.length > 0) {
-    pageTitle = hasuraLocaliseText(translations, 'search_title');
+    pageTitle = hasuraLocalizeText(locale, translations, 'search_title');
     pageTitle += ' | ' + metaValues.siteName;
 
     if (article && article.category) {
-      metaValues.section = hasuraLocaliseText(
+      metaValues.section = hasuraLocalizeText(
+        locale,
         article.category.category_translations,
         'title'
       );
     }
-    metaValues.searchTitle = hasuraLocaliseText(translations, 'search_title');
-    metaValues.searchDescription = hasuraLocaliseText(
+    metaValues.searchTitle = hasuraLocalizeText(
+      locale,
+      translations,
+      'search_title'
+    );
+    metaValues.searchDescription = hasuraLocalizeText(
       translations,
       'search_description'
     );
 
-    metaValues.twitterTitle = hasuraLocaliseText(translations, 'twitter_title');
-    metaValues.twitterDescription = hasuraLocaliseText(
+    metaValues.twitterTitle = hasuraLocalizeText(
+      locale,
+      translations,
+      'twitter_title'
+    );
+    metaValues.twitterDescription = hasuraLocalizeText(
+      locale,
       translations,
       'twitter_description'
     );
-    metaValues.facebookTitle = hasuraLocaliseText(
+    metaValues.facebookTitle = hasuraLocalizeText(
+      locale,
       translations,
       'facebook_title'
     );
-    metaValues.facebookDescription = hasuraLocaliseText(
+    metaValues.facebookDescription = hasuraLocalizeText(
+      locale,
       translations,
       'facebook_description'
     );
@@ -119,7 +132,7 @@ export default function Layout({
       tagList.push(
         <meta
           property="article:tag"
-          content={hasuraLocaliseText(tag.tag_translations, 'title')}
+          content={hasuraLocalizeText(locale, tag.tag_translations, 'title')}
           key={tag.slug}
         />
       );
@@ -183,9 +196,13 @@ export default function Layout({
           article.tags !== undefined &&
           article.tags.map((tag) => (
             <meta
-              key={hasuraLocaliseText(tag.tag_translations, 'title')}
+              key={hasuraLocalizeText(locale, tag.tag_translations, 'title')}
               property="article:tag"
-              content={hasuraLocaliseText(tag.tag_translations, 'title')}
+              content={hasuraLocalizeText(
+                locale,
+                tag.tag_translations,
+                'title'
+              )}
             />
           ))}
         {metaValues.facebookAppId && (

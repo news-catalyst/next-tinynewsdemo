@@ -1,12 +1,9 @@
 import React from 'react';
 import { hasuraStreamArticles } from '../lib/homepage.js';
 import { cachedContents } from '../lib/cached';
-import {
-  hasuraGetHomepageEditor,
-  hasuraListAllPageSlugs,
-} from '../lib/articles.js';
+import { hasuraGetHomepageEditor } from '../lib/articles.js';
 import { getArticleAds } from '../lib/ads.js';
-import { hasuraLocaliseText } from '../lib/utils.js';
+import { hasuraLocalizeText } from '../lib/utils.js';
 import Homepage from '../components/Homepage';
 import LandingPage from '../components/LandingPage';
 import CurriculumHomepage from '../components/curriculum/CurriculumHomepage';
@@ -16,6 +13,7 @@ export default function Home(props) {
     return <CurriculumHomepage {...props} />;
   }
 
+  console.log('streamArticles:', props.streamArticles);
   const component =
     props.siteMetadata.landingPage === 'on' || !props.selectedLayout ? (
       <LandingPage {...props} />
@@ -86,7 +84,6 @@ export async function getStaticProps({ locale }) {
   const streamResult = await hasuraStreamArticles({
     url: apiUrl,
     orgSlug: apiToken,
-    localeCode: locale,
     ids: ids,
     limit: process.env.ORG_SLUG === 'tiny-news-curriculum' ? 20 : 10,
   });
@@ -103,12 +100,17 @@ export async function getStaticProps({ locale }) {
 
   const tags = data.tags;
   for (var i = 0; i < tags.length; i++) {
-    tags[i].title = hasuraLocaliseText(tags[i].tag_translations, 'title');
+    tags[i].title = hasuraLocalizeText(
+      locale,
+      tags[i].tag_translations,
+      'title'
+    );
   }
 
   const sections = data.categories;
   for (var j = 0; j < sections.length; j++) {
-    sections[j].title = hasuraLocaliseText(
+    sections[j].title = hasuraLocalizeText(
+      locale,
       sections[j].category_translations,
       'title'
     );
