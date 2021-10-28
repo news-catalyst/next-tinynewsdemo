@@ -5,7 +5,7 @@ import tw, { styled } from 'twin.macro';
 import {
   renderDate,
   renderAuthors,
-  hasuraLocaliseText,
+  hasuraLocalizeText,
 } from '../../lib/utils.js';
 import Typography from '../common/Typography';
 
@@ -32,13 +32,18 @@ export default function ArticleLink({
   isAmp,
   showCategory,
   metadata,
+  locale,
 }) {
   let mainImage = null;
   let mainImageNode;
 
   let headline;
   if (article.article_translations) {
-    headline = hasuraLocaliseText(article.article_translations, 'headline');
+    headline = hasuraLocalizeText(
+      locale,
+      article.article_translations,
+      'headline'
+    );
   } else if (article.newsletter_published_at) {
     headline = article.headline;
   }
@@ -49,7 +54,8 @@ export default function ArticleLink({
   let linkAs;
 
   if (article.category && article.category.category_translations) {
-    categoryTitle = hasuraLocaliseText(
+    categoryTitle = hasuraLocalizeText(
+      locale,
       article.category.category_translations,
       'title'
     );
@@ -61,7 +67,8 @@ export default function ArticleLink({
     linkAs = `/newsletters/${article.slug}`;
   }
 
-  let mainImageContent = hasuraLocaliseText(
+  let mainImageContent = hasuraLocalizeText(
+    locale,
     article.article_translations,
     'main_image'
   );
