@@ -7,15 +7,16 @@ import Colors from '../common/Colors';
 
 const Group = tw.div`relative`;
 const Input = tw.input`block w-full border-b border-gray-500 opacity-70 text-black font-bold`;
-const Submit = styled.input(({ textColor, backgroundColor }) => ({
+const Submit = styled.input(({ textColor, backgroundColor, tinycms }) => ({
   ...tw`block absolute cursor-pointer rounded-full font-bold leading-none w-8 h-8 pl-2 right-2 z-10`,
   backgroundColor: backgroundColor,
   color: textColor,
+  pointerEvents: tinycms ? 'none' : '',
 }));
 
 const url = '/api/subscribe';
 
-const NewsletterSubscribe = ({ articleTitle, metadata }) => {
+const NewsletterSubscribe = ({ articleTitle, metadata, tinycms }) => {
   const { trackEvent } = useAnalytics();
   const [ref, inView] = useInView({ triggerOnce: true });
 
@@ -162,6 +163,7 @@ const NewsletterSubscribe = ({ articleTitle, metadata }) => {
                 }}
                 textColor={textColor}
                 backgroundColor={backgroundColor}
+                tinycms={tinycms}
               />
             </Group>
           )}
