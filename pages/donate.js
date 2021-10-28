@@ -1,5 +1,5 @@
 import { useAmp } from 'next/amp';
-import tw from 'twin.macro';
+import tw, { styled } from 'twin.macro';
 import { useRouter } from 'next/router';
 import { hasuraGetPage } from '../lib/articles.js';
 import { hasuraLocaliseText } from '../lib/utils';
@@ -17,6 +17,10 @@ import {
 } from '../components/common/CommonStyles.js';
 
 const SectionContainer = tw.div`flex flex-col flex-nowrap items-center px-5 mx-auto max-w-7xl w-full`;
+const WideContainer = styled.div(() => ({
+  ...tw`px-5 md:px-12 mx-auto w-full`,
+  maxWidth: '1280px',
+}));
 
 export default function Donate({
   page,
@@ -54,9 +58,11 @@ export default function Donate({
           <PostText>
             <PostTextContainer>{body}</PostTextContainer>
           </PostText>
-          <DonationOptionsBlock metadata={siteMetadata} wrap={true} />
         </article>
       </SectionContainer>
+      <WideContainer>
+        <DonationOptionsBlock metadata={siteMetadata} wrap={true} />
+      </WideContainer>
       {locales.length > 1 && (
         <SectionLayout>
           <SectionContainer>
