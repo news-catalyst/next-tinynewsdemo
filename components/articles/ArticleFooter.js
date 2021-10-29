@@ -17,7 +17,7 @@ const TagsListItem = tw.li`mb-4 ml-4`;
 const TagsListLink = tw.a`text-gray-700 uppercase text-xs bg-gray-200 rounded flex justify-center p-3 cursor-pointer hover:bg-blue-500 hover:text-white`;
 
 export default function ArticleFooter({ article, isAmp, locale, metadata }) {
-  let tagLinks;
+  let tagLinks = [];
   if (article.tag_articles) {
     tagLinks = article.tag_articles.map((tag_article) => (
       <TagsListItem key={tag_article.tag.slug}>

@@ -20,7 +20,7 @@ export default function Article({
 }) {
   const isAmp = useAmp();
 
-  console.log('Article locale:', locale, article.article_translations.length);
+  // console.log('Article locale:', locale, article.article_translations.length);
 
   let baseUrl = process.env.NEXT_PUBLIC_SITE_URL || siteMetadata['siteUrl'];
   // this is used for the canonical link tag in the Layout component

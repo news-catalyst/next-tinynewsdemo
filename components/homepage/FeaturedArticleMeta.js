@@ -62,7 +62,7 @@ export default function FeaturedArticleMeta({
     console.error('FeaturedArticleMeta missing article:', article);
   }
 
-  console.log('featured article:', article);
+  // console.log('featured article:', article);
 
   let categoryTitle = hasuraLocalizeText(
     locale,
