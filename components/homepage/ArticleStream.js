@@ -57,6 +57,10 @@ export default function ArticleStream({
   let adIndex = 0;
 
   const articleStream = articles.map((article, i) => {
+    console.log(
+      'ArticleStream article translations:',
+      article.article_translations
+    );
     const streamArticle = renderArticle(article);
     if (!metadata.shortName === 'Tiny News Curriculum') {
       if (

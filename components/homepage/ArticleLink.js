@@ -44,6 +44,7 @@ export default function ArticleLink({
       article.article_translations,
       'headline'
     );
+    console.log(headline, locale, article.article_translations);
   } else if (article.newsletter_published_at) {
     headline = article.headline;
   }

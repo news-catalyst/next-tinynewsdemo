@@ -3,7 +3,7 @@ import Layout from '../components/Layout';
 import { hasuraGetLayout } from '../lib/articles.js';
 import { hasuraLocaliseText } from '../lib/utils';
 
-export default function Custom404({ sections, siteMetadata }) {
+export default function Custom404({ locale, sections, siteMetadata }) {
   let title;
   if (siteMetadata && siteMetadata.title404) {
     title = siteMetadata.title404;
@@ -20,7 +20,7 @@ export default function Custom404({ sections, siteMetadata }) {
   }
 
   return (
-    <Layout meta={siteMetadata} sections={sections}>
+    <Layout locale={locale} meta={siteMetadata} sections={sections}>
       <div className="post">
         <article className="container">
           <section key="title" className="section post__header">
@@ -73,6 +73,7 @@ export async function getStaticProps({ locale }) {
 
   return {
     props: {
+      locale,
       sections,
       siteMetadata,
     },
