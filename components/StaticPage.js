@@ -31,7 +31,13 @@ export default function StaticPage({
   if (page) {
     // there will only be one translation returned for a given page + locale
     localisedPage = page.page_translations[0];
-    body = renderBody(page.page_translations, [], isAmp, siteMetadata);
+    body = renderBody(
+      currentLocale,
+      page.page_translations,
+      [],
+      isAmp,
+      siteMetadata
+    );
   }
 
   return (
