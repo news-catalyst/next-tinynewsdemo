@@ -90,7 +90,7 @@ export default function ArticleHeader({
   // 'ReadInOtherLanguage' component should show "Read in Spanish" link
   // (logic around current locale is in the component itself)
   let readLocales = [];
-  let currentLocale = article.article_translations[0].locale_code;
+  let currentLocale = locale;
   if (locales.length > 1) {
     locales.forEach((siteLocale) => {
       publishedLocales.forEach((articleLocale) => {
