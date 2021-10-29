@@ -2,7 +2,7 @@ import { useAmp } from 'next/amp';
 import tw, { styled } from 'twin.macro';
 import { useRouter } from 'next/router';
 import { hasuraGetPage } from '../lib/articles.js';
-import { hasuraLocaliseText } from '../lib/utils';
+import { hasuraLocalizeText } from '../lib/utils';
 import Layout from '../components/Layout';
 import ReadInOtherLanguage from '../components/articles/ReadInOtherLanguage';
 import StaticMainImage from '../components/articles/StaticMainImage';
@@ -40,7 +40,12 @@ export default function Donate({
   }
 
   // there will only be one translation returned for a given page + locale
-  const localisedPage = page.page_translations[0];
+  const headline = hasuraLocalizeText(
+    locale,
+    page.page_translations,
+    'headline'
+  );
+
   const body = renderBody(
     locale,
     page.page_translations,
@@ -54,7 +59,7 @@ export default function Donate({
       <SectionContainer>
         <article className="container">
           <ArticleTitle meta={siteMetadata} tw="text-center">
-            {localisedPage.headline}
+            {headline}
           </ArticleTitle>
           <StaticMainImage
             isAmp={isAmp}
@@ -95,7 +100,6 @@ export async function getStaticProps({ locale }) {
     url: apiUrl,
     orgSlug: apiToken,
     slug: 'donate',
-    localeCode: locale,
   });
   if (errors || !data) {
     console.log('Returning a 404 - errors:', errors);
@@ -135,7 +139,8 @@ export async function getStaticProps({ locale }) {
     sections = data.categories;
     siteMetadata = data.site_metadatas[0].site_metadata_translations[0].data;
     for (i = 0; i < sections.length; i++) {
-      sections[i].title = hasuraLocaliseText(
+      sections[i].title = hasuraLocalizeText(
+        locale,
         sections[i].category_translations,
         'title'
       );
