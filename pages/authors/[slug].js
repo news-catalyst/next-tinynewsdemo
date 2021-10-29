@@ -4,7 +4,7 @@ import {
   hasuraListAllAuthorPaths,
   hasuraAuthorPage,
 } from '../../lib/articles.js';
-import { displayAuthorName, hasuraLocaliseText } from '../../lib/utils';
+import { displayAuthorName, hasuraLocalizeText } from '../../lib/utils';
 import { cachedContents } from '../../lib/cached';
 import { getArticleAds } from '../../lib/ads.js';
 import { useAmp } from 'next/amp';
@@ -43,8 +43,12 @@ export default function AuthorPage({
   if (author) {
     authorName = displayAuthorName(author.first_names, author.last_name);
     authorPhoto = author.photoUrl;
-    authorTitle = hasuraLocaliseText(author.author_translations, 'title');
-    authorBio = hasuraLocaliseText(author.author_translations, 'bio');
+    authorTitle = hasuraLocalizeText(
+      locale,
+      author.author_translations,
+      'title'
+    );
+    authorBio = hasuraLocalizeText(locale, author.author_translations, 'bio');
     authorTwitter = author.twitter;
 
     // set page title
@@ -68,7 +72,7 @@ export default function AuthorPage({
   const ProfileTwitter = tw.p`text-base pt-3`;
 
   return (
-    <Layout meta={siteMetadata} sections={sections}>
+    <Layout locale={locale} meta={siteMetadata} sections={sections}>
       <ProfileHeaderDiv>
         <ProfileImage src={authorPhoto}></ProfileImage>
         <div>
@@ -96,6 +100,7 @@ export default function AuthorPage({
         isAmp={isAmp}
         metadata={siteMetadata}
         ads={expandedAds}
+        locale={locale}
       />
       {locales.length > 1 && (
         <SectionLayout>
@@ -161,10 +166,10 @@ export async function getStaticProps({ locale, params }) {
     url: apiUrl,
     orgSlug: apiToken,
     authorSlug: params.slug,
-    localeCode: locale,
   });
 
   if (errors || !data) {
+    console.log('author page errors:', errors, data);
     return {
       notFound: true,
     };
@@ -175,7 +180,8 @@ export async function getStaticProps({ locale, params }) {
     locales = data.organization_locales;
 
     for (var i = 0; i < sections.length; i++) {
-      sections[i].title = hasuraLocaliseText(
+      sections[i].title = hasuraLocalizeText(
+        locale,
         sections[i].category_translations,
         'title'
       );
