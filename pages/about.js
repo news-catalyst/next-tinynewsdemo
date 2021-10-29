@@ -39,8 +39,8 @@ export async function getStaticProps({ locale }) {
     // throw errors;
   } else {
     if (!data.page_slug_versions || !data.page_slug_versions[0]) {
-      console.log('Returning a 404 - page slug version not found:', data);
-      console.log(JSON.stringify(data.pages));
+      console.error('Returning a 404 - page slug version not found:', data);
+
       return {
         notFound: true,
       };
