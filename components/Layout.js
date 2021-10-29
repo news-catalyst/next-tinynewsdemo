@@ -31,7 +31,7 @@ export default function Layout({
     meta = {};
   }
 
-  console.log('Layout locale:', locale);
+  // console.log('Layout locale:', locale);
 
   const metaValues = {
     canonical: meta['canonicalUrl'] || meta['siteUrl'],

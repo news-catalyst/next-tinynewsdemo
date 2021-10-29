@@ -50,6 +50,7 @@ export default function NewsletterEditionPage(props) {
       meta={props.siteMetadata}
       sections={props.sections}
       renderFooter={props.renderFooter}
+      locale={props.locale}
     >
       <SectionContainer>
         <ArticleTitle meta={props.siteMetadata} tw="text-center">
@@ -61,6 +62,7 @@ export default function NewsletterEditionPage(props) {
             article={props.newsletter}
             isAmp={isAmp}
             metadata={props.siteMetadata}
+            locale={props.locale}
           />
         </PostText>
         <NewsletterBlock metadata={props.siteMetadata} />
@@ -119,7 +121,6 @@ export async function getStaticProps({ locale, params }) {
     url: apiUrl,
     orgSlug: apiToken,
     slug: params.slug,
-    locale_code: locale,
   });
 
   if (errors || !data) {
@@ -170,6 +171,7 @@ export async function getStaticProps({ locale, params }) {
       siteMetadata,
       expandedAds,
       renderFooter,
+      locale,
     },
   };
 }
