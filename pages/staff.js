@@ -22,7 +22,6 @@ export async function getStaticProps({ locale }) {
     url: apiUrl,
     orgSlug: apiToken,
     slug: 'about',
-    localeCode: locale,
   });
   if (errors || !data) {
     console.error(errors);
@@ -50,9 +49,10 @@ export async function getStaticProps({ locale }) {
 
   return {
     props: {
+      authors,
+      locale,
       sections,
       siteMetadata,
-      authors,
     },
   };
 }

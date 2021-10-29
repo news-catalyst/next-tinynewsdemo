@@ -11,7 +11,13 @@ const SectionContainer = tw.div`flex flex-col flex-nowrap items-center px-5 mx-a
 const AuthorName = tw.h3`font-bold text-xl leading-tight mt-5 mb-4`;
 const AuthorAvatar = tw.div`overflow-hidden relative w-full rounded-full h-12 w-12 mr-2 float-left`;
 
-export default function StaffPage({ sections, siteMetadata, authors, isAmp }) {
+export default function StaffPage({
+  authors,
+  locale,
+  sections,
+  siteMetadata,
+  isAmp,
+}) {
   const staffers = authors.filter((a) => a.staff);
 
   return (
@@ -26,7 +32,11 @@ export default function StaffPage({ sections, siteMetadata, authors, isAmp }) {
             <PostText>
               <PostTextContainer>
                 {staffers.map((author) => (
-                  <Staffer key={author} author={author} isAmp={isAmp} />
+                  <Staffer
+                    key={`staff-author-${author.id}`}
+                    author={author}
+                    isAmp={isAmp}
+                  />
                 ))}
               </PostTextContainer>
             </PostText>
