@@ -36,6 +36,7 @@ export default function ArticleLink({
 }) {
   let mainImage = null;
   let mainImageNode;
+  let mainImageContent;
 
   let headline;
   if (article.article_translations) {
@@ -44,7 +45,12 @@ export default function ArticleLink({
       article.article_translations,
       'headline'
     );
-    console.log(headline, locale, article.article_translations);
+    // console.log(headline, locale, article.article_translations);
+    mainImageContent = hasuraLocalizeText(
+      locale,
+      article.article_translations,
+      'main_image'
+    );
   } else if (article.newsletter_published_at) {
     headline = article.headline;
   }
@@ -68,11 +74,6 @@ export default function ArticleLink({
     linkAs = `/newsletters/${article.slug}`;
   }
 
-  let mainImageContent = hasuraLocalizeText(
-    locale,
-    article.article_translations,
-    'main_image'
-  );
   if (
     mainImageContent !== null &&
     mainImageContent !== undefined &&
@@ -131,7 +132,9 @@ export default function ArticleLink({
           )}
         </AssetTitle>
         <AssetByline meta={metadata}>
-          By&nbsp;{renderAuthors(article)}&nbsp;
+          {article.author_articles && (
+            <>By&nbsp;{renderAuthors(article)}&nbsp;</>
+          )}
           <AssetTime>
             <span>{renderDate(firstPublishedAt, siteTimeZone, false)}</span>
           </AssetTime>
@@ -139,6 +142,7 @@ export default function ArticleLink({
       </AssetMetaContainer>
       {mainImage && (
         <Link
+          key={`article-link-${article.category.slug}-${article.slug}`}
           href={`/articles/${article.category.slug}/${article.slug}`}
           passHref
         >

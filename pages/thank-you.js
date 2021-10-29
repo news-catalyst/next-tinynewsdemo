@@ -35,7 +35,7 @@ export default function ThankYou({
   // initially until getStaticProps() finishes running
   // See: https://nextjs.org/docs/basic-features/data-fetching#the-fallback-key-required
   if (router.isFallback) {
-    console.log('router.isFallback on thank you page');
+    // console.log('router.isFallback on thank you page');
     return <div>Loading...</div>;
   }
 

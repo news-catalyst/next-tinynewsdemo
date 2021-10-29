@@ -169,7 +169,7 @@ export async function getStaticProps({ locale, params }) {
   });
 
   if (errors || !data) {
-    console.log('author page errors:', errors, data);
+    // console.log('author page errors:', errors, data);
     return {
       notFound: true,
     };
