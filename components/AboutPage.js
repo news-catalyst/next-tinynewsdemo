@@ -35,7 +35,7 @@ export default function AboutPage({
   );
 
   return (
-    <Layout meta={siteMetadata} page={page} sections={sections}>
+    <Layout locale={locale} meta={siteMetadata} page={page} sections={sections}>
       <article className="container">
         <SectionContainer>
           <div key="title" className="section post__header">

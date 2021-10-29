@@ -13,7 +13,7 @@ import {
 
 const SectionContainer = tw.div`flex flex-col flex-nowrap items-center px-5 mx-auto max-w-7xl w-full`;
 
-export default function Cookies({ siteMetadata, post, content }) {
+export default function Cookies({ locale, siteMetadata, post, content }) {
   return (
     <Layout meta={siteMetadata} sections={{}}>
       <SectionContainer>
@@ -74,6 +74,7 @@ export async function getStaticProps({ locale }) {
 
     return {
       props: {
+        locale,
         siteMetadata,
         post,
         content,
