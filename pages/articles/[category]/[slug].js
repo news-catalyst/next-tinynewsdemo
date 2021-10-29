@@ -5,7 +5,7 @@ import {
   hasuraArticlePage,
   hasuraCategoryPage,
 } from '../../../lib/articles.js';
-import { hasuraLocaliseText } from '../../../lib/utils.js';
+import { hasuraLocalizeText } from '../../../lib/utils.js';
 import { getArticleAds } from '../../../lib/ads.js';
 import { cachedContents } from '../../../lib/cached';
 import Article from '../../../components/Article.js';
@@ -80,7 +80,6 @@ export async function getStaticProps({ locale, params }) {
     !data.article_slug_versions ||
     data.article_slug_versions.length === 0
   ) {
-    console.log('not found:', errors, data);
     return {
       notFound: true,
     };
@@ -88,7 +87,8 @@ export async function getStaticProps({ locale, params }) {
   } else {
     sections = data.categories;
     for (var i = 0; i < sections.length; i++) {
-      sections[i].title = hasuraLocaliseText(
+      sections[i].title = hasuraLocalizeText(
+        locale,
         sections[i].category_translations,
         'title'
       );
@@ -103,7 +103,6 @@ export async function getStaticProps({ locale, params }) {
       url: apiUrl,
       orgSlug: apiToken,
       categorySlug: params.category,
-      localeCode: locale,
     });
     if (!sectionResponse.errors && sectionResponse.data) {
       sectionArticles = sectionResponse.data.articles.filter(

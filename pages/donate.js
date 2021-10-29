@@ -41,7 +41,13 @@ export default function Donate({
 
   // there will only be one translation returned for a given page + locale
   const localisedPage = page.page_translations[0];
-  const body = renderBody(page.page_translations, [], isAmp, siteMetadata);
+  const body = renderBody(
+    locale,
+    page.page_translations,
+    [],
+    isAmp,
+    siteMetadata
+  );
 
   return (
     <Layout meta={siteMetadata} page={page} sections={sections}>
