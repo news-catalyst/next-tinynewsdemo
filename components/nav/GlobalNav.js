@@ -20,7 +20,6 @@ const SectionLink = styled.a(({ meta }) => ({
 export default function GlobalNav({ locale, metadata, sections, isAmp }) {
   let sectionLinks;
 
-  console.log('GlobalNav locale:', locale);
   if (sections && sections[0] && typeof sections[0].title === 'string') {
     sectionLinks = sections
       .filter((section) => section.published)
