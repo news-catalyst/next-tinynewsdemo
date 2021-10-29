@@ -13,7 +13,7 @@ export default function Home(props) {
     return <CurriculumHomepage {...props} />;
   }
 
-  console.log('streamArticles:', props.streamArticles);
+  // console.log('streamArticles:', props.streamArticles);
   const component =
     props.siteMetadata.landingPage === 'on' || !props.selectedLayout ? (
       <LandingPage {...props} />
