@@ -52,7 +52,11 @@ export default function LandingPage({ locale, siteMetadata, sections, pages }) {
           <NewsletterBlock metadata={siteMetadata} />
         </BlockWrapper>
         {pages && pages.length > 0 && (
-          <LandingPageNav pages={pages} metadata={siteMetadata} />
+          <LandingPageNav
+            locale={locale}
+            pages={pages}
+            metadata={siteMetadata}
+          />
         )}
       </Container>
       <style jsx global>{`

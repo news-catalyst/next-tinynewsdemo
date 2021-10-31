@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import tw, { styled } from 'twin.macro';
-import { hasuraLocaliseText, hasuraLocalizeText } from '../../lib/utils';
+import { hasuraLocalizeText } from '../../lib/utils';
 import ArticleFooterAuthor from './ArticleFooterAuthor';
 import Typography from '../common/Typography';
 
@@ -46,6 +46,7 @@ export default function ArticleFooter({ article, isAmp, locale, metadata }) {
                 i={i}
                 last={i === article.author_articles.length - 1}
                 metadata={metadata}
+                locale={locale}
               />
             ))}
         </ArticleByline>

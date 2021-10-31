@@ -18,7 +18,7 @@ import {
 import { hasuraInsertArticleSlugVersions } from '../../../lib/articles';
 import AdminNav from '../../../components/nav/AdminNav';
 import Notification from '../../../components/tinycms/Notification';
-import { hasuraLocaliseText } from '../../../lib/utils';
+import { hasuraLocalizeText } from '../../../lib/utils';
 
 const ViewOnSiteLink = tw.a`font-bold cursor-pointer hover:underline`;
 
@@ -40,7 +40,12 @@ export default function EditSection({
   );
 
   const [title, setTitle] = useState(
-    hasuraLocaliseText(section.category_translations, 'title')
+    hasuraLocalizeText(
+      currentLocale,
+      section.category_translations,
+      'title',
+      false
+    )
   );
   const [slug, setSlug] = useState(section.slug);
   const [currentSlug, setCurrentSlug] = useState(section.slug);
@@ -209,24 +214,31 @@ export default function EditSection({
         </form>
       </FormContainer>
 
-      <FormContainer>
-        <FormHeader title="Articles in this category" />
-        <ul>
-          {section.articles_aggregate.nodes.map((node) => (
-            <li key={`li-category-article-${node.slug}`}>
-              <Link
-                href="/articles/[category]/[slug]"
-                as={`/articles/${slug}/${node.slug}`}
-                passHref
-              >
-                <a>
-                  {hasuraLocaliseText(node.article_translations, 'headline')}
-                </a>
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </FormContainer>
+      {articleCount > 0 && (
+        <FormContainer>
+          <FormHeader title="Articles in this category" />
+          <ul>
+            {section.articles_aggregate.nodes.map((node) => (
+              <li key={`li-category-article-${node.slug}`}>
+                <Link
+                  href="/articles/[category]/[slug]"
+                  as={`/articles/${slug}/${node.slug}`}
+                  passHref
+                >
+                  <a>
+                    {hasuraLocalizeText(
+                      currentLocale,
+                      node.article_translations,
+                      'headline',
+                      false
+                    )}
+                  </a>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </FormContainer>
+      )}
     </AdminLayout>
   );
 }
@@ -241,7 +253,6 @@ export async function getServerSideProps(context) {
     url: apiUrl,
     orgSlug: apiToken,
     id: context.params.id,
-    locale_code: context.locale,
   });
   if (errors) {
     throw errors;

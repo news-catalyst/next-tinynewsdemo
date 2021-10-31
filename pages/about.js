@@ -1,7 +1,7 @@
 import { useAmp } from 'next/amp';
 import { useRouter } from 'next/router';
 import { hasuraGetPage } from '../lib/articles.js';
-import { hasuraLocaliseText } from '../lib/utils';
+import { hasuraLocalizeText } from '../lib/utils';
 import AboutPage from '../components/AboutPage';
 
 export default function About(props) {
@@ -62,7 +62,8 @@ export async function getStaticProps({ locale }) {
 
     sections = data.categories;
     for (i = 0; i < sections.length; i++) {
-      sections[i].title = hasuraLocaliseText(
+      sections[i].title = hasuraLocalizeText(
+        locale,
         sections[i].category_translations,
         'title'
       );

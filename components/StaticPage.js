@@ -49,6 +49,7 @@ export default function StaticPage({
 
         <StaticMainImage
           isAmp={isAmp}
+          locale={currentLocale}
           page={page}
           siteMetadata={siteMetadata}
         />
