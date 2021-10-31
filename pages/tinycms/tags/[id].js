@@ -13,7 +13,7 @@ import AdminLayout from '../../../components/AdminLayout';
 import AdminNav from '../../../components/nav/AdminNav';
 import Notification from '../../../components/tinycms/Notification';
 import { hasuraGetTagById, hasuraUpdateTag } from '../../../lib/section.js';
-import { hasuraLocaliseText } from '../../../lib/utils.js';
+import { hasuraLocalizeText } from '../../../lib/utils.js';
 import { slugify } from '../../../lib/utils';
 
 const ViewOnSiteLink = tw.a`font-bold cursor-pointer hover:underline`;
@@ -36,7 +36,12 @@ export default function EditTag({
   useEffect(() => {
     if (tag) {
       setTagId(tag.id);
-      let title = hasuraLocaliseText(tag.tag_translations, 'title');
+      let title = hasuraLocalizeText(
+        currentLocale,
+        tag.tag_translations,
+        'title',
+        false
+      );
       setTitle(title);
       setSlug(tag.slug);
     }

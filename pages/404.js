@@ -1,7 +1,7 @@
 // import { useAmp } from 'next/amp';
 import Layout from '../components/Layout';
 import { hasuraGetLayout } from '../lib/articles.js';
-import { hasuraLocaliseText } from '../lib/utils';
+import { hasuraLocalizeText } from '../lib/utils';
 
 export default function Custom404({ locale, sections, siteMetadata }) {
   let title;
@@ -59,7 +59,8 @@ export async function getStaticProps({ locale }) {
   } else {
     sections = data.categories;
     for (var i = 0; i < sections.length; i++) {
-      sections[i].title = hasuraLocaliseText(
+      sections[i].title = hasuraLocalizeText(
+        locale,
         sections[i].category_translations,
         'title'
       );
