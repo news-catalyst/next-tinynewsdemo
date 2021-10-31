@@ -8,8 +8,6 @@ import {
 import Staffer from './Staffer.js';
 
 const SectionContainer = tw.div`flex flex-col flex-nowrap items-center px-5 mx-auto max-w-7xl w-full`;
-const AuthorName = tw.h3`font-bold text-xl leading-tight mt-5 mb-4`;
-const AuthorAvatar = tw.div`overflow-hidden relative w-full rounded-full h-12 w-12 mr-2 float-left`;
 
 export default function StaffPage({
   authors,
@@ -35,6 +33,7 @@ export default function StaffPage({
                   <Staffer
                     key={`staff-author-${author.id}`}
                     author={author}
+                    locale={locale}
                     isAmp={isAmp}
                   />
                 ))}
