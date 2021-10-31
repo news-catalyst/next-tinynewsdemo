@@ -63,6 +63,7 @@ export default function Donate({
           </ArticleTitle>
           <StaticMainImage
             isAmp={isAmp}
+            locale={locale}
             page={page}
             siteMetadata={siteMetadata}
           />

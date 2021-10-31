@@ -3,7 +3,7 @@ import tw from 'twin.macro';
 import { useRouter } from 'next/router';
 import { hasuraGetPage } from '../lib/articles.js';
 import { useAnalytics } from '../lib/hooks/useAnalytics.js';
-import { hasuraLocaliseText } from '../lib/utils';
+import { hasuraLocalizeText } from '../lib/utils';
 import ReadInOtherLanguage from '../components/articles/ReadInOtherLanguage';
 import Layout from '../components/Layout';
 import NewsletterBlock from '../components/plugins/NewsletterBlock';
@@ -134,7 +134,8 @@ export async function getServerSideProps(context) {
     sections = data.categories;
     siteMetadata = data.site_metadatas[0].site_metadata_translations[0].data;
     for (i = 0; i < sections.length; i++) {
-      sections[i].title = hasuraLocaliseText(
+      sections[i].title = hasuraLocalizeText(
+        locale,
         sections[i].category_translations,
         'title'
       );

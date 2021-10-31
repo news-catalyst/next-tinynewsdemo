@@ -57,6 +57,7 @@ export default function AboutPage({
           )}
           <StaticMainImage
             isAmp={isAmp}
+            locale={locale}
             page={page}
             siteMetadata={siteMetadata}
           />

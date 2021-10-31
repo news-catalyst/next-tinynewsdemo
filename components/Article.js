@@ -94,6 +94,7 @@ export default function Article({
           isAmp={isAmp}
           siteMetadata={siteMetadata}
           section={article.category}
+          locale={locale}
         />
       </div>
     </Layout>

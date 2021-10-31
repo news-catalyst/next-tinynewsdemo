@@ -16,7 +16,7 @@ import {
 import ArticleFooter from '../../components/articles/ArticleFooter';
 import NewsletterBlock from '../../components/plugins/NewsletterBlock';
 import {
-  hasuraLocaliseText,
+  hasuraLocalizeText,
   renderNewsletterContent,
 } from '../../lib/utils.js';
 import { useAmp } from 'next/amp';
@@ -134,14 +134,19 @@ export async function getStaticProps({ locale, params }) {
     tags = data.tags;
 
     for (var i = 0; i < sections.length; i++) {
-      sections[i].title = hasuraLocaliseText(
+      sections[i].title = hasuraLocalizeText(
+        locale,
         sections[i].category_translations,
         'title'
       );
     }
 
     for (var j = 0; j < tags.length; j++) {
-      tags[j].title = hasuraLocaliseText(tags[j].tag_translations, 'title');
+      tags[j].title = hasuraLocalizeText(
+        locale,
+        tags[j].tag_translations,
+        'title'
+      );
     }
 
     let metadatas = data.site_metadatas;
