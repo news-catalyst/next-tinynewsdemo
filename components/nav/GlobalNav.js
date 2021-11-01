@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Donate from './Donate';
 import tw, { styled } from 'twin.macro';
 import Typography from '../common/Typography';
+import { hasuraLocalizeText } from '../../lib/utils';
 
 const NavContainer = tw.header`border-b border-gray-200 flex w-full`;
 const NavInnerContainer = tw.div`lg:p-5 flex flex-wrap flex-row mx-auto max-w-7xl w-full justify-items-start pt-5`;
@@ -16,7 +17,7 @@ const SectionLink = styled.a(({ meta }) => ({
   fontFamily: Typography[meta.theme].SectionLink,
 }));
 
-export default function GlobalNav({ metadata, sections, isAmp }) {
+export default function GlobalNav({ locale, metadata, sections, isAmp }) {
   let sectionLinks;
 
   if (sections && sections[0] && typeof sections[0].title === 'string') {
@@ -29,7 +30,7 @@ export default function GlobalNav({ metadata, sections, isAmp }) {
           passHref
         >
           <SectionLink href={`/categories/${section.slug}`} meta={metadata}>
-            {section.title}
+            {hasuraLocalizeText(locale, section.category_translations, 'title')}
           </SectionLink>
         </Link>
       ));

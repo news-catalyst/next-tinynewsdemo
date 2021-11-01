@@ -4,7 +4,7 @@ import { cachedContents } from '../../lib/cached';
 import { hasuraListNewsletters } from '../../lib/newsletters.js';
 import { getArticleAds } from '../../lib/ads.js';
 import ArticleStream from '../../components/homepage/ArticleStream';
-import { hasuraLocaliseText } from '../../lib/utils.js';
+import { hasuraLocalizeText } from '../../lib/utils.js';
 import { useAmp } from 'next/amp';
 
 export default function NewsletterIndexPage(props) {
@@ -15,8 +15,10 @@ export default function NewsletterIndexPage(props) {
       meta={props.siteMetadata}
       sections={props.sections}
       renderFooter={props.renderFooter}
+      locale={props.locale}
     >
       <ArticleStream
+        locale={props.locale}
         sections={props.sections}
         articles={props.newsletters}
         title={'Newsletters Archive'}
@@ -41,7 +43,6 @@ export async function getStaticProps({ locale, params }) {
   const { errors, data } = await hasuraListNewsletters({
     url: apiUrl,
     orgSlug: apiToken,
-    locale_code: locale,
   });
 
   if (errors || !data) {
@@ -57,14 +58,19 @@ export async function getStaticProps({ locale, params }) {
     sections = data.categories;
 
     for (var i = 0; i < sections.length; i++) {
-      sections[i].title = hasuraLocaliseText(
+      sections[i].title = hasuraLocalizeText(
+        locale,
         sections[i].category_translations,
         'title'
       );
     }
 
     for (var j = 0; j < tags.length; j++) {
-      tags[j].title = hasuraLocaliseText(tags[j].tag_translations, 'title');
+      tags[j].title = hasuraLocalizeText(
+        locale,
+        tags[j].tag_translations,
+        'title'
+      );
     }
 
     let metadatas = data.site_metadatas;
@@ -88,6 +94,7 @@ export async function getStaticProps({ locale, params }) {
       sections,
       siteMetadata,
       expandedAds,
+      locale,
     },
   };
 }

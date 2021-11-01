@@ -4,7 +4,7 @@ import React from 'react';
 import tw, { styled } from 'twin.macro';
 import PublishDate from './PublishDate.js';
 import MainImage from './MainImage.js';
-import { hasuraLocaliseText, renderAuthors } from '../../lib/utils.js';
+import { hasuraLocalizeText, renderAuthors } from '../../lib/utils.js';
 import { ArticleTitle } from '../common/CommonStyles.js';
 import Typography from '../common/Typography';
 import ReadInOtherLanguage from './ReadInOtherLanguage.js';
@@ -40,6 +40,7 @@ export default function ArticleHeader({
   isAmp,
   metadata,
   mainImage,
+  locale,
   locales,
   publishedLocales,
 }) {
@@ -54,21 +55,29 @@ export default function ArticleHeader({
   let articleContent;
 
   if (article && article.category) {
-    categoryTitle = hasuraLocaliseText(
+    categoryTitle = hasuraLocalizeText(
+      locale,
       article.category.category_translations,
       'title'
     );
-    headline = hasuraLocaliseText(article.article_translations, 'headline');
+
+    headline = hasuraLocalizeText(
+      locale,
+      article.article_translations,
+      'headline'
+    );
     postUrl = new URL(
       `/articles/${article.category.slug}/${article.slug}`,
       metadata.siteUrl
     );
-    searchDescription = hasuraLocaliseText(
+    searchDescription = hasuraLocalizeText(
+      locale,
       article.article_translations,
       'search_description'
     );
 
-    articleContent = hasuraLocaliseText(
+    articleContent = hasuraLocalizeText(
+      locale,
       article.article_translations,
       'content'
     );
@@ -79,13 +88,13 @@ export default function ArticleHeader({
     authorPhoto = article.author_articles[0].author.photoUrl;
   }
 
-  // this block of code bui9lds an array of locales the article is available in
+  // this block of code builds an array of locales the article is available in
   // by comparing the list of all site locales with the list of published translations
   // ex: site locales [en, es]; this article published in [en, es]; current locale is english;
   // 'ReadInOtherLanguage' component should show "Read in Spanish" link
   // (logic around current locale is in the component itself)
   let readLocales = [];
-  let currentLocale = article.article_translations[0].locale_code;
+  let currentLocale = locale;
   if (locales.length > 1) {
     locales.forEach((siteLocale) => {
       publishedLocales.forEach((articleLocale) => {
