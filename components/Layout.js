@@ -102,21 +102,33 @@ export default function Layout({
       translations,
       'twitter_title'
     );
+    if (!metaValues.twitterTitle) {
+      metaValues.twitterTitle = metaValues.searchTitle;
+    }
     metaValues.twitterDescription = hasuraLocalizeText(
       locale,
       translations,
       'twitter_description'
     );
+    if (!metaValues.twitterDescription) {
+      metaValues.twitterDescription = metaValues.searchDescription;
+    }
     metaValues.facebookTitle = hasuraLocalizeText(
       locale,
       translations,
       'facebook_title'
     );
+    if (!metaValues.facebookTitle) {
+      metaValues.facebookTitle = metaValues.searchTitle;
+    }
     metaValues.facebookDescription = hasuraLocalizeText(
       locale,
       translations,
       'facebook_description'
     );
+    if (!metaValues.facebookDescription) {
+      metaValues.facebookDescription = metaValues.searchDescription;
+    }
   }
 
   if (article && article.firstPublishedOn) {
