@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import { useAnalytics } from '../../lib/hooks/useAnalytics.js';
 import tw, { styled } from 'twin.macro';
 import { determineTextColor } from '../../lib/utils';
@@ -7,15 +6,21 @@ import Colors from '../common/Colors';
 
 const AdvertiseLink = styled.a(({ meta }) => ({
   ...tw`inline-flex text-base font-bold cursor-pointer items-center px-5 hover:underline`,
-  fontFamily: Typography[meta.theme].AdvertiseLink,
+  fontFamily: Typography[meta.theme]
+    ? Typography[meta.theme].AdvertiseLink
+    : Typography['styleone'].AdvertiseLink,
   backgroundColor:
     meta.color === 'custom'
       ? meta.primaryColor
-      : Colors[meta.color].CTABackground,
+      : Colors[meta.color]
+      ? Colors[meta.color].CTABackground
+      : Colors['colorone'].CTABackground,
   color:
     meta.color === 'custom'
       ? determineTextColor(meta.primaryColor)
-      : Colors[meta.color].CTAText,
+      : Colors[meta.color]
+      ? Colors[meta.color].CTAText
+      : Colors['colorone'].CTAText,
 }));
 
 const Advertise = ({ label, metadata }) => {
