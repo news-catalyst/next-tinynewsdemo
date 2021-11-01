@@ -26,10 +26,16 @@ export default function AboutPage({
 }) {
   // there will only be one translation returned for a given page + locale
   const localisedPage = page.page_translations[0];
-  const body = renderBody(page.page_translations, [], isAmp, siteMetadata);
+  const body = renderBody(
+    locale,
+    page.page_translations,
+    [],
+    isAmp,
+    siteMetadata
+  );
 
   return (
-    <Layout meta={siteMetadata} page={page} sections={sections}>
+    <Layout locale={locale} meta={siteMetadata} page={page} sections={sections}>
       <article className="container">
         <SectionContainer>
           <div key="title" className="section post__header">
@@ -51,6 +57,7 @@ export default function AboutPage({
           )}
           <StaticMainImage
             isAmp={isAmp}
+            locale={locale}
             page={page}
             siteMetadata={siteMetadata}
           />

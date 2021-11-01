@@ -18,6 +18,7 @@ export default function ArticleStream({
   title,
   metadata,
   ads,
+  locale,
 }) {
   const AD_PLACEMENT_INDEX = 3;
 
@@ -29,6 +30,7 @@ export default function ArticleStream({
         amp={isAmp}
         showCategory={showCategory}
         metadata={metadata}
+        locale={locale}
       />
     );
   };
@@ -55,6 +57,10 @@ export default function ArticleStream({
   let adIndex = 0;
 
   const articleStream = articles.map((article, i) => {
+    // console.log(
+    //   'ArticleStream article translations:',
+    //   article.article_translations
+    // );
     const streamArticle = renderArticle(article);
     if (!metadata.shortName === 'Tiny News Curriculum') {
       if (

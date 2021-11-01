@@ -1,7 +1,7 @@
 import { Fragment } from 'react';
 import Link from 'next/link';
 import tw from 'twin.macro';
-import { hasuraLocaliseText } from '../../lib/utils.js';
+import { hasuraLocalizeText } from '../../lib/utils.js';
 import { Anchor } from '../common/CommonStyles.js';
 
 const NavWrapper = tw.div`w-full`;
@@ -10,7 +10,7 @@ const NavLinks = tw.div`mt-1`;
 const PageLinkWrapper = tw.span`md:mx-2 my-4 md:my-0 first:ml-0 last:mr-0 block md:inline`;
 const Divider = tw.span`hidden md:inline`;
 
-function PageLink({ page, metadata }) {
+function PageLink({ locale, page, metadata }) {
   const specialSlugs = ['about', 'donate'];
   const ignoredSlugs = ['thank-you'];
   let link = null;
@@ -25,7 +25,11 @@ function PageLink({ page, metadata }) {
     link = `/static/${page.slug}`;
   }
 
-  const headline = hasuraLocaliseText(page.page_translations, 'headline');
+  const headline = hasuraLocalizeText(
+    locale,
+    page.page_translations,
+    'headline'
+  );
 
   return (
     <Link href={link} passHref>
@@ -34,7 +38,7 @@ function PageLink({ page, metadata }) {
   );
 }
 
-export default function LandingPageNav({ pages, metadata }) {
+export default function LandingPageNav({ locale, pages, metadata }) {
   return (
     <NavWrapper>
       <NavHeader>Read more</NavHeader>
@@ -42,7 +46,7 @@ export default function LandingPageNav({ pages, metadata }) {
         {pages.map((page, i) => (
           <Fragment key={page.slug}>
             <PageLinkWrapper>
-              <PageLink page={page} metadata={metadata} />
+              <PageLink locale={locale} page={page} metadata={metadata} />
             </PageLinkWrapper>
             <Divider>{` | `}</Divider>
           </Fragment>

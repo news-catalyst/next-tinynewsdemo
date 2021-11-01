@@ -31,6 +31,7 @@ export default function BigFeaturedStory(props) {
           article={props.featuredArticle}
           big={true}
           metadata={props.metadata}
+          locale={props.locale}
         />
       </AssetMetaContainer>
       <AssetThumbnailContainer
