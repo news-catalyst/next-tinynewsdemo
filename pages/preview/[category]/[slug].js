@@ -3,7 +3,7 @@ import {
   hasuraListAllArticleSlugs,
   hasuraPreviewArticlePage,
 } from '../../../lib/articles.js';
-import { hasuraLocaliseText } from '../../../lib/utils.js';
+import { hasuraLocalizeText } from '../../../lib/utils.js';
 import { getArticleAds } from '../../../lib/ads.js';
 import { cachedContents } from '../../../lib/cached';
 import Article from '../../../components/Article.js';
@@ -84,12 +84,17 @@ export async function getStaticProps(context) {
 
     tags = data.tags;
     for (var i = 0; i < tags.length; i++) {
-      tags[i].title = hasuraLocaliseText(tags[i].tag_translations, 'title');
+      tags[i].title = hasuraLocalizeText(
+        locale,
+        tags[i].tag_translations,
+        'title'
+      );
     }
 
     sections = data.categories;
     for (var j = 0; j < sections.length; j++) {
-      sections[j].title = hasuraLocaliseText(
+      sections[j].title = hasuraLocalizeText(
+        locale,
         sections[j].category_translations,
         'title'
       );

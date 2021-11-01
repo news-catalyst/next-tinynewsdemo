@@ -3,7 +3,7 @@ import Layout from '../../components/Layout.js';
 import { hasuraTagPage, hasuraListAllTags } from '../../lib/articles.js';
 import { cachedContents } from '../../lib/cached';
 import { getArticleAds } from '../../lib/ads.js';
-import { hasuraLocaliseText } from '../../lib/utils.js';
+import { hasuraLocalizeText } from '../../lib/utils.js';
 import { useAmp } from 'next/amp';
 import ArticleStream from '../../components/homepage/ArticleStream';
 import ReadInOtherLanguage from '../../components/articles/ReadInOtherLanguage';
@@ -31,13 +31,13 @@ export default function TagPage({
     return <div>Loading...</div>;
   }
 
-  let tagTitle = hasuraLocaliseText(tag.tag_translations, 'title');
+  let tagTitle = hasuraLocalizeText(locale, tag.tag_translations, 'title');
 
   // set page title
   siteMetadata['homepageTitle'] = tagTitle + ' | ' + siteMetadata['shortName'];
 
   return (
-    <Layout meta={siteMetadata} sections={sections}>
+    <Layout locale={locale} meta={siteMetadata} sections={sections}>
       <ArticleStream
         articles={articles}
         sections={sections}
@@ -46,6 +46,7 @@ export default function TagPage({
         title={`Articles tagged with ${tagTitle}`}
         metadata={siteMetadata}
         ads={expandedAds}
+        locale={locale}
       />
       {locales.length > 1 && (
         <SectionLayout>
@@ -106,7 +107,6 @@ export async function getStaticProps({ locale, params }) {
     url: apiUrl,
     orgSlug: apiToken,
     tagSlug: params.slug,
-    localeCode: locale,
   });
 
   if (errors || !data) {
@@ -128,7 +128,8 @@ export async function getStaticProps({ locale, params }) {
 
     sections = data.categories;
     for (var i = 0; i < sections.length; i++) {
-      sections[i].title = hasuraLocaliseText(
+      sections[i].title = hasuraLocalizeText(
+        locale,
         sections[i].category_translations,
         'title'
       );

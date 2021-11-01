@@ -405,10 +405,12 @@ export async function getServerSideProps(context) {
   });
 
   if (errors) {
+    console.error('Error getting site metadata:', errors);
     throw errors;
   } else {
     locales = data.organization_locales;
     siteMetadata = data.site_metadatas[0];
+    console.log('siteMetadata:', siteMetadata);
   }
   if (siteMetadata === undefined) {
     siteMetadata = null;
