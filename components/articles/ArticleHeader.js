@@ -60,12 +60,16 @@ export default function ArticleHeader({
       article.category.category_translations,
       'title'
     );
+
     headline = hasuraLocalizeText(
       locale,
       article.article_translations,
       'headline'
     );
-    postUrl = `${metadata.siteUrl}${article.category.slug}/${article.slug}`;
+    postUrl = new URL(
+      `/articles/${article.category.slug}/${article.slug}`,
+      metadata.siteUrl
+    );
     searchDescription = hasuraLocalizeText(
       locale,
       article.article_translations,
