@@ -5,7 +5,7 @@ import { CheckIcon, XIcon } from '@heroicons/react/solid';
 import AdminLayout from '../../../components/AdminLayout.js';
 import AdminNav from '../../../components/nav/AdminNav';
 import tw from 'twin.macro';
-import { hasuraLocaliseText } from '../../../lib/utils';
+import { hasuraLocalizeText } from '../../../lib/utils';
 import { hasuraListAllSectionsByLocale } from '../../../lib/section.js';
 import {
   DeleteButton,
@@ -35,7 +35,12 @@ export default function Sections({ sections, currentLocale, locales }) {
   }, [action]);
 
   const listItems = sections.map((section) => {
-    let title = hasuraLocaliseText(section.category_translations, 'title');
+    let title = hasuraLocalizeText(
+      currentLocale,
+      section.category_translations,
+      'title',
+      false
+    );
     return (
       <TableRow key={section.id}>
         <TableCell>
@@ -109,7 +114,6 @@ export async function getServerSideProps(context) {
   const { errors, data } = await hasuraListAllSectionsByLocale({
     url: apiUrl,
     orgSlug: apiToken,
-    localeCode: context.locale,
   });
 
   if (errors) {

@@ -16,7 +16,7 @@ import Upload from '../../../components/tinycms/Upload';
 import { hasuraGetAuthorById, hasuraUpdateAuthor } from '../../../lib/authors';
 import {
   displayAuthorName,
-  hasuraLocaliseText,
+  hasuraLocalizeText,
   slugify,
   validateAuthorName,
 } from '../../../lib/utils.js';
@@ -42,10 +42,15 @@ export default function EditAuthor({
   const [lastName, setLastName] = useState('');
 
   const [title, setTitle] = useState(
-    hasuraLocaliseText(author.author_translations, 'title')
+    hasuraLocalizeText(
+      currentLocale,
+      author.author_translations,
+      'title',
+      false
+    )
   );
   const [bio, setBio] = useState(
-    hasuraLocaliseText(author.author_translations, 'bio')
+    hasuraLocalizeText(currentLocale, author.author_translations, 'bio', false)
   );
   const [staticBio, setStaticBio] = useState(undefined);
 

@@ -57,7 +57,7 @@ const DonateBlockCTA = styled.a(({ meta, tinycms }) => ({
 }));
 
 export default function HomepagePromoBar({ metadata, tinycms }) {
-  console.log('homepage promo bar tinycms:', tinycms);
+  // console.log('homepage promo bar tinycms:', tinycms);
   return (
     <SectionLayout meta={metadata}>
       <SectionContainer>

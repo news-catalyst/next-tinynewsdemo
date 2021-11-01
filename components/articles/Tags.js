@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { hasuraLocaliseText } from '../../lib/utils.js';
+import { hasuraLocalizeText } from '../../lib/utils.js';
 
 export default function Tags({ article, locale }) {
   let tagLinks;
@@ -7,7 +7,7 @@ export default function Tags({ article, locale }) {
     tagLinks = article.tags.map((tag, index) => (
       <Link href={`/tags/${tag.slug}`} key={`${tag.slug}-${index}`}>
         <a className="is-link tag">
-          {hasuraLocaliseText(tag.tag_translations, 'title')}
+          {hasuraLocalizeText(locale, tag.tag_translations, 'title')}
         </a>
       </Link>
     ));

@@ -6,7 +6,12 @@ export default function TextNode({ node, metadata }) {
     let supportedPunctuation = [',', '.', '?', '!', ';', ':'];
     let delimiterSpaceChar = ' ';
     // if the next node/child starts with one of the punctuation marks above, don't add a space
-    if (nextChild && supportedPunctuation.includes(nextChild.content[0])) {
+    if (
+      nextChild &&
+      nextChild.content &&
+      nextChild.content[0] &&
+      supportedPunctuation.includes(nextChild.content[0])
+    ) {
       delimiterSpaceChar = '';
     }
 

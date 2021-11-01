@@ -51,6 +51,7 @@ export default function Homepage({
             setFeaturedArticle={setFeaturedArticle}
             isAmp={false}
             metadata={siteMetadata}
+            locale={locale}
           />
         )}
         {selectedLayout.name === 'Large Package Story Lead' && (
@@ -76,6 +77,7 @@ export default function Homepage({
           title={'Recent Stories'}
           metadata={siteMetadata}
           ads={expandedAds}
+          locale={locale}
         />
         <SectionContainer>
           <Link href="/articles/archive/1" passHref>
