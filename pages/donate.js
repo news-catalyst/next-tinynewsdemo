@@ -2,7 +2,7 @@ import { useAmp } from 'next/amp';
 import tw, { styled } from 'twin.macro';
 import { useRouter } from 'next/router';
 import { hasuraGetPage } from '../lib/articles.js';
-import { hasuraLocaliseText } from '../lib/utils';
+import { hasuraLocalizeText } from '../lib/utils';
 import Layout from '../components/Layout';
 import ReadInOtherLanguage from '../components/articles/ReadInOtherLanguage';
 import StaticMainImage from '../components/articles/StaticMainImage';
@@ -40,18 +40,30 @@ export default function Donate({
   }
 
   // there will only be one translation returned for a given page + locale
-  const localisedPage = page.page_translations[0];
-  const body = renderBody(page.page_translations, [], isAmp, siteMetadata);
+  const headline = hasuraLocalizeText(
+    locale,
+    page.page_translations,
+    'headline'
+  );
+
+  const body = renderBody(
+    locale,
+    page.page_translations,
+    [],
+    isAmp,
+    siteMetadata
+  );
 
   return (
-    <Layout meta={siteMetadata} page={page} sections={sections}>
+    <Layout locale={locale} meta={siteMetadata} page={page} sections={sections}>
       <SectionContainer>
         <article className="container">
           <ArticleTitle meta={siteMetadata} tw="text-center">
-            {localisedPage.headline}
+            {headline}
           </ArticleTitle>
           <StaticMainImage
             isAmp={isAmp}
+            locale={locale}
             page={page}
             siteMetadata={siteMetadata}
           />
@@ -89,11 +101,9 @@ export async function getStaticProps({ locale }) {
     url: apiUrl,
     orgSlug: apiToken,
     slug: 'donate',
-    localeCode: locale,
   });
   if (errors || !data) {
-    console.log('Returning a 404 - errors:', errors);
-    console.log('Returning a 404 - data:', data);
+    console.error('Returning a 404 - errors:', errors);
 
     return {
       notFound: true,
@@ -101,8 +111,7 @@ export async function getStaticProps({ locale }) {
     // throw errors;
   } else {
     if (!data.page_slug_versions || !data.page_slug_versions[0]) {
-      console.log('Returning a 404 - page slug version not found:', data);
-      console.log(JSON.stringify(data.pages));
+      console.error('Returning a 404 - page slug version not found:', data);
       return {
         notFound: true,
       };
@@ -129,7 +138,8 @@ export async function getStaticProps({ locale }) {
     sections = data.categories;
     siteMetadata = data.site_metadatas[0].site_metadata_translations[0].data;
     for (i = 0; i < sections.length; i++) {
-      sections[i].title = hasuraLocaliseText(
+      sections[i].title = hasuraLocalizeText(
+        locale,
         sections[i].category_translations,
         'title'
       );

@@ -74,6 +74,11 @@ export default function Settings({
   const router = useRouter();
   const { action } = router.query;
 
+  const validateHexColorCode = (value) => {
+    let codePattern = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
+    return codePattern.test(value);
+  };
+
   const validateUrl = (value) => {
     try {
       new URL(value);
@@ -107,7 +112,6 @@ export default function Settings({
           [name]: value,
         }));
       } else {
-        // console.log('setting parsed data', name, value);
         setParsedData((prevState) => ({
           ...prevState,
           [name]: value,
@@ -195,6 +199,28 @@ export default function Settings({
       setParsedData(parsed);
     }
 
+    if (
+      parsed['primaryColor'] &&
+      !validateHexColorCode(parsed['primaryColor'])
+    ) {
+      setNotificationMessage(
+        `Custom primary color '${parsed['primaryColor']}' is not a valid hex color: must start with '#' and include the letters A-F and/or digits 0-9 only.`
+      );
+      setNotificationType('error');
+      setShowNotification(true);
+      return false;
+    }
+    if (
+      parsed['secondaryColor'] &&
+      !validateHexColorCode(parsed['secondaryColor'])
+    ) {
+      setNotificationMessage(
+        `Custom secondary color '${parsed['primaryColor']}'' is not a valid hex color: must start with '#' and include the letters A-F and/or digits 0-9 only.`
+      );
+      setNotificationType('error');
+      setShowNotification(true);
+      return false;
+    }
     // ensure founder twitter link is a fully formed url
     if (parsed['founderTwitter'] && !validateUrl(parsed['founderTwitter'])) {
       let prependedUrl = new URL(
@@ -405,10 +431,12 @@ export async function getServerSideProps(context) {
   });
 
   if (errors) {
+    console.error('Error getting site metadata:', errors);
     throw errors;
   } else {
     locales = data.organization_locales;
     siteMetadata = data.site_metadatas[0];
+    console.log('siteMetadata:', siteMetadata);
   }
   if (siteMetadata === undefined) {
     siteMetadata = null;

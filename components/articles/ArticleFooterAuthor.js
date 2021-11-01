@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import tw, { styled } from 'twin.macro';
-import { renderAuthor, hasuraLocaliseText } from '../../lib/utils';
+import { renderAuthor, hasuraLocalizeText } from '../../lib/utils';
 import Typography from '../common/Typography';
 
 const AuthorWrapper = styled.div(({ last }) => [
@@ -22,11 +22,16 @@ export default function ArticleFooterAuthor({
   isAmp,
   i,
   last,
+  locale,
   metadata,
 }) {
   let authorPhoto = author.photoUrl;
-  let authorTitle = hasuraLocaliseText(author.author_translations, 'title');
-  let authorBio = hasuraLocaliseText(author.author_translations, 'bio');
+  let authorTitle = hasuraLocalizeText(
+    locale,
+    author.author_translations,
+    'title'
+  );
+  let authorBio = hasuraLocalizeText(locale, author.author_translations, 'bio');
   return (
     <AuthorWrapper last={last}>
       {authorPhoto && (

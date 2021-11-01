@@ -7,7 +7,7 @@ import tw from 'twin.macro';
 import Notification from '../../../components/tinycms/Notification';
 import { hasuraListAllTagsByLocale } from '../../../lib/articles.js';
 import { deleteSingleTag } from '../../../lib/section.js';
-import { hasuraLocaliseText } from '../../../lib/utils.js';
+import { hasuraLocalizeText } from '../../../lib/utils.js';
 import {
   DeleteButton,
   AddButton,
@@ -75,7 +75,12 @@ export default function Tags({
   }, [action]);
 
   const listItems = tags.map((tag) => {
-    let title = hasuraLocaliseText(tag.tag_translations, 'title');
+    let title = hasuraLocalizeText(
+      currentLocale,
+      tag.tag_translations,
+      'title',
+      false
+    );
 
     return (
       <TableRow key={tag.id}>
