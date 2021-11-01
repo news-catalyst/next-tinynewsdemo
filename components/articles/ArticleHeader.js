@@ -59,7 +59,10 @@ export default function ArticleHeader({
       'title'
     );
     headline = hasuraLocaliseText(article.article_translations, 'headline');
-    postUrl = `${metadata.siteUrl}${article.category.slug}/${article.slug}`;
+    postUrl = new URL(
+      `/articles/${article.category.slug}/${article.slug}`,
+      metadata.siteUrl
+    );
     searchDescription = hasuraLocaliseText(
       article.article_translations,
       'search_description'
