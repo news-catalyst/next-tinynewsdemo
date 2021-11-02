@@ -109,13 +109,11 @@ export async function getStaticProps({ locale, params }) {
         (a) => a.slug !== params.slug
       );
     }
-
-    let metadatas = data.site_metadatas;
-    try {
-      siteMetadata = metadatas[0].site_metadata_translations[0].data;
-    } catch (err) {
-      console.error('failed finding site metadata for ', locale, metadatas);
-    }
+    siteMetadata = hasuraLocalizeText(
+      locale,
+      data.site_metadatas[0].site_metadata_translations,
+      'data'
+    );
   }
 
   let ads = [];
