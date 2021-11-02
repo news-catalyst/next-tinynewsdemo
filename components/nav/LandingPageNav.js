@@ -45,10 +45,16 @@ export default function LandingPageNav({ locale, pages, metadata }) {
       <NavLinks>
         {pages.map((page, i) => (
           <Fragment key={page.slug}>
-            <PageLinkWrapper>
-              <PageLink locale={locale} page={page} metadata={metadata} />
-            </PageLinkWrapper>
-            <Divider>{` | `}</Divider>
+            {!(
+              metadata.shortName === 'Five Wards Media' && page.slug === 'about'
+            ) && (
+              <Fragment>
+                <PageLinkWrapper>
+                  <PageLink locale={locale} page={page} metadata={metadata} />
+                </PageLinkWrapper>
+                <Divider>{` | `}</Divider>
+              </Fragment>
+            )}
           </Fragment>
         ))}
         <PageLinkWrapper>
