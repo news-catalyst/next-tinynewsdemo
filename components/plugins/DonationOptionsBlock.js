@@ -1,5 +1,4 @@
 import tw, { styled } from 'twin.macro';
-import { generateMonkeypodUrl } from '../../lib/utils';
 import Colors from '../common/Colors';
 import Typography from '../common/Typography';
 import { determineTextColor } from '../../lib/utils';
@@ -62,6 +61,7 @@ export default function DonationOptionsBlock({
 
   let parsedOptions = [];
   try {
+    // console.log('donationOptions metadata:', metadata.donationOptions);
     parsedOptions = JSON.parse(metadata.donationOptions);
   } catch (e) {
     console.error(e);

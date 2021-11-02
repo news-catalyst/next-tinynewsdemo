@@ -136,7 +136,13 @@ export async function getStaticProps({ locale }) {
     locales = distinctLocales;
 
     sections = data.categories;
-    siteMetadata = data.site_metadatas[0].site_metadata_translations[0].data;
+
+    siteMetadata = hasuraLocalizeText(
+      locale,
+      data.site_metadatas[0].site_metadata_translations,
+      'data'
+    );
+
     for (i = 0; i < sections.length; i++) {
       sections[i].title = hasuraLocalizeText(
         locale,
