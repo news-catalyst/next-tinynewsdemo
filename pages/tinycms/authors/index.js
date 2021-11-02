@@ -186,7 +186,7 @@ export async function getServerSideProps(context) {
   const apiUrl = process.env.HASURA_API_URL;
   const apiToken = process.env.ORG_SLUG;
 
-  const { errors, data } = await hasuraListAllAuthors(context.locale);
+  const { errors, data } = await hasuraListAllAuthors();
 
   if (errors) {
     console.error(errors);

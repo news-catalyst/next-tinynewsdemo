@@ -156,7 +156,7 @@ export default function EditAuthor({
 
     if (errors) {
       console.error(errors);
-      setNotificationMessage(errors);
+      setNotificationMessage(JSON.stringify(errors));
       setNotificationType('error');
       setShowNotification(true);
     } else {
