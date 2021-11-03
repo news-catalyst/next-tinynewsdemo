@@ -20,6 +20,7 @@ const AssetTitle = styled.h4(({ meta }) => ({
   ...tw`font-bold text-xl leading-5 tracking-tight hover:underline`,
   fontFamily: Typography[meta.theme].ArticleTitle,
 }));
+const AssetDek = tw.p`mt-2`;
 const AssetByline = styled.div(({ meta }) => ({
   ...tw`text-xs mt-3 flex flex-row flex-wrap items-baseline`,
   fontFamily: Typography[meta.theme].ArticleMetaTop,
@@ -39,11 +40,17 @@ export default function ArticleLink({
   let mainImageContent;
 
   let headline;
+  let dek;
   if (article.article_translations) {
     headline = hasuraLocalizeText(
       locale,
       article.article_translations,
       'headline'
+    );
+    dek = hasuraLocalizeText(
+      locale,
+      article.article_translations,
+      'search_description'
     );
     // console.log(headline, locale, article.article_translations);
     mainImageContent = hasuraLocalizeText(
@@ -131,6 +138,7 @@ export default function ArticleLink({
             </Link>
           )}
         </AssetTitle>
+        <AssetDek>{dek}</AssetDek>
         <AssetByline meta={metadata}>
           {article.author_articles && (
             <>By&nbsp;{renderAuthors(article)}&nbsp;</>
