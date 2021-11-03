@@ -4,6 +4,8 @@ import Link from 'next/link';
 import tw from 'twin.macro';
 
 const AssetThumbnail = tw.div`overflow-hidden relative w-full mb-4 md:mb-0 md:ml-5 order-2 w-full cursor-pointer`;
+const Figure = tw.figure``;
+const Figcaption = tw.figcaption`text-gray-500 text-xs pt-1 text-right`;
 
 export default function FeaturedArticleThumbnail({ article, isAmp }) {
   let mainImage = {};
@@ -35,14 +37,17 @@ export default function FeaturedArticleThumbnail({ article, isAmp }) {
             layout="responsive"
           />
         ) : (
-          <Image
-            src={mainImage.imageUrl}
-            width={1080}
-            height={(mainImage.height / mainImage.width) * 1080}
-            alt={mainImage.imageAlt}
-            className="image"
-            priority={true}
-          />
+          <Figure key={mainImage.imageUrl}>
+            <Image
+              src={mainImage.imageUrl}
+              width={1080}
+              height={(mainImage.height / mainImage.width) * 1080}
+              alt={mainImage.imageAlt}
+              className="image"
+              priority={true}
+            />
+            <Figcaption>{mainImage.imageAlt}</Figcaption>
+          </Figure>
         )}
       </AssetThumbnail>
     </Link>
