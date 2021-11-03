@@ -63,7 +63,7 @@ export default function AuthorPage({
     twitterLink = 'https://twitter.com/' + authorTwitter;
   }
 
-  const ProfileHeaderDiv = tw.div`flex flex-row items-center max-w-7xl mx-auto my-8 bg-white`;
+  const ProfileHeaderDiv = tw.div`flex flex-row items-center max-w-7xl mx-auto px-5 my-8 bg-white`;
   const ProfileImage = tw.img`flex block rounded-full mr-5 w-48 h-48 bg-white`;
   const ProfileHeadingText = tw.p`text-4xl uppercase`;
   const ProfileTitle = tw.p`text-2xl`;
@@ -74,7 +74,7 @@ export default function AuthorPage({
   return (
     <Layout locale={locale} meta={siteMetadata} sections={sections}>
       <ProfileHeaderDiv>
-        <ProfileImage src={authorPhoto}></ProfileImage>
+        {authorPhoto && <ProfileImage src={authorPhoto}></ProfileImage>}
         <div>
           <ProfileHeadingText>
             <strong>{authorName}</strong>
