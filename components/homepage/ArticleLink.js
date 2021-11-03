@@ -26,7 +26,8 @@ const AssetByline = styled.div(({ meta }) => ({
   fontFamily: Typography[meta.theme].ArticleMetaTop,
 }));
 const AssetTime = tw.time`text-gray-500 block mb-4`;
-const AssetThumbnail = tw.figure`ml-5 order-2 w-1/3 cursor-pointer`;
+const ImageLink = tw.a`ml-5 order-2 w-1/3 cursor-pointer`;
+const AssetThumbnail = tw.figure``;
 
 export default function ArticleLink({
   article,
@@ -152,27 +153,28 @@ export default function ArticleLink({
         <Link
           key={`article-link-${article.category.slug}-${article.slug}`}
           href={`/articles/${article.category.slug}/${article.slug}`}
-          passHref
         >
-          <AssetThumbnail>
-            {isAmp ? (
-              <amp-img
-                width={mainImage.width}
-                height={(mainImage.height / mainImage.width) * 400}
-                src={mainImage.imageUrl}
-                alt={mainImage.imageAlt}
-                layout="responsive"
-              />
-            ) : (
-              <Image
-                src={mainImage.imageUrl}
-                width={400}
-                height={(mainImage.height / mainImage.width) * 400}
-                alt={mainImage.imageAlt}
-                className="image"
-              />
-            )}
-          </AssetThumbnail>
+          <ImageLink>
+            <AssetThumbnail>
+              {isAmp ? (
+                <amp-img
+                  width={mainImage.width}
+                  height={(mainImage.height / mainImage.width) * 400}
+                  src={mainImage.imageUrl}
+                  alt={mainImage.imageAlt}
+                  layout="responsive"
+                />
+              ) : (
+                <Image
+                  src={mainImage.imageUrl}
+                  width={400}
+                  height={(mainImage.height / mainImage.width) * 400}
+                  alt={mainImage.imageAlt}
+                  className="image"
+                />
+              )}
+            </AssetThumbnail>
+          </ImageLink>
         </Link>
       )}
     </Asset>
