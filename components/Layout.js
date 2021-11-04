@@ -56,6 +56,11 @@ export default function Layout({
     siteTwitter: meta['siteTwitter'],
   };
 
+  // override default canonical url if there's one specified on the article
+  if (article && article.canonical_url) {
+    metaValues['canonical'] = article.canonical_url;
+  }
+
   let pageTitle = meta['homepageTitle'];
 
   let author;
