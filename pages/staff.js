@@ -55,5 +55,6 @@ export async function getStaticProps({ locale }) {
       sections,
       siteMetadata,
     },
+    revalidate: 1,
   };
 }
