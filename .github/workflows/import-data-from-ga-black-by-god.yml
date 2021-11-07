@@ -4,7 +4,7 @@ name: GA Data Importer Black By God
     - cron: 5 9 * * *
   push:
     branches:
-      - main
+      - bugfix/ga-data-import-failing-jobs
 jobs:
   GA-Data-Importer:
     runs-on: ubuntu-latest
