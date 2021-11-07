@@ -626,6 +626,7 @@ program
     try {
       importDataFromGA(opts);
     } catch (e) {
+      console.log('CAUGHT ERROR IMPORTING DATA:', e);
       core.setFailed(`Action failed with error ${e}`);
     }
   });
