@@ -587,7 +587,9 @@ async function importDataFromGA(params) {
     });
   } catch (e) {
     console.log('error getting data from GA:', e);
-    throw e;
+    core.setFailed(`Action failed with error ${e}`);
+
+    // throw e;
   }
 
   if (!rows || (rows && rows.length <= 0)) {
