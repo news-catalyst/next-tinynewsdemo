@@ -168,7 +168,7 @@ export default function Layout({
       <Head>
         <title>{pageTitle}</title>
         {metaValues.favicon && <link rel="icon" href={metaValues.favicon} />}
-        <meta property="description" content={metaValues.searchDescription} />
+        <meta name="description" content={metaValues.searchDescription} />
         {tagList}
         <link rel="canonical" href={metaValues.canonical} />
         {/* Twitter Card data */}
