@@ -1,4 +1,4 @@
-name: GA Data Importer
+name: GA Data Importer Austin Vida
 'on':
   schedule:
     - cron: 5 9 * * *

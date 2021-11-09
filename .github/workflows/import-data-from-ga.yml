@@ -1,4 +1,4 @@
-name: GA Data Importer
+name: GA Data Importer Oaklyn
 on:
   schedule:
     - cron: '5 9 * * *'
