@@ -36,7 +36,9 @@ export default function Staffer({ author, locale, isAmp }) {
         </AuthorAvatar>
       )}
       <AuthorName>
-        {name}, {title}
+        {name}
+        {title ? ', ' : ''}
+        {title}
       </AuthorName>
       <div dangerouslySetInnerHTML={{ __html: bio }} />
       <style jsx global>{`
