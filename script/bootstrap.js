@@ -251,7 +251,9 @@ async function setupGoogleAnalytics(name, url) {
     },
   });
 
-  console.log(`[GA] Created view with ID ${profileResponse.data.id}`);
+  let viewId = profileResponse.data.id;
+  console.log(`[GA] Created view with ID ${viewId}`);
+
   console.log(`[GA] Current status of accounts:`);
   let statusResponse = await analytics.management.webproperties.list({
     accountId: googleAnalyticsAccountID,
@@ -268,11 +270,14 @@ async function setupGoogleAnalytics(name, url) {
       googleAnalyticsAccountID
     );
   }
-  return propertyId;
+  return {
+    trackingID: propertyId,
+    viewID: viewId,
+  };
 }
 
 // sets up org-specific ENV values
-async function configureNext(name, slug, locales, url, gaTrackingId) {
+async function configureNext(name, slug, locales, url, gaTrackingId, gaViewId) {
   const currentEnv = require('dotenv').config({ path: '.env.local' });
 
   if (currentEnv.error) {
@@ -295,6 +300,7 @@ async function configureNext(name, slug, locales, url, gaTrackingId) {
   currentEnv.parsed['ORG_SLUG'] = slug;
   currentEnv.parsed['TNC_AWS_DIR_NAME'] = slug;
   currentEnv.parsed['NEXT_PUBLIC_GA_TRACKING_ID'] = gaTrackingId;
+  currentEnv.parsed['NEXT_PUBLIC_ANALYTICS_VIEW_ID'] = gaViewId;
   currentEnv.parsed['LOCALES'] = arrayUnique(locales).join(',');
 
   console.log('Creating new environment file using the following settings:');
@@ -327,10 +333,10 @@ async function createOrganization(opts) {
 
   // console.log('locales:', typeof locales, locales);
 
-  let gaTrackingId = await setupGoogleAnalytics(name, url);
-  console.log('GA Tracking ID: ', gaTrackingId);
+  let { trackingID, viewID } = await setupGoogleAnalytics(name, url);
+  console.log(`GA TrackingID=${trackingID} and ViewID=${viewID}`);
 
-  await configureNext(name, slug, locales, url, gaTrackingId);
+  await configureNext(name, slug, locales, url, trackingID, viewID);
 
   const { errors, data } = await shared.hasuraInsertOrganization({
     url: apiUrl,
