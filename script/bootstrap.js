@@ -42,7 +42,7 @@ let organizationID;
 
 // encrypts a secret for GH environment variable setting
 function encryptSecret(key, value) {
-  // console.log("encrypting", key, value);
+  // console.log('encrypting', key, value);
   // Convert the message and key to Uint8Array's (Buffer implements that interface)
   const messageBytes = Buffer.from(value);
   const keyBytes = Buffer.from(key, 'base64');
@@ -169,9 +169,11 @@ async function createGitHubEnv(slug) {
 
     for await (let secretName of secrets) {
       let plainValue = currentEnv.parsed[secretName];
-      // console.log(`\t* setting secret: ${secretName} ${plainValue}`);
 
       let encryptedValue = encryptSecret(pubKey, plainValue);
+      console.log(
+        `\t* setting secret ${secretName} - plain value = '${plainValue}' encrypted as '${encryptedValue}'`
+      );
 
       const secretResult = await octokit.rest.actions.createOrUpdateEnvironmentSecret(
         {
@@ -187,7 +189,13 @@ async function createGitHubEnv(slug) {
         secretResult.status >= 200 &&
         secretResult.status < 300
       ) {
-        console.log(`\t* created secret: ${secretName}`);
+        console.log(`\t* done creating secret: ${secretName}`);
+      } else {
+        console.error(
+          `\t* error creating secret ${secretName}: ${JSON.stringify(
+            secretResult
+          )}`
+        );
       }
     }
   } catch (err) {
@@ -505,7 +513,8 @@ async function createOrganization(opts) {
               facebookDescription: 'Facebook description',
               commenting: 'on',
               advertisingHed: `Advertise with ${name}`,
-              advertisingDek: 'Want to reach our engaged, connected audience? Advertise within our weekly newsletter!',
+              advertisingDek:
+                'Want to reach our engaged, connected audience? Advertise within our weekly newsletter!',
               advertisingCTA: 'Buy an advertisement',
             };
 
