@@ -465,6 +465,8 @@ function storeData(params, rows) {
           source: row.dimensions[0],
         })
         .then((result) => {
+          console.log('hasura insert result:', result);
+
           if (result.errors) {
             const error = new Error(
               'Error inserting data into hasura',
@@ -506,6 +508,8 @@ function storeData(params, rows) {
           date: row.dimensions[0],
         })
         .then((result) => {
+          console.log('hasura insert result:', result);
+
           if (result.errors) {
             const error = new Error(
               'Error inserting data into hasura',
@@ -528,6 +532,8 @@ function storeData(params, rows) {
           date: row.dimensions[1],
         })
         .then((result) => {
+          console.log('hasura insert result:', result);
+
           if (result.errors) {
             const error = new Error(
               'Error inserting data into hasura',
@@ -549,6 +555,8 @@ function storeData(params, rows) {
           date: row.dimensions[4],
         })
         .then((result) => {
+          console.log('hasura insert result:', result);
+
           if (result.errors) {
             const error = new Error(
               'Error inserting data into hasura',
