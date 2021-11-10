@@ -34,8 +34,12 @@ const PageViews = (props) => {
         }
       });
       var sortable = [];
+      var counter = 0;
       Object.keys(totalPV).forEach((path) => {
-        sortable.push([path, totalPV[path]]);
+        if (counter < 10) {
+          sortable.push([path, totalPV[path]]);
+        }
+        counter++;
       });
 
       sortable.sort(function (a, b) {
@@ -56,10 +60,10 @@ const PageViews = (props) => {
   return (
     <>
       <SubHeaderContainer ref={pageviewsRef}>
-        <SubHeader>Page Views</SubHeader>
+        <SubHeader>Top 10 Viewed Pages</SubHeader>
         <SubDek>
           This table shows your most frequently visited pages for your given
-          date range.
+          date range across the entire site.
         </SubDek>
       </SubHeaderContainer>
       <p tw="p-2">
