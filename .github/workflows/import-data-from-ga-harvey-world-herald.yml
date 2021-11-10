@@ -1,11 +1,11 @@
 name: GA Data Importer HWH
-'on':
+on:
   schedule:
     - cron: 5 9 * * *
   push:
     branches:
       - feature/test-run-data-import-hwh
-    jobs:
+jobs:
   GA-Data-Importer:
     runs-on: ubuntu-latest
     environment: data_import_harvey-world-herald
