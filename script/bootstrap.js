@@ -241,6 +241,82 @@ async function setupGoogleAnalytics(name, url) {
     `[GA] Created property with ID ${propertyId} for ${response.data.name} on domain ${response.data.websiteUrl}`
   );
 
+  let customDimensions1Response = await analytics.management.customDimensions.insert(
+    {
+      accountId: googleAnalyticsAccountID,
+      webPropertyId: propertyId,
+      resource: {
+        name: `Contact Email`,
+        active: true,
+        scope: `USER`,
+      },
+    }
+  );
+  console.log(
+    '[GA] Created custom dimension 1:',
+    customDimensions1Response.statusText
+  );
+  let customDimensions2Response = await analytics.management.customDimensions.insert(
+    {
+      accountId: googleAnalyticsAccountID,
+      webPropertyId: propertyId,
+      resource: {
+        name: `Contact 30 Day Reading`,
+        active: true,
+        scope: `HIT`,
+      },
+    }
+  );
+  console.log(
+    '[GA] Created custom dimension 2:',
+    customDimensions2Response.statusText
+  );
+  let customDimensions3Response = await analytics.management.customDimensions.insert(
+    {
+      accountId: googleAnalyticsAccountID,
+      webPropertyId: propertyId,
+      resource: {
+        name: `Contact Member Level`,
+        active: true,
+        scope: `USER`,
+      },
+    }
+  );
+  console.log(
+    '[GA] Created custom dimension 3:',
+    customDimensions3Response.statusText
+  );
+  let customDimensions4Response = await analytics.management.customDimensions.insert(
+    {
+      accountId: googleAnalyticsAccountID,
+      webPropertyId: propertyId,
+      resource: {
+        name: `Donor`,
+        active: true,
+        scope: `USER`,
+      },
+    }
+  );
+  console.log(
+    '[GA] Created custom dimension 4:',
+    customDimensions4Response.statusText
+  );
+  let customDimensions5Response = await analytics.management.customDimensions.insert(
+    {
+      accountId: googleAnalyticsAccountID,
+      webPropertyId: propertyId,
+      resource: {
+        name: `Subscriber`,
+        active: true,
+        scope: `USER`,
+      },
+    }
+  );
+  console.log(
+    '[GA] Created custom dimension 5:',
+    customDimensions5Response.statusText
+  );
+
   // create the view (aka profile)
   let profileResponse = await analytics.management.profiles.insert({
     accountId: googleAnalyticsAccountID,
