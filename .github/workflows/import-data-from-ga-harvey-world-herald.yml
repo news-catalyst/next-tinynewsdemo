@@ -1,4 +1,4 @@
-name: GA Data Importer Harvey World Herald
+name: GA Data Importer HWH
 'on':
   schedule:
     - cron: 5 9 * * *
