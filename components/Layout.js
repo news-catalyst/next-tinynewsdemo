@@ -82,7 +82,16 @@ export default function Layout({
   }
   if (translations && translations.length > 0) {
     pageTitle = hasuraLocalizeText(locale, translations, 'search_title');
-    pageTitle += ' | ' + metaValues.siteName;
+    if (pageTitle === 'Untitled Document') {
+      let headline = hasuraLocalizeText(locale, translations, 'headline');
+      if (headline !== 'Untitled Document') {
+        pageTitle = headline + ' | ' + metaValues.siteName;
+      } else {
+        pageTitle = metaValues.siteName;
+      }
+    } else {
+      pageTitle += ' | ' + metaValues.siteName;
+    }
 
     if (article && article.category) {
       metaValues.section = hasuraLocalizeText(
