@@ -25,13 +25,18 @@ const SourceTopZips = (props) => {
       if (errors && !data) {
         console.error(errors);
       }
+      console.log('data:', data);
 
       let totalZC = {};
       data.sources_aggregate.nodes.map((pv) => {
-        if (!(pv.zip in totalZC)) {
-          totalZC[pv.zip] = 0;
+        let label = pv.zip;
+        if (!label) {
+          label = 'Unknown';
         }
-        totalZC[pv.zip] += 1;
+        if (!(label in totalZC)) {
+          totalZC[label] = 0;
+        }
+        totalZC[label] += 1;
       });
 
       var sortable = [];
