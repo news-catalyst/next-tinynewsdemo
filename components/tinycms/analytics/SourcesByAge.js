@@ -39,6 +39,9 @@ const SourcesByAge = (props) => {
 
       data.sources_aggregate.nodes.map((pv) => {
         let ageLabel = pv.age;
+        if (!ageLabel) {
+          ageLabel = 'Unknown';
+        }
         if (!(ageLabel in nodeCounter)) {
           nodeCounter[ageLabel] = 0;
         }
@@ -54,6 +57,8 @@ const SourcesByAge = (props) => {
           };
           chartValues.push(lineDataPoint);
         });
+
+      console.log('chartValues:', chartValues);
       setChartData(chartValues);
     };
     fetchData();
