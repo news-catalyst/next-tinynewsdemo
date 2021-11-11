@@ -934,7 +934,7 @@ export default function SiteInfoSettings(props) {
                 </label>
               </div>
               <div tw="mt-2 mb-8">
-                <label>
+                <label tw="block">
                   <input
                     type="radio"
                     name={`donationOptions-${i}-paymentType`}
@@ -944,7 +944,7 @@ export default function SiteInfoSettings(props) {
                   />
                   <span tw="p-2 mt-1 font-bold">Monthly</span>
                 </label>
-                <label>
+                <label tw="block">
                   <input
                     type="radio"
                     name={`donationOptions-${i}-paymentType`}
@@ -953,6 +953,16 @@ export default function SiteInfoSettings(props) {
                     onChange={props.handleChange}
                   />
                   <span tw="p-2 mt-1 font-bold">One-time payment</span>
+                </label>
+                <label tw="block">
+                  <input
+                    type="radio"
+                    name={`donationOptions-${i}-paymentType`}
+                    value="pay-what-you-want"
+                    checked={option.paymentType === 'pay-what-you-want'}
+                    onChange={props.handleChange}
+                  />
+                  <span tw="p-2 mt-1 font-bold">Pay what you want</span>
                 </label>
               </div>
               <div tw="mt-2">
