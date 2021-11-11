@@ -58,7 +58,6 @@ const SourcesByAge = (props) => {
           chartValues.push(lineDataPoint);
         });
 
-      console.log('chartValues:', chartValues);
       setChartData(chartValues);
     };
     fetchData();

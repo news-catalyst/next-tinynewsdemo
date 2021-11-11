@@ -25,7 +25,6 @@ const SourceTopZips = (props) => {
       if (errors && !data) {
         console.error(errors);
       }
-      console.log('data:', data);
 
       let totalZC = {};
       data.sources_aggregate.nodes.map((pv) => {
