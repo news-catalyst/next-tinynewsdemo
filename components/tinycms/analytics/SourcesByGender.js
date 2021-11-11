@@ -37,6 +37,9 @@ const SourcesByGender = (props) => {
 
       data.sources_aggregate.nodes.map((pv) => {
         let label = pv.gender;
+        if (!label) {
+          label = 'Unknown';
+        }
         if (!(label in nodeCounter)) {
           nodeCounter[label] = 0;
         }
