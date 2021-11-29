@@ -22,6 +22,9 @@ export default function TextNode({ node, metadata }) {
     );
 
     if (child.style) {
+      if (child.style.underline && child.style.bold && !child.link) {
+        delimiterSpaceChar = <br />;
+      }
       if (child.style.underline && !child.link) {
         text = (
           <>
