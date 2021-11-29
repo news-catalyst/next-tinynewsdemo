@@ -18,20 +18,42 @@ export default function TextNode({ node, metadata }) {
     let text = (
       <span key={child.index ? child.index : child.content}>
         {child.content}
-        {delimiterSpaceChar}
       </span>
     );
 
     if (child.style) {
       if (child.style.underline && !child.link) {
-        text = <u key={`${child.index}-u-${text}`}>{text}</u>;
+        text = (
+          <>
+            {delimiterSpaceChar}
+            <u key={`${child.index}-u-${text}`}>{text}</u>
+            {delimiterSpaceChar}
+          </>
+        );
       }
       if (child.style.italic) {
-        text = <em key={`${child.index}-em-${text}`}>{text}</em>;
+        text = (
+          <>
+            <em key={`${child.index}-em-${text}`}>{text}</em>
+            {delimiterSpaceChar}
+          </>
+        );
       }
       if (child.style.bold) {
-        text = <strong key={`${child.index}-strong-${text}`}>{text}</strong>;
+        text = (
+          <>
+            <strong key={`${child.index}-strong-${text}`}>{text}</strong>
+            {delimiterSpaceChar}
+          </>
+        );
       }
+    } else {
+      text = (
+        <>
+          {text}
+          {delimiterSpaceChar}
+        </>
+      );
     }
 
     if (child.link) {
@@ -65,7 +87,7 @@ export default function TextNode({ node, metadata }) {
   } else if (node.style == 'NORMAL_TEXT') {
     wrapper = <Paragraph>{children}</Paragraph>;
   } else if (node.style == 'FORMATTED_TEXT') {
-    console.log('FORMATTED_TEXT node:', node);
+    // console.log('FORMATTED_TEXT node:', node);
     wrapper = <pre>{children}</pre>;
   } else {
     wrapper = <>{children}</>;
