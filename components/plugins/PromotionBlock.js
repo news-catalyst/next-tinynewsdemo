@@ -7,14 +7,15 @@ export default function PromotionBlock({ metadata, prefer }) {
   const newsletter = <NewsletterBlock metadata={metadata} />;
   const donation = <DonationBlock metadata={metadata} />;
 
-  if (prefer === 'newsletter') {
+  if (metadata.shortName === 'Tiny News Collective Curriculum') {
+    promo = <div />;
+  } else if (prefer === 'newsletter') {
     if (!storage.getItem('TNCNewsletterSubscriber')) {
       promo = newsletter;
     } else if (process.env.NEXT_PUBLIC_MONKEYPOD_URL) {
       promo = donation;
     }
-  }
-  if (prefer === 'donation') {
+  } else if (prefer === 'donation') {
     if (process.env.NEXT_PUBLIC_MONKEYPOD_URL) {
       promo = donation;
     } else {

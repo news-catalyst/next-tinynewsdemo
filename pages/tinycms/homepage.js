@@ -1,6 +1,6 @@
 import dynamic from 'next/dynamic';
 import React, { useState } from 'react';
-import { hasuraLocaliseText } from '../../lib/utils.js';
+import { hasuraLocalizeText } from '../../lib/utils.js';
 import {
   hasuraGetHomepageEditor,
   hasuraSaveHomepageLayout,
@@ -82,7 +82,7 @@ export default function HomePageEditor({
     });
 
     if (errors) {
-      console.log(errors);
+      console.error(errors);
       setNotificationMessage(
         'An error occured while trying to create the new layout config:',
         errors
@@ -90,7 +90,7 @@ export default function HomePageEditor({
       setNotificationType('error');
       setShowNotification(true);
     } else {
-      console.log('data:', data);
+      // console.log('data:', data);
       setNotificationMessage('Successfully published homepage!');
       setNotificationType('success');
       setShowNotification(true);
@@ -199,14 +199,21 @@ export async function getServerSideProps({ locale }) {
 
   const tags = data.tags;
   for (var i = 0; i < tags.length; i++) {
-    tags[i].title = hasuraLocaliseText(tags[i].tag_translations, 'title');
+    tags[i].title = hasuraLocalizeText(
+      locale,
+      tags[i].tag_translations,
+      'title',
+      false
+    );
   }
 
   const sections = data.categories;
   for (var j = 0; j < sections.length; j++) {
-    sections[j].title = hasuraLocaliseText(
+    sections[j].title = hasuraLocalizeText(
+      locale,
       sections[j].category_translations,
-      'title'
+      'title',
+      false
     );
   }
 
@@ -215,7 +222,7 @@ export async function getServerSideProps({ locale }) {
   try {
     siteMetadata = metadatas[0].site_metadata_translations[0].data;
   } catch (err) {
-    console.log('failed finding site metadata for ', locale, metadatas);
+    console.error('failed finding site metadata for ', locale, metadatas);
   }
 
   return {

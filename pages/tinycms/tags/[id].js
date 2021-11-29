@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import tw from 'twin.macro';
+import Link from 'next/link';
 import {
   FormContainer,
   FormHeader,
@@ -11,8 +13,10 @@ import AdminLayout from '../../../components/AdminLayout';
 import AdminNav from '../../../components/nav/AdminNav';
 import Notification from '../../../components/tinycms/Notification';
 import { hasuraGetTagById, hasuraUpdateTag } from '../../../lib/section.js';
-import { hasuraLocaliseText } from '../../../lib/utils.js';
+import { hasuraLocalizeText } from '../../../lib/utils.js';
 import { slugify } from '../../../lib/utils';
+
+const ViewOnSiteLink = tw.a`font-bold cursor-pointer hover:underline`;
 
 export default function EditTag({
   apiUrl,
@@ -32,7 +36,12 @@ export default function EditTag({
   useEffect(() => {
     if (tag) {
       setTagId(tag.id);
-      let title = hasuraLocaliseText(tag.tag_translations, 'title');
+      let title = hasuraLocalizeText(
+        currentLocale,
+        tag.tag_translations,
+        'title',
+        false
+      );
       setTitle(title);
       setSlug(tag.slug);
     }
@@ -59,12 +68,11 @@ export default function EditTag({
     const { errors, data } = await hasuraUpdateTag(params);
 
     if (errors) {
-      console.log(errors);
+      console.error(errors);
       setNotificationMessage(errors);
       setNotificationType('error');
       setShowNotification(true);
     } else {
-      console.log(data);
       // display success message
       setNotificationMessage('The tag is updated.');
       setNotificationType('success');
@@ -92,12 +100,20 @@ export default function EditTag({
 
       <FormContainer>
         <FormHeader title="Edit Tag" />
-
+        {slug && (
+          <div tw="relative">
+            <p tw="absolute right-0">
+              <Link href={`/tags/${slug}`} key={`${slug}`} passHref>
+                <ViewOnSiteLink>View on site</ViewOnSiteLink>
+              </Link>
+            </p>
+          </div>
+        )}
         <form onSubmit={handleSubmit}>
           <TinyInputField
             name="title"
             value={title}
-            onChange={(ev) => updateTitleAndSlug(ev.target.value)}
+            onChange={(ev) => setTitle(ev.target.value)}
             label="Title"
           />
 

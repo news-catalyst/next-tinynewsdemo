@@ -6,27 +6,54 @@ export default function TextNode({ node, metadata }) {
     let supportedPunctuation = [',', '.', '?', '!', ';', ':'];
     let delimiterSpaceChar = ' ';
     // if the next node/child starts with one of the punctuation marks above, don't add a space
-    if (nextChild && supportedPunctuation.includes(nextChild.content[0])) {
+    if (
+      nextChild &&
+      nextChild.content &&
+      nextChild.content[0] &&
+      supportedPunctuation.includes(nextChild.content[0])
+    ) {
       delimiterSpaceChar = '';
     }
 
     let text = (
       <span key={child.index ? child.index : child.content}>
         {child.content}
-        {delimiterSpaceChar}
       </span>
     );
 
     if (child.style) {
       if (child.style.underline && !child.link) {
-        text = <u key={`${child.index}-u-${text}`}>{text}</u>;
+        text = (
+          <>
+            {delimiterSpaceChar}
+            <u key={`${child.index}-u-${text}`}>{text}</u>
+            {delimiterSpaceChar}
+          </>
+        );
       }
       if (child.style.italic) {
-        text = <em key={`${child.index}-em-${text}`}>{text}</em>;
+        text = (
+          <>
+            <em key={`${child.index}-em-${text}`}>{text}</em>
+            {delimiterSpaceChar}
+          </>
+        );
       }
       if (child.style.bold) {
-        text = <strong key={`${child.index}-strong-${text}`}>{text}</strong>;
+        text = (
+          <>
+            <strong key={`${child.index}-strong-${text}`}>{text}</strong>
+            {delimiterSpaceChar}
+          </>
+        );
       }
+    } else {
+      text = (
+        <>
+          {text}
+          {delimiterSpaceChar}
+        </>
+      );
     }
 
     if (child.link) {
@@ -40,9 +67,11 @@ export default function TextNode({ node, metadata }) {
     return text;
   };
 
-  const children = node.children.map((child, i) =>
-    processChild(child, node.children[i + 1])
-  );
+  const children = node.children.map((child, i) => {
+    if (child.content !== 'FORMAT START' && child.content !== 'FORMAT END') {
+      return processChild(child, node.children[i + 1]);
+    }
+  });
   let wrapper = null;
 
   if (node.style == 'TITLE') {
@@ -58,6 +87,7 @@ export default function TextNode({ node, metadata }) {
   } else if (node.style == 'NORMAL_TEXT') {
     wrapper = <Paragraph>{children}</Paragraph>;
   } else if (node.style == 'FORMATTED_TEXT') {
+    // console.log('FORMATTED_TEXT node:', node);
     wrapper = <pre>{children}</pre>;
   } else {
     wrapper = <>{children}</>;

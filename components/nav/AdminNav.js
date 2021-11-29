@@ -52,6 +52,7 @@ export default function NewAdminNav(props) {
                 <LocaleSwitcher
                   currentLocale={props.currentLocale}
                   locales={props.locales}
+                  id={props.id}
                 />
               )}
               <Link href="/tinycms/analytics" passHref>

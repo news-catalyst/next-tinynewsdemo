@@ -33,17 +33,19 @@ const BlockDek = styled.div(({ meta }) => ({
   ...tw`text-base mb-3`,
   fontFamily: Typography[meta.theme || 'styleone'].HomepagePromoBlockDek,
 }));
-const BlockCTA = styled.a(({ meta }) => ({
+const BlockCTA = styled.a(({ meta, tinycms }) => ({
   ...tw`text-base font-bold cursor-pointer hover:underline`,
   fontFamily: Typography[meta.theme || 'styleone'].HomepagePromoBlockCTA,
+  pointerEvents: tinycms ? 'none' : '',
   color:
     meta.color === 'custom'
       ? meta.primaryColor
       : Colors[meta.color ? meta.color : 'colorone'].CTABackground,
 }));
-const DonateBlockCTA = styled.a(({ meta }) => ({
+const DonateBlockCTA = styled.a(({ meta, tinycms }) => ({
   ...tw`inline-flex text-base font-bold cursor-pointer items-center px-5 hover:underline`,
   fontFamily: Typography[meta.theme || 'styleone'].HomepagePromoBlockCTA,
+  pointerEvents: tinycms ? 'none' : '',
   color:
     meta.color === 'custom'
       ? determineTextColor(meta.primaryColor)
@@ -54,7 +56,8 @@ const DonateBlockCTA = styled.a(({ meta }) => ({
       : Colors[meta.color || 'colorone'].CTABackground,
 }));
 
-export default function HomepagePromoBar({ metadata }) {
+export default function HomepagePromoBar({ metadata, tinycms }) {
+  // console.log('homepage promo bar tinycms:', tinycms);
   return (
     <SectionLayout meta={metadata}>
       <SectionContainer>
@@ -65,7 +68,9 @@ export default function HomepagePromoBar({ metadata }) {
             dangerouslySetInnerHTML={{ __html: metadata.aboutDek }}
           />
           <Link href="/about" passHref>
-            <BlockCTA meta={metadata}>{metadata.aboutCTA}</BlockCTA>
+            <BlockCTA meta={metadata} tinycms={tinycms}>
+              {metadata.aboutCTA}
+            </BlockCTA>
           </Link>
         </LeftBlock>
         <RightBlock>
@@ -80,6 +85,7 @@ export default function HomepagePromoBar({ metadata }) {
                 minHeight: '2.375rem',
               }}
               meta={metadata}
+              tinycms={tinycms}
             >
               {metadata.supportCTA}
             </DonateBlockCTA>

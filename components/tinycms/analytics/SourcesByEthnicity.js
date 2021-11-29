@@ -37,6 +37,9 @@ const SourcesByEthnicity = (props) => {
 
       data.sources_aggregate.nodes.map((pv) => {
         let label = pv.ethnicity;
+        if (!label) {
+          label = 'Unknown';
+        }
         if (!(label in nodeCounter)) {
           nodeCounter[label] = 0;
         }

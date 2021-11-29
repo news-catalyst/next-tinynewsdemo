@@ -1,7 +1,8 @@
 import { useAmp } from 'next/amp';
-import tw from 'twin.macro';
+import tw, { styled } from 'twin.macro';
+import { useRouter } from 'next/router';
 import { hasuraGetPage } from '../lib/articles.js';
-import { hasuraLocaliseText } from '../lib/utils';
+import { hasuraLocalizeText } from '../lib/utils';
 import Layout from '../components/Layout';
 import ReadInOtherLanguage from '../components/articles/ReadInOtherLanguage';
 import StaticMainImage from '../components/articles/StaticMainImage';
@@ -16,6 +17,10 @@ import {
 } from '../components/common/CommonStyles.js';
 
 const SectionContainer = tw.div`flex flex-col flex-nowrap items-center px-5 mx-auto max-w-7xl w-full`;
+const WideContainer = styled.div(() => ({
+  ...tw`px-5 md:px-12 mx-auto w-full`,
+  maxWidth: '1280px',
+}));
 
 export default function Donate({
   page,
@@ -25,29 +30,51 @@ export default function Donate({
   locale,
 }) {
   const isAmp = useAmp();
+  const router = useRouter();
+
+  // If the page is not yet generated, this will be displayed
+  // initially until getStaticProps() finishes running
+  // See: https://nextjs.org/docs/basic-features/data-fetching#the-fallback-key-required
+  if (router.isFallback) {
+    return <div>Loading...</div>;
+  }
 
   // there will only be one translation returned for a given page + locale
-  const localisedPage = page.page_translations[0];
-  const body = renderBody(page.page_translations, [], isAmp, siteMetadata);
+  const headline = hasuraLocalizeText(
+    locale,
+    page.page_translations,
+    'headline'
+  );
+
+  const body = renderBody(
+    locale,
+    page.page_translations,
+    [],
+    isAmp,
+    siteMetadata
+  );
 
   return (
-    <Layout meta={siteMetadata} page={page} sections={sections}>
+    <Layout locale={locale} meta={siteMetadata} page={page} sections={sections}>
       <SectionContainer>
         <article className="container">
           <ArticleTitle meta={siteMetadata} tw="text-center">
-            {localisedPage.headline}
+            {headline}
           </ArticleTitle>
           <StaticMainImage
             isAmp={isAmp}
+            locale={locale}
             page={page}
             siteMetadata={siteMetadata}
           />
           <PostText>
             <PostTextContainer>{body}</PostTextContainer>
           </PostText>
-          <DonationOptionsBlock metadata={siteMetadata} wrap={true} />
         </article>
       </SectionContainer>
+      <WideContainer>
+        <DonationOptionsBlock metadata={siteMetadata} wrap={true} />
+      </WideContainer>
       {locales.length > 1 && (
         <SectionLayout>
           <SectionContainer>
@@ -74,15 +101,17 @@ export async function getStaticProps({ locale }) {
     url: apiUrl,
     orgSlug: apiToken,
     slug: 'donate',
-    localeCode: locale,
   });
   if (errors || !data) {
+    console.error('Returning a 404 - errors:', errors);
+
     return {
       notFound: true,
     };
     // throw errors;
   } else {
     if (!data.page_slug_versions || !data.page_slug_versions[0]) {
+      console.error('Returning a 404 - page slug version not found:', data);
       return {
         notFound: true,
       };
@@ -107,9 +136,16 @@ export async function getStaticProps({ locale }) {
     locales = distinctLocales;
 
     sections = data.categories;
-    siteMetadata = data.site_metadatas[0].site_metadata_translations[0].data;
+
+    siteMetadata = hasuraLocalizeText(
+      locale,
+      data.site_metadatas[0].site_metadata_translations,
+      'data'
+    );
+
     for (i = 0; i < sections.length; i++) {
-      sections[i].title = hasuraLocaliseText(
+      sections[i].title = hasuraLocalizeText(
+        locale,
         sections[i].category_translations,
         'title'
       );

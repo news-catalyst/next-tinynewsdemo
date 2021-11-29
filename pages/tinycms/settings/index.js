@@ -59,6 +59,7 @@ export default function Settings({
   const homepagePromoRef = useRef();
   const newsletterRef = useRef();
   const membershipRef = useRef();
+  const advertisingRef = useRef();
   const paymentRef = useRef();
   const seoRef = useRef();
   const [message, setMessage] = useState(null);
@@ -73,6 +74,19 @@ export default function Settings({
   const router = useRouter();
   const { action } = router.query;
 
+  const validateHexColorCode = (value) => {
+    let codePattern = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
+    return codePattern.test(value);
+  };
+
+  const validateUrl = (value) => {
+    try {
+      new URL(value);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  };
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
 
@@ -98,7 +112,6 @@ export default function Settings({
           [name]: value,
         }));
       } else {
-        // console.log('setting parsed data', name, value);
         setParsedData((prevState) => ({
           ...prevState,
           [name]: value,
@@ -143,6 +156,13 @@ export default function Settings({
       if (membershipRef) {
         membershipRef.current.scrollIntoView({ behavior: 'smooth' });
       }
+    } else if (
+      window.location.hash &&
+      window.location.hash === '#advertising'
+    ) {
+      if (advertisingRef) {
+        advertisingRef.current.scrollIntoView({ behavior: 'smooth' });
+      }
     } else if (window.location.hash && window.location.hash === '#seo') {
       if (seoRef) {
         seoRef.current.scrollIntoView({ behavior: 'smooth' });
@@ -179,6 +199,61 @@ export default function Settings({
       setParsedData(parsed);
     }
 
+    if (
+      parsed['primaryColor'] &&
+      !validateHexColorCode(parsed['primaryColor'])
+    ) {
+      setNotificationMessage(
+        `Custom primary color '${parsed['primaryColor']}' is not a valid hex color: must start with '#' and include the letters A-F and/or digits 0-9 only.`
+      );
+      setNotificationType('error');
+      setShowNotification(true);
+      return false;
+    }
+    if (
+      parsed['secondaryColor'] &&
+      !validateHexColorCode(parsed['secondaryColor'])
+    ) {
+      setNotificationMessage(
+        `Custom secondary color '${parsed['primaryColor']}'' is not a valid hex color: must start with '#' and include the letters A-F and/or digits 0-9 only.`
+      );
+      setNotificationType('error');
+      setShowNotification(true);
+      return false;
+    }
+    // ensure founder twitter link is a fully formed url
+    if (parsed['founderTwitter'] && !validateUrl(parsed['founderTwitter'])) {
+      let prependedUrl = new URL(
+        `https://twitter.com/${parsed['founderTwitter']}`
+      );
+      if (validateUrl(prependedUrl)) {
+        parsed['founderTwitter'] = prependedUrl;
+      }
+    }
+
+    // ensure founder Instagram link is a fully formed url
+    if (
+      parsed['founderInstagram'] &&
+      !validateUrl(parsed['founderInstagram'])
+    ) {
+      let prependedUrl = new URL(
+        `https://instagram.com/${parsed['founderInstagram']}`
+      );
+      if (validateUrl(prependedUrl)) {
+        parsed['founderInstagram'] = prependedUrl;
+      }
+    }
+
+    // ensure founder Facebook link is a fully formed url
+    if (parsed['founderFacebook'] && !validateUrl(parsed['founderFacebook'])) {
+      let prependedUrl = new URL(
+        `https://facebook.com/${parsed['founderFacebook']}`
+      );
+      if (validateUrl(prependedUrl)) {
+        parsed['founderFacebook'] = prependedUrl;
+      }
+    }
+
     const { errors, data } = await hasuraUpsertMetadata({
       url: apiUrl,
       orgSlug: apiToken,
@@ -203,7 +278,7 @@ export default function Settings({
         });
         const statusCode = response.status;
         const data = await response.json();
-        console.log(statusCode, 'vercel data:', data);
+        // console.log(statusCode, 'vercel data:', data);
         if (statusCode < 200 || statusCode > 299) {
           setNotificationType('error');
           setNotificationMessage(
@@ -279,6 +354,11 @@ export default function Settings({
                   </Link>
                 </li>
                 <li>
+                  <Link href="/tinycms/settings#advertising">
+                    <a>Advertising Block</a>
+                  </Link>
+                </li>
+                <li>
                   <Link href="/tinycms/settings#payment-options">
                     <a>Payment options</a>
                   </Link>
@@ -316,6 +396,7 @@ export default function Settings({
                 seoRef={seoRef}
                 newsletterRef={newsletterRef}
                 membershipRef={membershipRef}
+                advertisingRef={advertisingRef}
                 designRef={designRef}
                 homepagePromoRef={homepagePromoRef}
                 paymentRef={paymentRef}
@@ -350,10 +431,12 @@ export async function getServerSideProps(context) {
   });
 
   if (errors) {
+    console.error('Error getting site metadata:', errors);
     throw errors;
   } else {
     locales = data.organization_locales;
     siteMetadata = data.site_metadatas[0];
+    console.log('siteMetadata:', siteMetadata);
   }
   if (siteMetadata === undefined) {
     siteMetadata = null;

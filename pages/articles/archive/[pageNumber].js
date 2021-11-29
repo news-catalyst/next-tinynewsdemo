@@ -7,7 +7,7 @@ import {
   hasuraArticlesArchivePage,
   hasuraListArticleArchivePages,
 } from '../../../lib/articles.js';
-import { hasuraLocaliseText } from '../../../lib/utils';
+import { hasuraLocalizeText } from '../../../lib/utils';
 import { cachedContents } from '../../../lib/cached';
 import { getArticleAds } from '../../../lib/ads.js';
 import { useAmp } from 'next/amp';
@@ -27,8 +27,8 @@ export default function ArticlesArchivePage({
   currentPageNumber,
   siteMetadata,
   expandedAds,
+  locale,
 }) {
-  const [currentArticles, setCurrentArticles] = useState(articles);
   const [pageNumbers, setPageNumbers] = useState(range(totalPageCount, 1));
   let paginationLinks = [];
 
@@ -68,15 +68,16 @@ export default function ArticlesArchivePage({
   }
 
   return (
-    <Layout meta={siteMetadata} sections={sections}>
+    <Layout locale={locale} meta={siteMetadata} sections={sections}>
       <ArticleStream
         sections={sections}
-        articles={currentArticles}
+        articles={articles}
         title={`All Stories`}
         showCategory={true}
         isAmp={isAmp}
         metadata={siteMetadata}
         ads={expandedAds}
+        locale={locale}
       />
       <PaginationSection>
         <PaginationContainer meta={siteMetadata}>
@@ -148,7 +149,6 @@ export async function getStaticProps(context) {
   const { errors, data } = await hasuraArticlesArchivePage({
     url: apiUrl,
     orgSlug: apiToken,
-    localeCode: locale,
     limit: limit,
     offset: offset,
   });
@@ -165,7 +165,8 @@ export async function getStaticProps(context) {
     totalPageCount = Math.ceil(totalArticleCount / limit);
 
     for (var i = 0; i < sections.length; i++) {
-      sections[i].title = hasuraLocaliseText(
+      sections[i].title = hasuraLocalizeText(
+        locale,
         sections[i].category_translations,
         'title'
       );
@@ -175,7 +176,7 @@ export async function getStaticProps(context) {
     try {
       siteMetadata = metadatas[0].site_metadata_translations[0].data;
     } catch (err) {
-      console.log('failed finding site metadata for ', locale, metadatas);
+      console.error('failed finding site metadata for ', locale, metadatas);
     }
   }
 
@@ -193,6 +194,7 @@ export async function getStaticProps(context) {
       currentPageNumber,
       siteMetadata,
       expandedAds,
+      locale,
     },
   };
 }

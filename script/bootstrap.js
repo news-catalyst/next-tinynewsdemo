@@ -42,7 +42,7 @@ let organizationID;
 
 // encrypts a secret for GH environment variable setting
 function encryptSecret(key, value) {
-  // console.log("encrypting", key, value);
+  // console.log('encrypting', key, value);
   // Convert the message and key to Uint8Array's (Buffer implements that interface)
   const messageBytes = Buffer.from(value);
   const keyBytes = Buffer.from(key, 'base64');
@@ -169,9 +169,11 @@ async function createGitHubEnv(slug) {
 
     for await (let secretName of secrets) {
       let plainValue = currentEnv.parsed[secretName];
-      // console.log(`\t* setting secret: ${secretName} ${plainValue}`);
 
       let encryptedValue = encryptSecret(pubKey, plainValue);
+      console.log(
+        `\t* setting secret ${secretName} - plain value = '${plainValue}' encrypted as '${encryptedValue}'`
+      );
 
       const secretResult = await octokit.rest.actions.createOrUpdateEnvironmentSecret(
         {
@@ -187,7 +189,13 @@ async function createGitHubEnv(slug) {
         secretResult.status >= 200 &&
         secretResult.status < 300
       ) {
-        console.log(`\t* created secret: ${secretName}`);
+        console.log(`\t* done creating secret: ${secretName}`);
+      } else {
+        console.error(
+          `\t* error creating secret ${secretName}: ${JSON.stringify(
+            secretResult
+          )}`
+        );
       }
     }
   } catch (err) {
@@ -233,6 +241,82 @@ async function setupGoogleAnalytics(name, url) {
     `[GA] Created property with ID ${propertyId} for ${response.data.name} on domain ${response.data.websiteUrl}`
   );
 
+  let customDimensions1Response = await analytics.management.customDimensions.insert(
+    {
+      accountId: googleAnalyticsAccountID,
+      webPropertyId: propertyId,
+      resource: {
+        name: `Contact Email`,
+        active: true,
+        scope: `USER`,
+      },
+    }
+  );
+  console.log(
+    '[GA] Created custom dimension 1:',
+    customDimensions1Response.statusText
+  );
+  let customDimensions2Response = await analytics.management.customDimensions.insert(
+    {
+      accountId: googleAnalyticsAccountID,
+      webPropertyId: propertyId,
+      resource: {
+        name: `Contact 30 Day Reading`,
+        active: true,
+        scope: `HIT`,
+      },
+    }
+  );
+  console.log(
+    '[GA] Created custom dimension 2:',
+    customDimensions2Response.statusText
+  );
+  let customDimensions3Response = await analytics.management.customDimensions.insert(
+    {
+      accountId: googleAnalyticsAccountID,
+      webPropertyId: propertyId,
+      resource: {
+        name: `Contact Member Level`,
+        active: true,
+        scope: `USER`,
+      },
+    }
+  );
+  console.log(
+    '[GA] Created custom dimension 3:',
+    customDimensions3Response.statusText
+  );
+  let customDimensions4Response = await analytics.management.customDimensions.insert(
+    {
+      accountId: googleAnalyticsAccountID,
+      webPropertyId: propertyId,
+      resource: {
+        name: `Donor`,
+        active: true,
+        scope: `USER`,
+      },
+    }
+  );
+  console.log(
+    '[GA] Created custom dimension 4:',
+    customDimensions4Response.statusText
+  );
+  let customDimensions5Response = await analytics.management.customDimensions.insert(
+    {
+      accountId: googleAnalyticsAccountID,
+      webPropertyId: propertyId,
+      resource: {
+        name: `Subscriber`,
+        active: true,
+        scope: `USER`,
+      },
+    }
+  );
+  console.log(
+    '[GA] Created custom dimension 5:',
+    customDimensions5Response.statusText
+  );
+
   // create the view (aka profile)
   let profileResponse = await analytics.management.profiles.insert({
     accountId: googleAnalyticsAccountID,
@@ -243,7 +327,9 @@ async function setupGoogleAnalytics(name, url) {
     },
   });
 
-  console.log(`[GA] Created view with ID ${profileResponse.data.id}`);
+  let viewId = profileResponse.data.id;
+  console.log(`[GA] Created view with ID ${viewId}`);
+
   console.log(`[GA] Current status of accounts:`);
   let statusResponse = await analytics.management.webproperties.list({
     accountId: googleAnalyticsAccountID,
@@ -260,11 +346,14 @@ async function setupGoogleAnalytics(name, url) {
       googleAnalyticsAccountID
     );
   }
-  return propertyId;
+  return {
+    trackingID: propertyId,
+    viewID: viewId,
+  };
 }
 
 // sets up org-specific ENV values
-async function configureNext(name, slug, locales, url, gaTrackingId) {
+async function configureNext(name, slug, locales, url, gaTrackingId, gaViewId) {
   const currentEnv = require('dotenv').config({ path: '.env.local' });
 
   if (currentEnv.error) {
@@ -287,6 +376,7 @@ async function configureNext(name, slug, locales, url, gaTrackingId) {
   currentEnv.parsed['ORG_SLUG'] = slug;
   currentEnv.parsed['TNC_AWS_DIR_NAME'] = slug;
   currentEnv.parsed['NEXT_PUBLIC_GA_TRACKING_ID'] = gaTrackingId;
+  currentEnv.parsed['NEXT_PUBLIC_ANALYTICS_VIEW_ID'] = gaViewId;
   currentEnv.parsed['LOCALES'] = arrayUnique(locales).join(',');
 
   console.log('Creating new environment file using the following settings:');
@@ -319,10 +409,10 @@ async function createOrganization(opts) {
 
   // console.log('locales:', typeof locales, locales);
 
-  let gaTrackingId = await setupGoogleAnalytics(name, url);
-  console.log('GA Tracking ID: ', gaTrackingId);
+  let { trackingID, viewID } = await setupGoogleAnalytics(name, url);
+  console.log(`GA TrackingID=${trackingID} and ViewID=${viewID}`);
 
-  await configureNext(name, slug, locales, url, gaTrackingId);
+  await configureNext(name, slug, locales, url, trackingID, viewID);
 
   const { errors, data } = await shared.hasuraInsertOrganization({
     url: apiUrl,
@@ -353,12 +443,16 @@ async function createOrganization(opts) {
         let orgLocaleObjects = [];
         allLocales.forEach((aLocale) => {
           let foundLocale = locales.find((l) => l === aLocale.code);
-          if (foundLocale) {
-            orgLocaleObjects.push({
-              locale_id: aLocale.id,
-              organization_id: organizationID,
-            });
+          if (!foundLocale) {
+            // console.log(`${aLocale.code} skip`);
+            return;
           }
+
+          orgLocaleObjects.push({
+            locale_id: aLocale.id,
+            organization_id: organizationID,
+          });
+
           shared
             .hasuraInsertSections({
               url: apiUrl,
@@ -418,7 +512,10 @@ async function createOrganization(opts) {
               ],
             })
             .then((res) => {
-              console.log('Created the default sections:', res);
+              console.log(
+                `[${aLocale.code}] created the default sections:`,
+                res
+              );
               shared
                 .hasuraUpsertHomepageLayout({
                   url: apiUrl,
@@ -430,7 +527,7 @@ async function createOrganization(opts) {
                 })
                 .then((res) => {
                   console.log(
-                    'Created the Large Package Story Lead homepage layout:',
+                    `[${aLocale.code}] created the Large Package Story Lead homepage layout:`,
                     res
                   );
                   shared
@@ -443,7 +540,7 @@ async function createOrganization(opts) {
                     })
                     .then((res) => {
                       console.log(
-                        'Created the Big Featured Story homepage layout:',
+                        `[${aLocale.code}] created the Big Featured Story homepage layout:`,
                         res
                       );
                     });
@@ -490,13 +587,17 @@ async function createOrganization(opts) {
               donateBlockHed: 'Donate',
               secondaryColor: '#002c57',
               donationOptions:
-                '[{\n"amount": 5,\n"name": "Member",\n"description": "This is a description."\n},\n{\n"amount": 10,\n"name": "Supporter",\n"description": "This is a description."\n},\n{\n"amount": 20,\n"name": "Superuser",\n"description": "This is a description."\n}]',
+                '[{\n"amount": 5,\n"name": "Member",\n"description": "This is a description.",\n"cta": "Donate"\n},\n{\n"amount": 10,\n"name": "Supporter",\n"description": "This is a description.",\n"cta": "Donate"\n},\n{\n"amount": 20,\n"name": "Superuser",\n"description": "This is a description.",\n"cta": "Donate"\n}]',
               footerBylineLink: url,
               footerBylineName: name,
               searchDescription: 'Page description',
               twitterDescription: 'Twitter description',
               facebookDescription: 'Facebook description',
               commenting: 'on',
+              advertisingHed: `Advertise with ${name}`,
+              advertisingDek:
+                'Want to reach our engaged, connected audience? Advertise within our weekly newsletter!',
+              advertisingCTA: 'Buy an advertisement',
             };
 
             locales.map((locale) => {
@@ -512,11 +613,11 @@ async function createOrganization(opts) {
                 .then((res) => {
                   if (res.errors) {
                     console.error(
-                      '! Failed creating site metadata in locale: ' + locale
+                      `[${locale}] ! Failed creating site metadata`
                     );
                     console.error(res.errors);
                   } else {
-                    console.log('Created site metadata in locale ' + locale);
+                    console.log(`[${locale}] created site metadata`);
                     // console.log(JSON.stringify(res));
                   }
                 });

@@ -1,6 +1,6 @@
 import { useAmp } from 'next/amp';
 import { hasuraGetPage } from '../lib/articles.js';
-import { hasuraLocaliseText } from '../lib/utils';
+import { hasuraLocalizeText } from '../lib/utils';
 import StaffPage from '../components/StaffPage';
 
 export default function Staff(props) {
@@ -22,10 +22,9 @@ export async function getStaticProps({ locale }) {
     url: apiUrl,
     orgSlug: apiToken,
     slug: 'about',
-    localeCode: locale,
   });
   if (errors || !data) {
-    console.log(errors);
+    console.error(errors);
     return {
       notFound: true,
     };
@@ -41,7 +40,8 @@ export async function getStaticProps({ locale }) {
     authors = data.authors;
     siteMetadata = data.site_metadatas[0].site_metadata_translations[0].data;
     for (var i = 0; i < sections.length; i++) {
-      sections[i].title = hasuraLocaliseText(
+      sections[i].title = hasuraLocalizeText(
+        locale,
         sections[i].category_translations,
         'title'
       );
@@ -50,9 +50,11 @@ export async function getStaticProps({ locale }) {
 
   return {
     props: {
+      authors,
+      locale,
       sections,
       siteMetadata,
-      authors,
     },
+    revalidate: 1,
   };
 }

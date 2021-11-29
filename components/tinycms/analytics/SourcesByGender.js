@@ -37,13 +37,14 @@ const SourcesByGender = (props) => {
 
       data.sources_aggregate.nodes.map((pv) => {
         let label = pv.gender;
+        if (!label) {
+          label = 'Unknown';
+        }
         if (!(label in nodeCounter)) {
           nodeCounter[label] = 0;
         }
         nodeCounter[label] += 1;
       });
-
-      console.log('node counter:', nodeCounter);
 
       Object.keys(nodeCounter)
         .sort()

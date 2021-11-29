@@ -5,7 +5,7 @@ import {
   hasuraGetPagePreview,
   hasuraListAllPageSlugsPreview,
 } from '../../../lib/articles.js';
-import { hasuraLocaliseText } from '../../../lib/utils';
+import { hasuraLocalizeText } from '../../../lib/utils';
 import StaticPage from '../../../components/StaticPage';
 
 export default function Static({
@@ -117,7 +117,8 @@ export async function getStaticProps(context) {
     sections = data.categories;
     siteMetadata = data.site_metadatas[0].site_metadata_translations[0].data;
     for (i = 0; i < sections.length; i++) {
-      sections[i].title = hasuraLocaliseText(
+      sections[i].title = hasuraLocalizeText(
+        locale,
         sections[i].category_translations,
         'title'
       );

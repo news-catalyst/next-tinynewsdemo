@@ -4,7 +4,7 @@ import GlobalFooter from './nav/GlobalFooter.js';
 import CookieConsentWrapper from './nav/CookieConsentWrapper.js';
 import { useAmp } from 'next/amp';
 import AmpAnalytics from './amp/AmpAnalytics.js';
-import { hasuraLocaliseText } from '../lib/utils';
+import { hasuraLocalizeText } from '../lib/utils';
 import tw, { styled } from 'twin.macro';
 
 const Main = tw.main`pt-8 pb-24`;
@@ -23,12 +23,15 @@ export default function Layout({
   article,
   page,
   sections,
+  locale,
   renderNav = true,
   renderFooter = true,
 }) {
   if (meta === null || meta === undefined) {
     meta = {};
   }
+
+  // console.log('Layout locale:', locale);
 
   const metaValues = {
     canonical: meta['canonicalUrl'] || meta['siteUrl'],
@@ -53,6 +56,11 @@ export default function Layout({
     siteTwitter: meta['siteTwitter'],
   };
 
+  // override default canonical url if there's one specified on the article
+  if (article && article.canonical_url) {
+    metaValues['canonical'] = article.canonical_url;
+  }
+
   let pageTitle = meta['homepageTitle'];
 
   let author;
@@ -73,34 +81,68 @@ export default function Layout({
     metaValues['documentType'] = 'website';
   }
   if (translations && translations.length > 0) {
-    pageTitle = hasuraLocaliseText(translations, 'search_title');
-    pageTitle += ' | ' + metaValues.siteName;
+    pageTitle = hasuraLocalizeText(locale, translations, 'search_title');
+    if (pageTitle === 'Untitled Document') {
+      let headline = hasuraLocalizeText(locale, translations, 'headline');
+      if (headline !== 'Untitled Document') {
+        pageTitle = headline + ' | ' + metaValues.siteName;
+      } else {
+        pageTitle = metaValues.siteName;
+      }
+    } else {
+      pageTitle += ' | ' + metaValues.siteName;
+    }
 
     if (article && article.category) {
-      metaValues.section = hasuraLocaliseText(
+      metaValues.section = hasuraLocalizeText(
+        locale,
         article.category.category_translations,
         'title'
       );
     }
-    metaValues.searchTitle = hasuraLocaliseText(translations, 'search_title');
-    metaValues.searchDescription = hasuraLocaliseText(
+    metaValues.searchTitle = hasuraLocalizeText(
+      locale,
+      translations,
+      'search_title'
+    );
+    metaValues.searchDescription = hasuraLocalizeText(
+      locale,
       translations,
       'search_description'
     );
 
-    metaValues.twitterTitle = hasuraLocaliseText(translations, 'twitter_title');
-    metaValues.twitterDescription = hasuraLocaliseText(
+    metaValues.twitterTitle = hasuraLocalizeText(
+      locale,
+      translations,
+      'twitter_title'
+    );
+    if (!metaValues.twitterTitle) {
+      metaValues.twitterTitle = metaValues.searchTitle;
+    }
+    metaValues.twitterDescription = hasuraLocalizeText(
+      locale,
       translations,
       'twitter_description'
     );
-    metaValues.facebookTitle = hasuraLocaliseText(
+    if (!metaValues.twitterDescription) {
+      metaValues.twitterDescription = metaValues.searchDescription;
+    }
+    metaValues.facebookTitle = hasuraLocalizeText(
+      locale,
       translations,
       'facebook_title'
     );
-    metaValues.facebookDescription = hasuraLocaliseText(
+    if (!metaValues.facebookTitle) {
+      metaValues.facebookTitle = metaValues.searchTitle;
+    }
+    metaValues.facebookDescription = hasuraLocalizeText(
+      locale,
       translations,
       'facebook_description'
     );
+    if (!metaValues.facebookDescription) {
+      metaValues.facebookDescription = metaValues.searchDescription;
+    }
   }
 
   if (article && article.firstPublishedOn) {
@@ -119,7 +161,7 @@ export default function Layout({
       tagList.push(
         <meta
           property="article:tag"
-          content={hasuraLocaliseText(tag.tag_translations, 'title')}
+          content={hasuraLocalizeText(locale, tag.tag_translations, 'title')}
           key={tag.slug}
         />
       );
@@ -135,7 +177,7 @@ export default function Layout({
       <Head>
         <title>{pageTitle}</title>
         {metaValues.favicon && <link rel="icon" href={metaValues.favicon} />}
-        <meta property="description" content={metaValues.searchDescription} />
+        <meta name="description" content={metaValues.searchDescription} />
         {tagList}
         <link rel="canonical" href={metaValues.canonical} />
         {/* Twitter Card data */}
@@ -183,9 +225,13 @@ export default function Layout({
           article.tags !== undefined &&
           article.tags.map((tag) => (
             <meta
-              key={hasuraLocaliseText(tag.tag_translations, 'title')}
+              key={hasuraLocalizeText(locale, tag.tag_translations, 'title')}
               property="article:tag"
-              content={hasuraLocaliseText(tag.tag_translations, 'title')}
+              content={hasuraLocalizeText(
+                locale,
+                tag.tag_translations,
+                'title'
+              )}
             />
           ))}
         {metaValues.facebookAppId && (
@@ -239,7 +285,12 @@ export default function Layout({
       </Head>
       <ThemeWrapper meta={meta}>
         {renderNav && (
-          <GlobalNav metadata={meta} sections={sections} isAmp={isAmp} />
+          <GlobalNav
+            locale={locale}
+            metadata={meta}
+            sections={sections}
+            isAmp={isAmp}
+          />
         )}
         <Main>
           {isAmp && (

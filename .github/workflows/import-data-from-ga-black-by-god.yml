@@ -1,10 +1,7 @@
-name: GA Data Importer
+name: GA Data Importer Black By God
 'on':
   schedule:
     - cron: 5 9 * * *
-  push:
-    branches:
-      - main
 jobs:
   GA-Data-Importer:
     runs-on: ubuntu-latest

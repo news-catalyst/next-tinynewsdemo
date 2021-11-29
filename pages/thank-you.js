@@ -1,8 +1,9 @@
 import { useAmp } from 'next/amp';
 import tw from 'twin.macro';
+import { useRouter } from 'next/router';
 import { hasuraGetPage } from '../lib/articles.js';
 import { useAnalytics } from '../lib/hooks/useAnalytics.js';
-import { hasuraLocaliseText } from '../lib/utils';
+import { hasuraLocalizeText } from '../lib/utils';
 import ReadInOtherLanguage from '../components/articles/ReadInOtherLanguage';
 import Layout from '../components/Layout';
 import NewsletterBlock from '../components/plugins/NewsletterBlock';
@@ -26,9 +27,18 @@ export default function ThankYou({
   locale,
 }) {
   const isAmp = useAmp();
-
+  const router = useRouter();
   // sets a cookie if request comes from monkeypod.io marking this browser as a donor
   const { checkReferrer, trackEvent } = useAnalytics();
+
+  // If the page is not yet generated, this will be displayed
+  // initially until getStaticProps() finishes running
+  // See: https://nextjs.org/docs/basic-features/data-fetching#the-fallback-key-required
+  if (router.isFallback) {
+    // console.log('router.isFallback on thank you page');
+    return <div>Loading...</div>;
+  }
+
   // this will return true if the request came from monkeypod, false otherwise
   let isDonor = checkReferrer(referrer);
   if (isDonor) {
@@ -44,10 +54,16 @@ export default function ThankYou({
 
   // there will only be one translation returned for a given page + locale
   const localisedPage = page.page_translations[0];
-  const body = renderBody(page.page_translations, [], isAmp, siteMetadata);
+  const body = renderBody(
+    locale,
+    page.page_translations,
+    [],
+    isAmp,
+    siteMetadata
+  );
 
   return (
-    <Layout meta={siteMetadata} page={page} sections={sections}>
+    <Layout locale={locale} meta={siteMetadata} page={page} sections={sections}>
       <SectionContainer>
         <ArticleTitle meta={siteMetadata} tw="text-center">
           {localisedPage.headline}
@@ -118,7 +134,8 @@ export async function getServerSideProps(context) {
     sections = data.categories;
     siteMetadata = data.site_metadatas[0].site_metadata_translations[0].data;
     for (i = 0; i < sections.length; i++) {
-      sections[i].title = hasuraLocaliseText(
+      sections[i].title = hasuraLocalizeText(
+        locale,
         sections[i].category_translations,
         'title'
       );
@@ -133,7 +150,6 @@ export async function getServerSideProps(context) {
       siteMetadata,
       locales,
       locale,
-      revalidate: 1,
     },
   };
 }

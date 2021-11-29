@@ -1,15 +1,14 @@
 import tw from 'twin.macro';
 import Image from 'next/image';
-import { Paragraph } from './common/CommonStyles.js';
-import { displayAuthorName, hasuraLocaliseText } from '../lib/utils';
+import { displayAuthorName, hasuraLocalizeText } from '../lib/utils';
 
 const AuthorName = tw.h3`font-bold text-xl leading-tight mt-5 mb-4`;
 const AuthorAvatar = tw.div`overflow-hidden relative w-full h-48 w-48 mr-4 md:float-left`;
 
-export default function Staffer({ author, isAmp }) {
+export default function Staffer({ author, locale, isAmp }) {
   const name = displayAuthorName(author.first_names, author.last_name);
-  const bio = hasuraLocaliseText(author.author_translations, 'bio');
-  const title = hasuraLocaliseText(author.author_translations, 'title');
+  const bio = hasuraLocalizeText(locale, author.author_translations, 'bio');
+  const title = hasuraLocalizeText(locale, author.author_translations, 'title');
 
   return (
     <div className="author mb-4">
@@ -37,7 +36,9 @@ export default function Staffer({ author, isAmp }) {
         </AuthorAvatar>
       )}
       <AuthorName>
-        {name}, {title}
+        {name}
+        {title ? ', ' : ''}
+        {title}
       </AuthorName>
       <div dangerouslySetInnerHTML={{ __html: bio }} />
       <style jsx global>{`

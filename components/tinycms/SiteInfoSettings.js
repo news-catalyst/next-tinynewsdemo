@@ -3,6 +3,7 @@ import tw, { css, styled } from 'twin.macro';
 import DonationBlock from '../plugins/DonationBlock';
 import NewsletterBlock from '../plugins/NewsletterBlock';
 import HomepagePromoBar from '../homepage/HomepagePromoBar';
+import AdPromotion from '../ads/AdPromotion';
 import DonationOptionsBlock from '../plugins/DonationOptionsBlock';
 import ControlledInput from './ControlledInput';
 import Upload from './Upload';
@@ -13,6 +14,7 @@ const SiteInfoFieldsContainer = tw.div`grid grid-cols-3 gap-4`;
 const SeoContainer = tw.div``;
 const DesignContainer = tw.div`grid grid-cols-2 gap-4`;
 const MembershipContainer = tw.div`grid grid-cols-2 gap-8`;
+const AdvertisingContainer = tw.div`grid grid-cols-2 gap-8`;
 const NewsletterContainer = tw.div`grid grid-cols-2 gap-8`;
 const HomepagePromoContainer = tw.div`grid grid-cols-2 gap-8`;
 const DonationOptionsEditor = tw.div`grid grid-cols-3 gap-4`;
@@ -253,6 +255,19 @@ export default function SiteInfoSettings(props) {
     props.parsedData['newsletterDek']
   );
 
+  const [advertisingHed, setAdvertisingHed] = useState(
+    props.parsedData['advertisingHed']
+  );
+  const [advertisingDek, setAdvertisingDek] = useState(
+    props.parsedData['advertisingDek']
+  );
+  const [staticAdvertisingDek, setStaticAdvertisingDek] = useState(
+    props.parsedData['advertisingDek']
+  );
+  const [advertisingCTA, setAdvertisingCTA] = useState(
+    props.parsedData['advertisingCTA']
+  );
+
   const [logo, setLogo] = useState(props.parsedData['logo']);
   const [favicon, setFavicon] = useState(props.parsedData['favicon']);
   const [defaultSocialImage, setDefaultSocialImage] = useState(
@@ -262,7 +277,7 @@ export default function SiteInfoSettings(props) {
   try {
     parsedDonationOptions = JSON.parse(props.parsedData['donationOptions']);
   } catch (e) {
-    console.log('Failed to parse donation options json:', e);
+    console.error('Failed to parse donation options json:', e);
   }
   const [donationOptions, setDonationOptions] = useState(
     props.parsedData['donationOptions'] ? parsedDonationOptions : null
@@ -314,6 +329,15 @@ export default function SiteInfoSettings(props) {
     }));
   };
 
+  const handleAdvertisingDekChange = (value) => {
+    setAdvertisingDek(value);
+
+    props.updateParsedData((prevState) => ({
+      ...prevState,
+      ['advertisingDek']: value,
+    }));
+  };
+
   useEffect(() => {
     setTimeZone(props.parsedData['timeZone']);
     setSiteTwitter(props.parsedData['siteTwitter']);
@@ -347,13 +371,19 @@ export default function SiteInfoSettings(props) {
       setStaticSupportDek(props.parsedData['supportDek']);
     }
     setSupportCTA(props.parsedData['supportCTA']);
+    setAdvertisingHed(props.parsedData['advertisingHed']);
+    setAdvertisingDek(props.parsedData['advertisingDek']);
+    if (!staticAdvertisingDek) {
+      setStaticAdvertisingDek(props.parsedData['advertisingDek']);
+    }
+    setAdvertisingCTA(props.parsedData['advertisingCTA']);
     setPrimaryColor(props.parsedData['primaryColor']);
     setSecondaryColor(props.parsedData['secondaryColor']);
     setMembershipDek(props.parsedData['membershipDek']);
 
     setMembershipHed(props.parsedData['membershipHed']);
-    if (props.parsedData['newsletterDek']) {
-      setNewsletterDek(props.parsedData['newsletterDek']);
+    if (!staticNewsletterDek) {
+      setStaticNewsletterDek(props.parsedData['newsletterDek']);
     }
     setNewsletterHed(props.parsedData['newsletterHed']);
     setNewsletterRedirect(props.parsedData['newsletterRedirect']);
@@ -364,7 +394,7 @@ export default function SiteInfoSettings(props) {
     try {
       parsedDonationOptions = JSON.parse(props.parsedData['donationOptions']);
     } catch (e) {
-      console.log('Failed to parse donation options json:', e);
+      console.error('Failed to parse donation options json:', e);
     }
     setDonationOptions(
       props.parsedData['donationOptions'] ? parsedDonationOptions : null
@@ -746,7 +776,7 @@ export default function SiteInfoSettings(props) {
       </HomepagePromoContainer>
       <div>
         <span tw="mt-1 font-bold">Preview</span>
-        <HomepagePromoBar metadata={props.parsedData} />
+        <HomepagePromoBar metadata={props.parsedData} tinycms={true} />
       </div>
       <NewsletterContainer ref={props.newsletterRef} id="newsletter">
         <SettingsHeader tw="col-span-3 mt-5">
@@ -784,7 +814,7 @@ export default function SiteInfoSettings(props) {
         <div tw="col-span-1">
           <span tw="mt-1 font-bold">Preview</span>
 
-          <NewsletterBlock metadata={props.parsedData} />
+          <NewsletterBlock metadata={props.parsedData} tinycms={true} />
         </div>
       </NewsletterContainer>
 
@@ -824,9 +854,55 @@ export default function SiteInfoSettings(props) {
         <div tw="col-span-1">
           <span tw="mt-1 font-bold">Preview</span>
 
-          <DonationBlock metadata={props.parsedData} />
+          <DonationBlock metadata={props.parsedData} tinycms={true} />
         </div>
       </MembershipContainer>
+
+      <AdvertisingContainer ref={props.advertisingRef} id="advertising">
+        <SettingsHeader tw="col-span-3 mt-5 mb-0 leading-none">
+          Advertising promotion block
+        </SettingsHeader>
+        <p tw="col-span-3 mt-0 mb-2">
+          <em>
+            Note: this promotion block will only appear if you have launched
+            your Letterhead advertising store.
+          </em>
+        </p>
+
+        <div tw="col-span-1">
+          <label htmlFor="heading">
+            <span tw="w-full mt-1 font-bold">Heading</span>
+            <ControlledInput
+              type="text"
+              name="advertisingHed"
+              value={advertisingHed}
+              onChange={props.handleChange}
+            />
+          </label>
+          <label htmlFor="description">
+            <span tw="mt-1 font-bold">Description</span>
+            <TinyEditor
+              tinyApiKey={props.tinyApiKey}
+              setValue={handleAdvertisingDekChange}
+              value={staticAdvertisingDek}
+            />
+          </label>
+          <label htmlFor="CTA">
+            <span tw="mt-1 font-bold">CTA</span>
+            <ControlledInput
+              type="text"
+              name="advertisingCTA"
+              value={advertisingCTA}
+              onChange={props.handleChange}
+            />
+          </label>
+        </div>
+        <div tw="col-span-1">
+          <span tw="mt-1 font-bold">Preview</span>
+
+          <AdPromotion metadata={props.parsedData} tinycms={true} />
+        </div>
+      </AdvertisingContainer>
 
       <DonationOptionsEditor ref={props.paymentRef} id="payment-options">
         <SettingsHeader tw="col-span-3 mt-5">Payment options</SettingsHeader>
@@ -857,6 +933,38 @@ export default function SiteInfoSettings(props) {
                   />
                 </label>
               </div>
+              <div tw="mt-2 mb-8">
+                <label tw="block">
+                  <input
+                    type="radio"
+                    name={`donationOptions-${i}-paymentType`}
+                    value="monthly"
+                    checked={option.paymentType === 'monthly'}
+                    onChange={props.handleChange}
+                  />
+                  <span tw="p-2 mt-1 font-bold">Monthly</span>
+                </label>
+                <label tw="block">
+                  <input
+                    type="radio"
+                    name={`donationOptions-${i}-paymentType`}
+                    value="one-time"
+                    checked={option.paymentType === 'one-time'}
+                    onChange={props.handleChange}
+                  />
+                  <span tw="p-2 mt-1 font-bold">One-time payment</span>
+                </label>
+                <label tw="block">
+                  <input
+                    type="radio"
+                    name={`donationOptions-${i}-paymentType`}
+                    value="pay-what-you-want"
+                    checked={option.paymentType === 'pay-what-you-want'}
+                    onChange={props.handleChange}
+                  />
+                  <span tw="p-2 mt-1 font-bold">Pay what you want</span>
+                </label>
+              </div>
               <div tw="mt-2">
                 <label htmlFor={`donationOptions-${i}-description`}>
                   <span tw="mt-1 font-bold">Option Description</span>
@@ -881,13 +989,25 @@ export default function SiteInfoSettings(props) {
                   />
                 </label>
               </div>
+              <div tw="mt-2">
+                <label htmlFor={`donationOptions-${i}-monkeypodId`}>
+                  <span tw="mt-1 font-bold">Option MonkeyPod ID</span>
+                  <ControlledInput
+                    tw="w-full rounded-md border-solid border-gray-300"
+                    type="text"
+                    name={`donationOptions-${i}-monkeypodId`}
+                    value={option.monkeypodId}
+                    onChange={props.handleChange}
+                  />
+                </label>
+              </div>
             </div>
           ))}
       </DonationOptionsEditor>
 
       <DonationOptionsContainer>
         <span tw="mt-1 font-bold">Preview</span>
-        <DonationOptionsBlock metadata={props.parsedData} />
+        <DonationOptionsBlock metadata={props.parsedData} tinycms={true} />
       </DonationOptionsContainer>
 
       <SeoContainer ref={props.seoRef}>

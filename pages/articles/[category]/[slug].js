@@ -5,7 +5,7 @@ import {
   hasuraArticlePage,
   hasuraCategoryPage,
 } from '../../../lib/articles.js';
-import { hasuraLocaliseText } from '../../../lib/utils.js';
+import { hasuraLocalizeText } from '../../../lib/utils.js';
 import { getArticleAds } from '../../../lib/ads.js';
 import { cachedContents } from '../../../lib/cached';
 import Article from '../../../components/Article.js';
@@ -71,7 +71,6 @@ export async function getStaticProps({ locale, params }) {
   const { errors, data } = await hasuraArticlePage({
     url: apiUrl,
     orgSlug: apiToken,
-    localeCode: locale,
     categorySlug: params.category,
     slug: params.slug,
   });
@@ -88,7 +87,8 @@ export async function getStaticProps({ locale, params }) {
   } else {
     sections = data.categories;
     for (var i = 0; i < sections.length; i++) {
-      sections[i].title = hasuraLocaliseText(
+      sections[i].title = hasuraLocalizeText(
+        locale,
         sections[i].category_translations,
         'title'
       );
@@ -103,20 +103,17 @@ export async function getStaticProps({ locale, params }) {
       url: apiUrl,
       orgSlug: apiToken,
       categorySlug: params.category,
-      localeCode: locale,
     });
     if (!sectionResponse.errors && sectionResponse.data) {
       sectionArticles = sectionResponse.data.articles.filter(
         (a) => a.slug !== params.slug
       );
     }
-
-    let metadatas = data.site_metadatas;
-    try {
-      siteMetadata = metadatas[0].site_metadata_translations[0].data;
-    } catch (err) {
-      console.log('failed finding site metadata for ', locale, metadatas);
-    }
+    siteMetadata = hasuraLocalizeText(
+      locale,
+      data.site_metadatas[0].site_metadata_translations,
+      'data'
+    );
   }
 
   let ads = [];
@@ -140,6 +137,7 @@ export async function getStaticProps({ locale, params }) {
       renderFooter,
       locales,
       publishedLocales,
+      locale,
     },
     // Re-generate the post at most once per second
     // if a request comes in

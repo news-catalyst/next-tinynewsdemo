@@ -5,7 +5,7 @@ import tw, { styled } from 'twin.macro';
 import {
   renderDate,
   renderAuthors,
-  hasuraLocaliseText,
+  hasuraLocalizeText,
 } from '../../lib/utils.js';
 import Typography from '../common/Typography';
 
@@ -20,25 +20,45 @@ const AssetTitle = styled.h4(({ meta }) => ({
   ...tw`font-bold text-xl leading-5 tracking-tight hover:underline`,
   fontFamily: Typography[meta.theme].ArticleTitle,
 }));
+const AssetDek = tw.p`mt-2`;
 const AssetByline = styled.div(({ meta }) => ({
   ...tw`text-xs mt-3 flex flex-row flex-wrap items-baseline`,
   fontFamily: Typography[meta.theme].ArticleMetaTop,
 }));
 const AssetTime = tw.time`text-gray-500 block mb-4`;
-const AssetThumbnail = tw.figure`ml-5 order-2 w-1/3 cursor-pointer`;
+const ImageLink = tw.a`ml-5 order-2 w-1/3 cursor-pointer`;
+const AssetThumbnail = tw.figure``;
 
 export default function ArticleLink({
   article,
   isAmp,
   showCategory,
   metadata,
+  locale,
 }) {
   let mainImage = null;
   let mainImageNode;
+  let mainImageContent;
 
   let headline;
+  let dek;
   if (article.article_translations) {
-    headline = hasuraLocaliseText(article.article_translations, 'headline');
+    headline = hasuraLocalizeText(
+      locale,
+      article.article_translations,
+      'headline'
+    );
+    dek = hasuraLocalizeText(
+      locale,
+      article.article_translations,
+      'search_description'
+    );
+    // console.log(headline, locale, article.article_translations);
+    mainImageContent = hasuraLocalizeText(
+      locale,
+      article.article_translations,
+      'main_image'
+    );
   } else if (article.newsletter_published_at) {
     headline = article.headline;
   }
@@ -49,7 +69,8 @@ export default function ArticleLink({
   let linkAs;
 
   if (article.category && article.category.category_translations) {
-    categoryTitle = hasuraLocaliseText(
+    categoryTitle = hasuraLocalizeText(
+      locale,
       article.category.category_translations,
       'title'
     );
@@ -61,10 +82,6 @@ export default function ArticleLink({
     linkAs = `/newsletters/${article.slug}`;
   }
 
-  let mainImageContent = hasuraLocaliseText(
-    article.article_translations,
-    'main_image'
-  );
   if (
     mainImageContent !== null &&
     mainImageContent !== undefined &&
@@ -73,7 +90,7 @@ export default function ArticleLink({
     try {
       mainImageNode = mainImageContent;
     } catch (e) {
-      console.log(
+      console.error(
         article.id,
         headline,
         'error finding main image:',
@@ -122,8 +139,11 @@ export default function ArticleLink({
             </Link>
           )}
         </AssetTitle>
+        <AssetDek>{dek}</AssetDek>
         <AssetByline meta={metadata}>
-          By&nbsp;{renderAuthors(article)}&nbsp;
+          {article.author_articles && (
+            <>By&nbsp;{renderAuthors(article)}&nbsp;</>
+          )}
           <AssetTime>
             <span>{renderDate(firstPublishedAt, siteTimeZone, false)}</span>
           </AssetTime>
@@ -131,28 +151,30 @@ export default function ArticleLink({
       </AssetMetaContainer>
       {mainImage && (
         <Link
+          key={`article-link-${article.category.slug}-${article.slug}`}
           href={`/articles/${article.category.slug}/${article.slug}`}
-          passHref
         >
-          <AssetThumbnail>
-            {isAmp ? (
-              <amp-img
-                width={mainImage.width}
-                height={(mainImage.height / mainImage.width) * 400}
-                src={mainImage.imageUrl}
-                alt={mainImage.imageAlt}
-                layout="responsive"
-              />
-            ) : (
-              <Image
-                src={mainImage.imageUrl}
-                width={400}
-                height={(mainImage.height / mainImage.width) * 400}
-                alt={mainImage.imageAlt}
-                className="image"
-              />
-            )}
-          </AssetThumbnail>
+          <ImageLink>
+            <AssetThumbnail>
+              {isAmp ? (
+                <amp-img
+                  width={mainImage.width}
+                  height={(mainImage.height / mainImage.width) * 400}
+                  src={mainImage.imageUrl}
+                  alt={mainImage.imageAlt}
+                  layout="responsive"
+                />
+              ) : (
+                <Image
+                  src={mainImage.imageUrl}
+                  width={400}
+                  height={(mainImage.height / mainImage.width) * 400}
+                  alt={mainImage.imageAlt}
+                  className="image"
+                />
+              )}
+            </AssetThumbnail>
+          </ImageLink>
         </Link>
       )}
     </Asset>

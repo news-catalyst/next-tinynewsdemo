@@ -3,7 +3,7 @@ import ArticleBody from './articles/ArticleBody';
 import Comments from './articles/Comments';
 import ArticleFooter from './articles/ArticleFooter';
 import Recirculation from './articles/Recirculation';
-import { hasuraLocaliseText, generateArticleUrl } from '../lib/utils.js';
+import { hasuraLocalizeText, generateArticleUrl } from '../lib/utils.js';
 import { useAmp } from 'next/amp';
 import Layout from './Layout.js';
 
@@ -16,8 +16,11 @@ export default function Article({
   renderFooter,
   locales,
   publishedLocales,
+  locale,
 }) {
   const isAmp = useAmp();
+
+  // console.log('Article locale:', locale, article.article_translations.length);
 
   let baseUrl = process.env.NEXT_PUBLIC_SITE_URL || siteMetadata['siteUrl'];
   // this is used for the canonical link tag in the Layout component
@@ -28,7 +31,8 @@ export default function Article({
 
   let mainImageNode;
   let mainImage = null;
-  let localisedContent = hasuraLocaliseText(
+  let localisedContent = hasuraLocalizeText(
+    locale,
     article.article_translations,
     'content'
   );
@@ -47,7 +51,7 @@ export default function Article({
         siteMetadata['coverImage'] = mainImage.imageUrl;
       }
     } catch (err) {
-      console.log('error finding main image: ', err);
+      console.error('error finding main image: ', err);
     }
   }
 
@@ -57,6 +61,7 @@ export default function Article({
       article={article}
       sections={sections}
       renderFooter={renderFooter}
+      locale={locale}
     >
       <div className="post">
         <ArticleHeader
@@ -66,6 +71,7 @@ export default function Article({
           mainImage={mainImage}
           locales={locales}
           publishedLocales={publishedLocales}
+          locale={locale}
         />
         <section className="section post__body rich-text" key="body">
           <ArticleBody
@@ -73,11 +79,13 @@ export default function Article({
             isAmp={isAmp}
             ads={ads}
             metadata={siteMetadata}
+            locale={locale}
           />
           <ArticleFooter
             article={article}
             isAmp={isAmp}
             metadata={siteMetadata}
+            locale={locale}
           />
         </section>
         {displayComments && <Comments article={article} isAmp={isAmp} />}
@@ -86,6 +94,7 @@ export default function Article({
           isAmp={isAmp}
           siteMetadata={siteMetadata}
           section={article.category}
+          locale={locale}
         />
       </div>
     </Layout>

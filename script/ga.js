@@ -23,7 +23,12 @@ async function getData(params) {
     '\n'
   );
 
-  // console.log("authenticating with google:", credsEmail, credsPrivateKey, scopes);
+  console.log(
+    'authenticating with google:',
+    credsEmail,
+    credsPrivateKey,
+    scopes
+  );
   const auth = new google.auth.JWT(credsEmail, null, credsPrivateKey, scopes);
   const analyticsreporting = google.analyticsreporting({ version: 'v4', auth });
   let startDate = params['startDate'];
@@ -460,6 +465,8 @@ function storeData(params, rows) {
           source: row.dimensions[0],
         })
         .then((result) => {
+          console.log('hasura insert result:', result);
+
           if (result.errors) {
             const error = new Error(
               'Error inserting data into hasura',
@@ -501,6 +508,8 @@ function storeData(params, rows) {
           date: row.dimensions[0],
         })
         .then((result) => {
+          console.log('hasura insert result:', result);
+
           if (result.errors) {
             const error = new Error(
               'Error inserting data into hasura',
@@ -523,6 +532,8 @@ function storeData(params, rows) {
           date: row.dimensions[1],
         })
         .then((result) => {
+          console.log('hasura insert result:', result);
+
           if (result.errors) {
             const error = new Error(
               'Error inserting data into hasura',
@@ -544,6 +555,8 @@ function storeData(params, rows) {
           date: row.dimensions[4],
         })
         .then((result) => {
+          console.log('hasura insert result:', result);
+
           if (result.errors) {
             const error = new Error(
               'Error inserting data into hasura',
@@ -587,7 +600,7 @@ async function importDataFromGA(params) {
     });
   } catch (e) {
     console.log('error getting data from GA:', e);
-    throw e;
+    core.setFailed(`Action failed with error ${e}`);
   }
 
   if (!rows || (rows && rows.length <= 0)) {

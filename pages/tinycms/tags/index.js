@@ -5,9 +5,9 @@ import AdminLayout from '../../../components/AdminLayout.js';
 import AdminNav from '../../../components/nav/AdminNav';
 import tw from 'twin.macro';
 import Notification from '../../../components/tinycms/Notification';
-import { hasuraListAllTags } from '../../../lib/articles.js';
+import { hasuraListAllTagsByLocale } from '../../../lib/articles.js';
 import { deleteSingleTag } from '../../../lib/section.js';
-import { hasuraLocaliseText } from '../../../lib/utils.js';
+import { hasuraLocalizeText } from '../../../lib/utils.js';
 import {
   DeleteButton,
   AddButton,
@@ -75,16 +75,27 @@ export default function Tags({
   }, [action]);
 
   const listItems = tags.map((tag) => {
-    let title = hasuraLocaliseText(tag.tag_translations, 'title');
+    let title = hasuraLocalizeText(
+      currentLocale,
+      tag.tag_translations,
+      'title',
+      false
+    );
 
     return (
       <TableRow key={tag.id}>
         <TableCell>
-          <Link key={`${tag.id}-link`} href={`/tinycms/tags/${tag.id}`}>
+          <Link
+            key={`${tag.id}-link`}
+            href={`/tinycms/tags/${tag.id}`}
+            passHref
+          >
             <a tw="underline">{title}</a>
           </Link>
         </TableCell>
         <TableCell>{tag.slug}</TableCell>
+        <TableCell>{tag.tag_articles_aggregate.aggregate.count}</TableCell>
+
         <TableCell>
           <DeleteButton
             className="delete-tag"
@@ -134,6 +145,7 @@ export default function Tags({
             <TableRow>
               <TableHeader>Name</TableHeader>
               <TableHeader>Slug</TableHeader>
+              <TableHeader>Article Count</TableHeader>
               <TableHeader></TableHeader>
             </TableRow>
           </TableHead>
@@ -157,9 +169,10 @@ export async function getServerSideProps(context) {
   let tags;
   let locales;
 
-  const { errors, data } = await hasuraListAllTags({
+  const { errors, data } = await hasuraListAllTagsByLocale({
     url: apiUrl,
     orgSlug: apiToken,
+    locale_code: context.locale,
   });
 
   if (errors || !data) {

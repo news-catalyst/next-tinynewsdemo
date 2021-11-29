@@ -4,7 +4,7 @@ import React from 'react';
 import tw, { styled } from 'twin.macro';
 import PublishDate from './PublishDate.js';
 import MainImage from './MainImage.js';
-import { hasuraLocaliseText, renderAuthors } from '../../lib/utils.js';
+import { hasuraLocalizeText, renderAuthors } from '../../lib/utils.js';
 import { ArticleTitle } from '../common/CommonStyles.js';
 import Typography from '../common/Typography';
 import ReadInOtherLanguage from './ReadInOtherLanguage.js';
@@ -40,6 +40,7 @@ export default function ArticleHeader({
   isAmp,
   metadata,
   mainImage,
+  locale,
   locales,
   publishedLocales,
 }) {
@@ -54,18 +55,29 @@ export default function ArticleHeader({
   let articleContent;
 
   if (article && article.category) {
-    categoryTitle = hasuraLocaliseText(
+    categoryTitle = hasuraLocalizeText(
+      locale,
       article.category.category_translations,
       'title'
     );
-    headline = hasuraLocaliseText(article.article_translations, 'headline');
-    postUrl = `${metadata.siteUrl}${article.category.slug}/${article.slug}`;
-    searchDescription = hasuraLocaliseText(
+
+    headline = hasuraLocalizeText(
+      locale,
+      article.article_translations,
+      'headline'
+    );
+    postUrl = new URL(
+      `/articles/${article.category.slug}/${article.slug}`,
+      metadata.siteUrl
+    );
+    searchDescription = hasuraLocalizeText(
+      locale,
       article.article_translations,
       'search_description'
     );
 
-    articleContent = hasuraLocaliseText(
+    articleContent = hasuraLocalizeText(
+      locale,
       article.article_translations,
       'content'
     );
@@ -76,13 +88,13 @@ export default function ArticleHeader({
     authorPhoto = article.author_articles[0].author.photoUrl;
   }
 
-  // this block of code bui9lds an array of locales the article is available in
+  // this block of code builds an array of locales the article is available in
   // by comparing the list of all site locales with the list of published translations
   // ex: site locales [en, es]; this article published in [en, es]; current locale is english;
   // 'ReadInOtherLanguage' component should show "Read in Spanish" link
   // (logic around current locale is in the component itself)
   let readLocales = [];
-  let currentLocale = article.article_translations[0].locale_code;
+  let currentLocale = locale;
   if (locales.length > 1) {
     locales.forEach((siteLocale) => {
       publishedLocales.forEach((articleLocale) => {
@@ -183,17 +195,6 @@ export default function ArticleHeader({
                       backgroundImage:
                         "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 17 14' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M14.725 4.111v.402c0 4.32-3.28 9.242-9.143 9.242-1.888 0-3.578-.502-4.97-1.507h.796c1.49 0 2.981-.502 4.074-1.406-1.39 0-2.583-1.005-3.08-2.31.198 0 .397.1.596.1.298 0 .596 0 .894-.1C2.402 8.23 1.31 6.923 1.31 5.316c.397.2.894.402 1.49.402-.894-.603-1.49-1.608-1.49-2.713 0-.603.198-1.205.397-1.708a8.943 8.943 0 0 0 6.758 3.416c-.1-.2-.1-.502-.1-.703 0-1.808 1.491-3.315 3.28-3.315.894 0 1.789.401 2.385 1.004.696-.1 1.49-.402 2.087-.803-.199.803-.795 1.406-1.391 1.808.695-.1 1.292-.302 1.888-.502-.696.904-1.292 1.506-1.888 1.908' fill='%234099FF' fill-rule='nonzero'%3E%3C/path%3E%3C/svg%3E\")",
                       backgroundSize: 'auto 0.9375rem',
-                    }}
-                  />
-                </a>
-              </ShareItem>
-              <ShareItem>
-                <a>
-                  <ShareButton
-                    style={{
-                      backgroundImage:
-                        "url(\"data:image/svg+xml,%3Csvg width='16' height='4' viewBox='0 0 16 4' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4 2C4 3.10467 3.10467 4 2 4C0.895333 4 0 3.10467 0 2C0 0.895333 0.895333 0 2 0C3.10467 0 4 0.895333 4 2ZM10 2C10 3.10467 9.10467 4 8 4C6.89533 4 6 3.10467 6 2C6 0.895333 6.89533 0 8 0C9.10467 0 10 0.895333 10 2ZM16 2C16 3.10467 15.1047 4 14 4C12.8953 4 12 3.10467 12 2C12 0.895333 12.8953 0 14 0C15.1047 0 16 0.895333 16 2Z' fill='black'/%3E%3C/svg%3E%0A\")",
-                      backgroundSize: '0.9375rem auto',
                     }}
                   />
                 </a>

@@ -13,7 +13,7 @@ import {
   DeleteButton,
   AddButton,
 } from '../../../components/common/CommonStyles.js';
-import { displayAuthorName, hasuraLocaliseText } from '../../../lib/utils.js';
+import { displayAuthorName, hasuraLocalizeText } from '../../../lib/utils.js';
 
 const Table = tw.table`table-auto w-full`;
 const TableHead = tw.thead``;
@@ -76,7 +76,16 @@ export default function Authors({
   }, [action]);
 
   const listItems = authors.map((author) => {
-    let title = hasuraLocaliseText(author.author_translations, 'title');
+    let title = hasuraLocalizeText(
+      currentLocale,
+      author.author_translations,
+      'title',
+      false
+    );
+    if (!title) {
+      title = 'NEEDS TRANSLATION';
+    }
+
     let staff = author.staff ? (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -177,7 +186,7 @@ export async function getServerSideProps(context) {
   const apiUrl = process.env.HASURA_API_URL;
   const apiToken = process.env.ORG_SLUG;
 
-  const { errors, data } = await hasuraListAllAuthors(context.locale);
+  const { errors, data } = await hasuraListAllAuthors();
 
   if (errors) {
     console.error(errors);

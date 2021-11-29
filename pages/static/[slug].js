@@ -2,7 +2,7 @@ import { useRouter } from 'next/router';
 import { useAmp } from 'next/amp';
 import React from 'react';
 import { hasuraGetPage, hasuraListAllPageSlugs } from '../../lib/articles.js';
-import { hasuraLocaliseText } from '../../lib/utils';
+import { hasuraLocalizeText } from '../../lib/utils';
 import StaticPage from '../../components/StaticPage';
 
 export default function Static({
@@ -78,7 +78,7 @@ export async function getStaticProps({ locale, params }) {
   });
 
   if (errors || !data) {
-    console.log('Failed finding page ', params);
+    console.error('Failed finding page ', params);
 
     return {
       notFound: true,
@@ -106,7 +106,8 @@ export async function getStaticProps({ locale, params }) {
 
     sections = data.categories;
     for (var j = 0; j < sections.length; j++) {
-      sections[j].title = hasuraLocaliseText(
+      sections[j].title = hasuraLocalizeText(
+        locale,
         sections[j].category_translations,
         'title'
       );

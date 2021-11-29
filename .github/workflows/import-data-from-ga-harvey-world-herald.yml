@@ -1,11 +1,11 @@
-name: GA Data Importer Five Wards Media
+name: GA Data Importer Harvey World Herald
 'on':
   schedule:
     - cron: 5 9 * * *
 jobs:
   GA-Data-Importer:
     runs-on: ubuntu-latest
-    environment: data_import_five-wards-media
+    environment: data_import_harvey-world-herald
     env:
       NEXT_PUBLIC_SITE_URL: ${{ secrets.NEXT_PUBLIC_SITE_URL }}
       HASURA_API_URL: ${{ secrets.HASURA_API_URL }}

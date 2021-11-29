@@ -1,9 +1,9 @@
 // import { useAmp } from 'next/amp';
 import Layout from '../components/Layout';
 import { hasuraGetLayout } from '../lib/articles.js';
-import { hasuraLocaliseText } from '../lib/utils';
+import { hasuraLocalizeText } from '../lib/utils';
 
-export default function Custom404({ sections, siteMetadata }) {
+export default function Custom404({ locale, sections, siteMetadata }) {
   let title;
   if (siteMetadata && siteMetadata.title404) {
     title = siteMetadata.title404;
@@ -20,7 +20,7 @@ export default function Custom404({ sections, siteMetadata }) {
   }
 
   return (
-    <Layout meta={siteMetadata} sections={sections}>
+    <Layout locale={locale} meta={siteMetadata} sections={sections}>
       <div className="post">
         <article className="container">
           <section key="title" className="section post__header">
@@ -54,12 +54,13 @@ export async function getStaticProps({ locale }) {
     localeCode: locale,
   });
   if (errors || !data) {
-    console.log('an error occurred');
+    console.error('an error occurred');
     throw errors;
   } else {
     sections = data.categories;
     for (var i = 0; i < sections.length; i++) {
-      sections[i].title = hasuraLocaliseText(
+      sections[i].title = hasuraLocalizeText(
+        locale,
         sections[i].category_translations,
         'title'
       );
@@ -73,6 +74,7 @@ export async function getStaticProps({ locale }) {
 
   return {
     props: {
+      locale,
       sections,
       siteMetadata,
     },

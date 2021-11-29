@@ -2,7 +2,7 @@ import Link from 'next/link';
 import {
   renderDate,
   renderAuthors,
-  hasuraLocaliseText,
+  hasuraLocalizeText,
 } from '../../lib/utils.js';
 import tw, { styled } from 'twin.macro';
 import Typography from '../common/Typography';
@@ -52,17 +52,30 @@ const AssetTitle = styled.h4(({ big, meta }) => ({
   fontFamily: Typography[meta.theme].ArticleTitle,
 }));
 
-export default function FeaturedArticleMeta({ article, big, metadata }) {
+export default function FeaturedArticleMeta({
+  article,
+  big,
+  metadata,
+  locale,
+}) {
   if (article === null || article === undefined || !article) {
-    console.log('FeaturedArticleMeta missing article:', article);
+    console.error('FeaturedArticleMeta missing article:', article);
   }
 
-  let categoryTitle = hasuraLocaliseText(
+  // console.log('featured article:', article);
+
+  let categoryTitle = hasuraLocalizeText(
+    locale,
     article.category.category_translations,
     'title'
   );
-  let headline = hasuraLocaliseText(article.article_translations, 'headline');
-  let searchDescription = hasuraLocaliseText(
+  let headline = hasuraLocalizeText(
+    locale,
+    article.article_translations,
+    'headline'
+  );
+  let searchDescription = hasuraLocalizeText(
+    locale,
     article.article_translations,
     'search_description'
   );

@@ -144,6 +144,22 @@ function hasuraInsertOrgLocales(params) {
   });
 }
 
+const INSERT_ADMIN_LOCALES_MUTATION = `mutation AdminInsertLocales($objects: [locales_insert_input!] = {}) {
+  insert_locales(objects: $objects, on_conflict: {constraint: locales_code_key, update_columns: name}) {
+    affected_rows
+  }
+}`;
+
+function hasuraAdminInsertLocales(params) {
+  return fetchGraphQL({
+    url: params['url'],
+    adminSecret: params['adminSecret'],
+    query: INSERT_ADMIN_LOCALES_MUTATION,
+    name: 'AdminInsertLocales',
+    variables: { objects: params['locales'] },
+  });
+}
+
 const HASURA_UPSERT_METADATA = `mutation FrontendUpsertMetadata($published: Boolean, $data: jsonb, $locale_code: String, $organization_id: Int!) {
   insert_site_metadatas(objects: {
     organization_id: $organization_id, published: $published, 
@@ -818,6 +834,7 @@ module.exports = {
   hasuraInsertDonationClick,
   hasuraInsertDonorReadingFrequency,
   hasuraGetArticlesRss,
+  hasuraAdminInsertLocales,
   fetchGraphQL,
   sanitizePath,
 };
