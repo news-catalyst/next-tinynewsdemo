@@ -7,6 +7,9 @@ const Figcaption = tw.figcaption`text-gray-500 text-sm pt-1`;
 export default function ImageNode({ node, amp }) {
   const image = node.children[0];
 
+  if (!image) {
+    return null;
+  }
   const figure = amp ? (
     <amp-img
       width={710}
