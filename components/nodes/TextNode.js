@@ -22,6 +22,8 @@ export default function TextNode({ node, metadata }) {
     );
 
     if (
+      child &&
+      child.content &&
       child.content.trim().length === 0 &&
       nextChild &&
       nextChild.content &&
