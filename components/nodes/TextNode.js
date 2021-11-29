@@ -45,9 +45,11 @@ export default function TextNode({ node, metadata }) {
     return text;
   };
 
-  const children = node.children.map((child, i) =>
-    processChild(child, node.children[i + 1])
-  );
+  const children = node.children.map((child, i) => {
+    if (child.content !== 'FORMAT START' && child.content !== 'FORMAT END') {
+      return processChild(child, node.children[i + 1]);
+    }
+  });
   let wrapper = null;
 
   if (node.style == 'TITLE') {
@@ -63,6 +65,7 @@ export default function TextNode({ node, metadata }) {
   } else if (node.style == 'NORMAL_TEXT') {
     wrapper = <Paragraph>{children}</Paragraph>;
   } else if (node.style == 'FORMATTED_TEXT') {
+    console.log('FORMATTED_TEXT node:', node);
     wrapper = <pre>{children}</pre>;
   } else {
     wrapper = <>{children}</>;
