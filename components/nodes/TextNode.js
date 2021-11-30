@@ -21,6 +21,17 @@ export default function TextNode({ node, metadata }) {
       </span>
     );
 
+    if (
+      child &&
+      child.content &&
+      child.content.trim().length === 0 &&
+      nextChild &&
+      nextChild.content &&
+      nextChild.content.trim().length !== 0
+    ) {
+      text = <br />;
+    }
+
     if (child.style) {
       if (child.style.underline && !child.link) {
         text = (
