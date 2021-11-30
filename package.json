@@ -114,7 +114,8 @@
     "swr": "^0.5.6",
     "tweetsodium": "^0.0.5",
     "universal-cookie": "^4.0.4",
-    "web-vitals": "^0.2.3"
+    "web-vitals": "^0.2.3",
+    "wxr-generator": "^0.2.0"
   },
   "devDependencies": {
     "@testing-library/dom": "^7.31.2",
