@@ -756,6 +756,81 @@ function hasuraGetArticlesRss(params) {
   });
 }
 
+const HASURA_GET_SITE_DATA = `query FrontendGetSiteData {
+  articles(where: {article_translations: {published: {_eq: true}}}, order_by: {article_translations_aggregate: {min: {first_published_at: desc}}}) {
+    id
+    slug
+    article_translations(where: {published: {_eq: true}}, order_by: {id: desc}) {
+      custom_byline
+      first_published_at
+      headline
+      last_published_at
+      main_image
+      published
+      search_description
+      updated_at
+      locale_code
+    }
+    author_articles {
+      author {
+        first_names
+        last_name
+        photoUrl
+        slug
+        twitter
+        author_translations {
+          bio
+          title
+          locale_code
+        }
+      }
+    }
+    category {
+      slug
+      category_translations {
+        locale_code
+        title
+      }
+    }
+  }
+  categories(where: {published: {_eq: true}}) {
+    slug
+    category_translations {
+      title
+      locale_code
+    }
+  }
+  organization_locales {
+    locale {
+      code
+    }
+  }
+  tag_articles(where: {tag: {published: {_eq: true}}}) {
+    tag {
+      tag_translations {
+        locale_code
+        title
+      }
+      slug
+    }
+  }
+  site_metadatas(where: {published: {_eq: true}}) {
+    site_metadata_translations {
+      data
+      locale_code
+    }
+  }
+}`;
+
+function hasuraGetSiteData(params) {
+  return fetchGraphQL({
+    url: params['url'],
+    orgSlug: params['orgSlug'],
+    query: HASURA_GET_SITE_DATA,
+    name: 'FrontendGetSiteData',
+  });
+}
+
 async function fetchGraphQL(params) {
   let url;
   let orgSlug;
@@ -806,6 +881,7 @@ function sanitizePath(path) {
 }
 
 module.exports = {
+  hasuraGetSiteData,
   hasuraInsertLocale,
   hasuraInsertNewsletterEdition,
   hasuraInsertOrganization,
