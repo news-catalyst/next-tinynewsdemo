@@ -3,14 +3,20 @@ import { Paragraph, H1, H2, H3, Anchor } from '../common/CommonStyles';
 
 export default function TextNode({ node, metadata }) {
   const processChild = function (child, nextChild) {
-    let supportedPunctuation = [',', '.', '?', '!', ';', ':'];
+    let supportedPunctuation = [',', '.', '?', '!', ';', ':', '"', '“', '”'];
+    // omit the comma here, we want to add a space after a trailing comma
+    let supportedTrailingPunctuation = ['.', '?', '!', ';', ':', '"', '“', '”'];
     let delimiterSpaceChar = ' ';
     // if the next node/child starts with one of the punctuation marks above, don't add a space
     if (
-      nextChild &&
-      nextChild.content &&
-      nextChild.content[0] &&
-      supportedPunctuation.includes(nextChild.content[0])
+      (nextChild &&
+        nextChild.content &&
+        nextChild.content[0] &&
+        supportedPunctuation.includes(nextChild.content[0])) ||
+      (child &&
+        child.content &&
+        child.content.slice(-1) &&
+        supportedTrailingPunctuation.includes(child.content.slice(-1)))
     ) {
       delimiterSpaceChar = '';
     }
@@ -18,6 +24,7 @@ export default function TextNode({ node, metadata }) {
     let text = (
       <span key={child.index ? child.index : child.content}>
         {child.content}
+        {child.link ? '' : delimiterSpaceChar}
       </span>
     );
 
@@ -62,16 +69,20 @@ export default function TextNode({ node, metadata }) {
       text = (
         <>
           {text}
-          {delimiterSpaceChar}
+          {child.link ? '' : delimiterSpaceChar}
         </>
       );
     }
 
     if (child.link) {
       text = (
-        <Anchor key={child.link} href={child.link} meta={metadata}>
-          {text}
-        </Anchor>
+        <>
+          {delimiterSpaceChar}
+          <Anchor key={child.link} href={child.link} meta={metadata}>
+            {text}
+          </Anchor>
+          {delimiterSpaceChar}
+        </>
       );
     }
 
