@@ -7,6 +7,7 @@
     "dev:test": "ORG_SLUG=test-org NEXT_PUBLIC_CYPRESS_TESTING=true HASURA_API_URL=https://tinynews-testing.hasura.app/v1/graphql next dev",
     "clear": "node script/clear.js",
     "populate": "node script/populate.js",
+    "wordpress": "node script/wordpress.js",
     "data:clear": "node script/clear-analytics.js",
     "bootstrap": "node script/bootstrap.js",
     "bootstrap:tests": "node script/bootstrap-tests.js",

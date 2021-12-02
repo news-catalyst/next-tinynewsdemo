@@ -69,6 +69,21 @@ Note: these commands expect `.env.local-$name` to exist in order to work.
 
 The [latest instructions on how to launch a new organisation are in a Google Doc](https://docs.google.com/document/d/1sSvtRTYkk2PoixMrWPT3FSM6qO_5zseqdCXv4LmP7Rc/edit?usp=sharing) and subject to change; please reference that for info.
 
+## Generate WXR
+
+Once you have the latest code, make sure you install dependencies for the WXR generator module - do this if you run into a babel-related error:
+
+```
+cd node_modules/wxr-generator
+npm install
+```
+
+This might instruct you to install babel command line tools; I did this, then switched back to the top directory and was able to run the generator without a problem.
+
+Then change back to the top-level directory. Make sure you have the site you'd like to export running locally. To generate for a different site, `script/switch $orgSlug` to change your current `.env.local`, then start up the site.
+
+Finally, execute `npm run wordpress` to generate the WXR file for each locale.
+
 ## Run tests
 
 In one terminal window, run `npm run dev:test` to start up the local front-end app in test mode. This will start the server using the appropriate hasura API url and test organization slug.
