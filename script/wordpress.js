@@ -52,19 +52,21 @@ async function processArticles(importer, localeCode, articles) {
       });
     }
 
-    let articleAuthors = [];
-    article.author_articles.forEach((authorArticle) => {
-      let authorName =
-        authorArticle.author.first_names + ' ' + authorArticle.author.last_name;
+    // By default, WordPress only allows one author per post.
+    let articleAuthor = article.author_articles[0];
+    let articleAuthorName = '';
+    if (articleAuthor) {
+      articleAuthorName =
+        articleAuthor.author.first_names + ' ' + articleAuthor.author.last_name;
       // console.log('author: ' + authorName);
       importer.addUser({
-        username: authorArticle.author.slug,
-        display_name: authorName,
-        first_name: authorArticle.author.first_names,
-        last_name: authorArticle.author.last_name,
+        username: articleAuthor.author.slug,
+        email: `${articleAuthor.author.slug}@newscatalyst.org`,
+        display_name: articleAuthorName,
+        first_name: articleAuthor.author.first_names,
+        last_name: articleAuthor.author.last_name,
       });
-      articleAuthors.push(authorName);
-    });
+    }
     let articleUrl = `/articles/${article.category.slug}/${article.slug}`;
     let apiArticleUrl = `http://localhost:3000/api${articleUrl}?secret=${process.env.PREVIEW_TOKEN}`;
 
@@ -85,7 +87,7 @@ async function processArticles(importer, localeCode, articles) {
         url: articleUrl,
         slug: article.slug,
         date: articleTranslation.first_published_at,
-        author: articleAuthors.join(', '),
+        author: articleAuthorName,
         content: articleContent,
         summary: articleTranslation.search_description,
         comment_status: 'open',
