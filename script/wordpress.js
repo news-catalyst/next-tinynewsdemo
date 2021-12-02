@@ -1,5 +1,7 @@
 require('dotenv').config({ path: '.env.local' });
 const fetch = require('node-fetch');
+const path = require('path');
+const fs = require('fs');
 const Importer = require('wxr-generator');
 const shared = require('./shared');
 
@@ -95,6 +97,18 @@ async function processArticles(importer, localeCode, articles) {
   }
 }
 
+function writeWXR(locale, data) {
+  const wxrFile = path.join(
+    process.cwd(),
+    `wordpress-export-wxr-${locale}.xml`
+  );
+
+  fs.writeFileSync(wxrFile, data, { flag: 'w' }, (err) => {
+    console.log('! failed to write WXR file:', err);
+  });
+  console.log(`* saved WXR as ${wxrFile}...`);
+}
+
 async function importSite() {
   let result = await shared.hasuraGetSiteData({
     url: apiUrl,
@@ -152,7 +166,8 @@ async function importSite() {
 
     let wxrContent = importer.stringify();
     console.log();
-    console.log(wxrContent);
+    // console.log(wxrContent);
+    writeWXR(localeCode, wxrContent);
   }
 }
 
