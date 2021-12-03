@@ -61,7 +61,7 @@ async function processArticles(importer, localeCode, articles) {
       // console.log('author: ' + authorName);
       importer.addUser({
         username: articleAuthor.author.slug,
-        email: `${articleAuthor.author.slug}@newscatalyst.org`,
+        email: articleAuthor.author.email,
         display_name: articleAuthorName,
         first_name: articleAuthor.author.first_names,
         last_name: articleAuthor.author.last_name,
@@ -70,7 +70,7 @@ async function processArticles(importer, localeCode, articles) {
     let articleUrl = `/articles/${article.category.slug}/${article.slug}`;
     let apiArticleUrl = `http://localhost:3000/api${articleUrl}?secret=${process.env.PREVIEW_TOKEN}`;
 
-    console.log(' - retrieving article content from: ' + apiArticleUrl);
+    console.log(' - retrieving article content...');
     const articleResult = await fetch(apiArticleUrl);
     const data = await articleResult.json();
 
@@ -79,7 +79,7 @@ async function processArticles(importer, localeCode, articles) {
 
     if (articleTranslation) {
       console.log(
-        ' - including article as post: ' + articleTranslation.headline
+        '\t\t* done! including article as post: ' + articleTranslation.headline
       );
       importer.addPost({
         id: article.id,
@@ -167,7 +167,7 @@ async function importSite() {
     await processArticles(importer, localeCode, articles);
 
     let wxrContent = importer.stringify();
-    console.log();
+
     // console.log(wxrContent);
     writeWXR(localeCode, wxrContent);
   }
