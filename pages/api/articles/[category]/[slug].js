@@ -40,12 +40,33 @@ export default async function Handler(req, res) {
       'data'
     );
 
+    let mainImageNode;
+    let mainImage = null;
+    let localisedContent = hasuraLocalizeText(
+      localeCode,
+      article.article_translations,
+      'content'
+    );
+    try {
+      mainImageNode = localisedContent.find(
+        (node) => node.type === 'mainImage'
+      );
+
+      if (mainImageNode) {
+        mainImage = mainImageNode.children[0];
+        siteMetadata['coverImage'] = mainImage.imageUrl;
+      }
+    } catch (err) {
+      console.error('error finding main image: ', err);
+    }
+
     let body = renderBody(
       localeCode,
       article.article_translations,
       false,
       false,
-      siteMetadata
+      siteMetadata,
+      true
     );
 
     let articleContent = ReactDOMServer.renderToStaticMarkup(body);
