@@ -770,6 +770,7 @@ const HASURA_GET_SITE_DATA = `query FrontendGetSiteData {
       search_description
       updated_at
       locale_code
+      content
     }
     author_articles {
       author {

@@ -2,6 +2,8 @@ require('dotenv').config({ path: '.env.local' });
 const fetch = require('node-fetch');
 const path = require('path');
 const fs = require('fs');
+const jsdom = require('jsdom');
+const { JSDOM } = jsdom;
 const Importer = require('wxr-generator');
 const shared = require('./shared');
 
@@ -74,13 +76,57 @@ async function processArticles(importer, localeCode, articles) {
     const articleResult = await fetch(apiArticleUrl);
     const data = await articleResult.json();
 
-    // console.log('data.content:', data.content);
+    // console.log('data.content:', articleTranslation.content);
     articleContent = data.content;
 
     if (articleTranslation) {
+      let images = [];
+      let mainImage;
+      let mainImageId;
+      articleTranslation.content.map((node) => {
+        if (
+          node.type === 'mainImage' &&
+          node.children &&
+          node.children.length === 1
+        ) {
+          // console.log('found mainImage:', node.children[0]);
+          mainImage = node.children[0];
+          mainImageId = article.id + 100;
+        }
+        if (
+          node.type === 'image' &&
+          node.children &&
+          node.children.length === 1
+        ) {
+          // console.log('found image:', node.children[0]);
+          images.push(node.children[0]);
+        }
+      });
+
       console.log(
         '\t\t* done! including article as post: ' + articleTranslation.headline
       );
+
+      if (mainImage) {
+        let description = 'article main image';
+        if (mainImage.imageAlt) {
+          description = mainImage.imageAlt;
+        }
+        console.log(
+          `Post ID#${article.id}`,
+          `adding attachment for mainImage ID#${mainImageId}`,
+          mainImage
+        );
+        importer.addAttachment({
+          id: mainImageId,
+          url: mainImage.imageUrl,
+          date: articleTranslation.first_published_at,
+          author: articleAuthorName,
+          description: description,
+          title: description,
+          post_id: article.id,
+        });
+      }
       importer.addPost({
         id: article.id,
         title: articleTranslation.headline,
@@ -94,7 +140,30 @@ async function processArticles(importer, localeCode, articles) {
         ping_status: 'closed',
         categories: articleCategories,
         tags: articleTags,
+        image: mainImageId,
       });
+
+      if (images) {
+        images.map((image) => {
+          let description = 'article image';
+          if (image.imageAlt) {
+            description = image.imageAlt;
+          }
+          console.log(
+            `Post ID#${article.id}`,
+            'adding attachment for image:',
+            image
+          );
+          importer.addAttachment({
+            url: image.imageUrl,
+            description: description,
+            title: description,
+            date: articleTranslation.first_published_at,
+            author: articleAuthorName,
+            post_id: article.id,
+          });
+        });
+      }
     }
   }
 }
