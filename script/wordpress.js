@@ -178,9 +178,7 @@ function writeWXR(locale, data) {
     console.log('! Error, failed to write WXR file:', err);
   });
   console.log(`Done. Saved WXR file as ${wxrFile}`);
-  console.log(
-    '*** Please note: you must import this file into WordPress in the same month that the WXR was generated. Otherwise, the images will not load properly in WordPress posts. ***'
-  );
+
   console.log();
 }
 
