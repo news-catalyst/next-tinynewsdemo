@@ -5,7 +5,8 @@ import { hasuraLocalizeText } from '../lib/utils';
 import AboutPage from '../components/AboutPage';
 
 export default function About(props) {
-  const isAmp = useAmp();
+  // const isAmp = useAmp();
+  const isAmp = false;
   const router = useRouter();
 
   // If the page is not yet generated, this will be displayed

@@ -10,7 +10,7 @@ import { getArticleAds } from '../../../lib/ads.js';
 import { cachedContents } from '../../../lib/cached';
 import Article from '../../../components/Article.js';
 
-export const config = { amp: 'hybrid' };
+// export const config = { amp: 'hybrid' };
 
 export default function ArticlePage(props) {
   const router = useRouter();
