@@ -4,7 +4,8 @@ import { hasuraLocalizeText } from '../../lib/utils';
 import AboutPage from '../../components/AboutPage';
 
 export default function About(props) {
-  const isAmp = useAmp();
+  // const isAmp = useAmp();
+  const isAmp = false;
 
   return <AboutPage {...props} isAmp={isAmp} />;
 }
