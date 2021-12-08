@@ -84,6 +84,16 @@ Then change back to the top-level directory. Make sure you have the site you'd l
 
 Finally, execute `npm run wordpress` to generate the WXR file for each locale.
 
+To test using [Local WordPress](https://localwp.com/):
+
+- generate the WXR files (`npm run wordpress`)
+- start up your local WP site
+- open the WP Admin
+- navigate to Tools > Import > WordPress "Run Importer" > Browse for the WXR XML file
+- map existing authors to incoming authors, if prompted
+- review Media Library
+- review All Posts
+
 ## Run tests
 
 In one terminal window, run `npm run dev:test` to start up the local front-end app in test mode. This will start the server using the appropriate hasura API url and test organization slug.
