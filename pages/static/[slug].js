@@ -13,7 +13,8 @@ export default function Static({
   locale,
 }) {
   const router = useRouter();
-  const isAmp = useAmp();
+  // const isAmp = useAmp();
+  const isAmp = false;
 
   if (router.isFallback) {
     return <div>Loading...</div>;

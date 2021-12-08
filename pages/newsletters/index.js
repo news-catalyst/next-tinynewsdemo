@@ -8,7 +8,8 @@ import { hasuraLocalizeText } from '../../lib/utils.js';
 import { useAmp } from 'next/amp';
 
 export default function NewsletterIndexPage(props) {
-  const isAmp = useAmp();
+  // const isAmp = useAmp();
+  const isAmp = false;
 
   return (
     <Layout
