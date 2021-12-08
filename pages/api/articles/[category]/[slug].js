@@ -1,5 +1,8 @@
 import { hasuraArticlePage } from '../../../../lib/articles.js';
-import { hasuraLocalizeText, renderBody } from '../../../../lib/utils.js';
+import {
+  hasuraLocalizeText,
+  renderBodyWordPress,
+} from '../../../../lib/utils.js';
 import ReactDOMServer from 'react-dom/server';
 
 export default async function Handler(req, res) {
@@ -60,13 +63,13 @@ export default async function Handler(req, res) {
       console.error('error finding main image: ', err);
     }
 
-    let body = renderBody(
+    let body = renderBodyWordPress(
       localeCode,
       article.article_translations,
       false,
       false,
       siteMetadata,
-      true
+      false
     );
 
     let articleContent = ReactDOMServer.renderToStaticMarkup(body);
