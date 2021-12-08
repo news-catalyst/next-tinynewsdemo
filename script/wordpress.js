@@ -76,7 +76,7 @@ async function processArticles(importer, localeCode, articles) {
     const articleResult = await fetch(apiArticleUrl);
     const data = await articleResult.json();
 
-    // console.log('data.content:', articleTranslation.content);
+    // console.log('data.content:', data.content);
     articleContent = data.content;
 
     if (articleTranslation) {
@@ -112,18 +112,18 @@ async function processArticles(importer, localeCode, articles) {
         if (mainImage.imageAlt) {
           description = mainImage.imageAlt;
         }
-        console.log(
-          `Post ID#${article.id}`,
-          `adding attachment for mainImage ID#${mainImageId}`,
-          mainImage
-        );
+        // console.log(
+        //   `Post ID#${article.id}`,
+        //   `adding attachment for mainImage ID#${mainImageId}`,
+        //   mainImage
+        // );
         importer.addAttachment({
           id: mainImageId,
           url: mainImage.imageUrl,
           date: articleTranslation.first_published_at,
           author: articleAuthorName,
           description: description,
-          title: description,
+          title: mainImage.imageId,
           post_id: article.id,
         });
       }
@@ -149,15 +149,15 @@ async function processArticles(importer, localeCode, articles) {
           if (image.imageAlt) {
             description = image.imageAlt;
           }
-          console.log(
-            `Post ID#${article.id}`,
-            'adding attachment for image:',
-            image
-          );
+          // console.log(
+          //   `Post ID#${article.id}`,
+          //   'adding attachment for image:',
+          //   image
+          // );
           importer.addAttachment({
             url: image.imageUrl,
             description: description,
-            title: description,
+            title: image.imageId,
             date: articleTranslation.first_published_at,
             author: articleAuthorName,
             post_id: article.id,
@@ -175,9 +175,13 @@ function writeWXR(locale, data) {
   );
 
   fs.writeFileSync(wxrFile, data, { flag: 'w' }, (err) => {
-    console.log('! failed to write WXR file:', err);
+    console.log('! Error, failed to write WXR file:', err);
   });
-  console.log(`* saved WXR as ${wxrFile}...`);
+  console.log(`Done. Saved WXR file as ${wxrFile}`);
+  console.log(
+    '*** Please note: you must import this file into WordPress in the same month that the WXR was generated. Otherwise, the images will not load properly in WordPress posts. ***'
+  );
+  console.log();
 }
 
 async function importSite() {
@@ -207,7 +211,9 @@ async function importSite() {
       return;
     }
 
-    console.log('Generating wordpress WXR file for locale ' + localeCode);
+    console.log(
+      'Generating WordPress export file (WXR) for locale ' + localeCode + '... '
+    );
 
     var importer = new Importer({
       name: metadata.data.shortName,
