@@ -60,7 +60,8 @@ export default function ArticlesArchivePage({
   }
 
   const router = useRouter();
-  const isAmp = useAmp();
+  // const isAmp = useAmp();
+  const isAmp = false;
   // If the page is not yet generated, this will be displayed
   // initially until getStaticProps() finishes running
   if (router.isFallback) {
