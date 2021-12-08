@@ -4,7 +4,8 @@ import { hasuraLocalizeText } from '../lib/utils';
 import StaffPage from '../components/StaffPage';
 
 export default function Staff(props) {
-  const isAmp = useAmp();
+  // const isAmp = useAmp();
+  const isAmp = false;
 
   return <StaffPage {...props} isAmp={isAmp} />;
 }

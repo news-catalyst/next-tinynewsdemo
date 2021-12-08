@@ -18,7 +18,8 @@ import {
 } from '../../components/common/CommonStyles';
 
 export default function CategoryPage(props) {
-  const isAmp = useAmp();
+  // const isAmp = useAmp();
+  const isAmp = false;
 
   const router = useRouter();
 
