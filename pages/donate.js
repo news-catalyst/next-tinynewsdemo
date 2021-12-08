@@ -29,7 +29,8 @@ export default function Donate({
   locales,
   locale,
 }) {
-  const isAmp = useAmp();
+  // const isAmp = useAmp();
+  const isAmp = false;
   const router = useRouter();
 
   // If the page is not yet generated, this will be displayed

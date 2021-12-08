@@ -26,7 +26,8 @@ export default function ThankYou({
   locales,
   locale,
 }) {
-  const isAmp = useAmp();
+  // const isAmp = useAmp();
+  const isAmp = false;
   const router = useRouter();
   // sets a cookie if request comes from monkeypod.io marking this browser as a donor
   const { checkReferrer, trackEvent } = useAnalytics();
