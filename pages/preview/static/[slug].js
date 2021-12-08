@@ -16,7 +16,8 @@ export default function Static({
   locale,
 }) {
   const router = useRouter();
-  const isAmp = useAmp();
+  // const isAmp = useAmp();
+  const isAmp = false;
 
   useEffect(() => {
     if (!page || page === undefined || page === null || page === {}) {
