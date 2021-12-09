@@ -3,9 +3,21 @@ import { Paragraph, H1, H2, H3, Anchor } from '../common/CommonStyles';
 
 export default function TextNode({ node, metadata }) {
   const processChild = function (child, nextChild) {
-    let supportedPunctuation = [',', '.', '?', '!', ';', ':', '"', '“', '”'];
-    // omit the comma here, we want to add a space after a trailing comma
-    let supportedTrailingPunctuation = ['.', '?', '!', ';', ':', '"', '“', '”'];
+    let supportedPunctuation = [
+      ',',
+      '.',
+      '?',
+      '!',
+      ';',
+      ':',
+      '"',
+      '“',
+      '”',
+
+      ')',
+    ];
+    // add a space after this list of punctuation: colon, comma, period
+    let supportedTrailingPunctuation = ['?', '!', ';', '"', '“', '”', '('];
     let delimiterSpaceChar = ' ';
     // if the next node/child starts with one of the punctuation marks above, don't add a space
     if (
