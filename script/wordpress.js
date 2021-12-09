@@ -168,6 +168,99 @@ async function processArticles(importer, localeCode, articles) {
   }
 }
 
+async function processPages(importer, localeCode, pages) {
+  for (const page of pages) {
+    let pageTranslation = page.page_translations.find(
+      (t) => t.locale_code === localeCode
+    );
+
+    if (!pageTranslation) {
+      console.error(
+        ' ! ' +
+          page.slug +
+          ' failed finding translation in ' +
+          localeCode +
+          ', skipping'
+      );
+      continue;
+    }
+    let pageContent;
+    let pageUrl;
+    if (['about', 'donate', 'staff', 'thank-you'].includes(page.slug)) {
+      pageUrl = `/${page.slug}`;
+    } else {
+      pageUrl = `/static/${page.slug}`;
+    }
+    let apiPageUrl = `http://localhost:3000/api/pages/${page.slug}?secret=${process.env.PREVIEW_TOKEN}`;
+
+    console.log(' - retrieving page content...');
+    const pageResult = await fetch(apiPageUrl);
+    const data = await pageResult.json();
+
+    // console.log('data.content:', data.content);
+    pageContent = data.content;
+
+    if (!pageContent) {
+      console.log(` ! content not found for page ${page.slug}, skipping`);
+      continue;
+    }
+    if (pageContent && pageTranslation && pageTranslation.content) {
+      let images = [];
+      try {
+        pageTranslation.content.map((node) => {
+          if (
+            node.type === 'image' &&
+            node.children &&
+            node.children.length === 1
+          ) {
+            // console.log('found image:', node.children[0]);
+            images.push(node.children[0]);
+          }
+        });
+      } catch (e) {
+        console.error(e);
+      }
+
+      console.log('\t\t* done! including page: ' + pageTranslation.headline);
+
+      let publishDate;
+      if (pageTranslation.first_published_at) {
+        publishDate = pageTranslation.first_published_at;
+      } else {
+        publishDate = '';
+      }
+      importer.addPage({
+        id: page.id,
+        author: '',
+        title: pageTranslation.headline,
+        url: pageUrl,
+        slug: page.slug,
+        date: publishDate,
+        content: pageContent,
+        summary: pageTranslation.search_description,
+        comment_status: 'open',
+        ping_status: 'closed',
+      });
+
+      if (images) {
+        images.map((image) => {
+          let description = 'page image';
+          if (image.imageAlt) {
+            description = image.imageAlt;
+          }
+
+          importer.addAttachment({
+            url: image.imageUrl,
+            description: description,
+            title: image.imageId,
+            date: pageTranslation.first_published_at,
+          });
+        });
+      }
+    }
+  }
+}
+
 function writeWXR(locale, data) {
   const wxrFile = path.join(
     process.cwd(),
@@ -195,6 +288,7 @@ async function importSite() {
   let articles = result.data.articles;
   let categories = result.data.categories;
   let orgLocales = result.data.organization_locales;
+  let pages = result.data.pages;
   let siteMetadatas = result.data.site_metadatas;
 
   for (const orgLocale of orgLocales) {
@@ -238,6 +332,7 @@ async function importSite() {
     });
 
     await processArticles(importer, localeCode, articles);
+    await processPages(importer, localeCode, pages);
 
     let wxrContent = importer.stringify();
 
