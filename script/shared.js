@@ -801,6 +801,41 @@ const HASURA_GET_SITE_DATA = `query FrontendGetSiteData {
       locale_code
     }
   }
+  pages(where: {page_translations: {published: {_eq: true}}}) {
+    id
+    author_pages {
+      author {
+        id
+        first_names
+        last_name
+        slug
+        photoUrl
+        author_translations {
+          title
+          locale_code
+        }
+      }
+    }
+    page_translations(where: {published: {_eq: true}}, order_by: {id: desc}) {
+      content
+      facebook_description
+      facebook_title
+      first_published_at
+      headline
+      last_published_at
+      locale_code
+      locale {
+        code
+        name
+      }
+      published
+      search_description
+      search_title
+      twitter_description
+      twitter_title
+    }
+    slug
+  }
   organization_locales {
     locale {
       code
