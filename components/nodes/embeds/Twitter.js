@@ -1,7 +1,7 @@
 import { TwitterTweetEmbed } from 'react-twitter-embed';
 
 export default function Twitter({ node, amp }) {
-  const tweetId = node.link.split('/').slice(-1)[0];
+  const tweetId = node.link.split('/').slice(-1)[0].split('?')[0];
   const el = amp ? (
     <amp-twitter
       layout="responsive"
