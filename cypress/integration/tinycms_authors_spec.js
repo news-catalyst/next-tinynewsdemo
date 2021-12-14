@@ -10,7 +10,6 @@ describe('tinycms authors', () => {
   });
 
   it('adds a new author', () => {
-    cy.task('db:authors');
     cy.visit('/tinycms/authors/add');
     cy.location('pathname').should('eq', '/tinycms/authors/add');
     cy.get('input[name="first_names"').type('New');
@@ -26,13 +25,15 @@ describe('tinycms authors', () => {
   });
 
   it('updates an existing author', () => {
-    cy.visit('/tinycms/authors');
-    cy.get('table>tbody>tr:first>td>a').click();
-    cy.get('input[name="first_names"').clear().type('New');
-    cy.get('input[name="last_name"').clear().type('AuthorName');
+    cy.task('newUser').then((user) => {
+      cy.visit('/tinycms/authors');
+      cy.get('table>tbody>tr:first>td>a').click();
+      cy.get('input[name="first_names"').clear().type(user.firstName);
+      cy.get('input[name="last_name"').clear().type(user.lastName);
 
-    cy.get('input[name="title"').clear().type('Staff Writer');
-    cy.get('form').submit();
-    cy.get('strong', { timeout: 10000 }).contains('Success');
+      cy.get('input[name="title"').clear().type(user.title);
+      cy.get('form').submit();
+      cy.get('strong', { timeout: 10000 }).contains('Success');
+    });
   });
 });
