@@ -1,5 +1,6 @@
 /// <reference types="cypress" />
 const fetch = require('node-fetch');
+const faker = require('faker');
 
 async function fetchGraphQL(params) {
   let url = params['url'];
@@ -86,6 +87,18 @@ module.exports = (on, config) => {
   const apiGraphQL = config.env.apiUrl;
 
   on('task', {
+    newTagTitle() {
+      return faker.company.catchPhrase();
+    },
+
+    newUser() {
+      return {
+        firstName: faker.name.findName(),
+        lastName: faker.name.lastName(),
+        title: faker.name.jobTitle(),
+      };
+    },
+
     async 'db:authors'() {
       // seed database with test data
       const { errors, data } = await deleteAllAuthors({
