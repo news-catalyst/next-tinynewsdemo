@@ -1,6 +1,7 @@
 import {
   hasuraLookupGoogleDoc,
   hasuraGetGoogleDocsForArticle,
+  hasuraGetGoogleDocsForPage,
 } from '../../../../lib/articles';
 
 export default async function Handler(req, res) {
@@ -80,7 +81,7 @@ export default async function Handler(req, res) {
       const pageResult = await hasuraGetGoogleDocsForPage({
         url: apiUrl,
         orgSlug: apiToken,
-        articleId: page.id,
+        pageId: page.id,
       });
       if (pageResult.errors) {
         return res.status(500).json({
