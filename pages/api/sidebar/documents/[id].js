@@ -1,4 +1,7 @@
-import { hasuraLookupGoogleDoc } from '../../../../lib/articles';
+import {
+  hasuraLookupGoogleDoc,
+  hasuraGetGoogleDocsForArticle,
+} from '../../../../lib/articles';
 
 export default async function Handler(req, res) {
   const apiUrl = process.env.HASURA_API_URL;
@@ -45,12 +48,50 @@ export default async function Handler(req, res) {
       returnData.documentType = 'article';
       let article = googleDoc.article_google_documents[0].article;
       returnData.article = article;
+      let articleGoogleDoc =
+        googleDoc.article_google_documents[0].google_document;
+
+      const articleResult = await hasuraGetGoogleDocsForArticle({
+        url: apiUrl,
+        orgSlug: apiToken,
+        articleId: article.id,
+        localeCode: articleGoogleDoc.locale_code,
+      });
+      if (articleResult.errors) {
+        return res.status(500).json({
+          message:
+            'Error finding google docs for article id ' +
+            article.id +
+            ': ' +
+            JSON.stringify(articleResult.errors),
+        });
+      }
+      returnData.article_google_documents =
+        articleResult.data.article_google_documents;
+      returnData.published_article_translations =
+        articleResult.data.published_article_translations;
 
       // page
     } else if (googleDoc.page_google_documents.length > 0) {
       returnData.documentType = 'page';
       let page = googleDoc.page_google_documents[0].page;
       returnData.page = page;
+
+      const pageResult = await hasuraGetGoogleDocsForPage({
+        url: apiUrl,
+        orgSlug: apiToken,
+        articleId: page.id,
+      });
+      if (pageResult.errors) {
+        return res.status(500).json({
+          message:
+            'Error finding google docs for page id ' +
+            page.id +
+            ': ' +
+            JSON.stringify(pageResult.errors),
+        });
+      }
+      returnData.page_google_documents = pageResult.data.page_google_documents;
     } else {
       return res.status(500).json({
         message:
@@ -58,20 +99,6 @@ export default async function Handler(req, res) {
       });
     }
   }
-
-  // let articlePath;
-
-  // if (localeCode) {
-  //   articlePath =
-  //     '/' +
-  //     localeCode +
-  //     '/preview/' +
-  //     article.category.slug +
-  //     '/' +
-  //     article.slug;
-  // } else {
-  //   articlePath = '/preview/' + article.category.slug + '/' + article.slug;
-  // }
 
   res.status(200).json(returnData);
 }
