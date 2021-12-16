@@ -13,6 +13,8 @@ describe('document API', () => {
       expect(response.body.categories).to.have.length.of.at.least(1);
       expect(response.body.organization_locales).to.have.length.of.at.least(1);
       expect(response.body.tags).to.have.length.of.at.least(1);
+      expect(response.body.homepage_layout_datas).to.have.length.of.at.least(1);
+      expect(response.body.editorUrl).not.to.be.empty;
 
       // should return article-specific data
       // expect(response.body.article).to.be.instanceOf(Object);
