@@ -273,6 +273,10 @@ export default function SiteInfoSettings(props) {
   const [defaultSocialImage, setDefaultSocialImage] = useState(
     props.parsedData['defaultSocialImage']
   );
+
+  const [paymentProvider, setPaymentProvider] = useState(
+    props.parsedData['paymentProvider']
+  );
   let parsedDonationOptions;
   try {
     parsedDonationOptions = JSON.parse(props.parsedData['donationOptions']);
@@ -390,6 +394,7 @@ export default function SiteInfoSettings(props) {
     setFounderTwitter(props.parsedData['founderTwitter']);
     setFounderInstagram(props.parsedData['founderInstagram']);
     setFounderFacebook(props.parsedData['founderFacebook']);
+    setPaymentProvider(props.parsedData['paymentProvider']);
     let parsedDonationOptions;
     try {
       parsedDonationOptions = JSON.parse(props.parsedData['donationOptions']);
@@ -906,6 +911,28 @@ export default function SiteInfoSettings(props) {
 
       <DonationOptionsEditor ref={props.paymentRef} id="payment-options">
         <SettingsHeader tw="col-span-3 mt-5">Payment options</SettingsHeader>
+        <div tw="col-span-3 mt-5">
+          <label tw="block">
+            <input
+              type="radio"
+              name={`paymentProvider`}
+              value="monkeypod"
+              checked={paymentProvider === 'monkeypod'}
+              onChange={props.handleChange}
+            />
+            <span tw="p-2 mt-1 font-bold">MonkeyPod (contributed revenue)</span>
+          </label>
+          <label tw="block">
+            <input
+              type="radio"
+              name={`paymentProvider`}
+              value="stripe"
+              checked={paymentProvider === 'stripe'}
+              onChange={props.handleChange}
+            />
+            <span tw="p-2 mt-1 font-bold">Stripe (earned revenue)</span>
+          </label>
+        </div>
         {Array.isArray(donationOptions) &&
           donationOptions.map((option, i) => (
             <div key={`option-${i}`}>
@@ -954,16 +981,18 @@ export default function SiteInfoSettings(props) {
                   />
                   <span tw="p-2 mt-1 font-bold">One-time payment</span>
                 </label>
-                <label tw="block">
-                  <input
-                    type="radio"
-                    name={`donationOptions-${i}-paymentType`}
-                    value="pay-what-you-want"
-                    checked={option.paymentType === 'pay-what-you-want'}
-                    onChange={props.handleChange}
-                  />
-                  <span tw="p-2 mt-1 font-bold">Pay what you want</span>
-                </label>
+                {paymentProvider === 'monkeypod' && (
+                  <label tw="block">
+                    <input
+                      type="radio"
+                      name={`donationOptions-${i}-paymentType`}
+                      value="pay-what-you-want"
+                      checked={option.paymentType === 'pay-what-you-want'}
+                      onChange={props.handleChange}
+                    />
+                    <span tw="p-2 mt-1 font-bold">Pay what you want</span>
+                  </label>
+                )}
               </div>
               <div tw="mt-2">
                 <label htmlFor={`donationOptions-${i}-description`}>
@@ -989,18 +1018,34 @@ export default function SiteInfoSettings(props) {
                   />
                 </label>
               </div>
-              <div tw="mt-2">
-                <label htmlFor={`donationOptions-${i}-monkeypodId`}>
-                  <span tw="mt-1 font-bold">Option MonkeyPod ID</span>
-                  <ControlledInput
-                    tw="w-full rounded-md border-solid border-gray-300"
-                    type="text"
-                    name={`donationOptions-${i}-monkeypodId`}
-                    value={option.monkeypodId}
-                    onChange={props.handleChange}
-                  />
-                </label>
-              </div>
+              {paymentProvider === 'monkeypod' && (
+                <div tw="mt-2">
+                  <label htmlFor={`donationOptions-${i}-monkeypodId`}>
+                    <span tw="mt-1 font-bold">Option MonkeyPod ID</span>
+                    <ControlledInput
+                      tw="w-full rounded-md border-solid border-gray-300"
+                      type="text"
+                      name={`donationOptions-${i}-monkeypodId`}
+                      value={option.monkeypodId}
+                      onChange={props.handleChange}
+                    />
+                  </label>
+                </div>
+              )}
+              {paymentProvider === 'stripe' && (
+                <div tw="mt-2">
+                  <label htmlFor={`donationOptions-${i}-monkeypodId`}>
+                    <span tw="mt-1 font-bold">Option Stripe Price ID</span>
+                    <ControlledInput
+                      tw="w-full rounded-md border-solid border-gray-300"
+                      type="text"
+                      name={`donationOptions-${i}-stripeId`}
+                      value={option.stripeId}
+                      onChange={props.handleChange}
+                    />
+                  </label>
+                </div>
+              )}
             </div>
           ))}
       </DonationOptionsEditor>

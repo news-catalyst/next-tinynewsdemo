@@ -32,8 +32,17 @@ const DonateFooterLink = styled.a(
     backgroundColor: backgroundColor,
   })
 );
+const DonateFooterButton = styled.button(
+  ({ meta, backgroundColor, textColor, tinycms }) => ({
+    ...tw`items-center justify-center flex font-bold w-full py-4 absolute bottom-0`,
+    fontFamily: Typography[meta.theme || 'styleone'].PromotionBlockDek,
+    color: textColor,
+    pointerEvents: tinycms ? 'none' : '',
+    backgroundColor: backgroundColor,
+  })
+);
 
-export default function DonationCard({ option, metadata, tinycms }) {
+export default function DonationCard({ option, metadata, tinycms, provider }) {
   const [textColor, setTextColor] = useState(null);
   const [backgroundColor, setBackgroundColor] = useState(null);
   const [customAmount, setCustomAmount] = useState(null);
@@ -99,15 +108,42 @@ export default function DonationCard({ option, metadata, tinycms }) {
           height: '4rem',
         }}
       >
-        <DonateFooterLink
-          href={monkeyPodURL}
-          meta={metadata}
-          backgroundColor={backgroundColor}
-          textColor={textColor}
-          tinycms={tinycms}
-        >
-          {option.cta}
-        </DonateFooterLink>
+        {provider == 'monkeypod' ? (
+          <DonateFooterLink
+            href={monkeyPodURL}
+            meta={metadata}
+            backgroundColor={backgroundColor}
+            textColor={textColor}
+            tinycms={tinycms}
+          >
+            {option.cta}
+          </DonateFooterLink>
+        ) : (
+          <form action="/api/checkout_sessions" method="POST">
+            <input
+              type="hidden"
+              name="stripeId"
+              id="stripeId"
+              value={option.stripeId}
+            />
+            <input
+              type="hidden"
+              name="paymentType"
+              id="paymentType"
+              value={option.paymentType}
+            />
+            <DonateFooterButton
+              meta={metadata}
+              backgroundColor={backgroundColor}
+              textColor={textColor}
+              tinycms={tinycms}
+              type="submit"
+              role="link"
+            >
+              {option.cta}
+            </DonateFooterButton>
+          </form>
+        )}
       </CardFooter>
     </Card>
   );

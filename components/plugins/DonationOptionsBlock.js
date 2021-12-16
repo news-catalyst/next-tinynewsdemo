@@ -7,6 +7,7 @@ export default function DonationOptionsBlock({
   metadata,
   tinycms,
   wrap = true,
+  provider = 'monkeypod',
 }) {
   if (metadata.donationOptions === '' || metadata.donationOptions === null) {
     return null;
@@ -28,6 +29,7 @@ export default function DonationOptionsBlock({
         option={option}
         metadata={metadata}
         tinycms={tinycms}
+        provider={provider}
       />
     ));
 
