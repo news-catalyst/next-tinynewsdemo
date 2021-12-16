@@ -43,9 +43,14 @@ export default async function Handler(req, res) {
     returnData.categories = data.categories;
     returnData.organization_locales = data.organization_locales;
     returnData.tags = data.tags;
+    returnData.homepage_layout_datas = data.homepage_layout_datas;
+    returnData.editorUrl = new URL(
+      '/tinycms/homepage',
+      process.env.NEXT_PUBLIC_SITE_URL
+    ).toString();
 
     // article
-    if (googleDoc.article_google_documents.length > 0) {
+    if (googleDoc && googleDoc.article_google_documents.length > 0) {
       returnData.documentType = 'article';
       let article = googleDoc.article_google_documents[0].article;
       returnData.article = article;
@@ -73,7 +78,7 @@ export default async function Handler(req, res) {
         articleResult.data.published_article_translations;
 
       // page
-    } else if (googleDoc.page_google_documents.length > 0) {
+    } else if (googleDoc && googleDoc.page_google_documents.length > 0) {
       returnData.documentType = 'page';
       let page = googleDoc.page_google_documents[0].page;
       returnData.page = page;
@@ -94,10 +99,7 @@ export default async function Handler(req, res) {
       }
       returnData.page_google_documents = pageResult.data.page_google_documents;
     } else {
-      return res.status(500).json({
-        message:
-          'Error: unknown content associated with google doc ID ' + documentId,
-      });
+      returnData.documentType = null;
     }
   }
 
