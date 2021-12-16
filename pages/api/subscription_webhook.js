@@ -28,12 +28,14 @@ export default async function handler(req, res) {
     eventType = req.body.type;
   }
 
+  let customer = data.object.customer_details;
+  let amountSubtotal = data.object.amount_subtotal;
+  let amountTotal = data.object.amount_total;
+  let subscription = data.object;
+  let status = subscription.status;
+
   switch (eventType) {
     case 'checkout.session.completed':
-      let customer = data.object.customer_details;
-      let amountSubtotal = data.object.amount_subtotal;
-      let amountTotal = data.object.amount_total;
-
       // handle these with a spreadsheet?
       break;
 
@@ -44,8 +46,6 @@ export default async function handler(req, res) {
       break;
 
     case 'invoice.payment_failed':
-      subscription = data.object;
-      status = subscription.status;
       console.log(`Subscription status is ${status}.`);
       // Then define and call a method to handle the subscription update.
       // handleSubscriptionUpdated(subscription);
