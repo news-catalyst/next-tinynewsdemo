@@ -22,6 +22,8 @@ export default async function Handler(req, res) {
   }
 
   let documentId = req.query.id;
+  let documentType = req.query.documentType;
+
   // Find the article or page
   const { errors, data } = await hasuraLookupGoogleDoc({
     url: apiUrl,
@@ -48,6 +50,7 @@ export default async function Handler(req, res) {
       '/tinycms/homepage',
       process.env.NEXT_PUBLIC_SITE_URL
     ).toString();
+    returnData.documentType = documentType;
 
     // article
     if (googleDoc && googleDoc.article_google_documents.length > 0) {
@@ -103,5 +106,6 @@ export default async function Handler(req, res) {
     }
   }
 
+  console.log('RETURNING:', returnData);
   res.status(200).json(returnData);
 }
