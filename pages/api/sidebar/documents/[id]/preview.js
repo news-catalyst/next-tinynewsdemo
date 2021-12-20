@@ -14,6 +14,7 @@ export default async function Handler(req, res) {
   }
 
   let documentId = req.query.id;
+  let documentType = req.query.documentType;
   let bodyData = req.body;
 
   // let imageID = req.query.imageId;
@@ -24,6 +25,12 @@ export default async function Handler(req, res) {
   let inlineObjects = bodyData['inlineObjects'];
   let slug = bodyData['slug'];
   let articleData = bodyData['articleData'];
+
+  console.log(
+    articleData['id'],
+    'incoming article data keys:',
+    Object.keys(articleData).sort()
+  );
 
   const { errors, data } = await hasuraLookupGoogleDoc({
     url: apiUrl,
@@ -39,11 +46,14 @@ export default async function Handler(req, res) {
       data: errors,
     });
   } else {
-    let googleDoc = data.google_documents[0];
-    let articleSlug = googleDoc.article_google_documents[0].article.slug;
-    let articleGoogleDoc =
-      googleDoc.article_google_documents[0].google_document;
-    let localeCode = articleGoogleDoc.locale_code;
+    console.log(data);
+
+    let localeCode = 'en-US'; // default up front, override if existing article
+    if (data.google_documents[0]) {
+      localeCode =
+        data.google_documents[0].article_google_documents[0].google_document
+          .locale_code;
+    }
 
     let processedData = await processDocumentContents(
       rawBodyData,
@@ -74,9 +84,10 @@ export default async function Handler(req, res) {
       });
     }
 
+    slug = storeDataResult.data[0].slug;
     //construct preview url
     let previewUrl = new URL(
-      `/api/preview?secret=${process.env.PREVIEW_TOKEN}&slug=${articleSlug}&locale=${localeCode}`,
+      `/api/preview?secret=${process.env.PREVIEW_TOKEN}&slug=${slug}&locale=${localeCode}`,
       process.env.NEXT_PUBLIC_SITE_URL
     ).toString();
 
@@ -85,6 +96,7 @@ export default async function Handler(req, res) {
     res.status(200).json({
       // s3Url: s3Url,
       body: processedData['formattedElements'],
+      documentType: documentType,
       mainImage: processedData['mainImage'],
       updatedImageList: processedData['updatedImageList'],
       googleToken: googleToken,
