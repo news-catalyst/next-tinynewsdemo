@@ -2,6 +2,7 @@ import { hasuraLookupGoogleDoc } from '../../../../../lib/articles';
 import {
   processDocumentContents,
   saveArticle,
+  savePage,
 } from '../../../../../lib/document';
 
 export default async function Handler(req, res) {
@@ -25,12 +26,24 @@ export default async function Handler(req, res) {
   let inlineObjects = bodyData['inlineObjects'];
   let slug = bodyData['slug'];
   let articleData = bodyData['articleData'];
+  let pageData = bodyData['pageData'];
 
-  console.log(
-    articleData['id'],
-    'incoming article data keys:',
-    Object.keys(articleData).sort()
-  );
+  if (articleData) {
+    console.log(
+      documentType,
+      articleData['id'],
+      'incoming article data keys:',
+      Object.keys(articleData).sort()
+    );
+  }
+  if (pageData) {
+    console.log(
+      documentType,
+      pageData['id'],
+      'incoming page data keys:',
+      Object.keys(pageData).sort()
+    );
+  }
 
   const { errors, data } = await hasuraLookupGoogleDoc({
     url: apiUrl,
@@ -49,9 +62,22 @@ export default async function Handler(req, res) {
     console.log(data);
 
     let localeCode = 'en-US'; // default up front, override if existing article
-    if (data.google_documents[0]) {
+    if (
+      data.google_documents[0] &&
+      data.google_documents[0].article_google_documents &&
+      data.google_documents[0].article_google_documents[0]
+    ) {
       localeCode =
         data.google_documents[0].article_google_documents[0].google_document
+          .locale_code;
+    }
+    if (
+      data.google_documents[0] &&
+      data.google_documents[0].page_google_documents &&
+      data.google_documents[0].page_google_documents[0]
+    ) {
+      localeCode =
+        data.google_documents[0].page_google_documents[0].google_document
           .locale_code;
     }
 
@@ -65,44 +91,80 @@ export default async function Handler(req, res) {
     );
 
     console.log('processedData:', Object.keys(processedData).sort());
-    articleData['content'] = processedData['formattedElements'];
-    articleData['main_image'] = processedData['mainImage'];
 
-    let storeDataResult = await saveArticle({
-      data: articleData,
-      url: apiUrl,
-      orgSlug: apiToken,
-    });
-    console.log('storeDataResult keys:', Object.keys(storeDataResult));
-    console.log('storeDataResult:', JSON.stringify(storeDataResult));
+    let previewUrl;
+    let resultData;
 
-    if (storeDataResult.status === 'error') {
-      return res.status(500).json({
-        status: 'error',
-        message: 'Error: ' + JSON.stringify(storeDataResult.message),
-        data: JSON.stringify(storeDataResult),
+    if (documentType === 'article') {
+      articleData['content'] = processedData['formattedElements'];
+      articleData['main_image'] = processedData['mainImage'];
+
+      let storeDataResult = await saveArticle({
+        data: articleData,
+        url: apiUrl,
+        orgSlug: apiToken,
       });
+      console.log('storeDataResult keys:', Object.keys(storeDataResult));
+      console.log('storeDataResult:', JSON.stringify(storeDataResult));
+
+      if (storeDataResult.status === 'error') {
+        return res.status(500).json({
+          status: 'error',
+          message: 'Error: ' + JSON.stringify(storeDataResult.message),
+          data: JSON.stringify(storeDataResult),
+        });
+      }
+
+      slug = storeDataResult.data[0].slug;
+      //construct preview url
+      previewUrl = new URL(
+        `/api/preview?secret=${process.env.PREVIEW_TOKEN}&slug=${slug}&locale=${localeCode}`,
+        process.env.NEXT_PUBLIC_SITE_URL
+      ).toString();
+
+      resultData = storeDataResult.data;
+      console.log(previewUrl);
+    } else if (documentType === 'page') {
+      pageData['content'] = processedData['formattedElements'];
+
+      let storeDataResult = await savePage({
+        data: pageData,
+        url: apiUrl,
+        orgSlug: apiToken,
+      });
+
+      console.log('storeDataResult keys:', Object.keys(storeDataResult));
+      console.log('storeDataResult:', JSON.stringify(storeDataResult));
+
+      if (storeDataResult.status === 'error') {
+        return res.status(500).json({
+          status: 'error',
+          message: 'Error: ' + JSON.stringify(storeDataResult.message),
+          data: JSON.stringify(storeDataResult),
+        });
+      }
+
+      slug = storeDataResult.data[0].slug;
+      //construct preview url
+      previewUrl = new URL(
+        `/api/preview-static?secret=${process.env.PREVIEW_TOKEN}&slug=${slug}&locale=${localeCode}`,
+        process.env.NEXT_PUBLIC_SITE_URL
+      ).toString();
+
+      resultData = storeDataResult.data;
+      console.log(previewUrl);
     }
-
-    slug = storeDataResult.data[0].slug;
-    //construct preview url
-    let previewUrl = new URL(
-      `/api/preview?secret=${process.env.PREVIEW_TOKEN}&slug=${slug}&locale=${localeCode}`,
-      process.env.NEXT_PUBLIC_SITE_URL
-    ).toString();
-
-    console.log(previewUrl);
 
     res.status(200).json({
       // s3Url: s3Url,
-      body: processedData['formattedElements'],
+      status: 'success',
       documentType: documentType,
-      mainImage: processedData['mainImage'],
-      updatedImageList: processedData['updatedImageList'],
       googleToken: googleToken,
       previewUrl: previewUrl,
-      status: 'success',
-      data: storeDataResult.data,
+      data: resultData,
+      body: processedData['formattedElements'],
+      mainImage: processedData['mainImage'],
+      updatedImageList: processedData['updatedImageList'],
     });
   }
 }
