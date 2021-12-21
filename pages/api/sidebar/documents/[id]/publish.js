@@ -53,7 +53,7 @@ export default async function Handler(req, res) {
   if (errors || !data || !data.google_documents) {
     console.error(errors);
     return res.status(500).json({
-      stauts: 'error',
+      status: 'error',
       message:
         'Error looking up data by Google Doc ID: ' + JSON.stringify(errors),
       data: errors,
@@ -92,8 +92,9 @@ export default async function Handler(req, res) {
 
     console.log('processedData:', Object.keys(processedData).sort());
 
-    let previewUrl;
+    let publishUrl;
     let resultData;
+    let categorySlug;
 
     if (documentType === 'article') {
       articleData['content'] = processedData['formattedElements'];
@@ -117,13 +118,28 @@ export default async function Handler(req, res) {
 
       resultData = storeDataResult.data[0];
       slug = resultData.slug;
-      //construct preview url
-      previewUrl = new URL(
-        `/api/preview?secret=${process.env.PREVIEW_TOKEN}&slug=${slug}&locale=${localeCode}`,
-        process.env.NEXT_PUBLIC_SITE_URL
-      ).toString();
+      categorySlug = resultData.category.slug;
 
-      console.log(previewUrl);
+      //construct the published article url
+      var path = localeCode + '/articles/' + categorySlug + '/' + slug;
+      publishUrl = new URL(path, process.env.NEXT_PUBLIC_SITE_URL).toString();
+      console.log(publishUrl);
+
+      // var articleID = data.id;
+      // var categorySlug = data.category.slug;
+
+      // if (articleID) {
+      //   // store slug + article ID in slug versions table
+      //   var result = await storeArticleIdAndSlug(articleID, slug, categorySlug);
+      //   Logger.log("stored article id + slug: " + JSON.stringify(result));
+
+      //   var publishedArticleData = await upsertPublishedArticle(articleID, translationID, formObject['article-locale'])
+      //   if (publishedArticleData) {
+      //     // Logger.log("Published Article Data:" + JSON.stringify(publishedArticleData));
+
+      //     data.data.insert_articles.returning[0].published_article_translations = publishedArticleData.data.insert_published_article_translations.returning;
+      //   }
+      // }
     } else if (documentType === 'page') {
       pageData['content'] = processedData['formattedElements'];
 
@@ -143,16 +159,21 @@ export default async function Handler(req, res) {
           data: JSON.stringify(storeDataResult),
         });
       }
+
       resultData = storeDataResult.data[0];
       slug = resultData.slug;
+      //construct published page url
 
-      //construct preview url
-      previewUrl = new URL(
-        `/api/preview-static?secret=${process.env.PREVIEW_TOKEN}&slug=${slug}&locale=${localeCode}`,
-        process.env.NEXT_PUBLIC_SITE_URL
-      ).toString();
+      let path = `/${localeCode}`;
+      if (slug !== 'about' && slug !== 'donate' && slug !== 'thank-you') {
+        // these 3 pages have their own special routes
+        path += '/static/' + slug;
+      } else {
+        path += '/' + slug;
+      }
+      publishUrl = new URL(path, process.env.NEXT_PUBLIC_SITE_URL).toString();
 
-      console.log(previewUrl);
+      console.log(publishUrl);
     }
 
     res.status(200).json({
@@ -160,7 +181,7 @@ export default async function Handler(req, res) {
       status: 'success',
       documentType: documentType,
       googleToken: googleToken,
-      previewUrl: previewUrl,
+      publishUrl: publishUrl,
       data: resultData,
       body: processedData['formattedElements'],
       mainImage: processedData['mainImage'],
