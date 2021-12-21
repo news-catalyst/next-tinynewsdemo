@@ -174,6 +174,16 @@ export default async function Handler(req, res) {
 
       resultData = storeDataResult.data[0];
       slug = resultData.slug;
+      let pageID = resultData.id;
+
+      // // store slug + page ID in slug versions table
+      var idSlugResult = await storePageIdAndSlug({
+        url: apiUrl,
+        orgSlug: apiToken,
+        page_id: pageID,
+        slug: slug,
+      });
+      Logger.log('stored page id + slug: ' + JSON.stringify(idSlugResult));
       //construct published page url
 
       let path = `/${localeCode}`;
