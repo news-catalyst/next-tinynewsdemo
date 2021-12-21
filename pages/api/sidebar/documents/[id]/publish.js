@@ -3,6 +3,8 @@ import {
   processDocumentContents,
   saveArticle,
   savePage,
+  storeArticleIdAndSlug,
+  upsertPublishedArticle,
 } from '../../../../../lib/document';
 
 export default async function Handler(req, res) {
@@ -95,6 +97,7 @@ export default async function Handler(req, res) {
     let publishUrl;
     let resultData;
     let categorySlug;
+    let articleID;
 
     if (documentType === 'article') {
       articleData['content'] = processedData['formattedElements'];
@@ -119,27 +122,36 @@ export default async function Handler(req, res) {
       resultData = storeDataResult.data[0];
       slug = resultData.slug;
       categorySlug = resultData.category.slug;
+      articleID = resultData.id;
+      let translationID = resultData.article_translations[0].id;
+
+      // store slug + article ID in slug versions table
+      var idSlugResult = await storeArticleIdAndSlug({
+        url: apiUrl,
+        orgSlug: apiToken,
+        article_id: articleID,
+        slug: slug,
+        category_slug: categorySlug,
+      });
+      console.log('stored article id + slug + categorySlug: ', idSlugResult);
+
+      var publishedArticleData = await upsertPublishedArticle({
+        url: apiUrl,
+        orgSlug: apiToken,
+        article_id: articleID,
+        article_translation_id: translationID,
+        locale_code: localeCode,
+      });
+      if (publishedArticleData) {
+        console.log('Published Article Data:', publishedArticleData);
+        resultData.published_article_translations =
+          publishedArticleData.data.insert_published_article_translations.returning;
+      }
 
       //construct the published article url
       var path = localeCode + '/articles/' + categorySlug + '/' + slug;
       publishUrl = new URL(path, process.env.NEXT_PUBLIC_SITE_URL).toString();
       console.log(publishUrl);
-
-      // var articleID = data.id;
-      // var categorySlug = data.category.slug;
-
-      // if (articleID) {
-      //   // store slug + article ID in slug versions table
-      //   var result = await storeArticleIdAndSlug(articleID, slug, categorySlug);
-      //   Logger.log("stored article id + slug: " + JSON.stringify(result));
-
-      //   var publishedArticleData = await upsertPublishedArticle(articleID, translationID, formObject['article-locale'])
-      //   if (publishedArticleData) {
-      //     // Logger.log("Published Article Data:" + JSON.stringify(publishedArticleData));
-
-      //     data.data.insert_articles.returning[0].published_article_translations = publishedArticleData.data.insert_published_article_translations.returning;
-      //   }
-      // }
     } else if (documentType === 'page') {
       pageData['content'] = processedData['formattedElements'];
 
