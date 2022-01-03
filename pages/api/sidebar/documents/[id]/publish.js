@@ -100,6 +100,7 @@ export default async function Handler(req, res) {
     let resultData;
     let categorySlug;
     let articleID;
+    let idSlugResult;
 
     if (documentType === 'article') {
       articleData['content'] = processedData['formattedElements'];
@@ -128,7 +129,7 @@ export default async function Handler(req, res) {
       let translationID = resultData.article_translations[0].id;
 
       // store slug + article ID in slug versions table
-      var idSlugResult = await storeArticleIdAndSlug({
+      idSlugResult = await storeArticleIdAndSlug({
         url: apiUrl,
         orgSlug: apiToken,
         article_id: articleID,
@@ -179,7 +180,7 @@ export default async function Handler(req, res) {
       let pageID = resultData.id;
 
       // // store slug + page ID in slug versions table
-      var idSlugResult = await storePageIdAndSlug({
+      idSlugResult = await storePageIdAndSlug({
         url: apiUrl,
         orgSlug: apiToken,
         page_id: pageID,
