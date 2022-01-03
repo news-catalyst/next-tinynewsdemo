@@ -4,6 +4,7 @@ import {
   saveArticle,
   savePage,
   storeArticleIdAndSlug,
+  storePageIdAndSlug,
   upsertPublishedArticle,
 } from '../../../../../lib/document';
 
@@ -18,6 +19,7 @@ export default async function Handler(req, res) {
 
   let documentId = req.query.id;
   let documentType = req.query.documentType;
+
   let bodyData = req.body;
 
   // let imageID = req.query.imageId;
@@ -61,7 +63,7 @@ export default async function Handler(req, res) {
       data: errors,
     });
   } else {
-    console.log(data);
+    // console.log(data);
 
     let localeCode = 'en-US'; // default up front, override if existing article
     if (
@@ -92,7 +94,7 @@ export default async function Handler(req, res) {
       googleToken
     );
 
-    console.log('processedData:', Object.keys(processedData).sort());
+    // console.log('processedData:', Object.keys(processedData).sort());
 
     let publishUrl;
     let resultData;
@@ -183,7 +185,7 @@ export default async function Handler(req, res) {
         page_id: pageID,
         slug: slug,
       });
-      Logger.log('stored page id + slug: ' + JSON.stringify(idSlugResult));
+      console.log('stored page id + slug: ' + JSON.stringify(idSlugResult));
       //construct published page url
 
       let path = `/${localeCode}`;
