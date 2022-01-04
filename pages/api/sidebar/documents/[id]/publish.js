@@ -32,22 +32,22 @@ export default async function Handler(req, res) {
   let articleData = bodyData['articleData'];
   let pageData = bodyData['pageData'];
 
-  if (articleData) {
-    console.log(
-      documentType,
-      articleData['id'],
-      'incoming article data keys:',
-      Object.keys(articleData).sort()
-    );
-  }
-  if (pageData) {
-    console.log(
-      documentType,
-      pageData['id'],
-      'incoming page data keys:',
-      Object.keys(pageData).sort()
-    );
-  }
+  // if (articleData) {
+  //   console.log(
+  //     documentType,
+  //     articleData['id'],
+  //     'incoming article data keys:',
+  //     Object.keys(articleData).sort()
+  //   );
+  // }
+  // if (pageData) {
+  //   console.log(
+  //     documentType,
+  //     pageData['id'],
+  //     'incoming page data keys:',
+  //     Object.keys(pageData).sort()
+  //   );
+  // }
 
   const { errors, data } = await hasuraLookupGoogleDoc({
     url: apiUrl,
@@ -111,13 +111,15 @@ export default async function Handler(req, res) {
         url: apiUrl,
         orgSlug: apiToken,
       });
-      console.log('storeDataResult keys:', Object.keys(storeDataResult));
-      console.log('storeDataResult:', JSON.stringify(storeDataResult));
+      // console.log('storeDataResult keys:', Object.keys(storeDataResult));
+      // console.log('storeDataResult:', JSON.stringify(storeDataResult));
 
       if (storeDataResult.status === 'error') {
+        console.error(JSON.stringify(storeDataResult));
         return res.status(500).json({
           status: 'error',
-          message: 'Error: ' + JSON.stringify(storeDataResult.message),
+          message:
+            'Error saving article: ' + JSON.stringify(storeDataResult.message),
           data: JSON.stringify(storeDataResult),
         });
       }
@@ -136,8 +138,17 @@ export default async function Handler(req, res) {
         slug: slug,
         category_slug: categorySlug,
       });
-      console.log('stored article id + slug + categorySlug: ', idSlugResult);
-
+      // console.log('stored article id + slug + categorySlug: ', idSlugResult);
+      if (idSlugResult.status === 'error') {
+        console.error(JSON.stringify(idSlugResult));
+        return res.status(500).json({
+          status: 'error',
+          message:
+            'Error storing article slug version: ' +
+            JSON.stringify(idSlugResult.message),
+          data: JSON.stringify(idSlugResult),
+        });
+      }
       var publishedArticleData = await upsertPublishedArticle({
         url: apiUrl,
         orgSlug: apiToken,
@@ -146,15 +157,29 @@ export default async function Handler(req, res) {
         locale_code: localeCode,
       });
       if (publishedArticleData) {
-        console.log('Published Article Data:', publishedArticleData);
-        resultData.published_article_translations =
-          publishedArticleData.data.insert_published_article_translations.returning;
+        // console.log('Published Article Data:', publishedArticleData);
+        if (publishedArticleData.status === 'error') {
+          console.error(
+            'Error saving published article translation: ' +
+              JSON.stringify(publishedArticleData)
+          );
+          return res.status(500).json({
+            status: 'error',
+            message:
+              'Error storing published article data: ' +
+              JSON.stringify(publishedArticleData.message),
+            data: JSON.stringify(publishedArticleData),
+          });
+        } else {
+          resultData.published_article_translations =
+            publishedArticleData.data.insert_published_article_translations.returning;
+        }
       }
 
       //construct the published article url
       var path = localeCode + '/articles/' + categorySlug + '/' + slug;
       publishUrl = new URL(path, process.env.NEXT_PUBLIC_SITE_URL).toString();
-      console.log(publishUrl);
+      // console.log(publishUrl);
     } else if (documentType === 'page') {
       pageData['content'] = processedData['formattedElements'];
 
@@ -164,8 +189,8 @@ export default async function Handler(req, res) {
         orgSlug: apiToken,
       });
 
-      console.log('storeDataResult keys:', Object.keys(storeDataResult));
-      console.log('storeDataResult:', JSON.stringify(storeDataResult));
+      // console.log('storeDataResult keys:', Object.keys(storeDataResult));
+      // console.log('storeDataResult:', JSON.stringify(storeDataResult));
 
       if (storeDataResult.status === 'error') {
         return res.status(500).json({
@@ -186,9 +211,19 @@ export default async function Handler(req, res) {
         page_id: pageID,
         slug: slug,
       });
-      console.log('stored page id + slug: ' + JSON.stringify(idSlugResult));
-      //construct published page url
 
+      if (idSlugResult.status === 'error') {
+        console.error(JSON.stringify(idSlugResult));
+        return res.status(500).json({
+          status: 'error',
+          message:
+            'Error storing page slug version: ' +
+            JSON.stringify(idSlugResult.message),
+          data: JSON.stringify(idSlugResult),
+        });
+      }
+
+      // construct published page url
       let path = `/${localeCode}`;
       if (slug !== 'about' && slug !== 'donate' && slug !== 'thank-you') {
         // these 3 pages have their own special routes
@@ -198,7 +233,7 @@ export default async function Handler(req, res) {
       }
       publishUrl = new URL(path, process.env.NEXT_PUBLIC_SITE_URL).toString();
 
-      console.log(publishUrl);
+      // console.log(publishUrl);
     }
 
     res.status(200).json({

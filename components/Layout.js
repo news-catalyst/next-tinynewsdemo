@@ -172,6 +172,7 @@ export default function Layout({
 
   const trackingId = process.env.NEXT_PUBLIC_GA_TRACKING_ID;
 
+  // console.log('Layout: returning page', children);
   return (
     <>
       <Head>

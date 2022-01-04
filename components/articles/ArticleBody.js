@@ -81,6 +81,7 @@ export default function ArticleBody({ article, ads, isAmp, locale, metadata }) {
     fullReached,
   ]);
 
+  // console.log('ArticleBody component');
   return (
     <ArticleBodyWrapper>
       <SectionContainer ref={ref}>
