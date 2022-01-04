@@ -106,6 +106,6 @@ export default async function Handler(req, res) {
     }
   }
 
-  console.log('RETURNING:', returnData);
+  // console.log('RETURNING:', returnData);
   res.status(200).json(returnData);
 }

@@ -20,6 +20,7 @@ export default function Article({
 }) {
   const isAmp = useAmp();
 
+  // console.log('Article component article: ', article);
   // console.log('Article locale:', locale, article.article_translations.length);
 
   let baseUrl = process.env.NEXT_PUBLIC_SITE_URL || siteMetadata['siteUrl'];
@@ -55,6 +56,7 @@ export default function Article({
     }
   }
 
+  // console.log('Returning layout and children components...');
   return (
     <Layout
       meta={siteMetadata}
