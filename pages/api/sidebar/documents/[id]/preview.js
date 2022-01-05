@@ -28,23 +28,6 @@ export default async function Handler(req, res) {
   let articleData = bodyData['articleData'];
   let pageData = bodyData['pageData'];
 
-  if (articleData) {
-    console.log(
-      documentType,
-      articleData['id'],
-      'incoming article data keys:',
-      Object.keys(articleData).sort()
-    );
-  }
-  if (pageData) {
-    console.log(
-      documentType,
-      pageData['id'],
-      'incoming page data keys:',
-      Object.keys(pageData).sort()
-    );
-  }
-
   const { errors, data } = await hasuraLookupGoogleDoc({
     url: apiUrl,
     orgSlug: apiToken,
@@ -59,8 +42,6 @@ export default async function Handler(req, res) {
       data: errors,
     });
   } else {
-    console.log(data);
-
     let localeCode = 'en-US'; // default up front, override if existing article
     if (
       data.google_documents[0] &&
@@ -90,8 +71,6 @@ export default async function Handler(req, res) {
       googleToken
     );
 
-    console.log('processedData:', Object.keys(processedData).sort());
-
     let previewUrl;
     let resultData;
 
@@ -104,8 +83,6 @@ export default async function Handler(req, res) {
         url: apiUrl,
         orgSlug: apiToken,
       });
-      console.log('storeDataResult keys:', Object.keys(storeDataResult));
-      console.log('storeDataResult:', JSON.stringify(storeDataResult));
 
       if (storeDataResult.status === 'error') {
         return res.status(500).json({
