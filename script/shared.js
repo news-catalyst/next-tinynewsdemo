@@ -1,7 +1,7 @@
 const fetch = require('node-fetch');
 
 const INSERT_LOCALE = `mutation FrontendInsertLocale($code: String!, $name: String!) {
-  insert_locales_one(object: {code: $code, name: $name}) {
+  insert_locales_one(object: {code: $code, name: $name}, on_conflict: {constraint: locales_code_key, update_columns: code}) {
     id
   }
 }`;
@@ -182,7 +182,7 @@ const HASURA_UPSERT_METADATA = `mutation FrontendUpsertMetadata($published: Bool
 }`;
 
 function hasuraUpsertMetadata(params) {
-  console.log('upsert metadata:', params);
+  // console.log('upsert metadata:', params);
   return fetchGraphQL({
     url: params['url'],
     adminSecret: params['adminSecret'],
@@ -198,27 +198,60 @@ function hasuraUpsertMetadata(params) {
 }
 
 const HASURA_REMOVE_ORGANIZATION = `mutation FrontendRemoveOrganization($slug: String!) {
-    delete_organization_locales(where: {organization: {slug: {_eq: $slug}}}) {
-      affected_rows
-    }
-    delete_category_translations(where: {category: {organization: {slug: {_eq: $slug}}}}) {
-      affected_rows
-    }
-    delete_categories(where: {organization: {slug: {_eq: $slug}}}) {
-      affected_rows
-    }
-    delete_site_metadata_translations(where: {site_metadata: {organization: {slug: {_eq: $slug}}}}) {
-      affected_rows
-    }
-    delete_site_metadatas(where: {organization: {slug: {_eq: $slug}}}) {
-      affected_rows
-    }
-    delete_homepage_layout_schemas(where: {organization: {slug: {_eq: $slug}}}) {
-      affected_rows
-    }
-    delete_organizations(where: {slug: {_eq: $slug}}) {
-      affected_rows
-    }  
+  delete_homepage_layout_datas(where: {organization: {slug: {_eq: $slug}}}) {
+    affected_rows
+  }
+  delete_author_translations(where: {author: {organization: {slug: {_eq: $slug}}}}) {
+    affected_rows
+  }
+  delete_homepage_layout_schemas(where: {organization: {slug: {_eq: $slug}}}) {
+    affected_rows
+  }
+  delete_author_articles(where: {author: {organization: {slug: {_eq: $slug}}}}) {
+    affected_rows
+  }
+  delete_tag_translations(where: {tag: {organization: {slug: {_eq: $slug}}}}) {
+    affected_rows
+  }
+  delete_tag_articles(where: {tag: {organization: {slug: {_eq: $slug}}}}) {
+    affected_rows
+  }
+  delete_tags(where: {organization: {slug: {_eq: $slug}}}) {
+    affected_rows
+  }
+  delete_article_translations(where: {article: {organization: {slug: {_eq: $slug}}}}) {
+    affected_rows
+  }
+  delete_article_google_documents(where: {google_document: {organization: {slug: {_eq: $slug}}}}) {
+    affected_rows
+  }
+  delete_articles(where: {organization: {slug: {_eq: $slug}}}) {
+    affected_rows
+  }
+  delete_authors(where: {organization: {slug: {_eq: $slug}}}) {
+    affected_rows
+  }
+  delete_google_documents(where: {organization: {slug: {_eq: $slug}}}) {
+    affected_rows
+  }
+  delete_organization_locales(where: {organization: {slug: {_eq: $slug}}}) {
+    affected_rows
+  }
+  delete_category_translations(where: {category: {organization: {slug: {_eq: $slug}}}}) {
+    affected_rows
+  }
+  delete_categories(where: {organization: {slug: {_eq: $slug}}}) {
+    affected_rows
+  }
+  delete_site_metadata_translations(where: {site_metadata: {organization: {slug: {_eq: $slug}}}}) {
+    affected_rows
+  }
+  delete_site_metadatas(where: {organization: {slug: {_eq: $slug}}}) {
+    affected_rows
+  }
+  delete_organizations(where: {slug: {_eq: $slug}}) {
+    affected_rows
+  }
 }`;
 
 function hasuraRemoveOrganization(params) {
@@ -229,6 +262,26 @@ function hasuraRemoveOrganization(params) {
     name: 'FrontendRemoveOrganization',
     variables: {
       slug: params['slug'],
+    },
+  });
+}
+
+const HASURA_CREATE_TAG = `mutation FrontendCreateTag($slug: String, $title: String, $locale_code: String) {
+  insert_tags_one(object: {published: true, slug: $slug, tag_translations: {data: {title: $title, locale_code: $locale_code}}}) {
+    id
+  }
+}`;
+
+async function hasuraCreateOneTag(params) {
+  return fetchGraphQL({
+    url: params['url'],
+    orgSlug: params['orgSlug'],
+    query: HASURA_CREATE_TAG,
+    name: 'FrontendCreateTag',
+    variables: {
+      slug: params['slug'],
+      title: params['title'],
+      locale_code: params['locale_code'],
     },
   });
 }
@@ -756,6 +809,91 @@ function hasuraGetArticlesRss(params) {
   });
 }
 
+const HASURA_INSERT_ONE_AUTHOR = `mutation FrontendInsertAuthor($bio: String = "", $email: String = "", $first_names: String = "", $last_name: String = "", $slug: String = "", $title: String = "", $twitter: String = "") {
+  insert_authors_one(on_conflict: {constraint: authors_slug_organization_id_key, update_columns: slug}, object: {bio: $bio, email: $email, first_names: $first_names, last_name: $last_name, published: true, slug: $slug, staff: true, title: $title, twitter: $twitter}) {
+    id
+  }
+}`;
+
+function hasuraInsertOneAuthor(params) {
+  return fetchGraphQL({
+    url: params['url'],
+    orgSlug: params['orgSlug'],
+    query: HASURA_INSERT_ONE_AUTHOR,
+    name: 'FrontendInsertAuthor',
+    variables: {
+      bio: params['bio'],
+      email: params['email'],
+      first_names: params['first_names'],
+      last_name: params['last_name'],
+      slug: params['slug'],
+      title: params['title'],
+      twitter: params['twitter'],
+    },
+  });
+}
+
+const HASURA_INSERT_GOOGLE_DOC = `mutation FrontendInsertGoogleDoc($document_id: String = "", $locale_code: String = "") {
+  insert_google_documents_one(object: {document_id: $document_id, locale_code: $locale_code}) {
+    id
+  }
+}`;
+
+async function hasuraInsertGoogleDoc(params) {
+  return fetchGraphQL({
+    url: params['url'],
+    orgSlug: params['orgSlug'],
+    query: HASURA_INSERT_GOOGLE_DOC,
+    name: 'FrontendInsertGoogleDoc',
+    variables: {
+      document_id: params['document_id'],
+      locale_code: params['locale_code'],
+    },
+  });
+}
+
+const HASURA_INSERT_TEST_ARTICLE = `mutation FrontendInsertArticle($google_document_id: Int, $category_id: Int, $slug: String, $content: jsonb, $headline: String, $search_title: String, $search_description: String, $locale_code: String, $author_id: Int, $tag_id: Int) {
+  insert_articles_one(object: {article_google_documents: {data: {google_document_id: $google_document_id}, on_conflict: {constraint: article_google_documents_article_id_google_document_id_key, update_columns: google_document_id}}, category_id: $category_id, slug: $slug, article_translations: {data: {content: $content, headline: $headline, published: true, search_title: $search_title, search_description: $search_description, locale_code: $locale_code}}, author_articles: {data: {author_id: $author_id}}, tag_articles: {data: {tag_id: $tag_id}}}) {
+    id
+    slug
+    article_google_documents {
+      article_id
+      google_document_id
+    }
+    author_articles {
+      article_id
+      author_id
+    }
+    tag_articles {
+      tag_id
+      article_id
+    }
+  }
+}`;
+
+async function hasuraInsertTestArticle(params) {
+  console.log('hasuraInsertTestArticle params:', params);
+
+  return fetchGraphQL({
+    url: params['url'],
+    orgSlug: params['orgSlug'],
+    query: HASURA_INSERT_TEST_ARTICLE,
+    name: 'FrontendInsertArticle',
+    variables: {
+      google_document_id: params['google_document_id'],
+      locale_code: params['locale_code'],
+      category_id: params['category_id'],
+      slug: params['slug'],
+      content: params['content'],
+      headline: params['headline'],
+      search_title: params['search_title'],
+      search_description: params['search_description'],
+      author_id: params['author_id'],
+      tag_id: params['tag_id'],
+    },
+  });
+}
+
 async function fetchGraphQL(params) {
   let url;
   let orgSlug;
@@ -807,6 +945,7 @@ function sanitizePath(path) {
 
 module.exports = {
   hasuraInsertLocale,
+  hasuraInsertOneAuthor,
   hasuraInsertNewsletterEdition,
   hasuraInsertOrganization,
   hasuraInsertOrgLocales,
@@ -835,6 +974,9 @@ module.exports = {
   hasuraInsertDonorReadingFrequency,
   hasuraGetArticlesRss,
   hasuraAdminInsertLocales,
+  hasuraInsertGoogleDoc,
+  hasuraInsertTestArticle,
+  hasuraCreateOneTag,
   fetchGraphQL,
   sanitizePath,
 };
