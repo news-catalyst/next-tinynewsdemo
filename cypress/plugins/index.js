@@ -2,6 +2,10 @@
 const fetch = require('node-fetch');
 const faker = require('faker');
 
+require('dotenv').config();
+
+// const dotenvPlugin = require('cypress-dotenv');
+
 async function fetchGraphQL(params) {
   let url = params['url'];
   let orgSlug = params['orgSlug'];
@@ -84,6 +88,9 @@ function deleteAllTags(params) {
 // the project's config changing)
 
 module.exports = (on, config) => {
+  // config = dotenvPlugin(config);
+
+  config.env.apiToken = process.env.API_TOKEN;
   const apiGraphQL = config.env.apiUrl;
 
   on('task', {
@@ -134,5 +141,7 @@ module.exports = (on, config) => {
       return data;
     },
   });
+
+  return config;
 };
 // eslint-disable-next-line no-unused-vars
