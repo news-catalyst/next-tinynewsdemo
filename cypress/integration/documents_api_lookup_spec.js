@@ -1,8 +1,9 @@
 describe('document API', () => {
   it('finds an article', () => {
+    cy.log(`API TOKEN: ${Cypress.env('apiToken')}`);
     cy.request({
       url: `/api/sidebar/documents/1LSyMzR1KxyKoml6q56DYQaxEV8Qm4EZo2y_xEFIkvGw?token=${Cypress.env(
-        'API_TOKEN'
+        'apiToken'
       )}`,
     }).should((response) => {
       // should determine if this is an article or a page
@@ -43,7 +44,7 @@ describe('document API', () => {
   it('finds a page', () => {
     cy.request({
       url: `/api/sidebar/documents/1cS3u5bdBP7sg29t-nBW8UgvUHDNpiZRFccZA53A04sU?token=${Cypress.env(
-        'API_TOKEN'
+        'apiToken'
       )}`,
     }).should((response) => {
       // should determine if this is an article or a page
@@ -77,7 +78,7 @@ describe('document API', () => {
   it('responds with sitewide data for an unknown (new) document', () => {
     cy.request({
       url: `/api/sidebar/documents/123456abcnotfound?token=${Cypress.env(
-        'API_TOKEN'
+        'apiToken'
       )}`,
     }).should((response) => {
       // should determine if this is an article or a page
