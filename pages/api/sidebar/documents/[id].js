@@ -18,6 +18,7 @@ export default async function Handler(req, res) {
 
   // Check the API token
   if (req.query.token !== process.env.API_TOKEN || !req.query.id) {
+    console.error(`${req.query.token} ne ${process.env.API_TOKEN}`);
     return res.status(401).json({ message: 'Invalid API token' });
   }
 
@@ -37,7 +38,7 @@ export default async function Handler(req, res) {
       .status(500)
       .json({ message: 'Error: ' + JSON.stringify(errors) });
   } else {
-    // console.log(data);
+    console.log('data:', data);
 
     let googleDoc = data.google_documents[0];
 
