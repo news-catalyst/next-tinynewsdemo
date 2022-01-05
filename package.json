@@ -5,6 +5,8 @@
   "scripts": {
     "dev": "next dev",
     "dev:test": "ORG_SLUG=oaklyn-test NEXT_PUBLIC_CYPRESS_TESTING=true CYPRESS_API_TOKEN=$API_TOKEN HASURA_API_URL=https://tinynews-testing.hasura.app/v1/graphql next dev",
+    "seed": "ORG_SLUG=oaklyn-test NEXT_PUBLIC_CYPRESS_TESTING=true CYPRESS_API_TOKEN=$API_TOKEN HASURA_API_URL=https://tinynews-testing.hasura.app/v1/graphql node script/seed.js",
+    "build:test": "ORG_SLUG=oaklyn-test NEXT_PUBLIC_CYPRESS_TESTING=true CYPRESS_API_TOKEN=$API_TOKEN HASURA_API_URL=https://tinynews-testing.hasura.app/v1/graphql next build",
     "clear": "node script/clear.js",
     "populate": "node script/populate.js",
     "data:clear": "node script/clear-analytics.js",
