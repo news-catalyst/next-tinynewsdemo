@@ -1,6 +1,11 @@
 // import { cypressDeleteAuthors } from "../../lib/authors"
 
 describe('tinycms tags', () => {
+  before(() => {
+    cy.log('before tests, setting up data...');
+    cy.task('db:seed');
+  });
+
   it('renders the list and updates the first tag', () => {
     cy.visit('/tinycms/tags');
     cy.get('h1').contains('Tags');

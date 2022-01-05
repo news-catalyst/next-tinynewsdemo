@@ -1,4 +1,8 @@
 describe('tinycms sections', () => {
+  before(() => {
+    cy.log('before tests, setting up data...');
+    cy.task('db:seed');
+  });
   it('renders the list', () => {
     cy.visit('/tinycms/sections');
     cy.get('h1').contains('Sections');
@@ -8,16 +12,17 @@ describe('tinycms sections', () => {
   });
 
   it('updates an existing section', () => {
-    cy.visit('/tinycms/sections');
-    cy.get('table>tbody>tr:first>td>a')
-      .click()
-      .then(() => {
-        // cy.get('input[name="title"').clear().type("News") // commented out because order of items not guaranteed and this could end up duping the existing "News" category!
-        cy.get('form')
-          .submit()
-          .then(() => {
-            cy.get('strong').contains('Success!');
-          });
-      });
+    cy.visit('/tinycms/sections').then(() => {
+      cy.get('table>tbody>tr:first>td>a')
+        .click()
+        .then(() => {
+          // cy.get('input[name="title"').clear().type("News") // commented out because order of items not guaranteed and this could end up duping the existing "News" category!
+          cy.get('form')
+            .submit()
+            .then(() => {
+              cy.get('strong').contains('Success!');
+            });
+        });
+    });
   });
 });
