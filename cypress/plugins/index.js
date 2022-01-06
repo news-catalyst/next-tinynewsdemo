@@ -95,7 +95,7 @@ module.exports = (on, config) => {
   config.env.orgSlug = process.env.ORG_SLUG;
   const orgSlug = process.env.ORG_SLUG;
   const apiGraphQL = config.env.apiUrl;
-  // const adminSecret = process.env.HASURA_ADMIN_SECRET;
+  const adminSecret = process.env.HASURA_ADMIN_SECRET;
   config.env.adminSecret = process.env.HASURA_ADMIN_SECRET;
 
   on('task', {
@@ -112,7 +112,7 @@ module.exports = (on, config) => {
     },
 
     async 'db:seed'() {
-      console.log('ENV:', config.env.adminSecret);
+      console.log('ENV:', adminSecret, config.env.adminSecret);
 
       const { errors, data } = await shared.seedData({
         url: apiGraphQL,
@@ -121,7 +121,7 @@ module.exports = (on, config) => {
           name: faker.company.companyName(),
           slug: orgSlug,
         },
-        adminSecret: config.env.adminSecret,
+        adminSecret: adminSecret,
       });
       if (errors) {
         console.error('errors:', errors);
