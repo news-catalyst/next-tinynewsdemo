@@ -38,7 +38,7 @@ export default async function Handler(req, res) {
       .status(500)
       .json({ message: 'Error: ' + JSON.stringify(errors) });
   } else {
-    console.log('data:', data);
+    // console.log('data:', data);
 
     let googleDoc = data.google_documents[0];
 

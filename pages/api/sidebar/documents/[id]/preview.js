@@ -100,7 +100,7 @@ export default async function Handler(req, res) {
         process.env.NEXT_PUBLIC_SITE_URL
       ).toString();
 
-      console.log(previewUrl);
+      // console.log(previewUrl);
     } else if (documentType === 'page') {
       pageData['content'] = processedData['formattedElements'];
 
@@ -110,8 +110,8 @@ export default async function Handler(req, res) {
         orgSlug: apiToken,
       });
 
-      console.log('storeDataResult keys:', Object.keys(storeDataResult));
-      console.log('storeDataResult:', JSON.stringify(storeDataResult));
+      // console.log('storeDataResult keys:', Object.keys(storeDataResult));
+      // console.log('storeDataResult:', JSON.stringify(storeDataResult));
 
       if (storeDataResult.status === 'error') {
         return res.status(500).json({
@@ -129,10 +129,10 @@ export default async function Handler(req, res) {
         process.env.NEXT_PUBLIC_SITE_URL
       ).toString();
 
-      console.log(previewUrl);
+      // console.log(previewUrl);
     }
 
-    res.status(200).json({
+    let responseData = {
       // s3Url: s3Url,
       status: 'success',
       documentType: documentType,
@@ -142,6 +142,8 @@ export default async function Handler(req, res) {
       body: processedData['formattedElements'],
       mainImage: processedData['mainImage'],
       updatedImageList: processedData['updatedImageList'],
-    });
+    };
+
+    res.status(200).json(responseData);
   }
 }
