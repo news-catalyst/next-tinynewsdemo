@@ -47,12 +47,14 @@ jobs:
             cached-cypress-binary-
       - name: npm ci
         run: npm ci
+      - name: seed data
+        run: npm run seed
       - name: Cypress install
         uses: cypress-io/github-action@v2
         with:
           # Disable running of tests within install job
           runTests: false
-          build: npm run seed && npm run build:test
+          build: npm run build:test
       - name: Save build folder
         uses: actions/upload-artifact@v2
         with:
