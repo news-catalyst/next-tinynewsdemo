@@ -1,8 +1,4 @@
 describe('tinycms homepage', () => {
-  before(() => {
-    cy.log('before tests, setting up data...');
-    cy.task('db:seed');
-  });
   it('renders successfully', () => {
     cy.visit('/tinycms');
     cy.get('h1').contains('Welcome to the TinyCMS');
