@@ -199,6 +199,24 @@ function hasuraUpsertMetadata(params) {
 }
 
 const HASURA_REMOVE_ORGANIZATION = `mutation FrontendRemoveOrganization($slug: String!) {
+  delete_page_google_documents(where: {page: {organization: {slug: {_eq: $slug}}}}) {
+    affected_rows
+  }
+  delete_page_slug_versions(where: {page: {organization: {slug: {_eq: $slug}}}}) {
+    affected_rows
+  }
+  delete_page_translations(where: {page: {organization: {slug: {_eq: $slug}}}}) {
+    affected_rows
+  }
+  delete_pages(where: {organization: {slug: {_eq: $slug}}}) {
+    affected_rows
+  }
+  delete_published_article_translations(where: {article: {organization: {slug: {_eq: $slug}}}}) {
+    affected_rows
+  }
+  delete_article_slug_versions(where: {article: {organization: {slug: {_eq: $slug}}}}) {
+    affected_rows
+  }
   delete_homepage_layout_datas(where: {organization: {slug: {_eq: $slug}}}) {
     affected_rows
   }
@@ -252,7 +270,7 @@ const HASURA_REMOVE_ORGANIZATION = `mutation FrontendRemoveOrganization($slug: S
   }
   delete_organizations(where: {slug: {_eq: $slug}}) {
     affected_rows
-  }
+  } 
 }`;
 
 function hasuraRemoveOrganization(params) {
@@ -854,7 +872,24 @@ async function hasuraInsertGoogleDoc(params) {
 }
 
 const HASURA_INSERT_TEST_ARTICLE = `mutation FrontendInsertArticle($google_document_id: Int, $category_id: Int, $slug: String, $content: jsonb, $headline: String, $search_title: String, $search_description: String, $locale_code: String, $author_id: Int, $tag_id: Int) {
-  insert_articles_one(object: {article_google_documents: {data: {google_document_id: $google_document_id}, on_conflict: {constraint: article_google_documents_article_id_google_document_id_key, update_columns: google_document_id}}, category_id: $category_id, slug: $slug, article_translations: {data: {content: $content, headline: $headline, published: true, search_title: $search_title, search_description: $search_description, locale_code: $locale_code}}, author_articles: {data: {author_id: $author_id}}, tag_articles: {data: {tag_id: $tag_id}}}) {
+  insert_articles_one(
+    object: {
+      article_google_documents: {
+        data: {
+          google_document_id: $google_document_id
+        }, 
+        on_conflict: {
+          constraint: article_google_documents_article_id_google_document_id_key, update_columns: google_document_id
+        }
+      }, 
+      category_id: $category_id, 
+      slug: $slug, 
+    article_translations: {
+      data: {
+        content: $content, headline: $headline, published: true, search_title: $search_title, search_description: $search_description, locale_code: $locale_code
+      }
+    }, 
+    author_articles: {data: {author_id: $author_id}}, tag_articles: {data: {tag_id: $tag_id}}}) {
     id
     slug
     article_google_documents {
@@ -889,8 +924,43 @@ async function hasuraInsertTestArticle(params) {
       headline: params['headline'],
       search_title: params['search_title'],
       search_description: params['search_description'],
+      facebook_title: params['facebook_title'],
+      facebook_description: params['facebook_description'],
+      twitter_title: params['twitter_title'],
+      twitter_description: params['twitter_description'],
       author_id: params['author_id'],
       tag_id: params['tag_id'],
+    },
+  });
+}
+
+const HASURA_INSERT_TEST_PAGE = `mutation FrontendInsertPage($google_document_id: Int, $slug: String, $content: jsonb, $headline: String, $search_title: String, $search_description: String, $locale_code: String, $facebook_title: String = "", $facebook_description: String = "", $twitter_title: String = "", $twitter_description: String = "") {
+  insert_pages_one(object: {page_google_documents: {data: {google_document_id: $google_document_id}, on_conflict: {constraint: page_google_documents_page_id_google_document_id_key, update_columns: google_document_id}}, slug: $slug, page_translations: {data: {content: $content, facebook_description: $facebook_description, facebook_title: $facebook_title, headline: $headline, locale_code: $locale_code, search_description: $search_description, published: true, search_title: $search_title, twitter_description: $twitter_description, twitter_title: $twitter_title}}, page_slug_versions: {data: {slug: $slug}}}) {
+    id
+    slug
+  }
+}`;
+
+async function hasuraInsertTestPage(params) {
+  console.log('hasuraInsertTestPage params:', params);
+
+  return fetchGraphQL({
+    url: params['url'],
+    orgSlug: params['orgSlug'],
+    query: HASURA_INSERT_TEST_PAGE,
+    name: 'FrontendInsertPage',
+    variables: {
+      google_document_id: params['google_document_id'],
+      locale_code: params['locale_code'],
+      slug: params['slug'],
+      content: params['content'],
+      headline: params['headline'],
+      search_title: params['search_title'],
+      search_description: params['search_description'],
+      facebook_title: params['facebook_title'],
+      facebook_description: params['facebook_description'],
+      twitter_title: params['twitter_title'],
+      twitter_description: params['twitter_description'],
     },
   });
 }
@@ -954,7 +1024,6 @@ async function seedData(params) {
     },
   ];
 
-  console.log('orgLocaleObjects:', orgLocaleObjects);
   let orgLocaleResult = await hasuraInsertOrgLocales({
     url: params['url'],
     adminSecret: params['adminSecret'],
@@ -1152,13 +1221,36 @@ async function seedData(params) {
     );
     return gdocResult;
   }
-  console.log('Setup test google doc for the organization:', gdocResult);
-  let googleDocID = gdocResult.data.insert_google_documents_one.id;
+  console.log(
+    'Setup test article google doc for the organization:',
+    gdocResult
+  );
+  let articleGoogleDocID = gdocResult.data.insert_google_documents_one.id;
+
+  let pageGdocResult = await hasuraInsertGoogleDoc({
+    document_id: '1cS3u5bdBP7sg29t-nBW8UgvUHDNpiZRFccZA53A04sU',
+    url: params['url'],
+    orgSlug: params['orgSlug'],
+    locale_code: 'en-US',
+  });
+  if (pageGdocResult.errors) {
+    console.error(
+      params['adminSecret'],
+      'Error creating test google doc: ',
+      pageGdocResult.errors
+    );
+    return pageGdocResult;
+  }
+  console.log(
+    'Setup test static page google doc for the organization:',
+    pageGdocResult
+  );
+  let pageGoogleDocID = pageGdocResult.data.insert_google_documents_one.id;
 
   let articleResult = await hasuraInsertTestArticle({
     url: params['url'],
     orgSlug: params['orgSlug'],
-    google_document_id: googleDocID,
+    google_document_id: articleGoogleDocID,
     locale_code: 'en-US',
     category_id: categoryID,
     slug: 'test-doc-for-article-features',
@@ -1178,6 +1270,27 @@ async function seedData(params) {
     return articleResult;
   }
   console.log('Setup test article for the organization:', articleResult);
+
+  let pageResult = await hasuraInsertTestPage({
+    url: params['url'],
+    orgSlug: params['orgSlug'],
+    google_document_id: pageGoogleDocID,
+    locale_code: 'en-US',
+    slug: 'test-about-page',
+    content: faker.lorem.paragraph(),
+    headline: faker.lorem.sentence(),
+    search_title: faker.lorem.sentence(),
+    search_description: faker.lorem.paragraph(),
+  });
+  if (pageResult.errors) {
+    console.error(
+      params['orgSlug'],
+      'Error creating test page: ',
+      pageResult.errors
+    );
+    return pageResult;
+  }
+  console.log('Setup test page for the organization:', pageResult);
   return orgResult;
 }
 async function fetchGraphQL(params) {
