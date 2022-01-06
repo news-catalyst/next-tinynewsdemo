@@ -112,8 +112,8 @@ module.exports = (on, config) => {
     },
 
     async 'db:seed'() {
-      console.log('process.env:', process.env);
-      console.log('config.env:', config.env);
+      // console.log('process.env:', process.env);
+      // console.log('config.env:', config.env);
 
       const { errors, data } = await shared.seedData({
         url: apiGraphQL,
