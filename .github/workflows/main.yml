@@ -17,6 +17,7 @@ jobs:
     env:
       LOCALES: ${{ secrets.LOCALES }}
       NEXT_PUBLIC_SITE_URL: ${{ secrets.NEXT_PUBLIC_SITE_URL }}
+      API_TOKEN: ${{ secrets.API_TOKEN }}
       HASURA_API_URL: ${{ secrets.HASURA_API_URL }}
       HASURA_ADMIN_SECRET: ${{ secrets.HASURA_ADMIN_SECRET }}
       ORG_SLUG: ${{ secrets.ORG_SLUG }}
@@ -72,6 +73,7 @@ jobs:
     env:
       LOCALES: ${{ secrets.LOCALES }}
       NEXT_PUBLIC_SITE_URL: ${{ secrets.NEXT_PUBLIC_SITE_URL }}
+      API_TOKEN: ${{ secrets.API_TOKEN }}
       HASURA_API_URL: ${{ secrets.HASURA_API_URL }}
       HASURA_ADMIN_SECRET: ${{ secrets.HASURA_ADMIN_SECRET }}
       ORG_SLUG: ${{ secrets.ORG_SLUG }}
