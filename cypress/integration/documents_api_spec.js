@@ -85,6 +85,7 @@ describe('document API', () => {
   });
 
   it('responds with sitewide data for an unknown (new) document', () => {
+    cy.wait(5000);
     cy.request({
       url: `/api/sidebar/documents/123456abcnotfound?token=${Cypress.env(
         'apiToken'
@@ -106,7 +107,7 @@ describe('document API', () => {
   });
 
   it('previews an article', () => {
-    cy.wait(1000);
+    cy.wait(5000);
     let articleData = {
       id: articleID,
       slug: 'test-doc-for-article-features',
@@ -162,7 +163,7 @@ describe('document API', () => {
     });
   });
   it('publishes an article', () => {
-    cy.wait(1000);
+    cy.wait(2000);
     let articleData = {
       id: articleID,
       slug: 'test-doc-for-article-features',
@@ -218,7 +219,7 @@ describe('document API', () => {
     });
   });
   it('previews a page', () => {
-    cy.wait(1000);
+    cy.wait(2000);
     let pageData = {
       id: pageID,
       slug: 'test-about-page',
@@ -272,7 +273,7 @@ describe('document API', () => {
     });
   });
   it('previews a page', () => {
-    cy.wait(1000);
+    cy.wait(5000);
     let pageData = {
       id: pageID,
       slug: 'test-about-page',
