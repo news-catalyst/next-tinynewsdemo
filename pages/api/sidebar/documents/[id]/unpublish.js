@@ -35,12 +35,13 @@ export default async function Handler(req, res) {
     // console.log(data);
 
     let resultData;
+    let slug;
 
     if (documentType === 'article') {
       articleData['published'] = false;
       console.log(
         documentType,
-        documentID,
+        documentId,
         'incoming article data keys:',
         Object.keys(articleData).sort()
       );
@@ -64,13 +65,11 @@ export default async function Handler(req, res) {
       resultData = storeDataResult.data[0];
       console.log(resultData);
       slug = resultData.slug;
-      categorySlug = resultData.category.slug;
-      articleID = resultData.id;
     } else if (documentType === 'page') {
       pageData['published'] = false;
       console.log(
         documentType,
-        documentID,
+        documentId,
         'incoming page data keys:',
         Object.keys(pageData).sort()
       );
@@ -95,10 +94,13 @@ export default async function Handler(req, res) {
       slug = resultData.slug;
     }
 
+    console.log(resultData);
+
     res.status(200).json({
       status: 'success',
       documentType: documentType,
       data: resultData,
+      slug: slug,
     });
   }
 }
