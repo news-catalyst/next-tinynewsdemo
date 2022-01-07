@@ -3,6 +3,8 @@ import {
   processDocumentContents,
   saveArticle,
   savePage,
+  storeArticleIdAndSlug,
+  storePageIdAndSlug,
 } from '../../../../../lib/document';
 
 export default async function Handler(req, res) {
@@ -43,6 +45,7 @@ export default async function Handler(req, res) {
     });
   } else {
     let localeCode = 'en-US'; // default up front, override if existing article
+
     if (
       data.google_documents[0] &&
       data.google_documents[0].article_google_documents &&
@@ -71,8 +74,12 @@ export default async function Handler(req, res) {
       googleToken
     );
 
+    let idSlugResult;
+    let articleID;
+    let pageID;
     let previewUrl;
     let resultData;
+    let categorySlug;
 
     if (documentType === 'article') {
       articleData['content'] = processedData['formattedElements'];
@@ -94,6 +101,28 @@ export default async function Handler(req, res) {
 
       resultData = storeDataResult.data[0];
       slug = resultData.slug;
+      articleID = resultData.id;
+      categorySlug = resultData.category.slug;
+
+      // store slug + article ID in slug versions table
+      idSlugResult = await storeArticleIdAndSlug({
+        url: apiUrl,
+        orgSlug: apiToken,
+        article_id: articleID,
+        slug: slug,
+        category_slug: categorySlug,
+      });
+      // console.log('stored article id + slug + categorySlug: ', idSlugResult);
+      if (idSlugResult.status === 'error') {
+        console.error(JSON.stringify(idSlugResult));
+        return res.status(500).json({
+          status: 'error',
+          message:
+            'Error storing article slug version: ' +
+            JSON.stringify(idSlugResult.message),
+          data: JSON.stringify(idSlugResult),
+        });
+      }
       //construct preview url
       previewUrl = new URL(
         `/api/preview?secret=${process.env.PREVIEW_TOKEN}&slug=${slug}&locale=${localeCode}`,
@@ -122,6 +151,27 @@ export default async function Handler(req, res) {
       }
       resultData = storeDataResult.data[0];
       slug = resultData.slug;
+
+      pageID = resultData.id;
+
+      // // store slug + page ID in slug versions table
+      idSlugResult = await storePageIdAndSlug({
+        url: apiUrl,
+        orgSlug: apiToken,
+        page_id: pageID,
+        slug: slug,
+      });
+
+      if (idSlugResult.status === 'error') {
+        console.error(JSON.stringify(idSlugResult));
+        return res.status(500).json({
+          status: 'error',
+          message:
+            'Error storing page slug version: ' +
+            JSON.stringify(idSlugResult.message),
+          data: JSON.stringify(idSlugResult),
+        });
+      }
 
       //construct preview url
       previewUrl = new URL(
