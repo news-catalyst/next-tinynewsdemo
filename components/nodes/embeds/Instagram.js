@@ -1,7 +1,7 @@
 import InstagramEmbed from 'react-instagram-embed';
 
 const FB_APP_ID = '200171875317911';
-const FB_CLIENT_TOKEN = 'c2953b8f7d46b6793b74c2e1ce6eda66';
+const FB_CLIENT_TOKEN = process.env.NEXT_PUBLIC_FB_CLIENT_TOKEN;
 
 export default function Instagram({ node }) {
   return (
