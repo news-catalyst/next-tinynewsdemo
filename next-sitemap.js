@@ -17,6 +17,10 @@ module.exports = {
       priority = 0.7;
     }
 
+    if (path.includes('/en-US/')) {
+      path = path.replace('/en-US', '');
+    }
+
     return {
       loc: path,
       changefreq: changefreq,
