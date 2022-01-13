@@ -114,6 +114,7 @@
     "swr": "^0.5.6",
     "tweetsodium": "^0.0.5",
     "universal-cookie": "^4.0.4",
+    "uuid": "^8.3.2",
     "web-vitals": "^0.2.3"
   },
   "devDependencies": {

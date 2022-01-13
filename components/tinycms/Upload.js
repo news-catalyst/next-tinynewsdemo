@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import S3 from 'react-aws-s3';
 import tw from 'twin.macro';
+import { v4 as uuidv4 } from 'uuid';
 
 const UploadButton = tw.input`hidden md:flex md:w-auto px-4 py-2 text-right bg-blue-700 hover:bg-blue-500 text-white md:rounded text-center cursor-pointer`;
 const ImgWrapper = tw.div`w-40 h-auto`;
@@ -20,7 +21,7 @@ export default function Upload(props) {
     event.preventDefault();
 
     let file = fileInput.current.files[0];
-    let newFilename = `${props.folderName}/${props.slug}`;
+    let newFilename = `${props.folderName}/${props.slug}-${uuidv4()}`;
 
     const ReactS3Client = new S3(props.awsConfig);
     ReactS3Client.uploadFile(file, newFilename)
