@@ -1,10 +1,10 @@
 // import { cypressDeleteAuthors } from "../../lib/authors"
 
 describe('tinycms', () => {
-  before(() => {
-    cy.log('before tests, setting up data...');
-    cy.task('db:seed');
-  });
+  // before(() => {
+  //   cy.log('before tests, setting up data...');
+  //   cy.task('db:seed');
+  // });
 
   it('renders the authors list', () => {
     cy.visit('/tinycms/authors');
