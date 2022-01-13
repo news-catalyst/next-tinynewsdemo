@@ -101,11 +101,25 @@ export default function TextNode({ node, metadata }) {
     return text;
   };
 
-  const children = node.children.map((child, i) => {
-    if (child.content !== 'FORMAT START' && child.content !== 'FORMAT END') {
+  const children = node.children
+    .filter(function (child) {
+      if (
+        !child.content ||
+        child.content === 'FORMAT START' ||
+        child.content === 'FORMAT END'
+      ) {
+        return false; // skip
+      }
+      return true;
+    })
+    .map((child, i) => {
       return processChild(child, node.children[i + 1]);
-    }
-  });
+    });
+
+  if (!children || children.length <= 0) {
+    return null;
+  }
+
   let wrapper = null;
 
   if (node.style == 'TITLE') {
