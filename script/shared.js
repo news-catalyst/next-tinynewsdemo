@@ -829,7 +829,6 @@ function hasuraGetArticlesRss(params) {
   });
 }
 
-<<<<<<< HEAD
 const HASURA_GET_SITE_DATA = `query FrontendGetSiteData {
   articles(where: {article_translations: {published: {_eq: true}}}, order_by: {article_translations_aggregate: {min: {first_published_at: desc}}}) {
     id
@@ -928,7 +927,9 @@ const HASURA_GET_SITE_DATA = `query FrontendGetSiteData {
     site_metadata_translations {
       data
       locale_code
-=======
+    }
+  }
+}`;
 const HASURA_INSERT_ONE_AUTHOR = `mutation FrontendInsertAuthor($bio: String = "", $email: String = "", $first_names: String = "", $last_name: String = "", $slug: String = "", $title: String = "", $twitter: String = "") {
   insert_authors_one(on_conflict: {constraint: authors_slug_organization_id_key, update_columns: slug}, object: {bio: $bio, email: $email, first_names: $first_names, last_name: $last_name, published: true, slug: $slug, staff: true, title: $title, twitter: $twitter}) {
     id
@@ -1004,12 +1005,10 @@ const HASURA_INSERT_TEST_ARTICLE = `mutation FrontendInsertArticle($google_docum
     tag_articles {
       tag_id
       article_id
->>>>>>> main
     }
   }
 }`;
 
-<<<<<<< HEAD
 function hasuraGetSiteData(params) {
   return fetchGraphQL({
     url: params['url'],
@@ -1019,7 +1018,6 @@ function hasuraGetSiteData(params) {
   });
 }
 
-=======
 async function hasuraInsertTestArticle(params) {
   console.log('hasuraInsertTestArticle params:', params);
 
@@ -1406,7 +1404,6 @@ async function seedData(params) {
   console.log('Setup test page for the organization:', pageResult);
   return orgResult;
 }
->>>>>>> main
 async function fetchGraphQL(params) {
   let url;
   let orgSlug;
