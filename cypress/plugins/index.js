@@ -1,5 +1,10 @@
 /// <reference types="cypress" />
 const fetch = require('node-fetch');
+const faker = require('faker');
+
+const shared = require('../../script/shared');
+
+// const dotenvPlugin = require('cypress-dotenv');
 
 async function fetchGraphQL(params) {
   let url = params['url'];
@@ -83,14 +88,54 @@ function deleteAllTags(params) {
 // the project's config changing)
 
 module.exports = (on, config) => {
+  // config = dotenvPlugin(config);
+  require('dotenv').config({ path: '.env.local' });
+
+  config.env.apiToken = process.env.API_TOKEN;
+  config.env.orgSlug = process.env.ORG_SLUG;
+  const orgSlug = process.env.ORG_SLUG;
   const apiGraphQL = config.env.apiUrl;
+  const adminSecret = process.env.HASURA_ADMIN_SECRET;
+  config.env.adminSecret = process.env.HASURA_ADMIN_SECRET;
 
   on('task', {
+    newTagTitle() {
+      return faker.company.catchPhrase();
+    },
+
+    newUser() {
+      return {
+        firstName: faker.name.findName(),
+        lastName: faker.name.lastName(),
+        title: faker.name.jobTitle(),
+      };
+    },
+
+    async 'db:seed'() {
+      // console.log('process.env:', process.env);
+      // console.log('config.env:', config.env);
+
+      const { errors, data } = await shared.seedData({
+        url: apiGraphQL,
+        orgSlug: orgSlug,
+        org: {
+          name: faker.company.companyName(),
+          slug: orgSlug,
+        },
+        adminSecret: adminSecret,
+      });
+      if (errors) {
+        console.error('errors:', errors);
+      }
+      console.log('data:', data);
+      return data;
+    },
+
     async 'db:authors'() {
       // seed database with test data
       const { errors, data } = await deleteAllAuthors({
         url: apiGraphQL,
-        orgSlug: 'test-org',
+        orgSlug: orgSlug,
       });
       if (errors) {
         console.error('errors:', errors);
@@ -103,7 +148,7 @@ module.exports = (on, config) => {
       // seed database with test data
       const { errors, data } = await deleteAllTags({
         url: apiGraphQL,
-        orgSlug: 'test-org',
+        orgSlug: orgSlug,
       });
       if (errors) {
         console.error('errors:', errors);
@@ -121,5 +166,7 @@ module.exports = (on, config) => {
       return data;
     },
   });
+
+  return config;
 };
 // eslint-disable-next-line no-unused-vars

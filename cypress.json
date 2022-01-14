@@ -2,7 +2,7 @@
   "projectId": "begad4",
   "baseUrl": "http://localhost:3000",
   "video": false,
-  "defaultCommandTimeout": 10000,
+  "defaultCommandTimeout": 30000,
   "env": {
     "apiUrl": "https://tinynews-testing.hasura.app/v1/graphql"
   }
