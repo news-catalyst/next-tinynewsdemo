@@ -61,6 +61,12 @@ export default function Layout({
     metaValues['canonical'] = article.canonical_url;
   }
 
+  if (page && ['about', 'donate', 'thank-you'].includes(page.slug)) {
+    metaValues[
+      'canonical'
+    ] = `${process.env.NEXT_PUBLIC_SITE_URL}/${page.slug}`;
+  }
+
   let pageTitle = meta['homepageTitle'];
 
   let author;
