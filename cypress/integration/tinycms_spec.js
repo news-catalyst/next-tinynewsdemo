@@ -1,12 +1,9 @@
 // import { cypressDeleteAuthors } from "../../lib/authors"
 
 describe('tinycms', () => {
-  // before(() => {
-  //   cy.log('before tests, setting up data...');
-  //   cy.task('db:seed');
-  // });
-
   it('renders the authors list', () => {
+    cy.wait(5000);
+
     cy.visit('/tinycms/authors');
     cy.get('h1').contains('Authors');
     // has at least one header
@@ -15,6 +12,7 @@ describe('tinycms', () => {
   });
 
   it('adds a new author', () => {
+    cy.wait(5000);
     cy.visit('/tinycms/authors/add');
     cy.location('pathname').should('eq', '/tinycms/authors/add');
     cy.get('input[name="first_names"').type('New');
@@ -30,6 +28,7 @@ describe('tinycms', () => {
   });
 
   it('updates an existing author', () => {
+    cy.wait(5000);
     cy.task('newUser').then((user) => {
       cy.visit('/tinycms/authors');
       cy.get('table>tbody>tr:first>td>a').click();
@@ -43,6 +42,7 @@ describe('tinycms', () => {
   });
 
   it('renders the homepage successfully', () => {
+    cy.wait(5000);
     cy.visit('/tinycms');
     cy.get('h1').contains('Welcome to the TinyCMS');
     // has at least one section link
@@ -56,6 +56,7 @@ describe('tinycms', () => {
   });
 
   it('renders the sections list', () => {
+    cy.wait(5000);
     cy.visit('/tinycms/sections');
     cy.get('h1').contains('Sections');
     // has at least one header
@@ -64,6 +65,7 @@ describe('tinycms', () => {
   });
 
   it('updates an existing section', () => {
+    cy.wait(5000);
     cy.visit('/tinycms/sections').then(() => {
       cy.get('table>tbody>tr:first>td>a')
         .click()
@@ -79,6 +81,7 @@ describe('tinycms', () => {
   });
 
   it('updates the settings', () => {
+    cy.wait(5000);
     cy.visit('/tinycms/settings');
     cy.get('h1').contains('Site Information');
     cy.get('input[name="siteUrl"').clear().type('https://example.org/');
@@ -87,6 +90,7 @@ describe('tinycms', () => {
   });
 
   it('renders the tags list and updates the first tag', () => {
+    cy.wait(5000);
     cy.visit('/tinycms/tags');
     cy.get('h1').contains('Tags');
     // has at least one header
@@ -103,6 +107,7 @@ describe('tinycms', () => {
   });
 
   it('adds a new tag', () => {
+    cy.wait(5000);
     cy.visit('/tinycms/tags/add');
     cy.task('newTagTitle').then((title) => {
       cy.log('new tag title:', title);
@@ -114,12 +119,4 @@ describe('tinycms', () => {
         });
     });
   });
-
-  //   it('displays the editor and changes layout', () => {
-  //     cy.visit('/tinycms/homepage');
-  //     cy.get('a').contains('Change Layout:');
-  //     cy.get('a.layout-switcher:last', { timeout: 10000 }).click();
-  //     // cy.get('form').submit()
-  //     cy.get('a.layout-switcher:last', { timeout: 10000 }).contains('(current)');
-  //   });
 });
