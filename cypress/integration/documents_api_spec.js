@@ -10,7 +10,7 @@ describe('document API', () => {
   });
 
   it('finds an article', () => {
-    cy.wait(1000);
+    cy.wait(5000);
     cy.request({
       url: `/api/sidebar/documents/1LSyMzR1KxyKoml6q56DYQaxEV8Qm4EZo2y_xEFIkvGw?token=${Cypress.env(
         'apiToken'
@@ -52,7 +52,7 @@ describe('document API', () => {
   });
 
   it('finds a page', () => {
-    cy.wait(1000);
+    cy.wait(5000);
     cy.request({
       url: `/api/sidebar/documents/1cS3u5bdBP7sg29t-nBW8UgvUHDNpiZRFccZA53A04sU?token=${Cypress.env(
         'apiToken'
@@ -164,7 +164,7 @@ describe('document API', () => {
   });
 
   it('publishes an article', () => {
-    cy.wait(2000);
+    cy.wait(5000);
     let articleData = {
       id: articleID,
       slug: 'test-doc-for-article-features',
@@ -233,7 +233,7 @@ describe('document API', () => {
     });
   });
   it('previews a page', () => {
-    cy.wait(2000);
+    cy.wait(5000);
     let pageData = {
       id: pageID,
       slug: 'test-about-page',
