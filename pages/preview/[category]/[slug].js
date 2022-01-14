@@ -10,13 +10,14 @@ import Article from '../../../components/Article.js';
 
 export default function PreviewArticle(props) {
   if (!props.article) {
+    // console.log('no props.article, returning notFound');
     return (
       <div>
         <DefaultErrorPage statusCode={404} />
       </div>
     );
   }
-
+  // console.log('returning article component...');
   return <Article {...props} />;
 }
 
@@ -48,8 +49,9 @@ export async function getStaticProps(context) {
   let locale = context.locale;
   let preview = context.preview;
   let params = context.params;
-
+  // console.log(context);
   if (!preview) {
+    // console.log('no preview, returning notFound');
     return {
       notFound: true,
     };
@@ -74,7 +76,7 @@ export async function getStaticProps(context) {
     categorySlug: params.category,
   });
   if (errors || !data) {
-    console.error('error getting article page:', errors);
+    console.error('error getting preview article page:', errors);
     return {
       notFound: true,
     };
@@ -120,7 +122,11 @@ export async function getStaticProps(context) {
     try {
       siteMetadata = metadatas[0].site_metadata_translations[0].data;
     } catch (err) {
-      console.error('failed finding site metadata for ', locale, metadatas);
+      console.error(
+        'preview failed finding site metadata for ',
+        locale,
+        metadatas
+      );
     }
   }
 
