@@ -9,6 +9,7 @@
     "build:test": "ORG_SLUG=oaklyn-test NEXT_PUBLIC_CYPRESS_TESTING=true CYPRESS_API_TOKEN=$API_TOKEN HASURA_API_URL=https://tinynews-testing.hasura.app/v1/graphql next build",
     "clear": "node script/clear.js",
     "populate": "node script/populate.js",
+    "wordpress": "node script/wordpress.js",
     "data:clear": "node script/clear-analytics.js",
     "bootstrap": "node script/bootstrap.js",
     "bootstrap:tests": "node script/bootstrap-tests.js",
@@ -120,7 +121,8 @@
     "tweetsodium": "^0.0.5",
     "universal-cookie": "^4.0.4",
     "uuid": "^8.3.2",
-    "web-vitals": "^0.2.3"
+    "web-vitals": "^0.2.3",
+    "wxr-generator": "^0.2.0"
   },
   "devDependencies": {
     "@testing-library/dom": "^7.31.2",
