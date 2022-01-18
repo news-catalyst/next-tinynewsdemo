@@ -829,6 +829,107 @@ function hasuraGetArticlesRss(params) {
   });
 }
 
+const HASURA_GET_SITE_DATA = `query FrontendGetSiteData {
+  articles(where: {article_translations: {published: {_eq: true}}}, order_by: {article_translations_aggregate: {min: {first_published_at: desc}}}) {
+    id
+    slug
+    article_translations(where: {published: {_eq: true}}, order_by: {id: desc}) {
+      custom_byline
+      first_published_at
+      headline
+      last_published_at
+      main_image
+      published
+      search_description
+      updated_at
+      locale_code
+      content
+    }
+    author_articles {
+      author {
+        first_names
+        last_name
+        photoUrl
+        slug
+        twitter
+        author_translations {
+          bio
+          title
+          locale_code
+        }
+      }
+    }
+    category {
+      slug
+      category_translations {
+        locale_code
+        title
+      }
+    }
+  }
+  categories(where: {published: {_eq: true}}) {
+    slug
+    category_translations {
+      title
+      locale_code
+    }
+  }
+  pages(where: {page_translations: {published: {_eq: true}}}) {
+    id
+    author_pages {
+      author {
+        id
+        first_names
+        last_name
+        slug
+        photoUrl
+        author_translations {
+          title
+          locale_code
+        }
+      }
+    }
+    page_translations(where: {published: {_eq: true}}, order_by: {id: desc}) {
+      content
+      facebook_description
+      facebook_title
+      first_published_at
+      headline
+      last_published_at
+      locale_code
+      locale {
+        code
+        name
+      }
+      published
+      search_description
+      search_title
+      twitter_description
+      twitter_title
+    }
+    slug
+  }
+  organization_locales {
+    locale {
+      code
+    }
+  }
+  tag_articles(where: {tag: {published: {_eq: true}}}) {
+    tag {
+      tag_translations {
+        locale_code
+        title
+      }
+      slug
+    }
+  }
+  site_metadatas(where: {published: {_eq: true}}) {
+    site_metadata_translations {
+      data
+      locale_code
+    }
+  }
+}`;
 const HASURA_INSERT_ONE_AUTHOR = `mutation FrontendInsertAuthor($bio: String = "", $email: String = "", $first_names: String = "", $last_name: String = "", $slug: String = "", $title: String = "", $twitter: String = "") {
   insert_authors_one(on_conflict: {constraint: authors_slug_organization_id_key, update_columns: slug}, object: {bio: $bio, email: $email, first_names: $first_names, last_name: $last_name, published: true, slug: $slug, staff: true, title: $title, twitter: $twitter}) {
     id
@@ -907,6 +1008,15 @@ const HASURA_INSERT_TEST_ARTICLE = `mutation FrontendInsertArticle($google_docum
     }
   }
 }`;
+
+function hasuraGetSiteData(params) {
+  return fetchGraphQL({
+    url: params['url'],
+    orgSlug: params['orgSlug'],
+    query: HASURA_GET_SITE_DATA,
+    name: 'FrontendGetSiteData',
+  });
+}
 
 async function hasuraInsertTestArticle(params) {
   console.log('hasuraInsertTestArticle params:', params);
@@ -1344,6 +1454,7 @@ function sanitizePath(path) {
 }
 
 module.exports = {
+  hasuraGetSiteData,
   hasuraInsertLocale,
   hasuraInsertOneAuthor,
   hasuraInsertNewsletterEdition,
