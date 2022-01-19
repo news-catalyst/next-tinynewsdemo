@@ -611,8 +611,35 @@ async function importDataFromGA(params) {
 
   try {
     storeData(params, rows);
+    shared
+      .hasuraInsertDataImport({
+        orgSlug: apiToken,
+        url: apiUrl,
+        end_date: endDate,
+        start_date: startDate,
+        table_name: params['data'],
+        success: true,
+        row_count: rows.length,
+      })
+      .then((result) => {
+        console.log('stored data import status:', result);
+      });
   } catch (e) {
     console.error('error importing data into hasura:', e);
+    shared
+      .hasuraInsertDataImport({
+        url: params['url'],
+        orgSlug: params['orgSlug'],
+        end_date: endDate,
+        start_date: startDate,
+        table_name: params['data'],
+        success: false,
+        row_count: 0,
+        notes: JSON.stringify(e),
+      })
+      .then((result) => {
+        console.log('stored data import status:', result);
+      });
     throw e;
   }
 }
