@@ -73,6 +73,8 @@ function hasuraInsertDataImport(params) {
       end_date: params['end_date'],
       start_date: params['start_date'],
       table_name: params['table_name'],
+      success: params['success'],
+      row_count: params['row_count'],
     },
   });
 }
