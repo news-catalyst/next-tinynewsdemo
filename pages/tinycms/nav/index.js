@@ -80,6 +80,22 @@ export default function NavBuilder({
     let selectedLabel = selectedItem.getAttribute('data-label');
     let selectedType = selectedItem.getAttribute('data-type');
 
+    let selectedOptionAlreadyChosen = currentNavOptions.find(
+      (option) => option.slug === selectedSlug && option.type === selectedType
+    );
+
+    if (selectedOptionAlreadyChosen) {
+      let errorMessage = `${selectedLabel} is already in the nav`;
+      setNotificationType('error');
+      setNotificationMessage(errorMessage);
+      setShowNotification(true);
+      return;
+    } else {
+      setNotificationType('success');
+      setNotificationMessage('');
+      setShowNotification(false);
+    }
+
     let updatedNavOptions = currentNavOptions;
     updatedNavOptions.push({
       type: selectedType,
