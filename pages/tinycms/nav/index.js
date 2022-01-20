@@ -250,6 +250,7 @@ export default function NavBuilder({
                     <p>Select items from the list to add to the nav:</p>
                   </div>
                   <select tw="mt-2" onChange={selectNavLinkItem}>
+                    <option>Please select</option>
                     {linkOptionItems}
                   </select>
 
