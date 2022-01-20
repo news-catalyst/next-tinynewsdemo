@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
 import tw, { styled } from 'twin.macro';
-import Typography from '../../../components/common/Typography';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { hasuraGetMetadataByLocale } from '../../../lib/articles.js';
-import { generateNavLinkFor } from '../../../lib/utils.js';
 import AdminLayout from '../../../components/AdminLayout.js';
 import AdminNav from '../../../components/nav/AdminNav';
 import { hasuraUpsertMetadata } from '../../../lib/site_metadata';
@@ -13,13 +11,14 @@ import {
   AddButton,
   DeleteButton,
 } from '../../../components/common/CommonStyles.js';
+import { TrashIcon, SelectorIcon } from '@heroicons/react/solid';
 const Container = tw.div`flex flex-wrap -mx-2`;
 const MainContent = tw.div`w-full lg:w-3/4 px-4 py-4`;
 
-const SectionLink = styled.a(({ meta }) => ({
-  ...tw`lg:items-center lg:mr-8 lg:py-0 inline-flex items-center lg:h-full py-2 px-5 lg:pb-0 lg:px-0 hover:underline`,
-  fontFamily: Typography[meta.theme].SectionLink,
-}));
+const Table = tw.table`table-auto w-full`;
+const TableBody = tw.tbody``;
+const TableRow = tw.tr``;
+const TableCell = tw.td`border px-4 py-2`;
 
 export default function NavBuilder({
   apiUrl,
@@ -38,9 +37,7 @@ export default function NavBuilder({
   const [jsonData, setJsonData] = useState('');
   const [parsedData, setParsedData] = useState({});
   const [currentNavOptions, setCurrentNavOptions] = useState([]);
-
   const [currentNavRandom, setCurrentNavRandom] = useState(Math.random());
-  // const [links, setLinks] = useState(linkOptions);
 
   const router = useRouter();
   const { action } = router.query;
@@ -60,6 +57,7 @@ export default function NavBuilder({
 
   const removeLink = (ev) => {
     ev.preventDefault();
+
     let link = ev.target;
     let removeSlug = link.getAttribute('data-slug');
     let removeType = link.getAttribute('data-type');
@@ -73,6 +71,63 @@ export default function NavBuilder({
 
     setCurrentNavOptions(updatedNavOptions);
   };
+
+  const reorderLink = (ev) => {
+    ev.preventDefault();
+
+    let updatedNavOptions = currentNavOptions.filter((option) => {
+      if (option.slug === removeSlug && option.type === removeType) {
+        return false;
+      } else {
+        return true;
+      }
+    });
+
+    setCurrentNavOptions(updatedNavOptions);
+  };
+
+  // a little function to help us with reordering the result
+  const reorder = (list, startIndex, endIndex) => {
+    const result = Array.from(list);
+    const [removed] = result.splice(startIndex, 1);
+    result.splice(endIndex, 0, removed);
+
+    return result;
+  };
+
+  const onDragEnd = (result) => {
+    // dropped outside the list
+    if (!result.destination) {
+      return;
+    }
+
+    const items = reorder(
+      currentNavOptions,
+      result.source.index,
+      result.destination.index
+    );
+
+    setCurrentNavOptions(items);
+  };
+
+  const grid = 8;
+
+  const getItemStyle = (isDragging, draggableStyle) => ({
+    // some basic styles to make the items look a bit nicer
+    userSelect: 'none',
+    padding: grid * 2,
+    margin: `0 0 ${grid}px 0`,
+
+    background: isDragging ? 'lightgrey' : 'white',
+
+    // styles we need to apply on draggables
+    ...draggableStyle,
+  });
+
+  const getListStyle = (isDraggingOver) => ({
+    background: isDraggingOver ? 'white' : 'white',
+    padding: grid,
+  });
 
   const selectNavLinkItem = (ev) => {
     let selectedItem = ev.target[ev.target.selectedIndex];
@@ -218,6 +273,11 @@ export default function NavBuilder({
 
       <Container>
         <MainContent>
+          <div tw="px-10 pt-5">
+            <h1 tw="inline-block text-3xl font-extrabold text-gray-900 tracking-tight">
+              Navigation Builder
+            </h1>
+          </div>
           <form
             onSubmit={handleSubmit}
             className={`settings-form ${parsedData['color']}`}
@@ -229,69 +289,99 @@ export default function NavBuilder({
                 notificationType={notificationType}
               />
             )}
-
-            <div tw="container mx-auto">
-              <div tw="px-10 pt-5">
-                <h1 tw="inline-block text-3xl font-extrabold text-gray-900 tracking-tight">
-                  Navigation Builder
-                </h1>
-              </div>
-
-              <div tw="flex mb-4 pt-5 px-10" key={currentNavRandom}>
-                <div tw="w-full bg-gray-200 h-12">
-                  <div
-                    tw="flex items-center bg-gray-200 text-black text-sm font-bold px-4 py-3 mb-2"
-                    role="alert"
-                  >
-                    <p>Current navigation links - click to remove:</p>
-                  </div>
-                  <nav tw="border-solid border-2 border-gray-500 px-3">
-                    {currentNavOptions.map((option) => (
-                      <SectionLink
-                        key={`navbar-${option.type}-${option.slug}`}
-                        data-type={option.type}
-                        data-slug={option.slug}
-                        onClick={removeLink}
-                        // href={generateNavLinkFor(option)}
-                        meta={metadata}
-                      >
-                        {option.label}
-                      </SectionLink>
-                    ))}
-                  </nav>
+            <div tw="flex mb-4 pt-5 px-10">
+              <div tw="w-full bg-gray-500 h-12">
+                <div
+                  tw="flex items-center bg-gray-500 text-white text-sm font-bold px-4 py-3"
+                  role="alert"
+                >
+                  <p>Select items from the list to add to the nav:</p>
                 </div>
-              </div>
-
-              <div tw="flex mb-4 pt-5 px-10">
-                <div tw="w-full bg-gray-500 h-12">
-                  <div
-                    tw="flex items-center bg-gray-500 text-white text-sm font-bold px-4 py-3"
-                    role="alert"
-                  >
-                    <svg
-                      tw="fill-current w-4 h-4 mr-2"
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 20 20"
-                    >
-                      <path d="M12.432 0c1.34 0 2.01.912 2.01 1.957 0 1.305-1.164 2.512-2.679 2.512-1.269 0-2.009-.75-1.974-1.99C9.789 1.436 10.67 0 12.432 0zM8.309 20c-1.058 0-1.833-.652-1.093-3.524l1.214-5.092c.211-.814.246-1.141 0-1.141-.317 0-1.689.562-2.502 1.117l-.528-.88c2.572-2.186 5.531-3.467 6.801-3.467 1.057 0 1.233 1.273.705 3.23l-1.391 5.352c-.246.945-.141 1.271.106 1.271.317 0 1.357-.392 2.379-1.207l.6.814C12.098 19.02 9.365 20 8.309 20z" />
-                    </svg>
-                    <p>Select items from the list to add to the nav:</p>
-                  </div>
-                  <select tw="mt-2" onChange={selectNavLinkItem}>
-                    <option>Please select</option>
-                    {linkOptionItems}
-                  </select>
-
-                  <div tw="flex pt-8 justify-end">
-                    <AddButton tw="mr-2" onClick={handleSubmit}>
-                      Save
-                    </AddButton>
-                    <DeleteButton onClick={handleClear}>Clear</DeleteButton>
-                  </div>
-                </div>
+                <select tw="mt-2" onChange={selectNavLinkItem}>
+                  <option>Please select</option>
+                  {linkOptionItems}
+                </select>
               </div>
             </div>
           </form>
+        </MainContent>
+      </Container>
+      <Container>
+        <MainContent>
+          <DragDropContext onDragEnd={onDragEnd}>
+            <Droppable droppableId="droppable">
+              {(provided, snapshot) => (
+                <Table
+                  {...provided.droppableProps}
+                  ref={provided.innerRef}
+                  style={getListStyle(snapshot.isDraggingOver)}
+                >
+                  <TableBody>
+                    {currentNavOptions.map((item, index) => (
+                      <Draggable
+                        key={`${item.type}-${item.slug}`}
+                        draggableId={`${item.type}-${item.slug}`}
+                        index={index}
+                      >
+                        {(provided, snapshot) => (
+                          <TableRow
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                            style={getItemStyle(
+                              snapshot.isDragging,
+                              provided.draggableProps.style
+                            )}
+                          >
+                            <TableCell
+                              key={`navbar-${item.type}-${item.slug}`}
+                              data-type={item.type}
+                              data-slug={item.slug}
+                              // href={generateNavLinkFor(option)}
+                              meta={metadata}
+                            >
+                              <SelectorIcon
+                                tw="h-5 w-5 float-left"
+                                onClick={reorderLink}
+                                data-type={item.type}
+                                data-slug={item.slug}
+                                data-index={index}
+                              />
+                              <span tw="float-right">{index}</span>
+                            </TableCell>
+                            <TableCell>{item.label}</TableCell>
+                            <TableCell
+                              onClick={removeLink}
+                              data-type={item.type}
+                              data-slug={item.slug}
+                            >
+                              <TrashIcon
+                                tw="h-5 w-5"
+                                onClick={removeLink}
+                                data-type={item.type}
+                                data-slug={item.slug}
+                              />
+                            </TableCell>
+                          </TableRow>
+                        )}
+                      </Draggable>
+                    ))}
+                    {provided.placeholder}
+                  </TableBody>
+                </Table>
+              )}
+            </Droppable>
+          </DragDropContext>
+        </MainContent>
+      </Container>
+      <Container>
+        <MainContent>
+          <div tw="flex pt-8 justify-end">
+            <AddButton tw="mr-2" onClick={handleSubmit}>
+              Save
+            </AddButton>
+            <DeleteButton onClick={handleClear}>Clear</DeleteButton>
+          </div>
         </MainContent>
       </Container>
     </AdminLayout>
