@@ -91,6 +91,7 @@
     "react": "^17.0.2",
     "react-analytics-charts": "^1.2.12",
     "react-aws-s3": "^1.5.0",
+    "react-beautiful-dnd": "^13.1.0",
     "react-chartjs-2": "^2.11.1",
     "react-cookie": "^4.0.3",
     "react-cookie-consent": "^6.4.1",
