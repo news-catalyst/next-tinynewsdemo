@@ -58,12 +58,27 @@ export default function NavBuilder({
     );
   });
 
+  const removeLink = (ev) => {
+    ev.preventDefault();
+    let link = ev.target;
+    let removeSlug = link.getAttribute('data-slug');
+    let removeType = link.getAttribute('data-type');
+    let updatedNavOptions = currentNavOptions.filter((option) => {
+      if (option.slug === removeSlug && option.type === removeType) {
+        return false;
+      } else {
+        return true;
+      }
+    });
+
+    setCurrentNavOptions(updatedNavOptions);
+  };
+
   const selectNavLinkItem = (ev) => {
     let selectedItem = ev.target[ev.target.selectedIndex];
     let selectedSlug = selectedItem.getAttribute('data-slug');
     let selectedLabel = selectedItem.getAttribute('data-label');
     let selectedType = selectedItem.getAttribute('data-type');
-    console.log('selected:', selectedType, selectedSlug);
 
     let updatedNavOptions = currentNavOptions;
     updatedNavOptions.push({
@@ -74,7 +89,6 @@ export default function NavBuilder({
 
     setCurrentNavOptions(updatedNavOptions);
     setCurrentNavRandom(Math.random());
-    console.log('Updated nav options: ', currentNavOptions);
   };
 
   useEffect(() => {
@@ -213,22 +227,20 @@ export default function NavBuilder({
                     tw="flex items-center bg-gray-200 text-black text-sm font-bold px-4 py-3 mb-2"
                     role="alert"
                   >
-                    <p>Current navigation links</p>
+                    <p>Current navigation links - click to remove:</p>
                   </div>
                   <nav tw="border-solid border-2 border-gray-500 px-3">
                     {currentNavOptions.map((option) => (
-                      <Link
+                      <SectionLink
                         key={`navbar-${option.type}-${option.slug}`}
-                        href={generateNavLinkFor(option)}
-                        passHref
+                        data-type={option.type}
+                        data-slug={option.slug}
+                        onClick={removeLink}
+                        // href={generateNavLinkFor(option)}
+                        meta={metadata}
                       >
-                        <SectionLink
-                          href={generateNavLinkFor(option)}
-                          meta={metadata}
-                        >
-                          {option.label}
-                        </SectionLink>
-                      </Link>
+                        {option.label}
+                      </SectionLink>
                     ))}
                   </nav>
                 </div>
