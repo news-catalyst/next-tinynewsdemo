@@ -208,7 +208,7 @@ export default function NavBuilder({
               </div>
 
               <div tw="flex mb-4 pt-5 px-10" key={currentNavRandom}>
-                <div class="w-full bg-gray-200 h-12">
+                <div tw="w-full bg-gray-200 h-12">
                   <div
                     tw="flex items-center bg-gray-200 text-black text-sm font-bold px-4 py-3 mb-2"
                     role="alert"
@@ -235,7 +235,7 @@ export default function NavBuilder({
               </div>
 
               <div tw="flex mb-4 pt-5 px-10">
-                <div class="w-full bg-gray-500 h-12">
+                <div tw="w-full bg-gray-500 h-12">
                   <div
                     tw="flex items-center bg-gray-500 text-white text-sm font-bold px-4 py-3"
                     role="alert"
