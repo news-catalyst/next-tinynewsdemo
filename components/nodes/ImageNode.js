@@ -10,6 +10,10 @@ export default function ImageNode({ node, amp }) {
   if (!image) {
     return null;
   }
+  if (!image.imageUrl) {
+    console.error('Error rendering image due to missing link:', node, image);
+    return null;
+  }
   const figure = amp ? (
     <amp-img
       width={710}

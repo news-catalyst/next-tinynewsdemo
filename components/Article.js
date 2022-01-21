@@ -49,7 +49,9 @@ export default function Article({
 
       if (mainImageNode) {
         mainImage = mainImageNode.children[0];
-        siteMetadata['coverImage'] = mainImage.imageUrl;
+        if (mainImage.imageUrl) {
+          siteMetadata['coverImage'] = mainImage.imageUrl;
+        }
       }
     } catch (err) {
       console.error('error finding main image: ', err);
