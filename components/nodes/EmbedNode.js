@@ -15,10 +15,22 @@ export default function EmbedNode({ node, amp }) {
   /* eslint-disable no-case-declarations */
   let el = null;
   if (!node.link) {
-    console.error('Embed missing link:', node);
+    console.error('Error rendering embed due to missing link:', node);
     return null;
   }
-  const url = new URL(node.link);
+
+  let url;
+  try {
+    url = new URL(node.link);
+  } catch (e) {
+    console.error(
+      `Error rendering embed due to invalid URL '${
+        node.link
+      }': ${JSON.stringify(e)}`
+    );
+    return null;
+  }
+
   switch (url.hostname.replace('www.', '')) {
     case 'twitter.com':
       el = <Twitter node={node} amp={amp} />;
