@@ -14,6 +14,10 @@ const EmbedWrapper = tw.div`mb-5 max-w-full w-full`;
 export default function EmbedNode({ node, amp }) {
   /* eslint-disable no-case-declarations */
   let el = null;
+  if (!node.link) {
+    console.error('Embed missing link:', node);
+    return null;
+  }
   const url = new URL(node.link);
   switch (url.hostname.replace('www.', '')) {
     case 'twitter.com':

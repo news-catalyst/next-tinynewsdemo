@@ -10,6 +10,10 @@ export default function ImageNode({ node, amp }) {
   if (!image) {
     return null;
   }
+  if (!image.imageUrl) {
+    console.error('IMAGE MISSING SRC:', node, image);
+    return null;
+  }
   const figure = amp ? (
     <amp-img
       width={710}
