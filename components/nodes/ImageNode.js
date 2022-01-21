@@ -11,7 +11,7 @@ export default function ImageNode({ node, amp }) {
     return null;
   }
   if (!image.imageUrl) {
-    console.error('IMAGE MISSING SRC:', node, image);
+    console.error('Error rendering image due to missing link:', node, image);
     return null;
   }
   const figure = amp ? (
