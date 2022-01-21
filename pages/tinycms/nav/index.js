@@ -71,7 +71,6 @@ export default function NavBuilder({
       }
     });
 
-    console.log('updated vs current', updatedNavOptions, currentNavOptions);
     setCurrentNavOptions(updatedNavOptions);
   };
 
@@ -353,7 +352,7 @@ export default function NavBuilder({
                                   data-slug={item.slug}
                                   data-index={index}
                                 />
-                                <span tw="float-right">{index}</span>
+                                <span tw="float-right">{index + 1}</span>
                               </TableCell>
                               <TableCell>{item.label}</TableCell>
                               <TableCell
