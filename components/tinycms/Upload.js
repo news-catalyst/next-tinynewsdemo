@@ -9,10 +9,19 @@ const ImgWrapper = tw.div`w-40 h-auto`;
 export default function Upload(props) {
   const fileInput = useRef();
   const [imageSrc, setImageSrc] = useState(props.image);
+  const [imageWidth, setImageWidth] = useState(0);
+  const [imageHeight, setImageHeight] = useState(0);
   const [randomKey, setRandomKey] = useState(Math.random());
 
   useEffect(() => {
     if (props.image) {
+      const img = document.createElement('img');
+      img.onload = function () {
+        setImageWidth(this.width);
+        setImageHeight(this.height);
+      };
+      img.src = props.image;
+
       setImageSrc(props.image);
     }
   }, [props.image]);
@@ -31,10 +40,23 @@ export default function Upload(props) {
           let assetUrl =
             'https://assets.tinynewsco.org' + uploadedS3Url.pathname;
           props.setter(assetUrl);
+          if (props.widthSetter) {
+            props.widthSetter(imageWidth);
+          }
+          if (props.heightSetter) {
+            props.heightSetter(imageHeight);
+          }
 
           if (props.parsedData) {
             let updatedParsedData = props.parsedData;
             updatedParsedData[props.imageKey] = assetUrl;
+            if (props.widthKey) {
+              updatedParsedData[props.widthKey] = imageWidth;
+            }
+            if (props.heightKey) {
+              updatedParsedData[props.heightKey] = imageHeight;
+            }
+
             props.updateParsedData(updatedParsedData);
           }
 
