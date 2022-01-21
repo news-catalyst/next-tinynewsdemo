@@ -4,14 +4,15 @@ import Image from 'next/image';
 import Donate from './Donate';
 import tw, { styled } from 'twin.macro';
 import Typography from '../common/Typography';
-import { hasuraLocalizeText } from '../../lib/utils';
+import { generateNavLinkFor, hasuraLocalizeText } from '../../lib/utils';
 
-const NavContainer = tw.header`border-b border-gray-200 flex w-full`;
-const NavInnerContainer = tw.div`lg:p-5 flex flex-wrap flex-row mx-auto max-w-7xl w-full justify-items-start pt-5`;
+const NavTopContainer = tw.header`flex w-full`;
+const NavBottomContainer = tw.header`border-b border-gray-200 flex w-full justify-center items-center`;
+const NavInnerContainer = tw.div`w-full flex lg:p-4 flex-wrap flex-row mx-auto max-w-7xl justify-center items-center`;
 const NavHeader = tw.h1`text-4xl leading-none font-bold ml-4 lg:ml-0 flex-1 order-1`;
 const LogoWrapper = tw.div`flex-1 order-1 h-12 w-80 relative mx-auto lg:mx-0 flex-1 order-1`;
 const Logo = tw.div`lg:mx-0 ml-5 lg:w-64 h-full relative`;
-const RightNav = tw.nav`lg:text-right lg:flex-1 flex flex-row flex-wrap mt-5 order-3 lg:order-none w-full flex-grow border-t border-gray-200 lg:border-t-0 lg:w-auto lg:block lg:mt-0`;
+const NavLinks = tw.nav`lg:flex-1 flex flex-row flex-wrap items-center justify-center mt-5 order-3 lg:order-none w-full flex-grow border-t border-gray-200 lg:border-t-0 lg:w-auto lg:mt-0`;
 const SectionLink = styled.a(({ meta }) => ({
   ...tw`lg:items-center lg:mr-8 lg:py-0 inline-flex items-center lg:h-full py-2 px-5 lg:pb-0 lg:px-0 hover:underline`,
   fontFamily: Typography[meta.theme].SectionLink,
@@ -20,7 +21,19 @@ const SectionLink = styled.a(({ meta }) => ({
 export default function GlobalNav({ locale, metadata, sections, isAmp }) {
   let sectionLinks;
 
-  if (sections && sections[0] && typeof sections[0].title === 'string') {
+  if (metadata && metadata['nav']) {
+    sectionLinks = metadata['nav'].map((link) => (
+      <Link
+        key={`navbar-${link.slug}`}
+        href={`/categories/${link.slug}`}
+        passHref
+      >
+        <SectionLink href={generateNavLinkFor(link)} meta={metadata}>
+          {link.label}
+        </SectionLink>
+      </Link>
+    ));
+  } else if (sections && sections[0] && typeof sections[0].title === 'string') {
     sectionLinks = sections
       .filter((section) => section.published)
       .map((section) => (
@@ -74,16 +87,26 @@ export default function GlobalNav({ locale, metadata, sections, isAmp }) {
   }
 
   return (
-    <NavContainer>
-      <NavInnerContainer>
-        <Link href="/">
-          <a>{logo ? LogoComponent : <NavHeader>{title}</NavHeader>}</a>
-        </Link>
-        <RightNav>{sectionLinks}</RightNav>
+    <>
+      <NavTopContainer>
         {process.env.NEXT_PUBLIC_MONKEYPOD_URL && (
-          <Donate label={metadata.supportCTA} metadata={metadata} />
+          <Donate
+            tw="absolute top-0 right-0"
+            label={metadata.supportCTA}
+            metadata={metadata}
+          />
         )}
-      </NavInnerContainer>
-    </NavContainer>
+        <NavInnerContainer>
+          <Link href="/">
+            <a>{logo ? LogoComponent : <NavHeader>{title}</NavHeader>}</a>
+          </Link>
+        </NavInnerContainer>
+      </NavTopContainer>
+      <NavBottomContainer>
+        <NavInnerContainer>
+          <NavLinks>{sectionLinks}</NavLinks>
+        </NavInnerContainer>
+      </NavBottomContainer>
+    </>
   );
 }
