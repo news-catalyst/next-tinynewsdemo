@@ -10,6 +10,10 @@ export default function MainImage({ articleContent, isAmp }) {
     mainImage = mainImageNode.children[0];
   }
 
+  if (!mainImage || !mainImage.imageUrl) {
+    console.error('Missing image src:', mainImageNode);
+    return null;
+  }
   return (
     <>
       {mainImage && isAmp && (
