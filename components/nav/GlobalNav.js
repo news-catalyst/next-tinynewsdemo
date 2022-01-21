@@ -1,4 +1,4 @@
-import React from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import Donate from './Donate';
@@ -8,17 +8,51 @@ import { generateNavLinkFor, hasuraLocalizeText } from '../../lib/utils';
 
 const NavTopContainer = tw.header`flex w-full`;
 const NavBottomContainer = tw.header`border-b border-gray-200 flex w-full justify-center items-center`;
-const NavInnerContainer = tw.div`w-full flex lg:p-4 flex-wrap flex-row mx-auto max-w-7xl justify-center items-center`;
+const NavInnerContainer = styled.div(() => ({
+  ...tw`w-full grid lg:py-4 mx-auto max-w-7xl my-0 pl-5`,
+  gridTemplateAreas: '"left right"',
+  gridTemplateColumns: '1fr 4rem',
+}));
+const NavInnerLeftContainer = styled.div(() => ({
+  ...tw`w-full justify-self-start`,
+  gridArea: 'left',
+}));
+const NavInnerRightContainer = styled.div(() => ({
+  ...tw`mr-0 self-auto`,
+  placeSelf: 'center end',
+  gridArea: 'right',
+  width: 'initial',
+}));
 const NavHeader = tw.h1`text-4xl leading-none font-bold ml-4 lg:ml-0 flex-1 order-1`;
-const LogoWrapper = tw.div`flex-1 order-1 h-12 w-80 relative mx-auto lg:mx-0 flex-1 order-1`;
-const Logo = tw.div`lg:mx-0 ml-5 lg:w-64 h-full relative`;
-const NavLinks = tw.nav`lg:flex-1 flex flex-row flex-wrap items-center justify-center mt-5 order-3 lg:order-none w-full flex-grow border-t border-gray-200 lg:border-t-0 lg:w-auto lg:mt-0`;
+const LogoWrapper = tw.div`flex flex-row justify-center md:max-h-24 max-h-16`;
+const Logo = styled.div(() => ({
+  ...tw`max-w-full max-h-full block cursor-pointer`,
+  maxWidth: '16rem',
+}));
+const NavLinks = tw.nav`lg:flex-1 flex flex-row flex-wrap items-center justify-center mt-5 lg:order-none w-full flex-grow border-t border-gray-200 lg:w-auto lg:mt-0 py-2`;
 const SectionLink = styled.a(({ meta }) => ({
   ...tw`lg:items-center lg:mr-8 lg:py-0 inline-flex items-center lg:h-full py-2 px-5 lg:pb-0 lg:px-0 hover:underline`,
   fontFamily: Typography[meta.theme].SectionLink,
 }));
 
 export default function GlobalNav({ locale, metadata, sections, isAmp }) {
+  const [logoWidth, setLogoWidth] = useState();
+  const [logoHeight, setLogoHeight] = useState();
+
+  useEffect(() => {
+    if ((metadata['logo'] && !metadata['logoWidth'], !metadata['logoHeight'])) {
+      console.warn(
+        'Reading logo in client to determine dimensions. You should reset the logo in the TinyCMS.'
+      );
+      const img = document.createElement('img');
+      img.onload = function () {
+        setLogoWidth(this.width);
+        setLogoHeight(this.height);
+      };
+      img.src = metadata['logo'];
+    }
+  }, [metadata]);
+
   let sectionLinks;
 
   if (metadata && metadata['nav']) {
@@ -51,37 +85,34 @@ export default function GlobalNav({ locale, metadata, sections, isAmp }) {
 
   let title;
   let logo;
+  let width;
+  let height;
   if (metadata) {
     title = metadata['shortName'];
     logo = metadata['logo'];
+    width = metadata['width'] || logoWidth;
+    height = metadata['height'] || logoHeight;
   }
 
   let LogoComponent;
-  if (logo) {
+  if (logo && width && height) {
     LogoComponent = (
       <LogoWrapper>
-        <Logo>
-          {isAmp ? (
-            <amp-img
-              src={logo}
-              layout="fill"
-              alt={title}
-              style={{
-                objectFit: 'contain',
-                objectPosition: 'left',
-              }}
-            />
-          ) : (
-            <Image
-              src={logo}
-              layout="fill"
-              objectFit="contain"
-              objectPosition="left"
-              alt={title}
-              priority={true}
-            />
-          )}
-        </Logo>
+        <Link href="/" passHref>
+          <Logo>
+            {isAmp ? (
+              <amp-img src={logo} alt={title} width={300} height={60} />
+            ) : (
+              <Image
+                src={logo}
+                width={width}
+                height={height}
+                alt={title}
+                priority={true}
+              />
+            )}
+          </Logo>
+        </Link>
       </LogoWrapper>
     );
   }
@@ -89,23 +120,19 @@ export default function GlobalNav({ locale, metadata, sections, isAmp }) {
   return (
     <>
       <NavTopContainer>
-        {process.env.NEXT_PUBLIC_MONKEYPOD_URL && (
-          <Donate
-            tw="absolute top-0 right-0"
-            label={metadata.supportCTA}
-            metadata={metadata}
-          />
-        )}
         <NavInnerContainer>
-          <Link href="/">
-            <a>{logo ? LogoComponent : <NavHeader>{title}</NavHeader>}</a>
-          </Link>
+          <NavInnerLeftContainer>
+            {logo ? LogoComponent : <NavHeader>{title}</NavHeader>}
+          </NavInnerLeftContainer>
+          <NavInnerRightContainer>
+            {process.env.NEXT_PUBLIC_MONKEYPOD_URL && (
+              <Donate label={metadata.supportCTA} metadata={metadata} />
+            )}
+          </NavInnerRightContainer>
         </NavInnerContainer>
       </NavTopContainer>
       <NavBottomContainer>
-        <NavInnerContainer>
-          <NavLinks>{sectionLinks}</NavLinks>
-        </NavInnerContainer>
+        <NavLinks>{sectionLinks}</NavLinks>
       </NavBottomContainer>
     </>
   );
