@@ -61,6 +61,8 @@ export default function NavBuilder({
     let link = ev.target;
     let removeSlug = link.getAttribute('data-slug');
     let removeType = link.getAttribute('data-type');
+
+    console.log('removing link', removeSlug);
     let updatedNavOptions = currentNavOptions.filter((option) => {
       if (option.slug === removeSlug && option.type === removeType) {
         return false;
@@ -69,6 +71,7 @@ export default function NavBuilder({
       }
     });
 
+    console.log('updated vs current', updatedNavOptions, currentNavOptions);
     setCurrentNavOptions(updatedNavOptions);
   };
 
@@ -119,6 +122,7 @@ export default function NavBuilder({
     margin: `0 0 ${grid}px 0`,
 
     background: isDragging ? 'lightgrey' : 'white',
+    display: isDragging ? 'table' : '',
 
     // styles we need to apply on draggables
     ...draggableStyle,
@@ -308,70 +312,73 @@ export default function NavBuilder({
       </Container>
       <Container>
         <MainContent>
-          <DragDropContext onDragEnd={onDragEnd}>
-            <Droppable droppableId="droppable">
-              {(provided, snapshot) => (
-                <Table
-                  {...provided.droppableProps}
-                  ref={provided.innerRef}
-                  style={getListStyle(snapshot.isDraggingOver)}
-                >
-                  <TableBody>
-                    {currentNavOptions.map((item, index) => (
-                      <Draggable
-                        key={`${item.type}-${item.slug}`}
-                        draggableId={`${item.type}-${item.slug}`}
-                        index={index}
-                      >
-                        {(provided, snapshot) => (
-                          <TableRow
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            {...provided.dragHandleProps}
-                            style={getItemStyle(
-                              snapshot.isDragging,
-                              provided.draggableProps.style
-                            )}
-                          >
-                            <TableCell
-                              key={`navbar-${item.type}-${item.slug}`}
-                              data-type={item.type}
-                              data-slug={item.slug}
-                              // href={generateNavLinkFor(option)}
-                              meta={metadata}
+          <div tw="flex mb-4 pt-5 px-10">
+            <DragDropContext onDragEnd={onDragEnd}>
+              <Droppable droppableId="droppable">
+                {(provided, snapshot) => (
+                  <Table
+                    {...provided.droppableProps}
+                    ref={provided.innerRef}
+                    style={getListStyle(snapshot.isDraggingOver)}
+                    tw="table-fixed"
+                  >
+                    <TableBody>
+                      {currentNavOptions.map((item, index) => (
+                        <Draggable
+                          key={`${item.type}-${item.slug}`}
+                          draggableId={`${item.type}-${item.slug}`}
+                          index={index}
+                        >
+                          {(provided, snapshot) => (
+                            <TableRow
+                              ref={provided.innerRef}
+                              {...provided.draggableProps}
+                              {...provided.dragHandleProps}
+                              style={getItemStyle(
+                                snapshot.isDragging,
+                                provided.draggableProps.style
+                              )}
                             >
-                              <SelectorIcon
-                                tw="h-5 w-5 float-left"
-                                onClick={reorderLink}
+                              <TableCell
+                                key={`navbar-${item.type}-${item.slug}`}
                                 data-type={item.type}
                                 data-slug={item.slug}
-                                data-index={index}
-                              />
-                              <span tw="float-right">{index}</span>
-                            </TableCell>
-                            <TableCell>{item.label}</TableCell>
-                            <TableCell
-                              onClick={removeLink}
-                              data-type={item.type}
-                              data-slug={item.slug}
-                            >
-                              <TrashIcon
-                                tw="h-5 w-5"
+                                // href={generateNavLinkFor(option)}
+                                meta={metadata}
+                              >
+                                <SelectorIcon
+                                  tw="h-5 w-5 float-left"
+                                  onClick={reorderLink}
+                                  data-type={item.type}
+                                  data-slug={item.slug}
+                                  data-index={index}
+                                />
+                                <span tw="float-right">{index}</span>
+                              </TableCell>
+                              <TableCell>{item.label}</TableCell>
+                              <TableCell
                                 onClick={removeLink}
                                 data-type={item.type}
                                 data-slug={item.slug}
-                              />
-                            </TableCell>
-                          </TableRow>
-                        )}
-                      </Draggable>
-                    ))}
-                    {provided.placeholder}
-                  </TableBody>
-                </Table>
-              )}
-            </Droppable>
-          </DragDropContext>
+                              >
+                                <TrashIcon
+                                  tw="h-5 w-5"
+                                  onClick={removeLink}
+                                  data-type={item.type}
+                                  data-slug={item.slug}
+                                />
+                              </TableCell>
+                            </TableRow>
+                          )}
+                        </Draggable>
+                      ))}
+                      {provided.placeholder}
+                    </TableBody>
+                  </Table>
+                )}
+              </Droppable>
+            </DragDropContext>
+          </div>
         </MainContent>
       </Container>
       <Container>
