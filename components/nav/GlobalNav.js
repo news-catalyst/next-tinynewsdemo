@@ -23,7 +23,7 @@ const NavInnerRightContainer = styled.div(() => ({
   gridArea: 'right',
   width: 'initial',
 }));
-const NavHeader = tw.h1`text-4xl leading-none font-bold ml-4 lg:ml-0 flex-1 order-1`;
+const NavHeader = tw.h1`text-4xl leading-none font-bold`;
 const LogoWrapper = tw.div`flex flex-row justify-center md:max-h-24 max-h-16`;
 const Logo = styled.div(() => ({
   ...tw`max-w-full max-h-full block cursor-pointer`,
@@ -55,7 +55,7 @@ export default function GlobalNav({ locale, metadata, sections, isAmp }) {
 
   let sectionLinks;
 
-  if (metadata && metadata['nav']) {
+  if (metadata && Array.isArray(metadata['nav'])) {
     sectionLinks = metadata['nav'].map((link) => (
       <Link
         key={`navbar-${link.slug}`}
@@ -90,30 +90,32 @@ export default function GlobalNav({ locale, metadata, sections, isAmp }) {
   if (metadata) {
     title = metadata['shortName'];
     logo = metadata['logo'];
-    width = metadata['width'] || logoWidth;
-    height = metadata['height'] || logoHeight;
+    width = metadata['logoWidth'] || logoWidth;
+    height = metadata['logoHeight'] || logoHeight;
   }
 
   let LogoComponent;
   if (logo && width && height) {
     LogoComponent = (
-      <LogoWrapper>
-        <Link href="/" passHref>
-          <Logo>
-            {isAmp ? (
-              <amp-img src={logo} alt={title} width={300} height={60} />
-            ) : (
-              <Image
-                src={logo}
-                width={width}
-                height={height}
-                alt={title}
-                priority={true}
-              />
-            )}
-          </Logo>
-        </Link>
-      </LogoWrapper>
+      <Logo>
+        {isAmp ? (
+          <amp-img src={logo} alt={title} width={width} height={height} />
+        ) : (
+          <Image
+            src={logo}
+            width={width}
+            height={height}
+            alt={title}
+            priority={true}
+          />
+        )}
+      </Logo>
+    );
+  } else {
+    LogoComponent = (
+      <Logo>
+        <NavHeader>{title}</NavHeader>
+      </Logo>
     );
   }
 
@@ -122,7 +124,11 @@ export default function GlobalNav({ locale, metadata, sections, isAmp }) {
       <NavTopContainer>
         <NavInnerContainer>
           <NavInnerLeftContainer>
-            {logo ? LogoComponent : <NavHeader>{title}</NavHeader>}
+            <LogoWrapper>
+              <Link href="/" passHref>
+                {LogoComponent}
+              </Link>
+            </LogoWrapper>
           </NavInnerLeftContainer>
           <NavInnerRightContainer>
             {process.env.NEXT_PUBLIC_MONKEYPOD_URL && (
