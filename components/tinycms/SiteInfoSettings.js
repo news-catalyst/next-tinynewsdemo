@@ -8,6 +8,7 @@ import DonationOptionsBlock from '../plugins/DonationOptionsBlock';
 import ControlledInput from './ControlledInput';
 import Upload from './Upload';
 import TinyEditor from './TinyEditor';
+import { TinyInputField } from './TinyFormElements';
 
 const SettingsHeader = tw.h1`text-4xl font-bold leading-normal mt-0 mb-2 text-black`;
 const SiteInfoFieldsContainer = tw.div`grid grid-cols-3 gap-4`;
@@ -411,24 +412,18 @@ export default function SiteInfoSettings(props) {
       </SettingsHeader>
 
       <SiteInfoFieldsContainer>
-        <label htmlFor="shortName">
-          <span tw="mt-1 font-bold">Site name</span>
-          <ControlledInput
-            type="text"
-            name="shortName"
-            value={shortName}
-            onChange={props.handleChange}
-          />
-        </label>
-        <label htmlFor="siteUrl">
-          <span tw="mt-1 font-bold">Site URL</span>
-          <ControlledInput
-            type="text"
-            name="siteUrl"
-            value={siteUrl}
-            onChange={props.handleChange}
-          />
-        </label>
+        <TinyInputField
+          name="shortName"
+          value={shortName}
+          onChange={(ev) => setShortName(ev.target.value)}
+          label="Site name"
+        />
+        <TinyInputField
+          name="siteUrl"
+          value={siteUrl}
+          onChange={(ev) => setSiteUrl(ev.target.value)}
+          label="Site URL"
+        />
         <label htmlFor="timeZone">
           <span tw="mt-1 font-bold">Time Zone</span>
           <Select
@@ -718,15 +713,12 @@ export default function SiteInfoSettings(props) {
       <HomepagePromoContainer ref={props.homepagePromoRef} id="homepage-promo">
         <SettingsHeader tw="col-span-3 mt-5">Homepage promo bar</SettingsHeader>
         <div>
-          <label htmlFor="heading">
-            <span tw="w-full mt-1 font-bold">About promo heading</span>
-            <ControlledInput
-              type="text"
-              name="aboutHed"
-              value={aboutHed}
-              onChange={props.handleChange}
-            />
-          </label>
+          <TinyInputField
+            name="aboutHed"
+            value={aboutHed}
+            onChange={(ev) => setAboutHed(ev.target.value)}
+            label="About promo heading"
+          />
           <label htmlFor="description">
             <span tw="mt-1 font-bold">About promo description</span>
             <TinyEditor
@@ -735,26 +727,21 @@ export default function SiteInfoSettings(props) {
               value={staticAboutDek}
             />
           </label>
-          <label htmlFor="cta">
-            <span tw="mt-1 font-bold">About call to action</span>
-            <ControlledInput
-              type="text"
-              name="aboutCTA"
-              value={aboutCTA}
-              onChange={props.handleChange}
-            />
-          </label>
+          <TinyInputField
+            name="aboutCTA"
+            value={aboutCTA}
+            onChange={(ev) => setAboutCTA(ev.target.value)}
+            label="About call to action"
+          />
         </div>
         <div>
-          <label htmlFor="heading">
-            <span tw="w-full mt-1 font-bold">Support promo heading</span>
-            <ControlledInput
-              type="text"
-              name="supportHed"
-              value={supportHed}
-              onChange={props.handleChange}
-            />
-          </label>
+          <TinyInputField
+            name="supportHed"
+            value={supportHed}
+            onChange={(ev) => setSupportHed(ev.target.value)}
+            label="Support promo heading"
+          />
+
           <label htmlFor="description">
             <span tw="mt-1 font-bold">Support promo description</span>
             <TinyEditor
@@ -763,15 +750,12 @@ export default function SiteInfoSettings(props) {
               value={staticSupportDek}
             />
           </label>
-          <label htmlFor="description">
-            <span tw="mt-1 font-bold">Support call to action</span>
-            <ControlledInput
-              type="text"
-              name="supportCTA"
-              value={supportCTA}
-              onChange={props.handleChange}
-            />
-          </label>
+          <TinyInputField
+            name="supportCTA"
+            value={supportCTA}
+            onChange={(ev) => setSupportCTA(ev.target.value)}
+            label="Support call to action"
+          />
         </div>
       </HomepagePromoContainer>
       <div>
@@ -784,15 +768,13 @@ export default function SiteInfoSettings(props) {
         </SettingsHeader>
 
         <div tw="col-span-1">
-          <label htmlFor="heading">
-            <span tw="w-full mt-1 font-bold">Heading</span>
-            <ControlledInput
-              type="text"
-              name="newsletterHed"
-              value={newsletterHed}
-              onChange={props.handleChange}
-            />
-          </label>
+          <TinyInputField
+            name="newsletterHed"
+            value={newsletterHed}
+            onChange={(ev) => setNewsletterHed(ev.target.value)}
+            label="Heading"
+          />
+
           <label htmlFor="description">
             <span tw="mt-1 font-bold">Description</span>
             <TinyEditor
@@ -824,15 +806,12 @@ export default function SiteInfoSettings(props) {
         </SettingsHeader>
 
         <div tw="col-span-1">
-          <label htmlFor="heading">
-            <span tw="w-full mt-1 font-bold">Heading</span>
-            <ControlledInput
-              type="text"
-              name="membershipHed"
-              value={membershipHed}
-              onChange={props.handleChange}
-            />
-          </label>
+          <TinyInputField
+            name="membershipHed"
+            value={membershipHed}
+            onChange={(ev) => setMembershipHed(ev.target.value)}
+            label="Heading"
+          />
           <label htmlFor="description">
             <span tw="mt-1 font-bold">Description</span>
             <TinyEditor
@@ -841,15 +820,12 @@ export default function SiteInfoSettings(props) {
               value={staticMembershipDek}
             />
           </label>
-          <label htmlFor="CTA">
-            <span tw="mt-1 font-bold">CTA</span>
-            <ControlledInput
-              type="text"
-              name="membershipCTA"
-              value={membershipCTA}
-              onChange={props.handleChange}
-            />
-          </label>
+          <TinyInputField
+            name="membershipCTA"
+            value={membershipCTA}
+            onChange={(ev) => setMembershipCTA(ev.target.value)}
+            label="CTA"
+          />
         </div>
         <div tw="col-span-1">
           <span tw="mt-1 font-bold">Preview</span>
