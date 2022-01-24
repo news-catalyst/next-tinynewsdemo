@@ -49,8 +49,8 @@ function hasuraInsertNewsletterEdition(params) {
   });
 }
 
-const INSERT_DATA_IMPORT = `mutation FrontendInsertDataImport($notes: String, $end_date: date, $start_date: date, $table_name: String) {
-  insert_ga_data_imports_one(object: {end_date: $end_date, notes: $notes, start_date: $start_date, table_name: $table_name}) {
+const INSERT_DATA_IMPORT = `mutation FrontendInsertDataImport($notes: String, $end_date: date, $start_date: date, $table_name: String, $success: Boolean, $row_count: Int) {
+  insert_ga_data_imports_one(object: {end_date: $end_date, notes: $notes, start_date: $start_date, table_name: $table_name, success: $success, row_count: $row_count}) {
     id
     notes
     end_date
