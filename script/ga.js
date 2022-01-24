@@ -16,6 +16,7 @@ async function getData(params) {
   if (params['requireDotEnv']) {
     require('dotenv').config({ path: '.env.local' });
   }
+
   const googleAnalyticsViewID = process.env.NEXT_PUBLIC_ANALYTICS_VIEW_ID;
   const credsEmail = process.env.GOOGLE_CREDENTIALS_EMAIL;
   const credsPrivateKey = process.env.GOOGLE_CREDENTIALS_PRIVATE_KEY.replace(
@@ -573,6 +574,13 @@ function storeData(params, rows) {
 }
 
 async function importDataFromGA(params) {
+  if (params['requireDotEnv']) {
+    require('dotenv').config({ path: '.env.local' });
+  }
+
+  const apiUrl = process.env.HASURA_API_URL;
+  const apiToken = process.env.ORG_SLUG;
+
   let { startDate, endDate } = params;
 
   if (startDate === undefined) {
@@ -611,6 +619,7 @@ async function importDataFromGA(params) {
 
   try {
     storeData(params, rows);
+
     shared
       .hasuraInsertDataImport({
         orgSlug: apiToken,
@@ -622,14 +631,22 @@ async function importDataFromGA(params) {
         row_count: rows.length,
       })
       .then((result) => {
-        console.log('stored data import status:', result);
+        if (result.errors) {
+          console.error(
+            'error storing data import status:',
+            JSON.stringify(result.errors)
+          );
+          core.setFailed(`Action failed with error ${result.errors}`);
+        } else {
+          console.log('stored data import status:', JSON.stringify(result));
+        }
       });
   } catch (e) {
     console.error('error importing data into hasura:', e);
     shared
       .hasuraInsertDataImport({
-        url: params['url'],
-        orgSlug: params['orgSlug'],
+        url: apiUrl,
+        orgSlug: apiToken,
         end_date: endDate,
         start_date: startDate,
         table_name: params['data'],
