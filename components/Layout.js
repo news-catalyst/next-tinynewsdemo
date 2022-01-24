@@ -200,7 +200,7 @@ export default function Layout({
         {metaValues.authorTwitter && (
           <meta name="twitter:creator" content={metaValues.authorTwitter} />
         )}
-        <meta name="twitter:image:src" content={metaValues.coverImage} />
+        <meta name="twitter:image" content={metaValues.coverImage} />
 
         {/* Facebook data */}
         <meta property="og:title" content={metaValues.facebookTitle} />
