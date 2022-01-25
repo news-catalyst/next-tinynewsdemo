@@ -5,6 +5,7 @@ import NewsletterBlock from '../plugins/NewsletterBlock';
 import HomepagePromoBar from '../homepage/HomepagePromoBar';
 import AdPromotion from '../ads/AdPromotion';
 import DonationOptionsBlock from '../plugins/DonationOptionsBlock';
+import DonationOption from './DonationOption';
 import ControlledInput from './ControlledInput';
 import Upload from './Upload';
 import TinyEditor from './TinyEditor';
@@ -284,6 +285,50 @@ export default function SiteInfoSettings(props) {
     props.parsedData['donationOptions'] ? parsedDonationOptions : null
   );
 
+  const updateKeyValue = (key, value) => {
+    props.updateParsedData((prevState) => ({
+      ...prevState,
+      [key]: value,
+    }));
+  };
+
+  const updateAboutCTA = (value) => {
+    setAboutCTA(value);
+    updateKeyValue('aboutCTA', value);
+  };
+  const updateAboutHed = (value) => {
+    setAboutHed(value);
+    updateKeyValue('aboutHed', value);
+  };
+  const updateSupportCTA = (value) => {
+    setSupportCTA(value);
+    updateKeyValue('supportCTA', value);
+  };
+  const updateSupportHed = (value) => {
+    setSupportHed(value);
+    updateKeyValue('supportHed', value);
+  };
+  const updateNewsletterHed = (value) => {
+    setNewsletterHed(value);
+    updateKeyValue('newsletterHed', value);
+  };
+  const updateMembershipHed = (value) => {
+    setMembershipHed(value);
+
+    updateKeyValue('membershipHed', value);
+  };
+  const updateMembershipCTA = (value) => {
+    setMembershipCTA(value);
+    updateKeyValue('membershipCTA', value);
+  };
+  const updateAdvertisingCTA = (value) => {
+    setAdvertisingCTA(value);
+    updateKeyValue('advertisingCTA', value);
+  };
+  const updateAdvertisingHed = (value) => {
+    setAdvertisingHed(value);
+    updateKeyValue('advertisingHed', value);
+  };
   const handleAboutDekEditorChange = (value) => {
     let content = value;
     setAboutDek(content);
@@ -415,7 +460,10 @@ export default function SiteInfoSettings(props) {
         <TinyInputField
           name="shortName"
           value={shortName}
-          onChange={(ev) => setShortName(ev.target.value)}
+          onChange={(ev) => {
+            setShortName(ev.target.value);
+            updateKeyValue('shortName', ev.target.value);
+          }}
           label="Site name"
         />
         <TinyInputField
@@ -716,7 +764,7 @@ export default function SiteInfoSettings(props) {
           <TinyInputField
             name="aboutHed"
             value={aboutHed}
-            onChange={(ev) => setAboutHed(ev.target.value)}
+            onChange={(ev) => updateAboutHed(ev.target.value)}
             label="About promo heading"
           />
           <label htmlFor="description">
@@ -730,7 +778,9 @@ export default function SiteInfoSettings(props) {
           <TinyInputField
             name="aboutCTA"
             value={aboutCTA}
-            onChange={(ev) => setAboutCTA(ev.target.value)}
+            onChange={(ev) => {
+              updateAboutCTA(ev.target.value);
+            }}
             label="About call to action"
           />
         </div>
@@ -738,7 +788,7 @@ export default function SiteInfoSettings(props) {
           <TinyInputField
             name="supportHed"
             value={supportHed}
-            onChange={(ev) => setSupportHed(ev.target.value)}
+            onChange={(ev) => updateSupportHed(ev.target.value)}
             label="Support promo heading"
           />
 
@@ -753,7 +803,7 @@ export default function SiteInfoSettings(props) {
           <TinyInputField
             name="supportCTA"
             value={supportCTA}
-            onChange={(ev) => setSupportCTA(ev.target.value)}
+            onChange={(ev) => updateSupportCTA(ev.target.value)}
             label="Support call to action"
           />
         </div>
@@ -771,7 +821,7 @@ export default function SiteInfoSettings(props) {
           <TinyInputField
             name="newsletterHed"
             value={newsletterHed}
-            onChange={(ev) => setNewsletterHed(ev.target.value)}
+            onChange={(ev) => updateNewsletterHed(ev.target.value)}
             label="Heading"
           />
 
@@ -809,7 +859,7 @@ export default function SiteInfoSettings(props) {
           <TinyInputField
             name="membershipHed"
             value={membershipHed}
-            onChange={(ev) => setMembershipHed(ev.target.value)}
+            onChange={(ev) => updateMembershipHed(ev.target.value)}
             label="Heading"
           />
           <label htmlFor="description">
@@ -823,7 +873,7 @@ export default function SiteInfoSettings(props) {
           <TinyInputField
             name="membershipCTA"
             value={membershipCTA}
-            onChange={(ev) => setMembershipCTA(ev.target.value)}
+            onChange={(ev) => updateMembershipCTA(ev.target.value)}
             label="CTA"
           />
         </div>
@@ -846,15 +896,12 @@ export default function SiteInfoSettings(props) {
         </p>
 
         <div tw="col-span-1">
-          <label htmlFor="heading">
-            <span tw="w-full mt-1 font-bold">Heading</span>
-            <ControlledInput
-              type="text"
-              name="advertisingHed"
-              value={advertisingHed}
-              onChange={props.handleChange}
-            />
-          </label>
+          <TinyInputField
+            name="advertisingHed"
+            value={advertisingHed}
+            onChange={(ev) => updateAdvertisingHed(ev.target.value)}
+            label="Heading"
+          />
           <label htmlFor="description">
             <span tw="mt-1 font-bold">Description</span>
             <TinyEditor
@@ -863,15 +910,12 @@ export default function SiteInfoSettings(props) {
               value={staticAdvertisingDek}
             />
           </label>
-          <label htmlFor="CTA">
-            <span tw="mt-1 font-bold">CTA</span>
-            <ControlledInput
-              type="text"
-              name="advertisingCTA"
-              value={advertisingCTA}
-              onChange={props.handleChange}
-            />
-          </label>
+          <TinyInputField
+            name="advertisingCTA"
+            value={advertisingCTA}
+            onChange={(ev) => updateAdvertisingCTA(ev.target.value)}
+            label="CTA"
+          />
         </div>
         <div tw="col-span-1">
           <span tw="mt-1 font-bold">Preview</span>
@@ -884,100 +928,17 @@ export default function SiteInfoSettings(props) {
         <SettingsHeader tw="col-span-3 mt-5">Payment options</SettingsHeader>
         {Array.isArray(donationOptions) &&
           donationOptions.map((option, i) => (
-            <div key={`option-${i}`}>
-              <div tw="mt-2">
-                <label htmlFor={`donationOptions-${i}-name`}>
-                  <span tw="mt-1 font-bold">Option name</span>
-                  <ControlledInput
-                    tw="w-full rounded-md border-solid border-gray-300"
-                    type="text"
-                    name={`donationOptions-${i}-name`}
-                    value={option.name}
-                    onChange={props.handleChange}
-                  />
-                </label>
-              </div>
-              <div tw="mt-2">
-                <label htmlFor={`donationOptions-${i}-amount`}>
-                  <span tw="mt-1 font-bold">Option amount</span>
-                  <Input
-                    tw="w-full rounded-md border-solid border-gray-300"
-                    type="number"
-                    name={`donationOptions-${i}-amount`}
-                    value={option.amount}
-                    onChange={props.handleChange}
-                  />
-                </label>
-              </div>
-              <div tw="mt-2 mb-8">
-                <label tw="block">
-                  <input
-                    type="radio"
-                    name={`donationOptions-${i}-paymentType`}
-                    value="monthly"
-                    checked={option.paymentType === 'monthly'}
-                    onChange={props.handleChange}
-                  />
-                  <span tw="p-2 mt-1 font-bold">Monthly</span>
-                </label>
-                <label tw="block">
-                  <input
-                    type="radio"
-                    name={`donationOptions-${i}-paymentType`}
-                    value="one-time"
-                    checked={option.paymentType === 'one-time'}
-                    onChange={props.handleChange}
-                  />
-                  <span tw="p-2 mt-1 font-bold">One-time payment</span>
-                </label>
-                <label tw="block">
-                  <input
-                    type="radio"
-                    name={`donationOptions-${i}-paymentType`}
-                    value="pay-what-you-want"
-                    checked={option.paymentType === 'pay-what-you-want'}
-                    onChange={props.handleChange}
-                  />
-                  <span tw="p-2 mt-1 font-bold">Pay what you want</span>
-                </label>
-              </div>
-              <div tw="mt-2">
-                <label htmlFor={`donationOptions-${i}-description`}>
-                  <span tw="mt-1 font-bold">Option Description</span>
-                  <ControlledInput
-                    tw="w-full rounded-md border-solid border-gray-300"
-                    type="text"
-                    name={`donationOptions-${i}-description`}
-                    value={option.description}
-                    onChange={props.handleChange}
-                  />
-                </label>
-              </div>
-              <div tw="mt-2">
-                <label htmlFor={`donationOptions-${i}-cta`}>
-                  <span tw="mt-1 font-bold">Option CTA</span>
-                  <ControlledInput
-                    tw="w-full rounded-md border-solid border-gray-300"
-                    type="text"
-                    name={`donationOptions-${i}-cta`}
-                    value={option.cta}
-                    onChange={props.handleChange}
-                  />
-                </label>
-              </div>
-              <div tw="mt-2">
-                <label htmlFor={`donationOptions-${i}-monkeypodId`}>
-                  <span tw="mt-1 font-bold">Option MonkeyPod ID</span>
-                  <ControlledInput
-                    tw="w-full rounded-md border-solid border-gray-300"
-                    type="text"
-                    name={`donationOptions-${i}-monkeypodId`}
-                    value={option.monkeypodId}
-                    onChange={props.handleChange}
-                  />
-                </label>
-              </div>
-            </div>
+            <DonationOption
+              index={i}
+              name={option.name}
+              cta={option.cta}
+              desc={option.description}
+              amount={option.amount}
+              paymentType={option.paymentType}
+              monkeypodId={option.monkeypodId}
+              parsedData={props.parsedData}
+              updateParsedData={props.updateParsedData}
+            />
           ))}
       </DonationOptionsEditor>
 
@@ -1018,28 +979,26 @@ export default function SiteInfoSettings(props) {
         </div>
 
         <div tw="mt-2">
-          <label htmlFor="searchTitle">
-            <span tw="mt-1 font-bold">Search title</span>
-            <ControlledInput
-              tw="w-full rounded-md border-solid border-gray-300"
-              type="text"
-              name="searchTitle"
-              value={searchTitle}
-              onChange={props.handleChange}
-            />
-          </label>
+          <TinyInputField
+            name="searchTitle"
+            value={searchTitle}
+            onChange={(ev) => {
+              setSearchTitle(ev.target.value);
+              updateKeyValue('searchTitle', ev.target.value);
+            }}
+            label="Search title"
+          />
         </div>
         <div tw="mt-2">
-          <label htmlFor="searchDescription">
-            <span tw="mt-1 font-bold">Search description</span>
-            <ControlledInput
-              tw="w-full"
-              type="text"
-              name="searchDescription"
-              value={searchDescription}
-              onChange={props.handleChange}
-            />
-          </label>
+          <TinyInputField
+            name="searchDescription"
+            value={searchDescription}
+            onChange={(ev) => {
+              setSearchDescription(ev.target.value);
+              updateKeyValue('searchDescription', ev.target.value);
+            }}
+            label="Search description"
+          />
         </div>
         <div tw="mt-2">
           <label htmlFor="facebookAdmins">
@@ -1070,28 +1029,26 @@ export default function SiteInfoSettings(props) {
           </label>
         </div>
         <div tw="mt-2">
-          <label htmlFor="facebookTitle">
-            <span tw="mt-1 font-bold">Facebook title</span>
-            <ControlledInput
-              tw="w-full"
-              type="text"
-              name="facebookTitle"
-              value={facebookTitle}
-              onChange={props.handleChange}
-            />
-          </label>
+          <TinyInputField
+            name="facebookTitle"
+            value={facebookTitle}
+            onChange={(ev) => {
+              setFacebookTitle(ev.target.value);
+              updateKeyValue('facebookTitle', ev.target.value);
+            }}
+            label="Facebook title"
+          />
         </div>
         <div tw="mt-2">
-          <label htmlFor="facebookDescription">
-            <span tw="mt-1 font-bold">Facebook description</span>
-            <ControlledInput
-              tw="w-full"
-              type="text"
-              name="facebookDescription"
-              value={facebookDescription}
-              onChange={props.handleChange}
-            />
-          </label>
+          <TinyInputField
+            name="facebookDescription"
+            value={facebookDescription}
+            onChange={(ev) => {
+              setFacebookDescription(ev.target.value);
+              updateKeyValue('facebookDescription', ev.target.value);
+            }}
+            label="Facebook description"
+          />
         </div>
         <div tw="mt-2">
           <label htmlFor="siteTwitter">
@@ -1106,28 +1063,26 @@ export default function SiteInfoSettings(props) {
           </label>
         </div>
         <div tw="mt-2">
-          <label htmlFor="twitterTitle">
-            <span tw="mt-1 font-bold">Twitter title</span>
-            <ControlledInput
-              tw="w-full"
-              type="text"
-              name="twitterTitle"
-              value={twitterTitle}
-              onChange={props.handleChange}
-            />
-          </label>
+          <TinyInputField
+            name="twitterTitle"
+            value={twitterTitle}
+            onChange={(ev) => {
+              setTwitterTitle(ev.target.value);
+              updateKeyValue('twitterTitle', ev.target.value);
+            }}
+            label="Twitter title"
+          />
         </div>
         <div tw="mt-2">
-          <label htmlFor="twitterDescription">
-            <span tw="mt-1 font-bold">Twitter description</span>
-            <ControlledInput
-              tw="w-full"
-              type="text"
-              name="twitterDescription"
-              value={twitterDescription}
-              onChange={props.handleChange}
-            />
-          </label>
+          <TinyInputField
+            name="twitterDescription"
+            value={twitterDescription}
+            onChange={(ev) => {
+              setTwitterDescription(ev.target.value);
+              updateKeyValue('twitterDescription', ev.target.value);
+            }}
+            label="Twitter description"
+          />
         </div>
         <div tw="mt-2">
           <label htmlFor="founderTwitter">
