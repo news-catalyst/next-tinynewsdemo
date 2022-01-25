@@ -5,6 +5,7 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { hasuraGetMetadataByLocale } from '../../../lib/articles.js';
 import AdminLayout from '../../../components/AdminLayout.js';
 import AdminNav from '../../../components/nav/AdminNav';
+import GlobalNav from '../../../components/nav/GlobalNav';
 import { hasuraUpsertMetadata } from '../../../lib/site_metadata';
 import Notification from '../../../components/tinycms/Notification';
 import {
@@ -37,7 +38,6 @@ export default function NavBuilder({
   const [jsonData, setJsonData] = useState('');
   const [parsedData, setParsedData] = useState({});
   const [currentNavOptions, setCurrentNavOptions] = useState([]);
-  const [currentNavRandom, setCurrentNavRandom] = useState(Math.random());
 
   const router = useRouter();
   const { action } = router.query;
@@ -62,7 +62,6 @@ export default function NavBuilder({
     let removeSlug = link.getAttribute('data-slug');
     let removeType = link.getAttribute('data-type');
 
-    console.log('removing link', removeSlug);
     let updatedNavOptions = currentNavOptions.filter((option) => {
       if (option.slug === removeSlug && option.type === removeType) {
         return false;
@@ -71,7 +70,7 @@ export default function NavBuilder({
       }
     });
 
-    setCurrentNavOptions(updatedNavOptions);
+    setCurrentNavOptions([...updatedNavOptions]);
   };
 
   const reorderLink = (ev) => {
@@ -85,7 +84,7 @@ export default function NavBuilder({
       }
     });
 
-    setCurrentNavOptions(updatedNavOptions);
+    setCurrentNavOptions([...updatedNavOptions]);
   };
 
   // a little function to help us with reordering the result
@@ -109,7 +108,7 @@ export default function NavBuilder({
       result.destination.index
     );
 
-    setCurrentNavOptions(items);
+    setCurrentNavOptions([...items]);
   };
 
   const grid = 8;
@@ -161,8 +160,7 @@ export default function NavBuilder({
       label: selectedLabel,
     });
 
-    setCurrentNavOptions(updatedNavOptions);
-    setCurrentNavRandom(Math.random());
+    setCurrentNavOptions([...updatedNavOptions]);
   };
 
   useEffect(() => {
@@ -179,7 +177,7 @@ export default function NavBuilder({
         console.error(error);
       }
       if (parsed && parsed['nav']) {
-        setCurrentNavOptions(parsed['nav']);
+        setCurrentNavOptions([...parsed['nav']]);
       }
     }
     if (action && action === 'edit') {
@@ -189,6 +187,13 @@ export default function NavBuilder({
       setMessage('Successfully created metadata.');
     }
   }, [action, siteMetadata]);
+
+  async function handleCustomLabel(ev, item) {
+    let updatedNavOptions = currentNavOptions;
+    const editedItem = updatedNavOptions.indexOf(item);
+    updatedNavOptions[editedItem]['customLabel'] = ev.target.value;
+    setCurrentNavOptions([...updatedNavOptions]);
+  }
 
   async function handleClear(ev) {
     ev.preventDefault();
@@ -292,7 +297,7 @@ export default function NavBuilder({
                 notificationType={notificationType}
               />
             )}
-            <div tw="flex mb-4 pt-5 px-10">
+            <div tw="flex mb-4 pt-5 pl-10">
               <div tw="w-full bg-gray-500 h-12">
                 <div
                   tw="flex items-center bg-gray-500 text-white text-sm font-bold px-4 py-3"
@@ -308,10 +313,8 @@ export default function NavBuilder({
             </div>
           </form>
         </MainContent>
-      </Container>
-      <Container>
         <MainContent>
-          <div tw="flex mb-4 pt-5 px-10">
+          <div tw="flex mb-4 pt-5 pl-10">
             <DragDropContext onDragEnd={onDragEnd}>
               <Droppable droppableId="droppable">
                 {(provided, snapshot) => (
@@ -322,6 +325,12 @@ export default function NavBuilder({
                     tw="table-fixed"
                   >
                     <TableBody>
+                      <TableRow>
+                        <TableCell>Order</TableCell>
+                        <TableCell>Name of page</TableCell>
+                        <TableCell>Custom label (optional)</TableCell>
+                        <TableCell>Delete from nav</TableCell>
+                      </TableRow>
                       {currentNavOptions.map((item, index) => (
                         <Draggable
                           key={`${item.type}-${item.slug}`}
@@ -355,17 +364,28 @@ export default function NavBuilder({
                                 <span tw="float-right">{index + 1}</span>
                               </TableCell>
                               <TableCell>{item.label}</TableCell>
+                              <TableCell>
+                                <input
+                                  type="text"
+                                  placeholder="Enter a custom label"
+                                  tw="w-full"
+                                  onChange={(ev) => handleCustomLabel(ev, item)}
+                                  defaultValue={item.customLabel}
+                                />
+                              </TableCell>
                               <TableCell
+                                tw="cursor-pointer"
                                 onClick={removeLink}
                                 data-type={item.type}
                                 data-slug={item.slug}
                               >
-                                <TrashIcon
-                                  tw="h-5 w-5"
-                                  onClick={removeLink}
+                                <DeleteButton
                                   data-type={item.type}
                                   data-slug={item.slug}
-                                />
+                                  onClick={removeLink}
+                                >
+                                  Remove
+                                </DeleteButton>
                               </TableCell>
                             </TableRow>
                           )}
@@ -379,8 +399,6 @@ export default function NavBuilder({
             </DragDropContext>
           </div>
         </MainContent>
-      </Container>
-      <Container>
         <MainContent>
           <div tw="flex pt-8 justify-end">
             <AddButton tw="mr-2" onClick={handleSubmit}>
@@ -388,6 +406,23 @@ export default function NavBuilder({
             </AddButton>
             <DeleteButton onClick={handleClear}>Clear</DeleteButton>
           </div>
+          <div tw="flex mb-4 pt-5 pl-10">
+            <div tw="w-full bg-gray-500 h-12">
+              <div
+                tw="flex items-center bg-gray-500 text-white text-sm font-bold px-4 py-3"
+                role="alert"
+              >
+                <p>Preview (update table above to see changes!)</p>
+              </div>
+            </div>
+          </div>
+          <GlobalNav
+            locale={currentLocale}
+            metadata={siteMetadata.site_metadata_translations[0].data}
+            sections={linkOptions.filter((opt) => opt.type === 'section')}
+            isAmp={false}
+            overrideNav={currentNavOptions}
+          />
         </MainContent>
       </Container>
     </AdminLayout>
@@ -415,7 +450,6 @@ export async function getServerSideProps(context) {
   } else {
     locales = data.organization_locales;
     siteMetadata = data.site_metadatas[0];
-    console.log('siteMetadata:', siteMetadata);
     data.authors.forEach((author) => {
       linkOptions.push({
         type: 'author',
