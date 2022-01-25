@@ -930,6 +930,7 @@ export default function SiteInfoSettings(props) {
           donationOptions.map((option, i) => (
             <DonationOption
               index={i}
+              key={`option-${i}`}
               name={option.name}
               cta={option.cta}
               desc={option.description}
