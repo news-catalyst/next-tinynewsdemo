@@ -9,12 +9,12 @@ import { generateNavLinkFor, hasuraLocalizeText } from '../../lib/utils';
 const NavTopContainer = tw.header`flex w-full`;
 const NavBottomContainer = tw.header`border-b border-gray-200 flex w-full justify-center items-center`;
 const NavInnerContainer = styled.div(() => ({
-  ...tw`w-full grid lg:py-4 mx-auto max-w-7xl my-0 pl-5`,
+  ...tw`w-full grid py-4 mx-auto max-w-7xl my-0 pl-5`,
   gridTemplateAreas: '"left right"',
   gridTemplateColumns: '1fr 4rem',
 }));
 const NavInnerLeftContainer = styled.div(() => ({
-  ...tw`w-full justify-self-start`,
+  ...tw`w-3/4 md:w-full justify-self-start items-center`,
   gridArea: 'left',
 }));
 const NavInnerRightContainer = styled.div(() => ({
@@ -24,12 +24,12 @@ const NavInnerRightContainer = styled.div(() => ({
   width: 'initial',
 }));
 const NavHeader = tw.h1`text-4xl leading-none font-bold`;
-const LogoWrapper = tw.div`flex flex-row justify-center md:max-h-24 max-h-16`;
+const LogoWrapper = tw.div`flex flex-row md:justify-center justify-start items-center max-h-24`;
 const Logo = styled.div(() => ({
-  ...tw`max-w-full max-h-full block cursor-pointer`,
+  ...tw`max-w-full max-h-full cursor-pointer flex items-center`,
   maxWidth: '16rem',
 }));
-const NavLinks = tw.nav`lg:flex-1 flex flex-row flex-wrap items-center justify-center mt-5 lg:order-none w-full flex-grow border-t border-gray-200 lg:w-auto lg:mt-0 py-2`;
+const NavLinks = tw.nav`lg:flex-1 flex flex-row flex-wrap items-center justify-center pt-5 lg:order-none w-full flex-grow border-t border-gray-200 lg:w-auto lg:mt-0 py-2`;
 const SectionLink = styled.a(({ meta }) => ({
   ...tw`lg:items-center lg:mr-8 lg:py-0 inline-flex items-center lg:h-full py-2 px-5 lg:pb-0 lg:px-0 hover:underline`,
   fontFamily: Typography[meta.theme].SectionLink,
