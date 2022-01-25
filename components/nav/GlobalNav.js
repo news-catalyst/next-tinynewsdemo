@@ -35,7 +35,13 @@ const SectionLink = styled.a(({ meta }) => ({
   fontFamily: Typography[meta.theme].SectionLink,
 }));
 
-export default function GlobalNav({ locale, metadata, sections, isAmp }) {
+export default function GlobalNav({
+  locale,
+  metadata,
+  sections,
+  isAmp,
+  overrideNav,
+}) {
   const [logoWidth, setLogoWidth] = useState();
   const [logoHeight, setLogoHeight] = useState();
 
@@ -53,17 +59,18 @@ export default function GlobalNav({ locale, metadata, sections, isAmp }) {
     }
   }, [metadata]);
 
+  let nav = overrideNav || metadata['nav'];
   let sectionLinks;
 
-  if (metadata && Array.isArray(metadata['nav'])) {
-    sectionLinks = metadata['nav'].map((link) => (
+  if (Array.isArray(nav)) {
+    sectionLinks = nav.map((link) => (
       <Link
         key={`navbar-${link.slug}`}
-        href={`/categories/${link.slug}`}
+        href={generateNavLinkFor(link)}
         passHref
       >
-        <SectionLink href={generateNavLinkFor(link)} meta={metadata}>
-          {link.label}
+        <SectionLink meta={metadata}>
+          {link.customLabel || link.label}
         </SectionLink>
       </Link>
     ));
