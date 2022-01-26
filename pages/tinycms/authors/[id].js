@@ -17,10 +17,9 @@ import { hasuraGetAuthorById, hasuraUpdateAuthor } from '../../../lib/authors';
 import {
   displayAuthorName,
   hasuraLocalizeText,
-  slugify,
   validateAuthorName,
 } from '../../../lib/utils.js';
-
+import { slugify } from '../../../lib/graphql';
 const UploadContainer = tw.div`container mx-auto min-w-0 flex-auto px-4 sm:px-6 xl:px-8 pt-10`;
 const ArticleAuthorLink = tw.a`font-bold cursor-pointer hover:underline`;
 

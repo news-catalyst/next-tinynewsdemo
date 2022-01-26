@@ -13,7 +13,7 @@ import AdminNav from '../../../components/nav/AdminNav';
 import Notification from '../../../components/tinycms/Notification';
 import { hasuraListLocales } from '../../../lib/articles.js';
 import { hasuraCreateSection } from '../../../lib/section';
-import { slugify } from '../../../lib/utils';
+import { slugify } from '../../../lib/graphql';
 
 export default function AddSection({
   apiUrl,
