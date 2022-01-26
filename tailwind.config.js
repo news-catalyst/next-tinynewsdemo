@@ -19,6 +19,7 @@ module.exports = {
   babelMacros: {
     twin: {
       preset: 'styled-components',
+      styled: 'styled-components',
     },
   },
 };
