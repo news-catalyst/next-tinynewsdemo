@@ -31,6 +31,12 @@
     "lint:fix": "npm run lint -- --fix",
     "format": "prettier --write ./components/** ./pages/** ./lib/**"
   },
+  "babelMacros": {
+    "twin": {
+        "config": "./tailwind.config.js",
+        "preset": "styled-components"
+    }
+  },
   "lint-staged": {
     "./components/**": "npm run format",
     "./pages/**": "npm run format",
