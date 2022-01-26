@@ -14,7 +14,7 @@ import AdminNav from '../../../components/nav/AdminNav';
 import Notification from '../../../components/tinycms/Notification';
 import { hasuraGetTagById, hasuraUpdateTag } from '../../../lib/section.js';
 import { hasuraLocalizeText } from '../../../lib/utils.js';
-import { slugify } from '../../../lib/utils';
+import { slugify } from '../../../lib/graphql';
 
 const ViewOnSiteLink = tw.a`font-bold cursor-pointer hover:underline`;
 

@@ -13,7 +13,7 @@ import AdminNav from '../../../components/nav/AdminNav';
 import Notification from '../../../components/tinycms/Notification';
 import { hasuraListLocales } from '../../../lib/articles.js';
 import { hasuraCreateTag } from '../../../lib/section';
-import { slugify } from '../../../lib/utils';
+import { slugify } from '../../../lib/graphql';
 
 export default function AddTag({ apiUrl, apiToken, currentLocale, locales }) {
   const [notificationMessage, setNotificationMessage] = useState('');
