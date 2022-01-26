@@ -14,11 +14,8 @@ import Notification from '../../../components/tinycms/Notification';
 import Upload from '../../../components/tinycms/Upload';
 import { hasuraListLocales } from '../../../lib/articles.js';
 import { hasuraCreateAuthor } from '../../../lib/authors';
-import {
-  displayAuthorName,
-  validateAuthorName,
-  slugify,
-} from '../../../lib/utils.js';
+import { displayAuthorName, validateAuthorName } from '../../../lib/utils.js';
+import { slugify } from '../../../lib/graphql';
 
 const UploadContainer = tw.div`container mx-auto min-w-0 flex-auto px-4 sm:px-6 xl:px-8 pt-10`;
 
