@@ -8,6 +8,7 @@ import Spotify from './embeds/Spotify';
 import ApplePodcasts from './embeds/ApplePodcasts';
 import Vimeo from './embeds/Vimeo';
 import Twitch from './embeds/Twitch';
+import GoogleForm from './embeds/GoogleForm';
 
 const EmbedWrapper = tw.div`mb-5 max-w-full w-full`;
 
@@ -58,6 +59,14 @@ export default function EmbedNode({ node, amp }) {
       break;
     case 'twitch.tv':
       el = <Twitch node={node} amp={amp} url={url} />;
+      break;
+    case 'forms.gle':
+      el = <GoogleForm node={node} amp={amp} />;
+      break;
+    case 'docs.google.com':
+      if (url.pathname.match(/^\/forms/)) {
+        el = <GoogleForm node={node} amp={amp} />;
+      }
       break;
     default:
       el = (
