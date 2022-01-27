@@ -4,8 +4,8 @@ export default function GoogleForm({ node, amp }) {
   ) : (
     <iframe
       src={node.link}
-      width="640"
-      height="640"
+      width="100%"
+      height="640px"
       frameBorder="0"
       marginHeight="0"
       marginWidth="0"
