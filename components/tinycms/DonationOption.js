@@ -55,6 +55,55 @@ export default function DonationOption(props) {
       ['donationOptions']: JSON.stringify(donationOptions),
     }));
   };
+
+  const updateDesc = (index, value) => {
+    setDesc(value);
+
+    let donationOptions = JSON.parse(props.parsedData.donationOptions);
+    donationOptions[index].description = value;
+
+    props.updateParsedData((prevState) => ({
+      ...prevState,
+      ['donationOptions']: JSON.stringify(donationOptions),
+    }));
+  };
+
+  const updatePaymentType = (index, value) => {
+    setPaymentType(value);
+
+    let donationOptions = JSON.parse(props.parsedData.donationOptions);
+    donationOptions[index].paymentType = value;
+
+    props.updateParsedData((prevState) => ({
+      ...prevState,
+      ['donationOptions']: JSON.stringify(donationOptions),
+    }));
+  };
+
+  const updateAmount = (index, value) => {
+    setAmount(value);
+
+    let donationOptions = JSON.parse(props.parsedData.donationOptions);
+    donationOptions[index].amount = value;
+
+    props.updateParsedData((prevState) => ({
+      ...prevState,
+      ['donationOptions']: JSON.stringify(donationOptions),
+    }));
+  };
+
+  const updateMonkeypodId = (index, value) => {
+    setMonkeypodId(value);
+
+    let donationOptions = JSON.parse(props.parsedData.donationOptions);
+    donationOptions[index].monkeypodId = value;
+
+    props.updateParsedData((prevState) => ({
+      ...prevState,
+      ['donationOptions']: JSON.stringify(donationOptions),
+    }));
+  };
+
   return (
     <div key={`option-${index}`}>
       <div tw="mt-2">
@@ -74,7 +123,7 @@ export default function DonationOption(props) {
             type="number"
             name={`donationOptions-${index}-amount`}
             value={amount}
-            onChange={(ev) => setAmount(ev.target.value)}
+            onChange={(ev) => updateAmount(index, ev.target.value)}
           />
         </label>
       </div>
@@ -85,7 +134,7 @@ export default function DonationOption(props) {
             name={`donationOptions-${index}-paymentType`}
             value="monthly"
             checked={paymentType === 'monthly'}
-            onChange={(ev) => setPaymentType(ev.target)}
+            onChange={(ev) => updatePaymentType(index, ev.target.value)}
           />
           <span tw="p-2 mt-1 font-bold">Monthly</span>
         </label>
@@ -95,7 +144,7 @@ export default function DonationOption(props) {
             name={`donationOptions-${index}-paymentType`}
             value="one-time"
             checked={paymentType === 'one-time'}
-            onChange={(ev) => setPaymentType(ev.target)}
+            onChange={(ev) => updatePaymentType(index, ev.target.value)}
           />
           <span tw="p-2 mt-1 font-bold">One-time payment</span>
         </label>
@@ -105,7 +154,7 @@ export default function DonationOption(props) {
             name={`donationOptions-${index}-paymentType`}
             value="pay-what-you-want"
             checked={paymentType === 'pay-what-you-want'}
-            onChange={(ev) => setPaymentType(ev.target)}
+            onChange={(ev) => updatePaymentType(index, ev.target.value)}
           />
           <span tw="p-2 mt-1 font-bold">Pay what you want</span>
         </label>
@@ -121,7 +170,7 @@ export default function DonationOption(props) {
           tw="w-full rounded-md border-solid border-gray-300"
           name={`donationOptions-${index}-description`}
           value={desc}
-          onChange={(ev) => setDesc(ev.target.value)}
+          onChange={(ev) => updateDesc(index, ev.target.value)}
           label="Option description"
         /> */}
       </div>
@@ -142,7 +191,7 @@ export default function DonationOption(props) {
             type="text"
             name={`donationOptions-${index}-monkeypodId`}
             value={monkeypodId}
-            onChange={(ev) => setMonkeypodId(ev.target.value)}
+            onChange={(ev) => updateMonkeypodId(index, ev.target.value)}
           />
         </label>
       </div>
