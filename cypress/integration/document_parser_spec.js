@@ -1,4 +1,5 @@
 import { processDocumentContents } from '../../lib/document';
+import TinyS3 from '../../lib/tiny_s3';
 
 describe('document API', () => {
   let listInfo = {};
@@ -463,6 +464,10 @@ describe('document API', () => {
           req.reply({
             statusCode: 200,
             fixture: 'upload.png',
+            headers: {
+              'content-type': 'image/png',
+              'cache-control': 'public, max-age=0',
+            },
           });
         }
       ).as('googleDocsImage');
@@ -487,6 +492,13 @@ describe('document API', () => {
           });
         }
       ).as('googleForms');
+
+      cy.stub(TinyS3, 'upload').returns({
+        s3Url:
+          'https://assets.tinynewsco.org/oaklyn-test/category-slug/article-slug/imagekix123.png',
+        height: 640,
+        width: 480,
+      });
     });
 
     it('returns an object with main image, an updated list of images, and formatted elements', () => {
@@ -577,7 +589,7 @@ describe('document API', () => {
       });
     });
 
-    it('formats headers', () => {
+    it('formats headings', () => {
       cy.wrap(
         processDocumentContents(
           elements,
@@ -1132,12 +1144,14 @@ describe('document API', () => {
           oauthToken
         )
       ).then((result) => {
-        let el = result.formattedElements[10];
-
-        // expect(el.type).to.eq('embed');
-        // expect(el.link).to.eq(
-        //   'https://docs.google.com/forms/d/e/1FAIpQLSfVOl8qdT54E2r_T367YsRlka57bUY_fnjedMLezp1Tll9OQw/viewform?usp=send_form'
-        // );
+        let el = result.formattedElements[result.formattedElements.length - 2];
+        expect(el.type).to.eq('image');
+        expect(el.children[0].imageId).to.eq('kix.wr6s7brrno1m');
+        expect(el.children[0].height).to.eq(640);
+        expect(el.children[0].width).to.eq(480);
+        expect(el.children[0].imageUrl).to.eq(
+          'https://assets.tinynewsco.org/oaklyn-test/category-slug/article-slug/imagekix123.png'
+        );
       });
     });
   });
