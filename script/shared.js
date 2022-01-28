@@ -204,7 +204,9 @@ const HASURA_REMOVE_ORGANIZATION = `mutation FrontendRemoveOrganization($slug: S
   delete_category_translations(where: {category: {organization: {slug: {_eq: $slug}}}}) {
     affected_rows
   }
-  
+  delete_author_articles(where: {author: {organization: {slug: {_eq: $slug}}}}) {
+    affected_rows
+  }
   delete_page_google_documents(where: {page: {organization: {slug: {_eq: $slug}}}}) {
     affected_rows
   }
@@ -227,9 +229,6 @@ const HASURA_REMOVE_ORGANIZATION = `mutation FrontendRemoveOrganization($slug: S
     affected_rows
   }
   delete_homepage_layout_schemas(where: {organization: {slug: {_eq: $slug}}}) {
-    affected_rows
-  }
-  delete_author_articles(where: {author: {organization: {slug: {_eq: $slug}}}}) {
     affected_rows
   }
   delete_tag_translations(where: {tag: {organization: {slug: {_eq: $slug}}}}) {

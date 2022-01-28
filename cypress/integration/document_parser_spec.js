@@ -11,192 +11,180 @@ describe('document API', () => {
     {
       sectionBreak: {
         sectionStyle: {
+          sectionType: 'CONTINUOUS',
           contentDirection: 'LEFT_TO_RIGHT',
           columnSeparatorStyle: 'NONE',
-          sectionType: 'CONTINUOUS',
         },
       },
       endIndex: 1,
     },
     {
+      startIndex: 1,
       paragraph: {
+        paragraphStyle: {
+          namedStyleType: 'NORMAL_TEXT',
+          direction: 'LEFT_TO_RIGHT',
+        },
         elements: [
           {
             endIndex: 29,
-            textRun: {
-              content: 'This sentence has a word in ',
-              textStyle: {},
-            },
             startIndex: 1,
+            textRun: {
+              textStyle: {},
+              content: 'This sentence has a word in ',
+            },
           },
           {
-            endIndex: 33,
             textRun: {
               content: 'bold',
               textStyle: {
                 bold: true,
               },
             },
+            endIndex: 33,
             startIndex: 29,
           },
           {
+            endIndex: 35,
             startIndex: 33,
             textRun: {
-              textStyle: {},
               content: ', ',
+              textStyle: {},
             },
-            endIndex: 35,
           },
           {
+            endIndex: 41,
+            startIndex: 35,
             textRun: {
               textStyle: {
                 italic: true,
               },
               content: 'italic',
             },
-            startIndex: 35,
-            endIndex: 41,
           },
           {
-            startIndex: 41,
             textRun: {
-              content: ', and ',
               textStyle: {},
+              content: ', and ',
             },
+            startIndex: 41,
             endIndex: 47,
           },
           {
-            startIndex: 47,
-            endIndex: 57,
             textRun: {
               content: 'underlined',
               textStyle: {
                 underline: true,
               },
             },
+            startIndex: 47,
+            endIndex: 57,
           },
           {
-            textRun: {
-              content: '. \n',
-              textStyle: {},
-            },
-            startIndex: 57,
             endIndex: 60,
+            startIndex: 57,
+            textRun: {
+              textStyle: {},
+              content: '. \n',
+            },
           },
         ],
-        paragraphStyle: {
-          direction: 'LEFT_TO_RIGHT',
-          namedStyleType: 'NORMAL_TEXT',
-        },
       },
       endIndex: 60,
-      startIndex: 1,
     },
     {
+      startIndex: 60,
+      endIndex: 61,
       paragraph: {
         paragraphStyle: {
-          namedStyleType: 'NORMAL_TEXT',
           direction: 'LEFT_TO_RIGHT',
+          namedStyleType: 'NORMAL_TEXT',
         },
         elements: [
           {
             startIndex: 60,
-            endIndex: 61,
             textRun: {
               textStyle: {},
               content: '\n',
             },
+            endIndex: 61,
           },
         ],
       },
-      endIndex: 61,
-      startIndex: 60,
     },
     {
-      startIndex: 61,
       paragraph: {
-        paragraphStyle: {
-          direction: 'LEFT_TO_RIGHT',
-          namedStyleType: 'NORMAL_TEXT',
-        },
         elements: [
           {
+            endIndex: 88,
             startIndex: 61,
             textRun: {
-              textStyle: {},
               content: 'This sentence has a single ',
+              textStyle: {},
             },
-            endIndex: 88,
           },
           {
-            startIndex: 88,
             textRun: {
               content: 'word',
               textStyle: {
+                underline: true,
                 foregroundColor: {
                   color: {
                     rgbColor: {
                       green: 0.33333334,
-                      blue: 0.8,
                       red: 0.06666667,
+                      blue: 0.8,
                     },
                   },
                 },
                 link: {
                   url: 'https://tinynewsco.org',
                 },
-                underline: true,
               },
             },
             endIndex: 92,
+            startIndex: 88,
           },
           {
-            endIndex: 137,
             startIndex: 92,
+            endIndex: 137,
             textRun: {
               content: ' linked to the tinynewsco website homepage. \n',
               textStyle: {},
             },
           },
         ],
-      },
-      endIndex: 137,
-    },
-    {
-      startIndex: 137,
-      endIndex: 138,
-      paragraph: {
         paragraphStyle: {
           namedStyleType: 'NORMAL_TEXT',
           direction: 'LEFT_TO_RIGHT',
         },
+      },
+      endIndex: 137,
+      startIndex: 61,
+    },
+    {
+      paragraph: {
+        paragraphStyle: {
+          direction: 'LEFT_TO_RIGHT',
+          namedStyleType: 'NORMAL_TEXT',
+        },
         elements: [
           {
             textRun: {
-              content: '\n',
               textStyle: {},
+              content: '\n',
             },
             endIndex: 138,
             startIndex: 137,
           },
         ],
       },
+      endIndex: 138,
+      startIndex: 137,
     },
     {
-      endIndex: 150,
+      startIndex: 138,
       paragraph: {
-        paragraphStyle: {
-          namedStyleType: 'NORMAL_TEXT',
-          indentFirstLine: {
-            unit: 'PT',
-            magnitude: 18,
-          },
-          indentStart: {
-            magnitude: 36,
-            unit: 'PT',
-          },
-          direction: 'LEFT_TO_RIGHT',
-        },
         bullet: {
           listId: 'kix.qqyukljg8mnr',
           textStyle: {
@@ -205,41 +193,20 @@ describe('document API', () => {
         },
         elements: [
           {
+            startIndex: 138,
             endIndex: 150,
             textRun: {
               textStyle: {},
               content: 'list item 1\n',
             },
-            startIndex: 138,
           },
         ],
-      },
-      startIndex: 138,
-    },
-    {
-      paragraph: {
-        elements: [
-          {
-            endIndex: 162,
-            startIndex: 150,
-            textRun: {
-              textStyle: {},
-              content: 'list item 2\n',
-            },
-          },
-        ],
-        bullet: {
-          textStyle: {
-            underline: false,
-          },
-          listId: 'kix.qqyukljg8mnr',
-        },
         paragraphStyle: {
-          namedStyleType: 'NORMAL_TEXT',
           indentFirstLine: {
             magnitude: 18,
             unit: 'PT',
           },
+          namedStyleType: 'NORMAL_TEXT',
           indentStart: {
             magnitude: 36,
             unit: 'PT',
@@ -247,21 +214,52 @@ describe('document API', () => {
           direction: 'LEFT_TO_RIGHT',
         },
       },
+      endIndex: 150,
+    },
+    {
+      paragraph: {
+        bullet: {
+          textStyle: {
+            underline: false,
+          },
+          listId: 'kix.qqyukljg8mnr',
+        },
+        paragraphStyle: {
+          indentStart: {
+            magnitude: 36,
+            unit: 'PT',
+          },
+          direction: 'LEFT_TO_RIGHT',
+          namedStyleType: 'NORMAL_TEXT',
+          indentFirstLine: {
+            magnitude: 18,
+            unit: 'PT',
+          },
+        },
+        elements: [
+          {
+            textRun: {
+              textStyle: {},
+              content: 'list item 2\n',
+            },
+            endIndex: 162,
+            startIndex: 150,
+          },
+        ],
+      },
       startIndex: 150,
       endIndex: 162,
     },
     {
-      startIndex: 162,
-      endIndex: 177,
       paragraph: {
         elements: [
           {
             endIndex: 177,
-            startIndex: 162,
             textRun: {
-              content: 'Heading Size 1\n',
               textStyle: {},
+              content: 'Heading Size 1\n',
             },
+            startIndex: 162,
           },
         ],
         paragraphStyle: {
@@ -270,60 +268,60 @@ describe('document API', () => {
           direction: 'LEFT_TO_RIGHT',
         },
       },
+      startIndex: 162,
+      endIndex: 177,
     },
     {
       startIndex: 177,
       paragraph: {
         elements: [
           {
-            startIndex: 177,
             textRun: {
-              textStyle: {},
               content: 'paragraph\n',
+              textStyle: {},
             },
+            startIndex: 177,
             endIndex: 187,
           },
         ],
         paragraphStyle: {
-          namedStyleType: 'NORMAL_TEXT',
           direction: 'LEFT_TO_RIGHT',
+          namedStyleType: 'NORMAL_TEXT',
         },
       },
       endIndex: 187,
     },
     {
       startIndex: 187,
-      endIndex: 202,
       paragraph: {
+        paragraphStyle: {
+          direction: 'LEFT_TO_RIGHT',
+          namedStyleType: 'HEADING_2',
+          headingId: 'h.zdu1t9xjbq6s',
+        },
         elements: [
           {
             endIndex: 202,
-            startIndex: 187,
             textRun: {
               content: 'Heading Size 2\n',
               textStyle: {},
             },
+            startIndex: 187,
           },
         ],
-        paragraphStyle: {
-          namedStyleType: 'HEADING_2',
-          direction: 'LEFT_TO_RIGHT',
-          headingId: 'h.zdu1t9xjbq6s',
-        },
       },
+      endIndex: 202,
     },
     {
-      endIndex: 212,
-      startIndex: 202,
       paragraph: {
         elements: [
           {
-            textRun: {
-              textStyle: {},
-              content: 'paragraph\n',
-            },
             startIndex: 202,
             endIndex: 212,
+            textRun: {
+              content: 'paragraph\n',
+              textStyle: {},
+            },
           },
         ],
         paragraphStyle: {
@@ -331,38 +329,151 @@ describe('document API', () => {
           direction: 'LEFT_TO_RIGHT',
         },
       },
+      startIndex: 202,
+      endIndex: 212,
     },
     {
-      endIndex: 214,
+      endIndex: 213,
       paragraph: {
+        paragraphStyle: {
+          namedStyleType: 'NORMAL_TEXT',
+          direction: 'LEFT_TO_RIGHT',
+        },
         elements: [
           {
-            startIndex: 212,
-            endIndex: 213,
-            inlineObjectElement: {
+            textRun: {
+              content: '\n',
               textStyle: {},
-              inlineObjectId: 'kix.wr6s7brrno1m',
+            },
+            endIndex: 213,
+            startIndex: 212,
+          },
+        ],
+      },
+      startIndex: 212,
+    },
+    {
+      startIndex: 213,
+      endIndex: 249,
+      paragraph: {
+        paragraphStyle: {
+          namedStyleType: 'NORMAL_TEXT',
+          direction: 'LEFT_TO_RIGHT',
+        },
+        elements: [
+          {
+            endIndex: 248,
+            startIndex: 213,
+            textRun: {
+              textStyle: {
+                underline: true,
+                link: {
+                  url: 'https://forms.gle/413sboQBCkw4p1PW6',
+                },
+                foregroundColor: {
+                  color: {
+                    rgbColor: {
+                      blue: 0.8,
+                      green: 0.33333334,
+                      red: 0.06666667,
+                    },
+                  },
+                },
+              },
+              content: 'https://forms.gle/413sboQBCkw4p1PW6',
             },
           },
           {
-            startIndex: 213,
+            endIndex: 249,
+            textRun: {
+              content: '\n',
+              textStyle: {},
+            },
+            startIndex: 248,
+          },
+        ],
+      },
+    },
+    {
+      paragraph: {
+        paragraphStyle: {
+          namedStyleType: 'NORMAL_TEXT',
+          direction: 'LEFT_TO_RIGHT',
+        },
+        elements: [
+          {
+            startIndex: 249,
             textRun: {
               textStyle: {},
               content: '\n',
             },
-            endIndex: 214,
+            endIndex: 250,
           },
         ],
+      },
+      endIndex: 250,
+      startIndex: 249,
+    },
+    {
+      endIndex: 252,
+      paragraph: {
         paragraphStyle: {
           namedStyleType: 'NORMAL_TEXT',
           direction: 'LEFT_TO_RIGHT',
         },
+        elements: [
+          {
+            endIndex: 251,
+            startIndex: 250,
+            inlineObjectElement: {
+              inlineObjectId: 'kix.wr6s7brrno1m',
+              textStyle: {},
+            },
+          },
+          {
+            textRun: {
+              content: '\n',
+              textStyle: {},
+            },
+            startIndex: 251,
+            endIndex: 252,
+          },
+        ],
       },
-      startIndex: 212,
+      startIndex: 250,
     },
   ];
 
   context('processDocumentContents', () => {
+    beforeEach(() => {
+      cy.intercept(
+        'https://accounts.google.com/ServiceLogin?service=wise&passive=1209600&continue=https://docs.google.com/forms/d/e/1FAIpQLSfVOl8qdT54E2r_T367YsRlka57bUY_fnjedMLezp1Tll9OQw/viewform?usp%3Dsend_form&followup=https://docs.google.com/forms/d/e/1FAIpQLSfVOl8qdT54E2r_T367YsRlka57bUY_fnjedMLezp1Tll9OQw/viewform?usp%3Dsend_form&ltmpl=forms',
+        {
+          statusCode: 200,
+        }
+      );
+      cy.intercept(
+        {
+          https: true,
+          method: 'GET',
+          hostname: 'forms.gle',
+          url: '/*',
+        },
+        (req) => {
+          req.reply({
+            headers: {
+              Location:
+                'https://accounts.google.com/ServiceLogin?service=wise&passive=1209600&continue=https://docs.google.com/forms/d/e/1FAIpQLSfVOl8qdT54E2r_T367YsRlka57bUY_fnjedMLezp1Tll9OQw/viewform?usp%3Dsend_form&followup=https://docs.google.com/forms/d/e/1FAIpQLSfVOl8qdT54E2r_T367YsRlka57bUY_fnjedMLezp1Tll9OQw/viewform?usp%3Dsend_form&ltmpl=forms',
+            },
+            statusCode: 301,
+            body: {
+              name: 'Peter Pan',
+            },
+          });
+        }
+      ).as('googleForms');
+    });
+
     it('returns an object with main image, an updated list of images, and formatted elements', () => {
       cy.wrap(
         processDocumentContents(
@@ -474,6 +585,26 @@ describe('document API', () => {
         expect(paragraph2.type).to.eq('text');
         expect(paragraph2.style).to.eq('HEADING_2');
         expect(paragraph2.children[0].content).to.eq('Heading Size 2');
+      });
+    });
+
+    it('formats google forms embed short links', () => {
+      cy.wrap(
+        processDocumentContents(
+          elements,
+          listInfo,
+          inlineObjects,
+          imageList,
+          slug,
+          oauthToken
+        )
+      ).then((result) => {
+        let el = result.formattedElements[10];
+
+        expect(el.type).to.eq('embed');
+        expect(el.link).to.eq(
+          'https://docs.google.com/forms/d/e/1FAIpQLSfVOl8qdT54E2r_T367YsRlka57bUY_fnjedMLezp1Tll9OQw/viewform?usp=send_form'
+        );
       });
     });
   });
