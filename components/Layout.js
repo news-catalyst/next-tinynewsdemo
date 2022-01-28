@@ -87,9 +87,11 @@ export default function Layout({
     metaValues['documentType'] = 'website';
   }
   if (translations && translations.length > 0) {
-    pageTitle = hasuraLocalizeText(locale, translations, 'search_title');
-    if (pageTitle === 'Untitled Document') {
-      let headline = hasuraLocalizeText(locale, translations, 'headline');
+    let headline = hasuraLocalizeText(locale, translations, 'headline');
+    let searchTitle = hasuraLocalizeText(locale, translations, 'search_title');
+    let pageTitle = searchTitle;
+
+    if (!pageTitle || pageTitle === 'Untitled Document') {
       if (headline !== 'Untitled Document') {
         pageTitle = headline + ' | ' + metaValues.siteName;
       } else {
@@ -106,11 +108,11 @@ export default function Layout({
         'title'
       );
     }
-    metaValues.searchTitle = hasuraLocalizeText(
-      locale,
-      translations,
-      'search_title'
-    );
+    metaValues.searchTitle = searchTitle;
+    // fallback to headline if no search title is given
+    if (!metaValues.searchTitle) {
+      metaValues.searchTitle = headline;
+    }
     metaValues.searchDescription = hasuraLocalizeText(
       locale,
       translations,
