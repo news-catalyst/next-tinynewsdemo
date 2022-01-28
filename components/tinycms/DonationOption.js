@@ -56,18 +56,6 @@ export default function DonationOption(props) {
     }));
   };
 
-  const updateDesc = (index, value) => {
-    setDesc(value);
-
-    let donationOptions = JSON.parse(props.parsedData.donationOptions);
-    donationOptions[index].description = value;
-
-    props.updateParsedData((prevState) => ({
-      ...prevState,
-      ['donationOptions']: JSON.stringify(donationOptions),
-    }));
-  };
-
   const updatePaymentType = (index, value) => {
     setPaymentType(value);
 
