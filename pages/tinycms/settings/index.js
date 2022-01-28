@@ -89,9 +89,7 @@ export default function Settings({
   };
 
   const handleKeyDown = (e) => {
-    console.log('keyCode:', e.keyCode);
     if (e.keyCode === 18) {
-      console.log('preventing default');
       e.preventDefault();
     }
   };
@@ -192,7 +190,6 @@ export default function Settings({
     let parsed = parsedData;
 
     if (jsonData && (Object.keys(parsedData).length === 0 || editData)) {
-      console.log('setting parsed data to jsondata');
       parsed = JSON.parse(jsonData);
       setParsedData(parsed);
     }
@@ -252,7 +249,6 @@ export default function Settings({
       }
     }
 
-    console.log('parsed:', parsed);
     const { errors, data } = await hasuraUpsertMetadata({
       url: apiUrl,
       orgSlug: apiToken,
@@ -436,7 +432,6 @@ export async function getServerSideProps(context) {
   } else {
     locales = data.organization_locales;
     siteMetadata = data.site_metadatas[0];
-    console.log('siteMetadata:', JSON.stringify(siteMetadata));
   }
   if (siteMetadata === undefined) {
     siteMetadata = null;
