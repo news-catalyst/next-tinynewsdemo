@@ -66,6 +66,30 @@ export default function DonationOption(props) {
     }));
   };
 
+  const updateAmount = (index, value) => {
+    setAmount(value);
+
+    let donationOptions = JSON.parse(props.parsedData.donationOptions);
+    donationOptions[index].amount = value;
+
+    props.updateParsedData((prevState) => ({
+      ...prevState,
+      ['donationOptions']: JSON.stringify(donationOptions),
+    }));
+  };
+
+  const updateMonkeypodId = (index, value) => {
+    setMonkeypodId(value);
+
+    let donationOptions = JSON.parse(props.parsedData.donationOptions);
+    donationOptions[index].monkeypodId = value;
+
+    props.updateParsedData((prevState) => ({
+      ...prevState,
+      ['donationOptions']: JSON.stringify(donationOptions),
+    }));
+  };
+
   return (
     <div key={`option-${index}`}>
       <div tw="mt-2">
@@ -85,7 +109,7 @@ export default function DonationOption(props) {
             type="number"
             name={`donationOptions-${index}-amount`}
             value={amount}
-            onChange={(ev) => setAmount(ev.target.value)}
+            onChange={(ev) => updateAmount(index, ev.target.value)}
           />
         </label>
       </div>
@@ -147,7 +171,7 @@ export default function DonationOption(props) {
             type="text"
             name={`donationOptions-${index}-monkeypodId`}
             value={monkeypodId}
-            onChange={(ev) => setMonkeypodId(ev.target.value)}
+            onChange={(ev) => updateMonkeypodId(index, ev.target.value)}
           />
         </label>
       </div>
