@@ -1,7 +1,7 @@
 import { processDocumentContents } from '../../lib/document';
 import TinyS3 from '../../lib/tiny_s3';
 
-describe('document API', () => {
+describe('document parser', () => {
   let listInfo = {};
   let inlineObjects = {};
   let imageList = {};
