@@ -939,6 +939,7 @@ export default function SiteInfoSettings(props) {
               monkeypodId={option.monkeypodId}
               parsedData={props.parsedData}
               updateParsedData={props.updateParsedData}
+              tinyApiKey={props.tinyApiKey}
             />
           ))}
       </DonationOptionsEditor>

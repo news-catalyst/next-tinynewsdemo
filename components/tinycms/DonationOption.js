@@ -3,6 +3,7 @@ import tw, { css, styled } from 'twin.macro';
 
 import ControlledInput from './ControlledInput';
 import { TinyInputField } from './TinyFormElements';
+import TinyEditor from './TinyEditor';
 
 const Input = styled.input`
   ${tw`px-3 py-3 mb-4 placeholder-gray-300 text-gray-600 relative bg-white bg-white rounded text-sm border-0 shadow outline-none focus:outline-none focus:ring w-full`}
@@ -14,9 +15,22 @@ export default function DonationOption(props) {
   const [name, setName] = useState(props.name);
   const [cta, setCTA] = useState(props.cta);
   const [desc, setDesc] = useState(props.desc);
+  const [staticDesc, setStaticDesc] = useState(props.desc);
   const [paymentType, setPaymentType] = useState(props.paymentType);
   const [monkeypodId, setMonkeypodId] = useState(props.monkeypodId);
   const [amount, setAmount] = useState(props.amount);
+
+  const updateDesc = (value, editor) => {
+    setDesc(value);
+    let index = editor.getParam('index');
+    let donationOptions = JSON.parse(props.parsedData.donationOptions);
+    donationOptions[index].description = value;
+
+    props.updateParsedData((prevState) => ({
+      ...prevState,
+      ['donationOptions']: JSON.stringify(donationOptions),
+    }));
+  };
 
   const updateName = (index, value) => {
     setName(value);
@@ -97,13 +111,19 @@ export default function DonationOption(props) {
         </label>
       </div>
       <div tw="mt-2">
-        <TinyInputField
+        <TinyEditor
+          tinyApiKey={props.tinyApiKey}
+          setValue={updateDesc}
+          index={index}
+          value={staticDesc}
+        />
+        {/* <TinyInputField
           tw="w-full rounded-md border-solid border-gray-300"
           name={`donationOptions-${index}-description`}
           value={desc}
           onChange={(ev) => setDesc(ev.target.value)}
           label="Option description"
-        />
+        /> */}
       </div>
       <div tw="mt-2">
         <TinyInputField

@@ -192,6 +192,7 @@ export default function Settings({
     let parsed = parsedData;
 
     if (jsonData && (Object.keys(parsedData).length === 0 || editData)) {
+      console.log('setting parsed data to jsondata');
       parsed = JSON.parse(jsonData);
       setParsedData(parsed);
     }
@@ -251,6 +252,7 @@ export default function Settings({
       }
     }
 
+    console.log('parsed:', parsed);
     const { errors, data } = await hasuraUpsertMetadata({
       url: apiUrl,
       orgSlug: apiToken,
