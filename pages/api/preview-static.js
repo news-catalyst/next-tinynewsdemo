@@ -29,7 +29,7 @@ export default async function Handler(req, res) {
   if (localeCode) {
     nextPath = '/' + localeCode;
   }
-  if (req.query.slug === 'about') {
+  if (['about', 'staff', 'thank-you', 'donate'].includes(req.query.slug)) {
     nextPath += '/preview/' + req.query.slug;
   } else {
     nextPath += '/preview/static/' + req.query.slug;
