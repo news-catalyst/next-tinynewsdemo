@@ -1,12 +1,11 @@
 import { hasuraGetPage } from '../../lib/articles.js';
 import { hasuraLocalizeText } from '../../lib/utils';
-import AboutPage from '../../components/AboutPage';
+import StaffPage from '../../components/StaffPage';
 
-export default function About(props) {
-  // const isAmp = useAmp();
+export default function Staff(props) {
   const isAmp = false;
 
-  return <AboutPage {...props} isAmp={isAmp} />;
+  return <StaffPage {...props} isAmp={isAmp} />;
 }
 
 export async function getStaticProps(context) {
@@ -18,21 +17,22 @@ export async function getStaticProps(context) {
       notFound: true,
     };
   }
+
   const apiUrl = process.env.HASURA_API_URL;
   const apiToken = process.env.ORG_SLUG;
 
   let page = {};
   let sections;
   let siteMetadata = {};
-  let locales = [];
+  let authors = [];
 
   const { errors, data } = await hasuraGetPage({
     url: apiUrl,
     orgSlug: apiToken,
     slug: 'about',
-    localeCode: locale,
   });
   if (errors || !data) {
+    console.error(errors);
     return {
       notFound: true,
     };
@@ -44,21 +44,10 @@ export async function getStaticProps(context) {
       };
     }
     page = data.page_slug_versions[0].page;
-
-    var allPageLocales = data.pages[0].page_translations;
-    var distinctLocaleCodes = [];
-    var distinctLocales = [];
-    for (var i = 0; i < allPageLocales.length; i++) {
-      if (!distinctLocaleCodes.includes(allPageLocales[i].locale.code)) {
-        distinctLocaleCodes.push(allPageLocales[i].locale.code);
-        distinctLocales.push(allPageLocales[i]);
-      }
-    }
-    locales = distinctLocales;
-
     sections = data.categories;
+    authors = data.authors;
     siteMetadata = data.site_metadatas[0].site_metadata_translations[0].data;
-    for (i = 0; i < sections.length; i++) {
+    for (var i = 0; i < sections.length; i++) {
       sections[i].title = hasuraLocalizeText(
         locale,
         sections[i].category_translations,
@@ -69,11 +58,11 @@ export async function getStaticProps(context) {
 
   return {
     props: {
-      page,
+      authors,
+      locale,
       sections,
       siteMetadata,
-      locales,
-      locale,
     },
+    revalidate: 1,
   };
 }
