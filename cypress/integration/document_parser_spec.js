@@ -13,44 +13,43 @@ describe('document parser', () => {
       sectionBreak: {
         sectionStyle: {
           sectionType: 'CONTINUOUS',
-          contentDirection: 'LEFT_TO_RIGHT',
           columnSeparatorStyle: 'NONE',
+          contentDirection: 'LEFT_TO_RIGHT',
         },
       },
       endIndex: 1,
     },
     {
-      startIndex: 1,
       paragraph: {
         paragraphStyle: {
-          namedStyleType: 'NORMAL_TEXT',
           direction: 'LEFT_TO_RIGHT',
+          namedStyleType: 'NORMAL_TEXT',
         },
         elements: [
           {
+            textRun: {
+              content: 'This sentence has a word in ',
+              textStyle: {},
+            },
             endIndex: 29,
             startIndex: 1,
-            textRun: {
-              textStyle: {},
-              content: 'This sentence has a word in ',
-            },
           },
           {
+            startIndex: 29,
+            endIndex: 33,
             textRun: {
               content: 'bold',
               textStyle: {
                 bold: true,
               },
             },
-            endIndex: 33,
-            startIndex: 29,
           },
           {
-            endIndex: 35,
             startIndex: 33,
+            endIndex: 35,
             textRun: {
-              content: ', ',
               textStyle: {},
+              content: ', ',
             },
           },
           {
@@ -73,78 +72,80 @@ describe('document parser', () => {
           },
           {
             textRun: {
-              content: 'underlined',
               textStyle: {
                 underline: true,
               },
+              content: 'underlined',
             },
             startIndex: 47,
             endIndex: 57,
           },
           {
             endIndex: 60,
-            startIndex: 57,
             textRun: {
-              textStyle: {},
               content: '. \n',
+              textStyle: {},
             },
+            startIndex: 57,
           },
         ],
       },
+      startIndex: 1,
       endIndex: 60,
     },
     {
-      startIndex: 60,
       endIndex: 61,
+      startIndex: 60,
       paragraph: {
         paragraphStyle: {
-          direction: 'LEFT_TO_RIGHT',
           namedStyleType: 'NORMAL_TEXT',
+          direction: 'LEFT_TO_RIGHT',
         },
         elements: [
           {
             startIndex: 60,
-            textRun: {
-              textStyle: {},
-              content: '\n',
-            },
             endIndex: 61,
+            textRun: {
+              content: '\n',
+              textStyle: {},
+            },
           },
         ],
       },
     },
     {
+      endIndex: 137,
       paragraph: {
         elements: [
           {
-            endIndex: 88,
             startIndex: 61,
+            endIndex: 88,
             textRun: {
-              content: 'This sentence has a single ',
               textStyle: {},
+              content: 'This sentence has a single ',
             },
           },
           {
+            startIndex: 88,
+            endIndex: 92,
             textRun: {
-              content: 'word',
               textStyle: {
                 underline: true,
+                link: {
+                  url: 'https://tinynewsco.org',
+                },
                 foregroundColor: {
                   color: {
                     rgbColor: {
                       green: 0.33333334,
-                      red: 0.06666667,
                       blue: 0.8,
+                      red: 0.06666667,
                     },
                   },
                 },
-                link: {
-                  url: 'https://tinynewsco.org',
-                },
               },
+              content: 'word',
             },
-            endIndex: 92,
-            startIndex: 88,
           },
           {
             startIndex: 92,
@@ -156,69 +157,46 @@ describe('document parser', () => {
           },
         ],
         paragraphStyle: {
-          namedStyleType: 'NORMAL_TEXT',
           direction: 'LEFT_TO_RIGHT',
+          namedStyleType: 'NORMAL_TEXT',
         },
       },
-      endIndex: 137,
       startIndex: 61,
     },
     {
-      paragraph: {
-        paragraphStyle: {
-          direction: 'LEFT_TO_RIGHT',
-          namedStyleType: 'NORMAL_TEXT',
-        },
-        elements: [
-          {
-            textRun: {
-              textStyle: {},
-              content: '\n',
-            },
-            endIndex: 138,
-            startIndex: 137,
-          },
-        ],
-      },
       endIndex: 138,
       startIndex: 137,
-    },
-    {
-      startIndex: 138,
       paragraph: {
-        bullet: {
-          listId: 'kix.qqyukljg8mnr',
-          textStyle: {
-            underline: false,
-          },
+        paragraphStyle: {
+          namedStyleType: 'NORMAL_TEXT',
+          direction: 'LEFT_TO_RIGHT',
         },
         elements: [
           {
-            startIndex: 138,
-            endIndex: 150,
+            startIndex: 137,
+            endIndex: 138,
             textRun: {
+              content: '\n',
               textStyle: {},
-              content: 'list item 1\n',
             },
           },
         ],
-        paragraphStyle: {
-          indentFirstLine: {
-            magnitude: 18,
-            unit: 'PT',
-          },
-          namedStyleType: 'NORMAL_TEXT',
-          indentStart: {
-            magnitude: 36,
-            unit: 'PT',
-          },
-          direction: 'LEFT_TO_RIGHT',
-        },
       },
-      endIndex: 150,
     },
     {
+      endIndex: 150,
+      startIndex: 138,
       paragraph: {
+        elements: [
+          {
+            textRun: {
+              content: 'list item 1\n',
+              textStyle: {},
+            },
+            endIndex: 150,
+            startIndex: 138,
+          },
+        ],
         bullet: {
           textStyle: {
             underline: false,
@@ -226,17 +204,23 @@ describe('document parser', () => {
           listId: 'kix.qqyukljg8mnr',
         },
         paragraphStyle: {
-          indentStart: {
-            magnitude: 36,
-            unit: 'PT',
-          },
           direction: 'LEFT_TO_RIGHT',
           namedStyleType: 'NORMAL_TEXT',
           indentFirstLine: {
             magnitude: 18,
             unit: 'PT',
           },
+          indentStart: {
+            unit: 'PT',
+            magnitude: 36,
+          },
         },
+      },
+    },
+    {
+      endIndex: 162,
+      startIndex: 150,
+      paragraph: {
         elements: [
           {
             textRun: {
@@ -247,11 +231,29 @@ describe('document parser', () => {
             startIndex: 150,
           },
         ],
+        bullet: {
+          listId: 'kix.qqyukljg8mnr',
+          textStyle: {
+            underline: false,
+          },
+        },
+        paragraphStyle: {
+          namedStyleType: 'NORMAL_TEXT',
+          direction: 'LEFT_TO_RIGHT',
+          indentStart: {
+            magnitude: 36,
+            unit: 'PT',
+          },
+          indentFirstLine: {
+            unit: 'PT',
+            magnitude: 18,
+          },
+        },
       },
-      startIndex: 150,
-      endIndex: 162,
     },
     {
+      endIndex: 177,
+      startIndex: 162,
       paragraph: {
         elements: [
           {
@@ -264,113 +266,103 @@ describe('document parser', () => {
           },
         ],
         paragraphStyle: {
-          headingId: 'h.t40hwwqf2an0',
           namedStyleType: 'HEADING_1',
           direction: 'LEFT_TO_RIGHT',
+          headingId: 'h.t40hwwqf2an0',
         },
       },
-      startIndex: 162,
-      endIndex: 177,
     },
     {
       startIndex: 177,
       paragraph: {
+        paragraphStyle: {
+          namedStyleType: 'NORMAL_TEXT',
+          direction: 'LEFT_TO_RIGHT',
+        },
         elements: [
           {
             textRun: {
-              content: 'paragraph\n',
               textStyle: {},
+              content: 'paragraph\n',
             },
-            startIndex: 177,
             endIndex: 187,
+            startIndex: 177,
           },
         ],
-        paragraphStyle: {
-          direction: 'LEFT_TO_RIGHT',
-          namedStyleType: 'NORMAL_TEXT',
-        },
       },
       endIndex: 187,
     },
     {
+      paragraph: {
+        elements: [
+          {
+            startIndex: 187,
+            endIndex: 202,
+            textRun: {
+              textStyle: {},
+              content: 'Heading Size 2\n',
+            },
+          },
+        ],
+        paragraphStyle: {
+          headingId: 'h.zdu1t9xjbq6s',
+          namedStyleType: 'HEADING_2',
+          direction: 'LEFT_TO_RIGHT',
+        },
+      },
+      endIndex: 202,
       startIndex: 187,
+    },
+    {
+      endIndex: 212,
+      startIndex: 202,
       paragraph: {
         paragraphStyle: {
+          namedStyleType: 'NORMAL_TEXT',
           direction: 'LEFT_TO_RIGHT',
-          namedStyleType: 'HEADING_2',
-          headingId: 'h.zdu1t9xjbq6s',
         },
         elements: [
           {
-            endIndex: 202,
-            textRun: {
-              content: 'Heading Size 2\n',
-              textStyle: {},
-            },
-            startIndex: 187,
-          },
-        ],
-      },
-      endIndex: 202,
-    },
-    {
-      paragraph: {
-        elements: [
-          {
-            startIndex: 202,
-            endIndex: 212,
             textRun: {
               content: 'paragraph\n',
               textStyle: {},
             },
+            endIndex: 212,
+            startIndex: 202,
           },
         ],
-        paragraphStyle: {
-          namedStyleType: 'NORMAL_TEXT',
-          direction: 'LEFT_TO_RIGHT',
-        },
       },
-      startIndex: 202,
-      endIndex: 212,
     },
     {
+      startIndex: 212,
       endIndex: 213,
       paragraph: {
+        elements: [
+          {
+            startIndex: 212,
+            textRun: {
+              textStyle: {},
+              content: '\n',
+            },
+            endIndex: 213,
+          },
+        ],
         paragraphStyle: {
           namedStyleType: 'NORMAL_TEXT',
           direction: 'LEFT_TO_RIGHT',
         },
-        elements: [
-          {
-            textRun: {
-              content: '\n',
-              textStyle: {},
-            },
-            endIndex: 213,
-            startIndex: 212,
-          },
-        ],
       },
-      startIndex: 212,
     },
     {
       startIndex: 213,
-      endIndex: 249,
       paragraph: {
-        paragraphStyle: {
-          namedStyleType: 'NORMAL_TEXT',
-          direction: 'LEFT_TO_RIGHT',
-        },
         elements: [
           {
             endIndex: 248,
             startIndex: 213,
             textRun: {
+              content: 'https://forms.gle/413sboQBCkw4p1PW6',
               textStyle: {
-                underline: true,
-                link: {
-                  url: 'https://forms.gle/413sboQBCkw4p1PW6',
-                },
                 foregroundColor: {
                   color: {
                     rgbColor: {
@@ -380,43 +372,116 @@ describe('document parser', () => {
                     },
                   },
                 },
+                link: {
+                  url: 'https://forms.gle/413sboQBCkw4p1PW6',
+                },
+                underline: true,
               },
-              content: 'https://forms.gle/413sboQBCkw4p1PW6',
             },
           },
           {
-            endIndex: 249,
             textRun: {
               content: '\n',
               textStyle: {},
             },
+            endIndex: 249,
             startIndex: 248,
           },
         ],
+        paragraphStyle: {
+          direction: 'LEFT_TO_RIGHT',
+          namedStyleType: 'NORMAL_TEXT',
+        },
       },
+      endIndex: 249,
     },
     {
+      startIndex: 249,
+      endIndex: 250,
       paragraph: {
         paragraphStyle: {
-          namedStyleType: 'NORMAL_TEXT',
           direction: 'LEFT_TO_RIGHT',
+          namedStyleType: 'NORMAL_TEXT',
         },
         elements: [
           {
-            startIndex: 249,
             textRun: {
-              textStyle: {},
               content: '\n',
+              textStyle: {},
             },
             endIndex: 250,
+            startIndex: 249,
           },
         ],
       },
-      endIndex: 250,
-      startIndex: 249,
     },
     {
-      endIndex: 252,
+      paragraph: {
+        paragraphStyle: {
+          direction: 'LEFT_TO_RIGHT',
+          namedStyleType: 'NORMAL_TEXT',
+        },
+        elements: [
+          {
+            startIndex: 250,
+            textRun: {
+              textStyle: {
+                link: {
+                  url:
+                    'https://twitter.com/metmuseum/status/1487459721737035779',
+                },
+                foregroundColor: {
+                  color: {
+                    rgbColor: {
+                      blue: 0.8,
+                      red: 0.06666667,
+                      green: 0.33333334,
+                    },
+                  },
+                },
+                underline: true,
+              },
+              content:
+                'https://twitter.com/metmuseum/status/1487459721737035779',
+            },
+            endIndex: 306,
+          },
+          {
+            textRun: {
+              textStyle: {},
+              content: '\n',
+            },
+            startIndex: 306,
+            endIndex: 307,
+          },
+        ],
+      },
+      endIndex: 307,
+      startIndex: 250,
+    },
+    {
+      endIndex: 308,
+      startIndex: 307,
+      paragraph: {
+        elements: [
+          {
+            endIndex: 308,
+            textRun: {
+              content: '\n',
+              textStyle: {},
+            },
+            startIndex: 307,
+          },
+        ],
+        paragraphStyle: {
+          direction: 'LEFT_TO_RIGHT',
+          namedStyleType: 'NORMAL_TEXT',
+        },
+      },
+    },
+    {
+      startIndex: 308,
+      endIndex: 337,
       paragraph: {
         paragraphStyle: {
           namedStyleType: 'NORMAL_TEXT',
@@ -424,11 +489,147 @@ describe('document parser', () => {
         },
         elements: [
           {
-            endIndex: 251,
-            startIndex: 250,
-            inlineObjectElement: {
-              inlineObjectId: 'kix.wr6s7brrno1m',
+            endIndex: 336,
+            textRun: {
+              content: 'https://youtu.be/xo_mTFHFy3A',
+              textStyle: {
+                link: {
+                  url: 'https://youtu.be/xo_mTFHFy3A',
+                },
+                underline: true,
+                foregroundColor: {
+                  color: {
+                    rgbColor: {
+                      red: 0.06666667,
+                      green: 0.33333334,
+                      blue: 0.8,
+                    },
+                  },
+                },
+              },
+            },
+            startIndex: 308,
+          },
+          {
+            endIndex: 337,
+            startIndex: 336,
+            textRun: {
               textStyle: {},
+              content: '\n',
+            },
+          },
+        ],
+      },
+    },
+    {
+      paragraph: {
+        paragraphStyle: {
+          namedStyleType: 'NORMAL_TEXT',
+          direction: 'LEFT_TO_RIGHT',
+        },
+        elements: [
+          {
+            startIndex: 337,
+            endIndex: 338,
+            textRun: {
+              content: '\n',
+              textStyle: {},
+            },
+          },
+        ],
+      },
+      startIndex: 337,
+      endIndex: 338,
+    },
+    {
+      paragraph: {
+        elements: [
+          {
+            endIndex: 378,
+            startIndex: 338,
+            textRun: {
+              textStyle: {
+                link: {
+                  url: 'https://www.instagram.com/p/CZW7N3ts_Uj/',
+                },
+                underline: true,
+                foregroundColor: {
+                  color: {
+                    rgbColor: {
+                      red: 0.06666667,
+                      green: 0.33333334,
+                      blue: 0.8,
+                    },
+                  },
+                },
+              },
+              content: 'https://www.instagram.com/p/CZW7N3ts_Uj/',
+            },
+          },
+          {
+            endIndex: 379,
+            textRun: {
+              textStyle: {},
+              content: '\n',
+            },
+            startIndex: 378,
+          },
+        ],
+        paragraphStyle: {
+          direction: 'LEFT_TO_RIGHT',
+          namedStyleType: 'NORMAL_TEXT',
+        },
+      },
+      endIndex: 379,
+      startIndex: 338,
+    },
+    {
+      endIndex: 380,
+      paragraph: {
+        paragraphStyle: {
+          namedStyleType: 'NORMAL_TEXT',
+          direction: 'LEFT_TO_RIGHT',
+        },
+        elements: [
+          {
+            endIndex: 380,
+            textRun: {
+              textStyle: {},
+              content: '\n',
+            },
+            startIndex: 379,
+          },
+        ],
+      },
+      startIndex: 379,
+    },
+    {
+      startIndex: 381,
+      endIndex: 440,
+      paragraph: {
+        elements: [
+          {
+            endIndex: 440,
+            startIndex: 381,
+            textRun: {
+              content:
+                'https://www.facebook.com/metmuseum/posts/10158951358637635',
+              textStyle: {
+                underline: true,
+                link: {
+                  url:
+                    'https://www.facebook.com/metmuseum/posts/10158951358637635',
+                },
+                foregroundColor: {
+                  color: {
+                    rgbColor: {
+                      red: 0.06666667,
+                      green: 0.33333334,
+                      blue: 0.8,
+                    },
+                  },
+                },
+              },
             },
           },
           {
@@ -436,12 +637,325 @@ describe('document parser', () => {
               content: '\n',
               textStyle: {},
             },
-            startIndex: 251,
-            endIndex: 252,
+            startIndex: 381,
+            endIndex: 440,
+          },
+        ],
+        paragraphStyle: {
+          direction: 'LEFT_TO_RIGHT',
+          namedStyleType: 'NORMAL_TEXT',
+        },
+      },
+    },
+    {
+      endIndex: 441,
+      paragraph: {
+        paragraphStyle: {
+          namedStyleType: 'NORMAL_TEXT',
+          direction: 'LEFT_TO_RIGHT',
+        },
+        elements: [
+          {
+            endIndex: 441,
+            textRun: {
+              textStyle: {},
+              content: '\n',
+            },
+            startIndex: 382,
           },
         ],
       },
-      startIndex: 250,
+      startIndex: 382,
+    },
+    {
+      startIndex: 383,
+      endIndex: 442,
+      paragraph: {
+        elements: [
+          {
+            endIndex: 442,
+            startIndex: 383,
+            textRun: {
+              content:
+                'https://www.tiktok.com/@metmuseum/video/7055762098449861935',
+              textStyle: {
+                underline: true,
+                link: {
+                  url:
+                    'https://www.tiktok.com/@metmuseum/video/7055762098449861935',
+                },
+                foregroundColor: {
+                  color: {
+                    rgbColor: {
+                      red: 0.06666667,
+                      green: 0.33333334,
+                      blue: 0.8,
+                    },
+                  },
+                },
+              },
+            },
+          },
+          {
+            textRun: {
+              content: '\n',
+              textStyle: {},
+            },
+            startIndex: 383,
+            endIndex: 442,
+          },
+        ],
+        paragraphStyle: {
+          direction: 'LEFT_TO_RIGHT',
+          namedStyleType: 'NORMAL_TEXT',
+        },
+      },
+    },
+    {
+      endIndex: 443,
+      paragraph: {
+        paragraphStyle: {
+          namedStyleType: 'NORMAL_TEXT',
+          direction: 'LEFT_TO_RIGHT',
+        },
+        elements: [
+          {
+            endIndex: 443,
+            textRun: {
+              textStyle: {},
+              content: '\n',
+            },
+            startIndex: 384,
+          },
+        ],
+      },
+      startIndex: 384,
+    },
+    {
+      startIndex: 385,
+      endIndex: 444,
+      paragraph: {
+        elements: [
+          {
+            endIndex: 444,
+            startIndex: 385,
+            textRun: {
+              content:
+                'https://open.spotify.com/playlist/37i9dQZF1EQnqst5TRi17F?si=6800f9f9f78048ff',
+              textStyle: {
+                underline: true,
+                link: {
+                  url:
+                    'https://open.spotify.com/playlist/37i9dQZF1EQnqst5TRi17F?si=6800f9f9f78048ff',
+                },
+                foregroundColor: {
+                  color: {
+                    rgbColor: {
+                      red: 0.06666667,
+                      green: 0.33333334,
+                      blue: 0.8,
+                    },
+                  },
+                },
+              },
+            },
+          },
+          {
+            textRun: {
+              content: '\n',
+              textStyle: {},
+            },
+            startIndex: 385,
+            endIndex: 444,
+          },
+        ],
+        paragraphStyle: {
+          direction: 'LEFT_TO_RIGHT',
+          namedStyleType: 'NORMAL_TEXT',
+        },
+      },
+    },
+    {
+      endIndex: 445,
+      paragraph: {
+        paragraphStyle: {
+          namedStyleType: 'NORMAL_TEXT',
+          direction: 'LEFT_TO_RIGHT',
+        },
+        elements: [
+          {
+            endIndex: 445,
+            textRun: {
+              textStyle: {},
+              content: '\n',
+            },
+            startIndex: 386,
+          },
+        ],
+      },
+      startIndex: 386,
+    },
+    {
+      startIndex: 388,
+      endIndex: 446,
+      paragraph: {
+        elements: [
+          {
+            endIndex: 446,
+            startIndex: 388,
+            textRun: {
+              content: 'https://vimeo.com/661633547',
+              textStyle: {
+                underline: true,
+                link: {
+                  url: 'https://vimeo.com/661633547',
+                },
+                foregroundColor: {
+                  color: {
+                    rgbColor: {
+                      red: 0.06666667,
+                      green: 0.33333334,
+                      blue: 0.8,
+                    },
+                  },
+                },
+              },
+            },
+          },
+          {
+            textRun: {
+              content: '\n',
+              textStyle: {},
+            },
+            startIndex: 388,
+            endIndex: 446,
+          },
+        ],
+        paragraphStyle: {
+          direction: 'LEFT_TO_RIGHT',
+          namedStyleType: 'NORMAL_TEXT',
+        },
+      },
+    },
+    {
+      endIndex: 447,
+      paragraph: {
+        paragraphStyle: {
+          namedStyleType: 'NORMAL_TEXT',
+          direction: 'LEFT_TO_RIGHT',
+        },
+        elements: [
+          {
+            endIndex: 447,
+            textRun: {
+              textStyle: {},
+              content: '\n',
+            },
+            startIndex: 389,
+          },
+        ],
+      },
+      startIndex: 389,
+    },
+    {
+      startIndex: 390,
+      endIndex: 448,
+      paragraph: {
+        elements: [
+          {
+            endIndex: 448,
+            startIndex: 390,
+            textRun: {
+              content:
+                'https://podcasts.apple.com/us/podcast/we-need-to-talk-about-covid-part-2-a-conversation/id1200361736?i=1000549512881',
+              textStyle: {
+                underline: true,
+                link: {
+                  url:
+                    'https://podcasts.apple.com/us/podcast/we-need-to-talk-about-covid-part-2-a-conversation/id1200361736?i=1000549512881',
+                },
+                foregroundColor: {
+                  color: {
+                    rgbColor: {
+                      red: 0.06666667,
+                      green: 0.33333334,
+                      blue: 0.8,
+                    },
+                  },
+                },
+              },
+            },
+          },
+          {
+            textRun: {
+              content: '\n',
+              textStyle: {},
+            },
+            startIndex: 390,
+            endIndex: 448,
+          },
+        ],
+        paragraphStyle: {
+          direction: 'LEFT_TO_RIGHT',
+          namedStyleType: 'NORMAL_TEXT',
+        },
+      },
+    },
+    {
+      paragraph: {
+        elements: [
+          {
+            inlineObjectElement: {
+              textStyle: {},
+              inlineObjectId: 'kix.al6se8yfh2hr',
+            },
+            startIndex: 439,
+            endIndex: 440,
+          },
+          {
+            inlineObjectElement: {
+              textStyle: {},
+              inlineObjectId: 'kix.k1t9pkul79ya',
+            },
+            endIndex: 441,
+            startIndex: 440,
+          },
+          {
+            startIndex: 441,
+            endIndex: 442,
+            textRun: {
+              textStyle: {},
+              content: '\n',
+            },
+          },
+        ],
+        paragraphStyle: {
+          namedStyleType: 'NORMAL_TEXT',
+          direction: 'LEFT_TO_RIGHT',
+        },
+      },
+      endIndex: 442,
+      startIndex: 439,
+    },
+    {
+      startIndex: 442,
+      endIndex: 443,
+      paragraph: {
+        paragraphStyle: {
+          direction: 'LEFT_TO_RIGHT',
+          namedStyleType: 'NORMAL_TEXT',
+        },
+        elements: [
+          {
+            textRun: {
+              textStyle: {},
+              content: '\n',
+            },
+            endIndex: 443,
+            startIndex: 442,
+          },
+        ],
+      },
     },
   ];
 
@@ -612,6 +1126,61 @@ describe('document parser', () => {
         expect(paragraph2.type).to.eq('text');
         expect(paragraph2.style).to.eq('HEADING_2');
         expect(paragraph2.children[0].content).to.eq('Heading Size 2');
+      });
+    });
+
+    it('formats social media embed links', () => {
+      cy.wrap(
+        processDocumentContents(
+          elements,
+          listInfo,
+          inlineObjects,
+          imageList,
+          slug,
+          oauthToken
+        )
+      ).then((result) => {
+        let tweet = result.formattedElements[12];
+        expect(tweet.type).to.eq('embed');
+        expect(tweet.link).to.eq(
+          'https://twitter.com/metmuseum/status/1487459721737035779'
+        );
+
+        let youtube = result.formattedElements[14];
+        expect(youtube.type).to.eq('embed');
+        expect(youtube.link).to.eq('https://youtu.be/xo_mTFHFy3A');
+
+        let insta = result.formattedElements[16];
+        expect(insta.type).to.eq('embed');
+        expect(insta.link).to.eq('https://www.instagram.com/p/CZW7N3ts_Uj/');
+
+        let fb = result.formattedElements[18];
+        expect(fb.type).to.eq('embed');
+        expect(fb.link).to.eq(
+          'https://www.facebook.com/metmuseum/posts/10158951358637635'
+        );
+
+        let tt = result.formattedElements[20];
+        expect(tt.type).to.eq('embed');
+        expect(tt.link).to.eq(
+          'https://www.tiktok.com/@metmuseum/video/7055762098449861935'
+        );
+
+        let spotify = result.formattedElements[24];
+        expect(spotify.type).to.eq('embed');
+        expect(spotify.link).to.eq(
+          'https://open.spotify.com/playlist/37i9dQZF1EQnqst5TRi17F?si=6800f9f9f78048ff'
+        );
+
+        let vimeo = result.formattedElements[26];
+        expect(vimeo.type).to.eq('embed');
+        expect(vimeo.link).to.eq('https://vimeo.com/661633547');
+
+        let apple = result.formattedElements[28];
+        expect(apple.type).to.eq('embed');
+        expect(apple.link).to.eq(
+          'https://podcasts.apple.com/us/podcast/we-need-to-talk-about-covid-part-2-a-conversation/id1200361736?i=1000549512881'
+        );
       });
     });
 
