@@ -90,13 +90,7 @@ export default function ArticleLink({
     try {
       mainImageNode = mainImageContent;
     } catch (e) {
-      console.error(
-        article.id,
-        headline,
-        'error finding main image:',
-        e,
-        articleContent
-      );
+      console.error(article.id, headline, 'error finding main image:', e);
     }
   }
 
