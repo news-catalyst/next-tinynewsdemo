@@ -88,8 +88,7 @@ export default function Layout({
   }
   if (translations && translations.length > 0) {
     let headline = hasuraLocalizeText(locale, translations, 'headline');
-    let searchTitle = hasuraLocalizeText(locale, translations, 'search_title');
-    let pageTitle = searchTitle;
+    pageTitle = hasuraLocalizeText(locale, translations, 'search_title');
 
     if (!pageTitle || pageTitle === 'Untitled Document') {
       if (headline !== 'Untitled Document') {
@@ -98,7 +97,7 @@ export default function Layout({
         pageTitle = metaValues.siteName;
       }
     } else {
-      pageTitle += ' | ' + metaValues.siteName;
+      pageTitle = pageTitle + ' | ' + metaValues.siteName;
     }
 
     if (article && article.category) {
@@ -108,11 +107,7 @@ export default function Layout({
         'title'
       );
     }
-    metaValues.searchTitle = searchTitle;
-    // fallback to headline if no search title is given
-    if (!metaValues.searchTitle) {
-      metaValues.searchTitle = headline;
-    }
+
     metaValues.searchDescription = hasuraLocalizeText(
       locale,
       translations,
@@ -125,7 +120,7 @@ export default function Layout({
       'twitter_title'
     );
     if (!metaValues.twitterTitle) {
-      metaValues.twitterTitle = metaValues.searchTitle;
+      metaValues.twitterTitle = headline;
     }
     metaValues.twitterDescription = hasuraLocalizeText(
       locale,
@@ -141,7 +136,7 @@ export default function Layout({
       'facebook_title'
     );
     if (!metaValues.facebookTitle) {
-      metaValues.facebookTitle = metaValues.searchTitle;
+      metaValues.facebookTitle = headline;
     }
     metaValues.facebookDescription = hasuraLocalizeText(
       locale,
