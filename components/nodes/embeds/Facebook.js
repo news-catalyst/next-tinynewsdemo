@@ -4,11 +4,21 @@ const FB_APP_ID = process.env.NEXT_PUBLIC_FB_APP_ID;
 const FB_CLIENT_TOKEN = process.env.NEXT_PUBLIC_FB_CLIENT_TOKEN;
 
 export default function Facebook({ node }) {
-  const [fbPost, setFbPost] = useState(null);
+  const [fbContent, setFbContent] = useState(null);
 
   useEffect(() => {
-    const fbApiUrl =
-      'https://graph.facebook.com/v12.0/oembed_post?url=' + node.link;
+    let fbApiUrl;
+    if (/\/videos/.test(node.link)) {
+      fbApiUrl =
+        'https://graph.facebook.com/v12.0/oembed_video?url=' + node.link;
+    } else if (/\/posts/.test(node.link)) {
+      fbApiUrl =
+        'https://graph.facebook.com/v12.0/oembed_post?url=' + node.link;
+    } else {
+      fbApiUrl =
+        'https://graph.facebook.com/v12.0/oembed_page?url=' + node.link;
+    }
+
     const fbAccessToken = `${FB_APP_ID}|${FB_CLIENT_TOKEN}`;
     fetch(fbApiUrl, {
       headers: {
@@ -20,7 +30,7 @@ export default function Facebook({ node }) {
       .then((res) => res.json())
       .then((result) => {
         // console.log('result:', result);
-        setFbPost(result.html);
+        setFbContent(result.html);
       });
   }, [node.link]);
   return (
@@ -29,7 +39,7 @@ export default function Facebook({ node }) {
         async=""
         src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&amp;version=v12.0"
       />
-      <div dangerouslySetInnerHTML={{ __html: fbPost }} />
+      <div dangerouslySetInnerHTML={{ __html: fbContent }} />
     </div>
   );
 }
