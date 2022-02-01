@@ -89,9 +89,11 @@ export default function DonationCard({ option, metadata, tinycms }) {
               </label>
             </>
           )}
-          <CardDonationDescription meta={metadata}>
-            {option.description}
-          </CardDonationDescription>
+
+          <CardDonationDescription
+            meta={metadata}
+            dangerouslySetInnerHTML={{ __html: option.description }}
+          ></CardDonationDescription>
         </div>
       </CardContent>
       <CardFooter
