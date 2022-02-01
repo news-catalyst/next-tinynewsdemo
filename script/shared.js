@@ -49,8 +49,8 @@ function hasuraInsertNewsletterEdition(params) {
   });
 }
 
-const INSERT_DATA_IMPORT = `mutation FrontendInsertDataImport($notes: String, $end_date: date, $start_date: date, $table_name: String) {
-  insert_ga_data_imports_one(object: {end_date: $end_date, notes: $notes, start_date: $start_date, table_name: $table_name}) {
+const INSERT_DATA_IMPORT = `mutation FrontendInsertDataImport($notes: String, $end_date: date, $start_date: date, $table_name: String, $success: Boolean, $row_count: Int) {
+  insert_ga_data_imports_one(object: {end_date: $end_date, notes: $notes, start_date: $start_date, table_name: $table_name, success: $success, row_count: $row_count}) {
     id
     notes
     end_date
@@ -73,6 +73,8 @@ function hasuraInsertDataImport(params) {
       end_date: params['end_date'],
       start_date: params['start_date'],
       table_name: params['table_name'],
+      success: params['success'],
+      row_count: params['row_count'],
     },
   });
 }
@@ -202,7 +204,9 @@ const HASURA_REMOVE_ORGANIZATION = `mutation FrontendRemoveOrganization($slug: S
   delete_category_translations(where: {category: {organization: {slug: {_eq: $slug}}}}) {
     affected_rows
   }
-  
+  delete_author_articles(where: {author: {organization: {slug: {_eq: $slug}}}}) {
+    affected_rows
+  }
   delete_page_google_documents(where: {page: {organization: {slug: {_eq: $slug}}}}) {
     affected_rows
   }
@@ -225,9 +229,6 @@ const HASURA_REMOVE_ORGANIZATION = `mutation FrontendRemoveOrganization($slug: S
     affected_rows
   }
   delete_homepage_layout_schemas(where: {organization: {slug: {_eq: $slug}}}) {
-    affected_rows
-  }
-  delete_author_articles(where: {author: {organization: {slug: {_eq: $slug}}}}) {
     affected_rows
   }
   delete_tag_translations(where: {tag: {organization: {slug: {_eq: $slug}}}}) {

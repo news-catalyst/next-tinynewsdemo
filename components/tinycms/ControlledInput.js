@@ -11,6 +11,7 @@ const ControlledInput = (props) => {
 
   useEffect(() => {
     const input = ref.current;
+
     if (input) input.setSelectionRange(cursor, cursor);
   }, [ref, cursor, value]);
 

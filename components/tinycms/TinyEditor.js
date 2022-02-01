@@ -1,6 +1,6 @@
 import { Editor } from '@tinymce/tinymce-react';
 
-const TinyEditor = ({ tinyApiKey, value, setValue }) => {
+const TinyEditor = ({ tinyApiKey, value, setValue, ...props }) => {
   return (
     <Editor
       apiKey={tinyApiKey}
@@ -18,8 +18,10 @@ const TinyEditor = ({ tinyApiKey, value, setValue }) => {
           'undo redo | formatselect | bold italic link | \
             alignleft aligncenter alignright | \
             bullist numlist outdent indent | help',
+        index: props.index,
       }}
       onEditorChange={setValue}
+      {...props}
     />
   );
 };
