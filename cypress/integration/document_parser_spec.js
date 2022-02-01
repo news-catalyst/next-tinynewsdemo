@@ -1723,5 +1723,192 @@ describe('document parser', () => {
         );
       });
     });
+
+    it('handles specially formatted text', () => {
+      elements = [
+        {
+          paragraph: {
+            paragraphStyle: {
+              direction: 'LEFT_TO_RIGHT',
+              namedStyleType: 'NORMAL_TEXT',
+            },
+            elements: [
+              {
+                endIndex: 213,
+                startIndex: 212,
+                textRun: {
+                  content: '\n',
+                  textStyle: {},
+                },
+              },
+            ],
+          },
+          endIndex: 213,
+          startIndex: 212,
+        },
+        {
+          endIndex: 226,
+          startIndex: 213,
+          paragraph: {
+            elements: [
+              {
+                endIndex: 226,
+                startIndex: 213,
+                textRun: {
+                  textStyle: {},
+                  content: 'FORMAT START\n',
+                },
+              },
+            ],
+            paragraphStyle: {
+              namedStyleType: 'NORMAL_TEXT',
+              direction: 'LEFT_TO_RIGHT',
+            },
+          },
+        },
+        {
+          endIndex: 241,
+          paragraph: {
+            paragraphStyle: {
+              namedStyleType: 'NORMAL_TEXT',
+              direction: 'LEFT_TO_RIGHT',
+            },
+            elements: [
+              {
+                endIndex: 241,
+                textRun: {
+                  textStyle: {},
+                  content: 'some lines of \n',
+                },
+                startIndex: 226,
+              },
+            ],
+          },
+          startIndex: 226,
+        },
+        {
+          startIndex: 241,
+          paragraph: {
+            elements: [
+              {
+                endIndex: 256,
+                textRun: {
+                  content: '        poetry\n',
+                  textStyle: {},
+                },
+                startIndex: 241,
+              },
+            ],
+            paragraphStyle: {
+              direction: 'LEFT_TO_RIGHT',
+              namedStyleType: 'NORMAL_TEXT',
+            },
+          },
+          endIndex: 256,
+        },
+        {
+          endIndex: 270,
+          paragraph: {
+            elements: [
+              {
+                endIndex: 270,
+                textRun: {
+                  content: 'should appear\n',
+                  textStyle: {},
+                },
+                startIndex: 256,
+              },
+            ],
+            paragraphStyle: {
+              direction: 'LEFT_TO_RIGHT',
+              namedStyleType: 'NORMAL_TEXT',
+            },
+          },
+          startIndex: 256,
+        },
+        {
+          startIndex: 270,
+          endIndex: 279,
+          paragraph: {
+            elements: [
+              {
+                endIndex: 279,
+                textRun: {
+                  content: ' – here.\n',
+                  textStyle: {},
+                },
+                startIndex: 270,
+              },
+            ],
+            paragraphStyle: {
+              direction: 'LEFT_TO_RIGHT',
+              namedStyleType: 'NORMAL_TEXT',
+            },
+          },
+        },
+        {
+          endIndex: 290,
+          paragraph: {
+            paragraphStyle: {
+              namedStyleType: 'NORMAL_TEXT',
+              direction: 'LEFT_TO_RIGHT',
+            },
+            elements: [
+              {
+                startIndex: 279,
+                textRun: {
+                  content: 'FORMAT END\n',
+                  textStyle: {},
+                },
+                endIndex: 290,
+              },
+            ],
+          },
+          startIndex: 279,
+        },
+        {
+          startIndex: 290,
+          paragraph: {
+            elements: [
+              {
+                textRun: {
+                  content: '\n',
+                  textStyle: {},
+                },
+                startIndex: 290,
+                endIndex: 291,
+              },
+            ],
+            paragraphStyle: {
+              direction: 'LEFT_TO_RIGHT',
+              namedStyleType: 'NORMAL_TEXT',
+            },
+          },
+          endIndex: 291,
+        },
+      ];
+
+      cy.wrap(
+        processDocumentContents(
+          elements,
+          listInfo,
+          inlineObjects,
+          imageList,
+          slug,
+          oauthToken
+        )
+      ).then((result) => {
+        // for (let l = 0; l < result.formattedElements.length; l++) {
+        //   let el = result.formattedElements[l];
+        //   cy.log(JSON.stringify(el));
+        // }
+
+        // example doc elements had 4 lines of poetry between the two FORMAT START & END markers
+        const specialEls = result.formattedElements.filter(
+          (el) => el.style === 'FORMATTED_TEXT'
+        );
+        expect(specialEls).to.have.length(4);
+      });
+    });
   });
 });
