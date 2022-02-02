@@ -106,6 +106,16 @@ export default function DonationOption(props) {
     }));
   };
 
+  useEffect(() => {
+    setPaymentType(props.paymentType);
+    setPaymentProvider(props.paymentProvider);
+    setMonkeypodId(props.monkeypodId);
+    setStripeId(props.stripeId);
+    setAmount(props.amount);
+    setCTA(props.cta);
+    setDesc(props.desc);
+    setName(props.name);
+  }, [props.paymentProvider]);
   return (
     <div key={`option-${index}`}>
       <div tw="mt-2">
