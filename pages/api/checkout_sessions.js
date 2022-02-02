@@ -16,8 +16,8 @@ export default async function handler(req, res) {
         ],
         payment_method_types: ['card'],
         mode: paymentType,
-        success_url: `${req.headers.origin}/join/?success=true&session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `${req.headers.origin}/join/?canceled=true`,
+        success_url: `${req.headers.origin}/thank-you/?success=true&session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${req.headers.origin}/thank-you/?canceled=true`,
       });
 
       res.redirect(303, session.url);

@@ -1,4 +1,4 @@
-import { useAmp } from 'next/amp';
+import { useEffect } from 'react';
 import tw from 'twin.macro';
 import { useRouter } from 'next/router';
 import { hasuraGetPage } from '../lib/articles.js';
@@ -62,6 +62,19 @@ export default function ThankYou({
     isAmp,
     siteMetadata
   );
+
+  // to-do
+  useEffect(() => {
+    const query = new URLSearchParams(window.location.search);
+
+    if (query.get('success')) {
+      console.log('Success!');
+    }
+
+    if (query.get('canceled')) {
+      console.log('Canceled :(');
+    }
+  }, []);
 
   return (
     <Layout locale={locale} meta={siteMetadata} page={page} sections={sections}>
