@@ -59,18 +59,6 @@ export default function Donate({
     siteMetadata
   );
 
-  useEffect(() => {
-    const query = new URLSearchParams(window.location.search);
-
-    if (query.get('success')) {
-      console.log('Success!');
-    }
-
-    if (query.get('canceled')) {
-      console.log('Canceled :(');
-    }
-  }, []);
-
   return (
     <Layout locale={locale} meta={siteMetadata} page={page} sections={sections}>
       <SectionContainer>
