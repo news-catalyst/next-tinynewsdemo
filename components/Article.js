@@ -20,6 +20,7 @@ export default function Article({
 }) {
   const isAmp = useAmp();
 
+  // console.log('Article component article: ', article);
   // console.log('Article locale:', locale, article.article_translations.length);
 
   let baseUrl = process.env.NEXT_PUBLIC_SITE_URL || siteMetadata['siteUrl'];
@@ -48,13 +49,16 @@ export default function Article({
 
       if (mainImageNode) {
         mainImage = mainImageNode.children[0];
-        siteMetadata['coverImage'] = mainImage.imageUrl;
+        if (mainImage.imageUrl) {
+          siteMetadata['coverImage'] = mainImage.imageUrl;
+        }
       }
     } catch (err) {
       console.error('error finding main image: ', err);
     }
   }
 
+  // console.log('Returning layout and children components...');
   return (
     <Layout
       meta={siteMetadata}

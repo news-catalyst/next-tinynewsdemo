@@ -87,37 +87,32 @@ export default function Settings({
       return false;
     }
   };
+
+  const handleKeyDown = (e) => {
+    if (e.keyCode === 18) {
+      e.preventDefault();
+    }
+  };
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
 
-    if (name.startsWith('donationOptions')) {
-      const i = name.split('-')[1];
-      const property = name.split('-')[2];
-      setParsedData((prevState) => {
-        const newState = Object.assign({ ...prevState });
-        const newStateDonationOptions = JSON.parse(newState.donationOptions);
-        newStateDonationOptions[parseInt(i)][property] = value;
-        newState.donationOptions = JSON.stringify(newStateDonationOptions);
-        return newState;
-      });
+    if (type === 'checkbox') {
+      setParsedData((prevState) => ({
+        ...prevState,
+        [name]: checked,
+      }));
+    } else if (type === 'radio') {
+      setParsedData((prevState) => ({
+        ...prevState,
+        [name]: value,
+      }));
     } else {
-      if (type === 'checkbox') {
-        setParsedData((prevState) => ({
-          ...prevState,
-          [name]: checked,
-        }));
-      } else if (type === 'radio') {
-        setParsedData((prevState) => ({
-          ...prevState,
-          [name]: value,
-        }));
-      } else {
-        setParsedData((prevState) => ({
-          ...prevState,
-          [name]: value,
-        }));
-      }
+      setParsedData((prevState) => ({
+        ...prevState,
+        [name]: value,
+      }));
     }
+
     // select typography
     if (name === 'theme') {
       setParsedData((prevState) => ({
@@ -401,6 +396,7 @@ export default function Settings({
                 homepagePromoRef={homepagePromoRef}
                 paymentRef={paymentRef}
                 handleChange={handleChange}
+                handleKeyDown={handleKeyDown}
                 parsedData={parsedData}
                 updateParsedData={setParsedData}
                 awsConfig={awsConfig}
@@ -436,7 +432,6 @@ export async function getServerSideProps(context) {
   } else {
     locales = data.organization_locales;
     siteMetadata = data.site_metadatas[0];
-    console.log('siteMetadata:', siteMetadata);
   }
   if (siteMetadata === undefined) {
     siteMetadata = null;

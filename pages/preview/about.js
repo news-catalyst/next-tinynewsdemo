@@ -1,4 +1,3 @@
-import { useAmp } from 'next/amp';
 import { hasuraGetPage } from '../../lib/articles.js';
 import { hasuraLocalizeText } from '../../lib/utils';
 import AboutPage from '../../components/AboutPage';

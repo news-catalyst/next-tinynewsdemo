@@ -17,10 +17,9 @@ import { hasuraGetAuthorById, hasuraUpdateAuthor } from '../../../lib/authors';
 import {
   displayAuthorName,
   hasuraLocalizeText,
-  slugify,
   validateAuthorName,
 } from '../../../lib/utils.js';
-
+import { slugify } from '../../../lib/graphql';
 const UploadContainer = tw.div`container mx-auto min-w-0 flex-auto px-4 sm:px-6 xl:px-8 pt-10`;
 const ArticleAuthorLink = tw.a`font-bold cursor-pointer hover:underline`;
 
@@ -40,6 +39,7 @@ export default function EditAuthor({
 
   const [firstNames, setFirstNames] = useState('');
   const [lastName, setLastName] = useState('');
+  const [email, setEmail] = useState('');
 
   const [title, setTitle] = useState(
     hasuraLocalizeText(
@@ -81,6 +81,9 @@ export default function EditAuthor({
     }
     if (author.last_name) {
       setLastName(author.last_name);
+    }
+    if (author.email) {
+      setEmail(author.email);
     }
   }, [author]);
 
@@ -132,6 +135,7 @@ export default function EditAuthor({
       setFirstNames('');
       setLastName('');
       setSlug('');
+      setEmail('');
       setDisplayUpload(false);
       return false;
     }
@@ -147,6 +151,7 @@ export default function EditAuthor({
       last_name: lastName,
       published: published,
       slug: slug,
+      email: email,
       staff: staff,
       twitter: twitter,
       photoUrl: bioImage,
@@ -228,7 +233,12 @@ export default function EditAuthor({
             onChange={(ev) => setSlug(ev.target.value)}
             label="Slug"
           />
-
+          <TinyInputField
+            name="email"
+            value={email}
+            onChange={(ev) => setEmail(ev.target.value)}
+            label="Email"
+          />
           <TinyEditor
             tinyApiKey={tinyApiKey}
             setValue={handleEditorChange}

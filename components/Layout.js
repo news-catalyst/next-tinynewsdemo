@@ -61,6 +61,12 @@ export default function Layout({
     metaValues['canonical'] = article.canonical_url;
   }
 
+  if (page && ['about', 'donate', 'thank-you'].includes(page.slug)) {
+    metaValues[
+      'canonical'
+    ] = `${process.env.NEXT_PUBLIC_SITE_URL}/${page.slug}`;
+  }
+
   let pageTitle = meta['homepageTitle'];
 
   let author;
@@ -172,6 +178,7 @@ export default function Layout({
 
   const trackingId = process.env.NEXT_PUBLIC_GA_TRACKING_ID;
 
+  // console.log('Layout: returning page', children);
   return (
     <>
       <Head>
@@ -193,7 +200,7 @@ export default function Layout({
         {metaValues.authorTwitter && (
           <meta name="twitter:creator" content={metaValues.authorTwitter} />
         )}
-        <meta name="twitter:image:src" content={metaValues.coverImage} />
+        <meta name="twitter:image" content={metaValues.coverImage} />
 
         {/* Facebook data */}
         <meta property="og:title" content={metaValues.facebookTitle} />

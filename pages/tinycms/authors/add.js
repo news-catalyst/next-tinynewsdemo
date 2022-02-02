@@ -14,11 +14,8 @@ import Notification from '../../../components/tinycms/Notification';
 import Upload from '../../../components/tinycms/Upload';
 import { hasuraListLocales } from '../../../lib/articles.js';
 import { hasuraCreateAuthor } from '../../../lib/authors';
-import {
-  displayAuthorName,
-  validateAuthorName,
-  slugify,
-} from '../../../lib/utils.js';
+import { displayAuthorName, validateAuthorName } from '../../../lib/utils.js';
+import { slugify } from '../../../lib/graphql';
 
 const UploadContainer = tw.div`container mx-auto min-w-0 flex-auto px-4 sm:px-6 xl:px-8 pt-10`;
 
@@ -43,6 +40,7 @@ export default function AddAuthor({
   const [bio, setBio] = useState('');
   const [bioImage, setBioImage] = useState('');
   const [displayUpload, setDisplayUpload] = useState(false);
+  const [email, setEmail] = useState('');
 
   const handleEditorChange = (value) => {
     setBio(value);
@@ -89,6 +87,7 @@ export default function AddAuthor({
       setLastName('');
 
       setSlug('');
+      setEmail('');
       setDisplayUpload(false);
       return false;
     }
@@ -108,6 +107,7 @@ export default function AddAuthor({
       last_name: lastName,
       published: published,
       slug: slug,
+      email: email,
       staff: staffBool,
       twitter: twitter,
       photoUrl: bioImage,
@@ -179,7 +179,12 @@ export default function AddAuthor({
             onChange={(ev) => setSlug(ev.target.value)}
             label="Slug"
           />
-
+          <TinyInputField
+            name="email"
+            value={email}
+            onChange={(ev) => setEmail(ev.target.value)}
+            label="Email"
+          />
           <TinyEditor
             tinyApiKey={tinyApiKey}
             setValue={handleEditorChange}
