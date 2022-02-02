@@ -7,7 +7,6 @@ export default function DonationOptionsBlock({
   metadata,
   tinycms,
   wrap = true,
-  provider = 'monkeypod',
 }) {
   if (metadata.donationOptions === '' || metadata.donationOptions === null) {
     return null;
@@ -21,6 +20,11 @@ export default function DonationOptionsBlock({
     console.error(e);
   }
 
+  let paymentProvider = metadata.paymentProvider;
+  if (!paymentProvider) {
+    paymentProvider = 'monkeypod'; // fallback just in case this isn't set
+  }
+
   const block = parsedOptions
     .filter((option) => !!option.name)
     .map((option, i) => (
@@ -29,7 +33,7 @@ export default function DonationOptionsBlock({
         option={option}
         metadata={metadata}
         tinycms={tinycms}
-        provider={provider}
+        provider={paymentProvider}
       />
     ));
 

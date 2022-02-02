@@ -1,6 +1,7 @@
-import { useAmp } from 'next/amp';
-import tw, { styled } from 'twin.macro';
+import { useEffect } from 'react';
 import { useRouter } from 'next/router';
+import tw, { styled } from 'twin.macro';
+import { loadStripe } from '@stripe/stripe-js';
 import { hasuraGetPage } from '../lib/articles.js';
 import { hasuraLocalizeText } from '../lib/utils';
 import Layout from '../components/Layout';
@@ -22,6 +23,10 @@ const WideContainer = styled.div(() => ({
   maxWidth: '1280px',
 }));
 
+const stripePromise = loadStripe(
+  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+);
+
 export default function Donate({
   page,
   sections,
@@ -29,7 +34,6 @@ export default function Donate({
   locales,
   locale,
 }) {
-  // const isAmp = useAmp();
   const isAmp = false;
   const router = useRouter();
 
@@ -54,6 +58,18 @@ export default function Donate({
     isAmp,
     siteMetadata
   );
+
+  useEffect(() => {
+    const query = new URLSearchParams(window.location.search);
+
+    if (query.get('success')) {
+      console.log('Success!');
+    }
+
+    if (query.get('canceled')) {
+      console.log('Canceled :(');
+    }
+  }, []);
 
   return (
     <Layout locale={locale} meta={siteMetadata} page={page} sections={sections}>
