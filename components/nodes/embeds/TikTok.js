@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import Script from 'next/script';
 
 export default function TikTokEmbed({ node, amp }) {
   const [video, setVideo] = useState(null);
@@ -20,7 +21,7 @@ export default function TikTokEmbed({ node, amp }) {
     <div />
   ) : (
     <div>
-      <script async="" src="https://www.tiktok.com/embed.js" />
+      <Script src="https://www.tiktok.com/embed.js" strategy="lazyOnload" />
       <div dangerouslySetInnerHTML={{ __html: video }} />
     </div>
   );
