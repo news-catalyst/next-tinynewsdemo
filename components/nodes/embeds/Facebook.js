@@ -32,15 +32,15 @@ export default function Facebook({ node }) {
   };
 
   useEffect(() => {
-    async function loadFB() {
-      if (!document.getElementById('load-facebook-sdk')) {
-        await injectScript();
-      }
+    // async function loadFB() {
+    //   if (!document.getElementById('load-facebook-sdk')) {
+    //     await injectScript();
+    //   }
 
-      await checkFacebookSdk();
-    }
+    //   await checkFacebookSdk();
+    // }
 
-    loadFB();
+    // loadFB();
 
     if (node.html) {
       setMarkup(node.html);
