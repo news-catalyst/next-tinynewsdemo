@@ -1,15 +1,13 @@
 import Stripe from 'stripe';
-import { tagSubscriberLetterhead } from '../../lib/utils';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
   apiVersion: '2020-08-27',
 });
 
 export default async function handler(req, res) {
-  console.log(req.body);
   const paymentType =
     req.body.paymentType === 'monthly' ? 'subscription' : 'payment';
-  console.log(paymentType);
+
   if (req.method === 'POST') {
     try {
       const session = await stripe.checkout.sessions.create({
@@ -21,11 +19,11 @@ export default async function handler(req, res) {
         ],
         payment_method_types: ['card'],
         mode: paymentType,
-        success_url: `${req.headers.origin}/thank-you/?success=true&session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `${req.headers.origin}/thank-you/?canceled=true`,
+        success_url: `${req.headers.origin}/thank-you?success=true&session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${req.headers.origin}/thank-you?canceled=true`,
       });
 
-      // let data = await tagSubscriberLetterhead(email, name);
+      console.log('checkout_sessions:', session);
 
       res.redirect(303, session.url);
     } catch (err) {
