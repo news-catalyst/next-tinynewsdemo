@@ -79,6 +79,6 @@ export async function getStaticProps({ locale }) {
       locales,
       locale,
     },
-    revalidate: 1,
+    revalidate: 60,
   };
 }

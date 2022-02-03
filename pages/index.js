@@ -134,6 +134,6 @@ export async function getStaticProps({ locale }) {
       siteMetadata,
       expandedAds,
     },
-    revalidate: 1,
+    revalidate: 60,
   };
 }

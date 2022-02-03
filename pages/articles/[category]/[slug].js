@@ -139,8 +139,8 @@ export async function getStaticProps({ locale, params }) {
       publishedLocales,
       locale,
     },
-    // Re-generate the post at most once per second
+    // Re-generate the post at most once every 30 seconds
     // if a request comes in
-    revalidate: 1,
+    revalidate: 60,
   };
 }
