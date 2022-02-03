@@ -55,7 +55,7 @@ export default function Facebook({ node }) {
     <div>
       <Script
         src="https://connect.facebook.net/en_US/sdk.js"
-        strategy="beforeInteractive"
+        strategy="lazyOnload"
       />
       <div dangerouslySetInnerHTML={{ __html: markup }} />
     </div>
