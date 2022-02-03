@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import Script from 'next/script';
 
 const FB_SDK_URL = 'https://connect.facebook.net/en_US/sdk.js';
 
@@ -52,6 +53,10 @@ export default function Facebook({ node }) {
 
   return (
     <div>
+      <Script
+        src="https://connect.facebook.net/en_US/sdk.js"
+        strategy="beforeInteractive"
+      />
       <div dangerouslySetInnerHTML={{ __html: markup }} />
     </div>
   );
