@@ -1,4 +1,9 @@
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+import Stripe from 'stripe';
+import { tagSubscriberLetterhead } from '../../lib/utils';
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+  apiVersion: '2020-08-27',
+});
 
 export default async function handler(req, res) {
   console.log(req.body);
@@ -19,6 +24,8 @@ export default async function handler(req, res) {
         success_url: `${req.headers.origin}/thank-you/?success=true&session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${req.headers.origin}/thank-you/?canceled=true`,
       });
+
+      // let data = await tagSubscriberLetterhead(email, name);
 
       res.redirect(303, session.url);
     } catch (err) {
