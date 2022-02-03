@@ -1,32 +1,39 @@
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+import { buffer } from 'micro';
+import Stripe from 'stripe';
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+  apiVersion: '2020-08-27',
+});
+const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};
 
 export default async function handler(req, res) {
+  if (req.method !== 'POST') {
+    res.setHeader('Allow', 'POST');
+    return res.status(405).end('Method Not Allowed');
+  }
+
   let data;
   let eventType;
+  let event;
 
-  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
-  if (webhookSecret) {
-    let event;
-    let signature = req.headers['stripe-signature'];
+  const buf = await buffer(req);
+  const sig = req.headers['stripe-signature'];
 
-    try {
-      console.log(signature, webhookSecret);
-      event = stripe.webhooks.constructEvent(
-        req.body,
-        signature,
-        webhookSecret
-      );
-    } catch (err) {
-      console.log('Webhook signature verification failed');
-      return res.status(400).send('Webhook signature verification failed');
-    }
-
-    data = event.data;
-    eventType = event.type;
-  } else {
-    data = req.body.data;
-    eventType = req.body.type;
+  try {
+    event = stripe.webhooks.constructEvent(buf, sig, webhookSecret);
+  } catch (err) {
+    console.log('Webhook signature verification failed', err);
+    return res.status(400).send('Webhook signature verification failed');
   }
+
+  data = event.data;
+  eventType = event.type;
 
   let customer = data.object.customer_details;
   let amountSubtotal = data.object.amount_subtotal;
@@ -55,5 +62,6 @@ export default async function handler(req, res) {
       console.log(`Unhandled event type ${eventType}.`);
   }
 
-  res.status(200).send('Webhook processed');
+  res.json({ received: true });
+  // res.status(200).send('Webhook processed');
 }
