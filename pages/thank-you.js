@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import tw from 'twin.macro';
 import { useRouter } from 'next/router';
 import { hasuraGetPage } from '../lib/articles.js';
@@ -32,6 +32,9 @@ export default function ThankYou({
   // sets a cookie if request comes from monkeypod.io marking this browser as a donor
   const { checkReferrer, trackEvent } = useAnalytics();
 
+  const [thanksHeadline, setThanksHeadline] = useState(null);
+  const [thanksBody, setThanksBody] = useState(null);
+
   // If the page is not yet generated, this will be displayed
   // initially until getStaticProps() finishes running
   // See: https://nextjs.org/docs/basic-features/data-fetching#the-fallback-key-required
@@ -64,30 +67,28 @@ export default function ThankYou({
   );
 
   // // to-do
-  // useEffect(() => {
-  //   const query = new URLSearchParams(window.location.search);
+  useEffect(() => {
+    const query = new URLSearchParams(window.location.search);
+    setThanksHeadline(localisedPage.headline);
+    setThanksBody(body);
 
-  //   if (query.get('success')) {
-  //     console.log('Success!');
-  //   }
-
-  //   if (query.get('canceled')) {
-  //     console.log('Canceled :(');
-  //   }
-  // }, []);
+    if (query.get('canceled')) {
+      setThanksBody('Something went wrong trying to process your payment.');
+    }
+  }, []);
 
   return (
     <Layout locale={locale} meta={siteMetadata} page={page} sections={sections}>
       <SectionContainer>
         <ArticleTitle meta={siteMetadata} tw="text-center">
-          {localisedPage.headline}
+          {thanksHeadline}
         </ArticleTitle>
         <PostText>
-          <PostTextContainer>{body}</PostTextContainer>
+          <PostTextContainer>{thanksBody}</PostTextContainer>
         </PostText>
         <NewsletterBlock
           metadata={siteMetadata}
-          headline={localisedPage.headline}
+          headline={thanksHeadline}
           wrap={false}
         />
       </SectionContainer>
