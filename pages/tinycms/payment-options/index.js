@@ -5,7 +5,7 @@ import tw from 'twin.macro';
 import { hasuraGetMetadataByLocale } from '../../../lib/articles.js';
 import AdminLayout from '../../../components/AdminLayout.js';
 import AdminNav from '../../../components/nav/AdminNav';
-import SiteInfoSettings from '../../../components/tinycms/SiteInfoSettings';
+import SitePaymentOptions from '../../../components/tinycms/SitePaymentOptions';
 import { hasuraUpsertMetadata } from '../../../lib/site_metadata';
 import Notification from '../../../components/tinycms/Notification';
 
@@ -42,7 +42,7 @@ const typographyOptions = {
   },
 };
 
-export default function Settings({
+export default function PaymentOptions({
   apiUrl,
   apiToken,
   tinyApiKey,
@@ -124,45 +124,6 @@ export default function Settings({
   };
 
   useEffect(() => {
-    if (window.location.hash && window.location.hash === '#siteInfo') {
-      if (siteInfoRef) {
-        siteInfoRef.current.scrollIntoView({ behavior: 'smooth' });
-      }
-    } else if (window.location.hash && window.location.hash === '#comments') {
-      if (commentsRef) {
-        commentsRef.current.scrollIntoView({ behavior: 'smooth' });
-      }
-    } else if (
-      window.location.hash &&
-      window.location.hash === '#landingPage'
-    ) {
-      if (landingPageRef) {
-        landingPageRef.current.scrollIntoView({ behavior: 'smooth' });
-      }
-    } else if (window.location.hash && window.location.hash === '#design') {
-      if (designRef) {
-        designRef.current.scrollIntoView({ behavior: 'smooth' });
-      }
-    } else if (window.location.hash && window.location.hash === '#newsletter') {
-      if (newsletterRef) {
-        newsletterRef.current.scrollIntoView({ behavior: 'smooth' });
-      }
-    } else if (window.location.hash && window.location.hash === '#membership') {
-      if (membershipRef) {
-        membershipRef.current.scrollIntoView({ behavior: 'smooth' });
-      }
-    } else if (
-      window.location.hash &&
-      window.location.hash === '#advertising'
-    ) {
-      if (advertisingRef) {
-        advertisingRef.current.scrollIntoView({ behavior: 'smooth' });
-      }
-    } else if (window.location.hash && window.location.hash === '#seo') {
-      if (seoRef) {
-        seoRef.current.scrollIntoView({ behavior: 'smooth' });
-      }
-    }
     if (siteMetadata) {
       let md = siteMetadata.site_metadata_translations[0].data;
       setMetadata(md);
@@ -177,10 +138,10 @@ export default function Settings({
       }
     }
     if (action && action === 'edit') {
-      setMessage('Successfully updated metadata.');
+      setMessage('Successfully updated payment options.');
     }
     if (action && action === 'create') {
-      setMessage('Successfully created metadata.');
+      setMessage('Successfully created payment options.');
     }
   }, [action, siteMetadata]);
 
@@ -282,7 +243,7 @@ export default function Settings({
         } else {
           setNotificationType('success');
           setNotificationMessage(
-            'Successfully saved settings, republishing the site now!'
+            'Successfully saved payment options, republishing the site!'
           );
         }
       }
@@ -383,7 +344,7 @@ export default function Settings({
               />
             )}
             <SettingsContainer>
-              <SiteInfoSettings
+              <SitePaymentOptions
                 tinyApiKey={tinyApiKey}
                 siteInfoRef={siteInfoRef}
                 commentsRef={commentsRef}

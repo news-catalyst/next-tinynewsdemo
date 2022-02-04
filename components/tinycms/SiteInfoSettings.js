@@ -929,55 +929,6 @@ export default function SiteInfoSettings(props) {
         </div>
       </AdvertisingContainer>
 
-      <DonationOptionsEditor ref={props.paymentRef} id="payment-options">
-        <SettingsHeader tw="col-span-3 mt-5">Payment options</SettingsHeader>
-        <div tw="col-span-3 mt-5">
-          <label tw="block">
-            <input
-              type="radio"
-              name={`paymentProvider`}
-              value="monkeypod"
-              checked={paymentProvider === 'monkeypod'}
-              onChange={props.handleChange}
-            />
-            <span tw="p-2 mt-1 font-bold">MonkeyPod (contributed revenue)</span>
-          </label>
-          <label tw="block">
-            <input
-              type="radio"
-              name={`paymentProvider`}
-              value="stripe"
-              checked={paymentProvider === 'stripe'}
-              onChange={props.handleChange}
-            />
-            <span tw="p-2 mt-1 font-bold">Stripe (earned revenue)</span>
-          </label>
-        </div>
-        {Array.isArray(donationOptions) &&
-          donationOptions.map((option, i) => (
-            <DonationOption
-              index={i}
-              key={`option-${i}`}
-              name={option.name}
-              cta={option.cta}
-              desc={option.description}
-              amount={option.amount}
-              paymentProvider={paymentProvider}
-              stripeId={option.stripeId}
-              paymentType={option.paymentType}
-              monkeypodId={option.monkeypodId}
-              parsedData={props.parsedData}
-              updateParsedData={props.updateParsedData}
-              tinyApiKey={props.tinyApiKey}
-            />
-          ))}
-      </DonationOptionsEditor>
-
-      <DonationOptionsContainer>
-        <span tw="mt-1 font-bold">Preview</span>
-        <DonationOptionsBlock metadata={props.parsedData} tinycms={true} />
-      </DonationOptionsContainer>
-
       <SeoContainer ref={props.seoRef}>
         <SettingsHeader tw="col-span-3 mt-5" id="seo">
           SEO and Social Metadata
