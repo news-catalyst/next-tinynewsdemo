@@ -30,7 +30,7 @@ export default function ThankYou({
   const isAmp = false;
   const router = useRouter();
   // sets a cookie if request comes from monkeypod.io marking this browser as a donor
-  const { checkReferrer, trackEvent } = useAnalytics();
+  const { checkReferrer, setDonor, trackEvent } = useAnalytics();
 
   const [thanksHeadline, setThanksHeadline] = useState(null);
   const [thanksBody, setThanksBody] = useState(null);
@@ -45,16 +45,6 @@ export default function ThankYou({
 
   // this will return true if the request came from monkeypod, false otherwise
   let isDonor = checkReferrer(referrer);
-  if (isDonor) {
-    setTimeout(() => {
-      trackEvent({
-        action: 'submit',
-        category: 'NTG membership',
-        label: 'success',
-        non_interaction: false,
-      });
-    }, 100);
-  }
 
   // there will only be one translation returned for a given page + locale
   const localisedPage = page.page_translations[0];
@@ -71,6 +61,24 @@ export default function ThankYou({
     const query = new URLSearchParams(window.location.search);
     setThanksHeadline(localisedPage.headline);
     setThanksBody(body);
+
+    // donation processed by stripe
+    if (query.get('success')) {
+      isDonor = true;
+    }
+
+    if (isDonor) {
+      setDonor(true);
+
+      setTimeout(() => {
+        trackEvent({
+          action: 'submit',
+          category: 'NTG membership',
+          label: 'success',
+          non_interaction: false,
+        });
+      }, 100);
+    }
 
     if (query.get('canceled')) {
       setThanksBody('Something went wrong trying to process your payment.');
