@@ -2,7 +2,7 @@
 title: Cookie Policy
 ---
 
-Our Privacy Policy explains how we use your information and how we store it. The Cookie Policy specifically explains how we deploy cookies, as well as the options you have to control them.
+Our [Privacy Policy](https://tinynewsco.org/member-privacy) explains how we use your information and how we store it. The Cookie Policy specifically explains how we deploy cookies, as well as the options you have to control them.
 
 ## What are cookies?
 
