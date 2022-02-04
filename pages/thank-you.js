@@ -59,9 +59,14 @@ export default function ThankYou({
   // // to-do
   useEffect(() => {
     const query = new URLSearchParams(window.location.search);
-    setThanksHeadline(localisedPage.headline);
-    setThanksBody(body);
-
+    if (siteMetadata && siteMetadata.thankYouHeadline) {
+      setThanksHeadline(siteMetadata.thankYouHeadline);
+    } else {
+      setThanksHeadline(localisedPage.headline);
+    }
+    if (siteMetadata.thankYouSuccess) {
+      setThanksBody(siteMetadata.thankYouSuccess);
+    }
     // donation processed by stripe
     if (query.get('success')) {
       isDonor = true;
@@ -80,8 +85,8 @@ export default function ThankYou({
       }, 100);
     }
 
-    if (query.get('canceled')) {
-      setThanksBody('Something went wrong trying to process your payment.');
+    if (query.get('canceled') && siteMetadata.thankYouCancel) {
+      setThanksBody(siteMetadata.thankYouCancel);
     }
   }, []);
 
@@ -92,7 +97,9 @@ export default function ThankYou({
           {thanksHeadline}
         </ArticleTitle>
         <PostText>
-          <PostTextContainer>{thanksBody}</PostTextContainer>
+          <PostTextContainer
+            dangerouslySetInnerHTML={{ __html: thanksBody }}
+          ></PostTextContainer>
         </PostText>
         <NewsletterBlock
           metadata={siteMetadata}
