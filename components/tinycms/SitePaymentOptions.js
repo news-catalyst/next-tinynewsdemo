@@ -14,7 +14,6 @@ const DonationOptionsEditor = tw.div`grid grid-cols-3 gap-4`;
 const DonationOptionsContainer = tw.div``;
 
 export default function SitePaymentOptions(props) {
-  console.log(props.parsedData);
   const router = useRouter();
 
   const [stripeAccountId, setStripeAccountId] = useState(
@@ -74,6 +73,8 @@ export default function SitePaymentOptions(props) {
       updateStripeAccountId(data.account.id);
 
       let latestSiteMetadata = props.parsedData;
+      latestSiteMetadata['stripeAccountId'] = data.account.id;
+
       console.log(
         'Submitting this data:',
         latestSiteMetadata.stripeAccountId,
@@ -87,6 +88,7 @@ export default function SitePaymentOptions(props) {
         published: true,
         localeCode: props.currentLocale,
       });
+      console.log('hasura result:', hasuraResult);
       if (hasuraResult.errors) {
         props.setNotificationType('error');
         props.setNotificationMessage(
@@ -99,10 +101,10 @@ export default function SitePaymentOptions(props) {
         props.setNotificationType('success');
         props.setNotificationMessage(
           'Redirecting you to Stripe to finish setting up your Stripe Connected Account to ' +
-            hasuraResult.data.redirectURL
+            data.redirectURL
         );
         props.setShowNotification(true);
-        router.push(hasuraResult.data.redirectURL);
+        router.push(data.redirectURL);
       }
     }
   }
@@ -147,6 +149,8 @@ export default function SitePaymentOptions(props) {
     setThankYouSuccess(props.parsedData['thankYouSuccess']);
     setPaymentProvider(props.parsedData['paymentProvider']);
     setShortName(props.parsedData['shortName']);
+    setStripeAccountId(props.parsedData['stripeAccountId']);
+
     let parsedDonationOptions;
     try {
       parsedDonationOptions = JSON.parse(props.parsedData['donationOptions']);
@@ -162,7 +166,7 @@ export default function SitePaymentOptions(props) {
     <div tw="space-x-4 space-y-8">
       <DonationOptionsEditor ref={props.paymentRef} id="payment-options">
         <SettingsHeader tw="col-span-3 mt-5">Payment options</SettingsHeader>
-        {paymentProvider === 'stripe' && (
+        {paymentProvider === 'stripe' && !stripeAccountId && (
           <div tw="col-span-3 mt-5">
             <AddButton onClick={handleCreateStripeConnectedAccount}>
               Setup Stripe
