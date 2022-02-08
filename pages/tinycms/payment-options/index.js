@@ -364,6 +364,9 @@ export default function PaymentOptions({
                 setNotificationMessage={setNotificationMessage}
                 setNotificationType={setNotificationType}
                 setShowNotification={setShowNotification}
+                currentLocale={currentLocale}
+                apiUrl={props.apiUrl}
+                apiToken={props.apiToken}
               />
             </SettingsContainer>
           </form>
