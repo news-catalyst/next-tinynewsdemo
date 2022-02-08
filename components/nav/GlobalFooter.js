@@ -110,12 +110,26 @@ export default function GlobalFooter(props) {
         </div>
         <FooterCopyright>
           <p>
-            copyright © {currentYear} {title}
+            Copyright © {currentYear} {title}
           </p>
           <p>
-            this project is part of the{' '}
-            <FooterHoverUnderline href="https://tinynewsco.org">
-              tiny news collective
+            This project is part of the{' '}
+            <FooterHoverUnderline tw="underline" href="https://tinynewsco.org">
+              Tiny News Collective
+            </FooterHoverUnderline>
+            . Read our{' '}
+            <FooterHoverUnderline
+              tw="underline"
+              href="https://tinynewsco.org/member-privacy"
+            >
+              privacy policy
+            </FooterHoverUnderline>{' '}
+            and{' '}
+            <FooterHoverUnderline
+              tw="underline"
+              href="https://tinynewsco.org/dmca"
+            >
+              DMCA policy
             </FooterHoverUnderline>
             .
           </p>
