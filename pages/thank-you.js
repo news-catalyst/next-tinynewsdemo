@@ -35,28 +35,9 @@ export default function ThankYou({
   const [thanksHeadline, setThanksHeadline] = useState(null);
   const [thanksBody, setThanksBody] = useState(null);
 
-  // If the page is not yet generated, this will be displayed
-  // initially until getStaticProps() finishes running
-  // See: https://nextjs.org/docs/basic-features/data-fetching#the-fallback-key-required
-  if (router.isFallback) {
-    // console.log('router.isFallback on thank you page');
-    return <div>Loading...</div>;
-  }
-
   // this will return true if the request came from monkeypod, false otherwise
   let isDonor = checkReferrer(referrer);
 
-  // there will only be one translation returned for a given page + locale
-  const localisedPage = page.page_translations[0];
-  const body = renderBody(
-    locale,
-    page.page_translations,
-    [],
-    isAmp,
-    siteMetadata
-  );
-
-  // // to-do
   useEffect(() => {
     const query = new URLSearchParams(window.location.search);
     if (siteMetadata && siteMetadata.thankYouHeadline) {
@@ -89,6 +70,24 @@ export default function ThankYou({
       setThanksBody(siteMetadata.thankYouCancel);
     }
   }, []);
+
+  // If the page is not yet generated, this will be displayed
+  // initially until getStaticProps() finishes running
+  // See: https://nextjs.org/docs/basic-features/data-fetching#the-fallback-key-required
+  if (router.isFallback) {
+    // console.log('router.isFallback on thank you page');
+    return <div>Loading...</div>;
+  }
+
+  // there will only be one translation returned for a given page + locale
+  const localisedPage = page.page_translations[0];
+  const body = renderBody(
+    locale,
+    page.page_translations,
+    [],
+    isAmp,
+    siteMetadata
+  );
 
   return (
     <Layout locale={locale} meta={siteMetadata} page={page} sections={sections}>
