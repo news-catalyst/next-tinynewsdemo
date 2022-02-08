@@ -271,6 +271,8 @@ export default function SiteInfoSettings(props) {
   );
 
   const [logo, setLogo] = useState(props.parsedData['logo']);
+  const [logoWidth, setLogoWidth] = useState(props.parsedData['logoWidth']);
+  const [logoHeight, setLogoHeight] = useState(props.parsedData['logoHeight']);
   const [favicon, setFavicon] = useState(props.parsedData['favicon']);
   const [defaultSocialImage, setDefaultSocialImage] = useState(
     props.parsedData['defaultSocialImage']
@@ -446,6 +448,8 @@ export default function SiteInfoSettings(props) {
       props.parsedData['donationOptions'] ? parsedDonationOptions : null
     );
     setLogo(props.parsedData['logo']);
+    setLogoWidth(props.parsedData['logoWidth']);
+    setLogoHeight(props.parsedData['logoHeight']);
     setFavicon(props.parsedData['favicon']);
     setDefaultSocialImage(props.parsedData['defaultSocialImage']);
   }, [props.parsedData]);
@@ -493,9 +497,13 @@ export default function SiteInfoSettings(props) {
             slug={shortName}
             image={logo}
             imageKey="logo"
+            widthKey="logoWidth"
+            heightKey="logoHeight"
             updateParsedData={props.updateParsedData}
             parsedData={props.parsedData}
             setter={setLogo}
+            widthSetter={setLogoWidth}
+            heightSetter={setLogoHeight}
             setNotificationMessage={props.setNotificationMessage}
             setNotificationType={props.setNotificationType}
             setShowNotification={props.setShowNotification}
