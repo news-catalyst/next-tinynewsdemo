@@ -1,5 +1,7 @@
 import tw, { styled } from 'twin.macro';
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+import { Elements } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
 import Colors from '../common/Colors';
 import Typography from '../common/Typography';
 import { determineTextColor } from '../../lib/utils';
@@ -46,6 +48,7 @@ export default function DonationCard({ option, metadata, tinycms, provider }) {
   const [textColor, setTextColor] = useState(null);
   const [backgroundColor, setBackgroundColor] = useState(null);
   const [customAmount, setCustomAmount] = useState(null);
+  const [clientSecret, setClientSecret] = useState('');
 
   useEffect(() => {
     let bgc;
@@ -121,7 +124,7 @@ export default function DonationCard({ option, metadata, tinycms, provider }) {
             {option.cta}
           </DonateFooterLink>
         ) : (
-          <form action="/api/checkout_sessions" method="POST">
+          <form action="/api/stripe/create-checkout-session" method="POST">
             <input
               type="hidden"
               name="stripeId"

@@ -1,4 +1,6 @@
 import tw from 'twin.macro';
+import React from 'react';
+
 import DonationCard from './DonationCard';
 
 const OptionsBlockContainer = tw.div`md:flex md:grid-cols-3 md:gap-4`;
