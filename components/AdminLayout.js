@@ -14,6 +14,10 @@ export default function AdminLayout({ children }) {
         <title>TinyCMS</title>
         <link rel="icon" href="/favicon.ico" />
         <link
+          href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+          rel="stylesheet"
+        />
+        <link
           href="https://fonts.googleapis.com/css2?family=Domine:wght@400;700&family=Libre+Franklin:ital,wght@0,400;0,700;1,400;1,700&display=swap"
           rel="stylesheet"
         />
