@@ -28,7 +28,7 @@ I followed along with the official Hasura documentation [Local Dev to Staging to
 
 8. This process (Hasura -> launch db -> Heroku) should fill in the necessary env vars for the instance db connectivity, specifically the `HASURA_GRAPHQL_DATABASE_URL` var.
 
-9. Copy the webhook related vars from production Hasura and recreate in the new instance (`HASURA_GRAPHQL_AUTH_HOOK` => `https://huf7758ged.execute-api.us-east-1.amazonaws.com/prod/webhook`)
+9. You'll also need a new instance of the authorization webhook, which authenticates requests based on TBD and directs them to the right Hasura instance. If the existing webhook implementation is fine and you just need a webhook to point at the right Hasura instance, you can probably copy the `js` directory and update a couple of values (howto doc would be good to have, will add to the list) then deploy using `sls`. Once you have a deployed webhook, specify it in the settings for the new Hasura instance (`HASURA_GRAPHQL_AUTH_HOOK` => `https://${PREFIX}.execute-api.us-east-1.amazonaws.com/prod/webhook`).
 
 10. Also be sure to grab the GraphQL endpoint URL for the new Hasura instance
 
