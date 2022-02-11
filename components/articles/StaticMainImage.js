@@ -23,10 +23,8 @@ export default function StaticMainImage({ page, locale, isAmp, siteMetadata }) {
   ) {
     try {
       mainImageNode = pageContent.find((node) => node.type === 'mainImage');
-
       if (mainImageNode) {
         mainImage = mainImageNode.children[0];
-        siteMetadata['coverImage'] = mainImage.imageUrl;
       }
     } catch (err) {
       console.error('error finding main image: ', err);
