@@ -33,6 +33,24 @@ export default function AboutPage({
     isAmp,
     siteMetadata
   );
+  let mainImageNode;
+  let mainImage = null;
+  if (page) {
+    try {
+      mainImageNode = localisedPage?.content.find(
+        (node) => node.type === 'mainImage'
+      );
+
+      if (mainImageNode) {
+        mainImage = mainImageNode.children[0];
+        siteMetadata['coverImage'] = mainImage.imageUrl;
+        siteMetadata['coverImageWidth'] = mainImage.width;
+        siteMetadata['coverImageHeight'] = mainImage.height;
+      }
+    } catch (err) {
+      console.error('error finding main image: ', err);
+    }
+  }
 
   return (
     <Layout locale={locale} meta={siteMetadata} page={page} sections={sections}>
