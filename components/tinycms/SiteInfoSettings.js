@@ -277,6 +277,12 @@ export default function SiteInfoSettings(props) {
   const [defaultSocialImage, setDefaultSocialImage] = useState(
     props.parsedData['defaultSocialImage']
   );
+  const [defaultSocialImageWidth, setDefaultSocialImageWidth] = useState(
+    props.parsedData['defaultSocialImageWidth']
+  );
+  const [defaultSocialImageHeight, setDefaultSocialImageHeight] = useState(
+    props.parsedData['defaultSocialImageHeight']
+  );
   let parsedDonationOptions;
   try {
     parsedDonationOptions = JSON.parse(props.parsedData['donationOptions']);
@@ -976,10 +982,14 @@ export default function SiteInfoSettings(props) {
               awsConfig={props.awsConfig}
               slug={shortName}
               imageKey="defaultSocialImage"
+              widthKey="defaultSocialImageWidth"
+              heightKey="defaultSocialImageHeight"
               image={defaultSocialImage}
               updateParsedData={props.updateParsedData}
               parsedData={props.parsedData}
               setter={setDefaultSocialImage}
+              widthSetter={setDefaultSocialImageWidth}
+              heightSetter={setDefaultSocialImageHeight}
               setNotificationMessage={props.setNotificationMessage}
               setNotificationType={props.setNotificationType}
               setShowNotification={props.setShowNotification}
