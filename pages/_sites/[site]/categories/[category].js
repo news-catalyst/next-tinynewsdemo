@@ -73,7 +73,7 @@ export default function CategoryPage(props) {
   );
 }
 
-export async function getStaticPaths({ locales }) {
+export async function getStaticPaths({}) {
   const apiUrl = process.env.HASURA_API_URL;
   const adminSecret = process.env.HASURA_ADMIN_SECRET;
 
