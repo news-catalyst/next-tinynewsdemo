@@ -1,21 +1,21 @@
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
-import Layout from '../../components/Layout.js';
-import { cachedContents } from '../../lib/cached';
+import Layout from '../../../../components/Layout.js';
+import { cachedContents } from '../../../../lib/cached';
 import {
   hasuraCategoryPage,
-  hasuraListAllSections,
-} from '../../lib/articles.js';
-import { getArticleAds } from '../../lib/ads.js';
-import { hasuraLocalizeText } from '../../lib/utils.js';
+  generateAllCategoryPagePaths,
+} from '../../../../lib/articles.js';
+import { getArticleAds } from '../../../../lib/ads.js';
+import { hasuraLocalizeText } from '../../../../lib/utils.js';
 import { useAmp } from 'next/amp';
-import ArticleStream from '../../components/homepage/ArticleStream';
-import ReadInOtherLanguage from '../../components/articles/ReadInOtherLanguage';
+import ArticleStream from '../../../../components/homepage/ArticleStream';
+import ReadInOtherLanguage from '../../../../components/articles/ReadInOtherLanguage';
 import {
   SectionContainer,
   SectionLayout,
   Block,
-} from '../../components/common/CommonStyles';
+} from '../../../../components/common/CommonStyles';
 
 export default function CategoryPage(props) {
   // const isAmp = useAmp();
@@ -75,36 +75,13 @@ export default function CategoryPage(props) {
 
 export async function getStaticPaths({ locales }) {
   const apiUrl = process.env.HASURA_API_URL;
-  const apiToken = process.env.ORG_SLUG;
+  const adminSecret = process.env.HASURA_ADMIN_SECRET;
 
-  let paths = [];
-  const { errors, data } = await hasuraListAllSections({
+  const paths = await generateAllCategoryPagePaths({
     url: apiUrl,
-    orgSlug: apiToken,
+    adminSecret: adminSecret,
+    urlParams: {},
   });
-
-  if (errors || !data) {
-    return {
-      paths,
-      fallback: true,
-    };
-  }
-
-  const siteLocales = process.env.LOCALES.split(',');
-
-  for (const section of data.categories) {
-    for (const locale of section.category_translations) {
-      if (siteLocales.indexOf(locale) >= 0) {
-        paths.push({
-          params: {
-            category: section.slug,
-          },
-          locale: locale.locale_code,
-        });
-      }
-    }
-  }
-
   return {
     paths,
     fallback: true,
