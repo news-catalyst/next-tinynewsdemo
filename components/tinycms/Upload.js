@@ -22,6 +22,13 @@ export default function Upload(props) {
       };
       img.src = props.image;
 
+      if (props.widthSetter) {
+        props.widthSetter(imageWidth);
+      }
+      if (props.heightSetter) {
+        props.heightSetter(imageHeight);
+      }
+
       setImageSrc(props.image);
     }
   }, [props.image]);
@@ -40,12 +47,6 @@ export default function Upload(props) {
           let assetUrl =
             'https://assets.tinynewsco.org' + uploadedS3Url.pathname;
           props.setter(assetUrl);
-          if (props.widthSetter) {
-            props.widthSetter(imageWidth);
-          }
-          if (props.heightSetter) {
-            props.heightSetter(imageHeight);
-          }
 
           if (props.parsedData) {
             let updatedParsedData = props.parsedData;
