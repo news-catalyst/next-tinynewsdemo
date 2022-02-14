@@ -1,13 +1,30 @@
-import { useAmp } from 'next/amp';
-import { hasuraGetPage } from '../lib/articles.js';
-import { hasuraLocalizeText } from '../lib/utils';
-import StaffPage from '../components/StaffPage';
+import {
+  hasuraGetPage,
+  generateAllDomainPaths,
+} from '../../../lib/articles.js';
+import { hasuraLocalizeText } from '../../../lib/utils';
+import StaffPage from '../../../components/StaffPage';
 
 export default function Staff(props) {
-  // const isAmp = useAmp();
   const isAmp = false;
 
   return <StaffPage {...props} isAmp={isAmp} />;
+}
+
+export async function getStaticPaths() {
+  const apiUrl = process.env.HASURA_API_URL;
+  const adminSecret = process.env.HASURA_ADMIN_SECRET;
+
+  const mappedPaths = await generateAllDomainPaths({
+    url: apiUrl,
+    adminSecret: adminSecret,
+    urlParams: { slug: 'staff' },
+  });
+
+  return {
+    paths: mappedPaths,
+    fallback: true,
+  };
 }
 
 export async function getStaticProps({ locale }) {
