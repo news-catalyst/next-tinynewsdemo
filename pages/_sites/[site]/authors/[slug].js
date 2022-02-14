@@ -1,22 +1,21 @@
 import { useRouter } from 'next/router';
-import Layout from '../../components/Layout.js';
+import Layout from '../../../../components/Layout.js';
 import {
-  hasuraListAllAuthorPaths,
+  generateAllAuthorPagePaths,
   hasuraAuthorPage,
-} from '../../lib/articles.js';
-import { displayAuthorName, hasuraLocalizeText } from '../../lib/utils';
-import { cachedContents } from '../../lib/cached';
-import { getArticleAds } from '../../lib/ads.js';
-import { useAmp } from 'next/amp';
-import ArticleStream from '../../components/homepage/ArticleStream';
+} from '../../../../lib/articles.js';
+import { displayAuthorName, hasuraLocalizeText } from '../../../../lib/utils';
+import { cachedContents } from '../../../../lib/cached';
+import { getArticleAds } from '../../../../lib/ads.js';
+import ArticleStream from '../../../../components/homepage/ArticleStream';
 import tw from 'twin.macro';
-import { Anchor } from '../../components/common/CommonStyles.js';
-import ReadInOtherLanguage from '../../components/articles/ReadInOtherLanguage';
+import { Anchor } from '../../../../components/common/CommonStyles.js';
+import ReadInOtherLanguage from '../../../../components/articles/ReadInOtherLanguage';
 import {
   SectionContainer,
   SectionLayout,
   Block,
-} from '../../components/common/CommonStyles';
+} from '../../../../components/common/CommonStyles';
 
 export default function AuthorPage({
   sections,
@@ -28,7 +27,6 @@ export default function AuthorPage({
   locale,
 }) {
   const router = useRouter();
-  // const isAmp = useAmp();
   const isAmp = false;
   // If the page is not yet generated, this will be displayed
   // initially until getStaticProps() finishes running
@@ -116,30 +114,15 @@ export default function AuthorPage({
   );
 }
 
-export async function getStaticPaths({ locales }) {
-  const { errors, data } = await hasuraListAllAuthorPaths();
-  let paths = [];
-  let authors = [];
-  if (errors || !data) {
-    return {
-      paths,
-      fallback: true,
-    };
-  } else {
-    authors = data.authors;
-  }
+export async function getStaticPaths({}) {
+  const apiUrl = process.env.HASURA_API_URL;
+  const adminSecret = process.env.HASURA_ADMIN_SECRET;
 
-  authors.map((author) => {
-    author.author_translations.map((translation) => {
-      paths.push({
-        params: {
-          slug: author.slug,
-        },
-        locale: translation.locale_code,
-      });
-    });
+  const paths = await generateAllAuthorPagePaths({
+    url: apiUrl,
+    adminSecret: adminSecret,
+    urlParams: {},
   });
-
   return {
     paths,
     fallback: true,
