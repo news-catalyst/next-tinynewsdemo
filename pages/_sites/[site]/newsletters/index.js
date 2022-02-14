@@ -1,14 +1,13 @@
 import React from 'react';
-import Layout from '../../components/Layout.js';
-import { cachedContents } from '../../lib/cached';
-import { hasuraListNewsletters } from '../../lib/newsletters.js';
-import { getArticleAds } from '../../lib/ads.js';
-import ArticleStream from '../../components/homepage/ArticleStream';
-import { hasuraLocalizeText } from '../../lib/utils.js';
-import { useAmp } from 'next/amp';
+import Layout from '../../../../components/Layout.js';
+import { cachedContents } from '../../../../lib/cached';
+import { hasuraListNewsletters } from '../../../../lib/newsletters.js';
+import { getArticleAds } from '../../../../lib/ads.js';
+import ArticleStream from '../../../../components/homepage/ArticleStream';
+import { generateAllDomainPaths } from '../../../../lib/articles.js';
+import { hasuraLocalizeText } from '../../../../lib/utils.js';
 
 export default function NewsletterIndexPage(props) {
-  // const isAmp = useAmp();
   const isAmp = false;
 
   return (
@@ -30,6 +29,22 @@ export default function NewsletterIndexPage(props) {
       />
     </Layout>
   );
+}
+
+export async function getStaticPaths() {
+  const apiUrl = process.env.HASURA_API_URL;
+  const adminSecret = process.env.HASURA_ADMIN_SECRET;
+
+  const mappedPaths = await generateAllDomainPaths({
+    url: apiUrl,
+    adminSecret: adminSecret,
+    urlParams: {},
+  });
+
+  return {
+    paths: mappedPaths,
+    fallback: true,
+  };
 }
 
 export async function getStaticProps({ locale, params }) {
