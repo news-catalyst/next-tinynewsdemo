@@ -28,6 +28,8 @@ export default function StaticPage({
 
   let localisedPage;
   let body;
+  let mainImageNode;
+  let mainImage = null;
   if (page) {
     // there will only be one translation returned for a given page + locale
     localisedPage = page.page_translations[0];
@@ -38,6 +40,20 @@ export default function StaticPage({
       isAmp,
       siteMetadata
     );
+    try {
+      mainImageNode = localisedPage?.content.find(
+        (node) => node.type === 'mainImage'
+      );
+
+      if (mainImageNode) {
+        mainImage = mainImageNode.children[0];
+        siteMetadata['coverImage'] = mainImage.imageUrl;
+        siteMetadata['coverImageWidth'] = mainImage.width;
+        siteMetadata['coverImageHeight'] = mainImage.height;
+      }
+    } catch (err) {
+      console.error('error finding main image: ', err);
+    }
   }
 
   return (
