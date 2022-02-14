@@ -1,7 +1,10 @@
 import tw from 'twin.macro';
-import { hasuraGetSiteMetadata } from '../lib/articles.js';
-import Layout from '../components/Layout';
-import { getPostBySlug, markdownToHtml } from '../lib/markdown';
+import {
+  hasuraGetSiteMetadata,
+  generateAllDomainPaths,
+} from '../../../lib/articles.js';
+import Layout from '../../../components/Layout';
+import { getPostBySlug, markdownToHtml } from '../../../lib/markdown';
 import {
   ArticleTitle,
   PostTextContainer,
@@ -9,7 +12,7 @@ import {
   SectionLayout,
   Block,
   Paragraph,
-} from '../components/common/CommonStyles.js';
+} from '../../../components/common/CommonStyles.js';
 
 const SectionContainer = tw.div`flex flex-col flex-nowrap items-center px-5 mx-auto max-w-7xl w-full`;
 
@@ -48,6 +51,22 @@ export default function Cookies({ locale, siteMetadata, post, content }) {
       </style>
     </Layout>
   );
+}
+
+export async function getStaticPaths() {
+  const apiUrl = process.env.HASURA_API_URL;
+  const adminSecret = process.env.HASURA_ADMIN_SECRET;
+
+  const mappedPaths = await generateAllDomainPaths({
+    url: apiUrl,
+    adminSecret: adminSecret,
+    urlParams: { slug: 'cookies' },
+  });
+
+  return {
+    paths: mappedPaths,
+    fallback: true,
+  };
 }
 
 export async function getStaticProps({ locale }) {

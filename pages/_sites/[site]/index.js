@@ -1,12 +1,15 @@
 import React from 'react';
-import { hasuraStreamArticles } from '../lib/homepage.js';
-import { cachedContents } from '../lib/cached';
-import { hasuraGetHomepageEditor } from '../lib/articles.js';
-import { getArticleAds } from '../lib/ads.js';
-import { hasuraLocalizeText } from '../lib/utils.js';
-import Homepage from '../components/Homepage';
-import LandingPage from '../components/LandingPage';
-import CurriculumHomepage from '../components/curriculum/CurriculumHomepage';
+import { hasuraStreamArticles } from '../../../lib/homepage.js';
+import { cachedContents } from '../../../lib/cached';
+import {
+  hasuraGetHomepageEditor,
+  generateAllDomainPaths,
+} from '../../../lib/articles.js';
+import { getArticleAds } from '../../../lib/ads.js';
+import { hasuraLocalizeText } from '../../../lib/utils.js';
+import Homepage from '../../../components/Homepage';
+import LandingPage from '../../../components/LandingPage';
+import CurriculumHomepage from '../../../components/curriculum/CurriculumHomepage';
 
 export default function Home(props) {
   if (props.siteMetadata.shortName === 'Tiny News Collective Curriculum') {
@@ -22,6 +25,22 @@ export default function Home(props) {
     );
 
   return component;
+}
+
+export async function getStaticPaths() {
+  const apiUrl = process.env.HASURA_API_URL;
+  const adminSecret = process.env.HASURA_ADMIN_SECRET;
+
+  const mappedPaths = await generateAllDomainPaths({
+    url: apiUrl,
+    adminSecret: adminSecret,
+    urlParams: {},
+  });
+
+  return {
+    paths: mappedPaths,
+    fallback: true,
+  };
 }
 
 export async function getStaticProps({ locale }) {
