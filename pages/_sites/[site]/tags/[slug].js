@@ -1,17 +1,19 @@
 import { useRouter } from 'next/router';
-import Layout from '../../components/Layout.js';
-import { hasuraTagPage, hasuraListAllTags } from '../../lib/articles.js';
-import { cachedContents } from '../../lib/cached';
-import { getArticleAds } from '../../lib/ads.js';
-import { hasuraLocalizeText } from '../../lib/utils.js';
-import { useAmp } from 'next/amp';
-import ArticleStream from '../../components/homepage/ArticleStream';
-import ReadInOtherLanguage from '../../components/articles/ReadInOtherLanguage';
+import Layout from '../../../../components/Layout.js';
+import {
+  hasuraTagPage,
+  generateAllTagPagePaths,
+} from '../../../../lib/articles.js';
+import { cachedContents } from '../../../../lib/cached';
+import { getArticleAds } from '../../../../lib/ads.js';
+import { hasuraLocalizeText } from '../../../../lib/utils.js';
+import ArticleStream from '../../../../components/homepage/ArticleStream';
+import ReadInOtherLanguage from '../../../../components/articles/ReadInOtherLanguage';
 import {
   SectionContainer,
   SectionLayout,
   Block,
-} from '../../components/common/CommonStyles';
+} from '../../../../components/common/CommonStyles';
 
 export default function TagPage({
   articles,
@@ -23,7 +25,6 @@ export default function TagPage({
   locales,
 }) {
   const router = useRouter();
-  // const isAmp = useAmp();
   const isAmp = false;
 
   // If the page is not yet generated, this will be displayed
@@ -62,32 +63,15 @@ export default function TagPage({
   );
 }
 
-export async function getStaticPaths({ locales }) {
+export async function getStaticPaths({}) {
   const apiUrl = process.env.HASURA_API_URL;
-  const apiToken = process.env.ORG_SLUG;
+  const adminSecret = process.env.HASURA_ADMIN_SECRET;
 
-  let paths = [];
-  const { errors, data } = await hasuraListAllTags({
+  const paths = await generateAllTagPagePaths({
     url: apiUrl,
-    orgSlug: apiToken,
+    adminSecret: adminSecret,
+    urlParams: {},
   });
-
-  if (errors || !data) {
-    return {
-      paths,
-      fallback: true,
-    };
-  }
-  for (const tag of data.tags) {
-    for (const locale of tag.tag_translations) {
-      paths.push({
-        params: {
-          slug: tag.slug,
-        },
-        locale: locale.code,
-      });
-    }
-  }
   return {
     paths,
     fallback: true,
