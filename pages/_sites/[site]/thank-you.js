@@ -1,52 +1,58 @@
-import { useAmp } from 'next/amp';
-import tw, { styled } from 'twin.macro';
+import tw from 'twin.macro';
 import { useRouter } from 'next/router';
-import { hasuraGetPage } from '../lib/articles.js';
-import { hasuraLocalizeText } from '../lib/utils';
-import Layout from '../components/Layout';
-import ReadInOtherLanguage from '../components/articles/ReadInOtherLanguage';
-import StaticMainImage from '../components/articles/StaticMainImage';
-import { renderBody } from '../lib/utils.js';
-import DonationOptionsBlock from '../components/plugins/DonationOptionsBlock.js';
+import { hasuraGetPage } from '../../../lib/articles.js';
+import { useAnalytics } from '../../../lib/hooks/useAnalytics.js';
+import { hasuraLocalizeText } from '../../../lib/utils';
+import ReadInOtherLanguage from '../../../components/articles/ReadInOtherLanguage';
+import Layout from '../../../components/Layout';
+import NewsletterBlock from '../../../components/plugins/NewsletterBlock';
+import { renderBody } from '../../../lib/utils.js';
 import {
   ArticleTitle,
   PostTextContainer,
   PostText,
   SectionLayout,
   Block,
-} from '../components/common/CommonStyles.js';
+} from '../../../components/common/CommonStyles.js';
 
 const SectionContainer = tw.div`flex flex-col flex-nowrap items-center px-5 mx-auto max-w-7xl w-full`;
-const WideContainer = styled.div(() => ({
-  ...tw`px-5 md:px-12 mx-auto w-full`,
-  maxWidth: '1280px',
-}));
 
-export default function Donate({
+export default function ThankYou({
+  referrer,
   page,
   sections,
   siteMetadata,
   locales,
   locale,
 }) {
-  // const isAmp = useAmp();
   const isAmp = false;
   const router = useRouter();
+  // sets a cookie if request comes from monkeypod.io marking this browser as a donor
+  const { checkReferrer, trackEvent } = useAnalytics();
 
   // If the page is not yet generated, this will be displayed
   // initially until getStaticProps() finishes running
   // See: https://nextjs.org/docs/basic-features/data-fetching#the-fallback-key-required
   if (router.isFallback) {
+    // console.log('router.isFallback on thank you page');
     return <div>Loading...</div>;
   }
 
-  // there will only be one translation returned for a given page + locale
-  const headline = hasuraLocalizeText(
-    locale,
-    page.page_translations,
-    'headline'
-  );
+  // this will return true if the request came from monkeypod, false otherwise
+  let isDonor = checkReferrer(referrer);
+  if (isDonor) {
+    setTimeout(() => {
+      trackEvent({
+        action: 'submit',
+        category: 'NTG membership',
+        label: 'success',
+        non_interaction: false,
+      });
+    }, 100);
+  }
 
+  // there will only be one translation returned for a given page + locale
+  const localisedPage = page.page_translations[0];
   const body = renderBody(
     locale,
     page.page_translations,
@@ -77,24 +83,18 @@ export default function Donate({
   return (
     <Layout locale={locale} meta={siteMetadata} page={page} sections={sections}>
       <SectionContainer>
-        <article className="container">
-          <ArticleTitle meta={siteMetadata} tw="text-center">
-            {headline}
-          </ArticleTitle>
-          <StaticMainImage
-            isAmp={isAmp}
-            locale={locale}
-            page={page}
-            siteMetadata={siteMetadata}
-          />
-          <PostText>
-            <PostTextContainer>{body}</PostTextContainer>
-          </PostText>
-        </article>
+        <ArticleTitle meta={siteMetadata} tw="text-center">
+          {localisedPage.headline}
+        </ArticleTitle>
+        <PostText>
+          <PostTextContainer>{body}</PostTextContainer>
+        </PostText>
+        <NewsletterBlock
+          metadata={siteMetadata}
+          headline={localisedPage.headline}
+          wrap={false}
+        />
       </SectionContainer>
-      <WideContainer>
-        <DonationOptionsBlock metadata={siteMetadata} wrap={true} />
-      </WideContainer>
       {locales.length > 1 && (
         <SectionLayout>
           <SectionContainer>
@@ -108,7 +108,8 @@ export default function Donate({
   );
 }
 
-export async function getStaticProps({ locale }) {
+export async function getServerSideProps(context) {
+  const referrer = context.req.headers['referer'];
   const apiUrl = process.env.HASURA_API_URL;
   const apiToken = process.env.ORG_SLUG;
 
@@ -116,53 +117,40 @@ export async function getStaticProps({ locale }) {
   let sections;
   let siteMetadata = {};
   let locales = [];
+  let locale = context.locale;
 
   const { errors, data } = await hasuraGetPage({
     url: apiUrl,
     orgSlug: apiToken,
-    slug: 'donate',
+    slug: 'thank-you',
+    localeCode: locale,
   });
   if (errors || !data) {
-    console.error('Returning a 404 - errors:', errors);
-
     return {
       notFound: true,
     };
     // throw errors;
   } else {
     if (!data.page_slug_versions || !data.page_slug_versions[0]) {
-      console.error('Returning a 404 - page slug version not found:', data);
       return {
         notFound: true,
       };
     }
     page = data.page_slug_versions[0].page;
 
-    var allPageLocales = page.page_translations;
+    var allPageLocales = data.pages[0].page_translations;
     var distinctLocaleCodes = [];
     var distinctLocales = [];
     for (var i = 0; i < allPageLocales.length; i++) {
-      let pageLocale = allPageLocales[i];
-
-      if (
-        pageLocale &&
-        pageLocale.locale &&
-        !distinctLocaleCodes.includes(pageLocale.locale.code)
-      ) {
-        distinctLocaleCodes.push(pageLocale.locale.code);
-        distinctLocales.push(pageLocale);
+      if (!distinctLocaleCodes.includes(allPageLocales[i].locale.code)) {
+        distinctLocaleCodes.push(allPageLocales[i].locale.code);
+        distinctLocales.push(allPageLocales[i]);
       }
     }
     locales = distinctLocales;
 
     sections = data.categories;
-
-    siteMetadata = hasuraLocalizeText(
-      locale,
-      data.site_metadatas[0].site_metadata_translations,
-      'data'
-    );
-
+    siteMetadata = data.site_metadatas[0].site_metadata_translations[0].data;
     for (i = 0; i < sections.length; i++) {
       sections[i].title = hasuraLocalizeText(
         locale,
@@ -174,12 +162,12 @@ export async function getStaticProps({ locale }) {
 
   return {
     props: {
+      referrer: referrer || '',
       page,
       sections,
       siteMetadata,
       locales,
       locale,
     },
-    revalidate: 1,
   };
 }

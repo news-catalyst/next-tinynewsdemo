@@ -1,9 +1,11 @@
 import { useRouter } from 'next/router';
-import { useAmp } from 'next/amp';
 import React from 'react';
-import { hasuraGetPage, hasuraListAllPageSlugs } from '../../lib/articles.js';
-import { hasuraLocalizeText } from '../../lib/utils';
-import StaticPage from '../../components/StaticPage';
+import {
+  hasuraGetPage,
+  generateAllStaticPagePaths,
+} from '../../../../lib/articles.js';
+import { hasuraLocalizeText } from '../../../../lib/utils';
+import StaticPage from '../../../../components/StaticPage';
 
 export default function Static({
   page,
@@ -13,7 +15,6 @@ export default function Static({
   locale,
 }) {
   const router = useRouter();
-  // const isAmp = useAmp();
   const isAmp = false;
 
   if (router.isFallback) {
@@ -39,22 +40,14 @@ export default function Static({
 }
 
 export async function getStaticPaths() {
-  const { errors, data } = await hasuraListAllPageSlugs();
-  if (errors) {
-    throw errors;
-  }
+  const apiUrl = process.env.HASURA_API_URL;
+  const adminSecret = process.env.HASURA_ADMIN_SECRET;
 
-  let paths = [];
-  for (const page of data.pages) {
-    for (const locale of page.page_translations) {
-      paths.push({
-        params: {
-          slug: page.slug,
-        },
-        locale: locale.locale_code,
-      });
-    }
-  }
+  const paths = await generateAllStaticPagePaths({
+    url: apiUrl,
+    adminSecret: adminSecret,
+    urlParams: {},
+  });
 
   return {
     paths,
