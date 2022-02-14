@@ -1,25 +1,25 @@
 import { useRouter } from 'next/router';
 import React from 'react';
 import tw from 'twin.macro';
-import Layout from '../../components/Layout.js';
-import { cachedContents } from '../../lib/cached';
+import Layout from '../../../../components/Layout.js';
+import { cachedContents } from '../../../../lib/cached';
 import {
   hasuraGetNewsletter,
   hasuraListNewsletters,
-} from '../../lib/newsletters.js';
-import { getArticleAds } from '../../lib/ads.js';
+} from '../../../../lib/newsletters.js';
+import { generateAllNewsletterPagePaths } from '../../../../lib/articles.js';
+import { getArticleAds } from '../../../../lib/ads.js';
 import {
   ArticleTitle,
   PostTextContainer,
   PostText,
-} from '../../components/common/CommonStyles.js';
-import ArticleFooter from '../../components/articles/ArticleFooter';
-import NewsletterBlock from '../../components/plugins/NewsletterBlock';
+} from '../../../../components/common/CommonStyles.js';
+import ArticleFooter from '../../../../components/articles/ArticleFooter';
+import NewsletterBlock from '../../../../components/plugins/NewsletterBlock';
 import {
   hasuraLocalizeText,
   renderNewsletterContent,
-} from '../../lib/utils.js';
-import { useAmp } from 'next/amp';
+} from '../../../../lib/utils.js';
 
 const SectionContainer = tw.div`flex flex-col flex-nowrap items-center px-5 mx-auto max-w-7xl w-full`;
 const BlockWrapper = tw.div`w-full`;
@@ -72,36 +72,16 @@ export default function NewsletterEditionPage(props) {
   );
 }
 
-export async function getStaticPaths({ locales }) {
+export async function getStaticPaths({}) {
   const apiUrl = process.env.HASURA_API_URL;
-  const apiToken = process.env.ORG_SLUG;
+  const adminSecret = process.env.HASURA_ADMIN_SECRET;
 
-  let paths = [];
-  const { errors, data } = await hasuraListNewsletters({
+  const paths = await generateAllNewsletterPagePaths({
     url: apiUrl,
-    orgSlug: apiToken,
-    locale_code: locales.first,
+    adminSecret: adminSecret,
+    urlParams: {},
   });
-
-  if (errors || !data) {
-    return {
-      paths,
-      fallback: true,
-    };
-  }
-
-  const siteLocales = process.env.LOCALES.split(',');
-
-  for (const newsletter of data.newsletter_editions) {
-    for (const locale of siteLocales) {
-      paths.push({
-        params: {
-          slug: newsletter.slug,
-        },
-        locale: locale.locale_code,
-      });
-    }
-  }
+  console.log('paths:', paths);
 
   return {
     paths,
