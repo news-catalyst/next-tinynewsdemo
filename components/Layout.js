@@ -84,8 +84,6 @@ export default function Layout({
   metaValues.coverImageWidth = dimensions?.width;
   metaValues.coverImageHeight = dimensions?.height;
 
-  console.log(meta);
-
   // override default canonical url if there's one specified on the article
   if (article && article.canonical_url) {
     metaValues['canonical'] = article.canonical_url;
