@@ -1,9 +1,9 @@
 import {
   hasuraGetPage,
   generateAllDomainPaths,
-} from '../../../lib/articles.js';
-import { hasuraLocalizeText } from '../../../lib/utils';
-import AboutPage from '../../../components/AboutPage';
+} from '../../../../lib/articles.js';
+import { hasuraLocalizeText } from '../../../../lib/utils';
+import AboutPage from '../../../../components/AboutPage';
 
 export default function About(props) {
   const isAmp = false;

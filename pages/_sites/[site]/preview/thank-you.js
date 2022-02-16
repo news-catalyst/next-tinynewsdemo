@@ -1,18 +1,18 @@
 import tw from 'twin.macro';
 import { useRouter } from 'next/router';
-import { hasuraGetPage } from '../../lib/articles.js';
-import { useAnalytics } from '../../lib/hooks/useAnalytics.js';
-import { hasuraLocalizeText, renderBody } from '../../lib/utils';
-import ReadInOtherLanguage from '../../components/articles/ReadInOtherLanguage';
-import Layout from '../../components/Layout';
-import NewsletterBlock from '../../components/plugins/NewsletterBlock';
+import { hasuraGetPage } from '../../../../lib/articles.js';
+import { useAnalytics } from '../../../../lib/hooks/useAnalytics.js';
+import { hasuraLocalizeText, renderBody } from '../../../../lib/utils';
+import ReadInOtherLanguage from '../../../../components/articles/ReadInOtherLanguage';
+import Layout from '../../../../components/Layout';
+import NewsletterBlock from '../../../../components/plugins/NewsletterBlock';
 import {
   ArticleTitle,
   PostTextContainer,
   PostText,
   SectionLayout,
   Block,
-} from '../../components/common/CommonStyles.js';
+} from '../../../../components/common/CommonStyles.js';
 
 const SectionContainer = tw.div`flex flex-col flex-nowrap items-center px-5 mx-auto max-w-7xl w-full`;
 

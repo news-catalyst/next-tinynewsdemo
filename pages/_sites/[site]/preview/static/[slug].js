@@ -3,10 +3,10 @@ import { useAmp } from 'next/amp';
 import React, { useEffect } from 'react';
 import {
   hasuraGetPagePreview,
-  hasuraListAllPageSlugsPreview,
-} from '../../../lib/articles.js';
-import { hasuraLocalizeText } from '../../../lib/utils';
-import StaticPage from '../../../components/StaticPage';
+  generateAllStaticPagePaths,
+} from '../../../../../lib/articles.js';
+import { hasuraLocalizeText } from '../../../../../lib/utils';
+import StaticPage from '../../../../../components/StaticPage';
 
 export default function Static({
   page,
@@ -42,22 +42,15 @@ export default function Static({
 }
 
 export async function getStaticPaths() {
-  const { errors, data } = await hasuraListAllPageSlugsPreview();
-  if (errors) {
-    throw errors;
-  }
+  const apiUrl = process.env.HASURA_API_URL;
+  const adminSecret = process.env.HASURA_ADMIN_SECRET;
 
-  let paths = [];
-  for (const page of data.pages) {
-    for (const locale of page.page_translations) {
-      paths.push({
-        params: {
-          slug: page.slug,
-        },
-        locale: locale.locale_code,
-      });
-    }
-  }
+  const paths = await generateAllStaticPagePaths({
+    url: apiUrl,
+    adminSecret: adminSecret,
+    urlParams: {},
+    preview: true,
+  });
 
   return {
     paths,
