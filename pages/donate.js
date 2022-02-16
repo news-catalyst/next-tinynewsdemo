@@ -40,6 +40,7 @@ export default function Donate({
     return <div>Loading...</div>;
   }
 
+  const localisedPage = page.page_translations[0];
   // there will only be one translation returned for a given page + locale
   const headline = hasuraLocalizeText(
     locale,
