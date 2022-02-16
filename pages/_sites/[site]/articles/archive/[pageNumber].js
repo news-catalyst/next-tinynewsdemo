@@ -1,18 +1,17 @@
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import tw, { styled } from 'twin.macro';
-import Typography from '../../../components/common/Typography';
-import Layout from '../../../components/Layout.js';
+import Typography from '../../../../../components/common/Typography';
+import Layout from '../../../../../components/Layout.js';
 import {
   hasuraArticlesArchivePage,
-  hasuraListArticleArchivePages,
-} from '../../../lib/articles.js';
-import { hasuraLocalizeText } from '../../../lib/utils';
-import { cachedContents } from '../../../lib/cached';
-import { getArticleAds } from '../../../lib/ads.js';
-import { useAmp } from 'next/amp';
-import ArticleStream from '../../../components/homepage/ArticleStream';
-import paginationStyles from '../../../styles/pagination.js';
+  generateAllArticleArchivePages,
+} from '../../../../../lib/articles.js';
+import { hasuraLocalizeText } from '../../../../../lib/utils';
+import { cachedContents } from '../../../../../lib/cached';
+import { getArticleAds } from '../../../../../lib/ads.js';
+import ArticleStream from '../../../../../components/homepage/ArticleStream';
+import paginationStyles from '../../../../../styles/pagination.js';
 
 const PaginationSection = tw.section`flex mb-8`;
 const PaginationContainer = styled.div(({ meta }) => ({
@@ -60,7 +59,6 @@ export default function ArticlesArchivePage({
   }
 
   const router = useRouter();
-  // const isAmp = useAmp();
   const isAmp = false;
   // If the page is not yet generated, this will be displayed
   // initially until getStaticProps() finishes running
@@ -104,26 +102,15 @@ export default function ArticlesArchivePage({
 function range(size, startAt = 0) {
   return [...Array(size).keys()].map((i) => i + startAt);
 }
-
 export async function getStaticPaths() {
-  const { errors, data } = await hasuraListArticleArchivePages();
-  if (errors) {
-    throw errors;
-  }
+  const apiUrl = process.env.HASURA_API_URL;
+  const adminSecret = process.env.HASURA_ADMIN_SECRET;
 
-  let limit = 10;
-  let totalCount = data.articles_aggregate.aggregate.count;
-  let pageCount = Math.ceil(totalCount / limit);
-
-  let pageNumbers = range(pageCount, 1);
-  let paths = [];
-  for (const pageNum of pageNumbers) {
-    paths.push({
-      params: {
-        pageNumber: pageNum.toString(),
-      },
-    });
-  }
+  const paths = await generateAllArticleArchivePages({
+    url: apiUrl,
+    adminSecret: adminSecret,
+    urlParams: {},
+  });
 
   return {
     paths,
