@@ -1,18 +1,21 @@
 import tw, { styled } from 'twin.macro';
 import { useRouter } from 'next/router';
-import { hasuraGetPage } from '../../lib/articles.js';
-import { hasuraLocalizeText, renderBody } from '../../lib/utils';
-import Layout from '../../components/Layout';
-import ReadInOtherLanguage from '../../components/articles/ReadInOtherLanguage';
-import StaticMainImage from '../../components/articles/StaticMainImage';
-import DonationOptionsBlock from '../../components/plugins/DonationOptionsBlock.js';
+import {
+  hasuraGetPage,
+  generateAllDomainPaths,
+} from '../../../../lib/articles.js';
+import { hasuraLocalizeText, renderBody } from '../../../../lib/utils';
+import Layout from '../../../../components/Layout';
+import ReadInOtherLanguage from '../../../../components/articles/ReadInOtherLanguage';
+import StaticMainImage from '../../../../components/articles/StaticMainImage';
+import DonationOptionsBlock from '../../../../components/plugins/DonationOptionsBlock.js';
 import {
   ArticleTitle,
   PostTextContainer,
   PostText,
   SectionLayout,
   Block,
-} from '../../components/common/CommonStyles.js';
+} from '../../../../components/common/CommonStyles.js';
 
 const SectionContainer = tw.div`flex flex-col flex-nowrap items-center px-5 mx-auto max-w-7xl w-full`;
 const WideContainer = styled.div(() => ({
@@ -84,6 +87,22 @@ export default function Donate({
       )}
     </Layout>
   );
+}
+
+export async function getStaticPaths() {
+  const apiUrl = process.env.HASURA_API_URL;
+  const adminSecret = process.env.HASURA_ADMIN_SECRET;
+
+  const mappedPaths = await generateAllDomainPaths({
+    url: apiUrl,
+    adminSecret: adminSecret,
+    urlParams: { slug: 'donate' },
+  });
+
+  return {
+    paths: mappedPaths,
+    fallback: true,
+  };
 }
 
 export async function getStaticProps(context) {
