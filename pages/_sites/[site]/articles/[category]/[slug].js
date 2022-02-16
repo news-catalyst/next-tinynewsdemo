@@ -1,16 +1,14 @@
 import { useRouter } from 'next/router';
 import React from 'react';
 import {
-  hasuraListAllArticleSlugs,
+  generateAllArticlePagePaths,
   hasuraArticlePage,
   hasuraCategoryPage,
-} from '../../../lib/articles.js';
-import { hasuraLocalizeText } from '../../../lib/utils.js';
-import { getArticleAds } from '../../../lib/ads.js';
-import { cachedContents } from '../../../lib/cached';
-import Article from '../../../components/Article.js';
-
-// export const config = { amp: 'hybrid' };
+} from '../../../../../lib/articles.js';
+import { hasuraLocalizeText } from '../../../../../lib/utils.js';
+import { getArticleAds } from '../../../../../lib/ads.js';
+import { cachedContents } from '../../../../../lib/cached';
+import Article from '../../../../../components/Article.js';
 
 export default function ArticlePage(props) {
   const router = useRouter();
@@ -34,24 +32,16 @@ export default function ArticlePage(props) {
 }
 
 export async function getStaticPaths() {
-  const { errors, data } = await hasuraListAllArticleSlugs();
-  if (errors) {
-    throw errors;
-  }
+  const apiUrl = process.env.HASURA_API_URL;
+  const adminSecret = process.env.HASURA_ADMIN_SECRET;
 
-  let paths = [];
-  for (const article of data.articles) {
-    for (const locale of article.article_translations) {
-      paths.push({
-        params: {
-          category: article.category.slug,
-          slug: article.slug,
-        },
-        locale: locale.locale_code,
-      });
-    }
-  }
+  const paths = await generateAllArticlePagePaths({
+    url: apiUrl,
+    adminSecret: adminSecret,
+    urlParams: {},
+  });
 
+  console.log('paths:', paths);
   return {
     paths,
     fallback: true,
