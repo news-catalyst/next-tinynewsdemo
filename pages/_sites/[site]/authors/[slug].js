@@ -114,7 +114,7 @@ export default function AuthorPage({
   );
 }
 
-export async function getStaticPaths({}) {
+export async function getStaticPaths() {
   const apiUrl = process.env.HASURA_API_URL;
   const adminSecret = process.env.HASURA_ADMIN_SECRET;
 

@@ -72,7 +72,7 @@ export default function NewsletterEditionPage(props) {
   );
 }
 
-export async function getStaticPaths({}) {
+export async function getStaticPaths() {
   const apiUrl = process.env.HASURA_API_URL;
   const adminSecret = process.env.HASURA_ADMIN_SECRET;
 
@@ -81,7 +81,6 @@ export async function getStaticPaths({}) {
     adminSecret: adminSecret,
     urlParams: {},
   });
-  console.log('paths:', paths);
 
   return {
     paths,
