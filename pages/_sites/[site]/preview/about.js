@@ -1,12 +1,30 @@
-import { hasuraGetPage } from '../../lib/articles.js';
-import { hasuraLocalizeText } from '../../lib/utils';
-import AboutPage from '../../components/AboutPage';
+import {
+  hasuraGetPage,
+  generateAllDomainPaths,
+} from '../../../lib/articles.js';
+import { hasuraLocalizeText } from '../../../lib/utils';
+import AboutPage from '../../../components/AboutPage';
 
 export default function About(props) {
-  // const isAmp = useAmp();
   const isAmp = false;
 
   return <AboutPage {...props} isAmp={isAmp} />;
+}
+
+export async function getStaticPaths() {
+  const apiUrl = process.env.HASURA_API_URL;
+  const adminSecret = process.env.HASURA_ADMIN_SECRET;
+
+  const mappedPaths = await generateAllDomainPaths({
+    url: apiUrl,
+    adminSecret: adminSecret,
+    urlParams: { slug: 'about' },
+  });
+
+  return {
+    paths: mappedPaths,
+    fallback: true,
+  };
 }
 
 export async function getStaticProps(context) {

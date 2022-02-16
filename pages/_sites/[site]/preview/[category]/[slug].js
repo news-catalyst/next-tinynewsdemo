@@ -1,12 +1,12 @@
 import DefaultErrorPage from 'next/error';
 import {
-  hasuraListAllArticleSlugs,
   hasuraPreviewArticlePage,
-} from '../../../lib/articles.js';
-import { hasuraLocalizeText } from '../../../lib/utils.js';
-import { getArticleAds } from '../../../lib/ads.js';
-import { cachedContents } from '../../../lib/cached';
-import Article from '../../../components/Article.js';
+  generateAllArticlePreviewPagePaths,
+} from '../../../../../lib/articles.js';
+import { hasuraLocalizeText } from '../../../../../lib/utils.js';
+import { getArticleAds } from '../../../../../lib/ads.js';
+import { cachedContents } from '../../../../../lib/cached';
+import Article from '../../../../../components/Article.js';
 
 export default function PreviewArticle(props) {
   if (!props.article) {
@@ -22,23 +22,13 @@ export default function PreviewArticle(props) {
 }
 
 export async function getStaticPaths() {
-  const { errors, data } = await hasuraListAllArticleSlugs();
-  if (errors) {
-    throw errors;
-  }
-
-  let paths = [];
-  for (const article of data.articles) {
-    for (const locale of article.article_translations) {
-      paths.push({
-        params: {
-          category: article.category.slug,
-          slug: article.slug,
-        },
-        locale: locale.locale_code,
-      });
-    }
-  }
+  const apiUrl = process.env.HASURA_API_URL;
+  const adminSecret = process.env.HASURA_ADMIN_SECRET;
+  const paths = await generateAllArticlePreviewPagePaths({
+    url: apiUrl,
+    adminSecret: adminSecret,
+    urlParams: {},
+  });
   return {
     paths,
     fallback: false,
