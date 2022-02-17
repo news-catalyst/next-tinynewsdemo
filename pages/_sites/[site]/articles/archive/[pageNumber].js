@@ -6,8 +6,9 @@ import Layout from '../../../../../components/Layout.js';
 import {
   hasuraArticlesArchivePage,
   generateAllArticleArchivePages,
+  getOrgSettings,
 } from '../../../../../lib/articles.js';
-import { hasuraLocalizeText } from '../../../../../lib/utils';
+import { hasuraLocalizeText, booleanSetting } from '../../../../../lib/utils';
 import { cachedContents } from '../../../../../lib/cached';
 import { getArticleAds } from '../../../../../lib/ads.js';
 import ArticleStream from '../../../../../components/homepage/ArticleStream';
@@ -120,7 +121,14 @@ export async function getStaticPaths() {
 
 export async function getStaticProps(context) {
   const apiUrl = process.env.HASURA_API_URL;
-  const apiToken = process.env.ORG_SLUG;
+
+  const settingsResult = await getOrgSettings({
+    url: apiUrl,
+  });
+
+  if (settingsResult.errors) {
+    throw settingsResult.errors;
+  }
 
   let articles = [];
   let sections = [];
@@ -136,7 +144,6 @@ export async function getStaticProps(context) {
 
   const { errors, data } = await hasuraArticlesArchivePage({
     url: apiUrl,
-    orgSlug: apiToken,
     limit: limit,
     offset: offset,
   });
@@ -169,7 +176,12 @@ export async function getStaticProps(context) {
   }
 
   let expandedAds = [];
-  if (process.env.LETTERHEAD_API_URL) {
+  let letterheadSetting = booleanSetting(
+    settingsResult.data.settings,
+    'LETTERHEAD_API_URL',
+    false
+  );
+  if (letterheadSetting) {
     const allAds = (await cachedContents('ads', getArticleAds)) || [];
     expandedAds = allAds.filter((ad) => ad.adTypeId === 166 && ad.status === 4);
   }

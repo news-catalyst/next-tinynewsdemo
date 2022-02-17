@@ -69,15 +69,15 @@ export async function getStaticPaths() {
   };
 }
 
-export async function getStaticProps({ locale }) {
+export async function getStaticProps({ locale, params }) {
   const apiUrl = process.env.HASURA_API_URL;
-  const apiToken = process.env.ORG_SLUG;
+  const site = params.site;
 
   let siteMetadata = {};
 
   const { errors, data } = await hasuraGetSiteMetadata({
     url: apiUrl,
-    orgSlug: apiToken,
+    site: site,
     localeCode: locale,
   });
   if (errors || !data) {

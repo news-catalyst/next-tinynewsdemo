@@ -7,7 +7,7 @@ import {
   getOrgSettings,
 } from '../../../lib/articles.js';
 import { getArticleAds } from '../../../lib/ads.js';
-import { hasuraLocalizeText } from '../../../lib/utils.js';
+import { booleanSetting, hasuraLocalizeText } from '../../../lib/utils.js';
 import Homepage from '../../../components/Homepage';
 import LandingPage from '../../../components/LandingPage';
 import CurriculumHomepage from '../../../components/curriculum/CurriculumHomepage';
@@ -61,14 +61,13 @@ export async function getStaticProps(context) {
   });
 
   if (settingsResult.errors) {
-    console.error(settingsResult.errors);
+    console.error('Settings error:', settingsResult.errors);
     throw settingsResult.errors;
-  } else {
-    console.log('Settings: ', settingsResult);
   }
 
   const { errors, data } = await hasuraGetHomepageEditor({
     url: apiUrl,
+    site: site,
     localeCode: locale,
   });
   if (errors || !data) {
@@ -121,7 +120,7 @@ export async function getStaticProps(context) {
 
   const streamResult = await hasuraStreamArticles({
     url: apiUrl,
-    orgSlug: apiToken,
+    site: site,
     ids: ids,
     limit: process.env.ORG_SLUG === 'tiny-news-curriculum' ? 20 : 10,
   });
@@ -154,12 +153,9 @@ export async function getStaticProps(context) {
     );
   }
 
+  let settings = settingsResult.data.settings;
   let expandedAds = [];
-  let letterheadSetting = booleanSetting(
-    settingsResult.data.settings,
-    'LETTERHEAD_API_URL',
-    false
-  );
+  let letterheadSetting = booleanSetting(settings, 'LETTERHEAD_API_URL', false);
   if (letterheadSetting) {
     const allAds = (await cachedContents('ads', getArticleAds)) || [];
     expandedAds = allAds.filter((ad) => ad.adTypeId === 166 && ad.status === 4);

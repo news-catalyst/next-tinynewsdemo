@@ -13,6 +13,7 @@ export default function Static({
   siteMetadata,
   locales,
   locale,
+  settings,
 }) {
   const router = useRouter();
   const isAmp = false;
@@ -57,7 +58,16 @@ export async function getStaticPaths() {
 
 export async function getStaticProps({ locale, params }) {
   const apiUrl = process.env.HASURA_API_URL;
-  const apiToken = process.env.ORG_SLUG;
+
+  const settingsResult = await getOrgSettings({
+    url: apiUrl,
+  });
+
+  if (settingsResult.errors) {
+    throw settingsResult.errors;
+  }
+
+  let settings = settingsResult.data.settings;
 
   let page = {};
   let sections;
@@ -66,7 +76,6 @@ export async function getStaticProps({ locale, params }) {
 
   const { errors, data } = await hasuraGetPage({
     url: apiUrl,
-    orgSlug: apiToken,
     slug: params.slug,
     localeCode: locale,
   });
@@ -115,6 +124,7 @@ export async function getStaticProps({ locale, params }) {
       siteMetadata,
       locales,
       locale,
+      settings,
     },
     revalidate: 1,
   };

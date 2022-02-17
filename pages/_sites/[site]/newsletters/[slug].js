@@ -3,11 +3,11 @@ import React from 'react';
 import tw from 'twin.macro';
 import Layout from '../../../../components/Layout.js';
 import { cachedContents } from '../../../../lib/cached';
+import { hasuraGetNewsletter } from '../../../../lib/newsletters.js';
 import {
-  hasuraGetNewsletter,
-  hasuraListNewsletters,
-} from '../../../../lib/newsletters.js';
-import { generateAllNewsletterPagePaths } from '../../../../lib/articles.js';
+  generateAllNewsletterPagePaths,
+  getOrgSettings,
+} from '../../../../lib/articles.js';
 import { getArticleAds } from '../../../../lib/ads.js';
 import {
   ArticleTitle,
@@ -17,6 +17,7 @@ import {
 import ArticleFooter from '../../../../components/articles/ArticleFooter';
 import NewsletterBlock from '../../../../components/plugins/NewsletterBlock';
 import {
+  booleanSetting,
   hasuraLocalizeText,
   renderNewsletterContent,
 } from '../../../../lib/utils.js';
@@ -90,7 +91,16 @@ export async function getStaticPaths() {
 
 export async function getStaticProps({ locale, params }) {
   const apiUrl = process.env.HASURA_API_URL;
-  const apiToken = process.env.ORG_SLUG;
+
+  const settingsResult = await getOrgSettings({
+    url: apiUrl,
+  });
+
+  if (settingsResult.errors) {
+    throw settingsResult.errors;
+  }
+
+  let settings = settingsResult.data.settings;
 
   let newsletter;
   let sections = [];
@@ -99,7 +109,6 @@ export async function getStaticProps({ locale, params }) {
 
   const { errors, data } = await hasuraGetNewsletter({
     url: apiUrl,
-    orgSlug: apiToken,
     slug: params.slug,
   });
 
@@ -138,15 +147,13 @@ export async function getStaticProps({ locale, params }) {
   }
 
   let expandedAds = [];
-  if (process.env.LETTERHEAD_API_URL) {
+  let letterheadSetting = booleanSetting(settings, 'LETTERHEAD_API_URL', false);
+  if (letterheadSetting) {
     const allAds = (await cachedContents('ads', getArticleAds)) || [];
     expandedAds = allAds.filter((ad) => ad.adTypeId === 166 && ad.status === 4);
   }
 
-  let renderFooter = true;
-  if (process.env.ORG_SLUG === 'tiny-news-curriculum') {
-    renderFooter = false; // turns off the global footer for the curriculum site
-  }
+  let renderFooter = booleanSetting(settings, 'RENDER_FOOTER', true);
 
   return {
     props: {
@@ -157,6 +164,7 @@ export async function getStaticProps({ locale, params }) {
       expandedAds,
       renderFooter,
       locale,
+      settings,
     },
   };
 }

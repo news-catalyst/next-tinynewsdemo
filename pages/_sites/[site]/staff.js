@@ -21,15 +21,16 @@ export async function getStaticPaths() {
     urlParams: { slug: 'staff' },
   });
 
+  console.log('paths:', mappedPaths);
   return {
     paths: mappedPaths,
     fallback: true,
   };
 }
 
-export async function getStaticProps({ locale }) {
+export async function getStaticProps({ locale, params }) {
   const apiUrl = process.env.HASURA_API_URL;
-  const apiToken = process.env.ORG_SLUG;
+  const site = params.site;
 
   let page = {};
   let sections;
@@ -38,11 +39,11 @@ export async function getStaticProps({ locale }) {
 
   const { errors, data } = await hasuraGetPage({
     url: apiUrl,
-    orgSlug: apiToken,
-    slug: 'about',
+    site: site,
+    slug: 'staff',
   });
   if (errors || !data) {
-    console.error(errors);
+    console.error('getPage errors:', errors);
     return {
       notFound: true,
     };
