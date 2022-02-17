@@ -15,7 +15,7 @@ module.exports = {
     deviceSizes: [640, 750, 828, 1080, 1200],
   },
   i18n: {
-    locales: process.env.LOCALES.split(','),
+    locales: ['en-US', 'es', 'tl'],
     defaultLocale: 'en-US',
   },
 };

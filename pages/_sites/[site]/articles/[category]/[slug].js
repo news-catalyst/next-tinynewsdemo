@@ -4,8 +4,12 @@ import {
   generateAllArticlePagePaths,
   hasuraArticlePage,
   hasuraCategoryPage,
+  getOrgSettings,
 } from '../../../../../lib/articles.js';
-import { hasuraLocalizeText } from '../../../../../lib/utils.js';
+import {
+  hasuraLocalizeText,
+  booleanSetting,
+} from '../../../../../lib/utils.js';
 import { getArticleAds } from '../../../../../lib/ads.js';
 import { cachedContents } from '../../../../../lib/cached';
 import Article from '../../../../../components/Article.js';
@@ -41,7 +45,6 @@ export async function getStaticPaths() {
     urlParams: {},
   });
 
-  console.log('paths:', paths);
   return {
     paths,
     fallback: true,
@@ -50,7 +53,17 @@ export async function getStaticPaths() {
 
 export async function getStaticProps({ locale, params }) {
   const apiUrl = process.env.HASURA_API_URL;
-  const apiToken = process.env.ORG_SLUG;
+  const site = params.site;
+
+  const settingsResult = await getOrgSettings({
+    url: apiUrl,
+    site: site,
+  });
+
+  if (settingsResult.errors) {
+    console.error('Settings lookup error:', settingsResult.errors);
+    throw settingsResult.errors;
+  }
 
   let article = {};
   let sectionArticles = [];
@@ -60,7 +73,7 @@ export async function getStaticProps({ locale, params }) {
   let siteMetadata;
   const { errors, data } = await hasuraArticlePage({
     url: apiUrl,
-    orgSlug: apiToken,
+    site: site,
     categorySlug: params.category,
     slug: params.slug,
   });
@@ -91,7 +104,6 @@ export async function getStaticProps({ locale, params }) {
 
     const sectionResponse = await hasuraCategoryPage({
       url: apiUrl,
-      orgSlug: apiToken,
       categorySlug: params.category,
     });
     if (!sectionResponse.errors && sectionResponse.data) {
@@ -107,15 +119,22 @@ export async function getStaticProps({ locale, params }) {
   }
 
   let ads = [];
-  if (process.env.LETTERHEAD_API_URL) {
+
+  let letterheadSetting = booleanSetting(
+    settingsResult.data.settings,
+    'LETTERHEAD_API_URL',
+    false
+  );
+  if (letterheadSetting) {
     const allAds = (await cachedContents('ads', getArticleAds)) || [];
     ads = allAds.filter((ad) => ad.adTypeId === 164 && ad.status === 4);
   }
 
-  let renderFooter = true;
-  if (process.env.ORG_SLUG === 'tiny-news-curriculum') {
-    renderFooter = false; // turns off the global footer for the curriculum site
-  }
+  let renderFooter = booleanSetting(
+    settingsResult.data.settings,
+    'RENDER_FOOTER',
+    true
+  );
 
   return {
     props: {

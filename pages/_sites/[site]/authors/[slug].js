@@ -3,8 +3,13 @@ import Layout from '../../../../components/Layout.js';
 import {
   generateAllAuthorPagePaths,
   hasuraAuthorPage,
+  getOrgSettings,
 } from '../../../../lib/articles.js';
-import { displayAuthorName, hasuraLocalizeText } from '../../../../lib/utils';
+import {
+  booleanSetting,
+  displayAuthorName,
+  hasuraLocalizeText,
+} from '../../../../lib/utils';
 import { cachedContents } from '../../../../lib/cached';
 import { getArticleAds } from '../../../../lib/ads.js';
 import ArticleStream from '../../../../components/homepage/ArticleStream';
@@ -131,7 +136,16 @@ export async function getStaticPaths() {
 
 export async function getStaticProps({ locale, params }) {
   const apiUrl = process.env.HASURA_API_URL;
-  const apiToken = process.env.ORG_SLUG;
+  const site = params.site;
+
+  const settingsResult = await getOrgSettings({
+    url: apiUrl,
+    site: site,
+  });
+
+  if (settingsResult.errors) {
+    throw settingsResult.errors;
+  }
 
   let slug = params.slug;
   if (slug === undefined) {
@@ -148,7 +162,7 @@ export async function getStaticProps({ locale, params }) {
 
   const { errors, data } = await hasuraAuthorPage({
     url: apiUrl,
-    orgSlug: apiToken,
+    site: site,
     authorSlug: params.slug,
   });
 
@@ -180,7 +194,12 @@ export async function getStaticProps({ locale, params }) {
   }
 
   let expandedAds = [];
-  if (process.env.LETTERHEAD_API_URL) {
+  let letterheadSetting = booleanSetting(
+    settingsResult.data.settings,
+    'LETTERHEAD_API_URL',
+    false
+  );
+  if (letterheadSetting) {
     const allAds = (await cachedContents('ads', getArticleAds)) || [];
     expandedAds = allAds.filter((ad) => ad.adTypeId === 166 && ad.status === 4);
   }

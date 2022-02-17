@@ -35,9 +35,10 @@ export async function getStaticPaths() {
   };
 }
 
-export async function getStaticProps({ locale }) {
+export async function getStaticProps({ locale, params }) {
   const apiUrl = process.env.HASURA_API_URL;
   const apiToken = process.env.ORG_SLUG;
+  const site = params.site;
 
   let page = {};
   let sections;
@@ -46,7 +47,7 @@ export async function getStaticProps({ locale }) {
 
   const { errors, data } = await hasuraGetPage({
     url: apiUrl,
-    orgSlug: apiToken,
+    site: site,
     slug: 'about',
     localeCode: locale,
   });

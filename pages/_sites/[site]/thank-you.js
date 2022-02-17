@@ -111,7 +111,7 @@ export default function ThankYou({
 export async function getServerSideProps(context) {
   const referrer = context.req.headers['referer'];
   const apiUrl = process.env.HASURA_API_URL;
-  const apiToken = process.env.ORG_SLUG;
+  const site = context.params.site;
 
   let page = {};
   let sections;
@@ -121,7 +121,7 @@ export async function getServerSideProps(context) {
 
   const { errors, data } = await hasuraGetPage({
     url: apiUrl,
-    orgSlug: apiToken,
+    site: site,
     slug: 'thank-you',
     localeCode: locale,
   });
