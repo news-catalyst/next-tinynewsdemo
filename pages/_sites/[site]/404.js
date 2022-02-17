@@ -1,7 +1,7 @@
 // import { useAmp } from 'next/amp';
-import Layout from '../components/Layout';
-import { hasuraGetLayout } from '../lib/articles.js';
-import { hasuraLocalizeText } from '../lib/utils';
+import Layout from '../../../components/Layout';
+import { hasuraGetLayout } from '../../../lib/articles.js';
+import { hasuraLocalizeText } from '../../../lib/utils';
 
 export default function Custom404({ locale, sections, siteMetadata }) {
   let title;
@@ -41,20 +41,21 @@ export default function Custom404({ locale, sections, siteMetadata }) {
   );
 }
 
-export async function getStaticProps({ locale }) {
+export async function getStaticProps({ locale, params }) {
   const apiUrl = process.env.HASURA_API_URL;
   const apiToken = process.env.ORG_SLUG;
+  const site = params.site;
 
   let sections;
   let siteMetadata = {};
 
   const { errors, data } = await hasuraGetLayout({
     url: apiUrl,
-    orgSlug: apiToken,
+    site: site,
     localeCode: locale,
   });
   if (errors || !data) {
-    console.error('an error occurred');
+    console.error('an error occurred', errors);
     throw errors;
   } else {
     sections = data.categories;

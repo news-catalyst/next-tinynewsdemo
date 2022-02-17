@@ -4,8 +4,11 @@ import { cachedContents } from '../../../../lib/cached';
 import { hasuraListNewsletters } from '../../../../lib/newsletters.js';
 import { getArticleAds } from '../../../../lib/ads.js';
 import ArticleStream from '../../../../components/homepage/ArticleStream';
-import { generateAllDomainPaths } from '../../../../lib/articles.js';
-import { hasuraLocalizeText } from '../../../../lib/utils.js';
+import {
+  generateAllDomainPaths,
+  getOrgSettings,
+} from '../../../../lib/articles.js';
+import { hasuraLocalizeText, booleanSetting } from '../../../../lib/utils.js';
 
 export default function NewsletterIndexPage(props) {
   const isAmp = false;
@@ -49,7 +52,14 @@ export async function getStaticPaths() {
 
 export async function getStaticProps({ locale, params }) {
   const apiUrl = process.env.HASURA_API_URL;
-  const apiToken = process.env.ORG_SLUG;
+
+  const settingsResult = await getOrgSettings({
+    url: apiUrl,
+  });
+
+  if (settingsResult.errors) {
+    throw settingsResult.errors;
+  }
 
   let newsletters = [];
   let sections = [];
@@ -58,7 +68,6 @@ export async function getStaticProps({ locale, params }) {
 
   const { errors, data } = await hasuraListNewsletters({
     url: apiUrl,
-    orgSlug: apiToken,
   });
 
   if (errors || !data) {
@@ -98,7 +107,12 @@ export async function getStaticProps({ locale, params }) {
   }
 
   let expandedAds = [];
-  if (process.env.LETTERHEAD_API_URL) {
+  let letterheadSetting = booleanSetting(
+    settingsResult.data.settings,
+    'LETTERHEAD_API_URL',
+    false
+  );
+  if (letterheadSetting) {
     const allAds = (await cachedContents('ads', getArticleAds)) || [];
     expandedAds = allAds.filter((ad) => ad.adTypeId === 166 && ad.status === 4);
   }

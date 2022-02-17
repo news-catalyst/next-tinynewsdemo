@@ -5,10 +5,10 @@ import { cachedContents } from '../../../../lib/cached';
 import {
   hasuraCategoryPage,
   generateAllCategoryPagePaths,
+  getOrgSettings,
 } from '../../../../lib/articles.js';
 import { getArticleAds } from '../../../../lib/ads.js';
-import { hasuraLocalizeText } from '../../../../lib/utils.js';
-import { useAmp } from 'next/amp';
+import { hasuraLocalizeText, booleanSetting } from '../../../../lib/utils.js';
 import ArticleStream from '../../../../components/homepage/ArticleStream';
 import ReadInOtherLanguage from '../../../../components/articles/ReadInOtherLanguage';
 import {
@@ -18,7 +18,6 @@ import {
 } from '../../../../components/common/CommonStyles';
 
 export default function CategoryPage(props) {
-  // const isAmp = useAmp();
   const isAmp = false;
 
   const router = useRouter();
@@ -90,7 +89,18 @@ export async function getStaticPaths() {
 
 export async function getStaticProps({ locale, params }) {
   const apiUrl = process.env.HASURA_API_URL;
-  const apiToken = process.env.ORG_SLUG;
+  const site = params.site;
+
+  const settingsResult = await getOrgSettings({
+    url: apiUrl,
+    site: site,
+  });
+
+  if (settingsResult.errors) {
+    throw settingsResult.errors;
+  }
+
+  const settings = settingsResult.data.settings;
 
   let articles = [];
   let sections = [];
@@ -102,7 +112,7 @@ export async function getStaticProps({ locale, params }) {
 
   const { errors, data } = await hasuraCategoryPage({
     url: apiUrl,
-    orgSlug: apiToken,
+    site: site,
     categorySlug: params.category,
   });
 
@@ -153,15 +163,13 @@ export async function getStaticProps({ locale, params }) {
   }
 
   let expandedAds = [];
-  if (process.env.LETTERHEAD_API_URL) {
+  let letterheadSetting = booleanSetting(settings, 'LETTERHEAD_API_URL', false);
+  if (letterheadSetting) {
     const allAds = (await cachedContents('ads', getArticleAds)) || [];
     expandedAds = allAds.filter((ad) => ad.adTypeId === 166 && ad.status === 4);
   }
 
-  let renderFooter = true;
-  if (process.env.ORG_SLUG === 'tiny-news-curriculum') {
-    renderFooter = false; // turns off the global footer for the curriculum site
-  }
+  let renderFooter = booleanSetting(settings, 'RENDER_FOOTER', true);
 
   return {
     props: {
@@ -175,6 +183,7 @@ export async function getStaticProps({ locale, params }) {
       renderFooter,
       locale,
       locales,
+      settings,
     },
   };
 }
