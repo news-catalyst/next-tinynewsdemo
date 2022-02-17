@@ -1,6 +1,9 @@
 // import { useAmp } from 'next/amp';
 import Layout from '../../../components/Layout';
-import { hasuraGetLayout } from '../../../lib/articles.js';
+import {
+  hasuraGetLayout,
+  generateAllDomainPaths,
+} from '../../../lib/articles.js';
 import { hasuraLocalizeText } from '../../../lib/utils';
 
 export default function Custom404({ locale, sections, siteMetadata }) {
@@ -41,9 +44,24 @@ export default function Custom404({ locale, sections, siteMetadata }) {
   );
 }
 
+export async function getStaticPaths() {
+  const apiUrl = process.env.HASURA_API_URL;
+  const adminSecret = process.env.HASURA_ADMIN_SECRET;
+
+  const mappedPaths = await generateAllDomainPaths({
+    url: apiUrl,
+    adminSecret: adminSecret,
+    urlParams: { slug: '404' },
+  });
+
+  return {
+    paths: mappedPaths,
+    fallback: true,
+  };
+}
+
 export async function getStaticProps({ locale, params }) {
   const apiUrl = process.env.HASURA_API_URL;
-  const apiToken = process.env.ORG_SLUG;
   const site = params.site;
 
   let sections;
