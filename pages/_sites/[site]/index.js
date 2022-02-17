@@ -4,6 +4,7 @@ import { cachedContents } from '../../../lib/cached';
 import {
   hasuraGetHomepageEditor,
   generateAllDomainPaths,
+  getOrgSettings,
 } from '../../../lib/articles.js';
 import { getArticleAds } from '../../../lib/ads.js';
 import { hasuraLocalizeText } from '../../../lib/utils.js';
@@ -43,13 +44,31 @@ export async function getStaticPaths() {
   };
 }
 
-export async function getStaticProps({ locale }) {
+export async function getStaticProps(context) {
+  const locale = context.locale;
+  const site = context.params.site;
+
+  if (!site) {
+    console.error('getStaticProps is missing the required site param!');
+    throw new Error('Missing required site param');
+  }
+
   const apiUrl = process.env.HASURA_API_URL;
-  const apiToken = process.env.ORG_SLUG;
+
+  const settingsResult = await getOrgSettings({
+    url: apiUrl,
+    site: site,
+  });
+
+  if (settingsResult.errors) {
+    console.error(settingsResult.errors);
+    throw settingsResult.errors;
+  } else {
+    console.log('Settings: ', settingsResult);
+  }
 
   const { errors, data } = await hasuraGetHomepageEditor({
     url: apiUrl,
-    orgSlug: apiToken,
     localeCode: locale,
   });
   if (errors || !data) {
@@ -136,7 +155,12 @@ export async function getStaticProps({ locale }) {
   }
 
   let expandedAds = [];
-  if (process.env.LETTERHEAD_API_URL) {
+  let letterheadSetting = booleanSetting(
+    settingsResult.data.settings,
+    'LETTERHEAD_API_URL',
+    false
+  );
+  if (letterheadSetting) {
     const allAds = (await cachedContents('ads', getArticleAds)) || [];
     expandedAds = allAds.filter((ad) => ad.adTypeId === 166 && ad.status === 4);
   }
@@ -152,6 +176,7 @@ export async function getStaticProps({ locale }) {
       locale,
       siteMetadata,
       expandedAds,
+      settings,
     },
     revalidate: 1,
   };
