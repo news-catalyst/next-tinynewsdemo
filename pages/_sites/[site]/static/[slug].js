@@ -3,6 +3,7 @@ import React from 'react';
 import {
   hasuraGetPage,
   generateAllStaticPagePaths,
+  getOrgSettings,
 } from '../../../../lib/articles.js';
 import { hasuraLocalizeText } from '../../../../lib/utils';
 import StaticPage from '../../../../components/StaticPage';
@@ -58,8 +59,10 @@ export async function getStaticPaths() {
 
 export async function getStaticProps({ locale, params }) {
   const apiUrl = process.env.HASURA_API_URL;
+  const site = params.site;
 
   const settingsResult = await getOrgSettings({
+    site: site,
     url: apiUrl,
   });
 
@@ -76,6 +79,7 @@ export async function getStaticProps({ locale, params }) {
 
   const { errors, data } = await hasuraGetPage({
     url: apiUrl,
+    site: site,
     slug: params.slug,
     localeCode: locale,
   });

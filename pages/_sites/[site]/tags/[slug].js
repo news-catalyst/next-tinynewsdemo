@@ -80,7 +80,7 @@ export async function getStaticPaths() {
 
 export async function getStaticProps({ locale, params }) {
   const apiUrl = process.env.HASURA_API_URL;
-  const apiToken = process.env.ORG_SLUG;
+  const site = params.site;
 
   let articles = [];
   let sections = [];
@@ -90,7 +90,7 @@ export async function getStaticProps({ locale, params }) {
 
   const { errors, data } = await hasuraTagPage({
     url: apiUrl,
-    orgSlug: apiToken,
+    site: site,
     tagSlug: params.slug,
   });
 
