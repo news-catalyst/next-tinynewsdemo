@@ -104,6 +104,7 @@ export async function getStaticProps({ locale, params }) {
 
     const sectionResponse = await hasuraCategoryPage({
       url: apiUrl,
+      site: site,
       categorySlug: params.category,
     });
     if (!sectionResponse.errors && sectionResponse.data) {
