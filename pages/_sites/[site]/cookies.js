@@ -9,14 +9,14 @@ import {
   ArticleTitle,
   PostTextContainer,
   PostText,
-  SectionLayout,
-  Block,
-  Paragraph,
 } from '../../../components/common/CommonStyles.js';
 
 const SectionContainer = tw.div`flex flex-col flex-nowrap items-center px-5 mx-auto max-w-7xl w-full`;
 
 export default function Cookies({ locale, siteMetadata, post, content }) {
+  if (!post) {
+    return null;
+  }
   return (
     <Layout meta={siteMetadata} sections={{}}>
       <SectionContainer>
@@ -89,6 +89,11 @@ export async function getStaticProps({ locale, params }) {
     siteMetadata = data.site_metadatas[0].site_metadata_translations[0].data;
 
     const post = getPostBySlug('cookies', ['title', 'content']);
+    if (!post) {
+      return {
+        notFound: true,
+      };
+    }
     const content = await markdownToHtml(post.content || '');
 
     return {

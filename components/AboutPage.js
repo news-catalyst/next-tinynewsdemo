@@ -25,7 +25,14 @@ export default function AboutPage({
   isAmp,
 }) {
   // there will only be one translation returned for a given page + locale
-  const localisedPage = page.page_translations[0];
+  let localisedPage;
+  if (page) {
+    localisedPage = page?.page_translations[0];
+  }
+
+  if (!localisedPage) {
+    return null;
+  }
   const body = renderBody(
     locale,
     page.page_translations,

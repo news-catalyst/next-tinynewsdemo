@@ -16,6 +16,10 @@ export default function StaffPage({
   siteMetadata,
   isAmp,
 }) {
+  if (!authors) {
+    return null;
+  }
+
   const staffers = authors.filter((a) => a.staff);
 
   return (
