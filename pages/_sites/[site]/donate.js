@@ -151,7 +151,10 @@ export async function getStaticProps({ locale, params }) {
     // throw errors;
   } else {
     if (!data.page_slug_versions || !data.page_slug_versions[0]) {
-      console.error('Returning a 404 - page slug version not found:', data);
+      console.error(
+        'Donate: returning a 404 - page slug version not found:',
+        data
+      );
       return {
         notFound: true,
       };

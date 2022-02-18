@@ -30,6 +30,7 @@ export async function getStaticPaths() {
 export async function getStaticProps(context) {
   let locale = context.locale;
   let preview = context.preview;
+  let site = context.params.site;
 
   if (!preview) {
     return {
@@ -37,7 +38,6 @@ export async function getStaticProps(context) {
     };
   }
   const apiUrl = process.env.HASURA_API_URL;
-  const apiToken = process.env.ORG_SLUG;
 
   let page = {};
   let sections;
@@ -46,7 +46,7 @@ export async function getStaticProps(context) {
 
   const { errors, data } = await hasuraGetPage({
     url: apiUrl,
-    orgSlug: apiToken,
+    site: site,
     slug: 'about',
     localeCode: locale,
   });
@@ -63,7 +63,13 @@ export async function getStaticProps(context) {
     }
     page = data.page_slug_versions[0].page;
 
-    var allPageLocales = data.pages[0].page_translations;
+    if (!page) {
+      return {
+        notFound: true,
+      };
+    }
+
+    var allPageLocales = page.page_translations;
     var distinctLocaleCodes = [];
     var distinctLocales = [];
     for (var i = 0; i < allPageLocales.length; i++) {
