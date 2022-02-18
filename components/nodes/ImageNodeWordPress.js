@@ -23,6 +23,8 @@ export default function ImageNodeWordPress({ node, translations, locale }) {
   let month = ('0' + (publishedDate.getMonth() + 1)).slice(-2);
   let wordpressImagePath = `/wp-content/uploads/${year}/${month}/${filename}`;
 
+  const constrainedImageWidth = image.width > 710 ? 710 : image.width;
+
   // console.log(image.imageUrl, '->', wordpressImagePath);
 
   const figure = (
@@ -30,8 +32,8 @@ export default function ImageNodeWordPress({ node, translations, locale }) {
       <img
         src={wordpressImagePath}
         alt={image.imageAlt}
-        width={710}
-        height={(image.height / image.width) * 710}
+        width={constrainedImageWidth}
+        height={(image.height / image.width) * constrainedImageWidth}
       />
       <figcaption>{image.imageAlt}</figcaption>
     </figure>
