@@ -51,6 +51,8 @@ export default function Article({
         mainImage = mainImageNode.children[0];
         if (mainImage.imageUrl) {
           siteMetadata['coverImage'] = mainImage.imageUrl;
+          siteMetadata['coverImageWidth'] = mainImage.width;
+          siteMetadata['coverImageHeight'] = mainImage.height;
         }
       }
     } catch (err) {
