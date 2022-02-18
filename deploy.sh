@@ -19,7 +19,7 @@ elif [[ "$VERCEL_GIT_COMMIT_REF" == "main" && "$VERCEL_ENV" == "preview" && "$OR
   echo "✅ - Not Oaklyn: build can proceed for main branch in preview env"
   exit 1;
 
-elif [[ "$ORG_SLUG" == "oaklyn" ]] ; then
+elif [[ "$VERCEL_GIT_COMMIT_REF" == "feature/vercel-platforms" && "$ORG_SLUG" == "oaklyn" ]] ; then
   echo "✅ - Oaklyn: build can proceed for branch $VERCEL_GIT_COMMIT_REF in env $VERCEL_ENV"
   exit 1;
 
