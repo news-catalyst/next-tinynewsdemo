@@ -2,6 +2,7 @@ import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import tw from 'twin.macro';
+import { IMAGE_DIMENSIONS_DATE } from '../../lib/utils';
 
 const AssetThumbnail = tw.div`overflow-hidden relative w-full mb-4 md:mb-0 md:ml-5 order-2 w-full cursor-pointer`;
 const Figure = tw.figure``;
@@ -24,14 +25,23 @@ export default function FeaturedArticleThumbnail({ article, isAmp }) {
   if (!mainImage.imageUrl) {
     return <div />;
   }
+  let constrainedImageWidth = 1080;
+  const updatedAt = translation['last_published_at'];
+
+  // if we can trust that the image width is correct, then handle smaller images
+  if (Date.parse(updatedAt) > IMAGE_DIMENSIONS_DATE && mainImage.width < 1080) {
+    constrainedImageWidth = mainImage.width;
+  }
 
   return (
     <Link href={`/articles/${article.category.slug}/${article.slug}`} passHref>
       <AssetThumbnail>
         {isAmp ? (
           <amp-img
-            width={1080}
-            height={(mainImage.height / mainImage.width) * 1080}
+            width={constrainedImageWidth}
+            height={
+              (mainImage.height / mainImage.width) * constrainedImageWidth
+            }
             src={mainImage.imageUrl}
             alt={mainImage.imageAlt}
             layout="responsive"
@@ -40,8 +50,10 @@ export default function FeaturedArticleThumbnail({ article, isAmp }) {
           <Figure key={mainImage.imageUrl}>
             <Image
               src={mainImage.imageUrl}
-              width={1080}
-              height={(mainImage.height / mainImage.width) * 1080}
+              width={constrainedImageWidth}
+              height={
+                (mainImage.height / mainImage.width) * constrainedImageWidth
+              }
               alt={mainImage.imageAlt}
               className="image"
               priority={true}
