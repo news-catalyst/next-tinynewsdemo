@@ -13,13 +13,17 @@ import LandingPage from '../../../components/LandingPage';
 import CurriculumHomepage from '../../../components/curriculum/CurriculumHomepage';
 
 export default function Home(props) {
-  if (props.siteMetadata.shortName === 'Tiny News Collective Curriculum') {
+  if (
+    props.siteMetadata &&
+    props.siteMetadata.shortName === 'Tiny News Collective Curriculum'
+  ) {
     return <CurriculumHomepage {...props} />;
   }
 
   // console.log('streamArticles:', props.streamArticles);
   const component =
-    props.siteMetadata.landingPage === 'on' || !props.selectedLayout ? (
+    (props.siteMetadata && props.siteMetadata.landingPage === 'on') ||
+    !props.selectedLayout ? (
       <LandingPage {...props} />
     ) : (
       <Homepage {...props} />

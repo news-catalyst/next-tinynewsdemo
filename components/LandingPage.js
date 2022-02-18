@@ -13,14 +13,16 @@ const LogoWrapper = tw.div`w-full h-auto mb-4`;
 const Logo = tw.div`w-full h-auto`;
 
 export default function LandingPage({ locale, siteMetadata, sections, pages }) {
+  if (!siteMetadata) {
+    return <div />;
+  }
+
   let landingDek = siteMetadata.landingPageDek || siteMetadata.aboutDek;
 
   let title;
   let logo;
-  if (siteMetadata) {
-    title = siteMetadata['shortName'];
-    logo = siteMetadata['logo'];
-  }
+  title = siteMetadata['shortName'];
+  logo = siteMetadata['logo'];
 
   let LogoComponent;
   if (logo) {
