@@ -6,6 +6,11 @@ export default function middleware(req) {
   const hostname = req.headers.get('host'); // get hostname of request (e.g. demo.vercel.pub)
   const currentHost = hostname
     .replace(`.localhost:3000`, '')
+    .replace(`.tinynewsco.dev:3000`, '')
+    .replace(`.tinynewsco.org:3000`, '')
+    .replace(`.tinynewsco.dev`, '')
+    .replace(`.tinynewsco.org`, '')
+    .replace(`.vercel.app`, '')
     .replace(`.vercel.app:3000`, ''); // TBD if we need to change this
 
   // console.log('middleware host / pathname', currentHost, '/', pathname);
