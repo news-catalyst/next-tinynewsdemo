@@ -11,6 +11,7 @@ import {
   UserIcon,
   CollectionIcon,
   TagIcon,
+  MenuIcon,
 } from '@heroicons/react/solid';
 
 const Content = tw.div`max-w-6xl my-16 mx-auto`;
@@ -41,6 +42,12 @@ const cardContent = [
     description: 'Customize the look, feel and language of your website.',
     href: '/tinycms/settings',
     icon: <CogIcon />,
+  },
+  {
+    title: 'Nav Builder',
+    description: 'Customize the navigation links on your website.',
+    href: '/tinycms/nav',
+    icon: <MenuIcon />,
   },
   {
     title: 'Authors',

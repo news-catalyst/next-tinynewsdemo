@@ -1,26 +1,80 @@
-import React from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import Donate from './Donate';
 import tw, { styled } from 'twin.macro';
 import Typography from '../common/Typography';
-import { hasuraLocalizeText } from '../../lib/utils';
+import { generateNavLinkFor, hasuraLocalizeText } from '../../lib/utils';
 
-const NavContainer = tw.header`border-b border-gray-200 flex w-full`;
-const NavInnerContainer = tw.div`lg:p-5 flex flex-wrap flex-row mx-auto max-w-7xl w-full justify-items-start pt-5`;
-const NavHeader = tw.h1`text-4xl leading-none font-bold ml-4 lg:ml-0 flex-1 order-1`;
-const LogoWrapper = tw.div`flex-1 order-1 h-12 w-80 relative mx-auto lg:mx-0 flex-1 order-1`;
-const Logo = tw.div`lg:mx-0 ml-5 lg:w-64 h-full relative`;
-const RightNav = tw.nav`lg:text-right lg:flex-1 flex flex-row flex-wrap mt-5 order-3 lg:order-none w-full flex-grow border-t border-gray-200 lg:border-t-0 lg:w-auto lg:block lg:mt-0`;
+const NavTopContainer = tw.header`flex w-full`;
+const NavBottomContainer = tw.header`border-b border-gray-200 flex w-full justify-center items-center`;
+const NavInnerContainer = styled.div(() => ({
+  ...tw`w-full grid py-4 mx-auto max-w-7xl my-0 pl-5`,
+  gridTemplateAreas: '"left right"',
+  gridTemplateColumns: '1fr 4rem',
+}));
+const NavInnerLeftContainer = styled.div(() => ({
+  ...tw`w-3/4 md:w-full justify-self-start items-center`,
+  gridArea: 'left',
+}));
+const NavInnerRightContainer = styled.div(() => ({
+  ...tw`mr-0 self-auto`,
+  placeSelf: 'center end',
+  gridArea: 'right',
+  width: 'initial',
+}));
+const NavHeader = tw.h1`text-4xl leading-none font-bold`;
+const LogoWrapper = tw.div`flex flex-row md:justify-center justify-start items-center max-h-24`;
+const Logo = styled.div(() => ({
+  ...tw`max-w-full max-h-full cursor-pointer flex items-center`,
+  maxWidth: '16rem',
+}));
+const NavLinks = tw.nav`lg:flex-1 flex flex-row flex-wrap items-center justify-center pt-5 lg:order-none w-full flex-grow border-t border-gray-200 lg:w-auto lg:mt-0 py-2`;
 const SectionLink = styled.a(({ meta }) => ({
   ...tw`lg:items-center lg:mr-8 lg:py-0 inline-flex items-center lg:h-full py-2 px-5 lg:pb-0 lg:px-0 hover:underline`,
   fontFamily: Typography[meta.theme].SectionLink,
 }));
 
-export default function GlobalNav({ locale, metadata, sections, isAmp }) {
+export default function GlobalNav({
+  locale,
+  metadata,
+  sections,
+  isAmp,
+  overrideNav,
+}) {
+  const [logoWidth, setLogoWidth] = useState();
+  const [logoHeight, setLogoHeight] = useState();
+
+  useEffect(() => {
+    if ((metadata['logo'] && !metadata['logoWidth'], !metadata['logoHeight'])) {
+      console.warn(
+        'Reading logo in client to determine dimensions. You should reset the logo in the TinyCMS.'
+      );
+      const img = document.createElement('img');
+      img.onload = function () {
+        setLogoWidth(this.width);
+        setLogoHeight(this.height);
+      };
+      img.src = metadata['logo'];
+    }
+  }, [metadata]);
+
+  let nav = overrideNav || metadata['nav'];
   let sectionLinks;
 
-  if (sections && sections[0] && typeof sections[0].title === 'string') {
+  if (Array.isArray(nav)) {
+    sectionLinks = nav.map((link) => (
+      <Link
+        key={`navbar-${link.slug}`}
+        href={generateNavLinkFor(link)}
+        passHref
+      >
+        <SectionLink meta={metadata}>
+          {link.customLabel || link.label}
+        </SectionLink>
+      </Link>
+    ));
+  } else if (sections && sections[0] && typeof sections[0].title === 'string') {
     sectionLinks = sections
       .filter((section) => section.published)
       .map((section) => (
@@ -38,52 +92,61 @@ export default function GlobalNav({ locale, metadata, sections, isAmp }) {
 
   let title;
   let logo;
+  let width;
+  let height;
   if (metadata) {
     title = metadata['shortName'];
     logo = metadata['logo'];
+    width = metadata['logoWidth'] || logoWidth;
+    height = metadata['logoHeight'] || logoHeight;
   }
 
   let LogoComponent;
-  if (logo) {
+  if (logo && width && height) {
     LogoComponent = (
-      <LogoWrapper>
-        <Logo>
-          {isAmp ? (
-            <amp-img
-              src={logo}
-              layout="fill"
-              alt={title}
-              style={{
-                objectFit: 'contain',
-                objectPosition: 'left',
-              }}
-            />
-          ) : (
-            <Image
-              src={logo}
-              layout="fill"
-              objectFit="contain"
-              objectPosition="left"
-              alt={title}
-              priority={true}
-            />
-          )}
-        </Logo>
-      </LogoWrapper>
+      <Logo>
+        {isAmp ? (
+          <amp-img src={logo} alt={title} width={width} height={height} />
+        ) : (
+          <Image
+            src={logo}
+            width={width}
+            height={height}
+            alt={title}
+            priority={true}
+          />
+        )}
+      </Logo>
+    );
+  } else {
+    LogoComponent = (
+      <Logo>
+        <NavHeader>{title}</NavHeader>
+      </Logo>
     );
   }
 
   return (
-    <NavContainer>
-      <NavInnerContainer>
-        <Link href="/">
-          <a>{logo ? LogoComponent : <NavHeader>{title}</NavHeader>}</a>
-        </Link>
-        <RightNav>{sectionLinks}</RightNav>
-        {process.env.NEXT_PUBLIC_MONKEYPOD_URL && (
-          <Donate label={metadata.supportCTA} metadata={metadata} />
-        )}
-      </NavInnerContainer>
-    </NavContainer>
+    <>
+      <NavTopContainer>
+        <NavInnerContainer>
+          <NavInnerLeftContainer>
+            <LogoWrapper>
+              <Link href="/" passHref>
+                {LogoComponent}
+              </Link>
+            </LogoWrapper>
+          </NavInnerLeftContainer>
+          <NavInnerRightContainer>
+            {process.env.NEXT_PUBLIC_MONKEYPOD_URL && (
+              <Donate label={metadata.supportCTA} metadata={metadata} />
+            )}
+          </NavInnerRightContainer>
+        </NavInnerContainer>
+      </NavTopContainer>
+      <NavBottomContainer>
+        <NavLinks>{sectionLinks}</NavLinks>
+      </NavBottomContainer>
+    </>
   );
 }

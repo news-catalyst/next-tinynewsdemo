@@ -271,9 +271,17 @@ export default function SiteInfoSettings(props) {
   );
 
   const [logo, setLogo] = useState(props.parsedData['logo']);
+  const [logoWidth, setLogoWidth] = useState(props.parsedData['logoWidth']);
+  const [logoHeight, setLogoHeight] = useState(props.parsedData['logoHeight']);
   const [favicon, setFavicon] = useState(props.parsedData['favicon']);
   const [defaultSocialImage, setDefaultSocialImage] = useState(
     props.parsedData['defaultSocialImage']
+  );
+  const [defaultSocialImageWidth, setDefaultSocialImageWidth] = useState(
+    props.parsedData['defaultSocialImageWidth']
+  );
+  const [defaultSocialImageHeight, setDefaultSocialImageHeight] = useState(
+    props.parsedData['defaultSocialImageHeight']
   );
   let parsedDonationOptions;
   try {
@@ -446,6 +454,8 @@ export default function SiteInfoSettings(props) {
       props.parsedData['donationOptions'] ? parsedDonationOptions : null
     );
     setLogo(props.parsedData['logo']);
+    setLogoWidth(props.parsedData['logoWidth']);
+    setLogoHeight(props.parsedData['logoHeight']);
     setFavicon(props.parsedData['favicon']);
     setDefaultSocialImage(props.parsedData['defaultSocialImage']);
   }, [props.parsedData]);
@@ -493,9 +503,13 @@ export default function SiteInfoSettings(props) {
             slug={shortName}
             image={logo}
             imageKey="logo"
+            widthKey="logoWidth"
+            heightKey="logoHeight"
             updateParsedData={props.updateParsedData}
             parsedData={props.parsedData}
             setter={setLogo}
+            widthSetter={setLogoWidth}
+            heightSetter={setLogoHeight}
             setNotificationMessage={props.setNotificationMessage}
             setNotificationType={props.setNotificationType}
             setShowNotification={props.setShowNotification}
@@ -939,6 +953,7 @@ export default function SiteInfoSettings(props) {
               monkeypodId={option.monkeypodId}
               parsedData={props.parsedData}
               updateParsedData={props.updateParsedData}
+              tinyApiKey={props.tinyApiKey}
             />
           ))}
       </DonationOptionsEditor>
@@ -967,10 +982,14 @@ export default function SiteInfoSettings(props) {
               awsConfig={props.awsConfig}
               slug={shortName}
               imageKey="defaultSocialImage"
+              widthKey="defaultSocialImageWidth"
+              heightKey="defaultSocialImageHeight"
               image={defaultSocialImage}
               updateParsedData={props.updateParsedData}
               parsedData={props.parsedData}
               setter={setDefaultSocialImage}
+              widthSetter={setDefaultSocialImageWidth}
+              heightSetter={setDefaultSocialImageHeight}
               setNotificationMessage={props.setNotificationMessage}
               setNotificationType={props.setNotificationType}
               setShowNotification={props.setShowNotification}
