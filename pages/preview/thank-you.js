@@ -1,20 +1,18 @@
-import { useAmp } from 'next/amp';
 import tw from 'twin.macro';
 import { useRouter } from 'next/router';
-import { hasuraGetPage } from '../lib/articles.js';
-import { useAnalytics } from '../lib/hooks/useAnalytics.js';
-import { hasuraLocalizeText } from '../lib/utils';
-import ReadInOtherLanguage from '../components/articles/ReadInOtherLanguage';
-import Layout from '../components/Layout';
-import NewsletterBlock from '../components/plugins/NewsletterBlock';
-import { renderBody } from '../lib/utils.js';
+import { hasuraGetPage } from '../../lib/articles.js';
+import { useAnalytics } from '../../lib/hooks/useAnalytics.js';
+import { hasuraLocalizeText, renderBody } from '../../lib/utils';
+import ReadInOtherLanguage from '../../components/articles/ReadInOtherLanguage';
+import Layout from '../../components/Layout';
+import NewsletterBlock from '../../components/plugins/NewsletterBlock';
 import {
   ArticleTitle,
   PostTextContainer,
   PostText,
   SectionLayout,
   Block,
-} from '../components/common/CommonStyles.js';
+} from '../../components/common/CommonStyles.js';
 
 const SectionContainer = tw.div`flex flex-col flex-nowrap items-center px-5 mx-auto max-w-7xl w-full`;
 
@@ -26,7 +24,6 @@ export default function ThankYou({
   locales,
   locale,
 }) {
-  // const isAmp = useAmp();
   const isAmp = false;
   const router = useRouter();
   // sets a cookie if request comes from monkeypod.io marking this browser as a donor
@@ -63,25 +60,6 @@ export default function ThankYou({
     siteMetadata
   );
 
-  let mainImageNode;
-  let mainImage = null;
-  if (page) {
-    try {
-      mainImageNode = localisedPage?.content.find(
-        (node) => node.type === 'mainImage'
-      );
-
-      if (mainImageNode) {
-        mainImage = mainImageNode.children[0];
-        siteMetadata['coverImage'] = mainImage.imageUrl;
-        siteMetadata['coverImageWidth'] = mainImage.width;
-        siteMetadata['coverImageHeight'] = mainImage.height;
-      }
-    } catch (err) {
-      console.error('error finding main image: ', err);
-    }
-  }
-
   return (
     <Layout locale={locale} meta={siteMetadata} page={page} sections={sections}>
       <SectionContainer>
@@ -111,15 +89,24 @@ export default function ThankYou({
 }
 
 export async function getServerSideProps(context) {
-  const referrer = context.req.headers['referer'];
+  let locale = context.locale;
+  let preview = context.preview;
+
+  if (!preview) {
+    return {
+      notFound: true,
+    };
+  }
+
   const apiUrl = process.env.HASURA_API_URL;
   const apiToken = process.env.ORG_SLUG;
+
+  const referrer = context.req.headers['referer'];
 
   let page = {};
   let sections;
   let siteMetadata = {};
   let locales = [];
-  let locale = context.locale;
 
   const { errors, data } = await hasuraGetPage({
     url: apiUrl,

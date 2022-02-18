@@ -31,6 +31,14 @@ export default function Layout({
     meta = {};
   }
 
+  // helper function to determine what to tell facebook width/height of image are
+  function coverImageDimensions(w, h) {
+    return {
+      width: w > 1201 ? w : 1201,
+      height: w > 1201 ? h : (h / w) * 1201,
+    };
+  }
+
   // console.log('Layout locale:', locale);
 
   const metaValues = {
@@ -55,6 +63,28 @@ export default function Layout({
     facebookAppId: meta['facebookAppId'],
     siteTwitter: meta['siteTwitter'],
   };
+
+  // figure out what dimensions to set for facebook cover image
+  let dimensions = null;
+  if (meta.coverImage && meta.coverImageWidth && meta.coverImageHeight) {
+    dimensions = coverImageDimensions(
+      meta.coverImageWidth,
+      meta.coverImageHeight
+    );
+  } else if (
+    meta.defaultSocialImage &&
+    meta.defaultSocialImageWidth &&
+    meta.defaultSocialImageHeight
+  ) {
+    dimensions = coverImageDimensions(
+      meta.defaultSocialImageWidth,
+      meta.defaultSocialImageHeight
+    );
+  }
+  metaValues.coverImageWidth = dimensions?.width;
+  metaValues.coverImageHeight = dimensions?.height;
+
+  console.log(meta);
 
   // override default canonical url if there's one specified on the article
   if (article && article.canonical_url) {
@@ -207,6 +237,11 @@ export default function Layout({
         <meta property="og:type" content={metaValues.documentType} />
         <meta property="og:url" content={metaValues.canonical} />
         <meta property="og:image" content={metaValues.coverImage} />
+        <meta property="og:image:width" content={metaValues.coverImageWidth} />
+        <meta
+          property="og:image:height"
+          content={metaValues.coverImageHeight}
+        />
         <meta
           property="og:description"
           content={metaValues.facebookDescription}

@@ -89,9 +89,7 @@ export default function Settings({
   };
 
   const handleKeyDown = (e) => {
-    console.log('keyCode:', e.keyCode);
     if (e.keyCode === 18) {
-      console.log('preventing default');
       e.preventDefault();
     }
   };
@@ -434,7 +432,6 @@ export async function getServerSideProps(context) {
   } else {
     locales = data.organization_locales;
     siteMetadata = data.site_metadatas[0];
-    console.log('siteMetadata:', JSON.stringify(siteMetadata));
   }
   if (siteMetadata === undefined) {
     siteMetadata = null;

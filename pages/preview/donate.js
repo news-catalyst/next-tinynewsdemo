@@ -1,20 +1,18 @@
-import { useAmp } from 'next/amp';
 import tw, { styled } from 'twin.macro';
 import { useRouter } from 'next/router';
-import { hasuraGetPage } from '../lib/articles.js';
-import { hasuraLocalizeText } from '../lib/utils';
-import Layout from '../components/Layout';
-import ReadInOtherLanguage from '../components/articles/ReadInOtherLanguage';
-import StaticMainImage from '../components/articles/StaticMainImage';
-import { renderBody } from '../lib/utils.js';
-import DonationOptionsBlock from '../components/plugins/DonationOptionsBlock.js';
+import { hasuraGetPage } from '../../lib/articles.js';
+import { hasuraLocalizeText, renderBody } from '../../lib/utils';
+import Layout from '../../components/Layout';
+import ReadInOtherLanguage from '../../components/articles/ReadInOtherLanguage';
+import StaticMainImage from '../../components/articles/StaticMainImage';
+import DonationOptionsBlock from '../../components/plugins/DonationOptionsBlock.js';
 import {
   ArticleTitle,
   PostTextContainer,
   PostText,
   SectionLayout,
   Block,
-} from '../components/common/CommonStyles.js';
+} from '../../components/common/CommonStyles.js';
 
 const SectionContainer = tw.div`flex flex-col flex-nowrap items-center px-5 mx-auto max-w-7xl w-full`;
 const WideContainer = styled.div(() => ({
@@ -29,7 +27,6 @@ export default function Donate({
   locales,
   locale,
 }) {
-  // const isAmp = useAmp();
   const isAmp = false;
   const router = useRouter();
 
@@ -54,25 +51,6 @@ export default function Donate({
     isAmp,
     siteMetadata
   );
-
-  let mainImageNode;
-  let mainImage = null;
-  if (page) {
-    try {
-      mainImageNode = localisedPage?.content.find(
-        (node) => node.type === 'mainImage'
-      );
-
-      if (mainImageNode) {
-        mainImage = mainImageNode.children[0];
-        siteMetadata['coverImage'] = mainImage.imageUrl;
-        siteMetadata['coverImageWidth'] = mainImage.width;
-        siteMetadata['coverImageHeight'] = mainImage.height;
-      }
-    } catch (err) {
-      console.error('error finding main image: ', err);
-    }
-  }
 
   return (
     <Layout locale={locale} meta={siteMetadata} page={page} sections={sections}>
@@ -108,7 +86,16 @@ export default function Donate({
   );
 }
 
-export async function getStaticProps({ locale }) {
+export async function getStaticProps(context) {
+  let locale = context.locale;
+  let preview = context.preview;
+
+  if (!preview) {
+    return {
+      notFound: true,
+    };
+  }
+
   const apiUrl = process.env.HASURA_API_URL;
   const apiToken = process.env.ORG_SLUG;
 

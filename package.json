@@ -33,8 +33,8 @@
   },
   "babelMacros": {
     "twin": {
-        "config": "./tailwind.config.js",
-        "preset": "styled-components"
+      "config": "./tailwind.config.js",
+      "preset": "styled-components"
     }
   },
   "lint-staged": {
@@ -84,6 +84,7 @@
     "graphql-request": "^2.0.0",
     "gray-matter": "^4.0.3",
     "image-size": "^1.0.1",
+    "image-type": "^4.1.0",
     "journalize": "^2.4.0",
     "js-yaml": "^4.1.0",
     "local-storage-fallback": "^4.1.1",
@@ -97,6 +98,7 @@
     "react": "^17.0.2",
     "react-analytics-charts": "^1.2.12",
     "react-aws-s3": "^1.5.0",
+    "react-beautiful-dnd": "^13.1.0",
     "react-chartjs-2": "^2.11.1",
     "react-cookie": "^4.0.3",
     "react-cookie-consent": "^6.4.1",
