@@ -4,11 +4,10 @@ import {
   hasuraGetPage,
   generateAllDomainPaths,
 } from '../../../lib/articles.js';
-import { hasuraLocalizeText } from '../../../lib/utils';
+import { hasuraLocalizeText, renderBody } from '../../../lib/utils';
 import Layout from '../../../components/Layout';
 import ReadInOtherLanguage from '../../../components/articles/ReadInOtherLanguage';
 import StaticMainImage from '../../../components/articles/StaticMainImage';
-import { renderBody } from '../../../lib/utils.js';
 import DonationOptionsBlock from '../../../components/plugins/DonationOptionsBlock.js';
 import {
   ArticleTitle,
@@ -41,8 +40,7 @@ export default function Donate({
     return <div>Loading...</div>;
   }
 
-  let localisedPage = page.page_translations[0];
-
+  const localisedPage = page.page_translations[0];
   // there will only be one translation returned for a given page + locale
   const headline = hasuraLocalizeText(
     locale,
