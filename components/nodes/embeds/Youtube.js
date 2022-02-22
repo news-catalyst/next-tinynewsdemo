@@ -1,7 +1,14 @@
 import ReactPlayer from 'react-player/lazy';
 
 export default function Youtube({ node, amp, url }) {
-  const videoId = url.searchParams.get('v');
+  let videoId = null;
+
+  // video IDs
+  if (url.hostname.includes('youtu.be')) {
+    videoId = url.pathname.split('/')[1];
+  } else {
+    videoId = url.searchParams.get('v');
+  }
   const el = amp ? (
     <amp-youtube
       layout="responsive"
