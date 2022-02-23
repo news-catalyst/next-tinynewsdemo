@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import tw from 'twin.macro';
 import moment from 'moment';
-import AdminLayout from '../../../components/AdminLayout';
-import AdminNav from '../../../components/nav/AdminNav';
-import CustomDimensions from '../../../components/tinycms/analytics/CustomDimensions';
-import NewsletterSignupFormData from '../../../components/tinycms/analytics/NewsletterSignupFormData';
-import DateRangePickerWrapper from '../../../components/tinycms/analytics/DateRangePickerWrapper';
-import datePickerStyles from '../../../styles/datepicker.js';
-import AnalyticsNav from '../../../components/tinycms/analytics/AnalyticsNav';
-import AnalyticsSidebar from '../../../components/tinycms/analytics/AnalyticsSidebar';
+import AdminLayout from '../../../../../components/AdminLayout';
+import AdminNav from '../../../../../components/nav/AdminNav';
+import CustomDimensions from '../../../../../components/tinycms/analytics/CustomDimensions';
+import NewsletterSignupFormData from '../../../../../components/tinycms/analytics/NewsletterSignupFormData';
+import DateRangePickerWrapper from '../../../../../components/tinycms/analytics/DateRangePickerWrapper';
+import datePickerStyles from '../../../../../styles/datepicker.js';
+import AnalyticsNav from '../../../../../components/tinycms/analytics/AnalyticsNav';
+import AnalyticsSidebar from '../../../../../components/tinycms/analytics/AnalyticsSidebar';
 
 const Container = tw.div`flex flex-wrap -mx-2 mb-8`;
 const Sidebar = tw.div`h-full h-screen bg-gray-100 md:w-1/5 lg:w-1/5 px-2 mb-4`;
@@ -68,7 +68,7 @@ export default function Newsletter(props) {
               startDate={startDate}
               endDate={endDate}
               apiUrl={props.apiUrl}
-              apiToken={props.apiToken}
+              site={props.site}
               dimension="dimension2"
             />
 
@@ -79,7 +79,7 @@ export default function Newsletter(props) {
               label="Subscriber"
               dek="This chart shows you have many sessions have occurred from user who have subscribed to your newsletter. Note: we track this via cookies, meaning a user must use the same browser as when they donated for this to track."
               apiUrl={props.apiUrl}
-              apiToken={props.apiToken}
+              site={props.site}
             />
           </SettingsContainer>
         </MainContent>
@@ -90,14 +90,14 @@ export default function Newsletter(props) {
     </AdminLayout>
   );
 }
-export async function getServerSideProps() {
+export async function getServerSideProps(context) {
   const apiUrl = process.env.HASURA_API_URL;
-  const apiToken = process.env.ORG_SLUG;
+  const site = context.params.site;
 
   return {
     props: {
       apiUrl,
-      apiToken,
+      site,
     },
   };
 }

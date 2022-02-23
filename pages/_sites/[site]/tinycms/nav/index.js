@@ -2,17 +2,22 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import tw, { styled } from 'twin.macro';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import { hasuraGetMetadataByLocale } from '../../../lib/articles.js';
-import AdminLayout from '../../../components/AdminLayout.js';
-import AdminNav from '../../../components/nav/AdminNav';
-import GlobalNav from '../../../components/nav/GlobalNav';
-import { hasuraUpsertMetadata } from '../../../lib/site_metadata';
-import Notification from '../../../components/tinycms/Notification';
+import { TrashIcon, SelectorIcon } from '@heroicons/react/solid';
+import {
+  getOrgSettings,
+  hasuraGetMetadataByLocale,
+} from '../../../../../lib/articles.js';
+import { findSetting } from '../../../../../lib/utils.js';
+import AdminLayout from '../../../../../components/AdminLayout.js';
+import AdminNav from '../../../../../components/nav/AdminNav';
+import GlobalNav from '../../../../../components/nav/GlobalNav';
+import { hasuraUpsertMetadata } from '../../../../../lib/site_metadata';
+import Notification from '../../../../../components/tinycms/Notification';
 import {
   AddButton,
   DeleteButton,
-} from '../../../components/common/CommonStyles.js';
-import { TrashIcon, SelectorIcon } from '@heroicons/react/solid';
+} from '../../../../../components/common/CommonStyles.js';
+
 const Container = tw.div`flex flex-wrap -mx-2`;
 const MainContent = tw.div`w-full lg:w-3/4 px-4 py-4`;
 
@@ -165,9 +170,8 @@ export default function NavBuilder({
 
   useEffect(() => {
     if (siteMetadata) {
-      let md = siteMetadata.site_metadata_translations[0].data;
-      setMetadata(md);
-      let parsed = md;
+      setMetadata(siteMetadata);
+      let parsed = siteMetadata;
       setParsedData(parsed);
       let formattedJSON;
       try {
@@ -223,7 +227,7 @@ export default function NavBuilder({
 
     const { errors, data } = await hasuraUpsertMetadata({
       url: apiUrl,
-      orgSlug: apiToken,
+      site: site,
       data: parsed,
       published: true,
       localeCode: currentLocale,
@@ -418,7 +422,7 @@ export default function NavBuilder({
           </div>
           <GlobalNav
             locale={currentLocale}
-            metadata={siteMetadata.site_metadata_translations[0].data}
+            metadata={siteMetadata}
             sections={linkOptions.filter((opt) => opt.type === 'section')}
             isAmp={false}
             overrideNav={currentNavOptions}
@@ -431,16 +435,42 @@ export default function NavBuilder({
 
 export async function getServerSideProps(context) {
   const apiUrl = process.env.HASURA_API_URL;
-  const apiToken = process.env.ORG_SLUG;
-  const tinyApiKey = process.env.TINYMCE_API_KEY;
+  const site = context.params.site;
 
-  let siteMetadata;
-  let locales;
+  const settingsResult = await getOrgSettings({
+    url: apiUrl,
+    site: site,
+  });
+
+  if (settingsResult.errors) {
+    console.log('error:', settingsResult);
+    throw settingsResult.errors;
+  }
+  let siteMetadata = settingsResult.data.settings;
+  let locales = settingsResult.data.organization_locales;
+
+  let bucketName = findSetting(siteMetadata, 'TNC_AWS_BUCKET_NAME');
+  let dir = findSetting(siteMetadata, 'TNC_AWS_DIR_NAME');
+  let region = findSetting(siteMetadata, 'TNC_AWS_REGION');
+  let accessKey = findSetting(siteMetadata, 'TNC_AWS_ACCESS_ID');
+  let secretKey = findSetting(siteMetadata, 'TNC_AWS_ACCESS_KEY');
+  let tinyApiKey = findSetting(siteMetadata, 'TINYMCE_API_KEY');
+  let vercelHook = findSetting(siteMetadata, 'VERCEL_DEPLOY_HOOK');
+
+  const awsConfig = {
+    bucketName: bucketName,
+    dirName: dir,
+    region: region,
+    accessKeyId: accessKey,
+    secretAccessKey: secretKey,
+    s3Url: `https://${bucketName}.s3.${region}.amazonaws.com`,
+  };
+
   let linkOptions = [];
 
   const { errors, data } = await hasuraGetMetadataByLocale({
     url: apiUrl,
-    orgSlug: apiToken,
+    site: site,
     localeCode: context.locale,
   });
 
@@ -448,8 +478,6 @@ export async function getServerSideProps(context) {
     console.error('Error getting site metadata:', errors);
     throw errors;
   } else {
-    locales = data.organization_locales;
-    siteMetadata = data.site_metadatas[0];
     data.authors.forEach((author) => {
       linkOptions.push({
         type: 'author',
@@ -492,12 +520,12 @@ export async function getServerSideProps(context) {
   return {
     props: {
       apiUrl: apiUrl,
-      apiToken: apiToken,
+      site: site,
       currentLocale: context.locale,
       siteMetadata: siteMetadata,
       linkOptions: linkOptions,
       locales: locales,
-      vercelHook: process.env.VERCEL_DEPLOY_HOOK,
+      vercelHook: vercelHook,
     },
   };
 }

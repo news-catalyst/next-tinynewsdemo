@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import tw from 'twin.macro';
-import AdminLayout from '../../../components/AdminLayout';
-import AdminNav from '../../../components/nav/AdminNav';
-import PageViews from '../../../components/tinycms/analytics/PageViews';
-import ReadingDepthData from '../../../components/tinycms/analytics/ReadingDepthData';
-import ReadingFrequencyData from '../../../components/tinycms/analytics/ReadingFrequencyData';
+import AdminLayout from '../../../../../components/AdminLayout';
+import AdminNav from '../../../../../components/nav/AdminNav';
+import PageViews from '../../../../../components/tinycms/analytics/PageViews';
+import ReadingDepthData from '../../../../../components/tinycms/analytics/ReadingDepthData';
+import ReadingFrequencyData from '../../../../../components/tinycms/analytics/ReadingFrequencyData';
 import moment from 'moment';
-import DateRangePickerWrapper from '../../../components/tinycms/analytics/DateRangePickerWrapper';
-import datePickerStyles from '../../../styles/datepicker.js';
-import AnalyticsSidebar from '../../../components/tinycms/analytics/AnalyticsSidebar';
-import AnalyticsNav from '../../../components/tinycms/analytics/AnalyticsNav';
+import DateRangePickerWrapper from '../../../../../components/tinycms/analytics/DateRangePickerWrapper';
+import datePickerStyles from '../../../../../styles/datepicker.js';
+import AnalyticsSidebar from '../../../../../components/tinycms/analytics/AnalyticsSidebar';
+import AnalyticsNav from '../../../../../components/tinycms/analytics/AnalyticsNav';
 
 const Container = tw.div`flex flex-wrap -mx-2 mb-8`;
 const Sidebar = tw.div`h-full h-screen bg-gray-100 md:w-1/5 lg:w-1/5 px-2 mb-4`;
@@ -78,7 +78,7 @@ export default function PageViewsPage(props) {
               startDate={startDate}
               endDate={endDate}
               apiUrl={props.apiUrl}
-              apiToken={props.apiToken}
+              site={props.site}
               setPageViews={setPageViews}
               pageViews={pageViews}
             />
@@ -89,7 +89,7 @@ export default function PageViewsPage(props) {
               endDate={endDate}
               pageViews={pageViews}
               apiUrl={props.apiUrl}
-              apiToken={props.apiToken}
+              site={props.site}
             />
 
             <ReadingFrequencyData
@@ -97,7 +97,7 @@ export default function PageViewsPage(props) {
               startDate={startDate}
               endDate={endDate}
               apiUrl={props.apiUrl}
-              apiToken={props.apiToken}
+              site={props.site}
             />
           </SettingsContainer>
         </MainContent>
@@ -109,17 +109,13 @@ export default function PageViewsPage(props) {
   );
 }
 export async function getServerSideProps(context) {
-  const clientID = process.env.ANALYTICS_CLIENT_ID;
-  const clientSecret = process.env.ANALYTICS_CLIENT_SECRET;
   const apiUrl = process.env.HASURA_API_URL;
-  const apiToken = process.env.ORG_SLUG;
+  const site = context.params.site;
 
   return {
     props: {
       apiUrl,
-      apiToken,
-      clientID: clientID,
-      clientSecret: clientSecret,
+      site,
     },
   };
 }

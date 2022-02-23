@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import tw from 'twin.macro';
 import Link from 'next/link';
 import {
@@ -9,22 +9,25 @@ import {
   TinySubmitCancelButtons,
   UrlSlugLabel,
   UrlSlugValue,
-} from '../../../components/tinycms/TinyFormElements';
-import AdminLayout from '../../../components/AdminLayout';
+} from '../../../../../components/tinycms/TinyFormElements';
+import AdminLayout from '../../../../../components/AdminLayout';
 import {
   hasuraGetSectionById,
   hasuraUpdateSection,
-} from '../../../lib/section';
-import { hasuraInsertArticleSlugVersions } from '../../../lib/articles';
-import AdminNav from '../../../components/nav/AdminNav';
-import Notification from '../../../components/tinycms/Notification';
-import { hasuraLocalizeText } from '../../../lib/utils';
+} from '../../../../../lib/section';
+import {
+  getOrgSettings,
+  hasuraInsertArticleSlugVersions,
+} from '../../../../../lib/articles';
+import AdminNav from '../../../../../components/nav/AdminNav';
+import Notification from '../../../../../components/tinycms/Notification';
+import { findSetting, hasuraLocalizeText } from '../../../../../lib/utils';
 
 const ViewOnSiteLink = tw.a`font-bold cursor-pointer hover:underline`;
 
 export default function EditSection({
   apiUrl,
-  apiToken,
+  site,
   currentLocale,
   section,
   locales,
@@ -33,23 +36,30 @@ export default function EditSection({
   const [notificationMessage, setNotificationMessage] = useState('');
   const [notificationType, setNotificationType] = useState('');
   const [showNotification, setShowNotification] = useState(false);
+  const [sectionId, setSectionId] = useState(null);
+  const [articleCount, setArticleCount] = useState(null);
+  const [title, setTitle] = useState(null);
+  const [slug, setSlug] = useState(null);
+  const [currentSlug, setCurrentSlug] = useState(null);
+  const [published, setPublished] = useState(false);
 
-  const [sectionId, setSectionId] = useState(section.id);
-  const [articleCount, setArticleCount] = useState(
-    section.articles_aggregate.aggregate.count
-  );
-
-  const [title, setTitle] = useState(
-    hasuraLocalizeText(
-      currentLocale,
-      section.category_translations,
-      'title',
-      false
-    )
-  );
-  const [slug, setSlug] = useState(section.slug);
-  const [currentSlug, setCurrentSlug] = useState(section.slug);
-  const [published, setPublished] = useState(section.published);
+  useEffect(() => {
+    if (section) {
+      setSectionId(section.id);
+      setArticleCount(section.articles_aggregate.aggregate.count);
+      setTitle(
+        hasuraLocalizeText(
+          currentLocale,
+          section.category_translations,
+          'title',
+          false
+        )
+      );
+      setSlug(section.slug);
+      setCurrentSlug(section.slug);
+      setPublished(section.published);
+    }
+  }, [section]);
 
   function handlePublished(event) {
     const value =
@@ -79,7 +89,7 @@ export default function EditSection({
 
     let params = {
       url: apiUrl,
-      orgSlug: apiToken,
+      site: site,
       id: sectionId,
       localeCode: currentLocale,
       title: title,
@@ -245,30 +255,41 @@ export default function EditSection({
 
 export async function getServerSideProps(context) {
   const apiUrl = process.env.HASURA_API_URL;
-  const apiToken = process.env.ORG_SLUG;
+  const site = context.params.site;
+
+  const settingsResult = await getOrgSettings({
+    url: apiUrl,
+    site: site,
+  });
+
+  if (settingsResult.errors) {
+    console.log('error:', settingsResult);
+    throw settingsResult.errors;
+  }
+  let locales = settingsResult.data.organization_locales;
+  let siteMetadata = settingsResult.data.settings;
+  let vercelHook = findSetting(siteMetadata, 'VERCEL_DEPLOY_HOOK');
 
   let section = {};
-  let locales;
   const { errors, data } = await hasuraGetSectionById({
     url: apiUrl,
-    orgSlug: apiToken,
+    site: site,
     id: context.params.id,
   });
   if (errors) {
     throw errors;
   } else {
     section = data.categories_by_pk;
-    locales = data.organization_locales;
   }
 
   return {
     props: {
       apiUrl: apiUrl,
-      apiToken: apiToken,
+      site: site,
       currentLocale: context.locale,
       section: section,
       locales: locales,
-      vercelHook: process.env.VERCEL_DEPLOY_HOOK,
+      vercelHook: vercelHook,
     },
   };
 }

@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import tw from 'twin.macro';
-import AdminLayout from '../../../components/AdminLayout';
-import AdminNav from '../../../components/nav/AdminNav';
+import AdminLayout from '../../../../../components/AdminLayout';
+import AdminNav from '../../../../../components/nav/AdminNav';
 import moment from 'moment';
-import DateRangePickerWrapper from '../../../components/tinycms/analytics/DateRangePickerWrapper';
-import datePickerStyles from '../../../styles/datepicker.js';
-import SourcesByAge from '../../../components/tinycms/analytics/SourcesByAge';
-import SourcesByRace from '../../../components/tinycms/analytics/SourcesByRace';
-import SourcesByEthnicity from '../../../components/tinycms/analytics/SourcesByEthnicity';
-import SourcesByGender from '../../../components/tinycms/analytics/SourcesByGender';
-import SourcesBySexualOrientation from '../../../components/tinycms/analytics/SourcesBySexualOrientation';
-import SourceTopZips from '../../../components/tinycms/analytics/SourceTopZips';
-import AnalyticsSidebar from '../../../components/tinycms/analytics/AnalyticsSidebar';
-import AnalyticsNav from '../../../components/tinycms/analytics/AnalyticsNav';
+import DateRangePickerWrapper from '../../../../../components/tinycms/analytics/DateRangePickerWrapper';
+import datePickerStyles from '../../../../../styles/datepicker.js';
+import SourcesByAge from '../../../../../components/tinycms/analytics/SourcesByAge';
+import SourcesByRace from '../../../../../components/tinycms/analytics/SourcesByRace';
+import SourcesByEthnicity from '../../../../../components/tinycms/analytics/SourcesByEthnicity';
+import SourcesByGender from '../../../../../components/tinycms/analytics/SourcesByGender';
+import SourcesBySexualOrientation from '../../../../../components/tinycms/analytics/SourcesBySexualOrientation';
+import SourceTopZips from '../../../../../components/tinycms/analytics/SourceTopZips';
+import AnalyticsSidebar from '../../../../../components/tinycms/analytics/AnalyticsSidebar';
+import AnalyticsNav from '../../../../../components/tinycms/analytics/AnalyticsNav';
 
 const Container = tw.div`flex flex-wrap -mx-2 mb-8`;
 const Sidebar = tw.div`h-full h-screen bg-gray-100 md:w-1/5 lg:w-1/5 px-2 mb-4`;
@@ -69,42 +69,42 @@ export default function SourcesOverview(props) {
               startDate={startDate}
               endDate={endDate}
               apiUrl={props.apiUrl}
-              apiToken={props.apiToken}
+              site={props.site}
             />
 
             <SourcesByRace
               startDate={startDate}
               endDate={endDate}
               apiUrl={props.apiUrl}
-              apiToken={props.apiToken}
+              site={props.site}
             />
 
             <SourcesByEthnicity
               startDate={startDate}
               endDate={endDate}
               apiUrl={props.apiUrl}
-              apiToken={props.apiToken}
+              site={props.site}
             />
 
             <SourcesByGender
               startDate={startDate}
               endDate={endDate}
               apiUrl={props.apiUrl}
-              apiToken={props.apiToken}
+              site={props.site}
             />
 
             <SourcesBySexualOrientation
               startDate={startDate}
               endDate={endDate}
               apiUrl={props.apiUrl}
-              apiToken={props.apiToken}
+              site={props.site}
             />
 
             <SourceTopZips
               startDate={startDate}
               endDate={endDate}
               apiUrl={props.apiUrl}
-              apiToken={props.apiToken}
+              site={props.site}
             />
           </SettingsContainer>
         </MainContent>
@@ -116,17 +116,13 @@ export default function SourcesOverview(props) {
   );
 }
 export async function getServerSideProps(context) {
-  const clientID = process.env.ANALYTICS_CLIENT_ID;
-  const clientSecret = process.env.ANALYTICS_CLIENT_SECRET;
   const apiUrl = process.env.HASURA_API_URL;
-  const apiToken = process.env.ORG_SLUG;
+  const site = context.params.site;
 
   return {
     props: {
       apiUrl: apiUrl,
-      apiToken: apiToken,
-      clientID: clientID,
-      clientSecret: clientSecret,
+      site: site,
     },
   };
 }

@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import tw from 'twin.macro';
 import moment from 'moment';
-import AdminLayout from '../../../components/AdminLayout';
-import AdminNav from '../../../components/nav/AdminNav';
-import CustomDimensions from '../../../components/tinycms/analytics/CustomDimensions';
-import DateRangePickerWrapper from '../../../components/tinycms/analytics/DateRangePickerWrapper';
-import datePickerStyles from '../../../styles/datepicker.js';
-import DonateClicks from '../../../components/tinycms/analytics/DonateClicks';
-import AnalyticsNav from '../../../components/tinycms/analytics/AnalyticsNav';
-import AnalyticsSidebar from '../../../components/tinycms/analytics/AnalyticsSidebar';
+import AdminLayout from '../../../../../components/AdminLayout';
+import AdminNav from '../../../../../components/nav/AdminNav';
+import CustomDimensions from '../../../../../components/tinycms/analytics/CustomDimensions';
+import DateRangePickerWrapper from '../../../../../components/tinycms/analytics/DateRangePickerWrapper';
+import datePickerStyles from '../../../../../styles/datepicker.js';
+import DonateClicks from '../../../../../components/tinycms/analytics/DonateClicks';
+import AnalyticsNav from '../../../../../components/tinycms/analytics/AnalyticsNav';
+import AnalyticsSidebar from '../../../../../components/tinycms/analytics/AnalyticsSidebar';
 
 const Container = tw.div`flex flex-wrap -mx-2 mb-8`;
 const Sidebar = tw.div`h-full h-screen bg-gray-100 md:w-1/5 lg:w-1/5 px-2 mb-4`;
@@ -90,14 +90,14 @@ export default function Donations(props) {
     </AdminLayout>
   );
 }
-export async function getServerSideProps() {
+export async function getServerSideProps(context) {
   const apiUrl = process.env.HASURA_API_URL;
-  const apiToken = process.env.ORG_SLUG;
+  const site = context.params.site;
 
   return {
     props: {
       apiUrl,
-      apiToken,
+      site,
     },
   };
 }

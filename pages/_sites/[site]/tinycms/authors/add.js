@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import tw from 'twin.macro';
 import {
   FormContainer,
@@ -6,22 +6,26 @@ import {
   TinyYesNoField,
   TinyInputField,
   TinySubmitCancelButtons,
-} from '../../../components/tinycms/TinyFormElements';
-import TinyEditor from '../../../components/tinycms/TinyEditor';
-import AdminLayout from '../../../components/AdminLayout';
-import AdminNav from '../../../components/nav/AdminNav';
-import Notification from '../../../components/tinycms/Notification';
-import Upload from '../../../components/tinycms/Upload';
-import { hasuraListLocales } from '../../../lib/articles.js';
-import { hasuraCreateAuthor } from '../../../lib/authors';
-import { displayAuthorName, validateAuthorName } from '../../../lib/utils.js';
-import { slugify } from '../../../lib/graphql';
+} from '../../../../../components/tinycms/TinyFormElements';
+import TinyEditor from '../../../../../components/tinycms/TinyEditor';
+import AdminLayout from '../../../../../components/AdminLayout';
+import AdminNav from '../../../../../components/nav/AdminNav';
+import Notification from '../../../../../components/tinycms/Notification';
+import Upload from '../../../../../components/tinycms/Upload';
+import { getOrgSettings } from '../../../../../lib/articles.js';
+import { hasuraCreateAuthor } from '../../../../../lib/authors';
+import {
+  displayAuthorName,
+  validateAuthorName,
+  findSetting,
+} from '../../../../../lib/utils.js';
+import { slugify } from '../../../../../lib/graphql';
 
 const UploadContainer = tw.div`container mx-auto min-w-0 flex-auto px-4 sm:px-6 xl:px-8 pt-10`;
 
 export default function AddAuthor({
   apiUrl,
-  apiToken,
+  site,
   tinyApiKey,
   currentLocale,
   locales,
@@ -99,7 +103,7 @@ export default function AddAuthor({
     }
     let params = {
       url: apiUrl,
-      orgSlug: apiToken,
+      site: site,
       localeCode: currentLocale,
       bio: bio,
       title: title,
@@ -221,37 +225,40 @@ export default function AddAuthor({
 }
 export async function getServerSideProps(context) {
   const apiUrl = process.env.HASURA_API_URL;
-  const apiToken = process.env.ORG_SLUG;
-  const tinyApiKey = process.env.TINYMCE_API_KEY;
+  const site = context.params.site;
 
-  const { errors, data } = await hasuraListLocales({
+  const settingsResult = await getOrgSettings({
     url: apiUrl,
-    orgSlug: apiToken,
+    site: site,
   });
 
-  let locales;
-
-  if (errors || !data) {
-    return {
-      notFound: true,
-    };
-  } else {
-    locales = data.organization_locales;
+  if (settingsResult.errors) {
+    console.log('error:', settingsResult);
+    throw settingsResult.errors;
   }
+  let siteMetadata = settingsResult.data.settings;
+  let locales = settingsResult.data.organization_locales;
+
+  let bucketName = findSetting(siteMetadata, 'TNC_AWS_BUCKET_NAME');
+  let dir = findSetting(siteMetadata, 'TNC_AWS_DIR_NAME');
+  let region = findSetting(siteMetadata, 'TNC_AWS_REGION');
+  let accessKey = findSetting(siteMetadata, 'TNC_AWS_ACCESS_ID');
+  let secretKey = findSetting(siteMetadata, 'TNC_AWS_ACCESS_KEY');
+  let tinyApiKey = findSetting(siteMetadata, 'TINYMCE_API_KEY');
 
   const awsConfig = {
-    bucketName: process.env.TNC_AWS_BUCKET_NAME,
-    dirName: process.env.TNC_AWS_DIR_NAME,
-    region: process.env.TNC_AWS_REGION,
-    accessKeyId: process.env.TNC_AWS_ACCESS_ID,
-    secretAccessKey: process.env.TNC_AWS_ACCESS_KEY,
-    s3Url: `https://${process.env.TNC_AWS_BUCKET_NAME}.s3.${process.env.TNC_AWS_REGION}.amazonaws.com`,
+    bucketName: bucketName,
+    dirName: dir,
+    region: region,
+    accessKeyId: accessKey,
+    secretAccessKey: secretKey,
+    s3Url: `https://${bucketName}.s3.${region}.amazonaws.com`,
   };
 
   return {
     props: {
       apiUrl: apiUrl,
-      apiToken: apiToken,
+      site: site,
       tinyApiKey: tinyApiKey,
       currentLocale: context.locale,
       locales: locales,

@@ -2,15 +2,13 @@ import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { CheckIcon, XIcon } from '@heroicons/react/solid';
-import AdminLayout from '../../../components/AdminLayout.js';
-import AdminNav from '../../../components/nav/AdminNav';
 import tw from 'twin.macro';
-import { hasuraLocalizeText } from '../../../lib/utils';
-import { hasuraListAllSectionsByLocale } from '../../../lib/section.js';
-import {
-  DeleteButton,
-  AddButton,
-} from '../../../components/common/CommonStyles.js';
+import AdminLayout from '../../../../../components/AdminLayout.js';
+import AdminNav from '../../../../../components/nav/AdminNav';
+import { hasuraLocalizeText } from '../../../../../lib/utils';
+import { hasuraListAllSectionsByLocale } from '../../../../../lib/section.js';
+import { AddButton } from '../../../../../components/common/CommonStyles.js';
+import { getOrgSettings } from '../../../../../lib/articles.js';
 
 const Table = tw.table`table-auto w-full`;
 const TableHead = tw.thead``;
@@ -109,19 +107,30 @@ export default function Sections({ sections, currentLocale, locales }) {
 
 export async function getServerSideProps(context) {
   const apiUrl = process.env.HASURA_API_URL;
-  const apiToken = process.env.ORG_SLUG;
+  const site = context.params.site;
+
+  const settingsResult = await getOrgSettings({
+    url: apiUrl,
+    site: site,
+  });
+
+  if (settingsResult.errors) {
+    console.log('error:', settingsResult);
+    throw settingsResult.errors;
+  }
+  let locales = settingsResult.data.organization_locales;
 
   const { errors, data } = await hasuraListAllSectionsByLocale({
     url: apiUrl,
-    orgSlug: apiToken,
+    site: site,
   });
 
   if (errors) {
     console.error(errors);
+    throw errors;
   }
 
   let sections = data.categories;
-  let locales = data.organization_locales;
 
   return {
     props: {

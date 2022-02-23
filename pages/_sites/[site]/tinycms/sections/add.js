@@ -7,20 +7,15 @@ import {
   TinySubmitCancelButtons,
   UrlSlugLabel,
   UrlSlugValue,
-} from '../../../components/tinycms/TinyFormElements';
-import AdminLayout from '../../../components/AdminLayout';
-import AdminNav from '../../../components/nav/AdminNav';
-import Notification from '../../../components/tinycms/Notification';
-import { hasuraListLocales } from '../../../lib/articles.js';
-import { hasuraCreateSection } from '../../../lib/section';
-import { slugify } from '../../../lib/graphql';
+} from '../../../../../components/tinycms/TinyFormElements';
+import AdminLayout from '../../../../../components/AdminLayout';
+import AdminNav from '../../../../../components/nav/AdminNav';
+import Notification from '../../../../../components/tinycms/Notification';
+import { getOrgSettings } from '../../../../../lib/articles.js';
+import { hasuraCreateSection } from '../../../../../lib/section';
+import { slugify } from '../../../../../lib/graphql';
 
-export default function AddSection({
-  apiUrl,
-  apiToken,
-  currentLocale,
-  locales,
-}) {
+export default function AddSection({ apiUrl, site, currentLocale, locales }) {
   const [notificationMessage, setNotificationMessage] = useState([]);
   const [notificationType, setNotificationType] = useState('');
   const [showNotification, setShowNotification] = useState(false);
@@ -71,7 +66,7 @@ export default function AddSection({
     let published = true;
     let params = {
       url: apiUrl,
-      orgSlug: apiToken,
+      site: site,
       localeCode: currentLocale,
       title: title,
       published: published,
@@ -142,27 +137,23 @@ export default function AddSection({
 
 export async function getServerSideProps(context) {
   const apiUrl = process.env.HASURA_API_URL;
-  const apiToken = process.env.ORG_SLUG;
-  const { errors, data } = await hasuraListLocales({
+  const site = context.params.site;
+
+  const settingsResult = await getOrgSettings({
     url: apiUrl,
-    orgSlug: apiToken,
+    site: site,
   });
 
-  let locales;
-
-  if (errors || !data) {
-    console.error('error listing locales:', errors);
-    return {
-      notFound: true,
-    };
-  } else {
-    locales = data.organization_locales;
+  if (settingsResult.errors) {
+    console.log('error:', settingsResult);
+    throw settingsResult.errors;
   }
+  let locales = settingsResult.data.organization_locales;
 
   return {
     props: {
       apiUrl: apiUrl,
-      apiToken: apiToken,
+      site: site,
       currentLocale: context.locale,
       locales: locales,
     },

@@ -1,11 +1,13 @@
 import React from 'react';
 import tw from 'twin.macro';
-import AdminLayout from '../../../components/AdminLayout';
-import AdminNav from '../../../components/nav/AdminNav';
-import AnalyticsNav from '../../../components/tinycms/analytics/AnalyticsNav';
-import AnalyticsSidebar from '../../../components/tinycms/analytics/AnalyticsSidebar';
-import YesterdaysTopTen from '../../../components/tinycms/analytics/YesterdaysTopTen';
-import { hasuraGetYesterday } from '../../../lib/analytics';
+import AdminLayout from '../../../../../components/AdminLayout';
+import AdminNav from '../../../../../components/nav/AdminNav';
+import AnalyticsNav from '../../../../../components/tinycms/analytics/AnalyticsNav';
+import AnalyticsSidebar from '../../../../../components/tinycms/analytics/AnalyticsSidebar';
+import YesterdaysTopTen from '../../../../../components/tinycms/analytics/YesterdaysTopTen';
+import { hasuraGetYesterday } from '../../../../../lib/analytics';
+import { getOrgSettings } from '../../../../../lib/articles.js';
+
 import moment from 'moment';
 
 const Container = tw.div`flex flex-wrap -mx-2 mb-8`;
@@ -121,9 +123,7 @@ export default function AnalyticsIndex(props) {
 }
 export async function getServerSideProps(context) {
   const apiUrl = process.env.HASURA_API_URL;
-  const apiToken = process.env.ORG_SLUG;
-  const clientID = process.env.ANALYTICS_CLIENT_ID;
-  const clientSecret = process.env.ANALYTICS_CLIENT_SECRET;
+  const site = context.params.site;
 
   const startDate = moment().subtract(1, 'days');
   const endDate = moment();
@@ -131,13 +131,14 @@ export async function getServerSideProps(context) {
   let sessionCount = 0;
   let sessionParams = {
     url: apiUrl,
-    orgSlug: apiToken,
+    site: site,
     startDate: startDate,
     endDate: endDate,
   };
   const { errors, data } = await hasuraGetYesterday(sessionParams);
   if (errors && !data) {
     console.error(errors);
+    throw errors;
   }
 
   let sessions = data.ga_sessions;
@@ -163,9 +164,7 @@ export async function getServerSideProps(context) {
   return {
     props: {
       apiUrl: apiUrl,
-      apiToken: apiToken,
-      clientID: clientID,
-      clientSecret: clientSecret,
+      site: site,
       pageViews: pageViews,
       readingDepth: readingDepth,
       sessionCount: sessionCount,

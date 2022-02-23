@@ -1,34 +1,54 @@
-import React, { useState } from 'react';
-import AdminLayout from '../../../components/AdminLayout';
-import AdminNav from '../../../components/nav/AdminNav';
-import Notification from '../../../components/tinycms/Notification';
-import { hasuraUpsertHomepageLayout } from '../../../lib/homepage';
+import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
+import AdminLayout from '../../../../../components/AdminLayout';
+import {
+  hasuraGetHomepageLayout,
+  hasuraUpdateHomepageLayout,
+} from '../../../../../lib/homepage';
+import AdminNav from '../../../../../components/nav/AdminNav';
+import Notification from '../../../../../components/tinycms/Notification';
 
-export default function AddHomepageLayout({ apiUrl, apiToken }) {
+export default function EditHomepageLayout({ apiUrl, site, homepageLayout }) {
   const [notificationMessage, setNotificationMessage] = useState('');
   const [notificationType, setNotificationType] = useState('');
   const [showNotification, setShowNotification] = useState(false);
+  const [homepageLayoutId, setHomepageLayoutId] = useState('');
 
   const [name, setName] = useState('');
   const [jsonData, setJsonData] = useState('');
 
+  useEffect(() => {
+    if (homepageLayout) {
+      setName(homepageLayout.name);
+      setJsonData(homepageLayout.data);
+      setHomepageLayoutId(homepageLayout.id);
+    }
+  }, [homepageLayout]);
+
+  const router = useRouter();
+
+  async function handleCancel(ev) {
+    ev.preventDefault();
+    router.push('/tinycms/homepage-layouts');
+  }
+
   async function handleSubmit(ev) {
     ev.preventDefault();
 
-    const { errors, data } = await hasuraUpsertHomepageLayout({
+    const { errors, data } = await hasuraUpdateHomepageLayout({
       url: apiUrl,
-      orgSlug: apiToken,
+      site: site,
+      id: homepageLayoutId,
       name: name,
       data: jsonData,
     });
 
     if (errors) {
-      console.error('Error creating layout:', errors);
       setNotificationMessage(errors);
       setNotificationType('error');
       setShowNotification(true);
     } else {
-      console.error('Created layout:', data);
+      setHomepageLayoutId(data.id);
       // display success message
       setNotificationMessage(
         'Successfully saved and published the homepage layout!'
@@ -49,8 +69,9 @@ export default function AddHomepageLayout({ apiUrl, apiToken }) {
           notificationType={notificationType}
         />
       )}
+
       <div id="page">
-        <h1 className="title">Add a homepage layout</h1>
+        <h1 className="title">Edit Homepage Layout</h1>
 
         <form onSubmit={handleSubmit}>
           <div className="field">
@@ -69,7 +90,7 @@ export default function AddHomepageLayout({ apiUrl, apiToken }) {
           </div>
 
           <div className="field">
-            <label className="label" htmlFor="jsonData">
+            <label className="label" htmlFor="data">
               Data
             </label>
             <div className="control">
@@ -85,10 +106,21 @@ export default function AddHomepageLayout({ apiUrl, apiToken }) {
 
           <div className="field is-grouped">
             <div className="control">
-              <input type="submit" className="button is-link" value="Submit" />
+              <input
+                className="button is-link"
+                name="submit"
+                type="submit"
+                value="Submit"
+              />
             </div>
             <div className="control">
-              <button className="button is-link is-light">Cancel</button>
+              <button
+                className="button is-link is-light"
+                name="cancel"
+                onClick={handleCancel}
+              >
+                Cancel
+              </button>
             </div>
           </div>
         </form>
@@ -97,14 +129,29 @@ export default function AddHomepageLayout({ apiUrl, apiToken }) {
   );
 }
 
-export async function getServerSideProps() {
+export async function getServerSideProps(context) {
   const apiUrl = process.env.HASURA_API_URL;
-  const apiToken = process.env.ORG_SLUG;
+  const site = context.params.site;
+  const id = context.params.id;
 
+  let homepageLayout;
+
+  const { errors, data } = await hasuraGetHomepageLayout({
+    url: apiUrl,
+    site: site,
+    id: id,
+  });
+
+  if (errors) {
+    throw errors;
+  } else {
+    homepageLayout = data.homepage_layout_schemas_by_pk;
+  }
   return {
     props: {
       apiUrl: apiUrl,
-      apiToken: apiToken,
+      site: site,
+      homepageLayout: homepageLayout,
     },
   };
 }
