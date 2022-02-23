@@ -2,12 +2,13 @@ import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import tw from 'twin.macro';
-import { hasuraGetMetadataByLocale } from '../../../lib/articles.js';
-import AdminLayout from '../../../components/AdminLayout.js';
-import AdminNav from '../../../components/nav/AdminNav';
-import SiteInfoSettings from '../../../components/tinycms/SiteInfoSettings';
-import { hasuraUpsertMetadata } from '../../../lib/site_metadata';
-import Notification from '../../../components/tinycms/Notification';
+import { getOrgSettings } from '../../../../../lib/articles.js';
+import { findSetting } from '../../../../../lib/utils.js';
+import AdminLayout from '../../../../../components/AdminLayout.js';
+import AdminNav from '../../../../../components/nav/AdminNav';
+import SiteInfoSettings from '../../../../../components/tinycms/SiteInfoSettings';
+import { hasuraUpsertMetadata } from '../../../../../lib/site_metadata';
+import Notification from '../../../../../components/tinycms/Notification';
 
 const Container = tw.div`flex flex-wrap -mx-2`;
 const Sidebar = tw.div`sticky top-0 h-full h-screen bg-gray-100 md:w-1/5 lg:w-1/5 px-2`;
@@ -44,7 +45,7 @@ const typographyOptions = {
 
 export default function Settings({
   apiUrl,
-  apiToken,
+  site,
   tinyApiKey,
   currentLocale,
   siteMetadata,
@@ -164,9 +165,8 @@ export default function Settings({
       }
     }
     if (siteMetadata) {
-      let md = siteMetadata.site_metadata_translations[0].data;
-      setMetadata(md);
-      let parsed = md;
+      setMetadata(siteMetadata);
+      let parsed = siteMetadata;
       setParsedData(parsed);
       let formattedJSON;
       try {
@@ -251,7 +251,7 @@ export default function Settings({
 
     const { errors, data } = await hasuraUpsertMetadata({
       url: apiUrl,
-      orgSlug: apiToken,
+      site: site,
       data: parsed,
       published: true,
       localeCode: currentLocale,
@@ -414,48 +414,48 @@ export default function Settings({
 
 export async function getServerSideProps(context) {
   const apiUrl = process.env.HASURA_API_URL;
-  const apiToken = process.env.ORG_SLUG;
-  const tinyApiKey = process.env.TINYMCE_API_KEY;
+  const site = context.params.site;
 
-  let siteMetadata;
-  let locales;
-
-  const { errors, data } = await hasuraGetMetadataByLocale({
+  const settingsResult = await getOrgSettings({
     url: apiUrl,
-    orgSlug: apiToken,
-    localeCode: context.locale,
+    site: site,
   });
 
-  if (errors) {
-    console.error('Error getting site metadata:', errors);
-    throw errors;
-  } else {
-    locales = data.organization_locales;
-    siteMetadata = data.site_metadatas[0];
+  if (settingsResult.errors) {
+    console.log('error:', settingsResult);
+    throw settingsResult.errors;
   }
-  if (siteMetadata === undefined) {
-    siteMetadata = null;
-  }
+  let siteMetadata = settingsResult.data.settings;
+
+  let locales = settingsResult.data.organization_locales;
+
+  let bucketName = findSetting(siteMetadata, 'TNC_AWS_BUCKET_NAME');
+  let dir = findSetting(siteMetadata, 'TNC_AWS_DIR_NAME');
+  let region = findSetting(siteMetadata, 'TNC_AWS_REGION');
+  let accessKey = findSetting(siteMetadata, 'TNC_AWS_ACCESS_ID');
+  let secretKey = findSetting(siteMetadata, 'TNC_AWS_ACCESS_KEY');
+  let vercelHook = findSetting(siteMetadata, 'VERCEL_DEPLOY_HOOK');
+  let tinyApiKey = findSetting(siteMetadata, 'TINYMCE_API_KEY');
 
   const awsConfig = {
-    bucketName: process.env.TNC_AWS_BUCKET_NAME,
-    dirName: process.env.TNC_AWS_DIR_NAME,
-    region: process.env.TNC_AWS_REGION,
-    accessKeyId: process.env.TNC_AWS_ACCESS_ID,
-    secretAccessKey: process.env.TNC_AWS_ACCESS_KEY,
-    s3Url: `https://${process.env.TNC_AWS_BUCKET_NAME}.s3.${process.env.TNC_AWS_REGION}.amazonaws.com`,
+    bucketName: bucketName,
+    dirName: dir,
+    region: region,
+    accessKeyId: accessKey,
+    secretAccessKey: secretKey,
+    s3Url: `https://${bucketName}.s3.${region}.amazonaws.com`,
   };
 
   return {
     props: {
       apiUrl: apiUrl,
-      apiToken: apiToken,
+      site: site,
       tinyApiKey: tinyApiKey,
       currentLocale: context.locale,
       siteMetadata: siteMetadata,
       locales: locales,
       awsConfig: awsConfig,
-      vercelHook: process.env.VERCEL_DEPLOY_HOOK,
+      vercelHook: vercelHook,
     },
   };
 }

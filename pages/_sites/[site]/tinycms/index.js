@@ -1,8 +1,8 @@
 import Link from 'next/link';
 import React from 'react';
-import { hasuraListLocales } from '../../lib/articles.js';
-import AdminLayout from '../../components/AdminLayout.js';
-import AdminNav from '../../components/nav/AdminNav';
+import { getOrgSettings } from '../../../../lib/articles.js';
+import AdminLayout from '../../../../components/AdminLayout.js';
+import AdminNav from '../../../../components/nav/AdminNav';
 import tw from 'twin.macro';
 import {
   ChartBarIcon,
@@ -71,6 +71,7 @@ const cardContent = [
 ];
 
 export default function TinyCmsHome(props) {
+  console.log('tinycmshome', props);
   return (
     <AdminLayout>
       <AdminNav
@@ -105,22 +106,19 @@ export default function TinyCmsHome(props) {
 
 export async function getServerSideProps(context) {
   const apiUrl = process.env.HASURA_API_URL;
-  const apiToken = process.env.ORG_SLUG;
-  const { errors, data } = await hasuraListLocales({
+  const site = context.params.site;
+
+  const settingsResult = await getOrgSettings({
     url: apiUrl,
-    orgSlug: apiToken,
+    site: site,
   });
 
-  let locales;
-
-  if (errors || !data) {
-    console.error('error listing locales:', errors);
-    return {
-      notFound: true,
-    };
-  } else {
-    locales = data.organization_locales;
+  if (settingsResult.errors) {
+    console.log('error:', settingsResult);
+    throw settingsResult.errors;
   }
+
+  let locales = settingsResult.data.organization_locales;
 
   return {
     props: {

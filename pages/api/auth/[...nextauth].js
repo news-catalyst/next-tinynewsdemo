@@ -7,6 +7,7 @@ export default NextAuth({
     Providers.Google({
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      state: false,
     }),
   ],
   debug: true,
@@ -50,15 +51,17 @@ export default NextAuth({
           isAllowedToSignIn = true;
         }
       });
-
+      // console.log('********* is allowed?', isAllowedToSignIn);
       return isAllowedToSignIn;
     },
     session(session, payload) {
       if (payload.account) session.user = payload.account;
+      // console.log('session user, payload:', session.user, payload);
       return session;
     },
     jwt(token, account, user, userInfo) {
       if (userInfo) token.account = userInfo;
+      // console.log('jwt token:', token);
       return token;
     },
   },

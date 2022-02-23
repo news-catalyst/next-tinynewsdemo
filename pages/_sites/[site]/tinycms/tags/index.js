@@ -1,17 +1,20 @@
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import AdminLayout from '../../../components/AdminLayout.js';
-import AdminNav from '../../../components/nav/AdminNav';
+import AdminLayout from '../../../../../components/AdminLayout.js';
+import AdminNav from '../../../../../components/nav/AdminNav';
 import tw from 'twin.macro';
-import Notification from '../../../components/tinycms/Notification';
-import { hasuraListAllTagsByLocale } from '../../../lib/articles.js';
-import { deleteSingleTag } from '../../../lib/section.js';
-import { hasuraLocalizeText } from '../../../lib/utils.js';
+import Notification from '../../../../../components/tinycms/Notification';
+import {
+  getOrgSettings,
+  hasuraListAllTagsByLocale,
+} from '../../../../../lib/articles.js';
+import { deleteSingleTag } from '../../../../../lib/section.js';
+import { hasuraLocalizeText } from '../../../../../lib/utils.js';
 import {
   DeleteButton,
   AddButton,
-} from '../../../components/common/CommonStyles.js';
+} from '../../../../../components/common/CommonStyles.js';
 
 const Table = tw.table`table-auto w-full`;
 const TableHead = tw.thead``;
@@ -21,13 +24,7 @@ const TableHeader = tw.th`px-4 py-2`;
 const TableCell = tw.td`border px-4 py-2`;
 const AddTagButton = tw.a`hidden md:flex w-full md:w-auto px-4 py-2 text-right bg-blue-900 hover:bg-blue-500 text-white md:rounded`;
 
-export default function Tags({
-  apiUrl,
-  apiToken,
-  tags,
-  currentLocale,
-  locales,
-}) {
+export default function Tags({ apiUrl, site, tags, currentLocale, locales }) {
   const [notificationMessage, setNotificationMessage] = useState('');
   const [notificationType, setNotificationType] = useState('');
   const [showNotification, setShowNotification] = useState(false);
@@ -42,7 +39,7 @@ export default function Tags({
   async function deleteTag(tagId) {
     let params = {
       url: apiUrl,
-      orgSlug: apiToken,
+      site: site,
       id: tagId,
     };
     const { errors, data } = await deleteSingleTag(params);
@@ -164,14 +161,24 @@ export default function Tags({
 
 export async function getServerSideProps(context) {
   const apiUrl = process.env.HASURA_API_URL;
-  const apiToken = process.env.ORG_SLUG;
+  const site = context.params.site;
 
+  const settingsResult = await getOrgSettings({
+    url: apiUrl,
+    site: site,
+  });
+
+  if (settingsResult.errors) {
+    console.log('error:', settingsResult);
+    throw settingsResult.errors;
+  }
+
+  let locales = settingsResult.data.organization_locales;
   let tags;
-  let locales;
 
   const { errors, data } = await hasuraListAllTagsByLocale({
     url: apiUrl,
-    orgSlug: apiToken,
+    site: site,
     locale_code: context.locale,
   });
 
@@ -188,7 +195,7 @@ export async function getServerSideProps(context) {
   return {
     props: {
       apiUrl: apiUrl,
-      apiToken: apiToken,
+      site: site,
       tags: tags,
       currentLocale: context.locale,
       locales: locales,

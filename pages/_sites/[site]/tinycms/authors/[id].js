@@ -1,31 +1,37 @@
 import React, { useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
-import AdminLayout from '../../../components/AdminLayout';
-import AdminNav from '../../../components/nav/AdminNav';
 import tw from 'twin.macro';
+import AdminLayout from '../../../../../components/AdminLayout';
+import AdminNav from '../../../../../components/nav/AdminNav';
 import {
   FormContainer,
   FormHeader,
   TinyYesNoField,
   TinyInputField,
   TinySubmitCancelButtons,
-} from '../../../components/tinycms/TinyFormElements';
-import TinyEditor from '../../../components/tinycms/TinyEditor';
-import Notification from '../../../components/tinycms/Notification';
-import Upload from '../../../components/tinycms/Upload';
-import { hasuraGetAuthorById, hasuraUpdateAuthor } from '../../../lib/authors';
+} from '../../../../../components/tinycms/TinyFormElements';
+import TinyEditor from '../../../../../components/tinycms/TinyEditor';
+import Notification from '../../../../../components/tinycms/Notification';
+import Upload from '../../../../../components/tinycms/Upload';
+import {
+  hasuraGetAuthorById,
+  hasuraUpdateAuthor,
+} from '../../../../../lib/authors';
 import {
   displayAuthorName,
   hasuraLocalizeText,
   validateAuthorName,
-} from '../../../lib/utils.js';
-import { slugify } from '../../../lib/graphql';
+  findSetting,
+} from '../../../../../lib/utils.js';
+import { getOrgSettings } from '../../../../../lib/articles.js';
+import { slugify } from '../../../../../lib/graphql';
+
 const UploadContainer = tw.div`container mx-auto min-w-0 flex-auto px-4 sm:px-6 xl:px-8 pt-10`;
 const ArticleAuthorLink = tw.a`font-bold cursor-pointer hover:underline`;
 
 export default function EditAuthor({
   apiUrl,
-  apiToken,
+  site,
   tinyApiKey,
   author,
   currentLocale,
@@ -142,7 +148,7 @@ export default function EditAuthor({
 
     let params = {
       url: apiUrl,
-      orgSlug: apiToken,
+      site: site,
       id: authorId,
       localeCode: currentLocale,
       bio: bio,
@@ -281,36 +287,52 @@ export default function EditAuthor({
 
 export async function getServerSideProps(context) {
   const apiUrl = process.env.HASURA_API_URL;
-  const apiToken = process.env.ORG_SLUG;
-  const tinyApiKey = process.env.TINYMCE_API_KEY;
+  const site = context.params.site;
+
+  const settingsResult = await getOrgSettings({
+    url: apiUrl,
+    site: site,
+  });
+
+  if (settingsResult.errors) {
+    console.log('error:', settingsResult);
+    throw settingsResult.errors;
+  }
+  let siteMetadata = settingsResult.data.settings;
+  let locales = settingsResult.data.organization_locales;
+
+  let bucketName = findSetting(siteMetadata, 'TNC_AWS_BUCKET_NAME');
+  let dir = findSetting(siteMetadata, 'TNC_AWS_DIR_NAME');
+  let region = findSetting(siteMetadata, 'TNC_AWS_REGION');
+  let accessKey = findSetting(siteMetadata, 'TNC_AWS_ACCESS_ID');
+  let secretKey = findSetting(siteMetadata, 'TNC_AWS_ACCESS_KEY');
+  let tinyApiKey = findSetting(siteMetadata, 'TINYMCE_API_KEY');
 
   const awsConfig = {
-    bucketName: process.env.TNC_AWS_BUCKET_NAME,
-    dirName: process.env.TNC_AWS_DIR_NAME,
-    region: process.env.TNC_AWS_REGION,
-    accessKeyId: process.env.TNC_AWS_ACCESS_ID,
-    secretAccessKey: process.env.TNC_AWS_ACCESS_KEY,
-    s3Url: `https://${process.env.TNC_AWS_BUCKET_NAME}.s3.${process.env.TNC_AWS_REGION}.amazonaws.com`,
+    bucketName: bucketName,
+    dirName: dir,
+    region: region,
+    accessKeyId: accessKey,
+    secretAccessKey: secretKey,
+    s3Url: `https://${bucketName}.s3.${region}.amazonaws.com`,
   };
 
   let author = {};
-  let locales;
   const { errors, data } = await hasuraGetAuthorById({
     url: apiUrl,
-    orgSlug: apiToken,
+    site: site,
     id: context.params.id,
   });
   if (errors) {
     throw errors;
   } else {
     author = data.authors_by_pk;
-    locales = data.organization_locales;
   }
 
   return {
     props: {
       apiUrl: apiUrl,
-      apiToken: apiToken,
+      site: site,
       tinyApiKey: tinyApiKey,
       author: author,
       currentLocale: context.locale,

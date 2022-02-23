@@ -8,23 +8,20 @@ import {
   TinySubmitCancelButtons,
   UrlSlugValue,
   UrlSlugLabel,
-} from '../../../components/tinycms/TinyFormElements';
-import AdminLayout from '../../../components/AdminLayout';
-import AdminNav from '../../../components/nav/AdminNav';
-import Notification from '../../../components/tinycms/Notification';
-import { hasuraGetTagById, hasuraUpdateTag } from '../../../lib/section.js';
-import { hasuraLocalizeText } from '../../../lib/utils.js';
-import { slugify } from '../../../lib/graphql';
+} from '../../../../../components/tinycms/TinyFormElements';
+import AdminLayout from '../../../../../components/AdminLayout';
+import AdminNav from '../../../../../components/nav/AdminNav';
+import Notification from '../../../../../components/tinycms/Notification';
+import {
+  hasuraGetTagById,
+  hasuraUpdateTag,
+} from '../../../../../lib/section.js';
+import { hasuraLocalizeText } from '../../../../../lib/utils.js';
+import { slugify } from '../../../../../lib/graphql';
 
 const ViewOnSiteLink = tw.a`font-bold cursor-pointer hover:underline`;
 
-export default function EditTag({
-  apiUrl,
-  apiToken,
-  tag,
-  currentLocale,
-  locales,
-}) {
+export default function EditTag({ apiUrl, site, tag, currentLocale, locales }) {
   const [notificationMessage, setNotificationMessage] = useState('');
   const [notificationType, setNotificationType] = useState('');
   const [showNotification, setShowNotification] = useState(false);
@@ -58,7 +55,7 @@ export default function EditTag({
     let published = true;
     let params = {
       url: apiUrl,
-      orgSlug: apiToken,
+      site: site,
       id: tagId,
       localeCode: currentLocale,
       title: title,
@@ -133,14 +130,15 @@ export default function EditTag({
 
 export async function getServerSideProps(context) {
   const apiUrl = process.env.HASURA_API_URL;
-  const apiToken = process.env.ORG_SLUG;
+  const site = context.params.site;
+  const id = context.params.id;
 
   let tag = {};
   let locales;
   const { errors, data } = await hasuraGetTagById({
     url: apiUrl,
-    orgSlug: apiToken,
-    id: context.params.id,
+    site: site,
+    id: id,
   });
   if (errors) {
     throw errors;
@@ -152,7 +150,7 @@ export async function getServerSideProps(context) {
   return {
     props: {
       apiUrl: apiUrl,
-      apiToken: apiToken,
+      site: site,
       tag: tag,
       currentLocale: context.locale,
       locales: locales,
