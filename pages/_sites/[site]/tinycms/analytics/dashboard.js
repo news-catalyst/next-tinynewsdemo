@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import tw, { styled } from 'twin.macro';
-import AdminLayout from '../../../components/AdminLayout';
-import AdminNav from '../../../components/nav/AdminNav';
-import AnalyticsNav from '../../../components/tinycms/analytics/AnalyticsNav';
-import AnalyticsSidebar from '../../../components/tinycms/analytics/AnalyticsSidebar';
-import { hasuraGetDataImports } from '../../../lib/analytics';
+import AdminLayout from '../../../../../components/AdminLayout';
+import AdminNav from '../../../../../components/nav/AdminNav';
+import AnalyticsNav from '../../../../../components/tinycms/analytics/AnalyticsNav';
+import AnalyticsSidebar from '../../../../../components/tinycms/analytics/AnalyticsSidebar';
+import { hasuraGetDataImports } from '../../../../../lib/analytics';
 import moment from 'moment';
 
 const Container = tw.div`flex flex-wrap -mx-2 mb-8`;
@@ -31,7 +31,7 @@ export default function AnalyticsDashboard(props) {
   useEffect(() => {
     let params = {
       url: props.apiUrl,
-      apiToken: props.apiToken,
+      site: props.site,
       start_date: startDate,
       end_date: endDate,
     };
@@ -112,12 +112,12 @@ export default function AnalyticsDashboard(props) {
 
 export async function getServerSideProps(context) {
   const apiUrl = process.env.HASURA_API_URL;
-  const apiToken = process.env.HASURA_ADMIN_SECRET;
+  const site = context.params.site;
 
   return {
     props: {
       apiUrl: apiUrl,
-      apiToken: apiToken,
+      site: site,
     },
   };
 }

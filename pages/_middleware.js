@@ -13,7 +13,7 @@ export default function middleware(req) {
     .replace(`.vercel.app`, '')
     .replace(`.vercel.app:3000`, ''); // TBD if we need to change this
 
-  // console.log('middleware host / pathname', currentHost, '/', pathname);
+  console.log('middleware host / pathname', currentHost, '/', pathname);
 
   // Copied this over as commented code in case we want to redirect particular hosts to one central spot
   // only for demo purposes – remove this if you want to use your root domain as the landing page
@@ -22,11 +22,7 @@ export default function middleware(req) {
   // }
 
   // API routes and the TinyCMS are handled elsewhere tbd
-  if (
-    !pathname.includes('.') &&
-    !pathname.startsWith('/api') &&
-    !pathname.startsWith('/tinycms')
-  ) {
+  if (!pathname.includes('.') && !pathname.startsWith('/api')) {
     url.pathname = `/_sites/${currentHost}${pathname}`;
     console.log('middleware rewrote url:', url.pathname);
     return NextResponse.rewrite(url);

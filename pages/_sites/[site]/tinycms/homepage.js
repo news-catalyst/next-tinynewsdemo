@@ -1,20 +1,21 @@
 import dynamic from 'next/dynamic';
 import React, { useState } from 'react';
-import { hasuraLocalizeText } from '../../lib/utils.js';
+import { hasuraLocalizeText } from '../../../../lib/utils.js';
 import {
   hasuraGetHomepageEditor,
   hasuraSaveHomepageLayout,
-} from '../../lib/articles.js';
-import AdminNav from '../../components/nav/AdminNav';
-import Notification from '../../components/tinycms/Notification';
-import AdminLayout from '../../components/AdminLayout';
-import homepageStyles from '../../styles/homepage.js';
+  getOrgSettings,
+} from '../../../../lib/articles.js';
+import AdminNav from '../../../../components/nav/AdminNav';
+import Notification from '../../../../components/tinycms/Notification';
+import AdminLayout from '../../../../components/AdminLayout';
+import homepageStyles from '../../../../styles/homepage.js';
 
 const BigFeaturedStory = dynamic(() =>
-  import(`../../components/homepage/BigFeaturedStory`)
+  import(`../../../../components/homepage/BigFeaturedStory`)
 );
 const LargePackageStoryLead = dynamic(() =>
-  import(`../../components/homepage/LargePackageStoryLead`)
+  import(`../../../../components/homepage/LargePackageStoryLead`)
 );
 
 export default function HomePageEditor({
@@ -27,7 +28,7 @@ export default function HomePageEditor({
   locales,
   siteMetadata,
   apiUrl,
-  apiToken,
+  site,
 }) {
   const [notificationMessage, setNotificationMessage] = useState('');
   const [notificationType, setNotificationType] = useState('');
@@ -74,7 +75,7 @@ export default function HomePageEditor({
 
     const { errors, data } = await hasuraSaveHomepageLayout({
       url: apiUrl,
-      orgSlug: apiToken,
+      site: site,
       schemaId: selectedLayout.id,
       article1: article1,
       article2: article2,
@@ -123,7 +124,7 @@ export default function HomePageEditor({
           <BigFeaturedStory
             editable={true}
             apiUrl={apiUrl}
-            apiToken={apiToken}
+            site={site}
             featuredArticle={featuredArticle}
             setFeaturedArticle={setFeaturedArticle}
             hpData={hpData}
@@ -139,7 +140,7 @@ export default function HomePageEditor({
             <LargePackageStoryLead
               editable={true}
               apiUrl={apiUrl}
-              apiToken={apiToken}
+              site={site}
               featuredArticle={featuredArticle}
               setFeaturedArticle={setFeaturedArticle}
               subFeaturedTopArticle={subFeaturedTopArticle}
@@ -167,13 +168,26 @@ export default function HomePageEditor({
   );
 }
 
-export async function getServerSideProps({ locale }) {
+export async function getServerSideProps(context) {
   const apiUrl = process.env.HASURA_API_URL;
-  const apiToken = process.env.ORG_SLUG;
+  const site = context.params.site;
+  const locale = context.locale;
+
+  const settingsResult = await getOrgSettings({
+    url: apiUrl,
+    site: site,
+  });
+
+  if (settingsResult.errors) {
+    console.log('error:', settingsResult);
+    throw settingsResult.errors;
+  }
+  let siteMetadata = settingsResult.data.settings;
+  let locales = settingsResult.data.organization_locales;
 
   const { errors, data } = await hasuraGetHomepageEditor({
     url: apiUrl,
-    orgSlug: apiToken,
+    site: site,
     localeCode: locale,
   });
   if (errors || !data) {
@@ -182,8 +196,6 @@ export async function getServerSideProps({ locale }) {
   }
 
   const layoutSchemas = data.homepage_layout_schemas;
-  const locales = data.organization_locales;
-
   let hpData = data.homepage_layout_datas[0];
   let hpArticles = [];
 
@@ -217,14 +229,6 @@ export async function getServerSideProps({ locale }) {
     );
   }
 
-  let siteMetadata;
-  let metadatas = data.site_metadatas;
-  try {
-    siteMetadata = metadatas[0].site_metadata_translations[0].data;
-  } catch (err) {
-    console.error('failed finding site metadata for ', locale, metadatas);
-  }
-
   return {
     props: {
       layoutSchemas,
@@ -236,7 +240,7 @@ export async function getServerSideProps({ locale }) {
       locales,
       siteMetadata,
       apiUrl,
-      apiToken,
+      site,
     },
   };
 }

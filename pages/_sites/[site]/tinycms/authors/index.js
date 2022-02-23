@@ -2,18 +2,22 @@ import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import tw from 'twin.macro';
-import AdminLayout from '../../../components/AdminLayout.js';
-import AdminNav from '../../../components/nav/AdminNav';
-import Notification from '../../../components/tinycms/Notification';
+import AdminLayout from '../../../../../components/AdminLayout.js';
+import AdminNav from '../../../../../components/nav/AdminNav';
+import Notification from '../../../../../components/tinycms/Notification';
+import { getOrgSettings } from '../../../../../lib/articles.js';
 import {
   deleteSingleAuthor,
   hasuraListAllAuthors,
-} from '../../../lib/authors.js';
+} from '../../../../../lib/authors.js';
 import {
   DeleteButton,
   AddButton,
-} from '../../../components/common/CommonStyles.js';
-import { displayAuthorName, hasuraLocalizeText } from '../../../lib/utils.js';
+} from '../../../../../components/common/CommonStyles.js';
+import {
+  displayAuthorName,
+  hasuraLocalizeText,
+} from '../../../../../lib/utils.js';
 
 const Table = tw.table`table-auto w-full`;
 const TableHead = tw.thead``;
@@ -24,7 +28,7 @@ const TableCell = tw.td`border px-4 py-2`;
 
 export default function Authors({
   apiUrl,
-  apiToken,
+  site,
   authors,
   currentLocale,
   locales,
@@ -43,7 +47,7 @@ export default function Authors({
   async function deleteAuthor(authorId) {
     let params = {
       url: apiUrl,
-      orgSlug: apiToken,
+      site: site,
       id: authorId,
     };
     const { errors, data } = await deleteSingleAuthor(params);
@@ -184,21 +188,34 @@ export default function Authors({
 
 export async function getServerSideProps(context) {
   const apiUrl = process.env.HASURA_API_URL;
-  const apiToken = process.env.ORG_SLUG;
+  const site = context.params.site;
 
-  const { errors, data } = await hasuraListAllAuthors();
+  const settingsResult = await getOrgSettings({
+    url: apiUrl,
+    site: site,
+  });
+
+  if (settingsResult.errors) {
+    console.log('error:', settingsResult);
+    throw settingsResult.errors;
+  }
+  let locales = settingsResult.data.organization_locales;
+
+  const { errors, data } = await hasuraListAllAuthors({
+    url: apiUrl,
+    site: site,
+  });
 
   if (errors) {
     console.error(errors);
   }
 
   let authors = data.authors;
-  let locales = data.organization_locales;
 
   return {
     props: {
       apiUrl: apiUrl,
-      apiToken: apiToken,
+      site: site,
       authors: authors,
       currentLocale: context.locale,
       locales: locales,

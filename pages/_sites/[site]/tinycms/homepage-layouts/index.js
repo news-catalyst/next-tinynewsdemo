@@ -1,9 +1,9 @@
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { hasuraListHomepageLayoutSchemas } from '../../../lib/homepage.js';
-import AdminLayout from '../../../components/AdminLayout.js';
-import AdminNav from '../../../components/nav/AdminNav';
+import { hasuraListHomepageLayoutSchemas } from '../../../../../lib/homepage.js';
+import AdminLayout from '../../../../../components/AdminLayout.js';
+import AdminNav from '../../../../../components/nav/AdminNav';
 
 export default function HomepageLayouts({ homepageLayouts }) {
   const [message, setMessage] = useState(null);
@@ -58,13 +58,13 @@ export default function HomepageLayouts({ homepageLayouts }) {
   );
 }
 
-export async function getServerSideProps() {
+export async function getServerSideProps(context) {
   const apiUrl = process.env.HASURA_API_URL;
-  const apiToken = process.env.ORG_SLUG;
+  const site = context.params.site;
 
   const { errors, data } = await hasuraListHomepageLayoutSchemas({
     url: apiUrl,
-    orgSlug: apiToken,
+    site: site,
   });
 
   let homepageLayouts;
