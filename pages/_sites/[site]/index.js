@@ -3,7 +3,7 @@ import { hasuraStreamArticles } from '../../../lib/homepage.js';
 import { cachedContents } from '../../../lib/cached';
 import {
   hasuraGetHomepageEditor,
-  generateAllDomainPaths,
+  generateHomepagePaths,
   getOrgSettings,
 } from '../../../lib/articles.js';
 import { getArticleAds } from '../../../lib/ads.js';
@@ -36,7 +36,7 @@ export async function getStaticPaths() {
   const apiUrl = process.env.HASURA_API_URL;
   const adminSecret = process.env.HASURA_ADMIN_SECRET;
 
-  const mappedPaths = await generateAllDomainPaths({
+  const mappedPaths = await generateHomepagePaths({
     url: apiUrl,
     adminSecret: adminSecret,
     urlParams: {},
@@ -77,7 +77,7 @@ export async function getStaticProps(context) {
   const { errors, data } = await hasuraGetHomepageEditor({
     url: apiUrl,
     site: site,
-    // localeCode: locale,
+    localeCode: locale,
   });
   if (errors || !data) {
     console.error('error getting homepage data:', errors);
