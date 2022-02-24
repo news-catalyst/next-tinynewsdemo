@@ -21,7 +21,6 @@ export async function getStaticPaths() {
     urlParams: { slug: 'staff' },
   });
 
-  console.log('paths:', mappedPaths);
   return {
     paths: mappedPaths,
     fallback: true,
