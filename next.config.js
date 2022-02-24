@@ -1,6 +1,11 @@
 require('dotenv').config({ path: '.env.local' });
 
 module.exports = {
+  i18n: {
+    locales: ['en-US', 'es', 'tl'],
+    defaultLocale: 'en-US',
+    localeDetection: false,
+  },
   images: {
     domains: [
       'tnc-test-upload-bucket.s3.amazonaws.com',
