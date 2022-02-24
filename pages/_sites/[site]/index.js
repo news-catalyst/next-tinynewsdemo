@@ -50,7 +50,11 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps(context) {
-  const locale = context.locale;
+  let locale = context.locale;
+  if (!locale) {
+    locale = null;
+  }
+
   const site = context.params.site;
 
   if (!site) {
@@ -73,7 +77,7 @@ export async function getStaticProps(context) {
   const { errors, data } = await hasuraGetHomepageEditor({
     url: apiUrl,
     site: site,
-    localeCode: locale,
+    // localeCode: locale,
   });
   if (errors || !data) {
     console.error('error getting homepage data:', errors);
@@ -85,7 +89,7 @@ export async function getStaticProps(context) {
   try {
     siteMetadata = metadatas[0].site_metadata_translations[0].data;
   } catch (err) {
-    console.error('failed finding site metadata for ', locale, metadatas);
+    console.error('failed finding site metadata', metadatas);
   }
 
   let pages = data.pages;
