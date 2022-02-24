@@ -91,6 +91,11 @@ export async function getStaticProps({ locale, params }) {
     }
   }
 
+  // why? Error: Error serializing `.locale` returned from `getStaticProps` in "/_sites/[site]/tags/[slug]".
+  // Reason: `undefined` cannot be serialized as JSON. Please use `null` or omit this value.
+  if (!locale) {
+    locale = null;
+  }
   return {
     props: {
       locale,
