@@ -24,7 +24,7 @@ export default function middleware(req) {
   // API routes and the TinyCMS are handled elsewhere tbd
   if (!pathname.includes('.') && !pathname.startsWith('/api')) {
     url.pathname = `/_sites/${currentHost}${pathname}`;
-    console.log('middleware rewrote url:', url.pathname);
+    console.log('middleware rewrote pathname:', url.pathname, url);
     return NextResponse.rewrite(url);
   }
 }
