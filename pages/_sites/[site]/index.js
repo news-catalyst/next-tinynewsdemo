@@ -41,6 +41,7 @@ export async function getStaticPaths() {
     adminSecret: adminSecret,
     urlParams: {},
   });
+  console.log('paths:', mappedPaths);
 
   return {
     paths: mappedPaths,
@@ -126,7 +127,7 @@ export async function getStaticProps(context) {
     url: apiUrl,
     site: site,
     ids: ids,
-    limit: process.env.ORG_SLUG === 'tiny-news-curriculum' ? 20 : 10,
+    limit: site === 'tiny-news-curriculum' ? 20 : 10,
   });
   let streamArticles = [];
   if (streamResult.errors || !streamResult.data) {
