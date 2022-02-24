@@ -4,7 +4,11 @@ echo "VERCEL_GIT_COMMIT_REF: $VERCEL_GIT_COMMIT_REF"
 echo "VERCEL_ENV: $VERCEL_ENV"
 echo "ORG_SLUG: $ORG_SLUG"
 
-if [[ "$VERCEL_GIT_COMMIT_REF" == "stable" && "$VERCEL_ENV" == "production"  ]] ; then
+if [[ "$VERCEL_GIT_COMMIT_REF" == "feature/vercel-platforms" ]] ; then
+  echo "🛑 - feature/vercel-platforms: build should not proceed in env $VERCEL_ENV"
+  exit 0;
+  
+elif [[ "$VERCEL_GIT_COMMIT_REF" == "stable" && "$VERCEL_ENV" == "production"  ]] ; then
   # Proceed with the build
   echo "✅ - stable/prod: build can proceed"
   exit 1;
@@ -25,6 +29,6 @@ elif [[ "$VERCEL_GIT_COMMIT_REF" == "feature/vercel-platforms" ]] ; then
 
 else
   # Don't build
-  echo "🛑 - Build cancelled for org '$ORG_SLUG' in env '$VERCEL_ENV' on branch '$VERCEL_GIT_COMMIT_REF'"
+  echo "🛑 - Build cancelled in env '$VERCEL_ENV' on branch '$VERCEL_GIT_COMMIT_REF'"
   exit 0;
 fi
