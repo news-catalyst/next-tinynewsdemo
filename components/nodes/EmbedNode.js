@@ -39,6 +39,9 @@ export default function EmbedNode({ node, amp }) {
     case 'youtube.com':
       el = <Youtube node={node} amp={amp} url={url} />;
       break;
+    case 'youtu.be':
+      el = <Youtube node={node} amp={amp} url={url} />;
+      break;
     case 'tiktok.com':
       el = <TikTokEmbed node={node} amp={amp} />;
       break;
