@@ -52,9 +52,11 @@ export async function getStaticPaths() {
 
 export async function getStaticProps({ locale, params }) {
   const apiUrl = process.env.HASURA_API_URL;
+  const site = params.site;
 
   const settingsResult = await getOrgSettings({
     url: apiUrl,
+    site: site,
   });
 
   if (settingsResult.errors) {
@@ -68,6 +70,7 @@ export async function getStaticProps({ locale, params }) {
 
   const { errors, data } = await hasuraListNewsletters({
     url: apiUrl,
+    site: site,
   });
 
   if (errors || !data) {
