@@ -7,7 +7,9 @@ const StaticFeaturedMediaFigure = tw.figure`flex flex-row flex-wrap w-full`;
 const StaticFeaturedMediaWrapper = tw.div`w-full`;
 const StaticFeaturedMediaCaption = tw.figcaption`text-sm text-gray-700 pt-1 inline-block`;
 
-export default function StaticMainImage({ page, locale, isAmp, siteMetadata }) {
+export default function StaticMainImage({ page, isAmp, siteMetadata }) {
+  const locale = 'en-US';
+
   // main image handling
   let mainImageNode;
   let mainImage = null;

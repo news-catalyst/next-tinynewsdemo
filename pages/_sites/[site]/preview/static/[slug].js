@@ -8,13 +8,7 @@ import {
 import { hasuraLocalizeText } from '../../../../../lib/utils';
 import StaticPage from '../../../../../components/StaticPage';
 
-export default function Static({
-  page,
-  sections,
-  siteMetadata,
-  locales,
-  locale,
-}) {
+export default function Static({ page, sections, siteMetadata }) {
   const router = useRouter();
   // const isAmp = useAmp();
   const isAmp = false;
@@ -35,8 +29,6 @@ export default function Static({
       page={page}
       sections={sections}
       siteMetadata={siteMetadata}
-      locales={locales}
-      currentLocale={locale}
     />
   );
 }

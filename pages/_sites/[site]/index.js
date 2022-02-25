@@ -3,7 +3,7 @@ import { hasuraStreamArticles } from '../../../lib/homepage.js';
 import { cachedContents } from '../../../lib/cached';
 import {
   hasuraGetHomepageEditor,
-  generateHomepagePaths,
+  generateAllDomainPaths,
   getOrgSettings,
 } from '../../../lib/articles.js';
 import { getArticleAds } from '../../../lib/ads.js';
@@ -32,11 +32,11 @@ export default function Home(props) {
   return component;
 }
 
-export async function getStaticPaths({ locales }) {
+export async function getStaticPaths() {
   const apiUrl = process.env.HASURA_API_URL;
   const adminSecret = process.env.HASURA_ADMIN_SECRET;
 
-  const mappedPaths = await generateHomepagePaths({
+  const mappedPaths = await generateAllDomainPaths({
     url: apiUrl,
     adminSecret: adminSecret,
     urlParams: {},
@@ -49,13 +49,7 @@ export async function getStaticPaths({ locales }) {
 }
 
 export async function getStaticProps(context) {
-  let locale = context.locale;
-  if (!locale) {
-    locale = null;
-  }
-
-  // console.log('HOMEPAGE CURRENT LOCALE:', locale);
-
+  const locale = 'en-US';
   const site = context.params.site;
 
   if (!site) {
@@ -134,6 +128,7 @@ export async function getStaticProps(context) {
     ids: ids,
     limit: site === 'tiny-news-curriculum' ? 20 : 10,
   });
+
   let streamArticles = [];
   if (streamResult.errors || !streamResult.data) {
     console.error(

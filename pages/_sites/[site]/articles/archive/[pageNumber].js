@@ -27,9 +27,10 @@ export default function ArticlesArchivePage({
   currentPageNumber,
   siteMetadata,
   expandedAds,
-  locale,
 }) {
   const [pageNumbers, setPageNumbers] = useState(range(totalPageCount, 1));
+  const locale = 'en-US';
+
   let paginationLinks = [];
 
   if (currentPageNumber !== 1) {
@@ -68,7 +69,7 @@ export default function ArticlesArchivePage({
   }
 
   return (
-    <Layout locale={locale} meta={siteMetadata} sections={sections}>
+    <Layout meta={siteMetadata} sections={sections}>
       <ArticleStream
         sections={sections}
         articles={articles}
@@ -77,7 +78,6 @@ export default function ArticlesArchivePage({
         isAmp={isAmp}
         metadata={siteMetadata}
         ads={expandedAds}
-        locale={locale}
       />
       <PaginationSection>
         <PaginationContainer meta={siteMetadata}>
@@ -121,9 +121,12 @@ export async function getStaticPaths() {
 
 export async function getStaticProps(context) {
   const apiUrl = process.env.HASURA_API_URL;
+  const site = context.params.site;
+  const locale = 'en-US';
 
   const settingsResult = await getOrgSettings({
     url: apiUrl,
+    site: site,
   });
 
   if (settingsResult.errors) {
@@ -134,7 +137,6 @@ export async function getStaticProps(context) {
   let sections = [];
   let siteMetadata;
 
-  let locale = context.locale;
   let currentPageNumber = parseInt(context.params.pageNumber);
   let limit = 10;
   let offset = (currentPageNumber - 1) * limit;
@@ -194,7 +196,6 @@ export async function getStaticProps(context) {
       currentPageNumber,
       siteMetadata,
       expandedAds,
-      locale,
     },
   };
 }

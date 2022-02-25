@@ -22,9 +22,10 @@ export default function ArticleFooterAuthor({
   isAmp,
   i,
   last,
-  locale,
   metadata,
 }) {
+  const locale = 'en-US';
+
   let authorPhoto = author.photoUrl;
   let authorTitle = hasuraLocalizeText(
     locale,

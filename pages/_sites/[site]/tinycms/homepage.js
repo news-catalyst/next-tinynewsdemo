@@ -24,8 +24,6 @@ export default function HomePageEditor({
   hpArticles,
   tags,
   sections,
-  locale,
-  locales,
   siteMetadata,
   apiUrl,
   site,
@@ -101,9 +99,6 @@ export default function HomePageEditor({
   return (
     <AdminLayout>
       <AdminNav
-        currentLocale={locale}
-        locales={locales}
-        switchLocales={true}
         homePageEditor={true}
         layoutSchemas={layoutSchemas}
         changeLayout={changeLayout}
@@ -131,7 +126,6 @@ export default function HomePageEditor({
             articles={hpArticles}
             tags={tags}
             sections={sections}
-            locale={locale}
             metadata={siteMetadata}
           />
         )}
@@ -151,7 +145,6 @@ export default function HomePageEditor({
               articles={hpArticles}
               tags={tags}
               sections={sections}
-              locale={locale}
               metadata={siteMetadata}
             />
           )}
@@ -171,7 +164,7 @@ export default function HomePageEditor({
 export async function getServerSideProps(context) {
   const apiUrl = process.env.HASURA_API_URL;
   const site = context.params.site;
-  const locale = context.locale;
+  const locale = 'en-US';
 
   const settingsResult = await getOrgSettings({
     url: apiUrl,
@@ -183,7 +176,6 @@ export async function getServerSideProps(context) {
     throw settingsResult.errors;
   }
   let siteMetadata = settingsResult.data.settings;
-  let locales = settingsResult.data.organization_locales;
 
   const { errors, data } = await hasuraGetHomepageEditor({
     url: apiUrl,
@@ -236,8 +228,6 @@ export async function getServerSideProps(context) {
       hpArticles,
       tags,
       sections,
-      locale,
-      locales,
       siteMetadata,
       apiUrl,
       site,

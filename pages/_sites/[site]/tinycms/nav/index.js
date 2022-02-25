@@ -7,7 +7,6 @@ import {
   getOrgSettings,
   hasuraGetMetadataByLocale,
 } from '../../../../../lib/articles.js';
-import { findSetting } from '../../../../../lib/utils.js';
 import AdminLayout from '../../../../../components/AdminLayout.js';
 import AdminNav from '../../../../../components/nav/AdminNav';
 import GlobalNav from '../../../../../components/nav/GlobalNav';
@@ -28,11 +27,8 @@ const TableCell = tw.td`border px-4 py-2`;
 
 export default function NavBuilder({
   apiUrl,
-  apiToken,
-  currentLocale,
   siteMetadata,
   linkOptions,
-  locales,
   vercelHook,
 }) {
   const [message, setMessage] = useState(null);
@@ -275,13 +271,7 @@ export default function NavBuilder({
   }
   return (
     <AdminLayout>
-      <AdminNav
-        switchLocales={true}
-        currentLocale={currentLocale}
-        locales={locales}
-        homePageEditor={false}
-        showConfigOptions={true}
-      />
+      <AdminNav homePageEditor={false} showConfigOptions={true} />
 
       <Container>
         <MainContent>
@@ -421,7 +411,6 @@ export default function NavBuilder({
             </div>
           </div>
           <GlobalNav
-            locale={currentLocale}
             metadata={siteMetadata}
             sections={linkOptions.filter((opt) => opt.type === 'section')}
             isAmp={false}
@@ -436,6 +425,7 @@ export default function NavBuilder({
 export async function getServerSideProps(context) {
   const apiUrl = process.env.HASURA_API_URL;
   const site = context.params.site;
+  const locale = 'en-US';
 
   const settingsResult = await getOrgSettings({
     url: apiUrl,
@@ -447,24 +437,7 @@ export async function getServerSideProps(context) {
     throw settingsResult.errors;
   }
   let siteMetadata = settingsResult.data.settings;
-  let locales = settingsResult.data.organization_locales;
-
-  let bucketName = findSetting(siteMetadata, 'TNC_AWS_BUCKET_NAME');
-  let dir = findSetting(siteMetadata, 'TNC_AWS_DIR_NAME');
-  let region = findSetting(siteMetadata, 'TNC_AWS_REGION');
-  let accessKey = findSetting(siteMetadata, 'TNC_AWS_ACCESS_ID');
-  let secretKey = findSetting(siteMetadata, 'TNC_AWS_ACCESS_KEY');
-  let tinyApiKey = findSetting(siteMetadata, 'TINYMCE_API_KEY');
   let vercelHook = findSetting(siteMetadata, 'VERCEL_DEPLOY_HOOK');
-
-  const awsConfig = {
-    bucketName: bucketName,
-    dirName: dir,
-    region: region,
-    accessKeyId: accessKey,
-    secretAccessKey: secretKey,
-    s3Url: `https://${bucketName}.s3.${region}.amazonaws.com`,
-  };
 
   let linkOptions = [];
 
@@ -521,10 +494,8 @@ export async function getServerSideProps(context) {
     props: {
       apiUrl: apiUrl,
       site: site,
-      currentLocale: context.locale,
       siteMetadata: siteMetadata,
       linkOptions: linkOptions,
-      locales: locales,
       vercelHook: vercelHook,
     },
   };

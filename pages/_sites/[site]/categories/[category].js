@@ -19,6 +19,7 @@ import {
 
 export default function CategoryPage(props) {
   const isAmp = false;
+  const locale = 'en-US';
 
   const router = useRouter();
 
@@ -44,7 +45,6 @@ export default function CategoryPage(props) {
       meta={siteMetadata}
       sections={props.sections}
       renderFooter={props.renderFooter}
-      locale={props.locale}
     >
       <ArticleStream
         articles={props.articles}
@@ -54,20 +54,7 @@ export default function CategoryPage(props) {
         title={props.title}
         metadata={props.siteMetadata}
         ads={props.expandedAds}
-        locale={props.locale}
       />
-      {props.locales.length > 1 && (
-        <SectionLayout>
-          <SectionContainer>
-            <Block>
-              <ReadInOtherLanguage
-                locales={props.locales}
-                currentLocale={props.locale}
-              />
-            </Block>
-          </SectionContainer>
-        </SectionLayout>
-      )}
     </Layout>
   );
 }
@@ -87,9 +74,10 @@ export async function getStaticPaths() {
   };
 }
 
-export async function getStaticProps({ locale, params }) {
+export async function getStaticProps({ params }) {
   const apiUrl = process.env.HASURA_API_URL;
   const site = params.site;
+  const locale = 'en-US';
 
   const settingsResult = await getOrgSettings({
     url: apiUrl,
@@ -105,7 +93,6 @@ export async function getStaticProps({ locale, params }) {
   let articles = [];
   let sections = [];
   let tags = [];
-  let locales = [];
   let siteMetadata;
   let title;
   let categoryExists = false;
@@ -124,7 +111,6 @@ export async function getStaticProps({ locale, params }) {
   } else {
     articles = data.articles;
     sections = data.categories;
-    locales = data.organization_locales;
 
     for (var i = 0; i < sections.length; i++) {
       sections[i].title = hasuraLocalizeText(
@@ -171,11 +157,6 @@ export async function getStaticProps({ locale, params }) {
 
   let renderFooter = booleanSetting(settings, 'RENDER_FOOTER', true);
 
-  // why? Error: Error serializing `.locale` returned from `getStaticProps` in "/_sites/[site]/tags/[slug]".
-  // Reason: `undefined` cannot be serialized as JSON. Please use `null` or omit this value.
-  if (!locale) {
-    locale = null;
-  }
   return {
     props: {
       articles,
@@ -186,8 +167,6 @@ export async function getStaticProps({ locale, params }) {
       siteMetadata,
       expandedAds,
       renderFooter,
-      locale,
-      locales,
       settings,
     },
   };

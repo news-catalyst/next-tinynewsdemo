@@ -14,6 +14,7 @@ export default function Staff(props) {
 export async function getStaticPaths() {
   const apiUrl = process.env.HASURA_API_URL;
   const adminSecret = process.env.HASURA_ADMIN_SECRET;
+  const locale = 'en-US';
 
   const mappedPaths = await generateAllDomainPaths({
     url: apiUrl,
@@ -27,9 +28,10 @@ export async function getStaticPaths() {
   };
 }
 
-export async function getStaticProps({ locale, params }) {
+export async function getStaticProps({ params }) {
   const apiUrl = process.env.HASURA_API_URL;
   const site = params.site;
+  const locale = 'en-US';
 
   let page = {};
   let sections;

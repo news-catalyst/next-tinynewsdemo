@@ -34,8 +34,9 @@ export default function ArticleLink({
   isAmp,
   showCategory,
   metadata,
-  locale,
 }) {
+  const locale = 'en-US';
+
   let mainImage = null;
   let mainImageNode;
   let mainImageContent;

@@ -28,21 +28,20 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps(context) {
-  let locale = context.locale;
-  let preview = context.preview;
-  let site = context.params.site;
+  const preview = context.preview;
+  const site = context.params.site;
+  const apiUrl = process.env.HASURA_API_URL;
+  const locale = 'en-US';
 
   if (!preview) {
     return {
       notFound: true,
     };
   }
-  const apiUrl = process.env.HASURA_API_URL;
 
   let page = {};
   let sections;
   let siteMetadata = {};
-  let locales = [];
 
   const { errors, data } = await hasuraGetPage({
     url: apiUrl,
@@ -69,17 +68,6 @@ export async function getStaticProps(context) {
       };
     }
 
-    var allPageLocales = page.page_translations;
-    var distinctLocaleCodes = [];
-    var distinctLocales = [];
-    for (var i = 0; i < allPageLocales.length; i++) {
-      if (!distinctLocaleCodes.includes(allPageLocales[i].locale.code)) {
-        distinctLocaleCodes.push(allPageLocales[i].locale.code);
-        distinctLocales.push(allPageLocales[i]);
-      }
-    }
-    locales = distinctLocales;
-
     sections = data.categories;
     siteMetadata = data.site_metadatas[0].site_metadata_translations[0].data;
     for (i = 0; i < sections.length; i++) {
@@ -96,8 +84,6 @@ export async function getStaticProps(context) {
       page,
       sections,
       siteMetadata,
-      locales,
-      locale,
     },
   };
 }

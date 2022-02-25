@@ -23,13 +23,7 @@ const WideContainer = styled.div(() => ({
   maxWidth: '1280px',
 }));
 
-export default function Donate({
-  page,
-  sections,
-  siteMetadata,
-  locales,
-  locale,
-}) {
+export default function Donate({ page, sections, siteMetadata }) {
   const isAmp = false;
   const router = useRouter();
 
@@ -56,7 +50,7 @@ export default function Donate({
   );
 
   return (
-    <Layout locale={locale} meta={siteMetadata} page={page} sections={sections}>
+    <Layout meta={siteMetadata} page={page} sections={sections}>
       <SectionContainer>
         <article className="container">
           <ArticleTitle meta={siteMetadata} tw="text-center">
@@ -64,7 +58,6 @@ export default function Donate({
           </ArticleTitle>
           <StaticMainImage
             isAmp={isAmp}
-            locale={locale}
             page={page}
             siteMetadata={siteMetadata}
           />
@@ -76,15 +69,6 @@ export default function Donate({
       <WideContainer>
         <DonationOptionsBlock metadata={siteMetadata} wrap={true} />
       </WideContainer>
-      {locales.length > 1 && (
-        <SectionLayout>
-          <SectionContainer>
-            <Block>
-              <ReadInOtherLanguage locales={locales} currentLocale={locale} />
-            </Block>
-          </SectionContainer>
-        </SectionLayout>
-      )}
     </Layout>
   );
 }
@@ -106,26 +90,24 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps(context) {
-  let locale = context.locale;
-  let preview = context.preview;
+  const locale = 'en-US';
+  const apiUrl = process.env.HASURA_API_URL;
+  const site = context.params.site;
 
+  const preview = context.preview;
   if (!preview) {
     return {
       notFound: true,
     };
   }
 
-  const apiUrl = process.env.HASURA_API_URL;
-  const apiToken = process.env.ORG_SLUG;
-
   let page = {};
   let sections;
   let siteMetadata = {};
-  let locales = [];
 
   const { errors, data } = await hasuraGetPage({
     url: apiUrl,
-    orgSlug: apiToken,
+    site: site,
     slug: 'donate',
   });
   if (errors || !data) {
@@ -146,24 +128,6 @@ export async function getStaticProps(context) {
       };
     }
     page = data.page_slug_versions[0].page;
-
-    var allPageLocales = page.page_translations;
-    var distinctLocaleCodes = [];
-    var distinctLocales = [];
-    for (var i = 0; i < allPageLocales.length; i++) {
-      let pageLocale = allPageLocales[i];
-
-      if (
-        pageLocale &&
-        pageLocale.locale &&
-        !distinctLocaleCodes.includes(pageLocale.locale.code)
-      ) {
-        distinctLocaleCodes.push(pageLocale.locale.code);
-        distinctLocales.push(pageLocale);
-      }
-    }
-    locales = distinctLocales;
-
     sections = data.categories;
 
     siteMetadata = hasuraLocalizeText(
@@ -186,8 +150,6 @@ export async function getStaticProps(context) {
       page,
       sections,
       siteMetadata,
-      locales,
-      locale,
     },
     revalidate: 1,
   };

@@ -10,6 +10,7 @@ export default function Staff(props) {
 
   return <StaffPage {...props} isAmp={isAmp} />;
 }
+
 export async function getStaticPaths() {
   const apiUrl = process.env.HASURA_API_URL;
   const adminSecret = process.env.HASURA_ADMIN_SECRET;
@@ -25,18 +26,18 @@ export async function getStaticPaths() {
     fallback: true,
   };
 }
+
 export async function getStaticProps(context) {
-  let locale = context.locale;
-  let preview = context.preview;
+  const preview = context.preview;
+  const site = context.params.site;
+  const locale = 'en-US';
+  const apiUrl = process.env.HASURA_API_URL;
 
   if (!preview) {
     return {
       notFound: true,
     };
   }
-
-  const apiUrl = process.env.HASURA_API_URL;
-  const apiToken = process.env.ORG_SLUG;
 
   let page = {};
   let sections;
@@ -45,7 +46,7 @@ export async function getStaticProps(context) {
 
   const { errors, data } = await hasuraGetPage({
     url: apiUrl,
-    orgSlug: apiToken,
+    site: site,
     slug: 'about',
   });
   if (errors || !data) {
@@ -76,7 +77,6 @@ export async function getStaticProps(context) {
   return {
     props: {
       authors,
-      locale,
       sections,
       siteMetadata,
     },

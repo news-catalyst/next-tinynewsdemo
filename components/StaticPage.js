@@ -13,14 +13,8 @@ import StaticMainImage from '../components/articles/StaticMainImage';
 
 const SectionContainer = tw.div`flex flex-col flex-nowrap items-center px-5 mx-auto max-w-7xl w-full`;
 
-export default function StaticPage({
-  siteMetadata,
-  sections,
-  page,
-  isAmp,
-  locales,
-  currentLocale,
-}) {
+export default function StaticPage({ siteMetadata, sections, page, isAmp }) {
+  const locale = 'en-US';
   let baseUrl = process.env.NEXT_PUBLIC_SITE_URL || siteMetadata['siteUrl'];
   // this is used for the canonical link tag in the Layout component
   let canonicalPageUrl = generatePageUrl(baseUrl, page);
@@ -33,13 +27,7 @@ export default function StaticPage({
   if (page) {
     // there will only be one translation returned for a given page + locale
     localisedPage = page.page_translations[0];
-    body = renderBody(
-      currentLocale,
-      page.page_translations,
-      [],
-      isAmp,
-      siteMetadata
-    );
+    body = renderBody(locale, page.page_translations, [], isAmp, siteMetadata);
     try {
       mainImageNode = localisedPage?.content.find(
         (node) => node.type === 'mainImage'
@@ -65,7 +53,6 @@ export default function StaticPage({
 
         <StaticMainImage
           isAmp={isAmp}
-          locale={currentLocale}
           page={page}
           siteMetadata={siteMetadata}
         />
@@ -73,19 +60,6 @@ export default function StaticPage({
         <PostText>
           <PostTextContainer>{body}</PostTextContainer>
         </PostText>
-
-        {locales.length > 1 && (
-          <SectionLayout>
-            <SectionContainer>
-              <Block>
-                <ReadInOtherLanguage
-                  locales={locales}
-                  currentLocale={currentLocale}
-                />
-              </Block>
-            </SectionContainer>
-          </SectionLayout>
-        )}
       </SectionContainer>
     </Layout>
   );
