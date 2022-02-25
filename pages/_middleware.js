@@ -4,7 +4,7 @@ export default function middleware(req) {
   const url = req.nextUrl.clone(); // clone the request url
   const { pathname } = req.nextUrl; // get pathname of request (e.g. /blog-slug)
   const hostname = req.headers.get('host'); // get hostname of request (e.g. demo.vercel.pub)
-  const locale = req.headers.get('accept-language')?.split(',')?.[0] || 'en-US';
+
   const currentHost = hostname
     .replace(`.localhost:3000`, '')
     .replace(`.tinynewsco.dev:3000`, '')
@@ -13,9 +13,14 @@ export default function middleware(req) {
     .replace(`.tinynewsco.org`, '')
     .replace(`.vercel.app`, '')
     .replace(`.vercel.app:3000`, ''); // TBD if we need to change this
-
   console.log(`middleware host:pathname ${currentHost}:${pathname}`);
-  console.log('middleware locale:', locale);
+
+  let locale = req.headers.get('accept-language')?.split(',')?.[0] || 'en-US';
+  console.log('middleware incoming locale:', locale);
+  const localeRegex = /^en/i;
+  if (localeRegex.test(locale)) {
+    locale = 'en-US';
+  }
   // Copied this over as commented code in case we want to redirect particular hosts to one central spot
   // only for demo purposes – remove this if you want to use your root domain as the landing page
   // if (hostname === "vercel.pub" || hostname === "platforms.vercel.app") {
