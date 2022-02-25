@@ -1,24 +1,31 @@
 import React from 'react';
-import { hasuraStreamArticles } from '../../../lib/homepage.js';
-import { cachedContents } from '../../../lib/cached';
+import { useRouter } from 'next/router';
+import { hasuraStreamArticles } from '../../../../lib/homepage.js';
+import { cachedContents } from '../../../../lib/cached';
 import {
   hasuraGetHomepageEditor,
   generateHomepagePaths,
   getOrgSettings,
-} from '../../../lib/articles.js';
-import { getArticleAds } from '../../../lib/ads.js';
-import { booleanSetting, hasuraLocalizeText } from '../../../lib/utils.js';
-import Homepage from '../../../components/Homepage';
-import LandingPage from '../../../components/LandingPage';
-import CurriculumHomepage from '../../../components/curriculum/CurriculumHomepage';
+} from '../../../../lib/articles.js';
+import { getArticleAds } from '../../../../lib/ads';
+import { booleanSetting, hasuraLocalizeText } from '../../../../lib/utils.js';
+import Homepage from '../../../../components/Homepage';
+import LandingPage from '../../../../components/LandingPage';
+import CurriculumHomepage from '../../../../components/curriculum/CurriculumHomepage';
 
 export default function Home(props) {
+  const { locales, locale, defaultLocale } = useRouter();
+
   if (
     props.siteMetadata &&
     props.siteMetadata.shortName === 'Tiny News Collective Curriculum'
   ) {
     return <CurriculumHomepage {...props} />;
   }
+
+  console.log('locales:', locales);
+  console.log('locale:', locale);
+  console.log('defaultLocale:', defaultLocale);
 
   // console.log('streamArticles:', props.streamArticles);
   const component =
@@ -36,6 +43,7 @@ export async function getStaticPaths({ locales }) {
   const apiUrl = process.env.HASURA_API_URL;
   const adminSecret = process.env.HASURA_ADMIN_SECRET;
 
+  console.log('HOMEPAGE LOCALES:', JSON.stringify(locales));
   const mappedPaths = await generateHomepagePaths({
     url: apiUrl,
     adminSecret: adminSecret,
@@ -54,7 +62,7 @@ export async function getStaticProps(context) {
     locale = null;
   }
 
-  // console.log('HOMEPAGE CURRENT LOCALE:', locale);
+  console.log('HOMEPAGE CURRENT LOCALE:', locale);
 
   const site = context.params.site;
 

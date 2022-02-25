@@ -147,6 +147,7 @@ export default function ArticleLink({
         <Link
           key={`article-link-${article.category.slug}-${article.slug}`}
           href={`/articles/${article.category.slug}/${article.slug}`}
+          passHref
         >
           <ImageLink>
             <AssetThumbnail>
