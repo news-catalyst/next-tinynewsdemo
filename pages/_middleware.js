@@ -13,14 +13,15 @@ export default function middleware(req) {
     .replace(`.tinynewsco.org`, '')
     .replace(`.vercel.app`, '')
     .replace(`.vercel.app:3000`, ''); // TBD if we need to change this
-  console.log(`middleware host:pathname ${currentHost}:${pathname}`);
+  console.log(`[middleware] host:pathname ${currentHost}:${pathname}`);
 
   let locale = req.headers.get('accept-language')?.split(',')?.[0] || 'en-US';
-  console.log('middleware incoming locale:', locale);
+  console.log('[middleware] incoming locale:', locale);
   const localeRegex = /^en/i;
   if (localeRegex.test(locale)) {
     locale = 'en-US';
   }
+  console.log('[middleware] updated locale:', locale);
   // Copied this over as commented code in case we want to redirect particular hosts to one central spot
   // only for demo purposes – remove this if you want to use your root domain as the landing page
   // if (hostname === "vercel.pub" || hostname === "platforms.vercel.app") {
@@ -32,7 +33,7 @@ export default function middleware(req) {
     !pathname.startsWith('/api') // exclude all API routes
   ) {
     url.pathname = `/_sites/${currentHost}/${locale}${pathname}`;
-    console.log('middleware rewrote pathname:', url.pathname);
+    console.log('[middleware] updated path:', url.pathname);
     return NextResponse.rewrite(url);
   }
 }
