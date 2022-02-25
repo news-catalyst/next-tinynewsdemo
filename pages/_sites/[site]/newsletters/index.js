@@ -18,10 +18,8 @@ export default function NewsletterIndexPage(props) {
       meta={props.siteMetadata}
       sections={props.sections}
       renderFooter={props.renderFooter}
-      locale={props.locale}
     >
       <ArticleStream
-        locale={props.locale}
         sections={props.sections}
         articles={props.newsletters}
         title={'Newsletters Archive'}
@@ -50,9 +48,10 @@ export async function getStaticPaths() {
   };
 }
 
-export async function getStaticProps({ locale, params }) {
+export async function getStaticProps({ params }) {
   const apiUrl = process.env.HASURA_API_URL;
   const site = params.site;
+  const locale = 'en-US';
 
   const settingsResult = await getOrgSettings({
     url: apiUrl,
@@ -119,11 +118,7 @@ export async function getStaticProps({ locale, params }) {
     const allAds = (await cachedContents('ads', getArticleAds)) || [];
     expandedAds = allAds.filter((ad) => ad.adTypeId === 166 && ad.status === 4);
   }
-  // why? Error: Error serializing `.locale` returned from `getStaticProps` in "/_sites/[site]/tags/[slug]".
-  // Reason: `undefined` cannot be serialized as JSON. Please use `null` or omit this value.
-  if (!locale) {
-    locale = null;
-  }
+
   return {
     props: {
       newsletters,
@@ -131,7 +126,6 @@ export async function getStaticProps({ locale, params }) {
       sections,
       siteMetadata,
       expandedAds,
-      locale,
     },
   };
 }

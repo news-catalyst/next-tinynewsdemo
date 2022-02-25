@@ -4,9 +4,9 @@ import ReactDOMServer from 'react-dom/server';
 
 export default async function Handler(req, res) {
   const apiUrl = process.env.HASURA_API_URL;
-  const apiToken = process.env.ORG_SLUG;
+  const apiToken = process.env.ORG_SLUG; // TODO Vercel Platforms
 
-  let localeCode = req.query.locale;
+  const localeCode = 'en-US';
 
   // Check the secret and next parameters
   // This secret should only be known to this API route and the CMS
@@ -38,11 +38,6 @@ export default async function Handler(req, res) {
       localeCode,
       data.site_metadatas[0].site_metadata_translations,
       'data'
-    );
-    let localisedContent = hasuraLocalizeText(
-      localeCode,
-      page.page_translations,
-      'content'
     );
 
     let body = renderBodyWordPress(

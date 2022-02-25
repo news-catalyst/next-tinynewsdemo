@@ -28,11 +28,11 @@ export default function AuthorPage({
   author,
   siteMetadata,
   expandedAds,
-  locales,
-  locale,
 }) {
   const router = useRouter();
   const isAmp = false;
+  const locale = 'en-US';
+
   // If the page is not yet generated, this will be displayed
   // initially until getStaticProps() finishes running
   if (router.isFallback) {
@@ -76,7 +76,7 @@ export default function AuthorPage({
   const ProfileTwitter = tw.p`text-base pt-3`;
 
   return (
-    <Layout locale={locale} meta={siteMetadata} sections={sections}>
+    <Layout meta={siteMetadata} sections={sections}>
       <ProfileHeaderDiv>
         {authorPhoto && <ProfileImage src={authorPhoto}></ProfileImage>}
         <div>
@@ -104,17 +104,7 @@ export default function AuthorPage({
         isAmp={isAmp}
         metadata={siteMetadata}
         ads={expandedAds}
-        locale={locale}
       />
-      {locales.length > 1 && (
-        <SectionLayout>
-          <SectionContainer>
-            <Block>
-              <ReadInOtherLanguage locales={locales} currentLocale={locale} />
-            </Block>
-          </SectionContainer>
-        </SectionLayout>
-      )}
     </Layout>
   );
 }
@@ -134,9 +124,10 @@ export async function getStaticPaths() {
   };
 }
 
-export async function getStaticProps({ locale, params }) {
+export async function getStaticProps({ params }) {
   const apiUrl = process.env.HASURA_API_URL;
   const site = params.site;
+  const locale = 'en-US';
 
   const settingsResult = await getOrgSettings({
     url: apiUrl,
@@ -156,7 +147,6 @@ export async function getStaticProps({ locale, params }) {
 
   let articles = [];
   let sections = [];
-  let locales = [];
   let author;
   let siteMetadata;
 
@@ -175,7 +165,6 @@ export async function getStaticProps({ locale, params }) {
     articles = data.articles;
     sections = data.categories;
     author = data.authors[0];
-    locales = data.organization_locales;
 
     for (var i = 0; i < sections.length; i++) {
       sections[i].title = hasuraLocalizeText(
@@ -210,12 +199,6 @@ export async function getStaticProps({ locale, params }) {
     };
   }
 
-  // why? Error: Error serializing `.locale` returned from `getStaticProps` in "/_sites/[site]/tags/[slug]".
-  // Reason: `undefined` cannot be serialized as JSON. Please use `null` or omit this value.
-  if (!locale) {
-    locale = null;
-  }
-
   return {
     props: {
       sections,
@@ -223,8 +206,6 @@ export async function getStaticProps({ locale, params }) {
       author,
       siteMetadata,
       expandedAds,
-      locales,
-      locale,
     },
   };
 }

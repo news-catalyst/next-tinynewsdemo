@@ -6,7 +6,9 @@ import {
 } from '../../../lib/articles.js';
 import { hasuraLocalizeText } from '../../../lib/utils';
 
-export default function Custom404({ locale, sections, siteMetadata }) {
+export default function Custom404({ sections, siteMetadata }) {
+  const locale = 'en-US';
+
   let title;
   if (siteMetadata && siteMetadata.title404) {
     title = siteMetadata.title404;
@@ -23,7 +25,7 @@ export default function Custom404({ locale, sections, siteMetadata }) {
   }
 
   return (
-    <Layout locale={locale} meta={siteMetadata} sections={sections}>
+    <Layout meta={siteMetadata} sections={sections}>
       <div className="post">
         <article className="container">
           <section key="title" className="section post__header">
@@ -60,9 +62,10 @@ export async function getStaticPaths() {
   };
 }
 
-export async function getStaticProps({ locale, params }) {
+export async function getStaticProps({ params }) {
   const apiUrl = process.env.HASURA_API_URL;
   const site = params.site;
+  const locale = 'en-US';
 
   let sections;
   let siteMetadata = {};
@@ -91,14 +94,8 @@ export async function getStaticProps({ locale, params }) {
     }
   }
 
-  // why? Error: Error serializing `.locale` returned from `getStaticProps` in "/_sites/[site]/tags/[slug]".
-  // Reason: `undefined` cannot be serialized as JSON. Please use `null` or omit this value.
-  if (!locale) {
-    locale = null;
-  }
   return {
     props: {
-      locale,
       sections,
       siteMetadata,
     },

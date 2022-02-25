@@ -51,9 +51,10 @@ export async function getStaticPaths() {
   };
 }
 
-export async function getStaticProps({ locale, params }) {
+export async function getStaticProps({ params }) {
   const apiUrl = process.env.HASURA_API_URL;
   const site = params.site;
+  const locale = 'en-US';
 
   const settingsResult = await getOrgSettings({
     url: apiUrl,
@@ -68,9 +69,8 @@ export async function getStaticProps({ locale, params }) {
   let article = {};
   let sectionArticles = [];
   let sections = [];
-  let locales = [];
-  let publishedLocales = [];
   let siteMetadata;
+
   const { errors, data } = await hasuraArticlePage({
     url: apiUrl,
     site: site,
@@ -97,8 +97,6 @@ export async function getStaticProps({ locale, params }) {
       );
     }
 
-    locales = data.organization_locales;
-    publishedLocales = data.published_article_translations;
     article = data.article_slug_versions[0].article;
     // article = data.articles.find((a) => a.slug === params.slug);
 
@@ -137,11 +135,6 @@ export async function getStaticProps({ locale, params }) {
     true
   );
 
-  // why? Error: Error serializing `.locale` returned from `getStaticProps` in "/_sites/[site]/tags/[slug]".
-  // Reason: `undefined` cannot be serialized as JSON. Please use `null` or omit this value.
-  if (!locale) {
-    locale = null;
-  }
   return {
     props: {
       article,
@@ -150,9 +143,6 @@ export async function getStaticProps({ locale, params }) {
       siteMetadata,
       sectionArticles,
       renderFooter,
-      locales,
-      publishedLocales,
-      locale,
     },
     // Re-generate the post at most once per second
     // if a request comes in

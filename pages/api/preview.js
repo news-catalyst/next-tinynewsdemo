@@ -2,7 +2,7 @@ import { hasuraPreviewArticleBySlug } from '../../lib/articles.js';
 
 export default async function Handler(req, res) {
   const apiUrl = process.env.HASURA_API_URL;
-  const apiToken = process.env.ORG_SLUG;
+  const apiToken = process.env.ORG_SLUG; // TODO Vercel Platforms
 
   // Check the secret and next parameters
   // This secret should only be known to this API route and the CMS
@@ -11,7 +11,7 @@ export default async function Handler(req, res) {
   }
 
   let article;
-  let localeCode = req.query.locale;
+  const localeCode = 'en-US';
   // Fetch the headless CMS to check if the provided `slug` exists
   const { errors, data } = await hasuraPreviewArticleBySlug({
     url: apiUrl,

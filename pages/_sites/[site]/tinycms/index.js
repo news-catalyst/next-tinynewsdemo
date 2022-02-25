@@ -70,16 +70,10 @@ const cardContent = [
   },
 ];
 
-export default function TinyCmsHome(props) {
-  console.log('tinycmshome', props);
+export default function TinyCmsHome() {
   return (
     <AdminLayout>
-      <AdminNav
-        currentLocale={props.currentLocale}
-        locales={props.locales}
-        homePageEditor={false}
-        showConfigOptions={true}
-      />
+      <AdminNav homePageEditor={false} showConfigOptions={true} />
       <div id="page">
         <Content>
           <Header>Welcome to the TinyCMS!</Header>
@@ -102,28 +96,4 @@ export default function TinyCmsHome(props) {
       </div>
     </AdminLayout>
   );
-}
-
-export async function getServerSideProps(context) {
-  const apiUrl = process.env.HASURA_API_URL;
-  const site = context.params.site;
-
-  const settingsResult = await getOrgSettings({
-    url: apiUrl,
-    site: site,
-  });
-
-  if (settingsResult.errors) {
-    console.log('error:', settingsResult);
-    throw settingsResult.errors;
-  }
-
-  let locales = settingsResult.data.organization_locales;
-
-  return {
-    props: {
-      locales: locales,
-      currentLocale: context.locale,
-    },
-  };
 }

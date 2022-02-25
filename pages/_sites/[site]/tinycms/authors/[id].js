@@ -34,14 +34,14 @@ export default function EditAuthor({
   site,
   tinyApiKey,
   author,
-  currentLocale,
-  locales,
   awsConfig,
 }) {
   const [notificationMessage, setNotificationMessage] = useState('');
   const [notificationType, setNotificationType] = useState('');
   const [showNotification, setShowNotification] = useState(false);
   const [displayUpload, setDisplayUpload] = useState(true);
+
+  const currentLocale = 'en-US';
 
   const [firstNames, setFirstNames] = useState('');
   const [lastName, setLastName] = useState('');
@@ -180,13 +180,7 @@ export default function EditAuthor({
 
   return (
     <AdminLayout>
-      <AdminNav
-        currentLocale={currentLocale}
-        switchLocales={true}
-        locales={locales}
-        homePageEditor={false}
-        showConfigOptions={true}
-      />
+      <AdminNav homePageEditor={false} showConfigOptions={true} />
 
       {showNotification && (
         <Notification
@@ -299,7 +293,6 @@ export async function getServerSideProps(context) {
     throw settingsResult.errors;
   }
   let siteMetadata = settingsResult.data.settings;
-  let locales = settingsResult.data.organization_locales;
 
   let bucketName = findSetting(siteMetadata, 'TNC_AWS_BUCKET_NAME');
   let dir = findSetting(siteMetadata, 'TNC_AWS_DIR_NAME');
@@ -335,8 +328,6 @@ export async function getServerSideProps(context) {
       site: site,
       tinyApiKey: tinyApiKey,
       author: author,
-      currentLocale: context.locale,
-      locales: locales,
       awsConfig: awsConfig,
     },
   };

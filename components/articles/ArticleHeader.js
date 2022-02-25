@@ -35,18 +35,11 @@ const ArticleShareWrapper = tw.ul`inline-flex flex-row flex-nowrap items-center`
 const ShareItem = tw.li`mr-2`;
 const ShareButton = tw.span`bg-no-repeat bg-center border-gray-200 border inline-flex flex items-center justify-center w-10 h-10 pl-6 overflow-hidden rounded-full leading-none text-sm`;
 
-export default function ArticleHeader({
-  article,
-  isAmp,
-  metadata,
-  mainImage,
-  locale,
-  locales,
-  publishedLocales,
-}) {
+export default function ArticleHeader({ article, isAmp, metadata, mainImage }) {
   if (!article) {
     return null;
   }
+  const locale = 'en-US';
 
   let categoryTitle;
   let headline;
@@ -95,23 +88,6 @@ export default function ArticleHeader({
     authorPhoto = article.author_articles[0].author.photoUrl;
   }
 
-  // this block of code builds an array of locales the article is available in
-  // by comparing the list of all site locales with the list of published translations
-  // ex: site locales [en, es]; this article published in [en, es]; current locale is english;
-  // 'ReadInOtherLanguage' component should show "Read in Spanish" link
-  // (logic around current locale is in the component itself)
-  let readLocales = [];
-  let currentLocale = locale;
-  if (locales.length > 1) {
-    locales.forEach((siteLocale) => {
-      publishedLocales.forEach((articleLocale) => {
-        if (siteLocale.locale.code === articleLocale.locale_code) {
-          readLocales.push(siteLocale);
-        }
-      });
-    });
-  }
-
   return (
     <section key="title" className="section post__header">
       <SectionContainer>
@@ -126,12 +102,7 @@ export default function ArticleHeader({
         <ArticleTitle meta={metadata}>{headline}</ArticleTitle>
         <ArticleDek meta={metadata}>{searchDescription}</ArticleDek>
         <PublishDate article={article} meta={metadata} />
-        {readLocales.length > 1 && (
-          <ReadInOtherLanguage
-            locales={readLocales}
-            currentLocale={currentLocale}
-          />
-        )}
+
         <ArticleFeaturedMedia>
           <FeaturedMediaFigure>
             <FeaturedMediaWrapper>

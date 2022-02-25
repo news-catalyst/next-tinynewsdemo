@@ -35,14 +35,14 @@ export async function getStaticPaths() {
   };
 }
 
-export async function getStaticProps({ locale, params }) {
+export async function getStaticProps({ params }) {
   const apiUrl = process.env.HASURA_API_URL;
   const site = params.site;
+  const locale = 'en-US';
 
   let page = {};
   let sections;
   let siteMetadata = {};
-  let locales = [];
 
   const { errors, data } = await hasuraGetPage({
     url: apiUrl,
@@ -65,21 +65,10 @@ export async function getStaticProps({ locale, params }) {
     }
     page = data.page_slug_versions[0].page;
 
-    var allPageLocales = data.pages[0].page_translations;
-    var distinctLocaleCodes = [];
-    var distinctLocales = [];
-    for (var i = 0; i < allPageLocales.length; i++) {
-      if (!distinctLocaleCodes.includes(allPageLocales[i].locale.code)) {
-        distinctLocaleCodes.push(allPageLocales[i].locale.code);
-        distinctLocales.push(allPageLocales[i]);
-      }
-    }
-    locales = distinctLocales;
-
     siteMetadata = data.site_metadatas[0].site_metadata_translations[0].data;
 
     sections = data.categories;
-    for (i = 0; i < sections.length; i++) {
+    for (var i = 0; i < sections.length; i++) {
       sections[i].title = hasuraLocalizeText(
         locale,
         sections[i].category_translations,
@@ -88,18 +77,11 @@ export async function getStaticProps({ locale, params }) {
     }
   }
 
-  // why? Error: Error serializing `.locale` returned from `getStaticProps` in "/_sites/[site]/tags/[slug]".
-  // Reason: `undefined` cannot be serialized as JSON. Please use `null` or omit this value.
-  if (!locale) {
-    locale = null;
-  }
   return {
     props: {
       page,
       sections,
       siteMetadata,
-      locales,
-      locale,
     },
     revalidate: 1,
   };

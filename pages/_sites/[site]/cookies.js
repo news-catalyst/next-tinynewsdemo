@@ -13,7 +13,7 @@ import {
 
 const SectionContainer = tw.div`flex flex-col flex-nowrap items-center px-5 mx-auto max-w-7xl w-full`;
 
-export default function Cookies({ locale, siteMetadata, post, content }) {
+export default function Cookies({ siteMetadata, post, content }) {
   if (!post) {
     return null;
   }
@@ -69,9 +69,10 @@ export async function getStaticPaths() {
   };
 }
 
-export async function getStaticProps({ locale, params }) {
+export async function getStaticProps({ params }) {
   const apiUrl = process.env.HASURA_API_URL;
   const site = params.site;
+  const locale = 'en-US';
 
   let siteMetadata = {};
 

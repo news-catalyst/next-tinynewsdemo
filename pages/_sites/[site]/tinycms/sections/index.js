@@ -17,11 +17,12 @@ const TableRow = tw.tr``;
 const TableHeader = tw.th`px-4 py-2`;
 const TableCell = tw.td`border px-4 py-2`;
 
-export default function Sections({ sections, currentLocale, locales }) {
+export default function Sections({ sections }) {
   const [message, setMessage] = useState(null);
 
   const router = useRouter();
   const { action } = router.query;
+  const currentLocale = 'en-US';
 
   useEffect(() => {
     if (action && action === 'edit') {
@@ -61,13 +62,7 @@ export default function Sections({ sections, currentLocale, locales }) {
 
   return (
     <AdminLayout>
-      <AdminNav
-        switchLocales={true}
-        currentLocale={currentLocale}
-        locales={locales}
-        homePageEditor={false}
-        showConfigOptions={true}
-      />
+      <AdminNav homePageEditor={false} showConfigOptions={true} />
       <div tw="container mx-auto">
         <div tw="px-10 pt-5">
           <h1 tw="inline-block text-3xl font-extrabold text-gray-900 tracking-tight">
@@ -118,7 +113,6 @@ export async function getServerSideProps(context) {
     console.log('error:', settingsResult);
     throw settingsResult.errors;
   }
-  let locales = settingsResult.data.organization_locales;
 
   const { errors, data } = await hasuraListAllSectionsByLocale({
     url: apiUrl,
@@ -135,8 +129,6 @@ export async function getServerSideProps(context) {
   return {
     props: {
       sections: sections,
-      currentLocale: context.locale,
-      locales: locales,
     },
   };
 }

@@ -16,7 +16,9 @@ const TagsList = tw.ul`flex flex-row flex-wrap pb-6 mb-2 list-outside w-full`;
 const TagsListItem = tw.li`mb-4 ml-4`;
 const TagsListLink = tw.a`text-gray-700 uppercase text-xs bg-gray-200 rounded flex justify-center p-3 cursor-pointer hover:bg-blue-500 hover:text-white`;
 
-export default function ArticleFooter({ article, isAmp, locale, metadata }) {
+export default function ArticleFooter({ article, isAmp, metadata }) {
+  const locale = 'en-US';
+
   let tagLinks = [];
   if (article.tag_articles) {
     tagLinks = article.tag_articles.map((tag_article) => (
@@ -46,7 +48,6 @@ export default function ArticleFooter({ article, isAmp, locale, metadata }) {
                 i={i}
                 last={i === article.author_articles.length - 1}
                 metadata={metadata}
-                locale={locale}
               />
             ))}
         </ArticleByline>

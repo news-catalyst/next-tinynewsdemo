@@ -23,13 +23,13 @@ export default function Layout({
   article,
   page,
   sections,
-  locale,
   renderNav = true,
   renderFooter = true,
 }) {
   if (meta === null || meta === undefined) {
     meta = {};
   }
+  const locale = 'en-US';
 
   // helper function to determine what to tell facebook width/height of image are
   function coverImageDimensions(w, h) {
