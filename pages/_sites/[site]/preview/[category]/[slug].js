@@ -10,14 +10,12 @@ import Article from '../../../../../components/Article.js';
 
 export default function PreviewArticle(props) {
   if (!props.article) {
-    // console.log('no props.article, returning notFound');
     return (
       <div>
         <DefaultErrorPage statusCode={404} />
       </div>
     );
   }
-  // console.log('returning article component...');
   return <Article {...props} />;
 }
 
@@ -36,31 +34,27 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps(context) {
-  let locale = context.locale;
-  let preview = context.preview;
-  let params = context.params;
-  // console.log(context);
+  const locale = 'en-US';
+  const apiUrl = process.env.HASURA_API_URL;
+  const site = context.params.site;
+  const preview = context.preview;
+  const params = context.params;
+
   if (!preview) {
-    // console.log('no preview, returning notFound');
     return {
       notFound: true,
     };
   }
 
-  const apiUrl = process.env.HASURA_API_URL;
-  const apiToken = process.env.ORG_SLUG;
-
   let article = {};
   let sectionArticles = [];
   let sections = [];
   let tags = [];
-  let locales = [];
-  let publishedLocales = [];
   let siteMetadata;
 
   const { errors, data } = await hasuraPreviewArticlePage({
     url: apiUrl,
-    orgSlug: apiToken,
+    site: site,
     localeCode: locale,
     slug: params.slug,
     categorySlug: params.category,
@@ -71,9 +65,6 @@ export async function getStaticProps(context) {
       notFound: true,
     };
   } else {
-    locales = data.organization_locales;
-    publishedLocales = data.published_article_translations;
-
     tags = data.tags;
     for (var i = 0; i < tags.length; i++) {
       tags[i].title = hasuraLocalizeText(
@@ -131,8 +122,6 @@ export async function getStaticProps(context) {
       article,
       sections,
       ads,
-      locales,
-      publishedLocales,
       siteMetadata,
       sectionArticles,
       tags,

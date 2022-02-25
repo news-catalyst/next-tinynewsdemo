@@ -8,9 +8,9 @@ export default async function Handler(req, res) {
   }
 
   const apiUrl = process.env.HASURA_API_URL;
-  const apiToken = process.env.ORG_SLUG;
+  const apiToken = process.env.ORG_SLUG; // TODO Vercel Platforms
 
-  let localeCode = req.query.locale;
+  const localeCode = 'en-US';
 
   const { errors, data } = await hasuraGetPage({
     url: apiUrl,

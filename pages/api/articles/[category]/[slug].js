@@ -7,9 +7,8 @@ import ReactDOMServer from 'react-dom/server';
 
 export default async function Handler(req, res) {
   const apiUrl = process.env.HASURA_API_URL;
-  const apiToken = process.env.ORG_SLUG;
-
-  let localeCode = req.query.locale;
+  const apiToken = process.env.ORG_SLUG; // TODO Vercel Platforms
+  const localeCode = 'en-US';
 
   // Check the secret and next parameters
   // This secret should only be known to this API route and the CMS

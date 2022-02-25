@@ -21,11 +21,10 @@ export default function TagPage({
   sections,
   siteMetadata,
   expandedAds,
-  locale,
-  locales,
 }) {
   const router = useRouter();
   const isAmp = false;
+  const locale = 'en-US';
 
   // If the page is not yet generated, this will be displayed
   // initially until getStaticProps() finishes running
@@ -39,7 +38,7 @@ export default function TagPage({
   siteMetadata['homepageTitle'] = tagTitle + ' | ' + siteMetadata['shortName'];
 
   return (
-    <Layout locale={locale} meta={siteMetadata} sections={sections}>
+    <Layout meta={siteMetadata} sections={sections}>
       <ArticleStream
         articles={articles}
         sections={sections}
@@ -48,17 +47,7 @@ export default function TagPage({
         title={`Articles tagged with ${tagTitle}`}
         metadata={siteMetadata}
         ads={expandedAds}
-        locale={locale}
       />
-      {locales.length > 1 && (
-        <SectionLayout>
-          <SectionContainer>
-            <Block>
-              <ReadInOtherLanguage locales={locales} currentLocale={locale} />
-            </Block>
-          </SectionContainer>
-        </SectionLayout>
-      )}
     </Layout>
   );
 }
@@ -78,13 +67,13 @@ export async function getStaticPaths() {
   };
 }
 
-export async function getStaticProps({ locale, params }) {
+export async function getStaticProps({ params }) {
   const apiUrl = process.env.HASURA_API_URL;
+  const locale = 'en-US';
   const site = params.site;
 
   let articles = [];
   let sections = [];
-  let locales = [];
   let tag;
   let siteMetadata;
 
@@ -120,8 +109,6 @@ export async function getStaticProps({ locale, params }) {
       );
     }
 
-    locales = data.organization_locales;
-
     let metadatas = data.site_metadatas;
     try {
       siteMetadata = metadatas[0].site_metadata_translations[0].data;
@@ -136,11 +123,6 @@ export async function getStaticProps({ locale, params }) {
     expandedAds = allAds.filter((ad) => ad.adTypeId === 166 && ad.status === 4);
   }
 
-  // why? Error: Error serializing `.locale` returned from `getStaticProps` in "/_sites/[site]/tags/[slug]".
-  // Reason: `undefined` cannot be serialized as JSON. Please use `null` or omit this value.
-  if (!locale) {
-    locale = null;
-  }
   return {
     props: {
       articles,
@@ -148,8 +130,6 @@ export async function getStaticProps({ locale, params }) {
       sections,
       siteMetadata,
       expandedAds,
-      locale,
-      locales,
     },
   };
 }

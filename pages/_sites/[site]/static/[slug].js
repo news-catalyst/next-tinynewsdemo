@@ -3,19 +3,11 @@ import React from 'react';
 import {
   hasuraGetPage,
   generateAllStaticPagePaths,
-  getOrgSettings,
 } from '../../../../lib/articles.js';
 import { hasuraLocalizeText } from '../../../../lib/utils';
 import StaticPage from '../../../../components/StaticPage';
 
-export default function Static({
-  page,
-  sections,
-  siteMetadata,
-  locales,
-  locale,
-  settings,
-}) {
+export default function Static({ page, sections, siteMetadata }) {
   const router = useRouter();
   const isAmp = false;
 
@@ -34,8 +26,6 @@ export default function Static({
         page={page}
         sections={sections}
         siteMetadata={siteMetadata}
-        locales={locales}
-        currentLocale={locale}
       />
     </>
   );
@@ -57,24 +47,13 @@ export async function getStaticPaths() {
   };
 }
 
-export async function getStaticProps({ locale, params }) {
+export async function getStaticProps({ params }) {
   const apiUrl = process.env.HASURA_API_URL;
   const site = params.site;
-
-  const settingsResult = await getOrgSettings({
-    site: site,
-    url: apiUrl,
-  });
-
-  if (settingsResult.errors) {
-    throw settingsResult.errors;
-  }
-
-  let settings = settingsResult.data.settings;
+  const locale = 'en-US';
 
   let page = {};
   let sections;
-  let locales = [];
   let siteMetadata = {};
 
   const { errors, data } = await hasuraGetPage({
@@ -99,16 +78,6 @@ export async function getStaticProps({ locale, params }) {
     }
 
     page = data.page_slug_versions[0].page;
-    var allPageLocales = data.pages[0].page_translations;
-    var distinctLocaleCodes = [];
-    var distinctLocales = [];
-    for (var i = 0; i < allPageLocales.length; i++) {
-      if (!distinctLocaleCodes.includes(allPageLocales[i].locale.code)) {
-        distinctLocaleCodes.push(allPageLocales[i].locale.code);
-        distinctLocales.push(allPageLocales[i]);
-      }
-    }
-    locales = distinctLocales;
     siteMetadata = data.site_metadatas[0].site_metadata_translations[0].data;
 
     sections = data.categories;
@@ -120,19 +89,12 @@ export async function getStaticProps({ locale, params }) {
       );
     }
   }
-  // why? Error: Error serializing `.locale` returned from `getStaticProps` in "/_sites/[site]/tags/[slug]".
-  // Reason: `undefined` cannot be serialized as JSON. Please use `null` or omit this value.
-  if (!locale) {
-    locale = null;
-  }
+
   return {
     props: {
       page,
       sections,
       siteMetadata,
-      locales,
-      locale,
-      settings,
     },
     revalidate: 1,
   };

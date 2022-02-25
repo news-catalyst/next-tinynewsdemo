@@ -23,14 +23,7 @@ import { slugify } from '../../../../../lib/graphql';
 
 const UploadContainer = tw.div`container mx-auto min-w-0 flex-auto px-4 sm:px-6 xl:px-8 pt-10`;
 
-export default function AddAuthor({
-  apiUrl,
-  site,
-  tinyApiKey,
-  currentLocale,
-  locales,
-  awsConfig,
-}) {
+export default function AddAuthor({ apiUrl, site, tinyApiKey, awsConfig }) {
   const [notificationMessage, setNotificationMessage] = useState('');
   const [notificationType, setNotificationType] = useState('');
   const [showNotification, setShowNotification] = useState(false);
@@ -50,6 +43,7 @@ export default function AddAuthor({
     setBio(value);
   };
 
+  const currentLocale = 'en-US';
   // slugifies the name and stores slug plus name values
   function updateFirstNames(val) {
     setFirstNames(val);
@@ -132,13 +126,7 @@ export default function AddAuthor({
 
   return (
     <AdminLayout>
-      <AdminNav
-        currentLocale={currentLocale}
-        switchLocales={true}
-        locales={locales}
-        homePageEditor={false}
-        showConfigOptions={true}
-      />
+      <AdminNav homePageEditor={false} showConfigOptions={true} />
 
       {showNotification && (
         <Notification
@@ -237,7 +225,6 @@ export async function getServerSideProps(context) {
     throw settingsResult.errors;
   }
   let siteMetadata = settingsResult.data.settings;
-  let locales = settingsResult.data.organization_locales;
 
   let bucketName = findSetting(siteMetadata, 'TNC_AWS_BUCKET_NAME');
   let dir = findSetting(siteMetadata, 'TNC_AWS_DIR_NAME');
@@ -260,8 +247,6 @@ export async function getServerSideProps(context) {
       apiUrl: apiUrl,
       site: site,
       tinyApiKey: tinyApiKey,
-      currentLocale: context.locale,
-      locales: locales,
       awsConfig: awsConfig,
     },
   };

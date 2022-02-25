@@ -81,7 +81,7 @@ export default function ThankYou({
   }
 
   return (
-    <Layout locale={locale} meta={siteMetadata} page={page} sections={sections}>
+    <Layout meta={siteMetadata} page={page} sections={sections}>
       <SectionContainer>
         <ArticleTitle meta={siteMetadata} tw="text-center">
           {localisedPage.headline}

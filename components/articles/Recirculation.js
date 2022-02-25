@@ -10,13 +10,14 @@ const RecirculationList = tw.ul`w-full self-end list-outside`;
 export default function Recirculation({
   articles,
   isAmp,
-  locale,
   siteMetadata,
   section,
 }) {
   if (articles === null || articles === undefined || articles.length <= 0) {
     return null;
   }
+  const locale = 'en-US';
+
   const localisedSection = hasuraLocalizeText(
     locale,
     section.category_translations,

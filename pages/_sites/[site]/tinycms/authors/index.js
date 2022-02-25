@@ -26,17 +26,11 @@ const TableRow = tw.tr``;
 const TableHeader = tw.th`px-4 py-2`;
 const TableCell = tw.td`border px-4 py-2`;
 
-export default function Authors({
-  apiUrl,
-  site,
-  authors,
-  currentLocale,
-  locales,
-}) {
+export default function Authors({ apiUrl, site, authors }) {
   const [notificationMessage, setNotificationMessage] = useState('');
   const [notificationType, setNotificationType] = useState('');
   const [showNotification, setShowNotification] = useState(false);
-
+  const currentLocale = 'en-US';
   const router = useRouter();
   const { action } = router.query;
 
@@ -142,13 +136,7 @@ export default function Authors({
 
   return (
     <AdminLayout>
-      <AdminNav
-        switchLocales={true}
-        currentLocale={currentLocale}
-        locales={locales}
-        homePageEditor={false}
-        showConfigOptions={true}
-      />
+      <AdminNav homePageEditor={false} showConfigOptions={true} />
       {showNotification && (
         <Notification
           message={notificationMessage}
@@ -190,17 +178,6 @@ export async function getServerSideProps(context) {
   const apiUrl = process.env.HASURA_API_URL;
   const site = context.params.site;
 
-  const settingsResult = await getOrgSettings({
-    url: apiUrl,
-    site: site,
-  });
-
-  if (settingsResult.errors) {
-    console.log('error:', settingsResult);
-    throw settingsResult.errors;
-  }
-  let locales = settingsResult.data.organization_locales;
-
   const { errors, data } = await hasuraListAllAuthors({
     url: apiUrl,
     site: site,
@@ -217,8 +194,6 @@ export async function getServerSideProps(context) {
       apiUrl: apiUrl,
       site: site,
       authors: authors,
-      currentLocale: context.locale,
-      locales: locales,
     },
   };
 }

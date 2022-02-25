@@ -18,9 +18,9 @@ export default function ArticleStream({
   title,
   metadata,
   ads,
-  locale,
 }) {
   const AD_PLACEMENT_INDEX = 3;
+  const locale = 'en-US';
 
   const renderArticle = function (article) {
     return (
@@ -30,7 +30,6 @@ export default function ArticleStream({
         amp={isAmp}
         showCategory={showCategory}
         metadata={metadata}
-        locale={locale}
       />
     );
   };

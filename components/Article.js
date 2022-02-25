@@ -14,14 +14,9 @@ export default function Article({
   siteMetadata,
   sectionArticles,
   renderFooter,
-  locales,
-  publishedLocales,
-  locale,
 }) {
   const isAmp = useAmp();
-
-  // console.log('Article component article: ', article);
-  // console.log('Article locale:', locale, article.article_translations.length);
+  const locale = 'en-US';
 
   let baseUrl = process.env.NEXT_PUBLIC_SITE_URL || siteMetadata['siteUrl'];
   // this is used for the canonical link tag in the Layout component
@@ -67,7 +62,6 @@ export default function Article({
       article={article}
       sections={sections}
       renderFooter={renderFooter}
-      locale={locale}
     >
       <div className="post">
         <ArticleHeader
@@ -75,9 +69,6 @@ export default function Article({
           isAmp={isAmp}
           metadata={siteMetadata}
           mainImage={mainImage}
-          locales={locales}
-          publishedLocales={publishedLocales}
-          locale={locale}
         />
         <section className="section post__body rich-text" key="body">
           <ArticleBody
@@ -85,13 +76,11 @@ export default function Article({
             isAmp={isAmp}
             ads={ads}
             metadata={siteMetadata}
-            locale={locale}
           />
           <ArticleFooter
             article={article}
             isAmp={isAmp}
             metadata={siteMetadata}
-            locale={locale}
           />
         </section>
         {displayComments && <Comments article={article} isAmp={isAmp} />}
@@ -100,7 +89,6 @@ export default function Article({
           isAmp={isAmp}
           siteMetadata={siteMetadata}
           section={article.category}
-          locale={locale}
         />
       </div>
     </Layout>
