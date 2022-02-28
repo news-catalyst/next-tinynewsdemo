@@ -47,7 +47,6 @@ export default function Settings({
   apiUrl,
   site,
   tinyApiKey,
-  currentLocale,
   siteMetadata,
   locales,
   awsConfig,
@@ -254,7 +253,6 @@ export default function Settings({
       site: site,
       data: parsed,
       published: true,
-      localeCode: currentLocale,
     });
     if (errors) {
       setNotificationMessage(errors);
@@ -299,13 +297,7 @@ export default function Settings({
   }
   return (
     <AdminLayout>
-      <AdminNav
-        switchLocales={true}
-        currentLocale={currentLocale}
-        locales={locales}
-        homePageEditor={false}
-        showConfigOptions={true}
-      />
+      <AdminNav homePageEditor={false} showConfigOptions={true} />
 
       <Container>
         <Sidebar>
@@ -451,7 +443,6 @@ export async function getServerSideProps(context) {
       apiUrl: apiUrl,
       site: site,
       tinyApiKey: tinyApiKey,
-      currentLocale: context.locale,
       siteMetadata: siteMetadata,
       locales: locales,
       awsConfig: awsConfig,

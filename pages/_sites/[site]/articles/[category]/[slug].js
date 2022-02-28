@@ -51,7 +51,6 @@ export async function getStaticPaths() {
 export async function getStaticProps({ params }) {
   const apiUrl = process.env.HASURA_API_URL;
   const site = params.site;
-  const locale = 'en-US';
 
   const settingsResult = await getOrgSettings({
     url: apiUrl,
@@ -106,6 +105,7 @@ export async function getStaticProps({ params }) {
         (a) => a.slug !== params.slug
       );
     }
+    console.log('data.site_metadatas:', data.site_metadatas);
     siteMetadata = getLatestVersion(
       data.site_metadatas[0].site_metadata_translations,
       'data'
