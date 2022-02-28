@@ -29,7 +29,8 @@ export default function Layout({
   if (meta === null || meta === undefined) {
     meta = {};
   }
-  const locale = 'en-US';
+
+  console.log(meta);
 
   // helper function to determine what to tell facebook width/height of image are
   function coverImageDimensions(w, h) {
@@ -305,12 +306,7 @@ export default function Layout({
       </Head>
       <ThemeWrapper meta={meta}>
         {renderNav && (
-          <GlobalNav
-            locale={locale}
-            metadata={meta}
-            sections={sections}
-            isAmp={isAmp}
-          />
+          <GlobalNav metadata={meta} sections={sections} isAmp={isAmp} />
         )}
         <Main>
           {isAmp && (
