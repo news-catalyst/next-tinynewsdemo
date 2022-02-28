@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import tw, { styled } from 'twin.macro';
-import { hasuraLocalizeText } from '../../lib/utils';
+import { getLatestVersion } from '../../lib/utils';
 import ArticleFooterAuthor from './ArticleFooterAuthor';
 import Typography from '../common/Typography';
 
@@ -25,11 +25,7 @@ export default function ArticleFooter({ article, isAmp, metadata }) {
       <TagsListItem key={tag_article.tag.slug}>
         <Link href={`/tags/${tag_article.tag.slug}`} passHref>
           <TagsListLink>
-            {hasuraLocalizeText(
-              locale,
-              tag_article.tag.tag_translations,
-              'title'
-            )}
+            {getLatestVersion(tag_article.tag.tag_translations, 'title')}
           </TagsListLink>
         </Link>
       </TagsListItem>

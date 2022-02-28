@@ -4,7 +4,7 @@ import {
   hasuraGetPage,
   generateAllDomainPaths,
 } from '../../../../lib/articles.js';
-import { hasuraLocalizeText, renderBody } from '../../../../lib/utils';
+import { getLatestVersion, renderBody } from '../../../../lib/utils';
 import Layout from '../../../../components/Layout';
 import ReadInOtherLanguage from '../../../../components/articles/ReadInOtherLanguage';
 import StaticMainImage from '../../../../components/articles/StaticMainImage';
@@ -35,14 +35,10 @@ export default function Donate({ page, sections, siteMetadata }) {
   }
 
   // there will only be one translation returned for a given page + locale
-  const headline = hasuraLocalizeText(
-    locale,
-    page.page_translations,
-    'headline'
-  );
+  const headline = getLatestVersion(page.page_translations, 'headline');
 
   const body = renderBody(
-    locale,
+    'en-US',
     page.page_translations,
     [],
     isAmp,
@@ -130,15 +126,13 @@ export async function getStaticProps(context) {
     page = data.page_slug_versions[0].page;
     sections = data.categories;
 
-    siteMetadata = hasuraLocalizeText(
-      locale,
+    siteMetadata = getLatestVersion(
       data.site_metadatas[0].site_metadata_translations,
       'data'
     );
 
     for (i = 0; i < sections.length; i++) {
-      sections[i].title = hasuraLocalizeText(
-        locale,
+      sections[i].title = getLatestVersion(
         sections[i].category_translations,
         'title'
       );

@@ -16,12 +16,12 @@ import {
   hasuraGetTagById,
   hasuraUpdateTag,
 } from '../../../../../lib/section.js';
-import { hasuraLocalizeText } from '../../../../../lib/utils.js';
+import { getLatestVersion } from '../../../../../lib/utils.js';
 import { slugify } from '../../../../../lib/graphql';
 
 const ViewOnSiteLink = tw.a`font-bold cursor-pointer hover:underline`;
 
-export default function EditTag({ apiUrl, site, tag, currentLocale, locales }) {
+export default function EditTag({ apiUrl, site, tag }) {
   const [notificationMessage, setNotificationMessage] = useState('');
   const [notificationType, setNotificationType] = useState('');
   const [showNotification, setShowNotification] = useState(false);
@@ -33,12 +33,7 @@ export default function EditTag({ apiUrl, site, tag, currentLocale, locales }) {
   useEffect(() => {
     if (tag) {
       setTagId(tag.id);
-      let title = hasuraLocalizeText(
-        currentLocale,
-        tag.tag_translations,
-        'title',
-        false
-      );
+      let title = getLatestVersion(tag.tag_translations, 'title', false);
       setTitle(title);
       setSlug(tag.slug);
     }
@@ -57,7 +52,7 @@ export default function EditTag({ apiUrl, site, tag, currentLocale, locales }) {
       url: apiUrl,
       site: site,
       id: tagId,
-      localeCode: currentLocale,
+      localeCode: 'en-US',
       title: title,
       published: published,
       slug: slug,
@@ -79,13 +74,7 @@ export default function EditTag({ apiUrl, site, tag, currentLocale, locales }) {
 
   return (
     <AdminLayout>
-      <AdminNav
-        switchLocales={true}
-        currentLocale={currentLocale}
-        locales={locales}
-        homePageEditor={false}
-        showConfigOptions={true}
-      />
+      <AdminNav homePageEditor={false} showConfigOptions={true} />
 
       {showNotification && (
         <Notification
@@ -134,7 +123,6 @@ export async function getServerSideProps(context) {
   const id = context.params.id;
 
   let tag = {};
-  let locales;
   const { errors, data } = await hasuraGetTagById({
     url: apiUrl,
     site: site,
@@ -144,7 +132,6 @@ export async function getServerSideProps(context) {
     throw errors;
   } else {
     tag = data.tags_by_pk;
-    locales = data.organization_locales;
   }
 
   return {
@@ -152,8 +139,6 @@ export async function getServerSideProps(context) {
       apiUrl: apiUrl,
       site: site,
       tag: tag,
-      currentLocale: context.locale,
-      locales: locales,
     },
   };
 }

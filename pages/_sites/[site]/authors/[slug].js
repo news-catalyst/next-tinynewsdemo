@@ -8,7 +8,7 @@ import {
 import {
   booleanSetting,
   displayAuthorName,
-  hasuraLocalizeText,
+  getLatestVersion,
 } from '../../../../lib/utils';
 import { cachedContents } from '../../../../lib/cached';
 import { getArticleAds } from '../../../../lib/ads.js';
@@ -47,12 +47,8 @@ export default function AuthorPage({
   if (author) {
     authorName = displayAuthorName(author.first_names, author.last_name);
     authorPhoto = author.photoUrl;
-    authorTitle = hasuraLocalizeText(
-      locale,
-      author.author_translations,
-      'title'
-    );
-    authorBio = hasuraLocalizeText(locale, author.author_translations, 'bio');
+    authorTitle = getLatestVersion(author.author_translations, 'title');
+    authorBio = getLatestVersion(author.author_translations, 'bio');
     authorTwitter = author.twitter;
 
     // set page title
@@ -167,8 +163,7 @@ export async function getStaticProps({ params }) {
     author = data.authors[0];
 
     for (var i = 0; i < sections.length; i++) {
-      sections[i].title = hasuraLocalizeText(
-        locale,
+      sections[i].title = getLatestVersion(
         sections[i].category_translations,
         'title'
       );

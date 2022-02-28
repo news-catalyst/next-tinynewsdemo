@@ -1,6 +1,6 @@
 import tw from 'twin.macro';
 import ArticleLink from '../homepage/ArticleLink';
-import { hasuraLocalizeText } from '../../lib/utils.js';
+import { getLatestVersion } from '../../lib/utils.js';
 
 const RecirculationSection = tw.section`border-t border-gray-200 pt-12`;
 const RecirculationContainer = tw.div`flex flex-col flex-nowrap max-w-5xl w-full mx-auto px-5`;
@@ -16,10 +16,8 @@ export default function Recirculation({
   if (articles === null || articles === undefined || articles.length <= 0) {
     return null;
   }
-  const locale = 'en-US';
 
-  const localisedSection = hasuraLocalizeText(
-    locale,
+  const localisedSection = getLatestVersion(
     section.category_translations,
     'title'
   );

@@ -1,6 +1,6 @@
 import dynamic from 'next/dynamic';
 import React, { useState } from 'react';
-import { hasuraLocalizeText } from '../../../../lib/utils.js';
+import { getLatestVersion } from '../../../../lib/utils.js';
 import {
   hasuraGetHomepageEditor,
   hasuraSaveHomepageLayout,
@@ -203,18 +203,12 @@ export async function getServerSideProps(context) {
 
   const tags = data.tags;
   for (var i = 0; i < tags.length; i++) {
-    tags[i].title = hasuraLocalizeText(
-      locale,
-      tags[i].tag_translations,
-      'title',
-      false
-    );
+    tags[i].title = getLatestVersion(tags[i].tag_translations, 'title', false);
   }
 
   const sections = data.categories;
   for (var j = 0; j < sections.length; j++) {
-    sections[j].title = hasuraLocalizeText(
-      locale,
+    sections[j].title = getLatestVersion(
       sections[j].category_translations,
       'title',
       false

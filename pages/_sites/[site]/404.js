@@ -4,7 +4,7 @@ import {
   hasuraGetLayout,
   generateAllDomainPaths,
 } from '../../../lib/articles.js';
-import { hasuraLocalizeText } from '../../../lib/utils';
+import { getLatestVersion } from '../../../lib/utils';
 
 export default function Custom404({ sections, siteMetadata }) {
   const locale = 'en-US';
@@ -81,8 +81,7 @@ export async function getStaticProps({ params }) {
   } else {
     sections = data.categories;
     for (var i = 0; i < sections.length; i++) {
-      sections[i].title = hasuraLocalizeText(
-        locale,
+      sections[i].title = getLatestVersion(
         sections[i].category_translations,
         'title'
       );

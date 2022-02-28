@@ -1,6 +1,6 @@
 import tw from 'twin.macro';
 import MainImage from './MainImage.js';
-import { hasuraLocalizeText } from '../../lib/utils.js';
+import { getLatestVersion } from '../../lib/utils.js';
 
 const StaticFeaturedMedia = tw.div`flex flex-col flex-nowrap items-center`;
 const StaticFeaturedMediaFigure = tw.figure`flex flex-row flex-wrap w-full`;
@@ -8,16 +8,10 @@ const StaticFeaturedMediaWrapper = tw.div`w-full`;
 const StaticFeaturedMediaCaption = tw.figcaption`text-sm text-gray-700 pt-1 inline-block`;
 
 export default function StaticMainImage({ page, isAmp, siteMetadata }) {
-  const locale = 'en-US';
-
   // main image handling
   let mainImageNode;
   let mainImage = null;
-  let pageContent = hasuraLocalizeText(
-    locale,
-    page.page_translations,
-    'content'
-  );
+  let pageContent = getLatestVersion(page.page_translations, 'content');
   if (
     pageContent !== undefined &&
     pageContent !== null &&
