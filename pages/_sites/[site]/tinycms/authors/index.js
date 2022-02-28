@@ -16,7 +16,7 @@ import {
 } from '../../../../../components/common/CommonStyles.js';
 import {
   displayAuthorName,
-  hasuraLocalizeText,
+  getLatestVersion,
 } from '../../../../../lib/utils.js';
 
 const Table = tw.table`table-auto w-full`;
@@ -74,12 +74,7 @@ export default function Authors({ apiUrl, site, authors }) {
   }, [action]);
 
   const listItems = authors.map((author) => {
-    let title = hasuraLocalizeText(
-      currentLocale,
-      author.author_translations,
-      'title',
-      false
-    );
+    let title = getLatestVersion(author.author_translations, 'title', false);
     if (!title) {
       title = 'NEEDS TRANSLATION';
     }

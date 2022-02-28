@@ -3,7 +3,7 @@ import {
   generateAllDomainPaths,
   hasuraGetPage,
 } from '../../../lib/articles.js';
-import { hasuraLocalizeText } from '../../../lib/utils';
+import { getLatestVersion } from '../../../lib/utils';
 import AboutPage from '../../../components/AboutPage';
 
 export default function About(props) {
@@ -69,8 +69,7 @@ export async function getStaticProps({ params }) {
 
     sections = data.categories;
     for (var i = 0; i < sections.length; i++) {
-      sections[i].title = hasuraLocalizeText(
-        locale,
+      sections[i].title = getLatestVersion(
         sections[i].category_translations,
         'title'
       );

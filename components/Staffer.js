@@ -1,16 +1,14 @@
 import tw from 'twin.macro';
 import Image from 'next/image';
-import { displayAuthorName, hasuraLocalizeText } from '../lib/utils';
+import { displayAuthorName, getLatestVersion } from '../lib/utils';
 
 const AuthorName = tw.h3`font-bold text-xl leading-tight mt-5 mb-4`;
 const AuthorAvatar = tw.div`overflow-hidden relative w-full h-48 w-48 mr-4 md:float-left`;
 
 export default function Staffer({ author, isAmp }) {
-  const locale = 'en-US';
-
   const name = displayAuthorName(author.first_names, author.last_name);
-  const bio = hasuraLocalizeText(locale, author.author_translations, 'bio');
-  const title = hasuraLocalizeText(locale, author.author_translations, 'title');
+  const bio = getLatestVersion(author.author_translations, 'bio');
+  const title = getLatestVersion(author.author_translations, 'title');
 
   return (
     <div className="author mb-4">

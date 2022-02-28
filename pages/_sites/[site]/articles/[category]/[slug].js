@@ -6,10 +6,7 @@ import {
   hasuraCategoryPage,
   getOrgSettings,
 } from '../../../../../lib/articles.js';
-import {
-  hasuraLocalizeText,
-  booleanSetting,
-} from '../../../../../lib/utils.js';
+import { getLatestVersion, booleanSetting } from '../../../../../lib/utils.js';
 import { getArticleAds } from '../../../../../lib/ads.js';
 import { cachedContents } from '../../../../../lib/cached';
 import Article from '../../../../../components/Article.js';
@@ -90,8 +87,7 @@ export async function getStaticProps({ params }) {
   } else {
     sections = data.categories;
     for (var i = 0; i < sections.length; i++) {
-      sections[i].title = hasuraLocalizeText(
-        locale,
+      sections[i].title = getLatestVersion(
         sections[i].category_translations,
         'title'
       );
@@ -110,8 +106,7 @@ export async function getStaticProps({ params }) {
         (a) => a.slug !== params.slug
       );
     }
-    siteMetadata = hasuraLocalizeText(
-      locale,
+    siteMetadata = getLatestVersion(
       data.site_metadatas[0].site_metadata_translations,
       'data'
     );

@@ -21,7 +21,7 @@ import {
 } from '../../../../../lib/articles';
 import AdminNav from '../../../../../components/nav/AdminNav';
 import Notification from '../../../../../components/tinycms/Notification';
-import { findSetting, hasuraLocalizeText } from '../../../../../lib/utils';
+import { findSetting, getLatestVersion } from '../../../../../lib/utils';
 
 const ViewOnSiteLink = tw.a`font-bold cursor-pointer hover:underline`;
 
@@ -47,14 +47,7 @@ export default function EditSection({
     if (section) {
       setSectionId(section.id);
       setArticleCount(section.articles_aggregate.aggregate.count);
-      setTitle(
-        hasuraLocalizeText(
-          currentLocale,
-          section.category_translations,
-          'title',
-          false
-        )
-      );
+      setTitle(getLatestVersion(section.category_translations, 'title', false));
       setSlug(section.slug);
       setCurrentSlug(section.slug);
       setPublished(section.published);
@@ -236,8 +229,7 @@ export default function EditSection({
                   passHref
                 >
                   <a>
-                    {hasuraLocalizeText(
-                      currentLocale,
+                    {getLatestVersion(
                       node.article_translations,
                       'headline',
                       false

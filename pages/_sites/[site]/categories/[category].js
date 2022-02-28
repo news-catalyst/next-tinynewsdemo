@@ -8,9 +8,8 @@ import {
   getOrgSettings,
 } from '../../../../lib/articles.js';
 import { getArticleAds } from '../../../../lib/ads.js';
-import { hasuraLocalizeText, booleanSetting } from '../../../../lib/utils.js';
+import { getLatestVersion, booleanSetting } from '../../../../lib/utils.js';
 import ArticleStream from '../../../../components/homepage/ArticleStream';
-import ReadInOtherLanguage from '../../../../components/articles/ReadInOtherLanguage';
 import {
   SectionContainer,
   SectionLayout,
@@ -19,8 +18,6 @@ import {
 
 export default function CategoryPage(props) {
   const isAmp = false;
-  const locale = 'en-US';
-
   const router = useRouter();
 
   useEffect(() => {
@@ -113,27 +110,18 @@ export async function getStaticProps({ params }) {
     sections = data.categories;
 
     for (var i = 0; i < sections.length; i++) {
-      sections[i].title = hasuraLocalizeText(
-        locale,
+      sections[i].title = getLatestVersion(
         sections[i].category_translations,
         'title'
       );
       if (sections[i].slug == params.category) {
         categoryExists = true;
-        title = hasuraLocalizeText(
-          locale,
-          sections[i].category_translations,
-          'title'
-        );
+        title = getLatestVersion(sections[i].category_translations, 'title');
       }
     }
 
     for (var j = 0; j < tags.length; j++) {
-      tags[j].title = hasuraLocalizeText(
-        locale,
-        tags[j].tag_translations,
-        'title'
-      );
+      tags[j].title = getLatestVersion(tags[j].tag_translations, 'title');
     }
 
     let metadatas = data.site_metadatas;

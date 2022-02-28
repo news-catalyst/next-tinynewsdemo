@@ -1,6 +1,6 @@
 import { hasuraArticlePage } from '../../../../lib/articles.js';
 import {
-  hasuraLocalizeText,
+  getLatestVersion,
   renderBodyWordPress,
 } from '../../../../lib/utils.js';
 import ReactDOMServer from 'react-dom/server';
@@ -36,16 +36,14 @@ export default async function Handler(req, res) {
   } else {
     article = data.article_slug_versions[0].article;
 
-    siteMetadata = hasuraLocalizeText(
-      localeCode,
+    siteMetadata = getLatestVersion(
       data.site_metadatas[0].site_metadata_translations,
       'data'
     );
 
     let mainImageNode;
     let mainImage = null;
-    let localisedContent = hasuraLocalizeText(
-      localeCode,
+    let localisedContent = getLatestVersion(
       article.article_translations,
       'content'
     );
@@ -63,7 +61,7 @@ export default async function Handler(req, res) {
     }
 
     let body = renderBodyWordPress(
-      localeCode,
+      'en-US',
       article.article_translations,
       false,
       false,

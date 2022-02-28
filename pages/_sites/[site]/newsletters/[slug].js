@@ -18,7 +18,7 @@ import ArticleFooter from '../../../../components/articles/ArticleFooter';
 import NewsletterBlock from '../../../../components/plugins/NewsletterBlock';
 import {
   booleanSetting,
-  hasuraLocalizeText,
+  getLatestVersion,
   renderNewsletterContent,
 } from '../../../../lib/utils.js';
 
@@ -124,19 +124,14 @@ export async function getStaticProps({ params }) {
     tags = data.tags;
 
     for (var i = 0; i < sections.length; i++) {
-      sections[i].title = hasuraLocalizeText(
-        locale,
+      sections[i].title = getLatestVersion(
         sections[i].category_translations,
         'title'
       );
     }
 
     for (var j = 0; j < tags.length; j++) {
-      tags[j].title = hasuraLocalizeText(
-        locale,
-        tags[j].tag_translations,
-        'title'
-      );
+      tags[j].title = getLatestVersion(tags[j].tag_translations, 'title');
     }
 
     let metadatas = data.site_metadatas;

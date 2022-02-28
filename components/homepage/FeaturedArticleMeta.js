@@ -2,7 +2,7 @@ import Link from 'next/link';
 import {
   renderDate,
   renderAuthors,
-  hasuraLocalizeText,
+  getLatestVersion,
 } from '../../lib/utils.js';
 import tw, { styled } from 'twin.macro';
 import Typography from '../common/Typography';
@@ -64,18 +64,12 @@ export default function FeaturedArticleMeta({
 
   // console.log('featured article:', article);
 
-  let categoryTitle = hasuraLocalizeText(
-    locale,
+  let categoryTitle = getLatestVersion(
     article.category.category_translations,
     'title'
   );
-  let headline = hasuraLocalizeText(
-    locale,
-    article.article_translations,
-    'headline'
-  );
-  let searchDescription = hasuraLocalizeText(
-    locale,
+  let headline = getLatestVersion(article.article_translations, 'headline');
+  let searchDescription = getLatestVersion(
     article.article_translations,
     'search_description'
   );

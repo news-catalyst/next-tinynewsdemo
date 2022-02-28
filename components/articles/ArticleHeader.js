@@ -4,10 +4,9 @@ import React from 'react';
 import tw, { styled } from 'twin.macro';
 import PublishDate from './PublishDate.js';
 import MainImage from './MainImage.js';
-import { hasuraLocalizeText, renderAuthors } from '../../lib/utils.js';
+import { getLatestVersion, renderAuthors } from '../../lib/utils.js';
 import { ArticleTitle } from '../common/CommonStyles.js';
 import Typography from '../common/Typography';
-import ReadInOtherLanguage from './ReadInOtherLanguage.js';
 
 const SectionContainer = tw.div`flex mx-auto max-w-5xl px-4 flex-col flex-nowrap`;
 const ArticleDescriptor = styled.span(({ meta }) => ({
@@ -49,35 +48,24 @@ export default function ArticleHeader({ article, isAmp, metadata, mainImage }) {
   let updatedAt;
 
   if (article && article.category) {
-    categoryTitle = hasuraLocalizeText(
-      locale,
+    categoryTitle = getLatestVersion(
       article.category.category_translations,
       'title'
     );
 
-    headline = hasuraLocalizeText(
-      locale,
-      article.article_translations,
-      'headline'
-    );
+    headline = getLatestVersion(article.article_translations, 'headline');
     postUrl = new URL(
       `/articles/${article.category.slug}/${article.slug}`,
       metadata.siteUrl
     );
-    searchDescription = hasuraLocalizeText(
-      locale,
+    searchDescription = getLatestVersion(
       article.article_translations,
       'search_description'
     );
 
-    articleContent = hasuraLocalizeText(
-      locale,
-      article.article_translations,
-      'content'
-    );
+    articleContent = getLatestVersion(article.article_translations, 'content');
 
-    updatedAt = hasuraLocalizeText(
-      locale,
+    updatedAt = getLatestVersion(
       article.article_translations,
       'last_published_at'
     );

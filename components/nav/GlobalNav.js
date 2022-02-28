@@ -4,7 +4,7 @@ import Image from 'next/image';
 import Donate from './Donate';
 import tw, { styled } from 'twin.macro';
 import Typography from '../common/Typography';
-import { generateNavLinkFor, hasuraLocalizeText } from '../../lib/utils';
+import { generateNavLinkFor, getLatestVersion } from '../../lib/utils';
 
 const NavTopContainer = tw.header`flex w-full`;
 const NavBottomContainer = tw.header`border-b border-gray-200 flex w-full justify-center items-center`;
@@ -84,7 +84,7 @@ export default function GlobalNav({
           passHref
         >
           <SectionLink href={`/categories/${section.slug}`} meta={metadata}>
-            {hasuraLocalizeText(locale, section.category_translations, 'title')}
+            {getLatestVersion(section.category_translations, 'title')}
           </SectionLink>
         </Link>
       ));

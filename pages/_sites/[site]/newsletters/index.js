@@ -8,7 +8,7 @@ import {
   generateAllDomainPaths,
   getOrgSettings,
 } from '../../../../lib/articles.js';
-import { hasuraLocalizeText, booleanSetting } from '../../../../lib/utils.js';
+import { getLatestVersion, booleanSetting } from '../../../../lib/utils.js';
 
 export default function NewsletterIndexPage(props) {
   const isAmp = false;
@@ -85,19 +85,14 @@ export async function getStaticProps({ params }) {
     sections = data.categories;
 
     for (var i = 0; i < sections.length; i++) {
-      sections[i].title = hasuraLocalizeText(
-        locale,
+      sections[i].title = getLatestVersion(
         sections[i].category_translations,
         'title'
       );
     }
 
     for (var j = 0; j < tags.length; j++) {
-      tags[j].title = hasuraLocalizeText(
-        locale,
-        tags[j].tag_translations,
-        'title'
-      );
+      tags[j].title = getLatestVersion(tags[j].tag_translations, 'title');
     }
 
     let metadatas = data.site_metadatas;

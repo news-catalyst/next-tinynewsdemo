@@ -19,7 +19,7 @@ import {
 } from '../../../../../lib/authors';
 import {
   displayAuthorName,
-  hasuraLocalizeText,
+  getLatestVersion,
   validateAuthorName,
   findSetting,
 } from '../../../../../lib/utils.js';
@@ -48,15 +48,10 @@ export default function EditAuthor({
   const [email, setEmail] = useState('');
 
   const [title, setTitle] = useState(
-    hasuraLocalizeText(
-      currentLocale,
-      author.author_translations,
-      'title',
-      false
-    )
+    getLatestVersion(author.author_translations, 'title', false)
   );
   const [bio, setBio] = useState(
-    hasuraLocalizeText(currentLocale, author.author_translations, 'bio', false)
+    getLatestVersion(author.author_translations, 'bio', false)
   );
   const [staticBio, setStaticBio] = useState(undefined);
 
