@@ -51,17 +51,17 @@ export default NextAuth({
           isAllowedToSignIn = true;
         }
       });
-      // console.log('********* is allowed?', isAllowedToSignIn);
+      console.log('********* is allowed?', isAllowedToSignIn);
       return isAllowedToSignIn;
     },
     session(session, payload) {
       if (payload.account) session.user = payload.account;
-      // console.log('session user, payload:', session.user, payload);
+      console.log('session user, payload:', session.user, payload);
       return session;
     },
     jwt(token, account, user, userInfo) {
       if (userInfo) token.account = userInfo;
-      // console.log('jwt token:', token);
+      console.log('jwt token:', token);
       return token;
     },
   },

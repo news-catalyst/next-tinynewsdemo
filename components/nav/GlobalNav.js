@@ -35,13 +35,7 @@ const SectionLink = styled.a(({ meta }) => ({
   fontFamily: Typography[meta.theme].SectionLink,
 }));
 
-export default function GlobalNav({
-  locale,
-  metadata,
-  sections,
-  isAmp,
-  overrideNav,
-}) {
+export default function GlobalNav({ metadata, sections, isAmp, overrideNav }) {
   const [logoWidth, setLogoWidth] = useState();
   const [logoHeight, setLogoHeight] = useState();
 

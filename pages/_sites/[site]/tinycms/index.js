@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import React from 'react';
-import { getOrgSettings } from '../../../../lib/articles.js';
 import AdminLayout from '../../../../components/AdminLayout.js';
 import AdminNav from '../../../../components/nav/AdminNav';
 import tw from 'twin.macro';

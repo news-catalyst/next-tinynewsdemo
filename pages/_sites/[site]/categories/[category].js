@@ -125,6 +125,8 @@ export async function getStaticProps({ params }) {
     }
 
     let metadatas = data.site_metadatas;
+    console.log('data.site_metadatas:', data.site_metadatas);
+
     try {
       siteMetadata = metadatas[0].site_metadata_translations[0].data;
     } catch (err) {
