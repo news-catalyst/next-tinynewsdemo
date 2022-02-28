@@ -2,7 +2,7 @@ import {
   hasuraGetPage,
   generateAllDomainPaths,
 } from '../../../../lib/articles.js';
-import { hasuraLocalizeText } from '../../../../lib/utils';
+import { getLatestVersion } from '../../../../lib/utils';
 import StaffPage from '../../../../components/StaffPage';
 
 export default function Staff(props) {
@@ -66,8 +66,7 @@ export async function getStaticProps(context) {
     authors = data.authors;
     siteMetadata = data.site_metadatas[0].site_metadata_translations[0].data;
     for (var i = 0; i < sections.length; i++) {
-      sections[i].title = hasuraLocalizeText(
-        locale,
+      sections[i].title = getLatestVersion(
         sections[i].category_translations,
         'title'
       );

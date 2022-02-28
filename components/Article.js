@@ -3,7 +3,7 @@ import ArticleBody from './articles/ArticleBody';
 import Comments from './articles/Comments';
 import ArticleFooter from './articles/ArticleFooter';
 import Recirculation from './articles/Recirculation';
-import { hasuraLocalizeText, generateArticleUrl } from '../lib/utils.js';
+import { getLatestVersion, generateArticleUrl } from '../lib/utils.js';
 import { useAmp } from 'next/amp';
 import Layout from './Layout.js';
 
@@ -16,7 +16,6 @@ export default function Article({
   renderFooter,
 }) {
   const isAmp = useAmp();
-  const locale = 'en-US';
 
   let baseUrl = process.env.NEXT_PUBLIC_SITE_URL || siteMetadata['siteUrl'];
   // this is used for the canonical link tag in the Layout component
@@ -27,20 +26,14 @@ export default function Article({
 
   let mainImageNode;
   let mainImage = null;
-  let localisedContent = hasuraLocalizeText(
-    locale,
-    article.article_translations,
-    'content'
-  );
+  let content = getLatestVersion(article.article_translations, 'content');
   if (
-    localisedContent !== undefined &&
-    localisedContent !== null &&
-    typeof localisedContent !== 'string'
+    content !== undefined &&
+    content !== null &&
+    typeof content !== 'string'
   ) {
     try {
-      mainImageNode = localisedContent.find(
-        (node) => node.type === 'mainImage'
-      );
+      mainImageNode = content.find((node) => node.type === 'mainImage');
 
       if (mainImageNode) {
         mainImage = mainImageNode.children[0];

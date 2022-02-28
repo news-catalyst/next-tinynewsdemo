@@ -8,7 +8,7 @@ import {
   generateAllArticleArchivePages,
   getOrgSettings,
 } from '../../../../../lib/articles.js';
-import { hasuraLocalizeText, booleanSetting } from '../../../../../lib/utils';
+import { getLatestVersion, booleanSetting } from '../../../../../lib/utils';
 import { cachedContents } from '../../../../../lib/cached';
 import { getArticleAds } from '../../../../../lib/ads.js';
 import ArticleStream from '../../../../../components/homepage/ArticleStream';
@@ -162,8 +162,7 @@ export async function getStaticProps(context) {
     totalPageCount = Math.ceil(totalArticleCount / limit);
 
     for (var i = 0; i < sections.length; i++) {
-      sections[i].title = hasuraLocalizeText(
-        locale,
+      sections[i].title = getLatestVersion(
         sections[i].category_translations,
         'title'
       );

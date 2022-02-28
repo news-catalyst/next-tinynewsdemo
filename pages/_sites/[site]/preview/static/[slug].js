@@ -1,11 +1,10 @@
 import { useRouter } from 'next/router';
-import { useAmp } from 'next/amp';
 import React, { useEffect } from 'react';
 import {
   hasuraGetPagePreview,
   generateAllStaticPagePaths,
 } from '../../../../../lib/articles.js';
-import { hasuraLocalizeText } from '../../../../../lib/utils';
+import { getLatestVersion } from '../../../../../lib/utils';
 import StaticPage from '../../../../../components/StaticPage';
 
 export default function Static({ page, sections, siteMetadata }) {
@@ -51,7 +50,6 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps(context) {
-  let locale = context.locale;
   let preview = context.preview;
   let params = context.params;
 
@@ -66,13 +64,11 @@ export async function getStaticProps(context) {
   let page = {};
   let sections;
   let siteMetadata = {};
-  let locales = [];
 
   const { errors, data } = await hasuraGetPagePreview({
     url: apiUrl,
     orgSlug: apiToken,
     slug: params.slug,
-    localeCode: locale,
   });
 
   if (errors || !data) {
@@ -89,22 +85,10 @@ export async function getStaticProps(context) {
     }
     page = data.page_slug_versions[0].page;
 
-    var allPageLocales = data.pages[0].page_translations;
-    var distinctLocaleCodes = [];
-    var distinctLocales = [];
-    for (var i = 0; i < allPageLocales.length; i++) {
-      if (!distinctLocaleCodes.includes(allPageLocales[i].locale.code)) {
-        distinctLocaleCodes.push(allPageLocales[i].locale.code);
-        distinctLocales.push(allPageLocales[i]);
-      }
-    }
-    locales = distinctLocales;
-
     sections = data.categories;
     siteMetadata = data.site_metadatas[0].site_metadata_translations[0].data;
     for (i = 0; i < sections.length; i++) {
-      sections[i].title = hasuraLocalizeText(
-        locale,
+      sections[i].title = getLatestVersion(
         sections[i].category_translations,
         'title'
       );
@@ -116,8 +100,6 @@ export async function getStaticProps(context) {
       page,
       sections,
       siteMetadata,
-      locales,
-      locale,
     },
   };
 }

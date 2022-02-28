@@ -10,7 +10,7 @@ import {
   hasuraListAllTagsByLocale,
 } from '../../../../../lib/articles.js';
 import { deleteSingleTag } from '../../../../../lib/section.js';
-import { hasuraLocalizeText } from '../../../../../lib/utils.js';
+import { getLatestVersion } from '../../../../../lib/utils.js';
 import {
   DeleteButton,
   AddButton,
@@ -24,7 +24,7 @@ const TableHeader = tw.th`px-4 py-2`;
 const TableCell = tw.td`border px-4 py-2`;
 const AddTagButton = tw.a`hidden md:flex w-full md:w-auto px-4 py-2 text-right bg-blue-900 hover:bg-blue-500 text-white md:rounded`;
 
-export default function Tags({ apiUrl, site, tags, currentLocale, locales }) {
+export default function Tags({ apiUrl, site, tags }) {
   const [notificationMessage, setNotificationMessage] = useState('');
   const [notificationType, setNotificationType] = useState('');
   const [showNotification, setShowNotification] = useState(false);
@@ -72,12 +72,7 @@ export default function Tags({ apiUrl, site, tags, currentLocale, locales }) {
   }, [action]);
 
   const listItems = tags.map((tag) => {
-    let title = hasuraLocalizeText(
-      currentLocale,
-      tag.tag_translations,
-      'title',
-      false
-    );
+    let title = getLatestVersion(tag.tag_translations, 'title', false);
 
     return (
       <TableRow key={tag.id}>
@@ -110,13 +105,7 @@ export default function Tags({ apiUrl, site, tags, currentLocale, locales }) {
 
   return (
     <AdminLayout>
-      <AdminNav
-        switchLocales={true}
-        currentLocale={currentLocale}
-        locales={locales}
-        homePageEditor={false}
-        showConfigOptions={true}
-      />
+      <AdminNav homePageEditor={false} showConfigOptions={true} />
       {showNotification && (
         <Notification
           message={notificationMessage}
@@ -173,13 +162,11 @@ export async function getServerSideProps(context) {
     throw settingsResult.errors;
   }
 
-  let locales = settingsResult.data.organization_locales;
   let tags;
 
   const { errors, data } = await hasuraListAllTagsByLocale({
     url: apiUrl,
     site: site,
-    locale_code: context.locale,
   });
 
   if (errors || !data) {
@@ -189,7 +176,6 @@ export async function getServerSideProps(context) {
     };
   } else {
     tags = data.tags;
-    locales = data.organization_locales;
   }
 
   return {
@@ -197,8 +183,6 @@ export async function getServerSideProps(context) {
       apiUrl: apiUrl,
       site: site,
       tags: tags,
-      currentLocale: context.locale,
-      locales: locales,
     },
   };
 }

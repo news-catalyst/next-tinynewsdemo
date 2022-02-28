@@ -4,7 +4,7 @@ import {
   hasuraGetPage,
   generateAllDomainPaths,
 } from '../../../lib/articles.js';
-import { hasuraLocalizeText, renderBody } from '../../../lib/utils';
+import { getLatestVersion, renderBody } from '../../../lib/utils';
 import Layout from '../../../components/Layout';
 import ReadInOtherLanguage from '../../../components/articles/ReadInOtherLanguage';
 import StaticMainImage from '../../../components/articles/StaticMainImage';
@@ -13,8 +13,6 @@ import {
   ArticleTitle,
   PostTextContainer,
   PostText,
-  SectionLayout,
-  Block,
 } from '../../../components/common/CommonStyles.js';
 
 const SectionContainer = tw.div`flex flex-col flex-nowrap items-center px-5 mx-auto max-w-7xl w-full`;
@@ -23,13 +21,7 @@ const WideContainer = styled.div(() => ({
   maxWidth: '1280px',
 }));
 
-export default function Donate({
-  page,
-  sections,
-  siteMetadata,
-  locales,
-  locale,
-}) {
+export default function Donate({ page, sections, siteMetadata }) {
   const isAmp = false;
   const router = useRouter();
 
@@ -41,15 +33,11 @@ export default function Donate({
   }
 
   const localisedPage = page.page_translations[0];
-  // there will only be one translation returned for a given page + locale
-  const headline = hasuraLocalizeText(
-    locale,
-    page.page_translations,
-    'headline'
-  );
+  // there will only be one translation returned for a given page
+  const headline = getLatestVersion(page.page_translations, 'headline');
 
   const body = renderBody(
-    locale,
+    'en-US',
     page.page_translations,
     [],
     isAmp,
@@ -84,7 +72,6 @@ export default function Donate({
           </ArticleTitle>
           <StaticMainImage
             isAmp={isAmp}
-            locale={locale}
             page={page}
             siteMetadata={siteMetadata}
           />
@@ -96,15 +83,6 @@ export default function Donate({
       <WideContainer>
         <DonationOptionsBlock metadata={siteMetadata} wrap={true} />
       </WideContainer>
-      {locales.length > 1 && (
-        <SectionLayout>
-          <SectionContainer>
-            <Block>
-              <ReadInOtherLanguage locales={locales} currentLocale={locale} />
-            </Block>
-          </SectionContainer>
-        </SectionLayout>
-      )}
     </Layout>
   );
 }
@@ -127,13 +105,11 @@ export async function getStaticPaths() {
 
 export async function getStaticProps({ params }) {
   const apiUrl = process.env.HASURA_API_URL;
-  const locale = 'en-US';
   const site = params.site;
 
   let page = {};
   let sections;
   let siteMetadata = {};
-  let locales = [];
 
   const { errors, data } = await hasuraGetPage({
     url: apiUrl,
@@ -160,15 +136,13 @@ export async function getStaticProps({ params }) {
     page = data.page_slug_versions[0].page;
     sections = data.categories;
 
-    siteMetadata = hasuraLocalizeText(
-      locale,
+    siteMetadata = getLatestVersion(
       data.site_metadatas[0].site_metadata_translations,
       'data'
     );
 
     for (var i = 0; i < sections.length; i++) {
-      sections[i].title = hasuraLocalizeText(
-        locale,
+      sections[i].title = getLatestVersion(
         sections[i].category_translations,
         'title'
       );
@@ -180,8 +154,6 @@ export async function getStaticProps({ params }) {
       page,
       sections,
       siteMetadata,
-      locales,
-      locale,
     },
     revalidate: 1,
   };

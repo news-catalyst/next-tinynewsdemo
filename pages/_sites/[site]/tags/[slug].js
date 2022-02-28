@@ -6,14 +6,8 @@ import {
 } from '../../../../lib/articles.js';
 import { cachedContents } from '../../../../lib/cached';
 import { getArticleAds } from '../../../../lib/ads.js';
-import { hasuraLocalizeText } from '../../../../lib/utils.js';
+import { getLatestVersion } from '../../../../lib/utils.js';
 import ArticleStream from '../../../../components/homepage/ArticleStream';
-import ReadInOtherLanguage from '../../../../components/articles/ReadInOtherLanguage';
-import {
-  SectionContainer,
-  SectionLayout,
-  Block,
-} from '../../../../components/common/CommonStyles';
 
 export default function TagPage({
   articles,
@@ -32,7 +26,7 @@ export default function TagPage({
     return <div>Loading...</div>;
   }
 
-  let tagTitle = hasuraLocalizeText(locale, tag.tag_translations, 'title');
+  let tagTitle = getLatestVersion(tag.tag_translations, 'title');
 
   // set page title
   siteMetadata['homepageTitle'] = tagTitle + ' | ' + siteMetadata['shortName'];
@@ -102,8 +96,7 @@ export async function getStaticProps({ params }) {
 
     sections = data.categories;
     for (var i = 0; i < sections.length; i++) {
-      sections[i].title = hasuraLocalizeText(
-        locale,
+      sections[i].title = getLatestVersion(
         sections[i].category_translations,
         'title'
       );
@@ -113,7 +106,7 @@ export async function getStaticProps({ params }) {
     try {
       siteMetadata = metadatas[0].site_metadata_translations[0].data;
     } catch (err) {
-      console.error('failed finding site metadata for ', locale, metadatas);
+      console.error('failed finding site metadata', metadatas);
     }
   }
 

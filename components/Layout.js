@@ -4,7 +4,7 @@ import GlobalFooter from './nav/GlobalFooter.js';
 import CookieConsentWrapper from './nav/CookieConsentWrapper.js';
 import { useAmp } from 'next/amp';
 import AmpAnalytics from './amp/AmpAnalytics.js';
-import { hasuraLocalizeText } from '../lib/utils';
+import { getLatestVersion } from '../lib/utils';
 import tw, { styled } from 'twin.macro';
 
 const Main = tw.main`pt-8 pb-24`;
@@ -115,9 +115,9 @@ export default function Layout({
     metaValues['documentType'] = 'website';
   }
   if (translations && translations.length > 0) {
-    pageTitle = hasuraLocalizeText(locale, translations, 'search_title');
+    pageTitle = getLatestVersion(translations, 'search_title');
     if (pageTitle === 'Untitled Document') {
-      let headline = hasuraLocalizeText(locale, translations, 'headline');
+      let headline = getLatestVersion(translations, 'headline');
       if (headline !== 'Untitled Document') {
         pageTitle = headline + ' | ' + metaValues.siteName;
       } else {
@@ -128,49 +128,33 @@ export default function Layout({
     }
 
     if (article && article.category) {
-      metaValues.section = hasuraLocalizeText(
-        locale,
+      metaValues.section = getLatestVersion(
         article.category.category_translations,
         'title'
       );
     }
-    metaValues.searchTitle = hasuraLocalizeText(
-      locale,
-      translations,
-      'search_title'
-    );
-    metaValues.searchDescription = hasuraLocalizeText(
-      locale,
+    metaValues.searchTitle = getLatestVersion(translations, 'search_title');
+    metaValues.searchDescription = getLatestVersion(
       translations,
       'search_description'
     );
 
-    metaValues.twitterTitle = hasuraLocalizeText(
-      locale,
-      translations,
-      'twitter_title'
-    );
+    metaValues.twitterTitle = getLatestVersion(translations, 'twitter_title');
     if (!metaValues.twitterTitle) {
       metaValues.twitterTitle = metaValues.searchTitle;
     }
-    metaValues.twitterDescription = hasuraLocalizeText(
-      locale,
+    metaValues.twitterDescription = getLatestVersion(
       translations,
       'twitter_description'
     );
     if (!metaValues.twitterDescription) {
       metaValues.twitterDescription = metaValues.searchDescription;
     }
-    metaValues.facebookTitle = hasuraLocalizeText(
-      locale,
-      translations,
-      'facebook_title'
-    );
+    metaValues.facebookTitle = getLatestVersion(translations, 'facebook_title');
     if (!metaValues.facebookTitle) {
       metaValues.facebookTitle = metaValues.searchTitle;
     }
-    metaValues.facebookDescription = hasuraLocalizeText(
-      locale,
+    metaValues.facebookDescription = getLatestVersion(
       translations,
       'facebook_description'
     );
@@ -195,7 +179,7 @@ export default function Layout({
       tagList.push(
         <meta
           property="article:tag"
-          content={hasuraLocalizeText(locale, tag.tag_translations, 'title')}
+          content={getLatestVersion(tag.tag_translations, 'title')}
           key={tag.slug}
         />
       );
@@ -265,13 +249,9 @@ export default function Layout({
           article.tags !== undefined &&
           article.tags.map((tag) => (
             <meta
-              key={hasuraLocalizeText(locale, tag.tag_translations, 'title')}
+              key={getLatestVersion(tag.tag_translations, 'title')}
               property="article:tag"
-              content={hasuraLocalizeText(
-                locale,
-                tag.tag_translations,
-                'title'
-              )}
+              content={getLatestVersion(tag.tag_translations, 'title')}
             />
           ))}
         {metaValues.facebookAppId && (

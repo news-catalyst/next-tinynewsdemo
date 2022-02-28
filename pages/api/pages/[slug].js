@@ -1,12 +1,10 @@
 import { hasuraGetPage } from '../../../lib/articles.js';
-import { hasuraLocalizeText, renderBodyWordPress } from '../../../lib/utils.js';
+import { getLatestVersion, renderBodyWordPress } from '../../../lib/utils.js';
 import ReactDOMServer from 'react-dom/server';
 
 export default async function Handler(req, res) {
   const apiUrl = process.env.HASURA_API_URL;
   const apiToken = process.env.ORG_SLUG; // TODO Vercel Platforms
-
-  const localeCode = 'en-US';
 
   // Check the secret and next parameters
   // This secret should only be known to this API route and the CMS
@@ -21,7 +19,6 @@ export default async function Handler(req, res) {
     url: apiUrl,
     orgSlug: apiToken,
     slug: req.query.slug,
-    locale: localeCode,
   });
 
   if (
@@ -34,14 +31,13 @@ export default async function Handler(req, res) {
   } else {
     page = data.page_slug_versions[0].page;
 
-    siteMetadata = hasuraLocalizeText(
-      localeCode,
+    siteMetadata = getLatestVersion(
       data.site_metadatas[0].site_metadata_translations,
       'data'
     );
 
     let body = renderBodyWordPress(
-      localeCode,
+      'en-US',
       page.page_translations,
       false,
       false,

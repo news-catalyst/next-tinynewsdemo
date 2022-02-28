@@ -3,7 +3,7 @@ import {
   hasuraPreviewArticlePage,
   generateAllArticlePreviewPagePaths,
 } from '../../../../../lib/articles.js';
-import { hasuraLocalizeText } from '../../../../../lib/utils.js';
+import { getLatestVersion } from '../../../../../lib/utils.js';
 import { getArticleAds } from '../../../../../lib/ads.js';
 import { cachedContents } from '../../../../../lib/cached';
 import Article from '../../../../../components/Article.js';
@@ -67,17 +67,12 @@ export async function getStaticProps(context) {
   } else {
     tags = data.tags;
     for (var i = 0; i < tags.length; i++) {
-      tags[i].title = hasuraLocalizeText(
-        locale,
-        tags[i].tag_translations,
-        'title'
-      );
+      tags[i].title = getLatestVersion(tags[i].tag_translations, 'title');
     }
 
     sections = data.categories;
     for (var j = 0; j < sections.length; j++) {
-      sections[j].title = hasuraLocalizeText(
-        locale,
+      sections[j].title = getLatestVersion(
         sections[j].category_translations,
         'title'
       );
@@ -103,11 +98,7 @@ export async function getStaticProps(context) {
     try {
       siteMetadata = metadatas[0].site_metadata_translations[0].data;
     } catch (err) {
-      console.error(
-        'preview failed finding site metadata for ',
-        locale,
-        metadatas
-      );
+      console.error('preview failed finding site metadata for ', metadatas);
     }
   }
 
