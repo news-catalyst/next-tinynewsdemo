@@ -1,12 +1,18 @@
 import Head from 'next/head';
 import tw from 'twin.macro';
-import { signIn, useSession } from 'next-auth/client';
+import { signIn, useSession } from 'next-auth/react';
 
 const SignInButton = tw.a`hidden md:flex w-full md:w-auto px-4 py-2 text-right bg-blue-900 hover:bg-blue-500 text-white md:rounded`;
 
 export default function AdminLayout({ children }) {
-  const [session, loading] = useSession();
+  const { data: session, status } = useSession();
+  const loading = status === 'loading';
+
+  console.log('session stuff:', session, status, loading);
+
   const cypressTesting = process.env.NEXT_PUBLIC_CYPRESS_TESTING;
+
+  const callbackUrl = 'http://localhost:3000/tinycms?site=next-tinynewsdemo';
 
   return (
     <>
@@ -58,7 +64,7 @@ export default function AdminLayout({ children }) {
                         id="tinycms-signin-button"
                         onClick={() =>
                           signIn('google', {
-                            callbackUrl: `${process.env.NEXT_PUBLIC_SITE_URL}/tinycms/`,
+                            callbackUrl: `${callbackUrl}`,
                           })
                         }
                       >
