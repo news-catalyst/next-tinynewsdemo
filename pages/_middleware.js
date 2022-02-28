@@ -26,7 +26,7 @@ export default function middleware(req) {
     !pathname.includes('.') && // exclude all files in the public folder
     !pathname.startsWith('/api') // exclude all API routes
   ) {
-    url.pathname = `/_sites/${currentHost}/${pathname}`;
+    url.pathname = `/_sites/${currentHost}${pathname}`;
     console.log('[middleware] updated path:', url.pathname);
     return NextResponse.rewrite(url);
   }
