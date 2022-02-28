@@ -5,7 +5,7 @@ import {
   initialize,
   trackReadingHistoryWithPageView,
 } from '../lib/hooks/useAnalytics.js';
-import { Provider } from 'next-auth/client';
+import { SessionProvider } from 'next-auth/react';
 import { useAmp } from 'next/amp';
 import GlobalStyles from './../components/GlobalStyles';
 
@@ -49,10 +49,11 @@ const App = ({ Component, pageProps }) => {
   });
 
   return (
-    <Provider session={pageProps.session}>
+    // Avoids flickering/session loading on first load.
+    <SessionProvider session={pageProps.session}>
       <GlobalStyles />
       <Component {...pageProps} />
-    </Provider>
+    </SessionProvider>
   );
 };
 
