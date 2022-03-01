@@ -12,7 +12,7 @@ export default function AdminLayout({ children }) {
 
   const cypressTesting = process.env.NEXT_PUBLIC_CYPRESS_TESTING;
 
-  const callbackUrl = 'http://localhost:3000/tinycms?site=next-tinynewsdemo';
+  const callbackUrl = 'https://next-tinynewsdemo.tinynewsco.dev/tinycms';
 
   return (
     <>

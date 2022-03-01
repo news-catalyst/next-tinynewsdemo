@@ -79,20 +79,27 @@ export default NextAuth({
       console.log('[CB] redirect url/baseUrl:', url, baseUrl);
       console.log();
       // return url;
-      let parsedUrl = new URL(url);
-      let params = parsedUrl.searchParams;
-      let site = params.get('site');
 
-      if (site) {
-        let siteUrl = `${parsedUrl.protocol}//${site}.${parsedUrl.host}${parsedUrl.pathname}`;
-        console.log('>> [SITE]', site, siteUrl);
+      if (url.startsWith(baseUrl)) return url;
 
-        return siteUrl;
+      // localhost
+      if (
+        url.startsWith('http://localhost:3000') ||
+        url.startsWith('https://localhost:3000')
+      ) {
+        let parsedUrl = new URL(url);
+        let params = parsedUrl.searchParams;
+        let site = params.get('site');
+
+        if (site) {
+          let siteUrl = `${parsedUrl.protocol}//${site}.${parsedUrl.host}${parsedUrl.pathname}`;
+          console.log('>> [SITE]', site, siteUrl);
+
+          return siteUrl;
+        }
       }
-
       return url;
 
-      // if (url.startsWith(baseUrl)) return url;
       // // Allows relative callback URLs
       // else if (url.startsWith('/')) return new URL(url, baseUrl).toString();
       // return baseUrl;
