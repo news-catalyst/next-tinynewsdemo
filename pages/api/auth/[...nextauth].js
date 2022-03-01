@@ -20,7 +20,7 @@ export default NextAuth({
   // https://next-auth.js.org/configuration/options#jwt
   jwt: {
     // A secret to use for key generation (you should set this explicitly)
-    // secret: process.env.SECRET,
+    secret: process.env.SECRET,
     // // Set to true to use encryption (default: false)
     // encryption: true,
     // // You can define your own encode/decode functions for signing and encryption
@@ -31,6 +31,7 @@ export default NextAuth({
 
   callbacks: {
     async signIn({ user, account, profile, email, credentials }) {
+      console.log('[CB] signIn returning true');
       return true;
       // let isAllowedToSignIn = false;
 
@@ -84,7 +85,7 @@ export default NextAuth({
 
       if (site) {
         let siteUrl = `${parsedUrl.protocol}//${site}.${parsedUrl.host}${parsedUrl.pathname}`;
-        console.log('>>', site, siteUrl);
+        console.log('>> [SITE]', site, siteUrl);
 
         return siteUrl;
       }
