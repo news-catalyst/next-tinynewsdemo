@@ -1,6 +1,6 @@
 import dynamic from 'next/dynamic';
 import React, { useState } from 'react';
-import { getLatestVersion } from '../../../../lib/utils.js';
+import { findSetting, getLatestVersion } from '../../../../lib/utils.js';
 import {
   hasuraGetHomepageEditor,
   hasuraSaveHomepageLayout,
@@ -27,6 +27,8 @@ export default function HomePageEditor({
   siteMetadata,
   apiUrl,
   site,
+  siteUrl,
+  host,
 }) {
   const [notificationMessage, setNotificationMessage] = useState('');
   const [notificationType, setNotificationType] = useState('');
@@ -97,7 +99,7 @@ export default function HomePageEditor({
   }
 
   return (
-    <AdminLayout>
+    <AdminLayout host={host} siteUrl={siteUrl}>
       <AdminNav
         homePageEditor={true}
         layoutSchemas={layoutSchemas}
@@ -175,8 +177,7 @@ export async function getServerSideProps(context) {
     console.log('error:', settingsResult);
     throw settingsResult.errors;
   }
-  let siteMetadata = settingsResult.data.settings;
-
+  let settings = settingsResult.data.settings;
   const { errors, data } = await hasuraGetHomepageEditor({
     url: apiUrl,
     site: site,
@@ -186,6 +187,8 @@ export async function getServerSideProps(context) {
     console.error('error getting homepage data:', errors);
     throw errors;
   }
+  const siteMetadata =
+    data.site_metadatas[0].site_metadata_translations[0].data;
 
   const layoutSchemas = data.homepage_layout_schemas;
   let hpData = data.homepage_layout_datas[0];
@@ -214,6 +217,8 @@ export async function getServerSideProps(context) {
       false
     );
   }
+  const host = context.req.headers.host; // will give you localhost:3000
+  const siteUrl = findSetting(settings, 'NEXT_PUBLIC_SITE_URL');
 
   return {
     props: {
@@ -225,6 +230,8 @@ export async function getServerSideProps(context) {
       siteMetadata,
       apiUrl,
       site,
+      siteUrl,
+      host,
     },
   };
 }

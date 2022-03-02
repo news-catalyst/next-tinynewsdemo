@@ -12,6 +12,8 @@ import {
   TagIcon,
   MenuIcon,
 } from '@heroicons/react/solid';
+import { getOrgSettings } from '../../../../lib/articles.js';
+import { findSetting } from '../../../../lib/utils';
 
 const Content = tw.div`max-w-6xl my-16 mx-auto`;
 const Header = tw.h1`text-3xl font-bold text-center`;
@@ -69,9 +71,9 @@ const cardContent = [
   },
 ];
 
-export default function TinyCmsHome() {
+export default function TinyCmsHome(props) {
   return (
-    <AdminLayout>
+    <AdminLayout host={props.host} siteUrl={props.siteUrl}>
       <AdminNav homePageEditor={false} showConfigOptions={true} />
       <div id="page">
         <Content>
@@ -95,4 +97,31 @@ export default function TinyCmsHome() {
       </div>
     </AdminLayout>
   );
+}
+
+export async function getServerSideProps(context) {
+  const apiUrl = process.env.HASURA_API_URL;
+  const site = context.params.site;
+
+  const settingsResult = await getOrgSettings({
+    url: apiUrl,
+    site: site,
+  });
+
+  if (settingsResult.errors) {
+    console.log('error:', settingsResult);
+    throw settingsResult.errors;
+  }
+  const settings = settingsResult.data.settings;
+  const siteUrl = findSetting(settings, 'NEXT_PUBLIC_SITE_URL');
+
+  const host = context.req.headers.host; // will give you localhost:3000
+  console.log('host:', host);
+
+  return {
+    props: {
+      host,
+      siteUrl,
+    },
+  };
 }

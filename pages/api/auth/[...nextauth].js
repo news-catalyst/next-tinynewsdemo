@@ -31,27 +31,25 @@ export default NextAuth({
 
   callbacks: {
     async signIn({ user, account, profile, email, credentials }) {
-      console.log('[CB] signIn returning true');
-      return true;
-      // let isAllowedToSignIn = false;
+      let isAllowedToSignIn = false;
 
-      // console.log(
-      //   '[CB] signIn (user, account,profile, email, credentials):',
-      //   user,
-      //   account,
-      //   profile,
-      //   email,
-      //   credentials
-      // );
+      console.log(
+        '[CB] signIn (user, account,profile, email, credentials):',
+        user,
+        account,
+        profile,
+        email,
+        credentials
+      );
 
-      // let authorizedDomains = process.env.AUTHORIZED_EMAIL_DOMAINS.split(',');
-      // authorizedDomains.forEach((authorizedDomain) => {
-      //   if (user.email.split('@')[1] === authorizedDomain) {
-      //     isAllowedToSignIn = true;
-      //   }
-      // });
-      // console.log('[CB] signIn ********* is allowed?', isAllowedToSignIn);
-      // return isAllowedToSignIn;
+      let authorizedDomains = process.env.AUTHORIZED_EMAIL_DOMAINS.split(',');
+      authorizedDomains.forEach((authorizedDomain) => {
+        if (user.email.split('@')[1] === authorizedDomain) {
+          isAllowedToSignIn = true;
+        }
+      });
+      console.log('[CB] signIn ********* is allowed?', isAllowedToSignIn);
+      return isAllowedToSignIn;
     },
     session({ session, token, user }) {
       console.log('[CB] session() session, token, user:', session, token, user);
@@ -75,18 +73,20 @@ export default NextAuth({
       return token;
     },
     redirect({ url, baseUrl }) {
-      console.log();
       console.log('[CB] redirect url/baseUrl:', url, baseUrl);
-      console.log();
-      // return url;
 
-      if (url.startsWith(baseUrl)) return url;
+      if (url.startsWith(baseUrl)) {
+        console.log('[CB] url starts with base, returning', url);
+        return url;
+      }
 
       // localhost
       if (
+        baseUrl == 'http://localhost:3000' ||
         url.startsWith('http://localhost:3000') ||
         url.startsWith('https://localhost:3000')
       ) {
+        console.log('[CB] url starts with localhost');
         let parsedUrl = new URL(url);
         let params = parsedUrl.searchParams;
         let site = params.get('site');
@@ -99,10 +99,6 @@ export default NextAuth({
         }
       }
       return url;
-
-      // // Allows relative callback URLs
-      // else if (url.startsWith('/')) return new URL(url, baseUrl).toString();
-      // return baseUrl;
     },
   },
 });

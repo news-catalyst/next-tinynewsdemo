@@ -52,17 +52,12 @@ const AssetTitle = styled.h4(({ big, meta }) => ({
   fontFamily: Typography[meta.theme].ArticleTitle,
 }));
 
-export default function FeaturedArticleMeta({
-  article,
-  big,
-  metadata,
-  locale,
-}) {
+export default function FeaturedArticleMeta({ article, big, metadata }) {
   if (article === null || article === undefined || !article) {
     console.error('FeaturedArticleMeta missing article:', article);
   }
 
-  // console.log('featured article:', article);
+  // console.log('featured article meta:', metadata);
 
   let categoryTitle = getLatestVersion(
     article.category.category_translations,

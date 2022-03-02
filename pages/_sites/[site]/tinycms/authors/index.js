@@ -17,6 +17,7 @@ import {
 import {
   displayAuthorName,
   getLatestVersion,
+  findSetting,
 } from '../../../../../lib/utils.js';
 
 const Table = tw.table`table-auto w-full`;
@@ -26,7 +27,7 @@ const TableRow = tw.tr``;
 const TableHeader = tw.th`px-4 py-2`;
 const TableCell = tw.td`border px-4 py-2`;
 
-export default function Authors({ apiUrl, site, authors }) {
+export default function Authors({ apiUrl, site, authors, siteUrl, host }) {
   const [notificationMessage, setNotificationMessage] = useState('');
   const [notificationType, setNotificationType] = useState('');
   const [showNotification, setShowNotification] = useState(false);
@@ -130,7 +131,7 @@ export default function Authors({ apiUrl, site, authors }) {
   });
 
   return (
-    <AdminLayout>
+    <AdminLayout host={host} siteUrl={siteUrl}>
       <AdminNav homePageEditor={false} showConfigOptions={true} />
       {showNotification && (
         <Notification
@@ -173,6 +174,18 @@ export async function getServerSideProps(context) {
   const apiUrl = process.env.HASURA_API_URL;
   const site = context.params.site;
 
+  const settingsResult = await getOrgSettings({
+    url: apiUrl,
+    site: site,
+  });
+
+  if (settingsResult.errors) {
+    console.log('error:', settingsResult);
+    throw settingsResult.errors;
+  }
+  let settings = settingsResult.data.settings;
+  const siteUrl = findSetting(settings, 'NEXT_PUBLIC_SITE_URL');
+  const host = context.req.headers.host;
   const { errors, data } = await hasuraListAllAuthors({
     url: apiUrl,
     site: site,
@@ -189,6 +202,8 @@ export async function getServerSideProps(context) {
       apiUrl: apiUrl,
       site: site,
       authors: authors,
+      siteUrl: siteUrl,
+      host: host,
     },
   };
 }

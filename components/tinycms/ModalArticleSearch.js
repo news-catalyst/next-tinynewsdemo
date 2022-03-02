@@ -26,7 +26,7 @@ export default function ModalArticleSearch(props) {
 
     const { errors, data } = await hasuraSearchArticles({
       url: props.apiUrl,
-      orgSlug: props.apiToken,
+      site: props.site,
       localeCode: props.locale,
       term: searchTerm,
     });
