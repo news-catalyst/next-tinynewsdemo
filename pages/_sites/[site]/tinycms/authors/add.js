@@ -23,7 +23,14 @@ import { slugify } from '../../../../../lib/graphql';
 
 const UploadContainer = tw.div`container mx-auto min-w-0 flex-auto px-4 sm:px-6 xl:px-8 pt-10`;
 
-export default function AddAuthor({ apiUrl, site, tinyApiKey, awsConfig }) {
+export default function AddAuthor({
+  apiUrl,
+  site,
+  tinyApiKey,
+  awsConfig,
+  siteUrl,
+  host,
+}) {
   const [notificationMessage, setNotificationMessage] = useState('');
   const [notificationType, setNotificationType] = useState('');
   const [showNotification, setShowNotification] = useState(false);
@@ -125,7 +132,7 @@ export default function AddAuthor({ apiUrl, site, tinyApiKey, awsConfig }) {
   }
 
   return (
-    <AdminLayout>
+    <AdminLayout host={host} siteUrl={siteUrl}>
       <AdminNav homePageEditor={false} showConfigOptions={true} />
 
       {showNotification && (
@@ -224,14 +231,16 @@ export async function getServerSideProps(context) {
     console.log('error:', settingsResult);
     throw settingsResult.errors;
   }
-  let siteMetadata = settingsResult.data.settings;
+  let settings = settingsResult.data.settings;
 
-  let bucketName = findSetting(siteMetadata, 'TNC_AWS_BUCKET_NAME');
-  let dir = findSetting(siteMetadata, 'TNC_AWS_DIR_NAME');
-  let region = findSetting(siteMetadata, 'TNC_AWS_REGION');
-  let accessKey = findSetting(siteMetadata, 'TNC_AWS_ACCESS_ID');
-  let secretKey = findSetting(siteMetadata, 'TNC_AWS_ACCESS_KEY');
-  let tinyApiKey = findSetting(siteMetadata, 'TINYMCE_API_KEY');
+  let bucketName = findSetting(settings, 'TNC_AWS_BUCKET_NAME');
+  let dir = findSetting(settings, 'TNC_AWS_DIR_NAME');
+  let region = findSetting(settings, 'TNC_AWS_REGION');
+  let accessKey = findSetting(settings, 'TNC_AWS_ACCESS_ID');
+  let secretKey = findSetting(settings, 'TNC_AWS_ACCESS_KEY');
+  let tinyApiKey = findSetting(settings, 'TINYMCE_API_KEY');
+  const siteUrl = findSetting(settings, 'NEXT_PUBLIC_SITE_URL');
+  const host = context.req.headers.host;
 
   const awsConfig = {
     bucketName: bucketName,
@@ -248,6 +257,8 @@ export async function getServerSideProps(context) {
       site: site,
       tinyApiKey: tinyApiKey,
       awsConfig: awsConfig,
+      siteUrl: siteUrl,
+      host: host,
     },
   };
 }

@@ -35,6 +35,8 @@ export default function EditAuthor({
   tinyApiKey,
   author,
   awsConfig,
+  siteUrl,
+  host,
 }) {
   const [notificationMessage, setNotificationMessage] = useState('');
   const [notificationType, setNotificationType] = useState('');
@@ -174,7 +176,7 @@ export default function EditAuthor({
   }
 
   return (
-    <AdminLayout>
+    <AdminLayout host={host} siteUrl={siteUrl}>
       <AdminNav homePageEditor={false} showConfigOptions={true} />
 
       {showNotification && (
@@ -287,14 +289,16 @@ export async function getServerSideProps(context) {
     console.log('error:', settingsResult);
     throw settingsResult.errors;
   }
-  let siteMetadata = settingsResult.data.settings;
+  let settings = settingsResult.data.settings;
 
-  let bucketName = findSetting(siteMetadata, 'TNC_AWS_BUCKET_NAME');
-  let dir = findSetting(siteMetadata, 'TNC_AWS_DIR_NAME');
-  let region = findSetting(siteMetadata, 'TNC_AWS_REGION');
-  let accessKey = findSetting(siteMetadata, 'TNC_AWS_ACCESS_ID');
-  let secretKey = findSetting(siteMetadata, 'TNC_AWS_ACCESS_KEY');
-  let tinyApiKey = findSetting(siteMetadata, 'TINYMCE_API_KEY');
+  let bucketName = findSetting(settings, 'TNC_AWS_BUCKET_NAME');
+  let dir = findSetting(settings, 'TNC_AWS_DIR_NAME');
+  let region = findSetting(settings, 'TNC_AWS_REGION');
+  let accessKey = findSetting(settings, 'TNC_AWS_ACCESS_ID');
+  let secretKey = findSetting(settings, 'TNC_AWS_ACCESS_KEY');
+  let tinyApiKey = findSetting(settings, 'TINYMCE_API_KEY');
+  const siteUrl = findSetting(settings, 'NEXT_PUBLIC_SITE_URL');
+  const host = context.req.headers.host;
 
   const awsConfig = {
     bucketName: bucketName,
@@ -324,6 +328,8 @@ export async function getServerSideProps(context) {
       tinyApiKey: tinyApiKey,
       author: author,
       awsConfig: awsConfig,
+      siteUrl: siteUrl,
+      host: host,
     },
   };
 }

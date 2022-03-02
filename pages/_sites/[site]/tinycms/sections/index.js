@@ -9,6 +9,7 @@ import { getLatestVersion } from '../../../../../lib/utils';
 import { hasuraListAllSectionsByLocale } from '../../../../../lib/section.js';
 import { AddButton } from '../../../../../components/common/CommonStyles.js';
 import { getOrgSettings } from '../../../../../lib/articles.js';
+import { findSetting } from '../../../../../lib/utils';
 
 const Table = tw.table`table-auto w-full`;
 const TableHead = tw.thead``;
@@ -17,7 +18,7 @@ const TableRow = tw.tr``;
 const TableHeader = tw.th`px-4 py-2`;
 const TableCell = tw.td`border px-4 py-2`;
 
-export default function Sections({ sections }) {
+export default function Sections({ sections, siteUrl, host }) {
   const [message, setMessage] = useState(null);
 
   const router = useRouter();
@@ -56,7 +57,7 @@ export default function Sections({ sections }) {
   });
 
   return (
-    <AdminLayout>
+    <AdminLayout host={host} siteUrl={siteUrl}>
       <AdminNav homePageEditor={false} showConfigOptions={true} />
       <div tw="container mx-auto">
         <div tw="px-10 pt-5">
@@ -108,6 +109,9 @@ export async function getServerSideProps(context) {
     console.log('error:', settingsResult);
     throw settingsResult.errors;
   }
+  const settings = settingsResult.data.settings;
+  const siteUrl = findSetting(settings, 'NEXT_PUBLIC_SITE_URL');
+  const host = context.req.headers.host;
 
   const { errors, data } = await hasuraListAllSectionsByLocale({
     url: apiUrl,
@@ -124,6 +128,8 @@ export async function getServerSideProps(context) {
   return {
     props: {
       sections: sections,
+      siteUrl: siteUrl,
+      host: host,
     },
   };
 }

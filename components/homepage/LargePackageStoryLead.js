@@ -35,6 +35,7 @@ export default function LargePackageStoryLead(props) {
   const [isFeaturedModalActive, setFeaturedModal] = useState(false);
   const [isTopModalActive, setTopModal] = useState(false);
   const [isBottomModalActive, setBottomModal] = useState(false);
+  const [locale, setLocale] = useState('en-US');
 
   const isDesktop = useMediaQuery(1024);
   const isTablet = useMediaQuery(768) && !isDesktop;
@@ -76,7 +77,7 @@ export default function LargePackageStoryLead(props) {
                     article={props.featuredArticle}
                     big={isDesktop}
                     metadata={props.metadata}
-                    locale={props.locale}
+                    locale={'en-US'}
                   />
                 </AssetMetaContainer>
                 <AssetThumbnailContainer>
@@ -92,13 +93,13 @@ export default function LargePackageStoryLead(props) {
             <div>
               <ModalArticleSearch
                 apiUrl={props.apiUrl}
-                apiToken={props.apiToken}
+                site={props.site}
                 isActive={isFeaturedModalActive}
                 setModal={setFeaturedModal}
                 featuredArticle={props.featuredArticle}
                 setFeaturedArticle={props.setFeaturedArticle}
                 key="featuredArticleModal"
-                locale={props.locale}
+                locale={locale}
               />
 
               <ChangeArticleButton onClick={() => setFeaturedModal(true)}>
@@ -119,7 +120,7 @@ export default function LargePackageStoryLead(props) {
                   key={props.subFeaturedTopArticle.slug}
                   article={props.subFeaturedTopArticle}
                   metadata={props.metadata}
-                  locale={props.locale}
+                  locale={locale}
                 />
               </AssetMetaContainer>
             )}
@@ -128,13 +129,13 @@ export default function LargePackageStoryLead(props) {
             <div>
               <ModalArticleSearch
                 apiUrl={props.apiUrl}
-                apiToken={props.apiToken}
+                site={props.site}
                 isActive={isTopModalActive}
                 setModal={setTopModal}
                 featuredArticle={props.subFeaturedTopArticle}
                 setFeaturedArticle={props.setSubFeaturedTopArticle}
                 key="featuredTopArticleModal"
-                locale={props.locale}
+                locale={locale}
               />
 
               <ChangeArticleButton onClick={() => setTopModal(true)}>
@@ -155,7 +156,7 @@ export default function LargePackageStoryLead(props) {
                   key={props.subFeaturedBottomArticle.slug}
                   article={props.subFeaturedBottomArticle}
                   metadata={props.metadata}
-                  locale={props.locale}
+                  locale={locale}
                 />
               </AssetMetaContainer>
             )}
@@ -164,13 +165,13 @@ export default function LargePackageStoryLead(props) {
             <div>
               <ModalArticleSearch
                 apiUrl={props.apiUrl}
-                apiToken={props.apiToken}
+                site={props.site}
                 isActive={isBottomModalActive}
                 setModal={setBottomModal}
                 featuredArticle={props.subFeaturedBottomArticle}
                 setFeaturedArticle={props.setSubFeaturedBottomArticle}
                 key="featuredBottomArticleModal"
-                locale={props.locale}
+                locale={locale}
               />
 
               <ChangeArticleButton onClick={() => setBottomModal(true)}>

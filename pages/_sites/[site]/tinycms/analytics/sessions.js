@@ -11,6 +11,8 @@ import GeoSessions from '../../../../../components/tinycms/analytics/GeoSessions
 import ReferralSource from '../../../../../components/tinycms/analytics/ReferralSource';
 import AnalyticsSidebar from '../../../../../components/tinycms/analytics/AnalyticsSidebar';
 import AnalyticsNav from '../../../../../components/tinycms/analytics/AnalyticsNav';
+import { findSetting } from '../../../../../lib/utils';
+import { getOrgSettings } from '../../../../../lib/articles.js';
 
 const Container = tw.div`flex flex-wrap -mx-2 mb-8`;
 const Sidebar = tw.div`h-full h-screen bg-gray-100 md:w-1/5 lg:w-1/5 px-2 mb-4`;
@@ -36,7 +38,7 @@ export default function SessionsOverview(props) {
   };
 
   return (
-    <AdminLayout>
+    <AdminLayout host={props.host} siteUrl={props.siteUrl}>
       <AdminNav switchLocales={false} homePageEditor={false} />
       <Container>
         <Sidebar>
@@ -121,11 +123,26 @@ export default function SessionsOverview(props) {
 export async function getServerSideProps(context) {
   const apiUrl = process.env.HASURA_API_URL;
   const site = context.params.site;
+  const settingsResult = await getOrgSettings({
+    url: apiUrl,
+    site: site,
+  });
+
+  if (settingsResult.errors) {
+    console.log('error:', settingsResult);
+    throw settingsResult.errors;
+  }
+  const settings = settingsResult.data.settings;
+  const siteUrl = findSetting(settings, 'NEXT_PUBLIC_SITE_URL');
+
+  const host = context.req.headers.host; // will give you localhost:3000
 
   return {
     props: {
-      apiUrl: apiUrl,
-      site: site,
+      apiUrl,
+      site,
+      siteUrl,
+      host,
     },
   };
 }

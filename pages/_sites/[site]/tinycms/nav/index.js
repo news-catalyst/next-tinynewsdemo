@@ -16,6 +16,7 @@ import {
   AddButton,
   DeleteButton,
 } from '../../../../../components/common/CommonStyles.js';
+import { findSetting } from '../../../../../lib/utils';
 
 const Container = tw.div`flex flex-wrap -mx-2`;
 const MainContent = tw.div`w-full lg:w-3/4 px-4 py-4`;
@@ -30,6 +31,8 @@ export default function NavBuilder({
   siteMetadata,
   linkOptions,
   vercelHook,
+  siteUrl,
+  host,
 }) {
   const [message, setMessage] = useState(null);
   const [metadata, setMetadata] = useState(null);
@@ -270,7 +273,7 @@ export default function NavBuilder({
     }
   }
   return (
-    <AdminLayout>
+    <AdminLayout host={host} siteUrl={siteUrl}>
       <AdminNav homePageEditor={false} showConfigOptions={true} />
 
       <Container>
@@ -436,21 +439,26 @@ export async function getServerSideProps(context) {
     console.log('error:', settingsResult);
     throw settingsResult.errors;
   }
-  let siteMetadata = settingsResult.data.settings;
-  let vercelHook = findSetting(siteMetadata, 'VERCEL_DEPLOY_HOOK');
+  let siteMetadata;
 
+  let settings = settingsResult.data.settings;
+  let vercelHook = findSetting(settings, 'VERCEL_DEPLOY_HOOK');
+  const siteUrl = findSetting(settings, 'NEXT_PUBLIC_SITE_URL');
+  const host = context.req.headers.host;
   let linkOptions = [];
 
   const { errors, data } = await hasuraGetMetadataByLocale({
     url: apiUrl,
     site: site,
-    localeCode: context.locale,
+    localeCode: locale,
   });
 
   if (errors) {
     console.error('Error getting site metadata:', errors);
     throw errors;
   } else {
+    siteMetadata = data.site_metadatas[0].site_metadata_translations[0].data;
+
     data.authors.forEach((author) => {
       linkOptions.push({
         type: 'author',
@@ -497,6 +505,8 @@ export async function getServerSideProps(context) {
       siteMetadata: siteMetadata,
       linkOptions: linkOptions,
       vercelHook: vercelHook,
+      siteUrl: siteUrl,
+      host: host,
     },
   };
 }

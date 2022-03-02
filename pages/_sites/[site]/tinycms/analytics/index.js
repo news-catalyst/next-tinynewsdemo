@@ -7,6 +7,7 @@ import AnalyticsSidebar from '../../../../../components/tinycms/analytics/Analyt
 import YesterdaysTopTen from '../../../../../components/tinycms/analytics/YesterdaysTopTen';
 import { hasuraGetYesterday } from '../../../../../lib/analytics';
 import { getOrgSettings } from '../../../../../lib/articles.js';
+import { findSetting } from '../../../../../lib/utils';
 
 import moment from 'moment';
 
@@ -21,7 +22,7 @@ const Header = tw.h1`inline-block text-3xl font-extrabold text-gray-900 tracking
 
 export default function AnalyticsIndex(props) {
   return (
-    <AdminLayout>
+    <AdminLayout host={props.host} siteUrl={props.siteUrl}>
       <AdminNav switchLocales={false} homePageEditor={false} />
       <Container>
         <Sidebar>
@@ -161,6 +162,20 @@ export async function getServerSideProps(context) {
     subscriberSessionCount += parseInt(item.count);
   });
 
+  const settingsResult = await getOrgSettings({
+    url: apiUrl,
+    site: site,
+  });
+
+  if (settingsResult.errors) {
+    console.log('error:', settingsResult);
+    throw settingsResult.errors;
+  }
+  const settings = settingsResult.data.settings;
+  const siteUrl = findSetting(settings, 'NEXT_PUBLIC_SITE_URL');
+
+  const host = context.req.headers.host; // will give you localhost:3000
+  console.log('host:', host);
   return {
     props: {
       apiUrl: apiUrl,
@@ -170,6 +185,8 @@ export async function getServerSideProps(context) {
       sessionCount: sessionCount,
       donorSessionCount: donorSessionCount,
       subscriberSessionCount: subscriberSessionCount,
+      siteUrl: siteUrl,
+      host: host,
     },
   };
 }

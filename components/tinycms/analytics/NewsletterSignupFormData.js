@@ -213,7 +213,7 @@ const NewsletterSignupFormData = (props) => {
   }, [
     props.startDate,
     props.endDate,
-    props.apiToken,
+    props.site,
     props.apiUrl,
     props.dimension,
   ]);

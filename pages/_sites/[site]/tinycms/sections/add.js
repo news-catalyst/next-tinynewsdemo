@@ -14,8 +14,16 @@ import Notification from '../../../../../components/tinycms/Notification';
 import { getOrgSettings } from '../../../../../lib/articles.js';
 import { hasuraCreateSection } from '../../../../../lib/section';
 import { slugify } from '../../../../../lib/graphql';
+import { findSetting } from '../../../../../lib/utils';
 
-export default function AddSection({ apiUrl, site, currentLocale, locales }) {
+export default function AddSection({
+  apiUrl,
+  site,
+  currentLocale,
+  locales,
+  siteUrl,
+  host,
+}) {
   const [notificationMessage, setNotificationMessage] = useState([]);
   const [notificationType, setNotificationType] = useState('');
   const [showNotification, setShowNotification] = useState(false);
@@ -86,7 +94,7 @@ export default function AddSection({ apiUrl, site, currentLocale, locales }) {
   }
 
   return (
-    <AdminLayout>
+    <AdminLayout host={host} siteUrl={siteUrl}>
       <AdminNav
         switchLocales={true}
         currentLocale={currentLocale}
@@ -148,14 +156,21 @@ export async function getServerSideProps(context) {
     console.log('error:', settingsResult);
     throw settingsResult.errors;
   }
+  let settings = settingsResult.data.settings;
+
+  const siteUrl = findSetting(settings, 'NEXT_PUBLIC_SITE_URL');
+  const host = context.req.headers.host;
+
   let locales = settingsResult.data.organization_locales;
 
   return {
     props: {
       apiUrl: apiUrl,
       site: site,
-      currentLocale: context.locale,
+      currentLocale: 'en-US',
       locales: locales,
+      siteUrl: siteUrl,
+      host: host,
     },
   };
 }

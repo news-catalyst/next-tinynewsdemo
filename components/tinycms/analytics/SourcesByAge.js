@@ -3,8 +3,6 @@ import tw from 'twin.macro';
 import {
   BarChart,
   Bar,
-  LineChart,
-  Line,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -24,7 +22,7 @@ const SourcesByAge = (props) => {
   useEffect(() => {
     let params = {
       url: props.apiUrl,
-      orgSlug: props.apiToken,
+      site: props.site,
       startDate: props.startDate.format('YYYY-MM-DD'),
       endDate: props.endDate.format('YYYY-MM-DD'),
     };
@@ -67,7 +65,7 @@ const SourcesByAge = (props) => {
         ageRef.current.scrollIntoView({ behavior: 'smooth' });
       }
     }
-  }, [props.startDate, props.endDate, props.apiToken, props.apiUrl]);
+  }, [props.startDate, props.endDate, props.site, props.apiUrl]);
 
   return (
     <>

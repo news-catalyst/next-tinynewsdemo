@@ -65,7 +65,7 @@ export default function UpdateMetadata(props) {
 
     const { errors, data } = await hasuraUpsertMetadata({
       url: props.apiUrl,
-      orgSlug: props.apiToken,
+      site: props.site,
       data: parsed,
       published: true,
       localeCode: props.currentLocale,

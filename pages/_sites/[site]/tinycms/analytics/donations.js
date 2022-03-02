@@ -9,6 +9,8 @@ import datePickerStyles from '../../../../../styles/datepicker.js';
 import DonateClicks from '../../../../../components/tinycms/analytics/DonateClicks';
 import AnalyticsNav from '../../../../../components/tinycms/analytics/AnalyticsNav';
 import AnalyticsSidebar from '../../../../../components/tinycms/analytics/AnalyticsSidebar';
+import { getOrgSettings } from '../../../../../lib/articles.js';
+import { findSetting } from '../../../../../lib/utils';
 
 const Container = tw.div`flex flex-wrap -mx-2 mb-8`;
 const Sidebar = tw.div`h-full h-screen bg-gray-100 md:w-1/5 lg:w-1/5 px-2 mb-4`;
@@ -30,7 +32,7 @@ export default function Donations(props) {
   };
 
   return (
-    <AdminLayout>
+    <AdminLayout host={props.host} siteUrl={props.siteUrl}>
       <AdminNav switchLocales={false} homePageEditor={false} />
 
       <Container>
@@ -69,7 +71,7 @@ export default function Donations(props) {
               startDate={startDate}
               endDate={endDate}
               apiUrl={props.apiUrl}
-              apiToken={props.apiToken}
+              site={props.site}
             />
 
             <CustomDimensions
@@ -79,7 +81,7 @@ export default function Donations(props) {
               label="Donor"
               dek="This chart shows you how many sessions have occurred from users who have already donated to your website. Note: we track this via cookies, meaning a user must use the same browser as when they donated for this to track."
               apiUrl={props.apiUrl}
-              apiToken={props.apiToken}
+              site={props.site}
             />
           </SettingsContainer>
         </MainContent>
@@ -94,10 +96,27 @@ export async function getServerSideProps(context) {
   const apiUrl = process.env.HASURA_API_URL;
   const site = context.params.site;
 
+  const settingsResult = await getOrgSettings({
+    url: apiUrl,
+    site: site,
+  });
+
+  if (settingsResult.errors) {
+    console.log('error:', settingsResult);
+    throw settingsResult.errors;
+  }
+  const settings = settingsResult.data.settings;
+  const siteUrl = findSetting(settings, 'NEXT_PUBLIC_SITE_URL');
+
+  const host = context.req.headers.host; // will give you localhost:3000
+  console.log('host:', host);
+
   return {
     props: {
       apiUrl,
       site,
+      siteUrl,
+      host,
     },
   };
 }
