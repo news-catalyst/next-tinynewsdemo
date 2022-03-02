@@ -32,6 +32,8 @@ export default function EditSection({
   section,
   locales,
   vercelHook,
+  siteUrl,
+  host,
 }) {
   const [notificationMessage, setNotificationMessage] = useState('');
   const [notificationType, setNotificationType] = useState('');
@@ -149,7 +151,7 @@ export default function EditSection({
   }
 
   return (
-    <AdminLayout>
+    <AdminLayout host={host} siteUrl={siteUrl}>
       <AdminNav
         currentLocale={currentLocale}
         switchLocales={true}
@@ -259,8 +261,10 @@ export async function getServerSideProps(context) {
     throw settingsResult.errors;
   }
   let locales = settingsResult.data.organization_locales;
-  let siteMetadata = settingsResult.data.settings;
-  let vercelHook = findSetting(siteMetadata, 'VERCEL_DEPLOY_HOOK');
+  let settings = settingsResult.data.settings;
+  let vercelHook = findSetting(settings, 'VERCEL_DEPLOY_HOOK');
+  const siteUrl = findSetting(settings, 'NEXT_PUBLIC_SITE_URL');
+  const host = context.req.headers.host;
 
   let section = {};
   const { errors, data } = await hasuraGetSectionById({
@@ -278,10 +282,12 @@ export async function getServerSideProps(context) {
     props: {
       apiUrl: apiUrl,
       site: site,
-      currentLocale: context.locale,
+      currentLocale: 'en-US',
       section: section,
       locales: locales,
       vercelHook: vercelHook,
+      siteUrl: siteUrl,
+      host: host,
     },
   };
 }

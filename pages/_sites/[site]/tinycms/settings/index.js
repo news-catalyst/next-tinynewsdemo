@@ -2,7 +2,10 @@ import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import tw from 'twin.macro';
-import { getOrgSettings } from '../../../../../lib/articles.js';
+import {
+  getOrgSettings,
+  hasuraGetMetadataByLocale,
+} from '../../../../../lib/articles.js';
 import { findSetting } from '../../../../../lib/utils.js';
 import AdminLayout from '../../../../../components/AdminLayout.js';
 import AdminNav from '../../../../../components/nav/AdminNav';
@@ -48,9 +51,10 @@ export default function Settings({
   site,
   tinyApiKey,
   siteMetadata,
-  locales,
   awsConfig,
   vercelHook,
+  siteUrl,
+  host,
 }) {
   const siteInfoRef = useRef();
   const designRef = useRef();
@@ -296,7 +300,7 @@ export default function Settings({
     }
   }
   return (
-    <AdminLayout>
+    <AdminLayout host={host} siteUrl={siteUrl}>
       <AdminNav homePageEditor={false} showConfigOptions={true} />
 
       <Container>
@@ -417,17 +421,16 @@ export async function getServerSideProps(context) {
     console.log('error:', settingsResult);
     throw settingsResult.errors;
   }
-  let siteMetadata = settingsResult.data.settings;
+  let settings = settingsResult.data.settings;
 
-  let locales = settingsResult.data.organization_locales;
-
-  let bucketName = findSetting(siteMetadata, 'TNC_AWS_BUCKET_NAME');
-  let dir = findSetting(siteMetadata, 'TNC_AWS_DIR_NAME');
-  let region = findSetting(siteMetadata, 'TNC_AWS_REGION');
-  let accessKey = findSetting(siteMetadata, 'TNC_AWS_ACCESS_ID');
-  let secretKey = findSetting(siteMetadata, 'TNC_AWS_ACCESS_KEY');
-  let vercelHook = findSetting(siteMetadata, 'VERCEL_DEPLOY_HOOK');
-  let tinyApiKey = findSetting(siteMetadata, 'TINYMCE_API_KEY');
+  let bucketName = findSetting(settings, 'TNC_AWS_BUCKET_NAME');
+  let dir = findSetting(settings, 'TNC_AWS_DIR_NAME');
+  let region = findSetting(settings, 'TNC_AWS_REGION');
+  let accessKey = findSetting(settings, 'TNC_AWS_ACCESS_ID');
+  let secretKey = findSetting(settings, 'TNC_AWS_ACCESS_KEY');
+  let vercelHook = findSetting(settings, 'VERCEL_DEPLOY_HOOK');
+  let tinyApiKey = findSetting(settings, 'TINYMCE_API_KEY');
+  const siteUrl = findSetting(settings, 'NEXT_PUBLIC_SITE_URL');
 
   const awsConfig = {
     bucketName: bucketName,
@@ -438,15 +441,34 @@ export async function getServerSideProps(context) {
     s3Url: `https://${bucketName}.s3.${region}.amazonaws.com`,
   };
 
+  const host = context.req.headers.host; // will give you localhost:3000
+
+  const { errors, data } = await hasuraGetMetadataByLocale({
+    url: apiUrl,
+    site: site,
+    localeCode: 'en-US',
+  });
+
+  let siteMetadata;
+  if (errors) {
+    console.error('Error getting site metadata:', errors);
+    throw errors;
+  } else {
+    siteMetadata = data.site_metadatas[0].site_metadata_translations[0].data;
+  }
+  if (siteMetadata === undefined) {
+    siteMetadata = null;
+  }
   return {
     props: {
       apiUrl: apiUrl,
       site: site,
       tinyApiKey: tinyApiKey,
       siteMetadata: siteMetadata,
-      locales: locales,
       awsConfig: awsConfig,
       vercelHook: vercelHook,
+      siteUrl: siteUrl,
+      host: host,
     },
   };
 }

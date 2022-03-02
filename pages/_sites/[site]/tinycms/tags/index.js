@@ -10,7 +10,7 @@ import {
   hasuraListAllTagsByLocale,
 } from '../../../../../lib/articles.js';
 import { deleteSingleTag } from '../../../../../lib/section.js';
-import { getLatestVersion } from '../../../../../lib/utils.js';
+import { findSetting, getLatestVersion } from '../../../../../lib/utils.js';
 import {
   DeleteButton,
   AddButton,
@@ -24,7 +24,7 @@ const TableHeader = tw.th`px-4 py-2`;
 const TableCell = tw.td`border px-4 py-2`;
 const AddTagButton = tw.a`hidden md:flex w-full md:w-auto px-4 py-2 text-right bg-blue-900 hover:bg-blue-500 text-white md:rounded`;
 
-export default function Tags({ apiUrl, site, tags }) {
+export default function Tags({ apiUrl, site, tags, siteUrl, host }) {
   const [notificationMessage, setNotificationMessage] = useState('');
   const [notificationType, setNotificationType] = useState('');
   const [showNotification, setShowNotification] = useState(false);
@@ -104,7 +104,7 @@ export default function Tags({ apiUrl, site, tags }) {
   });
 
   return (
-    <AdminLayout>
+    <AdminLayout host={host} siteUrl={siteUrl}>
       <AdminNav homePageEditor={false} showConfigOptions={true} />
       {showNotification && (
         <Notification
@@ -162,6 +162,10 @@ export async function getServerSideProps(context) {
     throw settingsResult.errors;
   }
 
+  const settings = settingsResult.data.settings;
+  const siteUrl = findSetting(settings, 'NEXT_PUBLIC_SITE_URL');
+  const host = context.req.headers.host;
+
   let tags;
 
   const { errors, data } = await hasuraListAllTagsByLocale({
@@ -183,6 +187,8 @@ export async function getServerSideProps(context) {
       apiUrl: apiUrl,
       site: site,
       tags: tags,
+      siteUrl: siteUrl,
+      host: host,
     },
   };
 }

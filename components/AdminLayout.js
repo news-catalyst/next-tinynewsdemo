@@ -4,16 +4,20 @@ import { signIn, useSession } from 'next-auth/react';
 
 const SignInButton = tw.a`hidden md:flex w-full md:w-auto px-4 py-2 text-right bg-blue-900 hover:bg-blue-500 text-white md:rounded`;
 
-export default function AdminLayout({ children }) {
+export default function AdminLayout({ children, host, siteUrl }) {
   const { data: session, status } = useSession();
   const loading = status === 'loading';
 
-  console.log('session stuff:', session, status, loading);
-
   const cypressTesting = process.env.NEXT_PUBLIC_CYPRESS_TESTING;
 
-  const callbackUrl = 'https://next-tinynewsdemo.tinynewsco.dev/tinycms';
-
+  // this is another flag to turn off Authentication similar to the cypress setting
+  // I thought it would be clearer to intentionally skip authentication with a separate variable
+  // when testing on localhost instead of repurposing the cypressTesting var
+  let skipAuth = false;
+  if (host.includes('localhost')) {
+    skipAuth = true;
+  }
+  const callbackUrl = new URL('/tinycms', siteUrl).toString();
   return (
     <>
       <Head>
@@ -46,7 +50,7 @@ export default function AdminLayout({ children }) {
         <script async src="https://apis.google.com/js/client:platform.js" />
       </Head>
       <main className="container">
-        {!session && !cypressTesting && (
+        {!session && !cypressTesting && !skipAuth && (
           <section tw="bg-gray-200 text-gray-900 relative">
             <div tw="min-h-screen bg-right-top bg-cover flex">
               <div tw="relative container mx-auto p-4 flex items-center z-10">
@@ -77,7 +81,7 @@ export default function AdminLayout({ children }) {
             </div>
           </section>
         )}
-        {(session || cypressTesting) && <>{children}</>}
+        {(session || cypressTesting || skipAuth) && <>{children}</>}
       </main>
     </>
   );

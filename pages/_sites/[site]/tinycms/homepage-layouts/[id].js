@@ -7,8 +7,16 @@ import {
 } from '../../../../../lib/homepage';
 import AdminNav from '../../../../../components/nav/AdminNav';
 import Notification from '../../../../../components/tinycms/Notification';
+import { getOrgSettings } from '../../../../../lib/articles.js';
+import { findSetting } from '../../../../../lib/utils';
 
-export default function EditHomepageLayout({ apiUrl, site, homepageLayout }) {
+export default function EditHomepageLayout({
+  apiUrl,
+  site,
+  homepageLayout,
+  siteUrl,
+  host,
+}) {
   const [notificationMessage, setNotificationMessage] = useState('');
   const [notificationType, setNotificationType] = useState('');
   const [showNotification, setShowNotification] = useState(false);
@@ -59,7 +67,7 @@ export default function EditHomepageLayout({ apiUrl, site, homepageLayout }) {
   }
 
   return (
-    <AdminLayout>
+    <AdminLayout host={host} siteUrl={siteUrl}>
       <AdminNav homePageEditor={false} showConfigOptions={true} />
 
       {showNotification && (
@@ -134,6 +142,19 @@ export async function getServerSideProps(context) {
   const site = context.params.site;
   const id = context.params.id;
 
+  const settingsResult = await getOrgSettings({
+    url: apiUrl,
+    site: site,
+  });
+
+  if (settingsResult.errors) {
+    console.log('error:', settingsResult);
+    throw settingsResult.errors;
+  }
+  let settings = settingsResult.data.settings;
+  const siteUrl = findSetting(settings, 'NEXT_PUBLIC_SITE_URL');
+  const host = context.req.headers.host;
+
   let homepageLayout;
 
   const { errors, data } = await hasuraGetHomepageLayout({
@@ -152,6 +173,8 @@ export async function getServerSideProps(context) {
       apiUrl: apiUrl,
       site: site,
       homepageLayout: homepageLayout,
+      siteUrl: siteUrl,
+      host: host,
     },
   };
 }

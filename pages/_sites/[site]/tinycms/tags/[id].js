@@ -18,10 +18,12 @@ import {
 } from '../../../../../lib/section.js';
 import { getLatestVersion } from '../../../../../lib/utils.js';
 import { slugify } from '../../../../../lib/graphql';
+import { getOrgSettings } from '../../../../../lib/articles.js';
+import { findSetting } from '../../../../../lib/utils';
 
 const ViewOnSiteLink = tw.a`font-bold cursor-pointer hover:underline`;
 
-export default function EditTag({ apiUrl, site, tag }) {
+export default function EditTag({ apiUrl, site, tag, siteUrl, host }) {
   const [notificationMessage, setNotificationMessage] = useState('');
   const [notificationType, setNotificationType] = useState('');
   const [showNotification, setShowNotification] = useState(false);
@@ -73,7 +75,7 @@ export default function EditTag({ apiUrl, site, tag }) {
   }
 
   return (
-    <AdminLayout>
+    <AdminLayout host={host} siteUrl={siteUrl}>
       <AdminNav homePageEditor={false} showConfigOptions={true} />
 
       {showNotification && (
@@ -122,6 +124,19 @@ export async function getServerSideProps(context) {
   const site = context.params.site;
   const id = context.params.id;
 
+  const settingsResult = await getOrgSettings({
+    url: apiUrl,
+    site: site,
+  });
+
+  if (settingsResult.errors) {
+    console.log('error:', settingsResult);
+    throw settingsResult.errors;
+  }
+  const settings = settingsResult.data.settings;
+  const siteUrl = findSetting(settings, 'NEXT_PUBLIC_SITE_URL');
+  const host = context.req.headers.host;
+
   let tag = {};
   const { errors, data } = await hasuraGetTagById({
     url: apiUrl,
@@ -139,6 +154,8 @@ export async function getServerSideProps(context) {
       apiUrl: apiUrl,
       site: site,
       tag: tag,
+      siteUrl: siteUrl,
+      host: host,
     },
   };
 }
