@@ -21,7 +21,7 @@ export default async function Handler(req, res) {
   });
 
   if (settingsResult.errors) {
-    console.error('Settings error:', settingsResult.errors);
+    console.error('DocAPI preview Settings error:', settingsResult.errors);
     throw settingsResult.errors;
   }
 
