@@ -2,7 +2,7 @@ import {
   getOrgSettings,
   hasuraLookupGoogleDoc,
 } from '../../../../../lib/articles';
-import { findSetting } from '../../../../lib/utils.js';
+import { findSetting } from '../../../../../lib/utils.js';
 import {
   processDocumentContents,
   saveArticle,
