@@ -5,6 +5,11 @@ export default function middleware(req) {
   const { pathname } = req.nextUrl; // get pathname of request (e.g. /blog-slug)
   const hostname = req.headers.get('host'); // get hostname of request (e.g. demo.vercel.pub)
 
+  if (pathname.includes('/en-US')) {
+    url.pathname = pathname.replace('/en-US', '');
+    return NextResponse.redirect(url);
+  }
+
   const currentHost = hostname
     .replace(`.localhost:3000`, '')
     .replace(`.tinynewsco.dev:3000`, '')
@@ -20,6 +25,7 @@ export default function middleware(req) {
   ) {
     // strip default locale from incoming request pathname
     const pathWithoutLocale = pathname.replace('/en-US', '');
+
     console.log(
       `[middleware] host:pathname ${currentHost}:${pathWithoutLocale}`
     );
