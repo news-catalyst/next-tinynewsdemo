@@ -28,9 +28,7 @@ const ViewOnSiteLink = tw.a`font-bold cursor-pointer hover:underline`;
 export default function EditSection({
   apiUrl,
   site,
-  currentLocale,
   section,
-  locales,
   vercelHook,
   siteUrl,
   host,
@@ -40,8 +38,8 @@ export default function EditSection({
   const [showNotification, setShowNotification] = useState(false);
   const [sectionId, setSectionId] = useState(null);
   const [articleCount, setArticleCount] = useState(null);
-  const [title, setTitle] = useState(null);
-  const [slug, setSlug] = useState(null);
+  const [title, setTitle] = useState('');
+  const [slug, setSlug] = useState('');
   const [currentSlug, setCurrentSlug] = useState(null);
   const [published, setPublished] = useState(false);
 
@@ -86,7 +84,7 @@ export default function EditSection({
       url: apiUrl,
       site: site,
       id: sectionId,
-      localeCode: currentLocale,
+      localeCode: 'en-US',
       title: title,
       published: published,
       slug: slug,
@@ -153,9 +151,6 @@ export default function EditSection({
   return (
     <AdminLayout host={host} siteUrl={siteUrl}>
       <AdminNav
-        currentLocale={currentLocale}
-        switchLocales={true}
-        locales={locales}
         homePageEditor={false}
         showConfigOptions={true}
         id={sectionId}
@@ -193,21 +188,12 @@ export default function EditSection({
             onChange={(ev) => setTitle(ev.target.value)}
             label="Title"
           />
-          {currentLocale === 'en-US' && (
-            <TinyInputField
-              name="slug"
-              value={slug}
-              onChange={(ev) => setSlug(ev.target.value)}
-              label="URL Slug"
-            />
-          )}
-          {currentLocale !== 'en-US' && (
-            <label>
-              <UrlSlugLabel>URL Slug (edit in English)</UrlSlugLabel>
-              <UrlSlugValue>{slug}</UrlSlugValue>
-            </label>
-          )}
-
+          <TinyInputField
+            name="slug"
+            value={slug}
+            onChange={(ev) => setSlug(ev.target.value)}
+            label="URL Slug"
+          />
           <TinyCheckboxField
             name="published"
             checked={published}
@@ -260,7 +246,6 @@ export async function getServerSideProps(context) {
     console.log('error:', settingsResult);
     throw settingsResult.errors;
   }
-  let locales = settingsResult.data.organization_locales;
   let settings = settingsResult.data.settings;
   let vercelHook = findSetting(settings, 'VERCEL_DEPLOY_HOOK');
   const siteUrl = findSetting(settings, 'NEXT_PUBLIC_SITE_URL');
@@ -271,6 +256,7 @@ export async function getServerSideProps(context) {
     url: apiUrl,
     site: site,
     id: context.params.id,
+    localeCode: 'en-US',
   });
   if (errors) {
     throw errors;
@@ -282,9 +268,7 @@ export async function getServerSideProps(context) {
     props: {
       apiUrl: apiUrl,
       site: site,
-      currentLocale: 'en-US',
       section: section,
-      locales: locales,
       vercelHook: vercelHook,
       siteUrl: siteUrl,
       host: host,
