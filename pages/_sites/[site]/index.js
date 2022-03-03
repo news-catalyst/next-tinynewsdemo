@@ -65,7 +65,7 @@ export async function getStaticProps(context) {
   });
 
   if (settingsResult.errors) {
-    console.error('Settings error:', settingsResult.errors);
+    console.error('Idx Settings error:', settingsResult.errors);
     throw settingsResult.errors;
   }
 

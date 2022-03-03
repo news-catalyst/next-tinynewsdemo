@@ -22,7 +22,7 @@ export default async function Handler(req, res) {
   });
 
   if (settingsResult.errors) {
-    console.error('Settings error:', settingsResult.errors);
+    console.error('DocAPI publish settings error:', settingsResult.errors);
     throw settingsResult.errors;
   }
 
