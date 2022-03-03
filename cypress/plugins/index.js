@@ -8,7 +8,7 @@ const shared = require('../../script/shared');
 
 async function fetchGraphQL(params) {
   let url = params['url'];
-  let orgSlug = params['orgSlug'];
+  let site = params['site'];
 
   let operationQuery = params['query'];
   let operationName = params['name'];
@@ -17,7 +17,7 @@ async function fetchGraphQL(params) {
   const result = await fetch(url, {
     method: 'POST',
     headers: {
-      'TNC-Organization': orgSlug,
+      'TNC-Site': site,
     },
     body: JSON.stringify({
       query: operationQuery,
