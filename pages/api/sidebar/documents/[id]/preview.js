@@ -23,7 +23,6 @@ export default async function Handler(req, res) {
 
   const settings = settingsResult.data.settings;
   const apiToken = findSetting(settings, 'API_TOKEN');
-  const apiToken = findSetting(settings, 'API_TOKEN');
   const previewToken = findSetting(settings, 'PREVIEW_TOKEN');
   const siteUrl = findSetting(settings, 'NEXT_PUBLIC_SITE_URL');
 
