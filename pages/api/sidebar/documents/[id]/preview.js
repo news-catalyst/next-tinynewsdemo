@@ -9,10 +9,26 @@ import {
 
 export default async function Handler(req, res) {
   const apiUrl = process.env.HASURA_API_URL;
-  const apiToken = process.env.ORG_SLUG;
+  const site = req.query.site;
+
+  const settingsResult = await getOrgSettings({
+    url: apiUrl,
+    site: site,
+  });
+
+  if (settingsResult.errors) {
+    console.error('Settings error:', settingsResult.errors);
+    throw settingsResult.errors;
+  }
+
+  const settings = settingsResult.data.settings;
+  const apiToken = findSetting(settings, 'API_TOKEN');
+  const apiToken = findSetting(settings, 'API_TOKEN');
+  const previewToken = findSetting(settings, 'PREVIEW_TOKEN');
+  const siteUrl = findSetting(settings, 'NEXT_PUBLIC_SITE_URL');
 
   // Check the API token
-  if (req.query.token !== process.env.API_TOKEN || !req.query.id) {
+  if (req.query.token !== apiToken || !req.query.id) {
     return res.status(401).json({ message: 'Invalid API token' });
   }
 
@@ -32,7 +48,7 @@ export default async function Handler(req, res) {
 
   const { errors, data } = await hasuraLookupGoogleDoc({
     url: apiUrl,
-    orgSlug: apiToken,
+    site: site,
     documentId: documentId,
   });
   if (errors || !data || !data.google_documents) {
@@ -88,7 +104,7 @@ export default async function Handler(req, res) {
       let storeDataResult = await saveArticle({
         data: articleData,
         url: apiUrl,
-        orgSlug: apiToken,
+        site: site,
       });
 
       if (storeDataResult.status === 'error') {
@@ -107,7 +123,7 @@ export default async function Handler(req, res) {
       // store slug + article ID in slug versions table
       idSlugResult = await storeArticleIdAndSlug({
         url: apiUrl,
-        orgSlug: apiToken,
+        site: site,
         article_id: articleID,
         slug: slug,
         category_slug: categorySlug,
@@ -125,8 +141,8 @@ export default async function Handler(req, res) {
       }
       //construct preview url
       previewUrl = new URL(
-        `/api/preview?secret=${process.env.PREVIEW_TOKEN}&slug=${slug}&locale=${localeCode}`,
-        process.env.NEXT_PUBLIC_SITE_URL
+        `/api/preview?secret=${previewToken}&slug=${slug}&locale=${localeCode}`,
+        siteUrl
       ).toString();
 
       // console.log(previewUrl);
@@ -136,7 +152,7 @@ export default async function Handler(req, res) {
       let storeDataResult = await savePage({
         data: pageData,
         url: apiUrl,
-        orgSlug: apiToken,
+        site: site,
       });
 
       // console.log('storeDataResult keys:', Object.keys(storeDataResult));
@@ -157,7 +173,7 @@ export default async function Handler(req, res) {
       // // store slug + page ID in slug versions table
       idSlugResult = await storePageIdAndSlug({
         url: apiUrl,
-        orgSlug: apiToken,
+        site: site,
         page_id: pageID,
         slug: slug,
       });
@@ -176,7 +192,7 @@ export default async function Handler(req, res) {
       //construct preview url
       previewUrl = new URL(
         `/api/preview-static?secret=${process.env.PREVIEW_TOKEN}&slug=${slug}&locale=${localeCode}`,
-        process.env.NEXT_PUBLIC_SITE_URL
+        siteUrl
       ).toString();
 
       // console.log(previewUrl);
