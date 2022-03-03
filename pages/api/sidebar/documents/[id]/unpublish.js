@@ -1,12 +1,29 @@
-import { hasuraLookupGoogleDoc } from '../../../../../lib/articles';
+import {
+  getOrgSettings,
+  hasuraLookupGoogleDoc,
+} from '../../../../../lib/articles';
+import { findSetting } from '../../../../../lib/utils.js';
 import { unpublishArticle, unpublishPage } from '../../../../../lib/document';
 
 export default async function Handler(req, res) {
   const apiUrl = process.env.HASURA_API_URL;
-  const apiToken = process.env.ORG_SLUG;
+  const site = req.query.site;
+
+  const settingsResult = await getOrgSettings({
+    url: apiUrl,
+    site: site,
+  });
+
+  if (settingsResult.errors) {
+    console.error('Settings error:', settingsResult.errors);
+    throw settingsResult.errors;
+  }
+
+  const settings = settingsResult.data.settings;
+  const apiToken = findSetting(settings, 'API_TOKEN');
 
   // Check the API token
-  if (req.query.token !== process.env.API_TOKEN || !req.query.id) {
+  if (req.query.token !== apiToken || !req.query.id) {
     return res.status(401).json({ message: 'Invalid API token' });
   }
 
@@ -19,7 +36,7 @@ export default async function Handler(req, res) {
 
   const { errors, data } = await hasuraLookupGoogleDoc({
     url: apiUrl,
-    orgSlug: apiToken,
+    site: site,
     documentId: documentId,
   });
   if (errors || !data || !data.google_documents || !data.google_documents[0]) {
@@ -58,7 +75,7 @@ export default async function Handler(req, res) {
       let storeDataResult = await unpublishArticle({
         article_id: articleId,
         url: apiUrl,
-        orgSlug: apiToken,
+        site: site,
         locale_code: localeCode,
       });
 
@@ -96,7 +113,7 @@ export default async function Handler(req, res) {
       let storeDataResult = await unpublishPage({
         page_id: pageId,
         url: apiUrl,
-        orgSlug: apiToken,
+        site: site,
         locale_code: localeCode,
       });
 

@@ -1,15 +1,29 @@
-import { hasuraLookupGoogleDoc } from '../../../../../lib/articles';
+import { getOrgSettings } from '../../../../../lib/articles';
 import {
   hasuraInsertArticleGoogleDoc,
   hasuraInsertPageGoogleDoc,
 } from '../../../../../lib/document';
+import { findSetting } from '../../../../../lib/utils.js';
 
 export default async function Handler(req, res) {
   const apiUrl = process.env.HASURA_API_URL;
-  const apiToken = process.env.ORG_SLUG;
+  const site = req.query.site;
+
+  const settingsResult = await getOrgSettings({
+    url: apiUrl,
+    site: site,
+  });
+
+  if (settingsResult.errors) {
+    console.error('Settings error:', settingsResult.errors);
+    throw settingsResult.errors;
+  }
+
+  const settings = settingsResult.data.settings;
+  const apiToken = findSetting(settings, 'API_TOKEN');
 
   // Check the API token
-  if (req.query.token !== process.env.API_TOKEN || !req.query.id) {
+  if (req.query.token !== apiToken || !req.query.id) {
     return res.status(401).json({ message: 'Invalid API token' });
   }
 
@@ -28,7 +42,7 @@ export default async function Handler(req, res) {
   if (documentType === 'article') {
     let insertDocResult = await hasuraInsertArticleGoogleDoc({
       url: apiUrl,
-      orgSlug: apiToken,
+      site: site,
       article_id: articleId,
       document_id: documentId,
       document_url: documentUrl,
@@ -51,7 +65,7 @@ export default async function Handler(req, res) {
     console.log('insert google doc for page ID', pageId);
     let insertDocResult = await hasuraInsertPageGoogleDoc({
       url: apiUrl,
-      orgSlug: apiToken,
+      site: site,
       page_id: pageId,
       document_id: documentId,
       document_url: documentUrl,
