@@ -14,19 +14,17 @@ export default function middleware(req) {
     .replace(`.vercel.app`, '')
     .replace(`.vercel.app:3000`, ''); // TBD if we need to change this
 
-  // Copied this over as commented code in case we want to redirect particular hosts to one central spot
-  // only for demo purposes – remove this if you want to use your root domain as the landing page
-  // if (hostname === "vercel.pub" || hostname === "platforms.vercel.app") {
-  //   return NextResponse.redirect("https://demo.vercel.pub");
-  // }
-
   if (
     !pathname.includes('.') && // exclude all files in the public folder
     !pathname.startsWith('/api') // exclude all API routes
   ) {
-    console.log(`[middleware] host:pathname ${currentHost}:${pathname}`);
+    // strip default locale from incoming request pathname
+    const pathWithoutLocale = pathname.replace('/en-US', '');
+    console.log(
+      `[middleware] host:pathname ${currentHost}:${pathWithoutLocale}`
+    );
 
-    url.pathname = `/_sites/${currentHost}${pathname}`;
+    url.pathname = `/_sites/${currentHost}${pathWithoutLocale}`;
     console.log('[middleware] updated path:', url.pathname);
     return NextResponse.rewrite(url);
   } else if (pathname.startsWith('/api/auth/callback/google')) {
