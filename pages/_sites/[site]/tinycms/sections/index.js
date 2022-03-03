@@ -116,6 +116,7 @@ export async function getServerSideProps(context) {
   const { errors, data } = await hasuraListAllSectionsByLocale({
     url: apiUrl,
     site: site,
+    localeCode: 'en-US',
   });
 
   if (errors) {
