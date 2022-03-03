@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import tw, { styled } from 'twin.macro';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import { TrashIcon, SelectorIcon } from '@heroicons/react/solid';
+import { SelectorIcon } from '@heroicons/react/solid';
 import {
   getOrgSettings,
   hasuraGetMetadataByLocale,
@@ -31,6 +31,7 @@ export default function NavBuilder({
   siteMetadata,
   linkOptions,
   vercelHook,
+  site,
   siteUrl,
   host,
 }) {
