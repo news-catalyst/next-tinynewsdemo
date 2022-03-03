@@ -230,7 +230,7 @@ export default function NavBuilder({
       site: site,
       data: parsed,
       published: true,
-      localeCode: currentLocale,
+      localeCode: 'en-US',
     });
     if (errors) {
       setNotificationMessage(errors);
