@@ -15,12 +15,6 @@ import { getArticleAds } from '../../../../lib/ads.js';
 import ArticleStream from '../../../../components/homepage/ArticleStream';
 import tw from 'twin.macro';
 import { Anchor } from '../../../../components/common/CommonStyles.js';
-import ReadInOtherLanguage from '../../../../components/articles/ReadInOtherLanguage';
-import {
-  SectionContainer,
-  SectionLayout,
-  Block,
-} from '../../../../components/common/CommonStyles';
 
 export default function AuthorPage({
   sections,
@@ -31,7 +25,6 @@ export default function AuthorPage({
 }) {
   const router = useRouter();
   const isAmp = false;
-  const locale = 'en-US';
 
   // If the page is not yet generated, this will be displayed
   // initially until getStaticProps() finishes running
@@ -150,6 +143,7 @@ export async function getStaticProps({ params }) {
     url: apiUrl,
     site: site,
     authorSlug: params.slug,
+    localeCode: 'en-US',
   });
 
   if (errors || !data) {
