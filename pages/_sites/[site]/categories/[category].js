@@ -98,6 +98,7 @@ export async function getStaticProps({ params }) {
     url: apiUrl,
     site: site,
     categorySlug: params.category,
+    localeCode: 'en-US',
   });
 
   if (errors || !data) {
