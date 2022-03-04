@@ -59,24 +59,24 @@ export default NextAuth({
       return session;
     },
     jwt({ token, user, account, profile, isNewUser }) {
-      console.log(
-        '[CB]jwt() token/user/account/profile/isNewUser:',
-        token,
-        user,
-        account,
-        profile,
-        isNewUser
-      );
+      // console.log(
+      //   '[CB]jwt() token/user/account/profile/isNewUser:',
+      //   token,
+      //   user,
+      //   account,
+      //   profile,
+      //   isNewUser
+      // );
       if (profile) token.account = profile;
       if (account) token.accessToken = account.access_token;
 
       return token;
     },
     redirect({ url, baseUrl }) {
-      console.log('[CB] redirect url/baseUrl:', url, baseUrl);
+      // console.log('[CB] redirect url/baseUrl:', url, baseUrl);
 
       if (url.startsWith(baseUrl)) {
-        console.log('[CB] url starts with base, returning', url);
+        // console.log('[CB] url starts with base, returning', url);
         return url;
       }
 
@@ -86,14 +86,14 @@ export default NextAuth({
         url.startsWith('http://localhost:3000') ||
         url.startsWith('https://localhost:3000')
       ) {
-        console.log('[CB] url starts with localhost');
+        // console.log('[CB] url starts with localhost');
         let parsedUrl = new URL(url);
         let params = parsedUrl.searchParams;
         let site = params.get('site');
 
         if (site) {
           let siteUrl = `${parsedUrl.protocol}//${site}.${parsedUrl.host}${parsedUrl.pathname}`;
-          console.log('>> [SITE]', site, siteUrl);
+          // console.log('>> [SITE]', site, siteUrl);
 
           return siteUrl;
         }
