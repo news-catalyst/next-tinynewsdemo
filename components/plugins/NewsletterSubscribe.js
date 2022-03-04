@@ -62,6 +62,17 @@ const NewsletterSubscribe = ({ articleTitle, metadata, tinycms }) => {
 
   const handleSubmit = async (evt) => {
     evt.preventDefault();
+
+    if (!name) {
+      setStatus('error');
+      setMessage('Your name is required.');
+      return;
+    }
+    if (!email) {
+      setStatus('error');
+      setMessage('Your email is required.');
+      return;
+    }
     setStatus('sending');
 
     try {
