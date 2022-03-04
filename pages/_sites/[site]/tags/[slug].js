@@ -18,7 +18,6 @@ export default function TagPage({
 }) {
   const router = useRouter();
   const isAmp = false;
-  const locale = 'en-US';
 
   // If the page is not yet generated, this will be displayed
   // initially until getStaticProps() finishes running
@@ -63,7 +62,6 @@ export async function getStaticPaths() {
 
 export async function getStaticProps({ params }) {
   const apiUrl = process.env.HASURA_API_URL;
-  const locale = 'en-US';
   const site = params.site;
 
   let articles = [];
@@ -75,9 +73,11 @@ export async function getStaticProps({ params }) {
     url: apiUrl,
     site: site,
     tagSlug: params.slug,
+    localeCode: 'en-US',
   });
 
   if (errors || !data) {
+    console.error('errors', errors);
     return {
       notFound: true,
     };
