@@ -6,7 +6,6 @@ export default function Notification(props) {
     messages = [props.message];
   }
   const hideNotification = () => {
-    console.log('hiding this', props);
     props.setShowNotification(false);
   };
 

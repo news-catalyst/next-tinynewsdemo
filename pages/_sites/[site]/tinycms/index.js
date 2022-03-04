@@ -109,14 +109,13 @@ export async function getServerSideProps(context) {
   });
 
   if (settingsResult.errors) {
-    console.log('error:', settingsResult);
+    console.error('error:', settingsResult);
     throw settingsResult.errors;
   }
   const settings = settingsResult.data.settings;
   const siteUrl = findSetting(settings, 'NEXT_PUBLIC_SITE_URL');
 
   const host = context.req.headers.host; // will give you localhost:3000
-  console.log('host:', host);
 
   return {
     props: {

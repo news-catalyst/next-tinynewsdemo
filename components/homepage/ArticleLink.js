@@ -59,12 +59,11 @@ export default function ArticleLink({
   let linkAs;
 
   if (article.category && article.category.category_translations) {
-    console.log('article.category:', article.category);
     categoryTitle = getLatestVersion(
       article.category.category_translations,
       'title'
     );
-    console.log('category title:', categoryTitle);
+
     categoryHref = `/categories/${article.category.slug}`;
     linkHref = '/articles/[category]/[slug]';
     linkAs = `/articles/${article.category.slug}/${article.slug}`;

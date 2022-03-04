@@ -174,7 +174,7 @@ export async function getServerSideProps(context) {
   });
 
   if (settingsResult.errors) {
-    console.log('error:', settingsResult);
+    console.error('error:', settingsResult);
     throw settingsResult.errors;
   }
   let settings = settingsResult.data.settings;
