@@ -115,6 +115,7 @@ export async function getStaticProps({ params }) {
     url: apiUrl,
     site: site,
     slug: 'donate',
+    localeCode: 'en-US',
   });
   if (errors || !data) {
     console.error('Returning a 404 - errors:', errors);

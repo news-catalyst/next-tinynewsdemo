@@ -48,9 +48,10 @@ export async function getStaticProps({ params }) {
     url: apiUrl,
     site: site,
     slug: 'about',
-    localeCode: locale,
+    localeCode: 'en-US',
   });
   if (errors || !data) {
+    console.error(errors);
     return {
       notFound: true,
     };
