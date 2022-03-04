@@ -70,6 +70,7 @@ export async function getStaticProps({ params }) {
   const { errors, data } = await hasuraListNewsletters({
     url: apiUrl,
     site: site,
+    localeCode: 'en-US',
   });
 
   if (errors || !data) {
