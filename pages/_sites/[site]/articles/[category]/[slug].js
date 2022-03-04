@@ -72,6 +72,7 @@ export async function getStaticProps({ params }) {
     site: site,
     categorySlug: params.category,
     slug: params.slug,
+    localeCode: 'en-US',
   });
   if (
     errors ||
@@ -99,13 +100,13 @@ export async function getStaticProps({ params }) {
       url: apiUrl,
       site: site,
       categorySlug: params.category,
+      localeCode: 'en-US',
     });
     if (!sectionResponse.errors && sectionResponse.data) {
       sectionArticles = sectionResponse.data.articles.filter(
         (a) => a.slug !== params.slug
       );
     }
-    console.log('data.site_metadatas:', data.site_metadatas);
     siteMetadata = getLatestVersion(
       data.site_metadatas[0].site_metadata_translations,
       'data'
