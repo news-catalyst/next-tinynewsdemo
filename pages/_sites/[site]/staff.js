@@ -42,6 +42,7 @@ export async function getStaticProps({ params }) {
     url: apiUrl,
     site: site,
     slug: 'staff',
+    localeCode: 'en-US',
   });
   if (errors || !data) {
     console.error('getPage errors:', errors);

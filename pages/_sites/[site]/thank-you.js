@@ -105,6 +105,7 @@ export async function getServerSideProps(context) {
     url: apiUrl,
     site: site,
     slug: 'thank-you',
+    localeCode: 'en-US',
   });
   if (errors || !data) {
     return {
@@ -121,7 +122,7 @@ export async function getServerSideProps(context) {
 
     sections = data.categories;
     siteMetadata = data.site_metadatas[0].site_metadata_translations[0].data;
-    for (i = 0; i < sections.length; i++) {
+    for (var i = 0; i < sections.length; i++) {
       sections[i].title = getLatestVersion(
         sections[i].category_translations,
         'title'
