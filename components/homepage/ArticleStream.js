@@ -20,7 +20,6 @@ export default function ArticleStream({
   ads,
 }) {
   const AD_PLACEMENT_INDEX = 3;
-  const locale = 'en-US';
 
   const renderArticle = function (article) {
     return (
