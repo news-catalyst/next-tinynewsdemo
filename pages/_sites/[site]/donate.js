@@ -126,10 +126,7 @@ export async function getStaticProps({ params }) {
     // throw errors;
   } else {
     if (!data.page_slug_versions || !data.page_slug_versions[0]) {
-      console.error(
-        'Donate: returning a 404 - page slug version not found:',
-        data
-      );
+      console.error('Donate: returning a 404 - page slug version not found:');
       return {
         notFound: true,
       };

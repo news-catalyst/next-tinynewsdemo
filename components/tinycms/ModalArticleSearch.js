@@ -7,15 +7,15 @@ export default function ModalArticleSearch(props) {
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
 
-  console.log('ModalArticleSearch', props.isActive);
+  // console.log('ModalArticleSearch', props.isActive);
 
   function selectArticle(article) {
-    console.log(
-      'changing featured article from:',
-      props.featuredArticle,
-      'to:',
-      article
-    );
+    // console.log(
+    //   'changing featured article from:',
+    //   props.featuredArticle,
+    //   'to:',
+    //   article
+    // );
     props.setFeaturedArticle(article);
     props.setModal(false);
   }
@@ -34,7 +34,7 @@ export default function ModalArticleSearch(props) {
     if (errors && !data) {
       console.error(errors);
     }
-    console.log('data:', data);
+    // console.log('data:', data);
     setLoading(false);
     setSearchResults(data.articles);
   }

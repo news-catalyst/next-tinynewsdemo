@@ -26,9 +26,9 @@ export default function middleware(req) {
     // strip default locale from incoming request pathname
     const pathWithoutLocale = pathname.replace('/en-US', '');
 
-    console.log(
-      `[middleware] host:pathname ${currentHost}:${pathWithoutLocale}`
-    );
+    // console.log(
+    //   `[middleware] host:pathname ${currentHost}:${pathWithoutLocale}`
+    // );
 
     url.pathname = `/_sites/${currentHost}${pathWithoutLocale}`;
     console.log('[middleware] updated path:', url.pathname);
