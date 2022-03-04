@@ -29,7 +29,6 @@ export default function ArticlesArchivePage({
   expandedAds,
 }) {
   const [pageNumbers, setPageNumbers] = useState(range(totalPageCount, 1));
-  const locale = 'en-US';
 
   let paginationLinks = [];
 
@@ -146,11 +145,14 @@ export async function getStaticProps(context) {
 
   const { errors, data } = await hasuraArticlesArchivePage({
     url: apiUrl,
+    site: site,
     limit: limit,
     offset: offset,
+    localeCode: 'en-US',
   });
 
   if (errors || !data) {
+    console.error(errors);
     return {
       notFound: true,
     };
