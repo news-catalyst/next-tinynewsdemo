@@ -20,7 +20,7 @@ export default function middleware(req) {
     .replace(`.vercel.app:3000`, ''); // TBD if we need to change this
 
   if (
-    !pathname.includes('.') && // exclude all files in the public folder
+    (!pathname.includes('.') || pathname.includes('.xml')) && // exclude all files in the public folder
     !pathname.startsWith('/api') // exclude all API routes
   ) {
     // strip default locale from incoming request pathname
