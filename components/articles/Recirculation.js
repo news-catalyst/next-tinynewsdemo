@@ -1,6 +1,5 @@
 import tw from 'twin.macro';
 import ArticleLink from '../homepage/ArticleLink';
-import { getLatestVersion } from '../../lib/utils.js';
 
 const RecirculationSection = tw.section`border-t border-gray-200 pt-12`;
 const RecirculationContainer = tw.div`flex flex-col flex-nowrap max-w-5xl w-full mx-auto px-5`;
@@ -17,16 +16,13 @@ export default function Recirculation({
     return null;
   }
 
-  const localisedSection = getLatestVersion(
-    section.category_translations,
-    'title'
-  );
+  const sectionTitle = section.category_translations[0].title;
 
   return (
     <RecirculationSection>
       <RecirculationContainer>
         <RecirculationTitle>
-          More in {localisedSection} from {siteMetadata.shortName}
+          More in {sectionTitle} from {siteMetadata.shortName}
         </RecirculationTitle>
         <RecirculationList>
           {articles &&

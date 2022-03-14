@@ -7,7 +7,7 @@ import {
   getOrgSettings,
 } from '../../../lib/articles.js';
 import { getArticleAds } from '../../../lib/ads.js';
-import { booleanSetting, getLatestVersion } from '../../../lib/utils.js';
+import { booleanSetting } from '../../../lib/utils.js';
 import Homepage from '../../../components/Homepage';
 import LandingPage from '../../../components/LandingPage';
 import CurriculumHomepage from '../../../components/curriculum/CurriculumHomepage';
@@ -142,15 +142,12 @@ export async function getStaticProps(context) {
 
   const tags = data.tags;
   for (var i = 0; i < tags.length; i++) {
-    tags[i].title = getLatestVersion(tags[i].tag_translations, 'title');
+    tags[i].title = tags[i].tag_translations[0].title;
   }
 
   const sections = data.categories;
   for (var j = 0; j < sections.length; j++) {
-    sections[j].title = getLatestVersion(
-      sections[j].category_translations,
-      'title'
-    );
+    sections[j].title = sections[j].category_translations[0].title;
   }
 
   let settings = settingsResult.data.settings;

@@ -4,7 +4,7 @@ import React from 'react';
 import tw, { styled } from 'twin.macro';
 import PublishDate from './PublishDate.js';
 import MainImage from './MainImage.js';
-import { getLatestVersion, renderAuthors } from '../../lib/utils.js';
+import { renderAuthors } from '../../lib/utils.js';
 import { ArticleTitle } from '../common/CommonStyles.js';
 import Typography from '../common/Typography';
 
@@ -48,27 +48,15 @@ export default function ArticleHeader({ article, isAmp, metadata, mainImage }) {
   let updatedAt;
 
   if (article && article.category) {
-    categoryTitle = getLatestVersion(
-      article.category.category_translations,
-      'title'
-    );
-
-    headline = getLatestVersion(article.article_translations, 'headline');
+    categoryTitle = article.category.category_translations[0].title;
+    headline = article.article_translations[0].headline;
     postUrl = new URL(
       `/articles/${article.category.slug}/${article.slug}`,
       metadata.siteUrl
     );
-    searchDescription = getLatestVersion(
-      article.article_translations,
-      'search_description'
-    );
-
-    articleContent = getLatestVersion(article.article_translations, 'content');
-
-    updatedAt = getLatestVersion(
-      article.article_translations,
-      'last_published_at'
-    );
+    searchDescription = article.article_translations[0].search_description;
+    articleContent = article.article_translations[0].content;
+    updatedAt = article.article_translations[0].last_published_at;
   }
 
   let authorPhoto;

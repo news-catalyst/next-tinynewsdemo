@@ -21,7 +21,7 @@ import {
 } from '../../../../../lib/articles';
 import AdminNav from '../../../../../components/nav/AdminNav';
 import Notification from '../../../../../components/tinycms/Notification';
-import { findSetting, getLatestVersion } from '../../../../../lib/utils';
+import { findSetting } from '../../../../../lib/utils';
 
 const ViewOnSiteLink = tw.a`font-bold cursor-pointer hover:underline`;
 
@@ -47,7 +47,7 @@ export default function EditSection({
     if (section) {
       setSectionId(section.id);
       setArticleCount(section.articles_aggregate.aggregate.count);
-      setTitle(getLatestVersion(section.category_translations, 'title', false));
+      setTitle(section.category_translations[0].title);
       setSlug(section.slug);
       setCurrentSlug(section.slug);
       setPublished(section.published);
@@ -216,13 +216,7 @@ export default function EditSection({
                   as={`/articles/${slug}/${node.slug}`}
                   passHref
                 >
-                  <a>
-                    {getLatestVersion(
-                      node.article_translations,
-                      'headline',
-                      false
-                    )}
-                  </a>
+                  <a>{node.article_translations[0].headline}</a>
                 </Link>
               </li>
             ))}

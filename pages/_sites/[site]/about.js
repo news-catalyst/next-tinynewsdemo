@@ -3,7 +3,6 @@ import {
   generateAllDomainPaths,
   hasuraGetPage,
 } from '../../../lib/articles.js';
-import { getLatestVersion } from '../../../lib/utils';
 import AboutPage from '../../../components/AboutPage';
 
 export default function About(props) {
@@ -70,10 +69,7 @@ export async function getStaticProps({ params }) {
 
     sections = data.categories;
     for (var i = 0; i < sections.length; i++) {
-      sections[i].title = getLatestVersion(
-        sections[i].category_translations,
-        'title'
-      );
+      sections[i].category_translations[0].title;
     }
   }
 

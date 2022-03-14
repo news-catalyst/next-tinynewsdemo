@@ -4,7 +4,6 @@ import GlobalFooter from './nav/GlobalFooter.js';
 import CookieConsentWrapper from './nav/CookieConsentWrapper.js';
 import { useAmp } from 'next/amp';
 import AmpAnalytics from './amp/AmpAnalytics.js';
-import { getLatestVersion } from '../lib/utils';
 import tw, { styled } from 'twin.macro';
 
 const Main = tw.main`pt-8 pb-24`;
@@ -29,8 +28,6 @@ export default function Layout({
   if (meta === null || meta === undefined) {
     meta = {};
   }
-
-  console.log(meta);
 
   // helper function to determine what to tell facebook width/height of image are
   function coverImageDimensions(w, h) {
@@ -116,9 +113,9 @@ export default function Layout({
     metaValues['documentType'] = 'website';
   }
   if (translations && translations.length > 0) {
-    pageTitle = getLatestVersion(translations, 'search_title');
+    pageTitle = translations[0]['search_title'];
     if (pageTitle === 'Untitled Document') {
-      let headline = getLatestVersion(translations, 'headline');
+      let headline = translations[0].headline;
       if (headline !== 'Untitled Document') {
         pageTitle = headline + ' | ' + metaValues.siteName;
       } else {
@@ -129,36 +126,24 @@ export default function Layout({
     }
 
     if (article && article.category) {
-      metaValues.section = getLatestVersion(
-        article.category.category_translations,
-        'title'
-      );
+      metaValues.section = article.category.category_translations[0].title;
     }
-    metaValues.searchTitle = getLatestVersion(translations, 'search_title');
-    metaValues.searchDescription = getLatestVersion(
-      translations,
-      'search_description'
-    );
+    metaValues.searchTitle = translations[0]['search_title'];
+    metaValues.searchDescription = translations[0]['search_description'];
 
-    metaValues.twitterTitle = getLatestVersion(translations, 'twitter_title');
+    metaValues.twitterTitle = translations[0]['twitter_title'];
     if (!metaValues.twitterTitle) {
       metaValues.twitterTitle = metaValues.searchTitle;
     }
-    metaValues.twitterDescription = getLatestVersion(
-      translations,
-      'twitter_description'
-    );
+    metaValues.twitterDescription = translations[0]['twitter_description'];
     if (!metaValues.twitterDescription) {
       metaValues.twitterDescription = metaValues.searchDescription;
     }
-    metaValues.facebookTitle = getLatestVersion(translations, 'facebook_title');
+    metaValues.facebookTitle = translations[0]['facebook_title'];
     if (!metaValues.facebookTitle) {
       metaValues.facebookTitle = metaValues.searchTitle;
     }
-    metaValues.facebookDescription = getLatestVersion(
-      translations,
-      'facebook_description'
-    );
+    metaValues.facebookDescription = translations[0]['facebook_description'];
     if (!metaValues.facebookDescription) {
       metaValues.facebookDescription = metaValues.searchDescription;
     }
@@ -180,7 +165,7 @@ export default function Layout({
       tagList.push(
         <meta
           property="article:tag"
-          content={getLatestVersion(tag.tag_translations, 'title')}
+          content={tag.tag_translations[0].title}
           key={tag.slug}
         />
       );
@@ -250,9 +235,9 @@ export default function Layout({
           article.tags !== undefined &&
           article.tags.map((tag) => (
             <meta
-              key={getLatestVersion(tag.tag_translations, 'title')}
+              key={tag.tag_translations[0].title}
               property="article:tag"
-              content={getLatestVersion(tag.tag_translations, 'title')}
+              content={tag.tag_translations[0].title}
             />
           ))}
         {metaValues.facebookAppId && (

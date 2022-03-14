@@ -10,7 +10,7 @@ import {
   hasuraListAllTagsByLocale,
 } from '../../../../../lib/articles.js';
 import { deleteSingleTag } from '../../../../../lib/section.js';
-import { findSetting, getLatestVersion } from '../../../../../lib/utils.js';
+import { findSetting } from '../../../../../lib/utils.js';
 import {
   DeleteButton,
   AddButton,
@@ -72,7 +72,7 @@ export default function Tags({ apiUrl, site, tags, siteUrl, host }) {
   }, [action]);
 
   const listItems = tags.map((tag) => {
-    let title = getLatestVersion(tag.tag_translations, 'title', false);
+    let title = tag.tag_translations[0].title;
 
     return (
       <TableRow key={tag.id}>

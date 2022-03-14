@@ -5,11 +5,7 @@ import {
   hasuraAuthorPage,
   getOrgSettings,
 } from '../../../../lib/articles.js';
-import {
-  booleanSetting,
-  displayAuthorName,
-  getLatestVersion,
-} from '../../../../lib/utils';
+import { booleanSetting, displayAuthorName } from '../../../../lib/utils';
 import { cachedContents } from '../../../../lib/cached';
 import { getArticleAds } from '../../../../lib/ads.js';
 import ArticleStream from '../../../../components/homepage/ArticleStream';
@@ -40,8 +36,8 @@ export default function AuthorPage({
   if (author) {
     authorName = displayAuthorName(author.first_names, author.last_name);
     authorPhoto = author.photoUrl;
-    authorTitle = getLatestVersion(author.author_translations, 'title');
-    authorBio = getLatestVersion(author.author_translations, 'bio');
+    authorTitle = author.author_translations[0].title;
+    authorBio = author.author_translations[0].bio;
     authorTwitter = author.twitter;
 
     // set page title
@@ -157,10 +153,7 @@ export async function getStaticProps({ params }) {
     author = data.authors[0];
 
     for (var i = 0; i < sections.length; i++) {
-      sections[i].title = getLatestVersion(
-        sections[i].category_translations,
-        'title'
-      );
+      sections[i].title = sections[i].category_translations[0].title;
     }
 
     let metadatas = data.site_metadatas;

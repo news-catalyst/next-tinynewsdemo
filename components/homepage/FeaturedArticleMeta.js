@@ -1,9 +1,5 @@
 import Link from 'next/link';
-import {
-  renderDate,
-  renderAuthors,
-  getLatestVersion,
-} from '../../lib/utils.js';
+import { renderDate, renderAuthors } from '../../lib/utils.js';
 import tw, { styled } from 'twin.macro';
 import Typography from '../common/Typography';
 
@@ -59,15 +55,9 @@ export default function FeaturedArticleMeta({ article, big, metadata }) {
 
   // console.log('featured article meta:', metadata);
 
-  let categoryTitle = getLatestVersion(
-    article.category.category_translations,
-    'title'
-  );
-  let headline = getLatestVersion(article.article_translations, 'headline');
-  let searchDescription = getLatestVersion(
-    article.article_translations,
-    'search_description'
-  );
+  let categoryTitle = article.category.category_translations[0].title;
+  let headline = article.article_translations[0].headline;
+  let searchDescription = article.article_translations[0].search_description;
 
   let siteTimeZone;
   if (metadata.timeZone) {

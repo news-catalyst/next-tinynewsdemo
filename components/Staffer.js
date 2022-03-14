@@ -1,14 +1,14 @@
 import tw from 'twin.macro';
 import Image from 'next/image';
-import { displayAuthorName, getLatestVersion } from '../lib/utils';
+import { displayAuthorName } from '../lib/utils';
 
 const AuthorName = tw.h3`font-bold text-xl leading-tight mt-5 mb-4`;
 const AuthorAvatar = tw.div`overflow-hidden relative w-full h-48 w-48 mr-4 md:float-left`;
 
 export default function Staffer({ author, isAmp }) {
   const name = displayAuthorName(author.first_names, author.last_name);
-  const bio = getLatestVersion(author.author_translations, 'bio');
-  const title = getLatestVersion(author.author_translations, 'title');
+  const bio = author.author_translations[0].bio;
+  const title = author.author_translations[0].title;
 
   return (
     <div className="author mb-4">

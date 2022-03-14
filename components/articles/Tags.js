@@ -1,14 +1,11 @@
 import Link from 'next/link';
-import { getLatestVersion } from '../../lib/utils.js';
 
 export default function Tags({ article, locale }) {
   let tagLinks;
   if (article.tags) {
     tagLinks = article.tags.map((tag, index) => (
       <Link href={`/tags/${tag.slug}`} key={`${tag.slug}-${index}`}>
-        <a className="is-link tag">
-          {getLatestVersion(tag.tag_translations, 'title')}
-        </a>
+        <a className="is-link tag">{tag.tag_translations[0].title}</a>
       </Link>
     ));
   }
