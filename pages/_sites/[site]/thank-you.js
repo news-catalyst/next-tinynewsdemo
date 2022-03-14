@@ -2,8 +2,6 @@ import tw from 'twin.macro';
 import { useRouter } from 'next/router';
 import { hasuraGetPage } from '../../../lib/articles.js';
 import { useAnalytics } from '../../../lib/hooks/useAnalytics.js';
-import { getLatestVersion } from '../../../lib/utils';
-import ReadInOtherLanguage from '../../../components/articles/ReadInOtherLanguage';
 import Layout from '../../../components/Layout';
 import NewsletterBlock from '../../../components/plugins/NewsletterBlock';
 import { renderBody } from '../../../lib/utils.js';
@@ -11,8 +9,6 @@ import {
   ArticleTitle,
   PostTextContainer,
   PostText,
-  SectionLayout,
-  Block,
 } from '../../../components/common/CommonStyles.js';
 
 const SectionContainer = tw.div`flex flex-col flex-nowrap items-center px-5 mx-auto max-w-7xl w-full`;
@@ -123,10 +119,7 @@ export async function getServerSideProps(context) {
     sections = data.categories;
     siteMetadata = data.site_metadatas[0].site_metadata_translations[0].data;
     for (var i = 0; i < sections.length; i++) {
-      sections[i].title = getLatestVersion(
-        sections[i].category_translations,
-        'title'
-      );
+      sections[i].title = sections[i].category_translations[0].title;
     }
   }
 

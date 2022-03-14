@@ -8,7 +8,7 @@ import {
   generateAllArticleArchivePages,
   getOrgSettings,
 } from '../../../../../lib/articles.js';
-import { getLatestVersion, booleanSetting } from '../../../../../lib/utils';
+import { booleanSetting } from '../../../../../lib/utils';
 import { cachedContents } from '../../../../../lib/cached';
 import { getArticleAds } from '../../../../../lib/ads.js';
 import ArticleStream from '../../../../../components/homepage/ArticleStream';
@@ -164,10 +164,7 @@ export async function getStaticProps(context) {
     totalPageCount = Math.ceil(totalArticleCount / limit);
 
     for (var i = 0; i < sections.length; i++) {
-      sections[i].title = getLatestVersion(
-        sections[i].category_translations,
-        'title'
-      );
+      sections[i].title = sections[i].category_translations[0].title;
     }
 
     let metadatas = data.site_metadatas;

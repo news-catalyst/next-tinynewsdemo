@@ -6,7 +6,7 @@ import {
   hasuraCategoryPage,
   getOrgSettings,
 } from '../../../../../lib/articles.js';
-import { getLatestVersion, booleanSetting } from '../../../../../lib/utils.js';
+import { booleanSetting } from '../../../../../lib/utils.js';
 import { getArticleAds } from '../../../../../lib/ads.js';
 import { cachedContents } from '../../../../../lib/cached';
 import Article from '../../../../../components/Article.js';
@@ -87,10 +87,7 @@ export async function getStaticProps({ params }) {
   } else {
     sections = data.categories;
     for (var i = 0; i < sections.length; i++) {
-      sections[i].title = getLatestVersion(
-        sections[i].category_translations,
-        'title'
-      );
+      sections[i].title = sections[i].category_translations[0].title;
     }
 
     article = data.article_slug_versions[0].article;
@@ -107,10 +104,7 @@ export async function getStaticProps({ params }) {
         (a) => a.slug !== params.slug
       );
     }
-    siteMetadata = getLatestVersion(
-      data.site_metadatas[0].site_metadata_translations,
-      'data'
-    );
+    siteMetadata = data.site_metadatas[0].site_metadata_translations[0].data;
   }
 
   let ads = [];

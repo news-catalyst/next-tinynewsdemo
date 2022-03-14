@@ -3,7 +3,7 @@ import ArticleBody from './articles/ArticleBody';
 import Comments from './articles/Comments';
 import ArticleFooter from './articles/ArticleFooter';
 import Recirculation from './articles/Recirculation';
-import { getLatestVersion, generateArticleUrl } from '../lib/utils.js';
+import { generateArticleUrl } from '../lib/utils.js';
 import { useAmp } from 'next/amp';
 import Layout from './Layout.js';
 
@@ -26,7 +26,7 @@ export default function Article({
 
   let mainImageNode;
   let mainImage = null;
-  let content = getLatestVersion(article.article_translations, 'content');
+  let content = article.article_translations[0].content;
   if (
     content !== undefined &&
     content !== null &&

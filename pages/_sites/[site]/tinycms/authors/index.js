@@ -14,11 +14,7 @@ import {
   DeleteButton,
   AddButton,
 } from '../../../../../components/common/CommonStyles.js';
-import {
-  displayAuthorName,
-  getLatestVersion,
-  findSetting,
-} from '../../../../../lib/utils.js';
+import { displayAuthorName, findSetting } from '../../../../../lib/utils.js';
 
 const Table = tw.table`table-auto w-full`;
 const TableHead = tw.thead``;
@@ -75,7 +71,7 @@ export default function Authors({ apiUrl, site, authors, siteUrl, host }) {
   }, [action]);
 
   const listItems = authors.map((author) => {
-    let title = getLatestVersion(author.author_translations, 'title', false);
+    let title = author.author_translations[0].title;
     if (!title) {
       title = 'NEEDS TRANSLATION';
     }

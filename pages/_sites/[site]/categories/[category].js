@@ -8,7 +8,7 @@ import {
   getOrgSettings,
 } from '../../../../lib/articles.js';
 import { getArticleAds } from '../../../../lib/ads.js';
-import { getLatestVersion, booleanSetting } from '../../../../lib/utils.js';
+import { booleanSetting } from '../../../../lib/utils.js';
 import ArticleStream from '../../../../components/homepage/ArticleStream';
 import {
   SectionContainer,
@@ -111,18 +111,15 @@ export async function getStaticProps({ params }) {
     sections = data.categories;
 
     for (var i = 0; i < sections.length; i++) {
-      sections[i].title = getLatestVersion(
-        sections[i].category_translations,
-        'title'
-      );
+      sections[i].title = sections[i].category_translations[0].title;
       if (sections[i].slug == params.category) {
         categoryExists = true;
-        title = getLatestVersion(sections[i].category_translations, 'title');
+        title = sections[i].category_translations[0].title;
       }
     }
 
     for (var j = 0; j < tags.length; j++) {
-      tags[j].title = getLatestVersion(tags[j].tag_translations, 'title');
+      tags[j].title = tags[j].tag_translations[0].title;
     }
 
     let metadatas = data.site_metadatas;

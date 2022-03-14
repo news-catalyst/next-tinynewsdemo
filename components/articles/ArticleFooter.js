@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import tw, { styled } from 'twin.macro';
-import { getLatestVersion } from '../../lib/utils';
 import ArticleFooterAuthor from './ArticleFooterAuthor';
 import Typography from '../common/Typography';
 
@@ -25,7 +24,7 @@ export default function ArticleFooter({ article, isAmp, metadata }) {
       <TagsListItem key={tag_article.tag.slug}>
         <Link href={`/tags/${tag_article.tag.slug}`} passHref>
           <TagsListLink>
-            {getLatestVersion(tag_article.tag.tag_translations, 'title')}
+            {tag_article.tag.tag_translations[0].title}
           </TagsListLink>
         </Link>
       </TagsListItem>

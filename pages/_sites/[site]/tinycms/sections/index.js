@@ -5,7 +5,6 @@ import { CheckIcon, XIcon } from '@heroicons/react/solid';
 import tw from 'twin.macro';
 import AdminLayout from '../../../../../components/AdminLayout.js';
 import AdminNav from '../../../../../components/nav/AdminNav';
-import { getLatestVersion } from '../../../../../lib/utils';
 import { hasuraListAllSectionsByLocale } from '../../../../../lib/section.js';
 import { AddButton } from '../../../../../components/common/CommonStyles.js';
 import { getOrgSettings } from '../../../../../lib/articles.js';
@@ -35,7 +34,7 @@ export default function Sections({ sections, siteUrl, host }) {
   }, [action]);
 
   const listItems = sections.map((section) => {
-    let title = getLatestVersion(section.category_translations, 'title', false);
+    let title = section.category_translations[0].title;
     return (
       <TableRow key={section.id}>
         <TableCell>

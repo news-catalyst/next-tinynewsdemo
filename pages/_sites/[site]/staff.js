@@ -2,7 +2,6 @@ import {
   hasuraGetPage,
   generateAllDomainPaths,
 } from '../../../lib/articles.js';
-import { getLatestVersion } from '../../../lib/utils';
 import StaffPage from '../../../components/StaffPage';
 
 export default function Staff(props) {
@@ -55,10 +54,7 @@ export async function getStaticProps({ params }) {
     authors = data.authors;
     siteMetadata = data.site_metadatas[0].site_metadata_translations[0].data;
     for (var i = 0; i < sections.length; i++) {
-      sections[i].title = getLatestVersion(
-        sections[i].category_translations,
-        'title'
-      );
+      sections[i].title = sections[i].category_translations[0].title;
     }
   }
 

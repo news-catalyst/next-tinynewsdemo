@@ -4,7 +4,7 @@ import Image from 'next/image';
 import Donate from './Donate';
 import tw, { styled } from 'twin.macro';
 import Typography from '../common/Typography';
-import { generateNavLinkFor, getLatestVersion } from '../../lib/utils';
+import { generateNavLinkFor } from '../../lib/utils';
 
 const NavTopContainer = tw.header`flex w-full`;
 const NavBottomContainer = tw.header`border-b border-gray-200 flex w-full justify-center items-center`;
@@ -78,7 +78,7 @@ export default function GlobalNav({ metadata, sections, isAmp, overrideNav }) {
           passHref
         >
           <SectionLink href={`/categories/${section.slug}`} meta={metadata}>
-            {getLatestVersion(section.category_translations, 'title')}
+            {section.category_translations[0].title}
           </SectionLink>
         </Link>
       ));
