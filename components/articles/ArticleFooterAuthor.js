@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import tw, { styled } from 'twin.macro';
-import { renderAuthor, getLatestVersion } from '../../lib/utils';
+import { renderAuthor } from '../../lib/utils';
 import Typography from '../common/Typography';
 
 const AuthorWrapper = styled.div(({ last }) => [
@@ -25,8 +25,8 @@ export default function ArticleFooterAuthor({
   metadata,
 }) {
   let authorPhoto = author.photoUrl;
-  let authorTitle = getLatestVersion(author.author_translations, 'title');
-  let authorBio = getLatestVersion(author.author_translations, 'bio');
+  let authorTitle = author.author_translations[0].title;
+  let authorBio = author.author_translations[0].bio;
   return (
     <AuthorWrapper last={last}>
       {authorPhoto && (

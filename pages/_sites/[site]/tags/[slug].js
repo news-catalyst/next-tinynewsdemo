@@ -6,7 +6,6 @@ import {
 } from '../../../../lib/articles.js';
 import { cachedContents } from '../../../../lib/cached';
 import { getArticleAds } from '../../../../lib/ads.js';
-import { getLatestVersion } from '../../../../lib/utils.js';
 import ArticleStream from '../../../../components/homepage/ArticleStream';
 
 export default function TagPage({
@@ -25,7 +24,7 @@ export default function TagPage({
     return <div>Loading...</div>;
   }
 
-  let tagTitle = getLatestVersion(tag.tag_translations, 'title');
+  let tagTitle = tag.tag_translations[0].title;
 
   // set page title
   siteMetadata['homepageTitle'] = tagTitle + ' | ' + siteMetadata['shortName'];
@@ -96,10 +95,7 @@ export async function getStaticProps({ params }) {
 
     sections = data.categories;
     for (var i = 0; i < sections.length; i++) {
-      sections[i].title = getLatestVersion(
-        sections[i].category_translations,
-        'title'
-      );
+      sections[i].title = sections[i].category_translations[0].title;
     }
 
     let metadatas = data.site_metadatas;

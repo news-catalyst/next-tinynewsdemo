@@ -3,7 +3,6 @@ import {
   hasuraPreviewArticlePage,
   generateAllArticlePreviewPagePaths,
 } from '../../../../../lib/articles.js';
-import { getLatestVersion } from '../../../../../lib/utils.js';
 import { getArticleAds } from '../../../../../lib/ads.js';
 import { cachedContents } from '../../../../../lib/cached';
 import Article from '../../../../../components/Article.js';
@@ -67,15 +66,12 @@ export async function getStaticProps(context) {
   } else {
     tags = data.tags;
     for (var i = 0; i < tags.length; i++) {
-      tags[i].title = getLatestVersion(tags[i].tag_translations, 'title');
+      tags[i].title = tags[i].tag_translations[0].title;
     }
 
     sections = data.categories;
     for (var j = 0; j < sections.length; j++) {
-      sections[j].title = getLatestVersion(
-        sections[j].category_translations,
-        'title'
-      );
+      sections[j].title = sections[j].category_translations[0].title;
     }
 
     article = data.articles.find((a) => a.slug === params.slug);

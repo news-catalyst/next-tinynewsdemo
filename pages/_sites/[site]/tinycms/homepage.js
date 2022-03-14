@@ -1,6 +1,6 @@
 import dynamic from 'next/dynamic';
 import React, { useState } from 'react';
-import { findSetting, getLatestVersion } from '../../../../lib/utils.js';
+import { findSetting } from '../../../../lib/utils.js';
 import {
   hasuraGetHomepageEditor,
   hasuraSaveHomepageLayout,
@@ -206,16 +206,12 @@ export async function getServerSideProps(context) {
 
   const tags = data.tags;
   for (var i = 0; i < tags.length; i++) {
-    tags[i].title = getLatestVersion(tags[i].tag_translations, 'title', false);
+    tags[i].title = tags[i].tag_translations[0].title;
   }
 
   const sections = data.categories;
   for (var j = 0; j < sections.length; j++) {
-    sections[j].title = getLatestVersion(
-      sections[j].category_translations,
-      'title',
-      false
-    );
+    sections[j].title = sections[j].category_translations[0].title;
   }
   const host = context.req.headers.host; // will give you localhost:3000
   const siteUrl = findSetting(settings, 'NEXT_PUBLIC_SITE_URL');

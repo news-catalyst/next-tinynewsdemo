@@ -1,6 +1,5 @@
 import tw from 'twin.macro';
 import MainImage from './MainImage.js';
-import { getLatestVersion } from '../../lib/utils.js';
 
 const StaticFeaturedMedia = tw.div`flex flex-col flex-nowrap items-center`;
 const StaticFeaturedMediaFigure = tw.figure`flex flex-row flex-wrap w-full`;
@@ -11,7 +10,7 @@ export default function StaticMainImage({ page, isAmp, siteMetadata }) {
   // main image handling
   let mainImageNode;
   let mainImage = null;
-  let pageContent = getLatestVersion(page.page_translations, 'content');
+  let pageContent = page.page_translations[0].content;
   if (
     pageContent !== undefined &&
     pageContent !== null &&

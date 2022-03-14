@@ -19,7 +19,6 @@ import {
 } from '../../../../../lib/authors';
 import {
   displayAuthorName,
-  getLatestVersion,
   validateAuthorName,
   findSetting,
 } from '../../../../../lib/utils.js';
@@ -49,12 +48,8 @@ export default function EditAuthor({
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
 
-  const [title, setTitle] = useState(
-    getLatestVersion(author.author_translations, 'title', false)
-  );
-  const [bio, setBio] = useState(
-    getLatestVersion(author.author_translations, 'bio', false)
-  );
+  const [title, setTitle] = useState(author.author_translations[0].title);
+  const [bio, setBio] = useState(author.author_translations[0].bio);
   const [staticBio, setStaticBio] = useState(undefined);
 
   const [twitter, setTwitter] = useState(author.twitter);

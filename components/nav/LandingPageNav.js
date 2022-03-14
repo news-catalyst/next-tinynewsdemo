@@ -1,7 +1,6 @@
 import { Fragment } from 'react';
 import Link from 'next/link';
 import tw from 'twin.macro';
-import { getLatestVersion } from '../../lib/utils.js';
 import { Anchor } from '../common/CommonStyles.js';
 
 const NavWrapper = tw.div`w-full`;
@@ -25,7 +24,7 @@ function PageLink({ locale, page, metadata }) {
     link = `/static/${page.slug}`;
   }
 
-  const headline = getLatestVersion(page.page_translations, 'headline');
+  const headline = page.page_translations[0].headline;
 
   return (
     <Link href={link} passHref>

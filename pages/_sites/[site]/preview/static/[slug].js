@@ -4,7 +4,6 @@ import {
   hasuraGetPagePreview,
   generateAllStaticPagePaths,
 } from '../../../../../lib/articles.js';
-import { getLatestVersion } from '../../../../../lib/utils';
 import StaticPage from '../../../../../components/StaticPage';
 
 export default function Static({ page, sections, siteMetadata }) {
@@ -88,10 +87,7 @@ export async function getStaticProps(context) {
     sections = data.categories;
     siteMetadata = data.site_metadatas[0].site_metadata_translations[0].data;
     for (i = 0; i < sections.length; i++) {
-      sections[i].title = getLatestVersion(
-        sections[i].category_translations,
-        'title'
-      );
+      sections[i].title = sections[i].category_translations[0].title;
     }
   }
 

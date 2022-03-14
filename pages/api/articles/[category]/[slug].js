@@ -1,8 +1,5 @@
 import { hasuraArticlePage } from '../../../../lib/articles.js';
-import {
-  getLatestVersion,
-  renderBodyWordPress,
-} from '../../../../lib/utils.js';
+import { renderBodyWordPress } from '../../../../lib/utils.js';
 import ReactDOMServer from 'react-dom/server';
 
 export default async function Handler(req, res) {
@@ -36,17 +33,11 @@ export default async function Handler(req, res) {
   } else {
     article = data.article_slug_versions[0].article;
 
-    siteMetadata = getLatestVersion(
-      data.site_metadatas[0].site_metadata_translations,
-      'data'
-    );
+    siteMetadata = data.site_metadatas[0].site_metadata_translations[0].data;
 
     let mainImageNode;
     let mainImage = null;
-    let localisedContent = getLatestVersion(
-      article.article_translations,
-      'content'
-    );
+    let localisedContent = article.article_translations[0].content;
     try {
       mainImageNode = localisedContent.find(
         (node) => node.type === 'mainImage'

@@ -16,7 +16,6 @@ import {
   hasuraGetTagById,
   hasuraUpdateTag,
 } from '../../../../../lib/section.js';
-import { getLatestVersion } from '../../../../../lib/utils.js';
 import { slugify } from '../../../../../lib/graphql';
 import { getOrgSettings } from '../../../../../lib/articles.js';
 import { findSetting } from '../../../../../lib/utils';
@@ -35,7 +34,7 @@ export default function EditTag({ apiUrl, site, tag, siteUrl, host }) {
   useEffect(() => {
     if (tag) {
       setTagId(tag.id);
-      let title = getLatestVersion(tag.tag_translations, 'title', false);
+      let title = tag.tag_translations[0].title;
       setTitle(title);
       setSlug(tag.slug);
     }
