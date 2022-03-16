@@ -4,7 +4,7 @@ module.exports = {
   images: {
     domains: [
       'tnc-test-upload-bucket.s3.amazonaws.com',
-      'tnc-staging-bucket.s3.amazonaws.com',
+      'tnc-staging-upload-bucket.s3.amazonaws.com',
       'assets.tinynewsco.org',
       'tiny-news-demo-assets-dev.s3.amazonaws.com',
       'wherebyspace.nyc3.digitaloceanspaces.com',

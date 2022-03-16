@@ -40,6 +40,7 @@ export default function Upload(props) {
     let newFilename = `${props.folderName}/${props.slug}-${uuidv4()}`;
 
     const ReactS3Client = new S3(props.awsConfig);
+
     ReactS3Client.uploadFile(file, newFilename)
       .then((data) => {
         if (data.status === 204) {
