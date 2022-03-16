@@ -1,6 +1,27 @@
 const fetch = require('node-fetch');
 const faker = require('faker');
 
+const INSERT_SETTINGS = `mutation FrontendInsertSettings($objects: [settings_insert_input!] = {}) {
+  insert_settings(objects: $objects) {
+    returning {
+      id
+      name
+      organization_id
+      value
+    }
+  }
+}`;
+
+function hasuraInsertSettings(params) {
+  return fetchGraphQL({
+    url: params['url'],
+    site: params['site'],
+    query: INSERT_SETTINGS,
+    name: 'FrontendInsertSettings',
+    variables: { objects: params['settings'] },
+  });
+}
+
 const INSERT_LOCALE = `mutation FrontendInsertLocale($code: String!, $name: String!) {
   insert_locales_one(object: {code: $code, name: $name}, on_conflict: {constraint: locales_code_key, update_columns: code}) {
     id
@@ -1407,7 +1428,6 @@ async function seedData(params) {
 }
 async function fetchGraphQL(params) {
   let url;
-  let orgSlug;
   if (!params.hasOwnProperty('url')) {
     url = HASURA_API_URL;
   } else {
@@ -1416,10 +1436,9 @@ async function fetchGraphQL(params) {
 
   let requestHeaders;
 
-  if (params.hasOwnProperty('orgSlug')) {
-    orgSlug = params['orgSlug'];
+  if (params.hasOwnProperty('site')) {
     requestHeaders = {
-      'TNC-Organization': orgSlug,
+      'TNC-Site': params['site'],
     };
   } else if (params.hasOwnProperty('adminSecret')) {
     requestHeaders = {
@@ -1455,6 +1474,7 @@ function sanitizePath(path) {
 }
 
 module.exports = {
+  hasuraInsertSettings,
   hasuraGetSiteData,
   hasuraInsertLocale,
   hasuraInsertOneAuthor,
