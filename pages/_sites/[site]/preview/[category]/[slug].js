@@ -121,7 +121,7 @@ export async function getStaticProps(context) {
       apiKey: findSetting(settings, 'LETTERHEAD_API_KEY'),
     };
     const allAds =
-      (await cachedContents('ads', getArticleAds(letterheadParams))) || [];
+      (await cachedContents('ads', letterheadParams, getArticleAds)) || [];
     ads = allAds.filter((ad) => ad.adTypeId === 164 && ad.status === 4);
   }
 
