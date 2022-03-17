@@ -2,11 +2,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import tw from 'twin.macro';
-import {
-  getOrgSettings,
-  hasuraGetMetadataByLocale,
-} from '../../../../../lib/articles.js';
-import { findSetting } from '../../../../../lib/utils.js';
+import { hasuraGetMetadataByLocale } from '../../../../../lib/articles.js';
+import { findSetting, getOrgSettings } from '../../../../../lib/settings.js';
 import AdminLayout from '../../../../../components/AdminLayout.js';
 import AdminNav from '../../../../../components/nav/AdminNav';
 import SiteInfoSettings from '../../../../../components/tinycms/SiteInfoSettings';

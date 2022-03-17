@@ -12,12 +12,11 @@ import AdminLayout from '../../../../../components/AdminLayout';
 import AdminNav from '../../../../../components/nav/AdminNav';
 import Notification from '../../../../../components/tinycms/Notification';
 import Upload from '../../../../../components/tinycms/Upload';
-import { getOrgSettings } from '../../../../../lib/articles.js';
+import { findSetting, getOrgSettings } from '../../../../../lib/settings.js';
 import { hasuraCreateAuthor } from '../../../../../lib/authors';
 import {
   displayAuthorName,
   validateAuthorName,
-  findSetting,
 } from '../../../../../lib/utils.js';
 import { slugify } from '../../../../../lib/graphql';
 

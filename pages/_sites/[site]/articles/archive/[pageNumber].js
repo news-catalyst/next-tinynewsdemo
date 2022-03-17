@@ -6,9 +6,8 @@ import Layout from '../../../../../components/Layout.js';
 import {
   hasuraArticlesArchivePage,
   generateAllArticleArchivePages,
-  getOrgSettings,
 } from '../../../../../lib/articles.js';
-import { booleanSetting } from '../../../../../lib/utils';
+import { booleanSetting, getOrgSettings } from '../../../../../lib/settings.js';
 import { cachedContents } from '../../../../../lib/cached';
 import { getArticleAds } from '../../../../../lib/ads.js';
 import ArticleStream from '../../../../../components/homepage/ArticleStream';
@@ -175,14 +174,17 @@ export async function getStaticProps(context) {
     }
   }
 
+  const settings = settingsResult.data.settings;
+
   let expandedAds = [];
-  let letterheadSetting = booleanSetting(
-    settingsResult.data.settings,
-    'LETTERHEAD_API_URL',
-    false
-  );
+  let letterheadSetting = booleanSetting(settings, 'LETTERHEAD_API_URL', false);
   if (letterheadSetting) {
-    const allAds = (await cachedContents('ads', getArticleAds)) || [];
+    let letterheadParams = {
+      url: findSetting(settings, 'LETTERHEAD_API_URL'),
+      apiKey: findSetting(settings, 'LETTERHEAD_API_KEY'),
+    };
+    const allAds =
+      (await cachedContents('ads', getArticleAds(letterheadParams))) || [];
     expandedAds = allAds.filter((ad) => ad.adTypeId === 166 && ad.status === 4);
   }
 

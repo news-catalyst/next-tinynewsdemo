@@ -12,8 +12,7 @@ import {
   TagIcon,
   MenuIcon,
 } from '@heroicons/react/solid';
-import { getOrgSettings } from '../../../../lib/articles.js';
-import { findSetting } from '../../../../lib/utils';
+import { findSetting, getOrgSettings } from '../../../../lib/settings.js';
 
 const Content = tw.div`max-w-6xl my-16 mx-auto`;
 const Header = tw.h1`text-3xl font-bold text-center`;

@@ -7,8 +7,7 @@ import {
 } from '../../../../../lib/homepage';
 import AdminNav from '../../../../../components/nav/AdminNav';
 import Notification from '../../../../../components/tinycms/Notification';
-import { getOrgSettings } from '../../../../../lib/articles.js';
-import { findSetting } from '../../../../../lib/utils';
+import { findSetting, getOrgSettings } from '../../../../../lib/settings.js';
 
 export default function EditHomepageLayout({
   apiUrl,

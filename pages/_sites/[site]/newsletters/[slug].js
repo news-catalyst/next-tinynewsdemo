@@ -4,10 +4,12 @@ import tw from 'twin.macro';
 import Layout from '../../../../components/Layout.js';
 import { cachedContents } from '../../../../lib/cached';
 import { hasuraGetNewsletter } from '../../../../lib/newsletters.js';
+import { generateAllNewsletterPagePaths } from '../../../../lib/articles.js';
 import {
-  generateAllNewsletterPagePaths,
+  booleanSetting,
+  findSetting,
   getOrgSettings,
-} from '../../../../lib/articles.js';
+} from '../../../../lib/settings.js';
 import { getArticleAds } from '../../../../lib/ads.js';
 import {
   ArticleTitle,
@@ -16,10 +18,7 @@ import {
 } from '../../../../components/common/CommonStyles.js';
 import ArticleFooter from '../../../../components/articles/ArticleFooter';
 import NewsletterBlock from '../../../../components/plugins/NewsletterBlock';
-import {
-  booleanSetting,
-  renderNewsletterContent,
-} from '../../../../lib/utils.js';
+import { renderNewsletterContent } from '../../../../lib/utils.js';
 
 const SectionContainer = tw.div`flex flex-col flex-nowrap items-center px-5 mx-auto max-w-7xl w-full`;
 const BlockWrapper = tw.div`w-full`;
@@ -142,7 +141,12 @@ export async function getStaticProps({ params }) {
   let expandedAds = [];
   let letterheadSetting = booleanSetting(settings, 'LETTERHEAD_API_URL', false);
   if (letterheadSetting) {
-    const allAds = (await cachedContents('ads', getArticleAds)) || [];
+    let letterheadParams = {
+      url: findSetting(settings, 'LETTERHEAD_API_URL'),
+      apiKey: findSetting(settings, 'LETTERHEAD_API_KEY'),
+    };
+    const allAds =
+      (await cachedContents('ads', getArticleAds(letterheadParams))) || [];
     expandedAds = allAds.filter((ad) => ad.adTypeId === 166 && ad.status === 4);
   }
 

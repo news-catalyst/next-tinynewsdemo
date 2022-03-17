@@ -7,8 +7,7 @@ import AdminLayout from '../../../../../components/AdminLayout.js';
 import AdminNav from '../../../../../components/nav/AdminNav';
 import { hasuraListAllSectionsByLocale } from '../../../../../lib/section.js';
 import { AddButton } from '../../../../../components/common/CommonStyles.js';
-import { getOrgSettings } from '../../../../../lib/articles.js';
-import { findSetting } from '../../../../../lib/utils';
+import { findSetting, getOrgSettings } from '../../../../../lib/settings.js';
 
 const Table = tw.table`table-auto w-full`;
 const TableHead = tw.thead``;

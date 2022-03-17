@@ -5,12 +5,10 @@ import AdminLayout from '../../../../../components/AdminLayout.js';
 import AdminNav from '../../../../../components/nav/AdminNav';
 import tw from 'twin.macro';
 import Notification from '../../../../../components/tinycms/Notification';
-import {
-  getOrgSettings,
-  hasuraListAllTagsByLocale,
-} from '../../../../../lib/articles.js';
+import { hasuraListAllTagsByLocale } from '../../../../../lib/articles.js';
+import { getOrgSettings, findSetting } from '../../../../../lib/settings.js';
+
 import { deleteSingleTag } from '../../../../../lib/section.js';
-import { findSetting } from '../../../../../lib/utils.js';
 import {
   DeleteButton,
   AddButton,

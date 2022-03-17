@@ -17,8 +17,7 @@ import {
   hasuraUpdateTag,
 } from '../../../../../lib/section.js';
 import { slugify } from '../../../../../lib/graphql';
-import { getOrgSettings } from '../../../../../lib/articles.js';
-import { findSetting } from '../../../../../lib/utils';
+import { findSetting, getOrgSettings } from '../../../../../lib/settings.js';
 
 const ViewOnSiteLink = tw.a`font-bold cursor-pointer hover:underline`;
 
