@@ -45,8 +45,7 @@ export default function Upload(props) {
       .then((data) => {
         if (data.status === 204) {
           let uploadedS3Url = new URL(data.location);
-          let assetUrl =
-            'https://assets.tinynewsco.org' + uploadedS3Url.pathname;
+          let assetUrl = `https://${process.env.NEXT_PUBLIC_ASSETS_DOMAIN}${uploadedS3Url.pathname}`;
           props.setter(assetUrl);
 
           if (props.parsedData) {

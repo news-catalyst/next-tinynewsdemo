@@ -26,15 +26,13 @@ export default function LandingPage({ locale, siteMetadata, sections, pages }) {
 
   let LogoComponent;
   if (logo) {
+    const assetsDomain = process.env.NEXT_PUBLIC_ASSETS_DOMAIN;
     const logoUrl = new URL(logo);
 
     LogoComponent = (
       <LogoWrapper>
         <Logo>
-          <img
-            src={`https://assets.tinynewsco.org${logoUrl.pathname}`}
-            alt={title}
-          />
+          <img src={`https://${assetsDomain}${logoUrl.pathname}`} alt={title} />
         </Logo>
       </LogoWrapper>
     );
