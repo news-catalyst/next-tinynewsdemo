@@ -49,12 +49,14 @@ export async function getStaticProps(context) {
     localeCode: locale,
   });
   if (errors || !data) {
+    console.error('About page not found:', errors, data);
     return {
       notFound: true,
     };
     // throw errors;
   } else {
     if (!data.page_slug_versions || !data.page_slug_versions[0]) {
+      console.error('About page slug versions not found');
       return {
         notFound: true,
       };
@@ -62,6 +64,10 @@ export async function getStaticProps(context) {
     page = data.page_slug_versions[0].page;
 
     if (!page) {
+      console.error(
+        'About page slug version found but lacking page',
+        data.page_slug_versions[0]
+      );
       return {
         notFound: true,
       };
@@ -69,7 +75,7 @@ export async function getStaticProps(context) {
 
     sections = data.categories;
     siteMetadata = data.site_metadatas[0].site_metadata_translations[0].data;
-    for (i = 0; i < sections.length; i++) {
+    for (var i = 0; i < sections.length; i++) {
       sections[i].title = sections[i].category_translations[0].title;
     }
   }
