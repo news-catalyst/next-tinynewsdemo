@@ -6,8 +6,7 @@ import AnalyticsNav from '../../../../../components/tinycms/analytics/AnalyticsN
 import AnalyticsSidebar from '../../../../../components/tinycms/analytics/AnalyticsSidebar';
 import YesterdaysTopTen from '../../../../../components/tinycms/analytics/YesterdaysTopTen';
 import { hasuraGetYesterday } from '../../../../../lib/analytics';
-import { getOrgSettings } from '../../../../../lib/articles.js';
-import { findSetting } from '../../../../../lib/utils';
+import { findSetting, getOrgSettings } from '../../../../../lib/settings.js';
 
 import moment from 'moment';
 

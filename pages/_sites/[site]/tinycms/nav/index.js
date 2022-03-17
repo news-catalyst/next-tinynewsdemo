@@ -3,10 +3,8 @@ import { useRouter } from 'next/router';
 import tw, { styled } from 'twin.macro';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { SelectorIcon } from '@heroicons/react/solid';
-import {
-  getOrgSettings,
-  hasuraGetMetadataByLocale,
-} from '../../../../../lib/articles.js';
+import { hasuraGetMetadataByLocale } from '../../../../../lib/articles.js';
+import { findSetting, getOrgSettings } from '../../../../../lib/settings.js';
 import AdminLayout from '../../../../../components/AdminLayout.js';
 import AdminNav from '../../../../../components/nav/AdminNav';
 import GlobalNav from '../../../../../components/nav/GlobalNav';
@@ -16,7 +14,6 @@ import {
   AddButton,
   DeleteButton,
 } from '../../../../../components/common/CommonStyles.js';
-import { findSetting } from '../../../../../lib/utils';
 
 const Container = tw.div`flex flex-wrap -mx-2`;
 const MainContent = tw.div`w-full lg:w-3/4 px-4 py-4`;

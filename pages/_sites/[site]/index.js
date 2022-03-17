@@ -4,10 +4,13 @@ import { cachedContents } from '../../../lib/cached';
 import {
   hasuraGetHomepageEditor,
   generateAllDomainPaths,
-  getOrgSettings,
 } from '../../../lib/articles.js';
+import {
+  booleanSetting,
+  findSetting,
+  getOrgSettings,
+} from '../../../lib/settings.js';
 import { getArticleAds } from '../../../lib/ads.js';
-import { booleanSetting } from '../../../lib/utils.js';
 import Homepage from '../../../components/Homepage';
 import LandingPage from '../../../components/LandingPage';
 import CurriculumHomepage from '../../../components/curriculum/CurriculumHomepage';
@@ -153,8 +156,14 @@ export async function getStaticProps(context) {
   let settings = settingsResult.data.settings;
   let expandedAds = [];
   let letterheadSetting = booleanSetting(settings, 'LETTERHEAD_API_URL', false);
+
   if (letterheadSetting) {
-    const allAds = (await cachedContents('ads', getArticleAds)) || [];
+    let letterheadParams = {
+      url: findSetting(settings, 'LETTERHEAD_API_URL'),
+      apiKey: findSetting(settings, 'LETTERHEAD_API_KEY'),
+    };
+    const allAds =
+      (await cachedContents('ads', getArticleAds(letterheadParams))) || [];
     expandedAds = allAds.filter((ad) => ad.adTypeId === 166 && ad.status === 4);
   }
 

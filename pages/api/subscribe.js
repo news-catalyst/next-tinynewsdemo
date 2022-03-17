@@ -1,5 +1,4 @@
-import { getOrgSettings } from '../../lib/articles';
-import { findSetting } from '../../lib/utils.js';
+import { getOrgSettings, findSetting } from '../../lib/settings';
 
 export default async function Handler(req, res) {
   const apiUrl = process.env.HASURA_API_URL;

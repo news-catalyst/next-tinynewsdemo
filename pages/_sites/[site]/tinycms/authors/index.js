@@ -5,7 +5,7 @@ import tw from 'twin.macro';
 import AdminLayout from '../../../../../components/AdminLayout.js';
 import AdminNav from '../../../../../components/nav/AdminNav';
 import Notification from '../../../../../components/tinycms/Notification';
-import { getOrgSettings } from '../../../../../lib/articles.js';
+import { findSetting, getOrgSettings } from '../../../../../lib/settings.js';
 import {
   deleteSingleAuthor,
   hasuraListAllAuthors,
@@ -14,7 +14,7 @@ import {
   DeleteButton,
   AddButton,
 } from '../../../../../components/common/CommonStyles.js';
-import { displayAuthorName, findSetting } from '../../../../../lib/utils.js';
+import { displayAuthorName } from '../../../../../lib/utils.js';
 
 const Table = tw.table`table-auto w-full`;
 const TableHead = tw.thead``;

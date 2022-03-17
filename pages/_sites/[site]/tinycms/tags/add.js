@@ -11,10 +11,9 @@ import {
 import AdminLayout from '../../../../../components/AdminLayout';
 import AdminNav from '../../../../../components/nav/AdminNav';
 import Notification from '../../../../../components/tinycms/Notification';
-import { getOrgSettings } from '../../../../../lib/articles.js';
+import { getOrgSettings, findSetting } from '../../../../../lib/settings.js';
 import { hasuraCreateTag } from '../../../../../lib/section';
 import { slugify } from '../../../../../lib/graphql';
-import { findSetting } from '../../../../../lib/utils';
 
 export default function AddTag({
   apiUrl,
