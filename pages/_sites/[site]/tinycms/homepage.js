@@ -1,11 +1,11 @@
 import dynamic from 'next/dynamic';
 import React, { useState } from 'react';
-import { findSetting } from '../../../../lib/utils.js';
 import {
   hasuraGetHomepageEditor,
   hasuraSaveHomepageLayout,
-  getOrgSettings,
 } from '../../../../lib/articles.js';
+import { findSetting, getOrgSettings } from '../../../../lib/settings.js';
+
 import AdminNav from '../../../../components/nav/AdminNav';
 import Notification from '../../../../components/tinycms/Notification';
 import AdminLayout from '../../../../components/AdminLayout';

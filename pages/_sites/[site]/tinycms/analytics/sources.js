@@ -13,8 +13,7 @@ import SourcesBySexualOrientation from '../../../../../components/tinycms/analyt
 import SourceTopZips from '../../../../../components/tinycms/analytics/SourceTopZips';
 import AnalyticsSidebar from '../../../../../components/tinycms/analytics/AnalyticsSidebar';
 import AnalyticsNav from '../../../../../components/tinycms/analytics/AnalyticsNav';
-import { findSetting } from '../../../../../lib/utils';
-import { getOrgSettings } from '../../../../../lib/articles.js';
+import { findSetting, getOrgSettings } from '../../../../../lib/settings.js';
 
 const Container = tw.div`flex flex-wrap -mx-2 mb-8`;
 const Sidebar = tw.div`h-full h-screen bg-gray-100 md:w-1/5 lg:w-1/5 px-2 mb-4`;

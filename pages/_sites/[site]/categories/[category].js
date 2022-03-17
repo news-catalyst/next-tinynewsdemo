@@ -5,10 +5,13 @@ import { cachedContents } from '../../../../lib/cached';
 import {
   hasuraCategoryPage,
   generateAllCategoryPagePaths,
-  getOrgSettings,
 } from '../../../../lib/articles.js';
+import {
+  booleanSetting,
+  findSetting,
+  getOrgSettings,
+} from '../../../../lib/settings.js';
 import { getArticleAds } from '../../../../lib/ads.js';
-import { booleanSetting } from '../../../../lib/utils.js';
 import ArticleStream from '../../../../components/homepage/ArticleStream';
 import {
   SectionContainer,
@@ -139,7 +142,12 @@ export async function getStaticProps({ params }) {
   let expandedAds = [];
   let letterheadSetting = booleanSetting(settings, 'LETTERHEAD_API_URL', false);
   if (letterheadSetting) {
-    const allAds = (await cachedContents('ads', getArticleAds)) || [];
+    let letterheadParams = {
+      url: findSetting(settings, 'LETTERHEAD_API_URL'),
+      apiKey: findSetting(settings, 'LETTERHEAD_API_KEY'),
+    };
+    const allAds =
+      (await cachedContents('ads', getArticleAds(letterheadParams))) || [];
     expandedAds = allAds.filter((ad) => ad.adTypeId === 166 && ad.status === 4);
   }
 

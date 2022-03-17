@@ -3,8 +3,7 @@ import AdminLayout from '../../../../../components/AdminLayout';
 import AdminNav from '../../../../../components/nav/AdminNav';
 import Notification from '../../../../../components/tinycms/Notification';
 import { hasuraUpsertHomepageLayout } from '../../../../../lib/homepage';
-import { getOrgSettings } from '../../../../../lib/articles.js';
-import { findSetting } from '../../../../../lib/utils';
+import { findSetting, getOrgSettings } from '../../../../../lib/settings.js';
 
 export default function AddHomepageLayout({ apiUrl, apiToken, siteUrl, host }) {
   const [notificationMessage, setNotificationMessage] = useState('');

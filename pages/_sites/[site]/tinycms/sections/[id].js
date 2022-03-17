@@ -15,13 +15,11 @@ import {
   hasuraGetSectionById,
   hasuraUpdateSection,
 } from '../../../../../lib/section';
-import {
-  getOrgSettings,
-  hasuraInsertArticleSlugVersions,
-} from '../../../../../lib/articles';
+import { hasuraInsertArticleSlugVersions } from '../../../../../lib/articles';
+import { findSetting, getOrgSettings } from '../../../../../lib/settings.js';
+
 import AdminNav from '../../../../../components/nav/AdminNav';
 import Notification from '../../../../../components/tinycms/Notification';
-import { findSetting } from '../../../../../lib/utils';
 
 const ViewOnSiteLink = tw.a`font-bold cursor-pointer hover:underline`;
 

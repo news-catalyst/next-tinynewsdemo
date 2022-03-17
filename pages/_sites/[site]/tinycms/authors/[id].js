@@ -20,9 +20,8 @@ import {
 import {
   displayAuthorName,
   validateAuthorName,
-  findSetting,
 } from '../../../../../lib/utils.js';
-import { getOrgSettings } from '../../../../../lib/articles.js';
+import { findSetting, getOrgSettings } from '../../../../../lib/settings.js';
 import { slugify } from '../../../../../lib/graphql';
 
 const UploadContainer = tw.div`container mx-auto min-w-0 flex-auto px-4 sm:px-6 xl:px-8 pt-10`;

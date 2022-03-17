@@ -1,8 +1,5 @@
-import {
-  getOrgSettings,
-  hasuraLookupGoogleDoc,
-} from '../../../../../lib/articles';
-import { findSetting } from '../../../../../lib/utils.js';
+import { hasuraLookupGoogleDoc } from '../../../../../lib/articles';
+import { findSetting, getOrgSettings } from '../../../../../lib/settings.js';
 import { unpublishArticle, unpublishPage } from '../../../../../lib/document';
 
 export default async function Handler(req, res) {

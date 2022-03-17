@@ -4,9 +4,12 @@ import {
   generateAllArticlePagePaths,
   hasuraArticlePage,
   hasuraCategoryPage,
-  getOrgSettings,
 } from '../../../../../lib/articles.js';
-import { booleanSetting } from '../../../../../lib/utils.js';
+import {
+  booleanSetting,
+  findSetting,
+  getOrgSettings,
+} from '../../../../../lib/settings.js';
 import { getArticleAds } from '../../../../../lib/ads.js';
 import { cachedContents } from '../../../../../lib/cached';
 import Article from '../../../../../components/Article.js';
@@ -61,6 +64,7 @@ export async function getStaticProps({ params }) {
     console.error('Settings lookup error:', settingsResult.errors);
     throw settingsResult.errors;
   }
+  const settings = settingsResult.data.settings;
 
   let article = {};
   let sectionArticles = [];
@@ -109,13 +113,14 @@ export async function getStaticProps({ params }) {
 
   let ads = [];
 
-  let letterheadSetting = booleanSetting(
-    settingsResult.data.settings,
-    'LETTERHEAD_API_URL',
-    false
-  );
+  let letterheadSetting = booleanSetting(settings, 'LETTERHEAD_API_URL', false);
   if (letterheadSetting) {
-    const allAds = (await cachedContents('ads', getArticleAds)) || [];
+    let letterheadParams = {
+      url: findSetting(settings, 'LETTERHEAD_API_URL'),
+      apiKey: findSetting(settings, 'LETTERHEAD_API_KEY'),
+    };
+    const allAds =
+      (await cachedContents('ads', getArticleAds(letterheadParams))) || [];
     ads = allAds.filter((ad) => ad.adTypeId === 164 && ad.status === 4);
   }
 

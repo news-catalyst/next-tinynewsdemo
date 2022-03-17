@@ -4,6 +4,11 @@ import {
   hasuraTagPage,
   generateAllTagPagePaths,
 } from '../../../../lib/articles.js';
+import {
+  booleanSetting,
+  findSetting,
+  getOrgSettings,
+} from '../../../../lib/settings.js';
 import { cachedContents } from '../../../../lib/cached';
 import { getArticleAds } from '../../../../lib/ads.js';
 import ArticleStream from '../../../../components/homepage/ArticleStream';
@@ -68,6 +73,16 @@ export async function getStaticProps({ params }) {
   let tag;
   let siteMetadata;
 
+  const settingsResult = await getOrgSettings({
+    url: apiUrl,
+    site: site,
+  });
+
+  if (settingsResult.errors) {
+    throw settingsResult.errors;
+  }
+  const settings = settingsResult.data.settings;
+
   const { errors, data } = await hasuraTagPage({
     url: apiUrl,
     site: site,
@@ -106,10 +121,16 @@ export async function getStaticProps({ params }) {
     }
   }
 
-  let expandedAds = [];
-  if (process.env.LETTERHEAD_API_URL) {
-    const allAds = (await cachedContents('ads', getArticleAds)) || [];
-    expandedAds = allAds.filter((ad) => ad.adTypeId === 166 && ad.status === 4);
+  let ads = [];
+  let letterheadSetting = booleanSetting(settings, 'LETTERHEAD_API_URL', false);
+  if (letterheadSetting) {
+    let letterheadParams = {
+      url: findSetting(settings, 'LETTERHEAD_API_URL'),
+      apiKey: findSetting(settings, 'LETTERHEAD_API_KEY'),
+    };
+    const allAds =
+      (await cachedContents('ads', getArticleAds(letterheadParams))) || [];
+    ads = allAds.filter((ad) => ad.adTypeId === 164 && ad.status === 4);
   }
 
   return {
@@ -118,7 +139,7 @@ export async function getStaticProps({ params }) {
       tag,
       sections,
       siteMetadata,
-      expandedAds,
+      ads,
     },
   };
 }

@@ -1,7 +1,4 @@
-import {
-  getOrgSettings,
-  hasuraLookupGoogleDoc,
-} from '../../../../../lib/articles';
+import { hasuraLookupGoogleDoc } from '../../../../../lib/articles';
 import {
   processDocumentContents,
   saveArticle,
@@ -10,7 +7,7 @@ import {
   storePageIdAndSlug,
   upsertPublishedArticle,
 } from '../../../../../lib/document';
-import { findSetting } from '../../../../../lib/utils.js';
+import { findSetting, getOrgSettings } from '../../../../../lib/settings.js';
 
 export default async function Handler(req, res) {
   const apiUrl = process.env.HASURA_API_URL;

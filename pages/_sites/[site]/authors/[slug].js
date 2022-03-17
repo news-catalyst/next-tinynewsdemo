@@ -3,9 +3,13 @@ import Layout from '../../../../components/Layout.js';
 import {
   generateAllAuthorPagePaths,
   hasuraAuthorPage,
-  getOrgSettings,
 } from '../../../../lib/articles.js';
-import { booleanSetting, displayAuthorName } from '../../../../lib/utils';
+import {
+  booleanSetting,
+  findSetting,
+  getOrgSettings,
+} from '../../../../lib/settings.js';
+import { displayAuthorName } from '../../../../lib/utils';
 import { cachedContents } from '../../../../lib/cached';
 import { getArticleAds } from '../../../../lib/ads.js';
 import ArticleStream from '../../../../components/homepage/ArticleStream';
@@ -163,15 +167,16 @@ export async function getStaticProps({ params }) {
       console.error('failed finding site metadata for ', locale, metadatas);
     }
   }
-
+  const settings = settingsResult.data.settings;
   let expandedAds = [];
-  let letterheadSetting = booleanSetting(
-    settingsResult.data.settings,
-    'LETTERHEAD_API_URL',
-    false
-  );
+  let letterheadSetting = booleanSetting(settings, 'LETTERHEAD_API_URL', false);
   if (letterheadSetting) {
-    const allAds = (await cachedContents('ads', getArticleAds)) || [];
+    let letterheadParams = {
+      url: findSetting(settings, 'LETTERHEAD_API_URL'),
+      apiKey: findSetting(settings, 'LETTERHEAD_API_KEY'),
+    };
+    const allAds =
+      (await cachedContents('ads', getArticleAds(letterheadParams))) || [];
     expandedAds = allAds.filter((ad) => ad.adTypeId === 166 && ad.status === 4);
   }
 
