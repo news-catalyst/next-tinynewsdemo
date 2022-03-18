@@ -621,7 +621,8 @@ describe('document parser', () => {
           inlineObjects,
           imageList,
           slug,
-          oauthToken
+          oauthToken,
+          'next-tinynewsdemo'
         )
       ).then((result) => {
         const listEl = result.formattedElements.find(
@@ -1664,7 +1665,8 @@ describe('document parser', () => {
           inlineObjects,
           imageList,
           slug,
-          oauthToken
+          oauthToken,
+          'next-tinynewsdemo'
         )
       )
         .should('be.an', 'object')
@@ -1683,7 +1685,8 @@ describe('document parser', () => {
           inlineObjects,
           imageList,
           slug,
-          oauthToken
+          oauthToken,
+          'next-tinynewsdemo'
         )
       ).then((result) => {
         // cy.log(JSON.stringify(result));
@@ -1706,7 +1709,8 @@ describe('document parser', () => {
           inlineObjects,
           imageList,
           slug,
-          oauthToken
+          oauthToken,
+          'next-tinynewsdemo'
         )
       ).then((result) => {
         // cy.log(JSON.stringify(result));
@@ -1729,7 +1733,8 @@ describe('document parser', () => {
           inlineObjects,
           imageList,
           slug,
-          oauthToken
+          oauthToken,
+          'next-tinynewsdemo'
         )
       ).then((result) => {
         // cy.log(JSON.stringify(result));
@@ -1752,7 +1757,8 @@ describe('document parser', () => {
           inlineObjects,
           imageList,
           slug,
-          oauthToken
+          oauthToken,
+          'next-tinynewsdemo'
         )
       ).then((result) => {
         // cy.log(JSON.stringify(result));
@@ -1778,7 +1784,8 @@ describe('document parser', () => {
           inlineObjects,
           imageList,
           slug,
-          oauthToken
+          oauthToken,
+          'next-tinynewsdemo'
         )
       ).then((result) => {
         let tweet = result.formattedElements[12];
@@ -1833,7 +1840,8 @@ describe('document parser', () => {
           inlineObjects,
           imageList,
           slug,
-          oauthToken
+          oauthToken,
+          'next-tinynewsdemo'
         )
       ).then((result) => {
         let el = result.formattedElements[10];
@@ -2350,7 +2358,8 @@ describe('document parser', () => {
           inlineObjects,
           imageList,
           slug,
-          oauthToken
+          oauthToken,
+          'next-tinynewsdemo'
         )
       ).then((result) => {
         let el = result.formattedElements[result.formattedElements.length - 2];
@@ -2535,7 +2544,8 @@ describe('document parser', () => {
           inlineObjects,
           imageList,
           slug,
-          oauthToken
+          oauthToken,
+          'next-tinynewsdemo'
         )
       ).then((result) => {
         // for (let l = 0; l < result.formattedElements.length; l++) {
