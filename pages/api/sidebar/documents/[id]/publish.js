@@ -64,24 +64,6 @@ export default async function Handler(req, res) {
     // console.log(data);
 
     let localeCode = 'en-US'; // default up front, override if existing article
-    if (
-      data.google_documents[0] &&
-      data.google_documents[0].article_google_documents &&
-      data.google_documents[0].article_google_documents[0]
-    ) {
-      localeCode =
-        data.google_documents[0].article_google_documents[0].google_document
-          .locale_code;
-    }
-    if (
-      data.google_documents[0] &&
-      data.google_documents[0].page_google_documents &&
-      data.google_documents[0].page_google_documents[0]
-    ) {
-      localeCode =
-        data.google_documents[0].page_google_documents[0].google_document
-          .locale_code;
-    }
 
     let processedData = await processDocumentContents(
       rawBodyData,
@@ -89,7 +71,8 @@ export default async function Handler(req, res) {
       inlineObjects,
       imageList,
       slug,
-      googleToken
+      googleToken,
+      site
     );
 
     // console.log('processedData:', Object.keys(processedData).sort());
@@ -173,7 +156,7 @@ export default async function Handler(req, res) {
       }
 
       //construct the published article url
-      var path = localeCode + '/articles/' + categorySlug + '/' + slug;
+      var path = '/articles/' + categorySlug + '/' + slug;
       publishUrl = new URL(path, siteUrl).toString();
       // console.log(publishUrl);
     } else if (documentType === 'page') {
@@ -220,7 +203,7 @@ export default async function Handler(req, res) {
       }
 
       // construct published page url
-      let path = `/${localeCode}`;
+      let path = '';
       if (slug !== 'about' && slug !== 'donate' && slug !== 'thank-you') {
         // these 3 pages have their own special routes
         path += '/static/' + slug;
