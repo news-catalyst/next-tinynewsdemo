@@ -7,6 +7,7 @@ module.exports = {
       'tnc-test-upload-bucket.s3.amazonaws.com',
       'tnc-staging-upload-bucket.s3.amazonaws.com',
       'assets.tinynewsco.org',
+      'assets.tinynewsco.dev',
       'd32qj1gowzeibr.cloudfront.net',
       'tiny-news-demo-assets-dev.s3.amazonaws.com',
       'wherebyspace.nyc3.digitaloceanspaces.com',
