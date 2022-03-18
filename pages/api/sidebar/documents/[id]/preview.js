@@ -95,7 +95,8 @@ export default async function Handler(req, res) {
     inlineObjects,
     imageList,
     slug,
-    googleToken
+    googleToken,
+    site
   );
 
   let idSlugResult;
