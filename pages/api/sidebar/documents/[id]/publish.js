@@ -1,5 +1,5 @@
-import { hasuraLookupGoogleDoc } from '../../../../../lib/articles';
 import {
+  hasuraLookupGoogleDoc,
   processDocumentContents,
   saveArticle,
   savePage,
