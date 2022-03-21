@@ -2,7 +2,6 @@
 
 echo "VERCEL_GIT_COMMIT_REF: $VERCEL_GIT_COMMIT_REF"
 echo "VERCEL_ENV: $VERCEL_ENV"
-echo "ORG_SLUG: $ORG_SLUG"
 
 # To-do before Vercel Platforms launch: remove this condition
 if [[ "$VERCEL_GIT_COMMIT_REF" == "feature/vercel-platforms" ]] ; then
@@ -23,10 +22,6 @@ elif [[ "$VERCEL_GIT_COMMIT_REF" == "main" && "$VERCEL_ENV" == "preview" ]] ; th
 # Proceed with the build
   echo "✅ - main/preview: build can proceed"
   exit 1;
-
-# elif [[ "$VERCEL_GIT_COMMIT_REF" == "feature/vercel-platforms" ]] ; then
-#   echo "✅ - feature/vercel-platforms: build can proceed in env $VERCEL_ENV"
-#   exit 1;
 
 else
   # Don't build
