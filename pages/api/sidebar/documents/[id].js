@@ -2,7 +2,7 @@ import {
   hasuraLookupGoogleDoc,
   hasuraGetGoogleDocsForArticle,
   hasuraGetGoogleDocsForPage,
-} from '../../../../lib/articles';
+} from '../../../../lib/document';
 import { findSetting, getOrgSettings } from '../../../../lib/settings.js';
 
 export default async function Handler(req, res) {
