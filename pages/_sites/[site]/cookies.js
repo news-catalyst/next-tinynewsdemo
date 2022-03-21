@@ -1,8 +1,6 @@
 import tw from 'twin.macro';
-import {
-  hasuraGetSiteMetadata,
-  generateAllDomainPaths,
-} from '../../../lib/articles.js';
+import { generateAllDomainPaths } from '../../../lib/settings.js';
+import { hasuraGetSiteMetadata } from '../../../lib/site_metadata';
 import Layout from '../../../components/Layout';
 import { getPostBySlug, markdownToHtml } from '../../../lib/markdown';
 import {

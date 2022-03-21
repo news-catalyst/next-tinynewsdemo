@@ -1,10 +1,8 @@
 import React from 'react';
 import { hasuraStreamArticles } from '../../../lib/homepage.js';
 import { cachedContents } from '../../../lib/cached';
-import {
-  hasuraGetHomepageEditor,
-  generateAllDomainPaths,
-} from '../../../lib/articles.js';
+import { generateAllDomainPaths } from '../../../lib/settings';
+import { hasuraGetHomepageEditor } from '../../../lib/homepage.js';
 import {
   booleanSetting,
   findSetting,

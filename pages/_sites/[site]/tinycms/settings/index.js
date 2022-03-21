@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import tw from 'twin.macro';
-import { hasuraGetMetadataByLocale } from '../../../../../lib/articles.js';
+import { hasuraGetMetadataByLocale } from '../../../../../lib/site_metadata';
 import { findSetting, getOrgSettings } from '../../../../../lib/settings.js';
 import AdminLayout from '../../../../../components/AdminLayout.js';
 import AdminNav from '../../../../../components/nav/AdminNav';

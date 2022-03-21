@@ -12,10 +12,7 @@ import {
 import AdminLayout from '../../../../../components/AdminLayout';
 import AdminNav from '../../../../../components/nav/AdminNav';
 import Notification from '../../../../../components/tinycms/Notification';
-import {
-  hasuraGetTagById,
-  hasuraUpdateTag,
-} from '../../../../../lib/section.js';
+import { hasuraGetTagById, hasuraUpdateTag } from '../../../../../lib/tags.js';
 import { slugify } from '../../../../../lib/graphql';
 import { findSetting, getOrgSettings } from '../../../../../lib/settings.js';
 
