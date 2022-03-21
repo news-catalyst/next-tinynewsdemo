@@ -5,7 +5,8 @@ import { cachedContents } from '../../../../lib/cached';
 import {
   hasuraCategoryPage,
   generateAllCategoryPagePaths,
-} from '../../../../lib/articles.js';
+} from '../../../../lib/section.js';
+
 import {
   booleanSetting,
   findSetting,

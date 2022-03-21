@@ -1,14 +1,20 @@
 import {
   hasuraGetSectionById,
-  hasuraGetTagById,
-  hasuraCreateTag,
   hasuraCreateSection,
   hasuraListAllSectionsByLocale,
   hasuraUpdateSection,
-  hasuraUpdateTag,
+  hasuraCategoryPage,
+  hasuraListAllSections,
 } from '../lib/section';
+import { hasuraGetHomepageEditor } from '../lib/homepage';
 import {
-  hasuraGetHomepageEditor,
+  hasuraTagPage,
+  hasuraListAllTags,
+  hasuraGetTagById,
+  hasuraCreateTag,
+  hasuraUpdateTag,
+} from '../lib/tags';
+import {
   hasuraCreatePage,
   hasuraSearchArticles,
   hasuraArticlePage,
@@ -16,23 +22,22 @@ import {
   hasuraPreviewArticleBySlug,
   hasuraGetArticleBySlug,
   hasuraListAllArticleSlugs,
-  hasuraGetMetadataByLocale,
-  hasuraListAllTags,
-  hasuraListAllSections,
-  hasuraAuthorPage,
-  hasuraTagPage,
-  hasuraCategoryPage,
   hasuraCreateArticle,
   hasuraUpdateArticle,
   hasuraDeleteArticles,
 } from '../lib/articles';
+import { hasuraCreatePage } from '../lib/pages';
 import {
+  hasuraAuthorPage,
   hasuraCreateAuthor,
   hasuraGetAuthorById,
   hasuraGetAuthorBySlug,
   hasuraListAllAuthors,
 } from '../lib/authors';
-import { hasuraUpsertMetadata } from '../lib/site_metadata';
+import {
+  hasuraGetMetadataByLocale,
+  hasuraUpsertMetadata,
+} from '../lib/site_metadata';
 
 let newAuthorId = 12;
 let newsSectionId;

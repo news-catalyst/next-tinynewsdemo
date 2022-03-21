@@ -1,4 +1,4 @@
-import { hasuraGetPage } from '../../lib/articles.js';
+import { hasuraGetPage } from '../../lib/pages.js';
 
 export default async function Handler(req, res) {
   // Check the secret and next parameters

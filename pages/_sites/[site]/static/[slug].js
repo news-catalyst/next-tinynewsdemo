@@ -1,9 +1,7 @@
 import { useRouter } from 'next/router';
 import React from 'react';
-import {
-  hasuraGetPage,
-  generateAllStaticPagePaths,
-} from '../../../../lib/articles.js';
+import { generateAllStaticPagePaths } from '../../../../lib/articles.js';
+import { hasuraGetPage } from '../../../../lib/pages.js';
 import StaticPage from '../../../../components/StaticPage';
 
 export default function Static({ page, sections, siteMetadata }) {

@@ -12,7 +12,7 @@ import AdminLayout from '../../../../../components/AdminLayout';
 import AdminNav from '../../../../../components/nav/AdminNav';
 import Notification from '../../../../../components/tinycms/Notification';
 import { getOrgSettings, findSetting } from '../../../../../lib/settings.js';
-import { hasuraCreateTag } from '../../../../../lib/section';
+import { hasuraCreateTag } from '../../../../../lib/tags';
 import { slugify } from '../../../../../lib/graphql';
 
 export default function AddTag({

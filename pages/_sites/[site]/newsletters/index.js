@@ -4,7 +4,7 @@ import { cachedContents } from '../../../../lib/cached';
 import { hasuraListNewsletters } from '../../../../lib/newsletters.js';
 import { getArticleAds } from '../../../../lib/ads.js';
 import ArticleStream from '../../../../components/homepage/ArticleStream';
-import { generateAllDomainPaths } from '../../../../lib/articles.js';
+import { generateAllDomainPaths } from '../../../../lib/settings';
 import {
   booleanSetting,
   findSetting,

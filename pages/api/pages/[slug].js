@@ -1,4 +1,4 @@
-import { hasuraGetPage } from '../../../lib/articles.js';
+import { hasuraGetPage } from '../../../lib/pages.js';
 import { renderBodyWordPress } from '../../../lib/utils.js';
 import ReactDOMServer from 'react-dom/server';
 

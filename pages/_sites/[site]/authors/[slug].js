@@ -3,7 +3,7 @@ import Layout from '../../../../components/Layout.js';
 import {
   generateAllAuthorPagePaths,
   hasuraAuthorPage,
-} from '../../../../lib/articles.js';
+} from '../../../../lib/authors';
 import {
   booleanSetting,
   findSetting,
