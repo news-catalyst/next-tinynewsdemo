@@ -7,7 +7,11 @@ import {
   hasuraArticlesArchivePage,
   generateAllArticleArchivePages,
 } from '../../../../../lib/articles.js';
-import { booleanSetting, getOrgSettings } from '../../../../../lib/settings.js';
+import {
+  booleanSetting,
+  findSetting,
+  getOrgSettings,
+} from '../../../../../lib/settings.js';
 import { cachedContents } from '../../../../../lib/cached';
 import { getArticleAds } from '../../../../../lib/ads.js';
 import ArticleStream from '../../../../../components/homepage/ArticleStream';
