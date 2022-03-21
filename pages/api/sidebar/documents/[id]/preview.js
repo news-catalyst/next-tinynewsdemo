@@ -1,6 +1,6 @@
-import { hasuraLookupGoogleDoc } from '../../../../../lib/articles';
 import { findSetting, getOrgSettings } from '../../../../../lib/settings';
 import {
+  hasuraLookupGoogleDoc,
   processDocumentContents,
   saveArticle,
   savePage,
