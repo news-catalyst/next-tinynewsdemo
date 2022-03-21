@@ -1,7 +1,5 @@
-import {
-  hasuraGetPage,
-  generateAllDomainPaths,
-} from '../../../../lib/articles.js';
+import { generateAllDomainPaths } from '../../../../lib/settings';
+import { hasuraGetPage } from '../../../../lib/pages.js';
 import AboutPage from '../../../../components/AboutPage';
 
 export default function About(props) {

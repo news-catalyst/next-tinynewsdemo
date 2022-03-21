@@ -1,9 +1,10 @@
 import dynamic from 'next/dynamic';
 import React, { useState } from 'react';
+
 import {
   hasuraGetHomepageEditor,
   hasuraSaveHomepageLayout,
-} from '../../../../lib/articles.js';
+} from '../../../../lib/homepage';
 import { findSetting, getOrgSettings } from '../../../../lib/settings.js';
 
 import AdminNav from '../../../../components/nav/AdminNav';

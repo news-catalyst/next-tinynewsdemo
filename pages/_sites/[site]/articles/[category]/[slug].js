@@ -3,8 +3,8 @@ import React from 'react';
 import {
   generateAllArticlePagePaths,
   hasuraArticlePage,
-  hasuraCategoryPage,
 } from '../../../../../lib/articles.js';
+import { hasuraCategoryPage } from '../../../../../lib/section';
 import {
   booleanSetting,
   findSetting,

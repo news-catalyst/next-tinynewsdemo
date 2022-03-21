@@ -1,12 +1,9 @@
 import tw, { styled } from 'twin.macro';
 import { useRouter } from 'next/router';
-import {
-  hasuraGetPage,
-  generateAllDomainPaths,
-} from '../../../../lib/articles.js';
+import { generateAllDomainPaths } from '../../../../lib/settings';
+import { hasuraGetPage } from '../../../../lib/pages.js';
 import { renderBody } from '../../../../lib/utils';
 import Layout from '../../../../components/Layout';
-import ReadInOtherLanguage from '../../../../components/articles/ReadInOtherLanguage';
 import StaticMainImage from '../../../../components/articles/StaticMainImage';
 import DonationOptionsBlock from '../../../../components/plugins/DonationOptionsBlock.js';
 import {

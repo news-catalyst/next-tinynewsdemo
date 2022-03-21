@@ -4,7 +4,7 @@ import tw from 'twin.macro';
 import Layout from '../../../../components/Layout.js';
 import { cachedContents } from '../../../../lib/cached';
 import { hasuraGetNewsletter } from '../../../../lib/newsletters.js';
-import { generateAllNewsletterPagePaths } from '../../../../lib/articles.js';
+import { generateAllNewsletterPagePaths } from '../../../../lib/newsletters';
 import {
   booleanSetting,
   findSetting,

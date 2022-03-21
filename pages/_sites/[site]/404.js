@@ -1,9 +1,6 @@
 // import { useAmp } from 'next/amp';
 import Layout from '../../../components/Layout';
-import {
-  hasuraGetLayout,
-  generateAllDomainPaths,
-} from '../../../lib/articles.js';
+import { hasuraGetLayout, generateAllDomainPaths } from '../../../lib/settings';
 
 export default function Custom404({ sections, siteMetadata }) {
   const locale = 'en-US';

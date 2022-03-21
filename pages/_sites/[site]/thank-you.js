@@ -1,6 +1,6 @@
 import tw from 'twin.macro';
 import { useRouter } from 'next/router';
-import { hasuraGetPage } from '../../../lib/articles.js';
+import { hasuraGetPage } from '../../../lib/pages.js';
 import { useAnalytics } from '../../../lib/hooks/useAnalytics.js';
 import Layout from '../../../components/Layout';
 import NewsletterBlock from '../../../components/plugins/NewsletterBlock';

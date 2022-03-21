@@ -3,7 +3,7 @@ import Layout from '../../../../components/Layout.js';
 import {
   hasuraTagPage,
   generateAllTagPagePaths,
-} from '../../../../lib/articles.js';
+} from '../../../../lib/tags.js';
 import {
   booleanSetting,
   findSetting,
