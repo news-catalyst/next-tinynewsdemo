@@ -851,11 +851,11 @@ function hasuraGetArticlesRss(params) {
   });
 }
 
-const HASURA_GET_SITE_DATA = `query FrontendGetSiteData {
-  articles(where: {article_translations: {published: {_eq: true}}}, order_by: {article_translations_aggregate: {min: {first_published_at: desc}}}) {
+const HASURA_GET_SITE_DATA = `query FrontendGetSiteData($locale_code: String!) {
+  articles(where: {article_translations: {published: {_eq: true}, locale_code: {_eq: $locale_code}}}, order_by: {article_translations_aggregate: {min: {first_published_at: desc}}}) {
     id
     slug
-    article_translations(where: {published: {_eq: true}}, order_by: {id: desc}) {
+    article_translations(where: {published: {_eq: true}, locale_code: {_eq: $locale_code}}, order_by: {id: desc}, limit: 1) {
       custom_byline
       first_published_at
       headline
@@ -936,17 +936,14 @@ const HASURA_GET_SITE_DATA = `query FrontendGetSiteData {
       code
     }
   }
-  tag_articles(where: {tag: {published: {_eq: true}}}) {
-    tag {
-      tag_translations {
-        locale_code
-        title
-      }
-      slug
-    }
+  tags(where: {published: {_eq: true}}) {
+    slug
   }
-  site_metadatas(where: {published: {_eq: true}}) {
-    site_metadata_translations {
+  authors(where: {published: {_eq: true}}) {
+    slug
+  }
+  site_metadatas(where: {site_metadata_translations: {locale_code: {_eq: $locale_code}}, published: {_eq: true}}) {
+    site_metadata_translations(where: {locale_code: {_eq: $locale_code}}, order_by: {id: desc}, limit: 1) {
       data
       locale_code
     }
@@ -1034,9 +1031,12 @@ const HASURA_INSERT_TEST_ARTICLE = `mutation FrontendInsertArticle($google_docum
 function hasuraGetSiteData(params) {
   return fetchGraphQL({
     url: params['url'],
-    orgSlug: params['orgSlug'],
+    site: params['site'],
     query: HASURA_GET_SITE_DATA,
     name: 'FrontendGetSiteData',
+    variables: {
+      'locale_code': 'en-US',
+    },
   });
 }
 
