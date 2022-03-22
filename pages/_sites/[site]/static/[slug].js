@@ -70,7 +70,7 @@ export async function getStaticProps({ params }) {
     };
   } else {
     if (!data.page_slug_versions || !data.page_slug_versions[0]) {
-      console.error('No page slug versions found', data);
+      console.error('No page slug versions found for:', params.slug);
       return {
         notFound: true,
       };
