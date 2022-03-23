@@ -8,11 +8,6 @@ if [[ "$VERCEL_GIT_COMMIT_REF" == "stable" && "$VERCEL_ENV" == "production"  ]] 
   echo "✅ - stable/prod: build can proceed"
   exit 1;
 
-elif [[ "$VERCEL_GIT_COMMIT_REF" == "main" && "$VERCEL_ENV" == "preview" ]] ; then
-# Proceed with the build
-  echo "✅ - main/preview: build can proceed"
-  exit 1;
-
 elif [[ "$VERCEL_GIT_COMMIT_REF" != "stable" && "$VERCEL_ENV" == "preview" ]] ; then
 # Proceed with the build
   echo "✅ - any branch besides stable in preview env: build can proceed"
