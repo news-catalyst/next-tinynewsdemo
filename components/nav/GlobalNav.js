@@ -39,7 +39,7 @@ const SectionLink = styled.a(({ meta }) => ({
 export default function GlobalNav({
   metadata,
   sections,
-  settings,
+  monkeypodLink,
   isAmp,
   overrideNav,
 }) {
@@ -60,11 +60,7 @@ export default function GlobalNav({
       img.src = metadata['logo'];
     }
 
-    const settingMonkeypodUrl = findSetting(
-      settings,
-      'NEXT_PUBLIC_MONKEYPOD_URL'
-    );
-    setMonkeypodUrl(settingMonkeypodUrl);
+    setMonkeypodUrl(monkeypodLink);
   }, [metadata]);
 
   let nav = overrideNav || metadata['nav'];

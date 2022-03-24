@@ -30,7 +30,7 @@ export default function Homepage({
   locale,
   siteMetadata,
   expandedAds,
-  settings,
+  monkeypodLink,
 }) {
   const [featuredArticle, setFeaturedArticle] = useState(featured);
   const [subFeaturedTopArticle, setSubFeaturedTopArticle] = useState(
@@ -47,7 +47,7 @@ export default function Homepage({
         meta={siteMetadata}
         sections={sections}
         locale={locale}
-        settings={settings}
+        monkeypodLink={monkeypodLink}
       >
         {!selectedLayout && <Placeholder />}
         {selectedLayout.name === 'Big Featured Story' && (
