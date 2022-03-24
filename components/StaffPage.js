@@ -14,7 +14,7 @@ export default function StaffPage({
   locale,
   sections,
   siteMetadata,
-  settings,
+  monkeypodLink,
   isAmp,
 }) {
   if (!authors) {
@@ -24,7 +24,11 @@ export default function StaffPage({
   const staffers = authors.filter((a) => a.staff);
 
   return (
-    <Layout meta={siteMetadata} sections={sections} settings={settings}>
+    <Layout
+      meta={siteMetadata}
+      sections={sections}
+      monkeypodLink={monkeypodLink}
+    >
       <article className="container">
         <SectionContainer>
           <div key="title" className="section post__header">

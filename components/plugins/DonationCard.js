@@ -34,7 +34,12 @@ const DonateFooterLink = styled.a(
   })
 );
 
-export default function DonationCard({ option, metadata, tinycms, settings }) {
+export default function DonationCard({
+  option,
+  metadata,
+  tinycms,
+  monkeypodLink,
+}) {
   const [textColor, setTextColor] = useState(null);
   const [backgroundColor, setBackgroundColor] = useState(null);
   const [customAmount, setCustomAmount] = useState(null);
@@ -53,11 +58,7 @@ export default function DonationCard({ option, metadata, tinycms, settings }) {
     setBackgroundColor(bgc);
     setTextColor(tc);
 
-    const settingMonkeypodUrl = findSetting(
-      settings,
-      'NEXT_PUBLIC_MONKEYPOD_URL'
-    );
-    setMpUrl(settingMonkeypodUrl);
+    setMpUrl(monkeypodLink);
   }, [metadata]);
 
   let monkeyPodURL = `${mpUrl}?option_id=${option.monkeypodId}`;
