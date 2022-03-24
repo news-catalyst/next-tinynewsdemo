@@ -189,7 +189,7 @@ function storeData(params, rows) {
     require('dotenv').config({ path: '.env.local' });
   }
   const apiUrl = process.env.HASURA_API_URL;
-  const apiToken = process.env.ORG_SLUG;
+  const site = process.env.SITE;
 
   if (params['data'] === 'reading-frequency') {
     let objects = [];
@@ -204,7 +204,7 @@ function storeData(params, rows) {
     shared
       .hasuraInsertReadingFrequency({
         url: apiUrl,
-        orgSlug: apiToken,
+        site: site,
         objects: objects,
       })
       .then((result) => {
@@ -255,7 +255,7 @@ function storeData(params, rows) {
       shared
         .hasuraInsertReadingDepth({
           url: apiUrl,
-          orgSlug: apiToken,
+          site: site,
           date: cd['date'],
           path: path,
           read_25: read25,
@@ -285,7 +285,7 @@ function storeData(params, rows) {
       shared
         .hasuraInsertDonationClick({
           url: apiUrl,
-          orgSlug: apiToken,
+          site: site,
           count: row.metrics[0].values[0],
           path: shared.sanitizePath(row.dimensions[3]),
           date: row.dimensions[4],
@@ -308,7 +308,7 @@ function storeData(params, rows) {
       shared
         .hasuraInsertCustomDimension({
           url: apiUrl,
-          orgSlug: apiToken,
+          site: site,
           count: 0,
           label: 'isDonor',
           dimension: 'dimension4',
@@ -331,7 +331,7 @@ function storeData(params, rows) {
       shared
         .hasuraInsertGeoSession({
           url: apiUrl,
-          orgSlug: apiToken,
+          site: site,
           region: `${row.dimensions[0]}-${row.dimensions[1]}`,
           count: row.metrics[0].values[0],
           date: row.dimensions[2],
@@ -353,7 +353,7 @@ function storeData(params, rows) {
       shared
         .hasuraInsertNewsletterImpression({
           url: apiUrl,
-          orgSlug: apiToken,
+          site: site,
           impressions: row.metrics[0].values[0],
           path: shared.sanitizePath(row.dimensions[3]),
           date: row.dimensions[4],
@@ -376,7 +376,7 @@ function storeData(params, rows) {
       shared
         .hasuraInsertCustomDimension({
           url: apiUrl,
-          orgSlug: apiToken,
+          site: site,
           count: row.metrics[0].values[0],
           date: row.dimensions[4],
           label: row.dimensions[3],
@@ -399,7 +399,7 @@ function storeData(params, rows) {
       shared
         .hasuraInsertPageView({
           url: apiUrl,
-          orgSlug: apiToken,
+          site: site,
           count: row.metrics[0].values[0],
           date: row.dimensions[1],
           path: shared.sanitizePath(row.dimensions[0]),
@@ -434,7 +434,7 @@ function storeData(params, rows) {
           shared
             .hasuraInsertArticleSession({
               url: apiUrl,
-              orgSlug: apiToken,
+              site: site,
               count: sessionCount,
               date: sessionDate,
               path: path,
@@ -460,7 +460,7 @@ function storeData(params, rows) {
       shared
         .hasuraInsertReferralSession({
           url: apiUrl,
-          orgSlug: apiToken,
+          site: site,
           count: row.metrics[0].values[0],
           date: row.dimensions[1],
           source: row.dimensions[0],
@@ -483,7 +483,7 @@ function storeData(params, rows) {
       shared
         .hasuraInsertSessionDuration({
           url: apiUrl,
-          orgSlug: apiToken,
+          site: site,
           seconds: row.metrics[0].values[0],
           date: row.dimensions[0],
         })
@@ -504,7 +504,7 @@ function storeData(params, rows) {
       shared
         .hasuraInsertSession({
           url: apiUrl,
-          orgSlug: apiToken,
+          site: site,
           count: row.metrics[0].values[0],
           date: row.dimensions[0],
         })
@@ -526,7 +526,7 @@ function storeData(params, rows) {
       shared
         .hasuraInsertCustomDimension({
           url: apiUrl,
-          orgSlug: apiToken,
+          site: site,
           count: row.metrics[0].values[0],
           label: 'isSubscriber',
           dimension: 'dimension5',
@@ -550,7 +550,7 @@ function storeData(params, rows) {
       shared
         .hasuraInsertDonorReadingFrequency({
           url: apiUrl,
-          orgSlug: apiToken,
+          site: site,
           count: row.metrics[0].values[0],
           label: row.dimensions[3],
           date: row.dimensions[4],
@@ -579,7 +579,7 @@ async function importDataFromGA(params) {
   }
 
   const apiUrl = process.env.HASURA_API_URL;
-  const apiToken = process.env.ORG_SLUG;
+  const site = process.env.SITE;
 
   let { startDate, endDate } = params;
 
@@ -602,8 +602,6 @@ async function importDataFromGA(params) {
       startDate: startDate,
       endDate: endDate,
       data: params['data'],
-      // viewID: googleAnalyticsViewID,
-      // apiUrl: apiUrl,
       requireDotEnv: params['requireDotEnv'],
     });
   } catch (e) {
@@ -622,7 +620,7 @@ async function importDataFromGA(params) {
 
     shared
       .hasuraInsertDataImport({
-        orgSlug: apiToken,
+        site: site,
         url: apiUrl,
         end_date: endDate,
         start_date: startDate,
@@ -646,7 +644,7 @@ async function importDataFromGA(params) {
     shared
       .hasuraInsertDataImport({
         url: apiUrl,
-        orgSlug: apiToken,
+        site: site,
         end_date: endDate,
         start_date: startDate,
         table_name: params['data'],
