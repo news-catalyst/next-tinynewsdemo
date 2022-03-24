@@ -5,7 +5,7 @@ import { determineTextColor } from '../../lib/utils';
 import Typography from '../common/Typography';
 import Colors from '../common/Colors';
 
-const DonateLink = styled.a(({ meta, settings }) => ({
+const DonateLink = styled.a(({ meta, monkeypodLink }) => ({
   ...tw`items-center flex font-bold leading-none px-5 ml-5 order-2 lg:ml-0 hover:underline`,
   fontFamily:
     Typography && Typography[meta.theme]
