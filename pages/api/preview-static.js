@@ -2,6 +2,9 @@ import { hasuraGetPage } from '../../lib/pages.js';
 import { findSetting, getOrgSettings } from '../../lib/settings.js';
 
 export default async function Handler(req, res) {
+  const apiUrl = process.env.HASURA_API_URL;
+  const site = req.query.site;
+
   const settingsResult = await getOrgSettings({
     url: apiUrl,
     site: site,
@@ -20,9 +23,6 @@ export default async function Handler(req, res) {
   if (req.query.secret !== previewToken || !req.query.slug) {
     return res.status(401).json({ message: 'Invalid token' });
   }
-
-  const apiUrl = process.env.HASURA_API_URL;
-  const site = req.query.site;
 
   const localeCode = 'en-US';
 
