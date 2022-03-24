@@ -140,6 +140,7 @@ export async function getStaticProps({ params }) {
       sectionArticles,
       renderFooter,
       monkeypodLink,
+      site,
     },
     // Re-generate the post at most once per second
     // if a request comes in
