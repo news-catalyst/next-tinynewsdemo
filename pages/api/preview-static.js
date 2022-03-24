@@ -1,4 +1,4 @@
-import { hasuraGetPage } from '../../lib/articles.js';
+import { hasuraGetPage } from '../../lib/pages.js';
 
 export default async function Handler(req, res) {
   // Check the secret and next parameters
@@ -8,13 +8,13 @@ export default async function Handler(req, res) {
   }
 
   const apiUrl = process.env.HASURA_API_URL;
-  const apiToken = process.env.ORG_SLUG;
+  const site = req.query.site;
 
-  let localeCode = req.query.locale;
+  const localeCode = 'en-US';
 
   const { errors, data } = await hasuraGetPage({
     url: apiUrl,
-    orgSlug: apiToken,
+    site: site,
     slug: req.query.slug,
     localeCode: localeCode,
   });
@@ -25,15 +25,14 @@ export default async function Handler(req, res) {
   // Enable Preview Mode by setting the cookies
   res.setPreviewData({});
 
-  let nextPath;
-  if (localeCode) {
-    nextPath = '/' + localeCode;
-  }
+  let redirectPath = '';
+
   if (['about', 'staff', 'thank-you', 'donate'].includes(req.query.slug)) {
-    nextPath += '/preview/' + req.query.slug;
+    redirectPath += '/preview/' + req.query.slug;
   } else {
-    nextPath += '/preview/static/' + req.query.slug;
+    redirectPath += '/preview/static/' + req.query.slug;
   }
 
-  res.redirect(nextPath);
+  console.log('redirectPath:', redirectPath);
+  res.redirect(redirectPath);
 }

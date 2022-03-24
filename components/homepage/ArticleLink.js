@@ -2,11 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import tw, { styled } from 'twin.macro';
-import {
-  renderDate,
-  renderAuthors,
-  hasuraLocalizeText,
-} from '../../lib/utils.js';
+import { renderDate, renderAuthors } from '../../lib/utils.js';
 import Typography from '../common/Typography';
 
 const Asset = tw.li`border-b border-gray-200 items-start content-start flex flex-row flex-nowrap mb-6 pb-6`;
@@ -34,7 +30,6 @@ export default function ArticleLink({
   isAmp,
   showCategory,
   metadata,
-  locale,
 }) {
   let mainImage = null;
   let mainImageNode;
@@ -43,22 +38,10 @@ export default function ArticleLink({
   let headline;
   let dek;
   if (article.article_translations) {
-    headline = hasuraLocalizeText(
-      locale,
-      article.article_translations,
-      'headline'
-    );
-    dek = hasuraLocalizeText(
-      locale,
-      article.article_translations,
-      'search_description'
-    );
+    headline = article.article_translations[0].headline;
+    dek = article.article_translations[0].search_description;
     // console.log(headline, locale, article.article_translations);
-    mainImageContent = hasuraLocalizeText(
-      locale,
-      article.article_translations,
-      'main_image'
-    );
+    mainImageContent = article.article_translations[0].main_image;
   } else if (article.newsletter_published_at) {
     headline = article.headline;
   }
@@ -69,11 +52,8 @@ export default function ArticleLink({
   let linkAs;
 
   if (article.category && article.category.category_translations) {
-    categoryTitle = hasuraLocalizeText(
-      locale,
-      article.category.category_translations,
-      'title'
-    );
+    categoryTitle = article.category.category_translations[0].title;
+
     categoryHref = `/categories/${article.category.slug}`;
     linkHref = '/articles/[category]/[slug]';
     linkAs = `/articles/${article.category.slug}/${article.slug}`;
@@ -147,6 +127,7 @@ export default function ArticleLink({
         <Link
           key={`article-link-${article.category.slug}-${article.slug}`}
           href={`/articles/${article.category.slug}/${article.slug}`}
+          passHref
         >
           <ImageLink>
             <AssetThumbnail>

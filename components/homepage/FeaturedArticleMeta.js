@@ -1,9 +1,5 @@
 import Link from 'next/link';
-import {
-  renderDate,
-  renderAuthors,
-  hasuraLocalizeText,
-} from '../../lib/utils.js';
+import { renderDate, renderAuthors } from '../../lib/utils.js';
 import tw, { styled } from 'twin.macro';
 import Typography from '../common/Typography';
 
@@ -52,33 +48,16 @@ const AssetTitle = styled.h4(({ big, meta }) => ({
   fontFamily: Typography[meta.theme].ArticleTitle,
 }));
 
-export default function FeaturedArticleMeta({
-  article,
-  big,
-  metadata,
-  locale,
-}) {
+export default function FeaturedArticleMeta({ article, big, metadata }) {
   if (article === null || article === undefined || !article) {
     console.error('FeaturedArticleMeta missing article:', article);
   }
 
-  // console.log('featured article:', article);
+  // console.log('featured article meta:', metadata);
 
-  let categoryTitle = hasuraLocalizeText(
-    locale,
-    article.category.category_translations,
-    'title'
-  );
-  let headline = hasuraLocalizeText(
-    locale,
-    article.article_translations,
-    'headline'
-  );
-  let searchDescription = hasuraLocalizeText(
-    locale,
-    article.article_translations,
-    'search_description'
-  );
+  let categoryTitle = article.category.category_translations[0].title;
+  let headline = article.article_translations[0].headline;
+  let searchDescription = article.article_translations[0].search_description;
 
   let siteTimeZone;
   if (metadata.timeZone) {
