@@ -44,7 +44,6 @@ export default function LandingPage({
     );
   }
 
-  console.log('site:', site);
   return (
     <Layout
       meta={siteMetadata}
