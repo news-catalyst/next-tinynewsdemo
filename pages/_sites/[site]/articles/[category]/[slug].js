@@ -65,6 +65,7 @@ export async function getStaticProps({ params }) {
     throw settingsResult.errors;
   }
   const settings = settingsResult.data.settings;
+  const monkeypodLink = findSetting(settings, 'NEXT_PUBLIC_MONKEYPOD_URL');
 
   let article = {};
   let sectionArticles = [];
@@ -138,6 +139,7 @@ export async function getStaticProps({ params }) {
       siteMetadata,
       sectionArticles,
       renderFooter,
+      monkeypodLink,
     },
     // Re-generate the post at most once per second
     // if a request comes in

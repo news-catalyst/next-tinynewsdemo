@@ -1,6 +1,11 @@
 import tw, { styled } from 'twin.macro';
 import { useRouter } from 'next/router';
-import { generateAllDomainPaths } from '../../../lib/settings';
+import {
+  booleanSetting,
+  findSetting,
+  getOrgSettings,
+  generateAllDomainPaths,
+} from '../../../lib/settings';
 import { hasuraGetPage } from '../../../lib/pages.js';
 import { renderBody } from '../../../lib/utils';
 import Layout from '../../../components/Layout';
@@ -18,7 +23,12 @@ const WideContainer = styled.div(() => ({
   maxWidth: '1280px',
 }));
 
-export default function Donate({ page, sections, siteMetadata }) {
+export default function Donate({
+  page,
+  sections,
+  siteMetadata,
+  monkeypodLink,
+}) {
   const isAmp = false;
   const router = useRouter();
 
@@ -61,7 +71,12 @@ export default function Donate({ page, sections, siteMetadata }) {
   }
 
   return (
-    <Layout meta={siteMetadata} page={page} sections={sections}>
+    <Layout
+      meta={siteMetadata}
+      page={page}
+      sections={sections}
+      monkeypodLink={monkeypodLink}
+    >
       <SectionContainer>
         <article className="container">
           <ArticleTitle meta={siteMetadata} tw="text-center">
@@ -78,7 +93,11 @@ export default function Donate({ page, sections, siteMetadata }) {
         </article>
       </SectionContainer>
       <WideContainer>
-        <DonationOptionsBlock metadata={siteMetadata} wrap={true} />
+        <DonationOptionsBlock
+          metadata={siteMetadata}
+          monkeypodLink={monkeypodLink}
+          wrap={true}
+        />
       </WideContainer>
     </Layout>
   );
@@ -103,6 +122,18 @@ export async function getStaticPaths() {
 export async function getStaticProps({ params }) {
   const apiUrl = process.env.HASURA_API_URL;
   const site = params.site;
+
+  const settingsResult = await getOrgSettings({
+    url: apiUrl,
+    site: site,
+  });
+
+  if (settingsResult.errors) {
+    console.error('Homepage Settings error:', settingsResult.errors);
+    throw settingsResult.errors;
+  }
+  const settings = settingsResult.data.settings;
+  const monkeypodLink = findSetting(settings, 'NEXT_PUBLIC_MONKEYPOD_URL');
 
   let page = {};
   let sections;
@@ -143,6 +174,7 @@ export async function getStaticProps({ params }) {
       page,
       sections,
       siteMetadata,
+      monkeypodLink,
     },
     revalidate: 1,
   };

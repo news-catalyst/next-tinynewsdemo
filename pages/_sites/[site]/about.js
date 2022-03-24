@@ -1,5 +1,9 @@
 import { useRouter } from 'next/router';
-import { generateAllDomainPaths } from '../../../lib/settings';
+import {
+  getOrgSettings,
+  findSetting,
+  generateAllDomainPaths,
+} from '../../../lib/settings';
 import { hasuraGetPage } from '../../../lib/pages.js';
 import AboutPage from '../../../components/AboutPage';
 
@@ -36,6 +40,17 @@ export async function getStaticProps({ params }) {
   const apiUrl = process.env.HASURA_API_URL;
   const site = params.site;
   const locale = 'en-US';
+
+  const settingsResult = await getOrgSettings({
+    url: apiUrl,
+    site: site,
+  });
+
+  if (settingsResult.errors) {
+    throw settingsResult.errors;
+  }
+  const settings = settingsResult.data.settings;
+  const monkeypodLink = findSetting(settings, 'NEXT_PUBLIC_MONKEYPOD_URL');
 
   let page = {};
   let sections;
@@ -76,6 +91,7 @@ export async function getStaticProps({ params }) {
       page,
       sections,
       siteMetadata,
+      monkeypodLink,
     },
     revalidate: 1,
   };

@@ -22,6 +22,7 @@ export default function AuthorPage({
   author,
   siteMetadata,
   expandedAds,
+  monkeypodLink,
 }) {
   const router = useRouter();
   const isAmp = false;
@@ -65,7 +66,11 @@ export default function AuthorPage({
   const ProfileTwitter = tw.p`text-base pt-3`;
 
   return (
-    <Layout meta={siteMetadata} sections={sections}>
+    <Layout
+      meta={siteMetadata}
+      sections={sections}
+      monkeypodLink={monkeypodLink}
+    >
       <ProfileHeaderDiv>
         {authorPhoto && <ProfileImage src={authorPhoto}></ProfileImage>}
         <div>
@@ -168,6 +173,8 @@ export async function getStaticProps({ params }) {
     }
   }
   const settings = settingsResult.data.settings;
+  const monkeypodLink = findSetting(settings, 'NEXT_PUBLIC_MONKEYPOD_URL');
+
   let expandedAds = [];
   let letterheadSetting = booleanSetting(settings, 'LETTERHEAD_API_URL', false);
   if (letterheadSetting) {
@@ -193,6 +200,7 @@ export async function getStaticProps({ params }) {
       author,
       siteMetadata,
       expandedAds,
+      monkeypodLink,
     },
   };
 }
