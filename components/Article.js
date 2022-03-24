@@ -14,6 +14,7 @@ export default function Article({
   siteMetadata,
   sectionArticles,
   renderFooter,
+  monkeypodLink,
 }) {
   const isAmp = useAmp();
 
@@ -55,6 +56,7 @@ export default function Article({
       article={article}
       sections={sections}
       renderFooter={renderFooter}
+      monkeypodLink={monkeypodLink}
     >
       <div className="post">
         <ArticleHeader

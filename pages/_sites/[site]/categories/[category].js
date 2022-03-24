@@ -46,6 +46,7 @@ export default function CategoryPage(props) {
       meta={siteMetadata}
       sections={props.sections}
       renderFooter={props.renderFooter}
+      monkeypodLink={props.monkeypodLink}
     >
       <ArticleStream
         articles={props.articles}
@@ -90,6 +91,7 @@ export async function getStaticProps({ params }) {
   }
 
   const settings = settingsResult.data.settings;
+  const monkeypodLink = findSetting(settings, 'NEXT_PUBLIC_MONKEYPOD_URL');
 
   let articles = [];
   let sections = [];
@@ -164,7 +166,7 @@ export async function getStaticProps({ params }) {
       siteMetadata,
       expandedAds,
       renderFooter,
-      settings,
+      monkeypodLink,
     },
   };
 }
