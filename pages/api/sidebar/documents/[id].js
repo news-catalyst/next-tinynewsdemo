@@ -2,11 +2,26 @@ import {
   hasuraLookupGoogleDoc,
   hasuraGetGoogleDocsForArticle,
   hasuraGetGoogleDocsForPage,
-} from '../../../../lib/articles';
+} from '../../../../lib/document';
+import { findSetting, getOrgSettings } from '../../../../lib/settings.js';
 
 export default async function Handler(req, res) {
   const apiUrl = process.env.HASURA_API_URL;
-  const apiToken = process.env.ORG_SLUG;
+  const site = req.query.site;
+
+  const settingsResult = await getOrgSettings({
+    url: apiUrl,
+    site: site,
+  });
+
+  if (settingsResult.errors) {
+    console.error('DocAPI id Settings error:', settingsResult.errors);
+    throw settingsResult.errors;
+  }
+
+  const settings = settingsResult.data.settings;
+  const apiToken = findSetting(settings, 'API_TOKEN');
+  const siteUrl = findSetting(settings, 'NEXT_PUBLIC_SITE_URL');
 
   let returnData = {
     documentType: '',
@@ -17,8 +32,10 @@ export default async function Handler(req, res) {
   };
 
   // Check the API token
-  if (req.query.token !== process.env.API_TOKEN || !req.query.id) {
-    console.error(`${req.query.token} ne ${process.env.API_TOKEN}`);
+  if (req.query.token !== apiToken || !req.query.id) {
+    console.error(
+      `Supplied token '${req.query.token}' doesn't match '${apiToken}'`
+    );
     return res.status(401).json({ message: 'Invalid API token' });
   }
 
@@ -28,7 +45,7 @@ export default async function Handler(req, res) {
   // Find the article or page
   const { errors, data } = await hasuraLookupGoogleDoc({
     url: apiUrl,
-    orgSlug: apiToken,
+    site: site,
     documentId: documentId,
   });
 
@@ -47,10 +64,7 @@ export default async function Handler(req, res) {
     returnData.organization_locales = data.organization_locales;
     returnData.tags = data.tags;
     returnData.homepage_layout_datas = data.homepage_layout_datas;
-    returnData.editorUrl = new URL(
-      '/tinycms/homepage',
-      process.env.NEXT_PUBLIC_SITE_URL
-    ).toString();
+    returnData.editorUrl = new URL('/tinycms/homepage', siteUrl).toString();
     returnData.documentType = documentType;
 
     // article
@@ -63,7 +77,7 @@ export default async function Handler(req, res) {
 
       const articleResult = await hasuraGetGoogleDocsForArticle({
         url: apiUrl,
-        orgSlug: apiToken,
+        site: site,
         articleId: article.id,
         localeCode: articleGoogleDoc.locale_code,
       });
@@ -89,7 +103,7 @@ export default async function Handler(req, res) {
 
       const pageResult = await hasuraGetGoogleDocsForPage({
         url: apiUrl,
-        orgSlug: apiToken,
+        site: site,
         pageId: page.id,
       });
       if (pageResult.errors) {

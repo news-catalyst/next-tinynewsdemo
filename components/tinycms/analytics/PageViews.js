@@ -48,7 +48,7 @@ const PageViews = (props) => {
   useEffect(() => {
     let pvParams = {
       url: props.apiUrl,
-      orgSlug: props.apiToken,
+      site: props.site,
       startDate: props.startDate.format('YYYY-MM-DD'),
       endDate: props.endDate.format('YYYY-MM-DD'),
     };
@@ -185,7 +185,7 @@ const PageViews = (props) => {
         pageviewsRef.current.scrollIntoView({ behavior: 'smooth' });
       }
     }
-  }, [props.startDate, props.endDate, props.apiToken, props.apiUrl]);
+  }, [props.startDate, props.endDate, props.site, props.apiUrl]);
 
   return (
     <>

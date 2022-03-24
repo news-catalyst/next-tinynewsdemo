@@ -1,21 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { hasuraSearchArticles } from '../../lib/articles.js';
-import { hasuraLocalizeText } from '../../lib/utils.js';
 
 export default function ModalArticleSearch(props) {
   const [isLoading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
 
-  console.log('ModalArticleSearch', props.isActive);
+  // console.log('ModalArticleSearch', props.isActive);
 
   function selectArticle(article) {
-    console.log(
-      'changing featured article from:',
-      props.featuredArticle,
-      'to:',
-      article
-    );
+    // console.log(
+    //   'changing featured article from:',
+    //   props.featuredArticle,
+    //   'to:',
+    //   article
+    // );
     props.setFeaturedArticle(article);
     props.setModal(false);
   }
@@ -26,7 +25,7 @@ export default function ModalArticleSearch(props) {
 
     const { errors, data } = await hasuraSearchArticles({
       url: props.apiUrl,
-      orgSlug: props.apiToken,
+      site: props.site,
       localeCode: props.locale,
       term: searchTerm,
     });
@@ -34,7 +33,7 @@ export default function ModalArticleSearch(props) {
     if (errors && !data) {
       console.error(errors);
     }
-    console.log('data:', data);
+    // console.log('data:', data);
     setLoading(false);
     setSearchResults(data.articles);
   }
@@ -65,11 +64,7 @@ export default function ModalArticleSearch(props) {
           <ul>
             {searchResults.map((result) => (
               <li key={result.id} onClick={() => selectArticle(result)}>
-                {hasuraLocalizeText(
-                  props.locale,
-                  result.article_translations,
-                  'headline'
-                )}
+                {result.article_translations[0].headline}
               </li>
             ))}
           </ul>

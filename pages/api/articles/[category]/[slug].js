@@ -1,15 +1,11 @@
 import { hasuraArticlePage } from '../../../../lib/articles.js';
-import {
-  hasuraLocalizeText,
-  renderBodyWordPress,
-} from '../../../../lib/utils.js';
+import { renderBodyWordPress } from '../../../../lib/utils.js';
 import ReactDOMServer from 'react-dom/server';
 
 export default async function Handler(req, res) {
   const apiUrl = process.env.HASURA_API_URL;
-  const apiToken = process.env.ORG_SLUG;
-
-  let localeCode = req.query.locale;
+  const apiToken = process.env.ORG_SLUG; // TODO Vercel Platforms
+  const localeCode = 'en-US';
 
   // Check the secret and next parameters
   // This secret should only be known to this API route and the CMS
@@ -37,19 +33,11 @@ export default async function Handler(req, res) {
   } else {
     article = data.article_slug_versions[0].article;
 
-    siteMetadata = hasuraLocalizeText(
-      localeCode,
-      data.site_metadatas[0].site_metadata_translations,
-      'data'
-    );
+    siteMetadata = data.site_metadatas[0].site_metadata_translations[0].data;
 
     let mainImageNode;
     let mainImage = null;
-    let localisedContent = hasuraLocalizeText(
-      localeCode,
-      article.article_translations,
-      'content'
-    );
+    let localisedContent = article.article_translations[0].content;
     try {
       mainImageNode = localisedContent.find(
         (node) => node.type === 'mainImage'
@@ -64,7 +52,7 @@ export default async function Handler(req, res) {
     }
 
     let body = renderBodyWordPress(
-      localeCode,
+      'en-US',
       article.article_translations,
       false,
       false,

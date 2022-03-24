@@ -34,7 +34,7 @@ const DonateClicks = (props) => {
     const fetchArticleSessions = async () => {
       let params = {
         url: props.apiUrl,
-        orgSlug: props.apiToken,
+        site: props.site,
         startDate: props.startDate.format('YYYY-MM-DD'),
         endDate: props.endDate.format('YYYY-MM-DD'),
       };
@@ -58,7 +58,7 @@ const DonateClicks = (props) => {
     const fetchDonationClicks = async () => {
       let params = {
         url: props.apiUrl,
-        orgSlug: props.apiToken,
+        site: props.site,
         startDate: props.startDate.format('YYYY-MM-DD'),
         endDate: props.endDate.format('YYYY-MM-DD'),
       };
@@ -331,7 +331,7 @@ const DonateClicks = (props) => {
         frequencyRef.current.scrollIntoView({ behavior: 'smooth' });
       }
     }
-  }, [props.startDate, props.endDate, props.apiToken, props.apiUrl]);
+  }, [props.startDate, props.endDate, props.site, props.apiUrl]);
 
   return (
     <>

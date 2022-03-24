@@ -4,10 +4,9 @@ import React from 'react';
 import tw, { styled } from 'twin.macro';
 import PublishDate from './PublishDate.js';
 import MainImage from './MainImage.js';
-import { hasuraLocalizeText, renderAuthors } from '../../lib/utils.js';
+import { renderAuthors } from '../../lib/utils.js';
 import { ArticleTitle } from '../common/CommonStyles.js';
 import Typography from '../common/Typography';
-import ReadInOtherLanguage from './ReadInOtherLanguage.js';
 
 const SectionContainer = tw.div`flex mx-auto max-w-5xl px-4 flex-col flex-nowrap`;
 const ArticleDescriptor = styled.span(({ meta }) => ({
@@ -35,18 +34,11 @@ const ArticleShareWrapper = tw.ul`inline-flex flex-row flex-nowrap items-center`
 const ShareItem = tw.li`mr-2`;
 const ShareButton = tw.span`bg-no-repeat bg-center border-gray-200 border inline-flex flex items-center justify-center w-10 h-10 pl-6 overflow-hidden rounded-full leading-none text-sm`;
 
-export default function ArticleHeader({
-  article,
-  isAmp,
-  metadata,
-  mainImage,
-  locale,
-  locales,
-  publishedLocales,
-}) {
+export default function ArticleHeader({ article, isAmp, metadata, mainImage }) {
   if (!article) {
     return null;
   }
+  const locale = 'en-US';
 
   let categoryTitle;
   let headline;
@@ -56,60 +48,20 @@ export default function ArticleHeader({
   let updatedAt;
 
   if (article && article.category) {
-    categoryTitle = hasuraLocalizeText(
-      locale,
-      article.category.category_translations,
-      'title'
-    );
-
-    headline = hasuraLocalizeText(
-      locale,
-      article.article_translations,
-      'headline'
-    );
+    categoryTitle = article.category.category_translations[0].title;
+    headline = article.article_translations[0].headline;
     postUrl = new URL(
       `/articles/${article.category.slug}/${article.slug}`,
       metadata.siteUrl
     );
-    searchDescription = hasuraLocalizeText(
-      locale,
-      article.article_translations,
-      'search_description'
-    );
-
-    articleContent = hasuraLocalizeText(
-      locale,
-      article.article_translations,
-      'content'
-    );
-
-    updatedAt = hasuraLocalizeText(
-      locale,
-      article.article_translations,
-      'last_published_at'
-    );
+    searchDescription = article.article_translations[0].search_description;
+    articleContent = article.article_translations[0].content;
+    updatedAt = article.article_translations[0].last_published_at;
   }
 
   let authorPhoto;
   if (article && article.author_articles && article.author_articles[0]) {
     authorPhoto = article.author_articles[0].author.photoUrl;
-  }
-
-  // this block of code builds an array of locales the article is available in
-  // by comparing the list of all site locales with the list of published translations
-  // ex: site locales [en, es]; this article published in [en, es]; current locale is english;
-  // 'ReadInOtherLanguage' component should show "Read in Spanish" link
-  // (logic around current locale is in the component itself)
-  let readLocales = [];
-  let currentLocale = locale;
-  if (locales.length > 1) {
-    locales.forEach((siteLocale) => {
-      publishedLocales.forEach((articleLocale) => {
-        if (siteLocale.locale.code === articleLocale.locale_code) {
-          readLocales.push(siteLocale);
-        }
-      });
-    });
   }
 
   return (
@@ -126,12 +78,7 @@ export default function ArticleHeader({
         <ArticleTitle meta={metadata}>{headline}</ArticleTitle>
         <ArticleDek meta={metadata}>{searchDescription}</ArticleDek>
         <PublishDate article={article} meta={metadata} />
-        {readLocales.length > 1 && (
-          <ReadInOtherLanguage
-            locales={readLocales}
-            currentLocale={currentLocale}
-          />
-        )}
+
         <ArticleFeaturedMedia>
           <FeaturedMediaFigure>
             <FeaturedMediaWrapper>

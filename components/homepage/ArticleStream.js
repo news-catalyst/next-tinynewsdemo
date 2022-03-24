@@ -18,7 +18,6 @@ export default function ArticleStream({
   title,
   metadata,
   ads,
-  locale,
 }) {
   const AD_PLACEMENT_INDEX = 3;
 
@@ -30,7 +29,6 @@ export default function ArticleStream({
         amp={isAmp}
         showCategory={showCategory}
         metadata={metadata}
-        locale={locale}
       />
     );
   };
@@ -56,43 +54,42 @@ export default function ArticleStream({
   };
   let adIndex = 0;
 
-  const articleStream = articles.map((article, i) => {
-    // console.log(
-    //   'ArticleStream article translations:',
-    //   article.article_translations
-    // );
-    const streamArticle = renderArticle(article);
-    if (!metadata.shortName === 'Tiny News Curriculum') {
-      if (
-        i > 0 &&
-        i % AD_PLACEMENT_INDEX === 0 &&
-        ads.length === 0 &&
-        adIndex === 0
-      ) {
-        adIndex = adIndex + 1;
-        return (
-          <>
-            <AdPromotion key="promotion" metadata={metadata} />
-            {streamArticle}
-          </>
-        );
-      }
-      if (i > 0 && i % AD_PLACEMENT_INDEX === 0 && adIndex < ads.length) {
-        const ad = renderAd(ads[adIndex]);
-        adIndex++;
-        return (
-          <>
-            {ad}
-            {streamArticle}
-          </>
-        );
+  let articleStream;
+  if (articles) {
+    articleStream = articles.map((article, i) => {
+      const streamArticle = renderArticle(article);
+      if (!metadata.shortName === 'Tiny News Curriculum') {
+        if (
+          i > 0 &&
+          i % AD_PLACEMENT_INDEX === 0 &&
+          ads.length === 0 &&
+          adIndex === 0
+        ) {
+          adIndex = adIndex + 1;
+          return (
+            <>
+              <AdPromotion key="promotion" metadata={metadata} />
+              {streamArticle}
+            </>
+          );
+        }
+        if (i > 0 && i % AD_PLACEMENT_INDEX === 0 && adIndex < ads.length) {
+          const ad = renderAd(ads[adIndex]);
+          adIndex++;
+          return (
+            <>
+              {ad}
+              {streamArticle}
+            </>
+          );
+        } else {
+          return streamArticle;
+        }
       } else {
         return streamArticle;
       }
-    } else {
-      return streamArticle;
-    }
-  });
+    });
+  }
 
   return (
     <SectionLayout>

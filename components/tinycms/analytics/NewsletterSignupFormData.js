@@ -35,13 +35,13 @@ const NewsletterSignupFormData = (props) => {
   useEffect(() => {
     let params = {
       url: props.apiUrl,
-      orgSlug: props.apiToken,
+      site: props.site,
       startDate: props.startDate.format('YYYY-MM-DD'),
       endDate: props.endDate.format('YYYY-MM-DD'),
     };
     let customParams = {
       url: props.apiUrl,
-      orgSlug: props.apiToken,
+      site: props.site,
       startDate: props.startDate.format('YYYY-MM-DD'),
       endDate: props.endDate.format('YYYY-MM-DD'),
       dimension: props.dimension,
@@ -213,7 +213,7 @@ const NewsletterSignupFormData = (props) => {
   }, [
     props.startDate,
     props.endDate,
-    props.apiToken,
+    props.site,
     props.apiUrl,
     props.dimension,
   ]);

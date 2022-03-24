@@ -40,12 +40,12 @@ export default function Upload(props) {
     let newFilename = `${props.folderName}/${props.slug}-${uuidv4()}`;
 
     const ReactS3Client = new S3(props.awsConfig);
+
     ReactS3Client.uploadFile(file, newFilename)
       .then((data) => {
         if (data.status === 204) {
           let uploadedS3Url = new URL(data.location);
-          let assetUrl =
-            'https://assets.tinynewsco.org' + uploadedS3Url.pathname;
+          let assetUrl = `https://${process.env.NEXT_PUBLIC_ASSETS_DOMAIN}${uploadedS3Url.pathname}`;
           props.setter(assetUrl);
 
           if (props.parsedData) {

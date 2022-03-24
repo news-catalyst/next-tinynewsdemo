@@ -7,7 +7,7 @@ export default function PromotionBlock({ metadata, prefer }) {
   const newsletter = <NewsletterBlock metadata={metadata} />;
   const donation = <DonationBlock metadata={metadata} />;
 
-  if (metadata.shortName === 'Tiny News Collective Curriculum') {
+  if (!metadata || metadata.shortName === 'Tiny News Collective Curriculum') {
     promo = <div />;
   } else if (prefer === 'newsletter') {
     if (!storage.getItem('TNCNewsletterSubscriber')) {
