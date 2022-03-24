@@ -16,10 +16,14 @@ export default function StaffPage({
   siteMetadata,
   isAmp,
 }) {
+  if (!authors) {
+    return null;
+  }
+
   const staffers = authors.filter((a) => a.staff);
 
   return (
-    <Layout locale={locale} meta={siteMetadata} sections={sections}>
+    <Layout meta={siteMetadata} sections={sections}>
       <article className="container">
         <SectionContainer>
           <div key="title" className="section post__header">

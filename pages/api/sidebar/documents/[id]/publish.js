@@ -1,5 +1,5 @@
-import { hasuraLookupGoogleDoc } from '../../../../../lib/articles';
 import {
+  hasuraLookupGoogleDoc,
   processDocumentContents,
   saveArticle,
   savePage,
@@ -7,13 +7,28 @@ import {
   storePageIdAndSlug,
   upsertPublishedArticle,
 } from '../../../../../lib/document';
+import { findSetting, getOrgSettings } from '../../../../../lib/settings.js';
 
 export default async function Handler(req, res) {
   const apiUrl = process.env.HASURA_API_URL;
-  const apiToken = process.env.ORG_SLUG;
+  const site = req.query.site;
+
+  const settingsResult = await getOrgSettings({
+    url: apiUrl,
+    site: site,
+  });
+
+  if (settingsResult.errors) {
+    console.error('DocAPI publish settings error:', settingsResult.errors);
+    throw settingsResult.errors;
+  }
+
+  const settings = settingsResult.data.settings;
+  const apiToken = findSetting(settings, 'API_TOKEN');
+  const siteUrl = findSetting(settings, 'NEXT_PUBLIC_SITE_URL');
 
   // Check the API token
-  if (req.query.token !== process.env.API_TOKEN || !req.query.id) {
+  if (req.query.token !== apiToken || !req.query.id) {
     return res.status(401).json({ message: 'Invalid API token' });
   }
 
@@ -32,26 +47,9 @@ export default async function Handler(req, res) {
   let articleData = bodyData['articleData'];
   let pageData = bodyData['pageData'];
 
-  // if (articleData) {
-  //   console.log(
-  //     documentType,
-  //     articleData['id'],
-  //     'incoming article data keys:',
-  //     Object.keys(articleData).sort()
-  //   );
-  // }
-  // if (pageData) {
-  //   console.log(
-  //     documentType,
-  //     pageData['id'],
-  //     'incoming page data keys:',
-  //     Object.keys(pageData).sort()
-  //   );
-  // }
-
   const { errors, data } = await hasuraLookupGoogleDoc({
     url: apiUrl,
-    orgSlug: apiToken,
+    site: site,
     documentId: documentId,
   });
   if (errors || !data || !data.google_documents) {
@@ -66,24 +64,6 @@ export default async function Handler(req, res) {
     // console.log(data);
 
     let localeCode = 'en-US'; // default up front, override if existing article
-    if (
-      data.google_documents[0] &&
-      data.google_documents[0].article_google_documents &&
-      data.google_documents[0].article_google_documents[0]
-    ) {
-      localeCode =
-        data.google_documents[0].article_google_documents[0].google_document
-          .locale_code;
-    }
-    if (
-      data.google_documents[0] &&
-      data.google_documents[0].page_google_documents &&
-      data.google_documents[0].page_google_documents[0]
-    ) {
-      localeCode =
-        data.google_documents[0].page_google_documents[0].google_document
-          .locale_code;
-    }
 
     let processedData = await processDocumentContents(
       rawBodyData,
@@ -91,7 +71,8 @@ export default async function Handler(req, res) {
       inlineObjects,
       imageList,
       slug,
-      googleToken
+      googleToken,
+      site
     );
 
     // console.log('processedData:', Object.keys(processedData).sort());
@@ -109,10 +90,8 @@ export default async function Handler(req, res) {
       let storeDataResult = await saveArticle({
         data: articleData,
         url: apiUrl,
-        orgSlug: apiToken,
+        site: site,
       });
-      // console.log('storeDataResult keys:', Object.keys(storeDataResult));
-      // console.log('storeDataResult:', JSON.stringify(storeDataResult));
 
       if (storeDataResult.status === 'error') {
         console.error(JSON.stringify(storeDataResult));
@@ -133,7 +112,7 @@ export default async function Handler(req, res) {
       // store slug + article ID in slug versions table
       idSlugResult = await storeArticleIdAndSlug({
         url: apiUrl,
-        orgSlug: apiToken,
+        site: site,
         article_id: articleID,
         slug: slug,
         category_slug: categorySlug,
@@ -151,7 +130,7 @@ export default async function Handler(req, res) {
       }
       var publishedArticleData = await upsertPublishedArticle({
         url: apiUrl,
-        orgSlug: apiToken,
+        site: site,
         article_id: articleID,
         article_translation_id: translationID,
         locale_code: localeCode,
@@ -177,8 +156,8 @@ export default async function Handler(req, res) {
       }
 
       //construct the published article url
-      var path = localeCode + '/articles/' + categorySlug + '/' + slug;
-      publishUrl = new URL(path, process.env.NEXT_PUBLIC_SITE_URL).toString();
+      var path = '/articles/' + categorySlug + '/' + slug;
+      publishUrl = new URL(path, siteUrl).toString();
       // console.log(publishUrl);
     } else if (documentType === 'page') {
       pageData['content'] = processedData['formattedElements'];
@@ -186,7 +165,7 @@ export default async function Handler(req, res) {
       let storeDataResult = await savePage({
         data: pageData,
         url: apiUrl,
-        orgSlug: apiToken,
+        site: site,
       });
 
       // console.log('storeDataResult keys:', Object.keys(storeDataResult));
@@ -207,7 +186,7 @@ export default async function Handler(req, res) {
       // // store slug + page ID in slug versions table
       idSlugResult = await storePageIdAndSlug({
         url: apiUrl,
-        orgSlug: apiToken,
+        site: site,
         page_id: pageID,
         slug: slug,
       });
@@ -224,14 +203,14 @@ export default async function Handler(req, res) {
       }
 
       // construct published page url
-      let path = `/${localeCode}`;
+      let path = '';
       if (slug !== 'about' && slug !== 'donate' && slug !== 'thank-you') {
         // these 3 pages have their own special routes
         path += '/static/' + slug;
       } else {
         path += '/' + slug;
       }
-      publishUrl = new URL(path, process.env.NEXT_PUBLIC_SITE_URL).toString();
+      publishUrl = new URL(path, siteUrl).toString();
 
       // console.log(publishUrl);
     }

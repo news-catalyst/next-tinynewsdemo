@@ -1,11 +1,16 @@
 #!/bin/bash
 
-if [[ "$VERCEL_GIT_COMMIT_REF" == "feature/vercel-platforms" ]] ; then
-  echo "🛑 - feature/vercel-platforms: build should not proceed in env $VERCEL_ENV"
-  exit 0;
+echo "VERCEL_GIT_COMMIT_REF: $VERCEL_GIT_COMMIT_REF"
+echo "VERCEL_ENV: $VERCEL_ENV"
 
-elif [[ "$VERCEL_GIT_COMMIT_REF" == "main"  ]] ; then 
-  echo "✅ - main: build can proceed"
+if [[ "$VERCEL_GIT_COMMIT_REF" == "stable" && "$VERCEL_ENV" == "production"  ]] ; then
+  # Proceed with the build
+  echo "✅ - stable/prod: build can proceed"
+  exit 1;
+
+elif [[ "$VERCEL_GIT_COMMIT_REF" != "stable" && "$VERCEL_ENV" == "preview" ]] ; then
+# Proceed with the build
+  echo "✅ - any branch besides stable in preview env: build can proceed"
   exit 1;
 
 else

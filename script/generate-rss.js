@@ -39,7 +39,7 @@ function generate(locale) {
   shared
     .hasuraGetArticlesRss({
       url: apiUrl,
-      orgSlug: apiToken,
+      site: apiToken,
       localeCode: locale,
     })
     .then((result) => {

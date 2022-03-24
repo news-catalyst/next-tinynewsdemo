@@ -23,7 +23,7 @@ const AverageSessionDuration = (props) => {
   useEffect(() => {
     let sessionParams = {
       url: props.apiUrl,
-      orgSlug: props.apiToken,
+      site: props.site,
       startDate: props.startDate.format('YYYY-MM-DD'),
       endDate: props.endDate.format('YYYY-MM-DD'),
     };
@@ -55,7 +55,7 @@ const AverageSessionDuration = (props) => {
         timeRef.current.scrollIntoView({ behavior: 'smooth' });
       }
     }
-  }, [props.startDate, props.endDate, props.apiUrl, props.apiToken]);
+  }, [props.startDate, props.endDate, props.apiUrl, props.site]);
 
   return (
     <>

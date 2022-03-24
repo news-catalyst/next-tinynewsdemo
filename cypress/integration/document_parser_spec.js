@@ -621,7 +621,8 @@ describe('document parser', () => {
           inlineObjects,
           imageList,
           slug,
-          oauthToken
+          oauthToken,
+          'next-tinynewsdemo'
         )
       ).then((result) => {
         const listEl = result.formattedElements.find(
@@ -1650,8 +1651,7 @@ describe('document parser', () => {
       ).as('googleForms');
 
       cy.stub(TinyS3, 'upload').returns({
-        s3Url:
-          'https://assets.tinynewsco.org/oaklyn-test/category-slug/article-slug/imagekix123.png',
+        s3Url: `https://${process.env.NEXT_PUBLIC_ASSETS_DOMAIN}/oaklyn-test/category-slug/article-slug/imagekix123.png`,
         height: 640,
         width: 480,
       });
@@ -1665,7 +1665,8 @@ describe('document parser', () => {
           inlineObjects,
           imageList,
           slug,
-          oauthToken
+          oauthToken,
+          'next-tinynewsdemo'
         )
       )
         .should('be.an', 'object')
@@ -1684,7 +1685,8 @@ describe('document parser', () => {
           inlineObjects,
           imageList,
           slug,
-          oauthToken
+          oauthToken,
+          'next-tinynewsdemo'
         )
       ).then((result) => {
         // cy.log(JSON.stringify(result));
@@ -1707,7 +1709,8 @@ describe('document parser', () => {
           inlineObjects,
           imageList,
           slug,
-          oauthToken
+          oauthToken,
+          'next-tinynewsdemo'
         )
       ).then((result) => {
         // cy.log(JSON.stringify(result));
@@ -1730,7 +1733,8 @@ describe('document parser', () => {
           inlineObjects,
           imageList,
           slug,
-          oauthToken
+          oauthToken,
+          'next-tinynewsdemo'
         )
       ).then((result) => {
         // cy.log(JSON.stringify(result));
@@ -1753,7 +1757,8 @@ describe('document parser', () => {
           inlineObjects,
           imageList,
           slug,
-          oauthToken
+          oauthToken,
+          'next-tinynewsdemo'
         )
       ).then((result) => {
         // cy.log(JSON.stringify(result));
@@ -1779,7 +1784,8 @@ describe('document parser', () => {
           inlineObjects,
           imageList,
           slug,
-          oauthToken
+          oauthToken,
+          'next-tinynewsdemo'
         )
       ).then((result) => {
         let tweet = result.formattedElements[12];
@@ -1834,7 +1840,8 @@ describe('document parser', () => {
           inlineObjects,
           imageList,
           slug,
-          oauthToken
+          oauthToken,
+          'next-tinynewsdemo'
         )
       ).then((result) => {
         let el = result.formattedElements[10];
@@ -2313,8 +2320,7 @@ describe('document parser', () => {
       ];
       listInfo = { 'kix.qqyukljg8mnr': 'BULLET' };
       imageList = {
-        'kix.wr6s7brrno1m':
-          'https://assets.tinynewsco.org/oaklyn/cypress-test-doc/imagekix.wr6s7brrno1m.png',
+        'kix.wr6s7brrno1m': `https://${process.env.NEXT_PUBLIC_ASSETS_DOMAIN}/oaklyn-test/category-slug/article-slug/imagekix.wr6s7brrno1m.png`,
       };
       inlineObjects = {
         'kix.wr6s7brrno1m': {
@@ -2352,7 +2358,8 @@ describe('document parser', () => {
           inlineObjects,
           imageList,
           slug,
-          oauthToken
+          oauthToken,
+          'next-tinynewsdemo'
         )
       ).then((result) => {
         let el = result.formattedElements[result.formattedElements.length - 2];
@@ -2361,7 +2368,7 @@ describe('document parser', () => {
         expect(el.children[0].height).to.eq(640);
         expect(el.children[0].width).to.eq(480);
         expect(el.children[0].imageUrl).to.eq(
-          'https://assets.tinynewsco.org/oaklyn-test/category-slug/article-slug/imagekix123.png'
+          `https://${process.env.NEXT_PUBLIC_ASSETS_DOMAIN}/oaklyn-test/category-slug/article-slug/imagekix123.png`
         );
       });
     });
@@ -2537,7 +2544,8 @@ describe('document parser', () => {
           inlineObjects,
           imageList,
           slug,
-          oauthToken
+          oauthToken,
+          'next-tinynewsdemo'
         )
       ).then((result) => {
         // for (let l = 0; l < result.formattedElements.length; l++) {
