@@ -14,6 +14,7 @@ export default function Article({
   siteMetadata,
   sectionArticles,
   renderFooter,
+  settings,
 }) {
   const isAmp = useAmp();
 
@@ -55,6 +56,7 @@ export default function Article({
       article={article}
       sections={sections}
       renderFooter={renderFooter}
+      settings={settings}
     >
       <div className="post">
         <ArticleHeader
