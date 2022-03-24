@@ -20,6 +20,7 @@ export default function ThankYou({
   sections,
   siteMetadata,
   monkeypodLink,
+  site,
 }) {
   const isAmp = false;
   const router = useRouter();
@@ -93,6 +94,7 @@ export default function ThankYou({
         <NewsletterBlock
           metadata={siteMetadata}
           headline={localisedPage.headline}
+          site={site}
           wrap={false}
         />
       </SectionContainer>
@@ -153,6 +155,7 @@ export async function getServerSideProps(context) {
       sections,
       siteMetadata,
       monkeypodLink,
+      site,
     },
   };
 }

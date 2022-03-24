@@ -31,6 +31,7 @@ export default function Homepage({
   siteMetadata,
   expandedAds,
   monkeypodLink,
+  site,
 }) {
   const [featuredArticle, setFeaturedArticle] = useState(featured);
   const [subFeaturedTopArticle, setSubFeaturedTopArticle] = useState(
@@ -74,7 +75,7 @@ export default function Homepage({
             metadata={siteMetadata}
           />
         )}
-        <HomepagePromoBar metadata={siteMetadata} />
+        <HomepagePromoBar metadata={siteMetadata} site={site} />
         <ArticleStream
           articles={mostRecentArticles}
           sections={sections}
@@ -84,6 +85,7 @@ export default function Homepage({
           metadata={siteMetadata}
           ads={expandedAds}
           locale={locale}
+          site={site}
         />
         <SectionContainer>
           <Link href="/articles/archive/1" passHref>
