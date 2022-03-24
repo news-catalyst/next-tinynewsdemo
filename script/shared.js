@@ -53,7 +53,7 @@ function hasuraInsertNewsletterEdition(params) {
   console.log(params);
   return fetchGraphQL({
     url: params['url'],
-    orgSlug: params['orgSlug'],
+    site: params['site'],
     query: INSERT_NEWSLETTER_EDITION,
     name: 'FrontendInsertNewsletterEdition',
     variables: {
@@ -86,7 +86,7 @@ const INSERT_DATA_IMPORT = `mutation FrontendInsertDataImport($notes: String, $e
 function hasuraInsertDataImport(params) {
   return fetchGraphQL({
     url: params['url'],
-    orgSlug: params['orgSlug'],
+    site: params['site'],
     query: INSERT_DATA_IMPORT,
     name: 'FrontendInsertDataImport',
     variables: {
@@ -116,7 +116,7 @@ const HASURA_INSERT_DONATION_CLICK_DATA = `mutation FrontendInsertDonationClick(
 function hasuraInsertDonationClick(params) {
   return fetchGraphQL({
     url: params['url'],
-    orgSlug: params['orgSlug'],
+    site: params['site'],
     query: HASURA_INSERT_DONATION_CLICK_DATA,
     name: 'FrontendInsertDonationClick',
     variables: {
@@ -317,7 +317,7 @@ const HASURA_CREATE_TAG = `mutation FrontendCreateTag($slug: String, $title: Str
 async function hasuraCreateOneTag(params) {
   return fetchGraphQL({
     url: params['url'],
-    orgSlug: params['orgSlug'],
+    site: params['site'],
     query: HASURA_CREATE_TAG,
     name: 'FrontendCreateTag',
     variables: {
@@ -386,7 +386,7 @@ const HASURA_LIST_TAGS = `query FrontendListTags {
 function hasuraListTags(params) {
   return fetchGraphQL({
     url: params['url'],
-    orgSlug: params['orgSlug'],
+    site: params['site'],
     query: HASURA_LIST_TAGS,
     name: 'FrontendListTags',
   });
@@ -405,7 +405,7 @@ const HASURA_LIST_SECTIONS = `query FrontendListSections {
 function hasuraListSections(params) {
   return fetchGraphQL({
     url: params['url'],
-    orgSlug: params['orgSlug'],
+    site: params['site'],
     query: HASURA_LIST_SECTIONS,
     name: 'FrontendListSections',
   });
@@ -437,7 +437,7 @@ const HASURA_LIST_ORG_LOCALES = `query FrontendListOrgLocales {
 function hasuraListLocales(params) {
   return fetchGraphQL({
     url: params['url'],
-    orgSlug: params['orgSlug'],
+    site: params['site'],
     query: HASURA_LIST_ORG_LOCALES,
     name: 'FrontendListOrgLocales',
   });
@@ -481,7 +481,7 @@ const HASURA_INSERT_PAGE_VIEW_DATA = `mutation FrontendInsertPageView($count: In
 function hasuraInsertPageView(params) {
   return fetchGraphQL({
     url: params['url'],
-    orgSlug: params['orgSlug'],
+    site: params['site'],
     query: HASURA_INSERT_PAGE_VIEW_DATA,
     name: 'FrontendInsertPageView',
     variables: {
@@ -509,7 +509,7 @@ const HASURA_INSERT_ARTICLE_SESSION_DATA = `mutation FrontendInsertArticleSessio
 function hasuraInsertArticleSession(params) {
   return fetchGraphQL({
     url: params['url'],
-    orgSlug: params['orgSlug'],
+    site: params['site'],
     query: HASURA_INSERT_ARTICLE_SESSION_DATA,
     name: 'FrontendInsertArticleSession',
     variables: {
@@ -537,7 +537,7 @@ const HASURA_INSERT_GEO_SESSION_DATA = `mutation FrontendInsertGeoSession($count
 function hasuraInsertGeoSession(params) {
   return fetchGraphQL({
     url: params['url'],
-    orgSlug: params['orgSlug'],
+    site: params['site'],
     query: HASURA_INSERT_GEO_SESSION_DATA,
     name: 'FrontendInsertGeoSession',
     variables: {
@@ -562,7 +562,7 @@ const HASURA_INSERT_SESSION_DATA = `mutation FrontendInsertSession($count: Int!,
 function hasuraInsertSession(params) {
   return fetchGraphQL({
     url: params['url'],
-    orgSlug: params['orgSlug'],
+    site: params['site'],
     query: HASURA_INSERT_SESSION_DATA,
     name: 'FrontendInsertSession',
     variables: {
@@ -586,7 +586,7 @@ const HASURA_INSERT_DONOR_READING_FREQUENCY = `mutation FrontendInsertDonorFrequ
 function hasuraInsertDonorReadingFrequency(params) {
   return fetchGraphQL({
     url: params['url'],
-    orgSlug: params['orgSlug'],
+    site: params['site'],
     query: HASURA_INSERT_DONOR_READING_FREQUENCY,
     name: 'FrontendInsertDonorFrequency',
     variables: {
@@ -611,7 +611,7 @@ const HASURA_INSERT_SESSION_DURATION_DATA = `mutation FrontendInsertSessionDurat
 function hasuraInsertSessionDuration(params) {
   return fetchGraphQL({
     url: params['url'],
-    orgSlug: params['orgSlug'],
+    site: params['site'],
     query: HASURA_INSERT_SESSION_DURATION_DATA,
     name: 'FrontendInsertSessionDuration',
     variables: {
@@ -637,7 +637,7 @@ const HASURA_INSERT_NEWSLETTER_IMPRESSION_DATA = `mutation FrontendInsertNewslet
 function hasuraInsertNewsletterImpression(params) {
   return fetchGraphQL({
     url: params['url'],
-    orgSlug: params['orgSlug'],
+    site: params['site'],
     query: HASURA_INSERT_NEWSLETTER_IMPRESSION_DATA,
     name: 'FrontendInsertNewsletterImpression',
     variables: {
@@ -665,7 +665,7 @@ const HASURA_INSERT_CUSTOM_DIMENSION_DATA = `mutation FrontendInsertCustomDimens
 function hasuraInsertCustomDimension(params) {
   return fetchGraphQL({
     url: params['url'],
-    orgSlug: params['orgSlug'],
+    site: params['site'],
     query: HASURA_INSERT_CUSTOM_DIMENSION_DATA,
     name: 'FrontendInsertCustomDimension',
     variables: {
@@ -692,7 +692,7 @@ const HASURA_INSERT_READING_FREQUENCY_DATA = `mutation FrontendInsertReadingFreq
 function hasuraInsertReadingFrequency(params) {
   return fetchGraphQL({
     url: params['url'],
-    orgSlug: params['orgSlug'],
+    site: params['site'],
     query: HASURA_INSERT_READING_FREQUENCY_DATA,
     name: 'FrontendInsertReadingFrequency',
     variables: {
@@ -716,7 +716,7 @@ const HASURA_INSERT_REFERRAL_SESSION_DATA = `mutation FrontendInsertReferralSess
 function hasuraInsertReferralSession(params) {
   return fetchGraphQL({
     url: params['url'],
-    orgSlug: params['orgSlug'],
+    site: params['site'],
     query: HASURA_INSERT_REFERRAL_SESSION_DATA,
     name: 'FrontendInsertReferralSession',
     variables: {
@@ -745,7 +745,7 @@ const HASURA_INSERT_READING_DEPTH_DATA = `mutation FrontendInsertReadingDepth($d
 function hasuraInsertReadingDepth(params) {
   return fetchGraphQL({
     url: params['url'],
-    orgSlug: params['orgSlug'],
+    site: params['site'],
     query: HASURA_INSERT_READING_DEPTH_DATA,
     name: 'FrontendInsertReadingDepth',
     variables: {
@@ -798,7 +798,7 @@ const HASURA_DELETE_ANALYTICS = `mutation FrontendDeleteAnalytics {
 function hasuraDeleteAnalytics(params) {
   return fetchGraphQL({
     url: params['url'],
-    orgSlug: params['orgSlug'],
+    site: params['site'],
     query: HASURA_DELETE_ANALYTICS,
     name: 'FrontendDeleteAnalytics',
   });
@@ -842,7 +842,7 @@ const HASURA_GET_ARTICLES_RSS = `query FrontendGetArticlesRSS($locale_code: Stri
 function hasuraGetArticlesRss(params) {
   return fetchGraphQL({
     url: params['url'],
-    orgSlug: params['orgSlug'],
+    site: params['site'],
     query: HASURA_GET_ARTICLES_RSS,
     name: 'FrontendGetArticlesRSS',
     variables: {
@@ -958,7 +958,7 @@ const HASURA_INSERT_ONE_AUTHOR = `mutation FrontendInsertAuthor($bio: String = "
 function hasuraInsertOneAuthor(params) {
   return fetchGraphQL({
     url: params['url'],
-    orgSlug: params['orgSlug'],
+    site: params['site'],
     query: HASURA_INSERT_ONE_AUTHOR,
     name: 'FrontendInsertAuthor',
     variables: {
@@ -982,7 +982,7 @@ const HASURA_INSERT_GOOGLE_DOC = `mutation FrontendInsertGoogleDoc($document_id:
 async function hasuraInsertGoogleDoc(params) {
   return fetchGraphQL({
     url: params['url'],
-    orgSlug: params['orgSlug'],
+    site: params['site'],
     query: HASURA_INSERT_GOOGLE_DOC,
     name: 'FrontendInsertGoogleDoc',
     variables: {
@@ -1035,7 +1035,7 @@ function hasuraGetSiteData(params) {
     query: HASURA_GET_SITE_DATA,
     name: 'FrontendGetSiteData',
     variables: {
-      'locale_code': 'en-US',
+      locale_code: 'en-US',
     },
   });
 }
@@ -1045,7 +1045,7 @@ async function hasuraInsertTestArticle(params) {
 
   return fetchGraphQL({
     url: params['url'],
-    orgSlug: params['orgSlug'],
+    site: params['site'],
     query: HASURA_INSERT_TEST_ARTICLE,
     name: 'FrontendInsertArticle',
     variables: {
@@ -1079,7 +1079,7 @@ async function hasuraInsertTestPage(params) {
 
   return fetchGraphQL({
     url: params['url'],
-    orgSlug: params['orgSlug'],
+    site: params['site'],
     query: HASURA_INSERT_TEST_PAGE,
     name: 'FrontendInsertPage',
     variables: {
@@ -1306,7 +1306,7 @@ async function seedData(params) {
   );
   let authorResult = await hasuraInsertOneAuthor({
     url: params['url'],
-    orgSlug: params['orgSlug'],
+    site: params['site'],
     first_names: faker.name.firstName(),
     last_name: faker.name.lastName(),
     title: faker.name.jobTitle(),
@@ -1328,7 +1328,7 @@ async function seedData(params) {
 
   let tagResult = await hasuraCreateOneTag({
     url: params['url'],
-    orgSlug: params['orgSlug'],
+    site: params['site'],
     slug: 'latest-news',
     title: 'Latest News',
     locale_code: 'en-US',
@@ -1342,7 +1342,7 @@ async function seedData(params) {
 
   let gdocResult = await hasuraInsertGoogleDoc({
     url: params['url'],
-    orgSlug: params['orgSlug'],
+    site: params['site'],
     document_id: '1LSyMzR1KxyKoml6q56DYQaxEV8Qm4EZo2y_xEFIkvGw',
     locale_code: 'en-US',
   });
@@ -1363,7 +1363,7 @@ async function seedData(params) {
   let pageGdocResult = await hasuraInsertGoogleDoc({
     document_id: '1cS3u5bdBP7sg29t-nBW8UgvUHDNpiZRFccZA53A04sU',
     url: params['url'],
-    orgSlug: params['orgSlug'],
+    site: params['site'],
     locale_code: 'en-US',
   });
   if (pageGdocResult.errors) {
@@ -1382,7 +1382,7 @@ async function seedData(params) {
 
   let articleResult = await hasuraInsertTestArticle({
     url: params['url'],
-    orgSlug: params['orgSlug'],
+    site: params['site'],
     google_document_id: articleGoogleDocID,
     locale_code: 'en-US',
     category_id: categoryID,
@@ -1406,7 +1406,7 @@ async function seedData(params) {
 
   let pageResult = await hasuraInsertTestPage({
     url: params['url'],
-    orgSlug: params['orgSlug'],
+    site: params['site'],
     google_document_id: pageGoogleDocID,
     locale_code: 'en-US',
     slug: 'test-about-page',

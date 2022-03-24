@@ -24,12 +24,6 @@ async function getData(params) {
     '\n'
   );
 
-  console.log(
-    'authenticating with google:',
-    credsEmail,
-    credsPrivateKey,
-    scopes
-  );
   const auth = new google.auth.JWT(credsEmail, null, credsPrivateKey, scopes);
   const analyticsreporting = google.analyticsreporting({ version: 'v4', auth });
   let startDate = params['startDate'];
@@ -430,7 +424,6 @@ function storeData(params, rows) {
         const matches = path.match(pathMatcher);
         if (matches) {
           category = matches[1];
-          // console.log(sessionDate, category, sessionCount, path);
           shared
             .hasuraInsertArticleSession({
               url: apiUrl,
