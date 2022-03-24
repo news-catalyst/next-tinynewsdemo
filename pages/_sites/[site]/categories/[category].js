@@ -46,6 +46,7 @@ export default function CategoryPage(props) {
       meta={siteMetadata}
       sections={props.sections}
       renderFooter={props.renderFooter}
+      settings={props.settings}
     >
       <ArticleStream
         articles={props.articles}

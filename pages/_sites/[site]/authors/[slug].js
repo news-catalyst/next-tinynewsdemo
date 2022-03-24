@@ -22,6 +22,7 @@ export default function AuthorPage({
   author,
   siteMetadata,
   expandedAds,
+  settings,
 }) {
   const router = useRouter();
   const isAmp = false;
@@ -65,7 +66,7 @@ export default function AuthorPage({
   const ProfileTwitter = tw.p`text-base pt-3`;
 
   return (
-    <Layout meta={siteMetadata} sections={sections}>
+    <Layout meta={siteMetadata} sections={sections} settings={settings}>
       <ProfileHeaderDiv>
         {authorPhoto && <ProfileImage src={authorPhoto}></ProfileImage>}
         <div>
@@ -193,6 +194,7 @@ export async function getStaticProps({ params }) {
       author,
       siteMetadata,
       expandedAds,
+      settings,
     },
   };
 }

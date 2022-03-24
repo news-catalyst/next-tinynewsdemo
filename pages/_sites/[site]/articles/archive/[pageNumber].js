@@ -30,6 +30,7 @@ export default function ArticlesArchivePage({
   currentPageNumber,
   siteMetadata,
   expandedAds,
+  settings,
 }) {
   const [pageNumbers, setPageNumbers] = useState(range(totalPageCount, 1));
 
@@ -71,7 +72,7 @@ export default function ArticlesArchivePage({
   }
 
   return (
-    <Layout meta={siteMetadata} sections={sections}>
+    <Layout meta={siteMetadata} sections={sections} settings={settings}>
       <ArticleStream
         sections={sections}
         articles={articles}
@@ -200,6 +201,7 @@ export async function getStaticProps(context) {
       currentPageNumber,
       siteMetadata,
       expandedAds,
+      settings,
     },
   };
 }

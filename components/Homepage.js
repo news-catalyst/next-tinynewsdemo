@@ -30,6 +30,7 @@ export default function Homepage({
   locale,
   siteMetadata,
   expandedAds,
+  settings,
 }) {
   const [featuredArticle, setFeaturedArticle] = useState(featured);
   const [subFeaturedTopArticle, setSubFeaturedTopArticle] = useState(
@@ -42,7 +43,12 @@ export default function Homepage({
 
   return (
     <div className="homepage">
-      <Layout meta={siteMetadata} sections={sections} locale={locale}>
+      <Layout
+        meta={siteMetadata}
+        sections={sections}
+        locale={locale}
+        settings={settings}
+      >
         {!selectedLayout && <Placeholder />}
         {selectedLayout.name === 'Big Featured Story' && (
           <BigFeaturedStory

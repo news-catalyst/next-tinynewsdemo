@@ -19,6 +19,7 @@ export default function TagPage({
   sections,
   siteMetadata,
   expandedAds,
+  settings,
 }) {
   const router = useRouter();
   const isAmp = false;
@@ -35,7 +36,7 @@ export default function TagPage({
   siteMetadata['homepageTitle'] = tagTitle + ' | ' + siteMetadata['shortName'];
 
   return (
-    <Layout meta={siteMetadata} sections={sections}>
+    <Layout meta={siteMetadata} sections={sections} settings={settings}>
       <ArticleStream
         articles={articles}
         sections={sections}
@@ -140,6 +141,7 @@ export async function getStaticProps({ params }) {
       sections,
       siteMetadata,
       ads,
+      settings,
     },
   };
 }
