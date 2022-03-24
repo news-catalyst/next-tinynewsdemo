@@ -5,6 +5,7 @@ import Donate from './Donate';
 import tw, { styled } from 'twin.macro';
 import Typography from '../common/Typography';
 import { generateNavLinkFor } from '../../lib/utils';
+import { findSetting } from '../../lib/settings';
 
 const NavTopContainer = tw.header`flex w-full`;
 const NavBottomContainer = tw.header`border-b border-gray-200 flex w-full justify-center items-center`;
@@ -35,9 +36,16 @@ const SectionLink = styled.a(({ meta }) => ({
   fontFamily: Typography[meta.theme].SectionLink,
 }));
 
-export default function GlobalNav({ metadata, sections, isAmp, overrideNav }) {
+export default function GlobalNav({
+  metadata,
+  sections,
+  settings,
+  isAmp,
+  overrideNav,
+}) {
   const [logoWidth, setLogoWidth] = useState();
   const [logoHeight, setLogoHeight] = useState();
+  const [monkeypodUrl, setMonkeypodUrl] = useState();
 
   useEffect(() => {
     if ((metadata['logo'] && !metadata['logoWidth'], !metadata['logoHeight'])) {
@@ -51,6 +59,12 @@ export default function GlobalNav({ metadata, sections, isAmp, overrideNav }) {
       };
       img.src = metadata['logo'];
     }
+
+    const settingMonkeypodUrl = findSetting(
+      settings,
+      'NEXT_PUBLIC_MONKEYPOD_URL'
+    );
+    setMonkeypodUrl(settingMonkeypodUrl);
   }, [metadata]);
 
   let nav = overrideNav || metadata['nav'];
@@ -132,7 +146,7 @@ export default function GlobalNav({ metadata, sections, isAmp, overrideNav }) {
             </LogoWrapper>
           </NavInnerLeftContainer>
           <NavInnerRightContainer>
-            {process.env.NEXT_PUBLIC_MONKEYPOD_URL && (
+            {monkeypodUrl && (
               <Donate label={metadata.supportCTA} metadata={metadata} />
             )}
           </NavInnerRightContainer>

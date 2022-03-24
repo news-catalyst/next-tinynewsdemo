@@ -1,4 +1,4 @@
-import { generateAllDomainPaths } from '../../../lib/settings';
+import { generateAllDomainPaths, getOrgSettings } from '../../../lib/settings';
 import { hasuraGetPage } from '../../../lib/pages.js';
 import StaffPage from '../../../components/StaffPage';
 
@@ -29,6 +29,16 @@ export async function getStaticProps({ params }) {
   const apiUrl = process.env.HASURA_API_URL;
   const site = params.site;
   const locale = 'en-US';
+
+  const settingsResult = await getOrgSettings({
+    url: apiUrl,
+    site: site,
+  });
+
+  if (settingsResult.errors) {
+    throw settingsResult.errors;
+  }
+  const settings = settingsResult.data.settings;
 
   let page = {};
   let sections;
@@ -62,6 +72,7 @@ export async function getStaticProps({ params }) {
       locale,
       sections,
       siteMetadata,
+      settings,
     },
     revalidate: 1,
   };

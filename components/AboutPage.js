@@ -16,7 +16,13 @@ import {
 
 const SectionContainer = tw.div`flex flex-col flex-nowrap items-center px-5 mx-auto max-w-7xl w-full`;
 
-export default function AboutPage({ page, sections, siteMetadata, isAmp }) {
+export default function AboutPage({
+  page,
+  sections,
+  siteMetadata,
+  settings,
+  isAmp,
+}) {
   const locale = 'en-US';
 
   // there will only be one translation returned for a given page + locale
@@ -53,7 +59,12 @@ export default function AboutPage({ page, sections, siteMetadata, isAmp }) {
   }
 
   return (
-    <Layout meta={siteMetadata} page={page} sections={sections}>
+    <Layout
+      meta={siteMetadata}
+      page={page}
+      sections={sections}
+      settings={settings}
+    >
       <article className="container">
         <SectionContainer>
           <div key="title" className="section post__header">
