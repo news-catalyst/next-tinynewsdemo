@@ -1,9 +1,23 @@
 import { hasuraGetPage } from '../../lib/pages.js';
+import { findSetting, getOrgSettings } from '../../lib/settings.js';
 
 export default async function Handler(req, res) {
+  const settingsResult = await getOrgSettings({
+    url: apiUrl,
+    site: site,
+  });
+
+  if (settingsResult.errors) {
+    console.error('DocAPI preview Settings error:', settingsResult.errors);
+    throw settingsResult.errors;
+  }
+
+  const settings = settingsResult.data.settings;
+  const previewToken = findSetting(settings, 'PREVIEW_TOKEN');
+
   // Check the secret and next parameters
   // This secret should only be known to this API route and the CMS
-  if (req.query.secret !== process.env.PREVIEW_TOKEN || !req.query.slug) {
+  if (req.query.secret !== previewToken || !req.query.slug) {
     return res.status(401).json({ message: 'Invalid token' });
   }
 
