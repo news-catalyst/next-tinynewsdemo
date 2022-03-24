@@ -200,7 +200,7 @@ export default async function Handler(req, res) {
 
     //construct preview url
     previewUrl = new URL(
-      `/api/preview-static?secret=${process.env.PREVIEW_TOKEN}&slug=${slug}&site=${site}`,
+      `/api/preview-static?secret=${previewToken}&slug=${slug}&site=${site}`,
       siteUrl
     ).toString();
 
