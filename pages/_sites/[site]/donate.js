@@ -23,7 +23,12 @@ const WideContainer = styled.div(() => ({
   maxWidth: '1280px',
 }));
 
-export default function Donate({ page, sections, siteMetadata, settings }) {
+export default function Donate({
+  page,
+  sections,
+  siteMetadata,
+  monkeypodLink,
+}) {
   const isAmp = false;
   const router = useRouter();
 
@@ -66,7 +71,12 @@ export default function Donate({ page, sections, siteMetadata, settings }) {
   }
 
   return (
-    <Layout meta={siteMetadata} page={page} sections={sections}>
+    <Layout
+      meta={siteMetadata}
+      page={page}
+      sections={sections}
+      monkeypodLink={monkeypodLink}
+    >
       <SectionContainer>
         <article className="container">
           <ArticleTitle meta={siteMetadata} tw="text-center">
@@ -85,7 +95,7 @@ export default function Donate({ page, sections, siteMetadata, settings }) {
       <WideContainer>
         <DonationOptionsBlock
           metadata={siteMetadata}
-          settings={settings}
+          monkeypodLink={monkeypodLink}
           wrap={true}
         />
       </WideContainer>
@@ -123,6 +133,7 @@ export async function getStaticProps({ params }) {
     throw settingsResult.errors;
   }
   const settings = settingsResult.data.settings;
+  const monkeypodLink = findSetting(settings, 'NEXT_PUBLIC_MONKEYPOD_URL');
 
   let page = {};
   let sections;
@@ -163,7 +174,7 @@ export async function getStaticProps({ params }) {
       page,
       sections,
       siteMetadata,
-      settings,
+      monkeypodLink,
     },
     revalidate: 1,
   };

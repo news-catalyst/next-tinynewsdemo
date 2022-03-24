@@ -50,6 +50,7 @@ export async function getStaticProps({ params }) {
     throw settingsResult.errors;
   }
   const settings = settingsResult.data.settings;
+  const monkeypodLink = findSetting(settings, 'NEXT_PUBLIC_MONKEYPOD_URL');
 
   let page = {};
   let sections;
@@ -90,7 +91,7 @@ export async function getStaticProps({ params }) {
       page,
       sections,
       siteMetadata,
-      settings,
+      monkeypodLink,
     },
     revalidate: 1,
   };

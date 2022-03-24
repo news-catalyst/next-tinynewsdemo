@@ -5,7 +5,7 @@ import { useAnalytics } from '../../../lib/hooks/useAnalytics.js';
 import Layout from '../../../components/Layout';
 import NewsletterBlock from '../../../components/plugins/NewsletterBlock';
 import { renderBody } from '../../../lib/utils.js';
-import { getOrgSettings } from '../../../lib/settings';
+import { getOrgSettings, findSetting } from '../../../lib/settings';
 import {
   ArticleTitle,
   PostTextContainer,
@@ -19,7 +19,7 @@ export default function ThankYou({
   page,
   sections,
   siteMetadata,
-  settings,
+  monkeypodLink,
 }) {
   const isAmp = false;
   const router = useRouter();
@@ -81,7 +81,7 @@ export default function ThankYou({
       meta={siteMetadata}
       page={page}
       sections={sections}
-      settings={settings}
+      monkeypodLink={monkeypodLink}
     >
       <SectionContainer>
         <ArticleTitle meta={siteMetadata} tw="text-center">
@@ -114,6 +114,7 @@ export async function getServerSideProps(context) {
     throw settingsResult.errors;
   }
   const settings = settingsResult.data.settings;
+  const monkeypodLink = findSetting(settings, 'NEXT_PUBLIC_MONKEYPOD_URL');
 
   let page = {};
   let sections;
@@ -151,7 +152,7 @@ export async function getServerSideProps(context) {
       page,
       sections,
       siteMetadata,
-      settings,
+      monkeypodLink,
     },
   };
 }

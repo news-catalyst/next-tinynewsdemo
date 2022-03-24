@@ -1,4 +1,8 @@
-import { generateAllDomainPaths, getOrgSettings } from '../../../lib/settings';
+import {
+  generateAllDomainPaths,
+  getOrgSettings,
+  findSetting,
+} from '../../../lib/settings';
 import { hasuraGetPage } from '../../../lib/pages.js';
 import StaffPage from '../../../components/StaffPage';
 
@@ -39,6 +43,7 @@ export async function getStaticProps({ params }) {
     throw settingsResult.errors;
   }
   const settings = settingsResult.data.settings;
+  const monkeypodLink = findSetting(settings, 'NEXT_PUBLIC_MONKEYPOD_URL');
 
   let page = {};
   let sections;
@@ -72,7 +77,7 @@ export async function getStaticProps({ params }) {
       locale,
       sections,
       siteMetadata,
-      settings,
+      monkeypodLink,
     },
     revalidate: 1,
   };

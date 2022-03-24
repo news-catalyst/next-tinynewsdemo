@@ -6,7 +6,7 @@ const OptionsBlockContainer = tw.div`md:flex md:grid-cols-3 md:gap-4`;
 export default function DonationOptionsBlock({
   metadata,
   tinycms,
-  settings,
+  monkeypodLink,
   wrap = true,
 }) {
   if (metadata.donationOptions === '' || metadata.donationOptions === null) {
@@ -29,7 +29,7 @@ export default function DonationOptionsBlock({
         option={option}
         metadata={metadata}
         tinycms={tinycms}
-        settings={settings}
+        monkeypodLink={monkeypodLink}
       />
     ));
 

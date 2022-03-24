@@ -22,7 +22,7 @@ export default function Layout({
   article,
   page,
   sections,
-  settings,
+  monkeypodLink,
   renderNav = true,
   renderFooter = true,
 }) {
@@ -296,7 +296,7 @@ export default function Layout({
             metadata={meta}
             sections={sections}
             isAmp={isAmp}
-            settings={settings}
+            monkeypodLink={monkeypodLink}
           />
         )}
         <Main>
