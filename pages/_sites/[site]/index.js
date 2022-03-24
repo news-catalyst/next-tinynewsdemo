@@ -21,6 +21,7 @@ export default function Home(props) {
     return <CurriculumHomepage {...props} />;
   }
 
+  console.log('props.site:', props.site);
   // console.log('streamArticles:', props.streamArticles);
   const component =
     (props.siteMetadata && props.siteMetadata.landingPage === 'on') ||
@@ -58,6 +59,7 @@ export async function getStaticProps(context) {
     throw new Error('Missing required site param');
   }
 
+  console.log('SITE:', site);
   const apiUrl = process.env.HASURA_API_URL;
 
   const settingsResult = await getOrgSettings({
@@ -96,6 +98,7 @@ export async function getStaticProps(context) {
         locale,
         siteMetadata,
         pages,
+        site,
       },
       revalidate: 1,
     };
@@ -178,6 +181,7 @@ export async function getStaticProps(context) {
       siteMetadata,
       expandedAds,
       monkeypodLink,
+      site,
     },
     revalidate: 1,
   };
