@@ -4,7 +4,6 @@ export default async function Handler(req, res) {
   const apiUrl = process.env.HASURA_API_URL;
   const site = req.query.site;
 
-  console.log('site:', site);
   const settingsResult = await getOrgSettings({
     url: apiUrl,
     site: site,
@@ -22,12 +21,10 @@ export default async function Handler(req, res) {
     settings,
     'LETTERHEAD_CHANNEL_SLUG'
   );
-  console.log('slug:', letterheadChannelSlug);
-  // console.log(settings);
+
   const subscribeApiUrl =
     letterheadApiUrl + 'channels/' + letterheadChannelSlug + '/subscribers';
 
-  console.log('subscribe:', subscribeApiUrl);
   // values from https://github.com/news-catalyst/next-tinynewsdemo/issues/718
   const channelSubscriberStatusValues = {
     'Not Subscribed': 0,
