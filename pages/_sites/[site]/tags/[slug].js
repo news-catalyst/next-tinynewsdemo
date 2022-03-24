@@ -19,6 +19,7 @@ export default function TagPage({
   sections,
   siteMetadata,
   expandedAds,
+  monkeypodLink,
 }) {
   const router = useRouter();
   const isAmp = false;
@@ -35,7 +36,11 @@ export default function TagPage({
   siteMetadata['homepageTitle'] = tagTitle + ' | ' + siteMetadata['shortName'];
 
   return (
-    <Layout meta={siteMetadata} sections={sections}>
+    <Layout
+      meta={siteMetadata}
+      sections={sections}
+      monkeypodLink={monkeypodLink}
+    >
       <ArticleStream
         articles={articles}
         sections={sections}
@@ -82,6 +87,7 @@ export async function getStaticProps({ params }) {
     throw settingsResult.errors;
   }
   const settings = settingsResult.data.settings;
+  const monkeypodLink = findSetting(settings, 'NEXT_PUBLIC_MONKEYPOD_URL');
 
   const { errors, data } = await hasuraTagPage({
     url: apiUrl,
@@ -140,6 +146,7 @@ export async function getStaticProps({ params }) {
       sections,
       siteMetadata,
       ads,
+      monkeypodLink,
     },
   };
 }

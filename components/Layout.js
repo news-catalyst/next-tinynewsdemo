@@ -22,6 +22,7 @@ export default function Layout({
   article,
   page,
   sections,
+  monkeypodLink,
   renderNav = true,
   renderFooter = true,
 }) {
@@ -291,7 +292,12 @@ export default function Layout({
       </Head>
       <ThemeWrapper meta={meta}>
         {renderNav && (
-          <GlobalNav metadata={meta} sections={sections} isAmp={isAmp} />
+          <GlobalNav
+            metadata={meta}
+            sections={sections}
+            isAmp={isAmp}
+            monkeypodLink={monkeypodLink}
+          />
         )}
         <Main>
           {isAmp && (
