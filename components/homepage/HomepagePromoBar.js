@@ -56,7 +56,7 @@ const DonateBlockCTA = styled.a(({ meta, tinycms }) => ({
       : Colors[meta.color || 'colorone'].CTABackground,
 }));
 
-export default function HomepagePromoBar({ metadata, tinycms }) {
+export default function HomepagePromoBar({ metadata, tinycms, site }) {
   // console.log('homepage promo bar tinycms:', tinycms);
   return (
     <SectionLayout meta={metadata}>

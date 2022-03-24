@@ -18,6 +18,7 @@ export default function ArticleStream({
   title,
   metadata,
   ads,
+  site,
 }) {
   const AD_PLACEMENT_INDEX = 3;
 
@@ -99,7 +100,7 @@ export default function ArticleStream({
           <BlockList>{articleStream}</BlockList>
         </Block>
         <PromotionContainer>
-          <PromotionBlock metadata={metadata} prefer="newsletter" />
+          <PromotionBlock metadata={metadata} site={site} prefer="newsletter" />
         </PromotionContainer>
       </SectionContainer>
     </SectionLayout>
