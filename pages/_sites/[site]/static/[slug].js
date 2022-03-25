@@ -7,6 +7,7 @@ import {
 import StaticPage from '../../../../components/StaticPage';
 
 export default function Static({ page, sections, siteMetadata, site }) {
+  console.log('<Static> site:', site);
   const router = useRouter();
   const isAmp = false;
 

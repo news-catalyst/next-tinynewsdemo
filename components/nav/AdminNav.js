@@ -30,7 +30,7 @@ export default function NewAdminNav(props) {
     ) {
       setCurrentLayoutName(props.hpData.homepage_layout_schema.name);
     } else if (props.homePageEditor) {
-      console.log('is homepage editor AND missing hp data/schema', props);
+      console.error('is homepage editor AND missing hp data/schema', props);
     }
   }, []);
 
