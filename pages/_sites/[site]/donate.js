@@ -28,6 +28,7 @@ export default function Donate({
   sections,
   siteMetadata,
   monkeypodLink,
+  site,
 }) {
   const isAmp = false;
   const router = useRouter();
@@ -76,6 +77,7 @@ export default function Donate({
       page={page}
       sections={sections}
       monkeypodLink={monkeypodLink}
+      site={site}
     >
       <SectionContainer>
         <article className="container">
@@ -175,6 +177,7 @@ export async function getStaticProps({ params }) {
       sections,
       siteMetadata,
       monkeypodLink,
+      site,
     },
     revalidate: 1,
   };
