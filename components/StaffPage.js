@@ -15,6 +15,7 @@ export default function StaffPage({
   sections,
   siteMetadata,
   monkeypodLink,
+  site,
   isAmp,
 }) {
   if (!authors) {
@@ -28,6 +29,7 @@ export default function StaffPage({
       meta={siteMetadata}
       sections={sections}
       monkeypodLink={monkeypodLink}
+      site={site}
     >
       <article className="container">
         <SectionContainer>

@@ -47,7 +47,7 @@ function generateSiteMap(data) {
         const publicationDate =
           article.article_translations[0].first_published_at;
 
-        console.log(lastmod);
+        // console.log(lastmod);
 
         return `<url>
         <loc>${siteURL}/articles/${category}/${slug}</loc>
@@ -129,9 +129,9 @@ export async function getServerSideProps(context) {
 
   const siteURL =
     response.data.site_metadatas[0].site_metadata_translations[0].data.siteUrl;
-  console.log(
-    response.data.site_metadatas[0].site_metadata_translations[0].data.siteUrl
-  );
+  // console.log(
+  //   response.data.site_metadatas[0].site_metadata_translations[0].data.siteUrl
+  // );
 
   // We generate the XML sitemap with the posts data
   const sitemap = generateSiteMap(response.data);

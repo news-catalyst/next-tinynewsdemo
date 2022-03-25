@@ -127,7 +127,6 @@ module.exports = (on, config) => {
       if (errors) {
         console.error('errors:', errors);
       }
-      console.log('data:', data);
       return data;
     },
 
