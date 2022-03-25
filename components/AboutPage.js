@@ -21,6 +21,7 @@ export default function AboutPage({
   sections,
   siteMetadata,
   monkeypodLink,
+  site,
   isAmp,
 }) {
   const locale = 'en-US';
@@ -64,6 +65,7 @@ export default function AboutPage({
       page={page}
       sections={sections}
       monkeypodLink={monkeypodLink}
+      site={site}
     >
       <article className="container">
         <SectionContainer>

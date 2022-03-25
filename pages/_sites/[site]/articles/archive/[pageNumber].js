@@ -31,6 +31,7 @@ export default function ArticlesArchivePage({
   siteMetadata,
   expandedAds,
   monkeypodLink,
+  site,
 }) {
   const [pageNumbers, setPageNumbers] = useState(range(totalPageCount, 1));
 
@@ -76,6 +77,7 @@ export default function ArticlesArchivePage({
       meta={siteMetadata}
       sections={sections}
       monkeypodLink={monkeypodLink}
+      site={site}
     >
       <ArticleStream
         sections={sections}
@@ -207,6 +209,7 @@ export async function getStaticProps(context) {
       siteMetadata,
       expandedAds,
       monkeypodLink,
+      site,
     },
   };
 }

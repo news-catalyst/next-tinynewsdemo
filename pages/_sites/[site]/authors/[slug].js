@@ -23,6 +23,7 @@ export default function AuthorPage({
   siteMetadata,
   expandedAds,
   monkeypodLink,
+  site,
 }) {
   const router = useRouter();
   const isAmp = false;
@@ -70,6 +71,7 @@ export default function AuthorPage({
       meta={siteMetadata}
       sections={sections}
       monkeypodLink={monkeypodLink}
+      site={site}
     >
       <ProfileHeaderDiv>
         {authorPhoto && <ProfileImage src={authorPhoto}></ProfileImage>}
@@ -201,6 +203,7 @@ export async function getStaticProps({ params }) {
       siteMetadata,
       expandedAds,
       monkeypodLink,
+      site,
     },
   };
 }

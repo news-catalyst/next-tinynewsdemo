@@ -78,6 +78,7 @@ export async function getStaticProps({ params }) {
       sections,
       siteMetadata,
       monkeypodLink,
+      site,
     },
     revalidate: 1,
   };

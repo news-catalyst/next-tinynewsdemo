@@ -49,6 +49,7 @@ export default function Homepage({
         sections={sections}
         locale={locale}
         monkeypodLink={monkeypodLink}
+        site={site}
       >
         {!selectedLayout && <Placeholder />}
         {selectedLayout.name === 'Big Featured Story' && (
