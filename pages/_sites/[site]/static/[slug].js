@@ -6,7 +6,7 @@ import {
 } from '../../../../lib/pages.js';
 import StaticPage from '../../../../components/StaticPage';
 
-export default function Static({ page, sections, siteMetadata }) {
+export default function Static({ page, sections, siteMetadata, site }) {
   const router = useRouter();
   const isAmp = false;
 
@@ -25,6 +25,7 @@ export default function Static({ page, sections, siteMetadata }) {
         page={page}
         sections={sections}
         siteMetadata={siteMetadata}
+        site={site}
       />
     </>
   );
@@ -90,6 +91,7 @@ export async function getStaticProps({ params }) {
       page,
       sections,
       siteMetadata,
+      site,
     },
     revalidate: 1,
   };
