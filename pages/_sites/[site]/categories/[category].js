@@ -57,6 +57,7 @@ export default function CategoryPage(props) {
         title={props.title}
         metadata={props.siteMetadata}
         ads={props.expandedAds}
+        site={props.site}
       />
     </Layout>
   );
