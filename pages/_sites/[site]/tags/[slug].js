@@ -20,6 +20,7 @@ export default function TagPage({
   siteMetadata,
   expandedAds,
   monkeypodLink,
+  site,
 }) {
   const router = useRouter();
   const isAmp = false;
@@ -40,6 +41,7 @@ export default function TagPage({
       meta={siteMetadata}
       sections={sections}
       monkeypodLink={monkeypodLink}
+      site={site}
     >
       <ArticleStream
         articles={articles}
@@ -147,6 +149,7 @@ export async function getStaticProps({ params }) {
       siteMetadata,
       ads,
       monkeypodLink,
+      site,
     },
   };
 }

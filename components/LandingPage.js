@@ -50,6 +50,7 @@ export default function LandingPage({
       sections={sections}
       renderNav={false}
       locale={locale}
+      site={site}
     >
       <Container>
         {logo ? LogoComponent : <Title>{title}</Title>}

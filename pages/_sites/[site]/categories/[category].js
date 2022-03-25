@@ -47,6 +47,7 @@ export default function CategoryPage(props) {
       sections={props.sections}
       renderFooter={props.renderFooter}
       monkeypodLink={props.monkeypodLink}
+      site={props.site}
     >
       <ArticleStream
         articles={props.articles}
@@ -167,6 +168,7 @@ export async function getStaticProps({ params }) {
       expandedAds,
       renderFooter,
       monkeypodLink,
+      site,
     },
   };
 }
