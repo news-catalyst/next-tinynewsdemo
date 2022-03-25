@@ -50,6 +50,7 @@ export default function NewsletterEditionPage(props) {
       meta={props.siteMetadata}
       sections={props.sections}
       renderFooter={props.renderFooter}
+      site={props.site}
     >
       <SectionContainer>
         <ArticleTitle meta={props.siteMetadata} tw="text-center">
@@ -161,6 +162,7 @@ export async function getStaticProps({ params }) {
       expandedAds,
       renderFooter,
       settings,
+      site,
     },
   };
 }

@@ -83,6 +83,7 @@ export default function ThankYou({
       page={page}
       sections={sections}
       monkeypodLink={monkeypodLink}
+      site={site}
     >
       <SectionContainer>
         <ArticleTitle meta={siteMetadata} tw="text-center">

@@ -58,6 +58,7 @@ export default function Article({
       sections={sections}
       renderFooter={renderFooter}
       monkeypodLink={monkeypodLink}
+      site={site}
     >
       <div className="post">
         <ArticleHeader
