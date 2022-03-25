@@ -39,7 +39,6 @@ export async function getStaticPaths() {
 export async function getStaticProps({ params }) {
   const apiUrl = process.env.HASURA_API_URL;
   const site = params.site;
-  const locale = 'en-US';
 
   const settingsResult = await getOrgSettings({
     url: apiUrl,
@@ -70,8 +69,6 @@ export async function getStaticProps({ params }) {
     // throw errors;
   } else {
     if (!data.page_slug_versions || !data.page_slug_versions[0]) {
-      console.error('About: returning 404, !data.page_slug_versions', data);
-
       return {
         notFound: true,
       };
@@ -92,6 +89,7 @@ export async function getStaticProps({ params }) {
       sections,
       siteMetadata,
       monkeypodLink,
+      site,
     },
     revalidate: 1,
   };

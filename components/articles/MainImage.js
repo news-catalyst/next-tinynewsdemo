@@ -17,8 +17,6 @@ export default function MainImage({ articleContent, isAmp, updatedAt }) {
   }
 
   let constrainedImageWidth = 1080;
-
-  console.log(updatedAt);
   // if we can trust that the image width is correct, then handle smaller images
   if (Date.parse(updatedAt) > IMAGE_DIMENSIONS_DATE && mainImage.width < 1080) {
     constrainedImageWidth = mainImage.width;

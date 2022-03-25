@@ -21,6 +21,7 @@ export default function AboutPage({
   sections,
   siteMetadata,
   monkeypodLink,
+  site,
   isAmp,
 }) {
   const locale = 'en-US';
