@@ -128,11 +128,11 @@ function hasuraInsertDonationClick(params) {
   });
 }
 
-const INSERT_ORGANIZATION_MUTATION = `mutation FrontendInsertOrganization($slug: String = "", $name: String = "") {
-  insert_organizations_one(object: {name: $name, slug: $slug}, on_conflict: {constraint: organizations_slug_key, update_columns: [name,slug]}) {
+const INSERT_ORGANIZATION_MUTATION = `mutation FrontendInsertOrganization($subdomain: String, $name: String) {
+  insert_organizations_one(object: {name: $name, subdomain: $subdomain}, on_conflict: {constraint: organizations_subdomain_key, update_columns: [name, subdomain]}) {
     id
     name
-    slug
+    subdomain
   }
 }`;
 
@@ -144,7 +144,7 @@ function hasuraInsertOrganization(params) {
     name: 'FrontendInsertOrganization',
     variables: {
       name: params['name'],
-      slug: params['slug'],
+      subdomain: params['subdomain'],
     },
   });
 }
@@ -221,89 +221,144 @@ function hasuraUpsertMetadata(params) {
   });
 }
 
-const HASURA_REMOVE_ORGANIZATION = `mutation FrontendRemoveOrganization($slug: String!) {
-  delete_category_translations(where: {category: {organization: {slug: {_eq: $slug}}}}) {
+const HASURA_REMOVE_ORGANIZATION = `mutation FrontendRemoveOrganization($subdomain: String!) {
+  delete_category_translations(where: {category: {organization: {subdomain: {_eq: $subdomain}}}}) {
     affected_rows
   }
-  delete_author_articles(where: {author: {organization: {slug: {_eq: $slug}}}}) {
+  delete_author_articles(where: {author: {organization: {subdomain: {_eq: $subdomain}}}}) {
     affected_rows
   }
-  delete_page_google_documents(where: {page: {organization: {slug: {_eq: $slug}}}}) {
+  delete_page_google_documents(where: {page: {organization: {subdomain: {_eq: $subdomain}}}}) {
     affected_rows
   }
-  delete_page_slug_versions(where: {page: {organization: {slug: {_eq: $slug}}}}) {
+  delete_page_slug_versions(where: {page: {organization: {subdomain: {_eq: $subdomain}}}}) {
     affected_rows
   }
-  delete_page_translations(where: {page: {organization: {slug: {_eq: $slug}}}}) {
+  delete_page_translations(where: {page: {organization: {subdomain: {_eq: $subdomain}}}}) {
     affected_rows
   }
-  delete_published_article_translations(where: {article: {organization: {slug: {_eq: $slug}}}}) {
+  delete_published_article_translations(where: {article: {organization: {subdomain: {_eq: $subdomain}}}}) {
     affected_rows
   }
-  delete_article_slug_versions(where: {article: {organization: {slug: {_eq: $slug}}}}) {
+  delete_newsletter_editions(where: {organization: {subdomain: {_eq: $subdomain}}}) {
     affected_rows
   }
-  delete_homepage_layout_datas(where: {organization: {slug: {_eq: $slug}}}) {
+  delete_article_slug_versions(where: {article: {organization: {subdomain: {_eq: $subdomain}}}}) {
     affected_rows
   }
-  delete_author_translations(where: {author: {organization: {slug: {_eq: $slug}}}}) {
+  delete_homepage_layout_datas(where: {organization: {subdomain: {_eq: $subdomain}}}) {
     affected_rows
   }
-  delete_homepage_layout_schemas(where: {organization: {slug: {_eq: $slug}}}) {
+  delete_author_translations(where: {author: {organization: {subdomain: {_eq: $subdomain}}}}) {
     affected_rows
   }
-  delete_tag_translations(where: {tag: {organization: {slug: {_eq: $slug}}}}) {
+  delete_homepage_layout_schemas(where: {organization: {subdomain: {_eq: $subdomain}}}) {
     affected_rows
   }
-  delete_tag_articles(where: {tag: {organization: {slug: {_eq: $slug}}}}) {
+  delete_tag_translations(where: {tag: {organization: {subdomain: {_eq: $subdomain}}}}) {
     affected_rows
   }
-  delete_tags(where: {organization: {slug: {_eq: $slug}}}) {
+  delete_tag_articles(where: {tag: {organization: {subdomain: {_eq: $subdomain}}}}) {
     affected_rows
   }
-  delete_pages(where: {organization: {slug: {_eq: $slug}}}) {
+  delete_tags(where: {organization: {subdomain: {_eq: $subdomain}}}) {
     affected_rows
   }
-  delete_article_translations(where: {article: {organization: {slug: {_eq: $slug}}}}) {
+  delete_pages(where: {organization: {subdomain: {_eq: $subdomain}}}) {
     affected_rows
   }
-  delete_article_google_documents(where: {google_document: {organization: {slug: {_eq: $slug}}}}) {
+  delete_ga_article_sessions(where: {organization: {subdomain: {_eq: $subdomain}}}) {
     affected_rows
   }
-  delete_articles(where: {organization: {slug: {_eq: $slug}}}) {
+  delete_ga_custom_dimensions(where: {organization: {subdomain: {_eq: $subdomain}}}) {
     affected_rows
   }
-  delete_categories(where: {organization: {slug: {_eq: $slug}}}) {
+  delete_ga_data_imports(where: {organization: {subdomain: {_eq: $subdomain}}}) {
     affected_rows
   }
-  delete_authors(where: {organization: {slug: {_eq: $slug}}}) {
+  delete_ga_donation_clicks(where: {organization: {subdomain: {_eq: $subdomain}}}) {
     affected_rows
   }
-  delete_google_documents(where: {organization: {slug: {_eq: $slug}}}) {
+  delete_ga_donor_reading_frequency(where: {organization: {subdomain: {_eq: $subdomain}}}) {
     affected_rows
   }
-  delete_organization_locales(where: {organization: {slug: {_eq: $slug}}}) {
+  delete_ga_geo_sessions(where: {organization: {subdomain: {_eq: $subdomain}}}) {
     affected_rows
   }
-  delete_site_metadata_translations(where: {site_metadata: {organization: {slug: {_eq: $slug}}}}) {
+  delete_ga_newsletter_impressions(where: {organization: {subdomain: {_eq: $subdomain}}}) {
     affected_rows
   }
-  delete_site_metadatas(where: {organization: {slug: {_eq: $slug}}}) {
+  delete_ga_page_views(where: {organization: {subdomain: {_eq: $subdomain}}}) {
     affected_rows
   }
-  delete_organizations(where: {slug: {_eq: $slug}}) {
+  delete_ga_reading_depth(where: {organization: {subdomain: {_eq: $subdomain}}}) {
+    affected_rows
+  }
+  delete_ga_reading_frequency(where: {organization: {subdomain: {_eq: $subdomain}}}) {
+    affected_rows
+  }
+  delete_ga_referral_sessions(where: {organization: {subdomain: {_eq: $subdomain}}}) {
+    affected_rows
+  }
+  delete_ga_session_duration(where: {organization: {subdomain: {_eq: $subdomain}}}) {
+    affected_rows
+  }
+  delete_ga_sessions(where: {organization: {subdomain: {_eq: $subdomain}}}) {
+    affected_rows
+  }
+  delete_article_source(where: {article: {organization: {subdomain: {_eq: $subdomain}}}}) {
+    affected_rows
+  }
+  delete_sources(where: {organization: {subdomain: {_eq: $subdomain}}}) {
+    affected_rows
+  }
+  delete_settings(where: {organization: {subdomain: {_eq: $subdomain}}}) {
+    affected_rows
+  }
+  delete_article_translations(where: {article: {organization: {subdomain: {_eq: $subdomain}}}}) {
+    affected_rows
+  }
+  delete_article_google_documents(where: {google_document: {organization: {subdomain: {_eq: $subdomain}}}}) {
+    affected_rows
+  }
+  delete_articles(where: {organization: {subdomain: {_eq: $subdomain}}}) {
+    affected_rows
+  }
+  delete_categories(where: {organization: {subdomain: {_eq: $subdomain}}}) {
+    affected_rows
+  }
+  delete_authors(where: {organization: {subdomain: {_eq: $subdomain}}}) {
+    affected_rows
+  }
+  delete_google_documents(where: {organization: {subdomain: {_eq: $subdomain}}}) {
+    affected_rows
+  }
+  delete_organization_locales(where: {organization: {subdomain: {_eq: $subdomain}}}) {
+    affected_rows
+  }
+  delete_site_metadata_translations(where: {site_metadata: {organization: {subdomain: {_eq: $subdomain}}}}) {
+    affected_rows
+  }
+  delete_site_metadatas(where: {organization: {subdomain: {_eq: $subdomain}}}) {
+    affected_rows
+  }
+  delete_donations_metadata(where: {organization: { subdomain: { _eq: $subdomain}}}) {
+    affected_rows
+  }
+  delete_organizations(where: {subdomain: {_eq: $subdomain}}) {
     affected_rows
   }
 }`;
 
 async function hasuraRemoveOrganization(params) {
+  console.log(params);
   return fetchGraphQL({
     url: params['url'],
     adminSecret: params['adminSecret'],
     query: HASURA_REMOVE_ORGANIZATION,
     name: 'FrontendRemoveOrganization',
     variables: {
-      slug: params['slug'],
+      subdomain: params['subdomain'],
     },
   });
 }
@@ -1102,7 +1157,7 @@ async function seedData(params) {
   const deleteOrgResult = await hasuraRemoveOrganization({
     url: params['url'],
     adminSecret: params['adminSecret'],
-    slug: params['org']['slug'],
+    subdomain: params['org']['subdomain'],
   });
   if (deleteOrgResult.errors) {
     console.error(
@@ -1118,7 +1173,7 @@ async function seedData(params) {
     url: params['url'],
     adminSecret: params['adminSecret'],
     name: params['org']['name'],
-    slug: params['org']['slug'],
+    subdomain: params['org']['subdomain'],
   });
   if (orgResult.errors) {
     console.error(
@@ -1132,6 +1187,30 @@ async function seedData(params) {
 
   let organizationID = orgResult.data.insert_organizations_one.id;
   let name = params['org']['name'];
+
+  const settingsResult = await hasuraInsertSettings({
+    url: params['url'],
+    site: params['site'],
+    settings: [
+      {
+        name: 'API_TOKEN',
+        value: process.env.API_TOKEN,
+      },
+      {
+        name: 'NEXT_PUBLIC_SITE_URL',
+        value: 'http://next-tinynewsdemo.localhost:3000',
+      },
+    ],
+  });
+  if (settingsResult.errors) {
+    console.error(
+      params['adminSecret'],
+      'Error creating settings: ',
+      settingsResult.errors
+    );
+    return settingsResult;
+  }
+  console.log('created settings', settingsResult);
 
   const localeResult = await hasuraInsertLocale({
     url: params['url'],
@@ -1175,7 +1254,7 @@ async function seedData(params) {
   let siteMetadata = {
     color: 'colorone',
     theme: 'styleone',
-    siteUrl: 'http://localhost:3000',
+    siteUrl: 'http://next-tinynewsdemo.localhost:3000',
     aboutCTA: 'Learn more',
     aboutDek: `About the ${name} TK`,
     aboutHed: 'Who We Are',
