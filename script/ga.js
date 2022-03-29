@@ -610,44 +610,9 @@ async function importDataFromGA(params) {
 
   try {
     storeData(params, rows);
-
-    shared
-      .hasuraInsertDataImport({
-        site: site,
-        url: apiUrl,
-        end_date: endDate,
-        start_date: startDate,
-        table_name: params['data'],
-        success: true,
-        row_count: rows.length,
-      })
-      .then((result) => {
-        if (result.errors) {
-          console.error(
-            'error storing data import status:',
-            JSON.stringify(result.errors)
-          );
-          core.setFailed(`Action failed with error ${result.errors}`);
-        } else {
-          console.log('stored data import status:', JSON.stringify(result));
-        }
-      });
   } catch (e) {
     console.error('error importing data into hasura:', e);
-    shared
-      .hasuraInsertDataImport({
-        url: apiUrl,
-        site: site,
-        end_date: endDate,
-        start_date: startDate,
-        table_name: params['data'],
-        success: false,
-        row_count: 0,
-        notes: JSON.stringify(e),
-      })
-      .then((result) => {
-        console.log('stored data import status:', result);
-      });
+    core.setFailed(`Action failed with errors ${JSON.stringify(e)}`);
     throw e;
   }
 }
