@@ -118,6 +118,6 @@ jobs:
           wait-on: 'http://next-tinynewsdemo.localhost:3000'
           wait-on-timeout: 120
           browser: firefox
-          record: false
+          record: true
           parallel: true
           group: 'UI - Firefox'
