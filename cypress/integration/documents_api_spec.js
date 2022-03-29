@@ -1,6 +1,7 @@
 let articleID;
 let categoryID;
 let pageID;
+const site = 'next-tinynewsdemo';
 const faker = require('faker');
 
 describe('document API', () => {
@@ -11,8 +12,10 @@ describe('document API', () => {
 
   it('finds an article', () => {
     cy.wait(5000);
+    const cypressApiToken = Cypress.env('apiToken');
+
     cy.request({
-      url: `/api/sidebar/documents/1LSyMzR1KxyKoml6q56DYQaxEV8Qm4EZo2y_xEFIkvGw?token=${Cypress.env(
+      url: `/api/sidebar/documents/1LSyMzR1KxyKoml6q56DYQaxEV8Qm4EZo2y_xEFIkvGw?site=${site}&token=${Cypress.env(
         'apiToken'
       )}`,
     }).should((response) => {
@@ -54,7 +57,7 @@ describe('document API', () => {
   it('finds a page', () => {
     cy.wait(5000);
     cy.request({
-      url: `/api/sidebar/documents/1cS3u5bdBP7sg29t-nBW8UgvUHDNpiZRFccZA53A04sU?token=${Cypress.env(
+      url: `/api/sidebar/documents/1cS3u5bdBP7sg29t-nBW8UgvUHDNpiZRFccZA53A04sU?site=${site}&token=${Cypress.env(
         'apiToken'
       )}`,
     }).should((response) => {
@@ -87,7 +90,7 @@ describe('document API', () => {
   it('responds with sitewide data for an unknown (new) document', () => {
     cy.wait(5000);
     cy.request({
-      url: `/api/sidebar/documents/123456abcnotfound?token=${Cypress.env(
+      url: `/api/sidebar/documents/123456abcnotfound?site=${site}&token=${Cypress.env(
         'apiToken'
       )}`,
     }).should((response) => {
@@ -126,7 +129,7 @@ describe('document API', () => {
     };
     cy.request(
       'POST',
-      `/api/sidebar/documents/1LSyMzR1KxyKoml6q56DYQaxEV8Qm4EZo2y_xEFIkvGw/preview?documentType=article&token=${Cypress.env(
+      `/api/sidebar/documents/1LSyMzR1KxyKoml6q56DYQaxEV8Qm4EZo2y_xEFIkvGw/preview?site=${site}&documentType=article&token=${Cypress.env(
         'apiToken'
       )}`,
       {
@@ -183,7 +186,7 @@ describe('document API', () => {
     };
     cy.request(
       'POST',
-      `/api/sidebar/documents/1LSyMzR1KxyKoml6q56DYQaxEV8Qm4EZo2y_xEFIkvGw/publish?documentType=article&token=${Cypress.env(
+      `/api/sidebar/documents/1LSyMzR1KxyKoml6q56DYQaxEV8Qm4EZo2y_xEFIkvGw/publish?site=${site}&documentType=article&token=${Cypress.env(
         'apiToken'
       )}`,
       {
@@ -224,7 +227,7 @@ describe('document API', () => {
     cy.wait(2000);
 
     cy.request({
-      url: `/api/sidebar/documents/1LSyMzR1KxyKoml6q56DYQaxEV8Qm4EZo2y_xEFIkvGw/unpublish?documentType=article&token=${Cypress.env(
+      url: `/api/sidebar/documents/1LSyMzR1KxyKoml6q56DYQaxEV8Qm4EZo2y_xEFIkvGw/unpublish?site=${site}&documentType=article&token=${Cypress.env(
         'apiToken'
       )}`,
     }).then((response) => {
@@ -250,7 +253,7 @@ describe('document API', () => {
     };
     cy.request(
       'POST',
-      `/api/sidebar/documents/1cS3u5bdBP7sg29t-nBW8UgvUHDNpiZRFccZA53A04sU/preview?documentType=page&token=${Cypress.env(
+      `/api/sidebar/documents/1cS3u5bdBP7sg29t-nBW8UgvUHDNpiZRFccZA53A04sU/preview?site=${site}&documentType=page&token=${Cypress.env(
         'apiToken'
       )}`,
       {
@@ -305,7 +308,7 @@ describe('document API', () => {
     };
     cy.request(
       'POST',
-      `/api/sidebar/documents/1cS3u5bdBP7sg29t-nBW8UgvUHDNpiZRFccZA53A04sU/publish?documentType=page&token=${Cypress.env(
+      `/api/sidebar/documents/1cS3u5bdBP7sg29t-nBW8UgvUHDNpiZRFccZA53A04sU/publish?site=${site}&documentType=page&token=${Cypress.env(
         'apiToken'
       )}`,
       {
@@ -346,7 +349,7 @@ describe('document API', () => {
     cy.wait(5000);
 
     cy.request({
-      url: `/api/sidebar/documents/1cS3u5bdBP7sg29t-nBW8UgvUHDNpiZRFccZA53A04sU/unpublish?documentType=page&token=${Cypress.env(
+      url: `/api/sidebar/documents/1cS3u5bdBP7sg29t-nBW8UgvUHDNpiZRFccZA53A04sU/unpublish?site=${site}&documentType=page&token=${Cypress.env(
         'apiToken'
       )}`,
     }).then((response) => {
