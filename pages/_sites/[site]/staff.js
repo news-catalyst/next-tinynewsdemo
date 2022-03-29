@@ -65,9 +65,9 @@ export async function getStaticProps({ params }) {
   } else {
     sections = data.categories;
     authors = data.authors;
-    siteMetadata = data.site_metadatas[0].site_metadata_translations[0].data;
+    siteMetadata = data.site_metadatas[0].site_metadata_translations[0]?.data;
     for (var i = 0; i < sections.length; i++) {
-      sections[i].title = sections[i].category_translations[0].title;
+      sections[i].title = sections[i].category_translations[0]?.title;
     }
   }
 
