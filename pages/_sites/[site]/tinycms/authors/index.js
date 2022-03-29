@@ -71,7 +71,7 @@ export default function Authors({ apiUrl, site, authors, siteUrl, host }) {
   }, [action]);
 
   const listItems = authors.map((author) => {
-    let title = author.author_translations[0].title;
+    let title = author.author_translations[0]?.title;
     if (!title) {
       title = 'NEEDS TRANSLATION';
     }
