@@ -10,6 +10,7 @@ import {
   getOrgSettings,
 } from '../../../../lib/settings.js';
 import { cachedContents } from '../../../../lib/cached';
+import { avoidRateLimit } from '../../../../lib/utils';
 import { getArticleAds } from '../../../../lib/ads.js';
 import ArticleStream from '../../../../components/homepage/ArticleStream';
 
@@ -72,6 +73,8 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ params }) {
+  await avoidRateLimit();
+
   const apiUrl = process.env.HASURA_API_URL;
   const site = params.site;
 
