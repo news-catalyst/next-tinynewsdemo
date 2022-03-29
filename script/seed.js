@@ -6,15 +6,15 @@ const shared = require('./shared');
 
 const apiUrl = process.env.HASURA_API_URL;
 const adminSecret = process.env.HASURA_ADMIN_SECRET;
-const orgSlug = process.env.ORG_SLUG;
+const site = process.env.SITE;
 
 async function seed() {
   const { errors, data } = await shared.seedData({
     url: apiUrl,
-    orgSlug: orgSlug,
+    site: site,
     org: {
       name: faker.company.companyName(),
-      slug: orgSlug,
+      subdomain: site,
     },
     adminSecret: adminSecret,
   });
