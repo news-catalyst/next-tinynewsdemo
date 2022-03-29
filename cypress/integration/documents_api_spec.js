@@ -13,7 +13,7 @@ describe('document API', () => {
   it('finds an article', () => {
     cy.wait(5000);
     const cypressApiToken = Cypress.env('apiToken');
-    cy.log(`Cypress API token: ${cypressApiToken}`);
+
     cy.request({
       url: `/api/sidebar/documents/1LSyMzR1KxyKoml6q56DYQaxEV8Qm4EZo2y_xEFIkvGw?site=${site}&token=${Cypress.env(
         'apiToken'
