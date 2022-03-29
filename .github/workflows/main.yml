@@ -18,6 +18,8 @@ jobs:
       LOCALES: ${{ secrets.LOCALES }}
       NEXT_PUBLIC_SITE_URL: ${{ secrets.NEXT_PUBLIC_SITE_URL }}
       API_TOKEN: ${{ secrets.API_TOKEN }}
+      CYPRESS_API_TOKEN: ${{ secrets.API_TOKEN }}
+      SITE: next-tinynewsdemo
       HASURA_API_URL: ${{ secrets.HASURA_API_URL }}
       HASURA_ADMIN_SECRET: ${{ secrets.HASURA_ADMIN_SECRET }}
       ORG_SLUG: ${{ secrets.ORG_SLUG }}
@@ -74,6 +76,8 @@ jobs:
       LOCALES: ${{ secrets.LOCALES }}
       NEXT_PUBLIC_SITE_URL: ${{ secrets.NEXT_PUBLIC_SITE_URL }}
       API_TOKEN: ${{ secrets.API_TOKEN }}
+      CYPRESS_API_TOKEN: ${{ secrets.API_TOKEN }}
+      SITE: next-tinynewsdemo
       HASURA_API_URL: ${{ secrets.HASURA_API_URL }}
       HASURA_ADMIN_SECRET: ${{ secrets.HASURA_ADMIN_SECRET }}
       ORG_SLUG: ${{ secrets.ORG_SLUG }}
