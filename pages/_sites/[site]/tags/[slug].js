@@ -89,6 +89,7 @@ export async function getStaticProps({ params }) {
   });
 
   if (settingsResult.errors) {
+    console.error('settings error:', settingsResult.errors);
     throw settingsResult.errors;
   }
   const settings = settingsResult.data.settings;
@@ -102,7 +103,7 @@ export async function getStaticProps({ params }) {
   });
 
   if (errors || !data) {
-    console.error('errors', errors);
+    console.error('tag page errors', errors);
     return {
       notFound: true,
     };
@@ -121,12 +122,12 @@ export async function getStaticProps({ params }) {
 
     sections = data.categories;
     for (var i = 0; i < sections.length; i++) {
-      sections[i].title = sections[i].category_translations[0].title;
+      sections[i].title = sections[i].category_translations[0]?.title;
     }
 
     let metadatas = data.site_metadatas;
     try {
-      siteMetadata = metadatas[0].site_metadata_translations[0].data;
+      siteMetadata = metadatas[0]?.site_metadata_translations[0]?.data;
     } catch (err) {
       console.error('failed finding site metadata', metadatas);
     }
