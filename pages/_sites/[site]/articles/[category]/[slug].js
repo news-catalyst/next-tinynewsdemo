@@ -12,6 +12,7 @@ import {
 } from '../../../../../lib/settings.js';
 import { getArticleAds } from '../../../../../lib/ads.js';
 import { cachedContents } from '../../../../../lib/cached';
+import { avoidRateLimit } from '../../../../../lib/utils';
 import Article from '../../../../../components/Article.js';
 
 export default function ArticlePage(props) {
@@ -52,6 +53,8 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ params }) {
+  await avoidRateLimit();
+
   const apiUrl = process.env.HASURA_API_URL;
   const site = params.site;
 
