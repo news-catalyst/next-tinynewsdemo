@@ -42,8 +42,8 @@ export default function AuthorPage({
   if (author) {
     authorName = displayAuthorName(author.first_names, author.last_name);
     authorPhoto = author.photoUrl;
-    authorTitle = author.author_translations[0].title;
-    authorBio = author.author_translations[0].bio;
+    authorTitle = author.author_translations[0]?.title;
+    authorBio = author.author_translations[0]?.bio;
     authorTwitter = author.twitter;
 
     // set page title
