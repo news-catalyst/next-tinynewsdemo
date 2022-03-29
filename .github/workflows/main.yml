@@ -115,9 +115,9 @@ jobs:
         with:
           install: false
           start: npm run start
-          wait-on: 'http://localhost:3000'
+          wait-on: 'http://next-tinynewsdemo.localhost:3000'
           wait-on-timeout: 120
           browser: firefox
-          record: true
+          record: false
           parallel: true
           group: 'UI - Firefox'
