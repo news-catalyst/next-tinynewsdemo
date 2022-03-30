@@ -40,15 +40,28 @@ export default function EditSection({
   const [slug, setSlug] = useState('');
   const [currentSlug, setCurrentSlug] = useState(null);
   const [published, setPublished] = useState(false);
+  const [validArticleNodes, setValidArticleNodes] = useState([]);
 
   useEffect(() => {
     if (section) {
       setSectionId(section.id);
-      setArticleCount(section.articles_aggregate.aggregate.count);
       setTitle(section.category_translations[0].title);
       setSlug(section.slug);
       setCurrentSlug(section.slug);
       setPublished(section.published);
+
+      let filteredNodes = section.articles_aggregate.nodes.filter(
+        (node) =>
+          node.article_translations && node.article_translations.length > 0
+      );
+      setArticleCount(filteredNodes.length);
+      let sortedNodes = filteredNodes.sort((a, b) => {
+        return a.article_translations[0].headline
+          .toLowerCase()
+          .localeCompare(b.article_translations[0].headline.toLowerCase());
+      });
+
+      setValidArticleNodes(sortedNodes);
     }
   }, [section]);
 
@@ -67,7 +80,7 @@ export default function EditSection({
     if (currentSlug !== slug && articleCount > 0) {
       if (
         !window.confirm(
-          `You're going to change the URL for ${articleCount} articles in this category. Are you sure?`
+          `You're going to change the URL for ${articleCount} articles in this section. Are you sure?`
         )
       ) {
         setNotificationType('warning');
@@ -205,9 +218,9 @@ export default function EditSection({
 
       {articleCount > 0 && (
         <FormContainer>
-          <FormHeader title="Articles in this category" />
+          <FormHeader title="Articles in this section" />
           <ul>
-            {section.articles_aggregate.nodes.map((node) => (
+            {validArticleNodes.map((node) => (
               <li key={`li-category-article-${node.slug}`}>
                 <Link
                   href="/articles/[category]/[slug]"

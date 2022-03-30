@@ -2,9 +2,7 @@
 import Layout from '../../../components/Layout';
 import { hasuraGetLayout, generateAllDomainPaths } from '../../../lib/settings';
 
-export default function Custom404({ sections, siteMetadata }) {
-  const locale = 'en-US';
-
+export default function Custom404({ sections, siteMetadata, site }) {
   let title;
   if (siteMetadata && siteMetadata.title404) {
     title = siteMetadata.title404;
@@ -21,7 +19,7 @@ export default function Custom404({ sections, siteMetadata }) {
   }
 
   return (
-    <Layout meta={siteMetadata} sections={sections}>
+    <Layout meta={siteMetadata} sections={sections} site={site}>
       <div className="post">
         <article className="container">
           <section key="title" className="section post__header">
@@ -90,6 +88,7 @@ export async function getStaticProps({ params }) {
     props: {
       sections,
       siteMetadata,
+      site,
     },
   };
 }

@@ -21,6 +21,7 @@ export default async function Handler(req, res) {
     settings,
     'LETTERHEAD_CHANNEL_SLUG'
   );
+
   const subscribeApiUrl =
     letterheadApiUrl + 'channels/' + letterheadChannelSlug + '/subscribers';
 

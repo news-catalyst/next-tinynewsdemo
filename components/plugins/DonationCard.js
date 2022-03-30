@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import Colors from '../common/Colors';
 import Typography from '../common/Typography';
 import { determineTextColor } from '../../lib/utils';
+import { findSetting } from '../../lib/settings';
 import CurrencyInput from 'react-currency-input-field';
 
 const Card = tw.div`rounded overflow-hidden shadow-lg w-full border-gray-200 border my-8 md:my-0 relative`;
@@ -33,10 +34,16 @@ const DonateFooterLink = styled.a(
   })
 );
 
-export default function DonationCard({ option, metadata, tinycms }) {
+export default function DonationCard({
+  option,
+  metadata,
+  tinycms,
+  monkeypodLink,
+}) {
   const [textColor, setTextColor] = useState(null);
   const [backgroundColor, setBackgroundColor] = useState(null);
   const [customAmount, setCustomAmount] = useState(null);
+  const [mpUrl, setMpUrl] = useState();
 
   useEffect(() => {
     let bgc;
@@ -50,9 +57,11 @@ export default function DonationCard({ option, metadata, tinycms }) {
     }
     setBackgroundColor(bgc);
     setTextColor(tc);
+
+    setMpUrl(monkeypodLink);
   }, [metadata]);
 
-  let monkeyPodURL = `${process.env.NEXT_PUBLIC_MONKEYPOD_URL}?option_id=${option.monkeypodId}`;
+  let monkeyPodURL = `${mpUrl}?option_id=${option.monkeypodId}`;
 
   if (customAmount) {
     monkeyPodURL += `&amount=${customAmount}`;
