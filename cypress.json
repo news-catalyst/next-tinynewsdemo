@@ -1,6 +1,6 @@
 {
   "projectId": "begad4",
-  "baseUrl": "http://localhost:3000",
+  "baseUrl": "http://next-tinynewsdemo.localhost:3000",
   "video": false,
   "defaultCommandTimeout": 30000,
   "env": {

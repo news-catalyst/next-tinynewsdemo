@@ -20,7 +20,7 @@ const WideContainer = styled.div(() => ({
   maxWidth: '1280px',
 }));
 
-export default function Donate({ page, sections, siteMetadata }) {
+export default function Donate({ page, sections, siteMetadata, site }) {
   const isAmp = false;
   const router = useRouter();
 
@@ -43,7 +43,7 @@ export default function Donate({ page, sections, siteMetadata }) {
   );
 
   return (
-    <Layout meta={siteMetadata} page={page} sections={sections}>
+    <Layout meta={siteMetadata} page={page} sections={sections} site={site}>
       <SectionContainer>
         <article className="container">
           <ArticleTitle meta={siteMetadata} tw="text-center">
@@ -135,6 +135,7 @@ export async function getStaticProps(context) {
       page,
       sections,
       siteMetadata,
+      site,
     },
     revalidate: 1,
   };

@@ -96,6 +96,7 @@ export async function getStaticProps(context) {
         locale,
         siteMetadata,
         pages,
+        site,
       },
       revalidate: 1,
     };
@@ -154,6 +155,7 @@ export async function getStaticProps(context) {
   let settings = settingsResult.data.settings;
   let expandedAds = [];
   let letterheadSetting = booleanSetting(settings, 'LETTERHEAD_API_URL', false);
+  const monkeypodLink = findSetting(settings, 'NEXT_PUBLIC_MONKEYPOD_URL');
 
   if (letterheadSetting) {
     let letterheadParams = {
@@ -176,7 +178,8 @@ export async function getStaticProps(context) {
       locale,
       siteMetadata,
       expandedAds,
-      settings,
+      monkeypodLink,
+      site,
     },
     revalidate: 1,
   };

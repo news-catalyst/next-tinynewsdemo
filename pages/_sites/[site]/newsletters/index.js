@@ -19,6 +19,7 @@ export default function NewsletterIndexPage(props) {
       meta={props.siteMetadata}
       sections={props.sections}
       renderFooter={props.renderFooter}
+      site={props.site}
     >
       <ArticleStream
         sections={props.sections}
@@ -122,6 +123,7 @@ export async function getStaticProps({ params }) {
       sections,
       siteMetadata,
       expandedAds,
+      site,
     },
   };
 }

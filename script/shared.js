@@ -53,7 +53,7 @@ function hasuraInsertNewsletterEdition(params) {
   console.log(params);
   return fetchGraphQL({
     url: params['url'],
-    orgSlug: params['orgSlug'],
+    site: params['site'],
     query: INSERT_NEWSLETTER_EDITION,
     name: 'FrontendInsertNewsletterEdition',
     variables: {
@@ -86,7 +86,7 @@ const INSERT_DATA_IMPORT = `mutation FrontendInsertDataImport($notes: String, $e
 function hasuraInsertDataImport(params) {
   return fetchGraphQL({
     url: params['url'],
-    orgSlug: params['orgSlug'],
+    site: params['site'],
     query: INSERT_DATA_IMPORT,
     name: 'FrontendInsertDataImport',
     variables: {
@@ -116,7 +116,7 @@ const HASURA_INSERT_DONATION_CLICK_DATA = `mutation FrontendInsertDonationClick(
 function hasuraInsertDonationClick(params) {
   return fetchGraphQL({
     url: params['url'],
-    orgSlug: params['orgSlug'],
+    site: params['site'],
     query: HASURA_INSERT_DONATION_CLICK_DATA,
     name: 'FrontendInsertDonationClick',
     variables: {
@@ -128,11 +128,11 @@ function hasuraInsertDonationClick(params) {
   });
 }
 
-const INSERT_ORGANIZATION_MUTATION = `mutation FrontendInsertOrganization($slug: String = "", $name: String = "") {
-  insert_organizations_one(object: {name: $name, slug: $slug}, on_conflict: {constraint: organizations_slug_key, update_columns: [name,slug]}) {
+const INSERT_ORGANIZATION_MUTATION = `mutation FrontendInsertOrganization($subdomain: String, $name: String) {
+  insert_organizations_one(object: {name: $name, subdomain: $subdomain}, on_conflict: {constraint: organizations_subdomain_key, update_columns: [name, subdomain]}) {
     id
     name
-    slug
+    subdomain
   }
 }`;
 
@@ -144,7 +144,7 @@ function hasuraInsertOrganization(params) {
     name: 'FrontendInsertOrganization',
     variables: {
       name: params['name'],
-      slug: params['slug'],
+      subdomain: params['subdomain'],
     },
   });
 }
@@ -221,89 +221,144 @@ function hasuraUpsertMetadata(params) {
   });
 }
 
-const HASURA_REMOVE_ORGANIZATION = `mutation FrontendRemoveOrganization($slug: String!) {
-  delete_category_translations(where: {category: {organization: {slug: {_eq: $slug}}}}) {
+const HASURA_REMOVE_ORGANIZATION = `mutation FrontendRemoveOrganization($subdomain: String!) {
+  delete_category_translations(where: {category: {organization: {subdomain: {_eq: $subdomain}}}}) {
     affected_rows
   }
-  delete_author_articles(where: {author: {organization: {slug: {_eq: $slug}}}}) {
+  delete_author_articles(where: {author: {organization: {subdomain: {_eq: $subdomain}}}}) {
     affected_rows
   }
-  delete_page_google_documents(where: {page: {organization: {slug: {_eq: $slug}}}}) {
+  delete_page_google_documents(where: {page: {organization: {subdomain: {_eq: $subdomain}}}}) {
     affected_rows
   }
-  delete_page_slug_versions(where: {page: {organization: {slug: {_eq: $slug}}}}) {
+  delete_page_slug_versions(where: {page: {organization: {subdomain: {_eq: $subdomain}}}}) {
     affected_rows
   }
-  delete_page_translations(where: {page: {organization: {slug: {_eq: $slug}}}}) {
+  delete_page_translations(where: {page: {organization: {subdomain: {_eq: $subdomain}}}}) {
     affected_rows
   }
-  delete_published_article_translations(where: {article: {organization: {slug: {_eq: $slug}}}}) {
+  delete_published_article_translations(where: {article: {organization: {subdomain: {_eq: $subdomain}}}}) {
     affected_rows
   }
-  delete_article_slug_versions(where: {article: {organization: {slug: {_eq: $slug}}}}) {
+  delete_newsletter_editions(where: {organization: {subdomain: {_eq: $subdomain}}}) {
     affected_rows
   }
-  delete_homepage_layout_datas(where: {organization: {slug: {_eq: $slug}}}) {
+  delete_article_slug_versions(where: {article: {organization: {subdomain: {_eq: $subdomain}}}}) {
     affected_rows
   }
-  delete_author_translations(where: {author: {organization: {slug: {_eq: $slug}}}}) {
+  delete_homepage_layout_datas(where: {organization: {subdomain: {_eq: $subdomain}}}) {
     affected_rows
   }
-  delete_homepage_layout_schemas(where: {organization: {slug: {_eq: $slug}}}) {
+  delete_author_translations(where: {author: {organization: {subdomain: {_eq: $subdomain}}}}) {
     affected_rows
   }
-  delete_tag_translations(where: {tag: {organization: {slug: {_eq: $slug}}}}) {
+  delete_homepage_layout_schemas(where: {organization: {subdomain: {_eq: $subdomain}}}) {
     affected_rows
   }
-  delete_tag_articles(where: {tag: {organization: {slug: {_eq: $slug}}}}) {
+  delete_tag_translations(where: {tag: {organization: {subdomain: {_eq: $subdomain}}}}) {
     affected_rows
   }
-  delete_tags(where: {organization: {slug: {_eq: $slug}}}) {
+  delete_tag_articles(where: {tag: {organization: {subdomain: {_eq: $subdomain}}}}) {
     affected_rows
   }
-  delete_pages(where: {organization: {slug: {_eq: $slug}}}) {
+  delete_tags(where: {organization: {subdomain: {_eq: $subdomain}}}) {
     affected_rows
   }
-  delete_article_translations(where: {article: {organization: {slug: {_eq: $slug}}}}) {
+  delete_pages(where: {organization: {subdomain: {_eq: $subdomain}}}) {
     affected_rows
   }
-  delete_article_google_documents(where: {google_document: {organization: {slug: {_eq: $slug}}}}) {
+  delete_ga_article_sessions(where: {organization: {subdomain: {_eq: $subdomain}}}) {
     affected_rows
   }
-  delete_articles(where: {organization: {slug: {_eq: $slug}}}) {
+  delete_ga_custom_dimensions(where: {organization: {subdomain: {_eq: $subdomain}}}) {
     affected_rows
   }
-  delete_categories(where: {organization: {slug: {_eq: $slug}}}) {
+  delete_ga_data_imports(where: {organization: {subdomain: {_eq: $subdomain}}}) {
     affected_rows
   }
-  delete_authors(where: {organization: {slug: {_eq: $slug}}}) {
+  delete_ga_donation_clicks(where: {organization: {subdomain: {_eq: $subdomain}}}) {
     affected_rows
   }
-  delete_google_documents(where: {organization: {slug: {_eq: $slug}}}) {
+  delete_ga_donor_reading_frequency(where: {organization: {subdomain: {_eq: $subdomain}}}) {
     affected_rows
   }
-  delete_organization_locales(where: {organization: {slug: {_eq: $slug}}}) {
+  delete_ga_geo_sessions(where: {organization: {subdomain: {_eq: $subdomain}}}) {
     affected_rows
   }
-  delete_site_metadata_translations(where: {site_metadata: {organization: {slug: {_eq: $slug}}}}) {
+  delete_ga_newsletter_impressions(where: {organization: {subdomain: {_eq: $subdomain}}}) {
     affected_rows
   }
-  delete_site_metadatas(where: {organization: {slug: {_eq: $slug}}}) {
+  delete_ga_page_views(where: {organization: {subdomain: {_eq: $subdomain}}}) {
     affected_rows
   }
-  delete_organizations(where: {slug: {_eq: $slug}}) {
+  delete_ga_reading_depth(where: {organization: {subdomain: {_eq: $subdomain}}}) {
+    affected_rows
+  }
+  delete_ga_reading_frequency(where: {organization: {subdomain: {_eq: $subdomain}}}) {
+    affected_rows
+  }
+  delete_ga_referral_sessions(where: {organization: {subdomain: {_eq: $subdomain}}}) {
+    affected_rows
+  }
+  delete_ga_session_duration(where: {organization: {subdomain: {_eq: $subdomain}}}) {
+    affected_rows
+  }
+  delete_ga_sessions(where: {organization: {subdomain: {_eq: $subdomain}}}) {
+    affected_rows
+  }
+  delete_article_source(where: {article: {organization: {subdomain: {_eq: $subdomain}}}}) {
+    affected_rows
+  }
+  delete_sources(where: {organization: {subdomain: {_eq: $subdomain}}}) {
+    affected_rows
+  }
+  delete_settings(where: {organization: {subdomain: {_eq: $subdomain}}}) {
+    affected_rows
+  }
+  delete_article_translations(where: {article: {organization: {subdomain: {_eq: $subdomain}}}}) {
+    affected_rows
+  }
+  delete_article_google_documents(where: {google_document: {organization: {subdomain: {_eq: $subdomain}}}}) {
+    affected_rows
+  }
+  delete_articles(where: {organization: {subdomain: {_eq: $subdomain}}}) {
+    affected_rows
+  }
+  delete_categories(where: {organization: {subdomain: {_eq: $subdomain}}}) {
+    affected_rows
+  }
+  delete_authors(where: {organization: {subdomain: {_eq: $subdomain}}}) {
+    affected_rows
+  }
+  delete_google_documents(where: {organization: {subdomain: {_eq: $subdomain}}}) {
+    affected_rows
+  }
+  delete_organization_locales(where: {organization: {subdomain: {_eq: $subdomain}}}) {
+    affected_rows
+  }
+  delete_site_metadata_translations(where: {site_metadata: {organization: {subdomain: {_eq: $subdomain}}}}) {
+    affected_rows
+  }
+  delete_site_metadatas(where: {organization: {subdomain: {_eq: $subdomain}}}) {
+    affected_rows
+  }
+  delete_donations_metadata(where: {organization: { subdomain: { _eq: $subdomain}}}) {
+    affected_rows
+  }
+  delete_organizations(where: {subdomain: {_eq: $subdomain}}) {
     affected_rows
   }
 }`;
 
 async function hasuraRemoveOrganization(params) {
+  console.log(params);
   return fetchGraphQL({
     url: params['url'],
     adminSecret: params['adminSecret'],
     query: HASURA_REMOVE_ORGANIZATION,
     name: 'FrontendRemoveOrganization',
     variables: {
-      slug: params['slug'],
+      subdomain: params['subdomain'],
     },
   });
 }
@@ -317,7 +372,7 @@ const HASURA_CREATE_TAG = `mutation FrontendCreateTag($slug: String, $title: Str
 async function hasuraCreateOneTag(params) {
   return fetchGraphQL({
     url: params['url'],
-    orgSlug: params['orgSlug'],
+    site: params['site'],
     query: HASURA_CREATE_TAG,
     name: 'FrontendCreateTag',
     variables: {
@@ -386,7 +441,7 @@ const HASURA_LIST_TAGS = `query FrontendListTags {
 function hasuraListTags(params) {
   return fetchGraphQL({
     url: params['url'],
-    orgSlug: params['orgSlug'],
+    site: params['site'],
     query: HASURA_LIST_TAGS,
     name: 'FrontendListTags',
   });
@@ -405,7 +460,7 @@ const HASURA_LIST_SECTIONS = `query FrontendListSections {
 function hasuraListSections(params) {
   return fetchGraphQL({
     url: params['url'],
-    orgSlug: params['orgSlug'],
+    site: params['site'],
     query: HASURA_LIST_SECTIONS,
     name: 'FrontendListSections',
   });
@@ -437,7 +492,7 @@ const HASURA_LIST_ORG_LOCALES = `query FrontendListOrgLocales {
 function hasuraListLocales(params) {
   return fetchGraphQL({
     url: params['url'],
-    orgSlug: params['orgSlug'],
+    site: params['site'],
     query: HASURA_LIST_ORG_LOCALES,
     name: 'FrontendListOrgLocales',
   });
@@ -481,7 +536,7 @@ const HASURA_INSERT_PAGE_VIEW_DATA = `mutation FrontendInsertPageView($count: In
 function hasuraInsertPageView(params) {
   return fetchGraphQL({
     url: params['url'],
-    orgSlug: params['orgSlug'],
+    site: params['site'],
     query: HASURA_INSERT_PAGE_VIEW_DATA,
     name: 'FrontendInsertPageView',
     variables: {
@@ -509,7 +564,7 @@ const HASURA_INSERT_ARTICLE_SESSION_DATA = `mutation FrontendInsertArticleSessio
 function hasuraInsertArticleSession(params) {
   return fetchGraphQL({
     url: params['url'],
-    orgSlug: params['orgSlug'],
+    site: params['site'],
     query: HASURA_INSERT_ARTICLE_SESSION_DATA,
     name: 'FrontendInsertArticleSession',
     variables: {
@@ -537,7 +592,7 @@ const HASURA_INSERT_GEO_SESSION_DATA = `mutation FrontendInsertGeoSession($count
 function hasuraInsertGeoSession(params) {
   return fetchGraphQL({
     url: params['url'],
-    orgSlug: params['orgSlug'],
+    site: params['site'],
     query: HASURA_INSERT_GEO_SESSION_DATA,
     name: 'FrontendInsertGeoSession',
     variables: {
@@ -562,7 +617,7 @@ const HASURA_INSERT_SESSION_DATA = `mutation FrontendInsertSession($count: Int!,
 function hasuraInsertSession(params) {
   return fetchGraphQL({
     url: params['url'],
-    orgSlug: params['orgSlug'],
+    site: params['site'],
     query: HASURA_INSERT_SESSION_DATA,
     name: 'FrontendInsertSession',
     variables: {
@@ -586,7 +641,7 @@ const HASURA_INSERT_DONOR_READING_FREQUENCY = `mutation FrontendInsertDonorFrequ
 function hasuraInsertDonorReadingFrequency(params) {
   return fetchGraphQL({
     url: params['url'],
-    orgSlug: params['orgSlug'],
+    site: params['site'],
     query: HASURA_INSERT_DONOR_READING_FREQUENCY,
     name: 'FrontendInsertDonorFrequency',
     variables: {
@@ -611,7 +666,7 @@ const HASURA_INSERT_SESSION_DURATION_DATA = `mutation FrontendInsertSessionDurat
 function hasuraInsertSessionDuration(params) {
   return fetchGraphQL({
     url: params['url'],
-    orgSlug: params['orgSlug'],
+    site: params['site'],
     query: HASURA_INSERT_SESSION_DURATION_DATA,
     name: 'FrontendInsertSessionDuration',
     variables: {
@@ -637,7 +692,7 @@ const HASURA_INSERT_NEWSLETTER_IMPRESSION_DATA = `mutation FrontendInsertNewslet
 function hasuraInsertNewsletterImpression(params) {
   return fetchGraphQL({
     url: params['url'],
-    orgSlug: params['orgSlug'],
+    site: params['site'],
     query: HASURA_INSERT_NEWSLETTER_IMPRESSION_DATA,
     name: 'FrontendInsertNewsletterImpression',
     variables: {
@@ -665,7 +720,7 @@ const HASURA_INSERT_CUSTOM_DIMENSION_DATA = `mutation FrontendInsertCustomDimens
 function hasuraInsertCustomDimension(params) {
   return fetchGraphQL({
     url: params['url'],
-    orgSlug: params['orgSlug'],
+    site: params['site'],
     query: HASURA_INSERT_CUSTOM_DIMENSION_DATA,
     name: 'FrontendInsertCustomDimension',
     variables: {
@@ -692,7 +747,7 @@ const HASURA_INSERT_READING_FREQUENCY_DATA = `mutation FrontendInsertReadingFreq
 function hasuraInsertReadingFrequency(params) {
   return fetchGraphQL({
     url: params['url'],
-    orgSlug: params['orgSlug'],
+    site: params['site'],
     query: HASURA_INSERT_READING_FREQUENCY_DATA,
     name: 'FrontendInsertReadingFrequency',
     variables: {
@@ -716,7 +771,7 @@ const HASURA_INSERT_REFERRAL_SESSION_DATA = `mutation FrontendInsertReferralSess
 function hasuraInsertReferralSession(params) {
   return fetchGraphQL({
     url: params['url'],
-    orgSlug: params['orgSlug'],
+    site: params['site'],
     query: HASURA_INSERT_REFERRAL_SESSION_DATA,
     name: 'FrontendInsertReferralSession',
     variables: {
@@ -745,7 +800,7 @@ const HASURA_INSERT_READING_DEPTH_DATA = `mutation FrontendInsertReadingDepth($d
 function hasuraInsertReadingDepth(params) {
   return fetchGraphQL({
     url: params['url'],
-    orgSlug: params['orgSlug'],
+    site: params['site'],
     query: HASURA_INSERT_READING_DEPTH_DATA,
     name: 'FrontendInsertReadingDepth',
     variables: {
@@ -798,7 +853,7 @@ const HASURA_DELETE_ANALYTICS = `mutation FrontendDeleteAnalytics {
 function hasuraDeleteAnalytics(params) {
   return fetchGraphQL({
     url: params['url'],
-    orgSlug: params['orgSlug'],
+    site: params['site'],
     query: HASURA_DELETE_ANALYTICS,
     name: 'FrontendDeleteAnalytics',
   });
@@ -842,7 +897,7 @@ const HASURA_GET_ARTICLES_RSS = `query FrontendGetArticlesRSS($locale_code: Stri
 function hasuraGetArticlesRss(params) {
   return fetchGraphQL({
     url: params['url'],
-    orgSlug: params['orgSlug'],
+    site: params['site'],
     query: HASURA_GET_ARTICLES_RSS,
     name: 'FrontendGetArticlesRSS',
     variables: {
@@ -958,7 +1013,7 @@ const HASURA_INSERT_ONE_AUTHOR = `mutation FrontendInsertAuthor($bio: String = "
 function hasuraInsertOneAuthor(params) {
   return fetchGraphQL({
     url: params['url'],
-    orgSlug: params['orgSlug'],
+    site: params['site'],
     query: HASURA_INSERT_ONE_AUTHOR,
     name: 'FrontendInsertAuthor',
     variables: {
@@ -982,7 +1037,7 @@ const HASURA_INSERT_GOOGLE_DOC = `mutation FrontendInsertGoogleDoc($document_id:
 async function hasuraInsertGoogleDoc(params) {
   return fetchGraphQL({
     url: params['url'],
-    orgSlug: params['orgSlug'],
+    site: params['site'],
     query: HASURA_INSERT_GOOGLE_DOC,
     name: 'FrontendInsertGoogleDoc',
     variables: {
@@ -1035,7 +1090,7 @@ function hasuraGetSiteData(params) {
     query: HASURA_GET_SITE_DATA,
     name: 'FrontendGetSiteData',
     variables: {
-      'locale_code': 'en-US',
+      locale_code: 'en-US',
     },
   });
 }
@@ -1045,7 +1100,7 @@ async function hasuraInsertTestArticle(params) {
 
   return fetchGraphQL({
     url: params['url'],
-    orgSlug: params['orgSlug'],
+    site: params['site'],
     query: HASURA_INSERT_TEST_ARTICLE,
     name: 'FrontendInsertArticle',
     variables: {
@@ -1079,7 +1134,7 @@ async function hasuraInsertTestPage(params) {
 
   return fetchGraphQL({
     url: params['url'],
-    orgSlug: params['orgSlug'],
+    site: params['site'],
     query: HASURA_INSERT_TEST_PAGE,
     name: 'FrontendInsertPage',
     variables: {
@@ -1102,7 +1157,7 @@ async function seedData(params) {
   const deleteOrgResult = await hasuraRemoveOrganization({
     url: params['url'],
     adminSecret: params['adminSecret'],
-    slug: params['org']['slug'],
+    subdomain: params['org']['subdomain'],
   });
   if (deleteOrgResult.errors) {
     console.error(
@@ -1118,7 +1173,7 @@ async function seedData(params) {
     url: params['url'],
     adminSecret: params['adminSecret'],
     name: params['org']['name'],
-    slug: params['org']['slug'],
+    subdomain: params['org']['subdomain'],
   });
   if (orgResult.errors) {
     console.error(
@@ -1132,6 +1187,30 @@ async function seedData(params) {
 
   let organizationID = orgResult.data.insert_organizations_one.id;
   let name = params['org']['name'];
+
+  const settingsResult = await hasuraInsertSettings({
+    url: params['url'],
+    site: params['site'],
+    settings: [
+      {
+        name: 'API_TOKEN',
+        value: process.env.API_TOKEN,
+      },
+      {
+        name: 'NEXT_PUBLIC_SITE_URL',
+        value: 'http://next-tinynewsdemo.localhost:3000',
+      },
+    ],
+  });
+  if (settingsResult.errors) {
+    console.error(
+      params['adminSecret'],
+      'Error creating settings: ',
+      settingsResult.errors
+    );
+    return settingsResult;
+  }
+  console.log('created settings', settingsResult);
 
   const localeResult = await hasuraInsertLocale({
     url: params['url'],
@@ -1175,7 +1254,7 @@ async function seedData(params) {
   let siteMetadata = {
     color: 'colorone',
     theme: 'styleone',
-    siteUrl: 'http://localhost:3000',
+    siteUrl: 'http://next-tinynewsdemo.localhost:3000',
     aboutCTA: 'Learn more',
     aboutDek: `About the ${name} TK`,
     aboutHed: 'Who We Are',
@@ -1306,7 +1385,7 @@ async function seedData(params) {
   );
   let authorResult = await hasuraInsertOneAuthor({
     url: params['url'],
-    orgSlug: params['orgSlug'],
+    site: params['site'],
     first_names: faker.name.firstName(),
     last_name: faker.name.lastName(),
     title: faker.name.jobTitle(),
@@ -1328,7 +1407,7 @@ async function seedData(params) {
 
   let tagResult = await hasuraCreateOneTag({
     url: params['url'],
-    orgSlug: params['orgSlug'],
+    site: params['site'],
     slug: 'latest-news',
     title: 'Latest News',
     locale_code: 'en-US',
@@ -1342,7 +1421,7 @@ async function seedData(params) {
 
   let gdocResult = await hasuraInsertGoogleDoc({
     url: params['url'],
-    orgSlug: params['orgSlug'],
+    site: params['site'],
     document_id: '1LSyMzR1KxyKoml6q56DYQaxEV8Qm4EZo2y_xEFIkvGw',
     locale_code: 'en-US',
   });
@@ -1363,7 +1442,7 @@ async function seedData(params) {
   let pageGdocResult = await hasuraInsertGoogleDoc({
     document_id: '1cS3u5bdBP7sg29t-nBW8UgvUHDNpiZRFccZA53A04sU',
     url: params['url'],
-    orgSlug: params['orgSlug'],
+    site: params['site'],
     locale_code: 'en-US',
   });
   if (pageGdocResult.errors) {
@@ -1382,7 +1461,7 @@ async function seedData(params) {
 
   let articleResult = await hasuraInsertTestArticle({
     url: params['url'],
-    orgSlug: params['orgSlug'],
+    site: params['site'],
     google_document_id: articleGoogleDocID,
     locale_code: 'en-US',
     category_id: categoryID,
@@ -1406,7 +1485,7 @@ async function seedData(params) {
 
   let pageResult = await hasuraInsertTestPage({
     url: params['url'],
-    orgSlug: params['orgSlug'],
+    site: params['site'],
     google_document_id: pageGoogleDocID,
     locale_code: 'en-US',
     slug: 'test-about-page',
