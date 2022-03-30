@@ -1,5 +1,23 @@
 import { hasuraGetSiteData } from '../../../script/shared.js';
 
+// Function from https://stackoverflow.com/a/27979933
+function escapeXml(unsafe) {
+  return unsafe.replace(/[<>&'"]/g, function (c) {
+    switch (c) {
+      case '<':
+        return '&lt;';
+      case '>':
+        return '&gt;';
+      case '&':
+        return '&amp;';
+      case "'":
+        return '&apos;';
+      case '"':
+        return '&quot;';
+    }
+  });
+}
+
 function generateSiteMap(data) {
   const siteURL =
     data.site_metadatas[0].site_metadata_translations[0].data.siteUrl;
@@ -44,10 +62,11 @@ function generateSiteMap(data) {
         const slug = article.slug;
         const lastmod = article.article_translations[0].last_published_at;
         const headline = article.article_translations[0].headline;
+        const encodedHeadline = escapeXml(headline);
         const publicationDate =
           article.article_translations[0].first_published_at;
 
-        console.log(lastmod);
+        // console.log(lastmod);
 
         return `<url>
         <loc>${siteURL}/articles/${category}/${slug}</loc>
@@ -60,7 +79,7 @@ function generateSiteMap(data) {
             <news:language>en</news:language>
           </news:publication>
           <news:publication_date>${publicationDate}</news:publication_date>
-          <news:title>${headline}</news:title>
+          <news:title>${encodedHeadline}</news:title>
         </news:news>
       </url>`;
       })}
@@ -129,9 +148,9 @@ export async function getServerSideProps(context) {
 
   const siteURL =
     response.data.site_metadatas[0].site_metadata_translations[0].data.siteUrl;
-  console.log(
-    response.data.site_metadatas[0].site_metadata_translations[0].data.siteUrl
-  );
+  // console.log(
+  //   response.data.site_metadatas[0].site_metadata_translations[0].data.siteUrl
+  // );
 
   // We generate the XML sitemap with the posts data
   const sitemap = generateSiteMap(response.data);

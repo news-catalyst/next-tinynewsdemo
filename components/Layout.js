@@ -5,6 +5,7 @@ import CookieConsentWrapper from './nav/CookieConsentWrapper.js';
 import { useAmp } from 'next/amp';
 import AmpAnalytics from './amp/AmpAnalytics.js';
 import tw, { styled } from 'twin.macro';
+import { trackingIdMapping } from '../lib/utils';
 
 const Main = tw.main`pt-8 pb-24`;
 const ThemeWrapper = styled.div(({ meta }) => ({
@@ -22,6 +23,8 @@ export default function Layout({
   article,
   page,
   sections,
+  monkeypodLink,
+  site,
   renderNav = true,
   renderFooter = true,
 }) {
@@ -38,6 +41,8 @@ export default function Layout({
   }
 
   // console.log('Layout locale:', locale);
+
+  const siteUrl = meta['siteUrl'];
 
   const metaValues = {
     canonical: meta['canonicalUrl'] || meta['siteUrl'],
@@ -88,9 +93,7 @@ export default function Layout({
   }
 
   if (page && ['about', 'donate', 'thank-you'].includes(page.slug)) {
-    metaValues[
-      'canonical'
-    ] = `${process.env.NEXT_PUBLIC_SITE_URL}/${page.slug}`;
+    metaValues['canonical'] = `${siteUrl}/${page.slug}`;
   }
 
   let pageTitle = meta['homepageTitle'];
@@ -174,7 +177,8 @@ export default function Layout({
 
   const isAmp = useAmp();
 
-  const trackingId = process.env.NEXT_PUBLIC_GA_TRACKING_ID;
+  const mappingSiteTrackingID = trackingIdMapping();
+  const trackingId = mappingSiteTrackingID[site];
 
   // console.log('Layout: returning page', children);
   return (
@@ -291,7 +295,12 @@ export default function Layout({
       </Head>
       <ThemeWrapper meta={meta}>
         {renderNav && (
-          <GlobalNav metadata={meta} sections={sections} isAmp={isAmp} />
+          <GlobalNav
+            metadata={meta}
+            sections={sections}
+            isAmp={isAmp}
+            monkeypodLink={monkeypodLink}
+          />
         )}
         <Main>
           {isAmp && (

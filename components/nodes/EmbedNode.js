@@ -49,7 +49,11 @@ export default function EmbedNode({ node, amp }) {
       el = <Facebook node={node} amp={amp} />;
       break;
     case 'instagram.com':
-      el = <Instagram node={node} amp={amp} />;
+      if (url.pathname.match(/^\/reel/)) {
+        el = <Facebook node={node} amp={amp} />;
+      } else {
+        el = <Instagram node={node} amp={amp} />;
+      }
       break;
     case 'open.spotify.com':
       el = <Spotify node={node} amp={amp} />;

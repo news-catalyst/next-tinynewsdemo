@@ -30,6 +30,8 @@ export default function Homepage({
   locale,
   siteMetadata,
   expandedAds,
+  monkeypodLink,
+  site,
 }) {
   const [featuredArticle, setFeaturedArticle] = useState(featured);
   const [subFeaturedTopArticle, setSubFeaturedTopArticle] = useState(
@@ -42,7 +44,13 @@ export default function Homepage({
 
   return (
     <div className="homepage">
-      <Layout meta={siteMetadata} sections={sections} locale={locale}>
+      <Layout
+        meta={siteMetadata}
+        sections={sections}
+        locale={locale}
+        monkeypodLink={monkeypodLink}
+        site={site}
+      >
         {!selectedLayout && <Placeholder />}
         {selectedLayout.name === 'Big Featured Story' && (
           <BigFeaturedStory
@@ -68,7 +76,7 @@ export default function Homepage({
             metadata={siteMetadata}
           />
         )}
-        <HomepagePromoBar metadata={siteMetadata} />
+        <HomepagePromoBar metadata={siteMetadata} site={site} />
         <ArticleStream
           articles={mostRecentArticles}
           sections={sections}
@@ -78,6 +86,7 @@ export default function Homepage({
           metadata={siteMetadata}
           ads={expandedAds}
           locale={locale}
+          site={site}
         />
         <SectionContainer>
           <Link href="/articles/archive/1" passHref>
