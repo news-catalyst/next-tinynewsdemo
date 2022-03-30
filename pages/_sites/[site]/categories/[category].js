@@ -58,6 +58,7 @@ export default function CategoryPage(props) {
         metadata={props.siteMetadata}
         ads={props.expandedAds}
         site={props.site}
+        monkeypodLink={props.monkeypodLink}
       />
     </Layout>
   );
