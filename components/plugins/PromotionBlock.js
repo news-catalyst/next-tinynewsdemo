@@ -2,7 +2,12 @@ import NewsletterBlock from './NewsletterBlock';
 import DonationBlock from './DonationBlock';
 import storage from 'local-storage-fallback';
 
-export default function PromotionBlock({ metadata, prefer, site }) {
+export default function PromotionBlock({
+  metadata,
+  prefer,
+  site,
+  monkeypodLink,
+}) {
   let promo = null;
   const newsletter = <NewsletterBlock metadata={metadata} site={site} />;
   const donation = <DonationBlock metadata={metadata} />;
@@ -12,11 +17,11 @@ export default function PromotionBlock({ metadata, prefer, site }) {
   } else if (prefer === 'newsletter') {
     if (!storage.getItem('TNCNewsletterSubscriber')) {
       promo = newsletter;
-    } else if (process.env.NEXT_PUBLIC_MONKEYPOD_URL) {
+    } else if (monkeypodLink) {
       promo = donation;
     }
   } else if (prefer === 'donation') {
-    if (process.env.NEXT_PUBLIC_MONKEYPOD_URL) {
+    if (monkeypodLink) {
       promo = donation;
     } else {
       promo = newsletter;

@@ -100,6 +100,7 @@ export default function AuthorPage({
         isAmp={isAmp}
         metadata={siteMetadata}
         ads={expandedAds}
+        monkeypodLink={monkeypodLink}
       />
     </Layout>
   );

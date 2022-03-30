@@ -74,6 +74,7 @@ export default function Article({
             ads={ads}
             metadata={siteMetadata}
             site={site}
+            monkeypodLink={monkeypodLink}
           />
           <ArticleFooter
             article={article}
