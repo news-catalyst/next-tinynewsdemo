@@ -20,7 +20,7 @@ const NewsletterDek = styled.div(({ meta }) => ({
   fontFamily: Typography[meta.theme || 'styleone'].PromotionBlockDek,
 }));
 
-export default function NewsletterBlock({ metadata, headline, tinycms }) {
+export default function NewsletterBlock({ metadata, headline, tinycms, site }) {
   const [textColor, setTextColor] = useState(null);
   const [backgroundColor, setBackgroundColor] = useState(null);
 
@@ -50,6 +50,7 @@ export default function NewsletterBlock({ metadata, headline, tinycms }) {
         metadata={metadata}
         articleTitle={headline}
         tinycms={tinycms}
+        site={site}
       />
     </NewsletterWrapper>
   );

@@ -47,7 +47,7 @@ const DELETE_AUTHORS_MUTATION = `mutation DeleteAllAuthors {
 function deleteAllAuthors(params) {
   return fetchGraphQL({
     url: params['url'],
-    orgSlug: params['orgSlug'],
+    site: params['site'],
     query: DELETE_AUTHORS_MUTATION,
     name: 'DeleteAllAuthors',
   });
@@ -68,7 +68,7 @@ const DELETE_TAGS_MUTATION = `mutation DeleteAllTags {
 function deleteAllTags(params) {
   return fetchGraphQL({
     url: params['url'],
-    orgSlug: params['orgSlug'],
+    site: params['site'],
     query: DELETE_TAGS_MUTATION,
     name: 'DeleteAllTags',
   });
@@ -91,9 +91,9 @@ module.exports = (on, config) => {
   // config = dotenvPlugin(config);
   require('dotenv').config({ path: '.env.local' });
 
-  config.env.apiToken = process.env.API_TOKEN;
-  config.env.orgSlug = process.env.ORG_SLUG;
-  const orgSlug = process.env.ORG_SLUG;
+  config.env.apiToken = process.env.CYPRESS_API_TOKEN;
+  config.env.site = 'next-tinynewsdemo';
+  const site = 'next-tinynewsdemo';
   const apiGraphQL = config.env.apiUrl;
   const adminSecret = process.env.HASURA_ADMIN_SECRET;
   config.env.adminSecret = process.env.HASURA_ADMIN_SECRET;
@@ -117,17 +117,16 @@ module.exports = (on, config) => {
 
       const { errors, data } = await shared.seedData({
         url: apiGraphQL,
-        orgSlug: orgSlug,
+        site: site,
         org: {
           name: faker.company.companyName(),
-          slug: orgSlug,
+          subdomain: site,
         },
         adminSecret: adminSecret,
       });
       if (errors) {
         console.error('errors:', errors);
       }
-      console.log('data:', data);
       return data;
     },
 
@@ -135,7 +134,7 @@ module.exports = (on, config) => {
       // seed database with test data
       const { errors, data } = await deleteAllAuthors({
         url: apiGraphQL,
-        orgSlug: orgSlug,
+        site: site,
       });
       if (errors) {
         console.error('errors:', errors);
@@ -148,7 +147,7 @@ module.exports = (on, config) => {
       // seed database with test data
       const { errors, data } = await deleteAllTags({
         url: apiGraphQL,
-        orgSlug: orgSlug,
+        site: site,
       });
       if (errors) {
         console.error('errors:', errors);

@@ -12,6 +12,7 @@ import {
 } from '../../../../../lib/settings.js';
 import { getArticleAds } from '../../../../../lib/ads.js';
 import { cachedContents } from '../../../../../lib/cached';
+import { avoidRateLimit } from '../../../../../lib/utils';
 import Article from '../../../../../components/Article.js';
 
 export default function ArticlePage(props) {
@@ -52,6 +53,8 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ params }) {
+  await avoidRateLimit();
+
   const apiUrl = process.env.HASURA_API_URL;
   const site = params.site;
 
@@ -65,6 +68,7 @@ export async function getStaticProps({ params }) {
     throw settingsResult.errors;
   }
   const settings = settingsResult.data.settings;
+  const monkeypodLink = findSetting(settings, 'NEXT_PUBLIC_MONKEYPOD_URL');
 
   let article = {};
   let sectionArticles = [];
@@ -138,6 +142,8 @@ export async function getStaticProps({ params }) {
       siteMetadata,
       sectionArticles,
       renderFooter,
+      monkeypodLink,
+      site,
     },
     // Re-generate the post at most once per second
     // if a request comes in

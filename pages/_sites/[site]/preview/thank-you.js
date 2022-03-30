@@ -53,7 +53,7 @@ export default function ThankYou({ referrer, page, sections, siteMetadata }) {
   );
 
   return (
-    <Layout meta={siteMetadata} page={page} sections={sections}>
+    <Layout meta={siteMetadata} page={page} sections={sections} site={site}>
       <SectionContainer>
         <ArticleTitle meta={siteMetadata} tw="text-center">
           {localisedPage.headline}
@@ -81,7 +81,7 @@ export async function getServerSideProps(context) {
   }
 
   const apiUrl = process.env.HASURA_API_URL;
-  const apiToken = process.env.ORG_SLUG;
+  const site = context.params.site;
 
   const referrer = context.req.headers['referer'];
 
@@ -91,7 +91,7 @@ export async function getServerSideProps(context) {
 
   const { errors, data } = await hasuraGetPage({
     url: apiUrl,
-    orgSlug: apiToken,
+    site: site,
     slug: 'thank-you',
   });
   if (errors || !data) {
@@ -120,6 +120,7 @@ export async function getServerSideProps(context) {
       page,
       sections,
       siteMetadata,
+      site,
     },
   };
 }
