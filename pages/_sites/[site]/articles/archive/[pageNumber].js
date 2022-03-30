@@ -30,6 +30,8 @@ export default function ArticlesArchivePage({
   currentPageNumber,
   siteMetadata,
   expandedAds,
+  monkeypodLink,
+  site,
 }) {
   const [pageNumbers, setPageNumbers] = useState(range(totalPageCount, 1));
 
@@ -71,7 +73,12 @@ export default function ArticlesArchivePage({
   }
 
   return (
-    <Layout meta={siteMetadata} sections={sections}>
+    <Layout
+      meta={siteMetadata}
+      sections={sections}
+      monkeypodLink={monkeypodLink}
+      site={site}
+    >
       <ArticleStream
         sections={sections}
         articles={articles}
@@ -179,6 +186,7 @@ export async function getStaticProps(context) {
   }
 
   const settings = settingsResult.data.settings;
+  const monkeypodLink = findSetting(settings, 'NEXT_PUBLIC_MONKEYPOD_URL');
 
   let expandedAds = [];
   let letterheadSetting = booleanSetting(settings, 'LETTERHEAD_API_URL', false);
@@ -200,6 +208,8 @@ export async function getStaticProps(context) {
       currentPageNumber,
       siteMetadata,
       expandedAds,
+      monkeypodLink,
+      site,
     },
   };
 }

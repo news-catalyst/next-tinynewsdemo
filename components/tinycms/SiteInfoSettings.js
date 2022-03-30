@@ -479,7 +479,10 @@ export default function SiteInfoSettings(props) {
         <TinyInputField
           name="siteUrl"
           value={siteUrl}
-          onChange={(ev) => setSiteUrl(ev.target.value)}
+          onChange={(ev) => {
+            setSiteUrl(ev.target.value);
+            updateKeyValue('siteUrl', ev.target.value);
+          }}
           label="Site URL"
         />
         <label htmlFor="timeZone">
