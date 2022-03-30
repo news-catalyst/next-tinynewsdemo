@@ -13,9 +13,15 @@ import StaticMainImage from '../components/articles/StaticMainImage';
 
 const SectionContainer = tw.div`flex flex-col flex-nowrap items-center px-5 mx-auto max-w-7xl w-full`;
 
-export default function StaticPage({ siteMetadata, sections, page, isAmp }) {
+export default function StaticPage({
+  siteMetadata,
+  sections,
+  page,
+  site,
+  isAmp,
+}) {
   const locale = 'en-US';
-  let baseUrl = process.env.NEXT_PUBLIC_SITE_URL || siteMetadata['siteUrl'];
+  let baseUrl = siteMetadata['siteUrl'];
   // this is used for the canonical link tag in the Layout component
   let canonicalPageUrl = generatePageUrl(baseUrl, page);
   siteMetadata['canonicalUrl'] = canonicalPageUrl;
@@ -45,7 +51,7 @@ export default function StaticPage({ siteMetadata, sections, page, isAmp }) {
   }
 
   return (
-    <Layout meta={siteMetadata} page={page} sections={sections}>
+    <Layout meta={siteMetadata} page={page} sections={sections} site={site}>
       <SectionContainer>
         <ArticleTitle meta={siteMetadata} tw="text-center">
           {localisedPage.headline}

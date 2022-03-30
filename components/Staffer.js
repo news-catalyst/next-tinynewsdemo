@@ -7,8 +7,8 @@ const AuthorAvatar = tw.div`overflow-hidden relative w-full h-48 w-48 mr-4 md:fl
 
 export default function Staffer({ author, isAmp }) {
   const name = displayAuthorName(author.first_names, author.last_name);
-  const bio = author.author_translations[0].bio;
-  const title = author.author_translations[0].title;
+  const bio = author.author_translations[0]?.bio;
+  const title = author.author_translations[0]?.title;
 
   return (
     <div className="author mb-4">

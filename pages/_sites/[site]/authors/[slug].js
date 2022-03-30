@@ -9,7 +9,7 @@ import {
   findSetting,
   getOrgSettings,
 } from '../../../../lib/settings.js';
-import { displayAuthorName } from '../../../../lib/utils';
+import { avoidRateLimit, displayAuthorName } from '../../../../lib/utils';
 import { cachedContents } from '../../../../lib/cached';
 import { getArticleAds } from '../../../../lib/ads.js';
 import ArticleStream from '../../../../components/homepage/ArticleStream';
@@ -22,6 +22,8 @@ export default function AuthorPage({
   author,
   siteMetadata,
   expandedAds,
+  monkeypodLink,
+  site,
 }) {
   const router = useRouter();
   const isAmp = false;
@@ -40,8 +42,8 @@ export default function AuthorPage({
   if (author) {
     authorName = displayAuthorName(author.first_names, author.last_name);
     authorPhoto = author.photoUrl;
-    authorTitle = author.author_translations[0].title;
-    authorBio = author.author_translations[0].bio;
+    authorTitle = author.author_translations[0]?.title;
+    authorBio = author.author_translations[0]?.bio;
     authorTwitter = author.twitter;
 
     // set page title
@@ -65,7 +67,12 @@ export default function AuthorPage({
   const ProfileTwitter = tw.p`text-base pt-3`;
 
   return (
-    <Layout meta={siteMetadata} sections={sections}>
+    <Layout
+      meta={siteMetadata}
+      sections={sections}
+      monkeypodLink={monkeypodLink}
+      site={site}
+    >
       <ProfileHeaderDiv>
         {authorPhoto && <ProfileImage src={authorPhoto}></ProfileImage>}
         <div>
@@ -114,6 +121,8 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ params }) {
+  await avoidRateLimit();
+
   const apiUrl = process.env.HASURA_API_URL;
   const site = params.site;
   const locale = 'en-US';
@@ -168,6 +177,8 @@ export async function getStaticProps({ params }) {
     }
   }
   const settings = settingsResult.data.settings;
+  const monkeypodLink = findSetting(settings, 'NEXT_PUBLIC_MONKEYPOD_URL');
+
   let expandedAds = [];
   let letterheadSetting = booleanSetting(settings, 'LETTERHEAD_API_URL', false);
   if (letterheadSetting) {
@@ -193,6 +204,8 @@ export async function getStaticProps({ params }) {
       author,
       siteMetadata,
       expandedAds,
+      monkeypodLink,
+      site,
     },
   };
 }

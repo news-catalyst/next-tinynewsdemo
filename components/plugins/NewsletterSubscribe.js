@@ -16,7 +16,7 @@ const Submit = styled.input(({ textColor, backgroundColor, tinycms }) => ({
 
 const url = '/api/subscribe';
 
-const NewsletterSubscribe = ({ articleTitle, metadata, tinycms }) => {
+const NewsletterSubscribe = ({ articleTitle, metadata, tinycms, site }) => {
   const { trackEvent } = useAnalytics();
   const [ref, inView] = useInView({ triggerOnce: true });
 
@@ -76,7 +76,7 @@ const NewsletterSubscribe = ({ articleTitle, metadata, tinycms }) => {
     setStatus('sending');
 
     try {
-      const subscribeURL = url;
+      const subscribeURL = `${url}?site=${site}`;
       const response = await fetch(subscribeURL, {
         method: 'POST',
         body: JSON.stringify({

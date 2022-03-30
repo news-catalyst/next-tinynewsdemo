@@ -1,8 +1,13 @@
 import tw, { styled } from 'twin.macro';
 import { useRouter } from 'next/router';
-import { generateAllDomainPaths } from '../../../lib/settings';
+import {
+  booleanSetting,
+  findSetting,
+  getOrgSettings,
+  generateAllDomainPaths,
+} from '../../../lib/settings';
 import { hasuraGetPage } from '../../../lib/pages.js';
-import { renderBody } from '../../../lib/utils';
+import { avoidRateLimit, renderBody } from '../../../lib/utils';
 import Layout from '../../../components/Layout';
 import StaticMainImage from '../../../components/articles/StaticMainImage';
 import DonationOptionsBlock from '../../../components/plugins/DonationOptionsBlock.js';
@@ -18,7 +23,13 @@ const WideContainer = styled.div(() => ({
   maxWidth: '1280px',
 }));
 
-export default function Donate({ page, sections, siteMetadata }) {
+export default function Donate({
+  page,
+  sections,
+  siteMetadata,
+  monkeypodLink,
+  site,
+}) {
   const isAmp = false;
   const router = useRouter();
 
@@ -27,6 +38,10 @@ export default function Donate({ page, sections, siteMetadata }) {
   // See: https://nextjs.org/docs/basic-features/data-fetching#the-fallback-key-required
   if (router.isFallback) {
     return <div>Loading...</div>;
+  }
+
+  if (!page.page_translations[0]) {
+    return null;
   }
 
   const localisedPage = page.page_translations[0];
@@ -45,23 +60,29 @@ export default function Donate({ page, sections, siteMetadata }) {
   let mainImage = null;
   if (page) {
     try {
-      mainImageNode = localisedPage?.content.find(
+      mainImageNode = localisedPage?.content?.find(
         (node) => node.type === 'mainImage'
       );
 
-      if (mainImageNode) {
+      if (mainImageNode && mainImageNode.children[0]) {
         mainImage = mainImageNode.children[0];
         siteMetadata['coverImage'] = mainImage.imageUrl;
         siteMetadata['coverImageWidth'] = mainImage.width;
         siteMetadata['coverImageHeight'] = mainImage.height;
       }
     } catch (err) {
-      console.error('error finding main image: ', err);
+      console.log('error finding main image: ', err);
     }
   }
 
   return (
-    <Layout meta={siteMetadata} page={page} sections={sections}>
+    <Layout
+      meta={siteMetadata}
+      page={page}
+      sections={sections}
+      monkeypodLink={monkeypodLink}
+      site={site}
+    >
       <SectionContainer>
         <article className="container">
           <ArticleTitle meta={siteMetadata} tw="text-center">
@@ -78,7 +99,11 @@ export default function Donate({ page, sections, siteMetadata }) {
         </article>
       </SectionContainer>
       <WideContainer>
-        <DonationOptionsBlock metadata={siteMetadata} wrap={true} />
+        <DonationOptionsBlock
+          metadata={siteMetadata}
+          monkeypodLink={monkeypodLink}
+          wrap={true}
+        />
       </WideContainer>
     </Layout>
   );
@@ -101,8 +126,22 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ params }) {
+  await avoidRateLimit();
+
   const apiUrl = process.env.HASURA_API_URL;
   const site = params.site;
+
+  const settingsResult = await getOrgSettings({
+    url: apiUrl,
+    site: site,
+  });
+
+  if (settingsResult.errors) {
+    console.error('Donate page error:', settingsResult.errors);
+    throw settingsResult.errors;
+  }
+  const settings = settingsResult.data.settings;
+  const monkeypodLink = findSetting(settings, 'NEXT_PUBLIC_MONKEYPOD_URL');
 
   let page = {};
   let sections;
@@ -143,6 +182,8 @@ export async function getStaticProps({ params }) {
       page,
       sections,
       siteMetadata,
+      monkeypodLink,
+      site,
     },
     revalidate: 1,
   };
