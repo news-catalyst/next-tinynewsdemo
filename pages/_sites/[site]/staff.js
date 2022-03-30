@@ -1,4 +1,8 @@
-import { generateAllDomainPaths } from '../../../lib/settings';
+import {
+  generateAllDomainPaths,
+  getOrgSettings,
+  findSetting,
+} from '../../../lib/settings';
 import { hasuraGetPage } from '../../../lib/pages.js';
 import StaffPage from '../../../components/StaffPage';
 
@@ -30,6 +34,17 @@ export async function getStaticProps({ params }) {
   const site = params.site;
   const locale = 'en-US';
 
+  const settingsResult = await getOrgSettings({
+    url: apiUrl,
+    site: site,
+  });
+
+  if (settingsResult.errors) {
+    throw settingsResult.errors;
+  }
+  const settings = settingsResult.data.settings;
+  const monkeypodLink = findSetting(settings, 'NEXT_PUBLIC_MONKEYPOD_URL');
+
   let page = {};
   let sections;
   let siteMetadata = {};
@@ -50,9 +65,9 @@ export async function getStaticProps({ params }) {
   } else {
     sections = data.categories;
     authors = data.authors;
-    siteMetadata = data.site_metadatas[0].site_metadata_translations[0].data;
+    siteMetadata = data.site_metadatas[0].site_metadata_translations[0]?.data;
     for (var i = 0; i < sections.length; i++) {
-      sections[i].title = sections[i].category_translations[0].title;
+      sections[i].title = sections[i].category_translations[0]?.title;
     }
   }
 
@@ -62,6 +77,8 @@ export async function getStaticProps({ params }) {
       locale,
       sections,
       siteMetadata,
+      monkeypodLink,
+      site,
     },
     revalidate: 1,
   };

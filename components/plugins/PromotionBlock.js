@@ -2,9 +2,9 @@ import NewsletterBlock from './NewsletterBlock';
 import DonationBlock from './DonationBlock';
 import storage from 'local-storage-fallback';
 
-export default function PromotionBlock({ metadata, prefer }) {
+export default function PromotionBlock({ metadata, prefer, site }) {
   let promo = null;
-  const newsletter = <NewsletterBlock metadata={metadata} />;
+  const newsletter = <NewsletterBlock metadata={metadata} site={site} />;
   const donation = <DonationBlock metadata={metadata} />;
 
   if (!metadata || metadata.shortName === 'Tiny News Collective Curriculum') {

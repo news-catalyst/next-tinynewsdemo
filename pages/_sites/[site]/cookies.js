@@ -11,12 +11,12 @@ import {
 
 const SectionContainer = tw.div`flex flex-col flex-nowrap items-center px-5 mx-auto max-w-7xl w-full`;
 
-export default function Cookies({ siteMetadata, post, content }) {
+export default function Cookies({ siteMetadata, post, content, site }) {
   if (!post) {
     return null;
   }
   return (
-    <Layout meta={siteMetadata} sections={{}}>
+    <Layout meta={siteMetadata} sections={{}} site={site}>
       <SectionContainer>
         <div key="title" className="section post__header">
           <ArticleTitle meta={siteMetadata}>{post.title}</ArticleTitle>
@@ -101,6 +101,7 @@ export async function getStaticProps({ params }) {
         siteMetadata,
         post,
         content,
+        site,
       },
     };
   }
