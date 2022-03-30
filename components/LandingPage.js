@@ -12,7 +12,13 @@ const BlockWrapper = tw.div`w-full`;
 const LogoWrapper = tw.div`w-full h-auto mb-4`;
 const Logo = tw.div`w-full h-auto`;
 
-export default function LandingPage({ locale, siteMetadata, sections, pages }) {
+export default function LandingPage({
+  locale,
+  siteMetadata,
+  sections,
+  pages,
+  site,
+}) {
   if (!siteMetadata) {
     return <div />;
   }
@@ -44,12 +50,13 @@ export default function LandingPage({ locale, siteMetadata, sections, pages }) {
       sections={sections}
       renderNav={false}
       locale={locale}
+      site={site}
     >
       <Container>
         {logo ? LogoComponent : <Title>{title}</Title>}
         <Dek className="dek" dangerouslySetInnerHTML={{ __html: landingDek }} />
         <BlockWrapper>
-          <NewsletterBlock metadata={siteMetadata} />
+          <NewsletterBlock metadata={siteMetadata} site={site} />
         </BlockWrapper>
         {pages && pages.length > 0 && (
           <LandingPageNav

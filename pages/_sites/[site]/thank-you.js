@@ -5,6 +5,7 @@ import { useAnalytics } from '../../../lib/hooks/useAnalytics.js';
 import Layout from '../../../components/Layout';
 import NewsletterBlock from '../../../components/plugins/NewsletterBlock';
 import { renderBody } from '../../../lib/utils.js';
+import { getOrgSettings, findSetting } from '../../../lib/settings';
 import {
   ArticleTitle,
   PostTextContainer,
@@ -13,7 +14,14 @@ import {
 
 const SectionContainer = tw.div`flex flex-col flex-nowrap items-center px-5 mx-auto max-w-7xl w-full`;
 
-export default function ThankYou({ referrer, page, sections, siteMetadata }) {
+export default function ThankYou({
+  referrer,
+  page,
+  sections,
+  siteMetadata,
+  monkeypodLink,
+  site,
+}) {
   const isAmp = false;
   const router = useRouter();
   // sets a cookie if request comes from monkeypod.io marking this browser as a donor
@@ -70,7 +78,13 @@ export default function ThankYou({ referrer, page, sections, siteMetadata }) {
   }
 
   return (
-    <Layout meta={siteMetadata} page={page} sections={sections}>
+    <Layout
+      meta={siteMetadata}
+      page={page}
+      sections={sections}
+      monkeypodLink={monkeypodLink}
+      site={site}
+    >
       <SectionContainer>
         <ArticleTitle meta={siteMetadata} tw="text-center">
           {localisedPage.headline}
@@ -81,6 +95,7 @@ export default function ThankYou({ referrer, page, sections, siteMetadata }) {
         <NewsletterBlock
           metadata={siteMetadata}
           headline={localisedPage.headline}
+          site={site}
           wrap={false}
         />
       </SectionContainer>
@@ -92,6 +107,17 @@ export async function getServerSideProps(context) {
   const referrer = context.req.headers['referer'];
   const apiUrl = process.env.HASURA_API_URL;
   const site = context.params.site;
+
+  const settingsResult = await getOrgSettings({
+    url: apiUrl,
+    site: site,
+  });
+
+  if (settingsResult.errors) {
+    throw settingsResult.errors;
+  }
+  const settings = settingsResult.data.settings;
+  const monkeypodLink = findSetting(settings, 'NEXT_PUBLIC_MONKEYPOD_URL');
 
   let page = {};
   let sections;
@@ -129,6 +155,8 @@ export async function getServerSideProps(context) {
       page,
       sections,
       siteMetadata,
+      monkeypodLink,
+      site,
     },
   };
 }
