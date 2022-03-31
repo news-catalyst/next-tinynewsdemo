@@ -92,12 +92,10 @@ export default function AnalyticsIndex(props) {
 
               <ul tw="p-2">
                 <li>
-                  <b>Tracking ID:</b>{' '}
-                  <code>{process.env.NEXT_PUBLIC_GA_TRACKING_ID}</code>
+                  <b>Tracking ID:</b> <code>{props.trackingId}</code>
                 </li>
                 <li>
-                  <b>View ID:</b>{' '}
-                  <code>{process.env.NEXT_PUBLIC_ANALYTICS_VIEW_ID}</code>
+                  <b>View ID:</b> <code>{props.viewId}</code>
                 </li>
               </ul>
 
@@ -172,7 +170,8 @@ export async function getServerSideProps(context) {
   }
   const settings = settingsResult.data.settings;
   const siteUrl = findSetting(settings, 'NEXT_PUBLIC_SITE_URL');
-
+  const trackingId = findSetting(settings, 'NEXT_PUBLIC_GA_TRACKING_ID');
+  const viewId = findSetting(settings, 'NEXT_PUBLIC_ANALYTICS_VIEW_ID');
   const host = context.req.headers.host; // will give you localhost:3000
 
   return {
@@ -186,6 +185,8 @@ export async function getServerSideProps(context) {
       subscriberSessionCount: subscriberSessionCount,
       siteUrl: siteUrl,
       host: host,
+      trackingId: trackingId,
+      viewId: viewId,
     },
   };
 }
