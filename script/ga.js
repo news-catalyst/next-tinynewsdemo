@@ -306,7 +306,7 @@ function storeData(params, rows) {
           count: 0,
           label: 'isDonor',
           dimension: 'dimension4',
-          date: startDate,
+          date: row.dimensions[1],
         })
         .then((result) => {
           console.log('hasura insert result:', result);
