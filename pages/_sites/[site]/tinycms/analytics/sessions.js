@@ -23,9 +23,7 @@ const HeaderContainer = tw.div`pt-5 pb-10`;
 const Header = tw.h1`inline-block text-3xl font-extrabold text-gray-900 tracking-tight`;
 
 export default function SessionsOverview(props) {
-  const [viewID, setViewID] = useState(
-    process.env.NEXT_PUBLIC_ANALYTICS_VIEW_ID
-  );
+  const [viewID, setViewID] = useState(props.viewId);
 
   const [startDate, setStartDate] = useState(moment().subtract(30, 'days'));
   const [endDate, setEndDate] = useState(moment());
@@ -133,6 +131,7 @@ export async function getServerSideProps(context) {
   }
   const settings = settingsResult.data.settings;
   const siteUrl = findSetting(settings, 'NEXT_PUBLIC_SITE_URL');
+  const viewId = findSetting(settings, 'NEXT_PUBLIC_ANALYTICS_VIEW_ID');
 
   const host = context.req.headers.host; // will give you localhost:3000
 
@@ -142,6 +141,7 @@ export async function getServerSideProps(context) {
       site,
       siteUrl,
       host,
+      viewId,
     },
   };
 }
