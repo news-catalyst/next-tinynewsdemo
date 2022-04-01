@@ -87,6 +87,7 @@ export default function Homepage({
           ads={expandedAds}
           locale={locale}
           site={site}
+          monkeypodLink={monkeypodLink}
         />
         <SectionContainer>
           <Link href="/articles/archive/1" passHref>
