@@ -10,7 +10,14 @@ const ArticleBodyWrapper = tw.section`mb-4`;
 const SectionContainer = tw.div`w-full px-5 items-center flex flex-col flex-nowrap mx-auto max-w-7xl`;
 const BlockWrapper = tw.div`max-w-2xl w-full`;
 
-export default function ArticleBody({ article, ads, isAmp, metadata, site }) {
+export default function ArticleBody({
+  article,
+  ads,
+  isAmp,
+  metadata,
+  site,
+  monkeypodLink,
+}) {
   const locale = 'en-US';
 
   const body = renderBody(
@@ -91,7 +98,12 @@ export default function ArticleBody({ article, ads, isAmp, metadata, site }) {
           <PostTextContainer>{body}</PostTextContainer>
         </PostText>
         <BlockWrapper>
-          <PromotionBlock metadata={metadata} site={site} prefer="newsletter" />
+          <PromotionBlock
+            metadata={metadata}
+            site={site}
+            monkeypodLink={monkeypodLink}
+            prefer="newsletter"
+          />
         </BlockWrapper>
       </SectionContainer>
     </ArticleBodyWrapper>

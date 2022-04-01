@@ -20,6 +20,7 @@ export default function NewsletterIndexPage(props) {
       sections={props.sections}
       renderFooter={props.renderFooter}
       site={props.site}
+      monkeypodLink={props.monkeypodLink}
     >
       <ArticleStream
         sections={props.sections}
@@ -29,6 +30,7 @@ export default function NewsletterIndexPage(props) {
         isAmp={isAmp}
         metadata={props.siteMetadata}
         ads={props.expandedAds}
+        monkeypodLink={props.monkeypodLink}
       />
     </Layout>
   );
@@ -104,6 +106,8 @@ export async function getStaticProps({ params }) {
   }
 
   const settings = settingsResult.data.settings;
+  const monkeypodLink = findSetting(settings, 'NEXT_PUBLIC_MONKEYPOD_URL');
+
   let expandedAds = [];
   let letterheadSetting = booleanSetting(settings, 'LETTERHEAD_API_URL', false);
   if (letterheadSetting) {
@@ -124,6 +128,7 @@ export async function getStaticProps({ params }) {
       siteMetadata,
       expandedAds,
       site,
+      monkeypodLink,
     },
   };
 }

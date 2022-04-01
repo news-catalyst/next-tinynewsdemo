@@ -52,6 +52,7 @@ export default function TagPage({
         title={`Articles tagged with ${tagTitle}`}
         metadata={siteMetadata}
         ads={expandedAds}
+        monkeypodLink={monkeypodLink}
       />
     </Layout>
   );
