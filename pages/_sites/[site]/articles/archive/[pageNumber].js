@@ -87,6 +87,7 @@ export default function ArticlesArchivePage({
         isAmp={isAmp}
         metadata={siteMetadata}
         ads={expandedAds}
+        monkeypodLink={monkeypodLink}
       />
       <PaginationSection>
         <PaginationContainer meta={siteMetadata}>
