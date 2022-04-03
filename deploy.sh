@@ -1,5 +1,13 @@
 #!/bin/bash
 
-# Don't build anything!
-echo "🛑 - Build cancelled in env '$VERCEL_ENV' on branch '$VERCEL_GIT_COMMIT_REF'"
-exit 0;
+# Only build the stable branch
+if [[ "$VERCEL_GIT_COMMIT_REF" == "stable" ]] ; then
+  # Proceed with the build
+  echo "✅ - Stable build can proceed"
+  exit 1;
+
+else
+  # Don't build
+  echo "🛑 - Preview builds not supported"
+  exit 0;
+fi
