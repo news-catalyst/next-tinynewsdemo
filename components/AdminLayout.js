@@ -14,7 +14,7 @@ export default function AdminLayout({
   const loading = status === 'loading';
 
   console.log(session);
-
+  console.log('authorizedEmailDomains:', authorizedEmailDomains);
   let isAllowedToAccess = false;
 
   if (session && session.user && session.user.email) {
