@@ -13,8 +13,6 @@ export default function AdminLayout({
   const { data: session, status } = useSession();
   const loading = status === 'loading';
 
-  console.log(session);
-  console.log('authorizedEmailDomains:', authorizedEmailDomains);
   let isAllowedToAccess = false;
 
   if (session && session.user && session.user.email) {
@@ -22,12 +20,12 @@ export default function AdminLayout({
     authorizedDomains.forEach((authorizedDomain) => {
       if (session.user.email.split('@')[1] === authorizedDomain) {
         isAllowedToAccess = true;
-        console.log(
-          '[debug] isAllowedToAccess:',
-          isAllowedToAccess,
-          session.user.email,
-          authorizedDomain
-        );
+        // console.log(
+        //   '[debug] isAllowedToAccess:',
+        //   isAllowedToAccess,
+        //   session.user.email,
+        //   authorizedDomain
+        // );
       }
     });
   }
