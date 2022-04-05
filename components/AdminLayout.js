@@ -20,16 +20,25 @@ export default function AdminLayout({
     authorizedDomains.forEach((authorizedDomain) => {
       if (session.user.email.split('@')[1] === authorizedDomain) {
         isAllowedToAccess = true;
-        // console.log(
-        //   '[debug] isAllowedToAccess:',
-        //   isAllowedToAccess,
-        //   session.user.email,
-        //   authorizedDomain
-        // );
       }
     });
   }
   const cypressTesting = process.env.NEXT_PUBLIC_CYPRESS_TESTING;
+
+  let unauthorizedAccess;
+
+  if (!isAllowedToAccess && session && session.user) {
+    unauthorizedAccess = (
+      <span>
+        Sorry, {session.user.email}, you're not authorized to access this
+        organization's TinyCMS. Check the URL you're using to make sure it's the
+        right one for your organization. Have we made a mistake? Let us know in
+        Slack!
+      </span>
+    );
+  } else {
+    unauthorizedAccess = <span>You must be signed in to use these tools.</span>;
+  }
 
   // this is another flag to turn off Authentication similar to the cypress setting
   // I thought it would be clearer to intentionally skip authentication with a separate variable
@@ -80,7 +89,7 @@ export default function AdminLayout({
                     <div tw="content float-left py-4 px-5 my-5">
                       <div tw="mb-3 text-2xl md:text-4xl">TinyCMS</div>
                       <div tw="leading-normal hidden sm:block">
-                        You must be signed in to use these tools.
+                        {unauthorizedAccess}
                       </div>
                     </div>
                     <div tw="clear-left px-5">
