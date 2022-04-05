@@ -30,8 +30,8 @@ export default async function handler(req, res) {
   }
 
   try {
-    // await res.unstable_revalidate(`${pathToRevalidate}?site=${site}`);
-    await res.unstable_revalidate(pathToRevalidate);
+    await res.unstable_revalidate(`${pathToRevalidate}?site=${site}`);
+    // await res.unstable_revalidate(pathToRevalidate);
     return res.json({ revalidated: true });
   } catch (err) {
     console.error(err);
