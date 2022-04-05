@@ -22,6 +22,33 @@ Clone this project:
 git clone git@github.com:news-catalyst/next-tinynewsdemo.git
 ```
 
+And then initialize git-flow in your local checkout:
+
+```bash
+cd next-tinynewsdemo
+git flow init
+```
+
+You'll be prompted for a few settings - answer as noted here:
+
+```
+Branch name for production releases: stable
+Branch name for "next release" development: main
+```
+
+Accept the default answers for all remaining questions by hitting `<enter>`:
+
+```
+How to name your supporting branch prefixes?
+Feature branches? [feature/]
+Release branches? [release/]
+Hotfix branches? [hotfix/]
+Support branches? [support/]
+Version tag prefix? []
+```
+
+And you're done!
+
 **Step 2**
 
 Change into the project directory:
