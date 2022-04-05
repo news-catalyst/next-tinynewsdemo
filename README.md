@@ -139,7 +139,13 @@ git flow feature start feature_branch_name
 
 Example: `git flow feature start tinycms-auth`
 
-Make your code commits as usual, then push to origin and open a PR when ready for review.
+Make your code commits as usual. When the changes are ready for review and you want to open a PR:
+
+```bash
+git flow feature publish feature_branch_name
+```
+
+Then open a PR as usual on GitHub.
 
 To start a release (for production):
 
