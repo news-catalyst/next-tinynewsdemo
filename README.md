@@ -1,6 +1,18 @@
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
+This app runs the front-end published sites for all tiny news organizations, using a single multi-tenant "platforms" project in Vercel, with data served through a GraphQL API from Hasura, along with a dynamic TinyCMS for organization-specific site configuration.
+
 ## Getting Started
+
+**Step 0**
+
+We use [git-flow](https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow) to make processes around feature development, staging deployment, stable production releases, and production hotfixes easier. You're likely on a Mac, in which case you can use [Homebrew](https://brew.sh/) to set it up easily:
+
+```bash
+brew install git-flow
+```
+
+See the note at the end of this README for how to work with git-flow.
 
 **Step 1**
 
@@ -12,7 +24,7 @@ git clone git@github.com:news-catalyst/next-tinynewsdemo.git
 
 **Step 2**
 
-CD into the project:
+Change into the project directory:
 
 ```bash
 cd next-tinynewsdemo
@@ -23,47 +35,32 @@ cd next-tinynewsdemo
 Install dependencies:
 
 ```bash
-yarn
+npm install
 ```
 
 **Step 4**
 
-To start up a new tiny news org, set up an environment file (see below) then bootstrap the initial content with `yarn bootstrap`.
+Set up an environment file for global settings:
 
-**Step 5 - Pre-Start Notes**
+We store our global environment settings in a separate private repo on GitHub. Copy [the file `.env.local`](https://github.com/news-catalyst/tnc-org-envs/blob/main/.env.local) to a file in this project's directory called `.env.local`. Any values that differ between the tiny news orgs are found in the `settings` database table in Hasura.
 
-Regular start ups, especially in dev, see the following...
+For development on your laptop, you'll want to make sure you're pointing at the **staging** database, which is called heroic-snapper, because that's the random name Hasura gave us for that stack and I missed the chance to rename it.
 
-Clear out any old cache files, rebuild the cache and run the development server:
+**Step 5**
 
-```bash
-yarn clear && yarn populate && yarn dev
-```
-
-**Step 6**
+Run the site in development mode: `npm run dev`
 
 To build the site and serve from the static files:
 
 ```bash
-yarn clear && yarn populate && yarn build && yarn start
+npm run build && npm run start
 ```
 
-**Step 7**
+**Step 6**
 
-Open [http://localhost:3000](http://localhost:3000) with your browser.
+Open [http://next-tinynewsdemo.localhost:3000](http://next-tinynewsdemo.localhost:3000) with your browser.
 
-## Environment Variables
-
-Copy the file `.env.local-template` to a file called `.env.local` and fill in all of the environment variables.
-
-To switch between environments - aka, tiny news organizations - use the `script/switch` command:
-
-```
-$ script/switch $name
-$ script/switch oaklyn
-```
-
-Note: these commands expect `.env.local-$name` to exist in order to work.
+We switch between the different organizations' websites by changing the subdomain on localhost. "next-tinynewsdemo" is the testing "Oaklyn Observer" news organization subdomain.
 
 ## Bootstrap a new org
 
@@ -131,3 +128,43 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/import?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+
+## Git Flow
+
+To start working on a new feature:
+
+```bash
+git flow feature start feature_branch_name
+```
+
+Example: `git flow feature start tinycms-auth`
+
+Make your code commits as usual, then push to origin and open a PR when ready for review.
+
+To start a release (for production):
+
+```bash
+git flow release start 0.1.1
+```
+
+Then write up some quick release notes in CHANGELOG.md for the new version number and commit the changes.
+
+To finish the release:
+
+```bash
+git flow release finish '0.1.1'
+```
+
+If you have to fix something in production ASAP, and the main branch has changes that aren't ready to go live, you'll want to do a **hotfix**:
+
+```bash
+git flow hotfix start hotfix_branch_name
+```
+
+Example: `git flow hotfix start fix-this-nasty-bug`
+
+Code away, fix the bug, commit the changes, and then:
+
+```bash
+git flow hotfix finish hotfix_branch_name
+```
