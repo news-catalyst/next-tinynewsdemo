@@ -168,3 +168,5 @@ Code away, fix the bug, commit the changes, and then:
 ```bash
 git flow hotfix finish hotfix_branch_name
 ```
+
+For help, type: `git flow` for a list of topics; `git flow feature help` for example will provide info on subcommands available around feature branches.
