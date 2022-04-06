@@ -2,6 +2,12 @@ import { findSetting, getOrgSettings } from '../../lib/settings';
 
 export default async function handler(req, res) {
   const apiUrl = process.env.HASURA_API_URL;
+
+  if (!req.query.site) {
+    return res
+      .status(401)
+      .json({ message: 'Missing required ?site=subdomain query param' });
+  }
   const site = req.query.site;
 
   const settingsResult = await getOrgSettings({
@@ -10,7 +16,7 @@ export default async function handler(req, res) {
   });
 
   if (settingsResult.errors) {
-    console.error('DocAPI id Settings error:', settingsResult.errors);
+    console.error('DocAPI revalidate settings error:', settingsResult.errors);
     throw settingsResult.errors;
   }
 
@@ -22,7 +28,7 @@ export default async function handler(req, res) {
     return res.status(401).json({ message: 'Invalid token' });
   }
 
-  const pathToRevalidate = req.query.path;
+  const pathToRevalidate = `${req.query.path}?site=${site}`;
   if (!pathToRevalidate) {
     return res
       .status(401)
@@ -30,8 +36,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    await res.unstable_revalidate(`${pathToRevalidate}?site=${site}`);
-    // await res.unstable_revalidate(pathToRevalidate);
+    await res.unstable_revalidate(pathToRevalidate);
     return res.json({ revalidated: true });
   } catch (err) {
     console.error(err);
