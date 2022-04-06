@@ -7,32 +7,72 @@ const fetch = require('node-fetch');
 const shared = require('./shared');
 
 const apiUrl = process.env.HASURA_API_URL;
-const apiToken = process.env.ORG_SLUG;
+const adminSecret = process.env.HASURA_ADMIN_SECRET;
 
-function getNewsletterEditions() {
-  const letterheadUrl =
-    process.env.LETTERHEAD_API_URL +
-    'channels/' +
-    process.env.LETTERHEAD_CHANNEL_SLUG +
-    '/letters';
-  console.log('Letterhead API URL:', letterheadUrl);
+// https://stackoverflow.com/a/38327540
+function groupBy(list, keyGetter) {
+  const map = new Map();
+  list.forEach((item) => {
+    const key = keyGetter(item);
+    const collection = map.get(key);
+    if (!collection) {
+      map.set(key, [item]);
+    } else {
+      collection.push(item);
+    }
+  });
+  return map;
+}
 
-  if (!process.env.LETTERHEAD_API_URL) {
+async function getNewsletterEditions() {
+  const settingsResult = await shared.hasuraGetAllLetterheadSettings({
+    url: apiUrl,
+    adminSecret: adminSecret,
+  });
+
+  if (settingsResult.errors) {
+    console.error(settingsResult.errors);
     return;
   }
 
-  const opts = {
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${process.env.LETTERHEAD_API_KEY}`,
-    },
-  };
-  fetch(letterheadUrl, opts)
-    .then((res) => res.json())
-    .then((data) => {
-      saveNewsletterEditions(data);
-    })
-    .catch(console.error);
+  // group all settings by organization, then loop over each to get the newsletter editions
+  const settings = settingsResult.data.settings;
+  let groupedSettings = groupBy(settings, (setting) => setting.organization.id);
+
+  for (const [organizationId, orgSettings] of groupedSettings) {
+    if (organizationId !== 109) {
+      continue;
+    }
+    let letterhead = {
+      url: orgSettings.find((setting) => setting.name === 'LETTERHEAD_API_URL')
+        ?.value,
+      apiKey: orgSettings.find(
+        (setting) => setting.name === 'LETTERHEAD_API_KEY'
+      )?.value,
+      channelSlug: orgSettings.find(
+        (setting) => setting.name === 'LETTERHEAD_CHANNEL_SLUG'
+      )?.value,
+    };
+
+    if (!letterhead['url']) {
+      return;
+    }
+
+    const letterheadUrl =
+      letterhead['url'] + 'channels/' + letterhead['channelSlug'] + '/letters';
+    console.log('Letterhead API URL:', letterheadUrl);
+
+    const opts = {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${letterhead['apiKey']}`,
+      },
+    };
+    let res = await fetch(letterheadUrl, opts);
+    let data = await res.json();
+    let saveResult = await saveNewsletterEditions(organizationId, data);
+    // console.log('save newsletter result:', saveResult);
+  }
 }
 
 //{"ops":[{"insert":"This is my newsletter"},{"attributes":{"header":1},"insert":"\n"},{"insert":"By Tyler \nThis is a paragraph followed by a list:\nlist item 1"},{"attributes":{"list":"bullet"},"insert":"\n"},{"insert":"list item 2"},{"attributes":{"list":"bullet"},"insert":"\n"},{"insert":"list item 3"},{"attributes":{"list":"bullet"},"insert":"\n"},{"insert":"Section title"},{"attributes":{"header":2},"insert":"\n"},{"attributes":{"bold":true},"insert":"Bold text. "},{"attributes":{"italic":true,"bold":true},"insert":"Italic bold text. "},{"attributes":{"italic":true},"insert":"Just italic."},{"insert":"\n\n"}]}
@@ -186,15 +226,15 @@ function transformDelta(delta) {
         elements[i + 1].attributes &&
         elements[i + 1].attributes.header
       ) {
-        console.log(i, 'skip, header is handled next:', element.insert);
+        // console.log(i, 'skip, header is handled next:', element.insert);
       } else if (
         elements[i + 1] &&
         elements[i + 1].attributes &&
         elements[i + 1].attributes.list
       ) {
-        console.log(i, 'skip, list is handled next:', element.insert);
+        // console.log(i, 'skip, list is handled next:', element.insert);
       } else {
-        console.log(i, 'plain text:', element.insert);
+        // console.log(i, 'plain text:', element.insert);
 
         paragraph.children.push({
           link: null,
@@ -239,16 +279,20 @@ function transformDelta(delta) {
   return formattedElements;
 }
 
-async function saveNewsletterEditions(letterheadData) {
+async function saveNewsletterEditions(organizationId, letterheadData) {
   console.log(
+    organizationId,
     'Letterhead returned',
     letterheadData.length,
     'newsletter editions in total:'
   );
   for await (let newsletter of letterheadData) {
+    console.log(organizationId, newsletter.publicationDate, newsletter.title);
     if (!newsletter.publicationDate) {
       console.log(
-        '> Newsletter ID#' +
+        '> Org#' +
+          organizationId +
+          ' Newsletter ID#' +
           newsletter.id +
           " '" +
           newsletter.title +
@@ -259,10 +303,34 @@ async function saveNewsletterEditions(letterheadData) {
 
     let slug = slugify(newsletter.title);
     if (!slug) {
+      console.error('> no slug, skipping');
       continue;
     }
 
-    let content = transformDelta(JSON.parse(newsletter.delta));
+    console.log(Object.keys(newsletter).sort());
+
+    if (!newsletter.delta) {
+      console.log('> no delta, skipping');
+      // continue;
+    } else {
+      console.log();
+      console.log('DELTA', newsletter.delta);
+      console.log();
+    }
+    if (!newsletter.emailTemplate) {
+      console.log('> no emailTemplate, skipping');
+    } else {
+      console.log();
+      console.log('emailTemplate:', newsletter.emailTemplate);
+      console.log();
+    }
+    // console.log('DELTA:', newsletter.delta);
+
+    if (!newsletter.delta) {
+      continue;
+    }
+    let parsedDeltaJson = JSON.parse(newsletter.delta);
+    let content = transformDelta(parsedDeltaJson);
 
     let editionData = {
       slug: slug,
@@ -280,33 +348,37 @@ async function saveNewsletterEditions(letterheadData) {
       editionData['subheadline'] = newsletter.subtitle;
     }
 
-    const result = await shared.hasuraInsertNewsletterEdition({
-      url: apiUrl,
-      orgSlug: apiToken,
-      data: editionData,
-    });
+    console.log(JSON.stringify(editionData));
 
-    if (result.errors) {
-      console.error(
-        '! Newsletter ID#' +
-          newsletter.id +
-          " '" +
-          newsletter.title +
-          "' had an error saving:",
-        result.errors
-      );
-    } else {
-      console.log(
-        '. Newsletter ID#' +
-          newsletter.id +
-          " '" +
-          newsletter.title +
-          "' was published at " +
-          newsletter.publicationDate +
-          ', saved in Hasura with slug: ' +
-          result.data.insert_newsletter_editions_one.slug
-      );
-    }
+    // const result = await shared.hasuraInsertNewsletterEdition(organizationId, {
+    //   url: apiUrl,
+    //   adminSecret: adminSecret,
+    //   data: editionData,
+    // });
+
+    // if (result.errors) {
+    //   console.error(
+    //     '! Newsletter ID#' +
+    //       newsletter.id +
+    //       " '" +
+    //       newsletter.title +
+    //       "' had an error saving:",
+    //     result.errors
+    //   );
+    // } else {
+    //   console.log(
+    //     '. OrgID#' +
+    //       organizationId +
+    //       ' Newsletter ID#' +
+    //       newsletter.id +
+    //       " '" +
+    //       newsletter.title +
+    //       "' was published at " +
+    //       newsletter.publicationDate +
+    //       ', saved in Hasura with slug: ' +
+    //       result.data.insert_newsletter_editions_one.slug
+    //   );
+    // }
   }
 }
 
@@ -333,8 +405,7 @@ const slugify = (value) => {
 const publishNewsletters = process.env.PUBLISH_NEWSLETTERS;
 
 if (!publishNewsletters || publishNewsletters === 'false') {
-  console.log('Not publishing newsletters for ' + apiToken);
-  return;
+  console.log('Not publishing newsletters');
 } else {
   getNewsletterEditions();
 }
