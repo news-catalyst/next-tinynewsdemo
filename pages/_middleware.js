@@ -19,7 +19,8 @@ export default function middleware(req) {
     .replace(`.vercel.app`, '')
     .replace(`.vercel.app:3000`, ''); // TBD if we need to change this
 
-  if (currentHost === 'localhost:3000' && searchParams) {
+  // use the query param 'site' if currentHost isn't usable
+  if ((currentHost === 'localhost:3000' || !currentHost) && searchParams) {
     currentHost = searchParams.get('site');
   }
 
