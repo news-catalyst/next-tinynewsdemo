@@ -96,7 +96,11 @@ export default function HomePageEditor({
       setNotificationType('error');
       setShowNotification(true);
     } else {
-      const result = await revalidate('/', site, apiSecret);
+      const result = await revalidate({
+        path: '/',
+        site: site,
+        secret: apiSecret,
+      });
       if (result && result.revalidated) {
         setNotificationMessage(
           'Successfully re-published homepage with these changes!'

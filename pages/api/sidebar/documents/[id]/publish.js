@@ -7,7 +7,9 @@ import {
   storePageIdAndSlug,
   upsertPublishedArticle,
 } from '../../../../../lib/document';
-import { findSetting, getOrgSettings } from '../../../../../lib/settings.js';
+import { findSetting, getOrgSettings } from '../../../../../lib/settings';
+import { revalidate } from '../../../../../lib/utils';
+import { slugify } from '../../../../../lib/graphql';
 
 export default async function Handler(req, res) {
   const apiUrl = process.env.HASURA_API_URL;
@@ -26,6 +28,8 @@ export default async function Handler(req, res) {
   const settings = settingsResult.data.settings;
   const apiToken = findSetting(settings, 'API_TOKEN');
   const siteUrl = findSetting(settings, 'NEXT_PUBLIC_SITE_URL');
+
+  const apiBaseURL = `http://${req.headers.host}`;
 
   // Check the API token
   if (req.query.token !== apiToken || !req.query.id) {
@@ -61,8 +65,6 @@ export default async function Handler(req, res) {
       data: errors,
     });
   } else {
-    // console.log(data);
-
     let localeCode = 'en-US'; // default up front, override if existing article
 
     let processedData = await processDocumentContents(
@@ -75,8 +77,6 @@ export default async function Handler(req, res) {
       site
     );
 
-    // console.log('processedData:', Object.keys(processedData).sort());
-
     let publishUrl;
     let resultData;
     let categorySlug;
@@ -84,6 +84,9 @@ export default async function Handler(req, res) {
     let idSlugResult;
 
     if (documentType === 'article') {
+      let tags = articleData['article_tags'];
+      console.log('tags:', tags);
+
       articleData['content'] = processedData['formattedElements'];
       articleData['main_image'] = processedData['mainImage'];
 
@@ -157,6 +160,23 @@ export default async function Handler(req, res) {
 
       //construct the published article url
       var path = '/articles/' + categorySlug + '/' + slug;
+      var categoryPath = '/categories/' + categorySlug;
+      var revalidatePaths = [path, categoryPath];
+      if (tags) {
+        for (const tag of tags) {
+          revalidatePaths.push(`/tags/${slugify(tag)}`);
+        }
+      }
+
+      for await (const revalidatePath of revalidatePaths) {
+        await revalidate({
+          baseURL: apiBaseURL,
+          path: revalidatePath,
+          site: site,
+          secret: apiToken,
+        });
+      }
+
       publishUrl = new URL(path, siteUrl).toString();
       // console.log(publishUrl);
     } else if (documentType === 'page') {
@@ -210,6 +230,13 @@ export default async function Handler(req, res) {
       } else {
         path += '/' + slug;
       }
+      await revalidate({
+        baseURL: apiBaseURL,
+        path: path,
+        site: site,
+        secret: apiToken,
+      });
+
       publishUrl = new URL(path, siteUrl).toString();
 
       // console.log(publishUrl);
