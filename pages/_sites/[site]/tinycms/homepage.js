@@ -1,12 +1,13 @@
 import dynamic from 'next/dynamic';
 import React, { useState } from 'react';
+import tw from 'twin.macro';
+import { revalidate } from '../../../../lib/utils';
 
 import {
   hasuraGetHomepageEditor,
   hasuraSaveHomepageLayout,
 } from '../../../../lib/homepage';
 import { findSetting, getOrgSettings } from '../../../../lib/settings.js';
-
 import AdminNav from '../../../../components/nav/AdminNav';
 import Notification from '../../../../components/tinycms/Notification';
 import AdminLayout from '../../../../components/AdminLayout';
@@ -19,6 +20,8 @@ const LargePackageStoryLead = dynamic(() =>
   import(`../../../../components/homepage/LargePackageStoryLead`)
 );
 
+const SaveButton = tw.button`hidden md:flex w-full md:w-auto px-4 py-2 text-left bg-blue-900 hover:bg-blue-500 text-white md:rounded`;
+
 export default function HomePageEditor({
   layoutSchemas,
   hpData,
@@ -30,6 +33,7 @@ export default function HomePageEditor({
   site,
   siteUrl,
   host,
+  apiSecret,
 }) {
   const [notificationMessage, setNotificationMessage] = useState('');
   const [notificationType, setNotificationType] = useState('');
@@ -92,8 +96,16 @@ export default function HomePageEditor({
       setNotificationType('error');
       setShowNotification(true);
     } else {
-      // console.log('data:', data);
-      setNotificationMessage('Successfully published homepage!');
+      const result = await revalidate('/', site, apiSecret);
+      if (result && result.revalidated) {
+        setNotificationMessage(
+          'Successfully re-published homepage with these changes!'
+        );
+      } else {
+        setNotificationMessage(
+          'Successfully saved these homepage settings. It will take a few minutes to see them live.'
+        );
+      }
       setNotificationType('success');
       setShowNotification(true);
     }
@@ -152,11 +164,11 @@ export default function HomePageEditor({
             />
           )}
       </div>
-      <input
-        type="submit"
-        value="Save Homepage"
-        onClick={saveAndPublishHomepage}
-      />
+
+      <div tw="flex pt-8 justify-center">
+        <SaveButton onClick={saveAndPublishHomepage}>Save Homepage</SaveButton>
+      </div>
+
       <style jsx global>
         {homepageStyles}
       </style>
@@ -216,6 +228,7 @@ export async function getServerSideProps(context) {
   }
   const host = context.req.headers.host; // will give you localhost:3000
   const siteUrl = findSetting(settings, 'NEXT_PUBLIC_SITE_URL');
+  const apiSecret = findSetting(settings, 'API_TOKEN');
 
   return {
     props: {
@@ -229,6 +242,7 @@ export async function getServerSideProps(context) {
       site,
       siteUrl,
       host,
+      apiSecret,
     },
   };
 }
