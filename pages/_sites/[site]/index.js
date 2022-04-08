@@ -19,8 +19,7 @@ export default function Home(props) {
     props.siteMetadata &&
     props.siteMetadata.shortName === 'Tiny News Collective Curriculum'
   ) {
-
-    console.log(props)
+    console.log(props);
     return <CurriculumHomepage {...props} />;
   }
 
@@ -30,35 +29,33 @@ export default function Home(props) {
     !props.selectedLayout ? (
       <LandingPage {...props} />
     ) : (
-     
-     <>
-      <Homepage {...props} />
+      <>
+        <Homepage {...props} />
 
-      <NextSeo
-  title= {props.siteMetadata.searchTitle}
-  description={props.siteMetadata.facebookDescription || props.siteMetadata.searchDescription}
-  canonical={props.siteMetadata.siteUrl}
-  openGraph={{
-    title: props.siteMetadata.facebookTitle,
-    description: props.siteMetadata.facebookDescription,
-    url: props.siteMetadata.siteUrl,
-    images: [
-      {
-        url: props.siteMetadata.defaultSocialImage,
-        width: props.siteMetadata.defaultSocialImageWidth, 
-        height: props.siteMetadata.defaultSocialImageHeight,
-      },
-    ],
-  }}
-/>
-
-     
-     </>
-     
-     
+        <NextSeo
+          title={props.siteMetadata.searchTitle}
+          description={
+            props.siteMetadata.facebookDescription ||
+            props.siteMetadata.searchDescription
+          }
+          canonical={props.siteMetadata.siteUrl}
+          openGraph={{
+            title: props.siteMetadata.facebookTitle,
+            description: props.siteMetadata.facebookDescription,
+            url: props.siteMetadata.siteUrl,
+            images: [
+              {
+                url: props.siteMetadata.defaultSocialImage,
+                width: props.siteMetadata.defaultSocialImageWidth,
+                height: props.siteMetadata.defaultSocialImageHeight,
+              },
+            ],
+          }}
+        />
+      </>
     );
 
-    console.log(props.siteMetadata)
+  console.log(props.siteMetadata);
   return component;
 }
 
@@ -93,7 +90,6 @@ export async function getStaticProps(context) {
     url: apiUrl,
     site: site,
   });
-
 
   if (settingsResult.errors) {
     console.error('Idx Settings error:', settingsResult.errors);

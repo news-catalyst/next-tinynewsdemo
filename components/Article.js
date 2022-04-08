@@ -26,8 +26,8 @@ export default function Article({
   siteMetadata['canonicalUrl'] = canonicalArticleUrl;
   const translation = article.article_translations[0];
 
-  console.log(translation)
-  console.log(article)
+  console.log(translation);
+  console.log(article);
 
   const displayComments = siteMetadata['commenting'] === 'on';
 
@@ -97,32 +97,34 @@ export default function Article({
         />
       </div>
 
-
       <NextSeo
-  title={translation.searchTitle || translation.headline} // get the search title if defined, if not fall back to headline
-  description={translation.searchDescription} // search description (labeled as just description in the sidebar) is required, so we can rely on it being there
-  canonical={canonicalArticleUrl} // defined on line 24 of the component
-  openGraph={{
-    title: translation.facebookTitle || translation.headline, // get facebook title if defined, if not fall back to headline
-    description: translation.facebookDescription || translation.searchDescription, // get FB description if defined, if not fall back to search description
-    url: canonicalArticleUrl,
-    type: 'article',
-    article: {
-      publishedTime: translation.first_published_at,
-      modifiedTime: translation.last_published_at,
-      authors: article.author_articles.map((a) => [`${siteMetadata.siteUrl}/authors/${a.author.slug}`]),  // generate author URL for each author
-      section: article.category.category_translations[0].title,
-      tags: article.tag_articles.map((t) => [t.tag.slug])
-    },
-    images: [
-      {
-        url: siteMetadata.defaultSocialImage,
-        width: siteMetadata.defaultSocialImageWidth, 
-        height: siteMetadata.defaultSocialImageHeight,
-      },
-    ],
-  }}
-/>
+        title={translation.searchTitle || translation.headline} // get the search title if defined, if not fall back to headline
+        description={translation.searchDescription} // search description (labeled as just description in the sidebar) is required, so we can rely on it being there
+        canonical={canonicalArticleUrl} // defined on line 24 of the component
+        openGraph={{
+          title: translation.facebookTitle || translation.headline, // get facebook title if defined, if not fall back to headline
+          description:
+            translation.facebookDescription || translation.searchDescription, // get FB description if defined, if not fall back to search description
+          url: canonicalArticleUrl,
+          type: 'article',
+          article: {
+            publishedTime: translation.first_published_at,
+            modifiedTime: translation.last_published_at,
+            authors: article.author_articles.map((a) => [
+              `${siteMetadata.siteUrl}/authors/${a.author.slug}`,
+            ]), // generate author URL for each author
+            section: article.category.category_translations[0].title,
+            tags: article.tag_articles.map((t) => [t.tag.slug]),
+          },
+          images: [
+            {
+              url: siteMetadata.defaultSocialImage,
+              width: siteMetadata.defaultSocialImageWidth,
+              height: siteMetadata.defaultSocialImageHeight,
+            },
+          ],
+        }}
+      />
     </Layout>
   );
 }
