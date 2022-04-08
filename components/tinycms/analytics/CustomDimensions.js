@@ -10,6 +10,7 @@ import {
   Legend,
 } from 'recharts';
 import { hasuraGetCustomDimension } from '../../../lib/analytics';
+import { format } from 'date-fns';
 
 const SubHeaderContainer = tw.div`pt-10 pb-5`;
 const SubHeader = tw.h1`inline-block text-xl font-extrabold text-gray-900 tracking-tight`;
@@ -23,8 +24,8 @@ const CustomDimensions = (props) => {
     let params = {
       url: props.apiUrl,
       site: props.site,
-      startDate: props.startDate.format('YYYY-MM-DD'),
-      endDate: props.endDate.format('YYYY-MM-DD'),
+      startDate: format(props.startDate, 'yyyy-MM-dd'),
+      endDate: format(props.endDate, 'yyyy-MM-dd'),
       dimension: props.dimension,
     };
     const fetchCustomDimension = async () => {
@@ -67,8 +68,8 @@ const CustomDimensions = (props) => {
         <SubDek>{props.dek}</SubDek>
       </SubHeaderContainer>
       <p tw="p-2">
-        {props.startDate.format('dddd, MMMM Do YYYY')} -{' '}
-        {props.endDate.format('dddd, MMMM Do YYYY')}
+        {format(props.startDate, 'EEEE, MMMM do yyyy')} -{' '}
+        {format(props.endDate, 'EEEE, MMMM do yyyy')}
       </p>
       <LineChart width={740} height={400} data={chartData}>
         <CartesianGrid strokeDasharray="3 3" />
