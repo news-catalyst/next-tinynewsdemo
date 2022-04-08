@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import tw from 'twin.macro';
+import { format } from 'date-fns';
 import { hasuraGetGeoSessions } from '../../../lib/analytics';
 
 const SubHeaderContainer = tw.div`pt-10 pb-5`;
@@ -16,11 +17,12 @@ const GeoSessions = (props) => {
     let sessionParams = {
       url: props.apiUrl,
       site: props.site,
-      startDate: props.startDate.format('YYYY-MM-DD'),
-      endDate: props.endDate.format('YYYY-MM-DD'),
+      startDate: format(props.startDate, 'yyyy-MM-dd'),
+      endDate: format(props.endDate, 'yyyy-MM-dd'),
     };
 
     const fetchGeoSessions = async () => {
+      console.log('this is firing');
       const { errors, data } = await hasuraGetGeoSessions(sessionParams);
 
       if (errors && !data) {
@@ -58,8 +60,8 @@ const GeoSessions = (props) => {
         </SubDek>
       </SubHeaderContainer>
       <p tw="p-2">
-        {props.startDate.format('dddd, MMMM Do YYYY')} -{' '}
-        {props.endDate.format('dddd, MMMM Do YYYY')}
+        {format(props.startDate, 'EEEE, MMMM do yyyy')} -{' '}
+        {format(props.endDate, 'EEEE, MMMM do yyyy')}
       </p>
 
       <table tw="w-full table-auto">

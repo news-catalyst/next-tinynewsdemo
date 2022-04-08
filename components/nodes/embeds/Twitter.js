@@ -1,4 +1,4 @@
-import { TwitterTweetEmbed } from 'react-twitter-embed';
+import TweetEmbed from 'react-tweet-embed';
 
 export default function Twitter({ node, amp }) {
   const tweetId = node.link.split('/').slice(-1)[0].split('?')[0];
@@ -10,7 +10,7 @@ export default function Twitter({ node, amp }) {
       height="200"
     />
   ) : (
-    <TwitterTweetEmbed tweetId={tweetId} />
+    <TweetEmbed tweetId={tweetId} />
   );
   return el;
 }

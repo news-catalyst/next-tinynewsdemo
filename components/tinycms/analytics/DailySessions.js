@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import tw from 'twin.macro';
+import { format } from 'date-fns';
 import {
   LineChart,
   Line,
@@ -24,8 +25,8 @@ const DailySessions = (props) => {
     let sessionParams = {
       url: props.apiUrl,
       site: props.site,
-      startDate: props.startDate.format('YYYY-MM-DD'),
-      endDate: props.endDate.format('YYYY-MM-DD'),
+      startDate: format(props.startDate, 'yyyy-MM-dd'),
+      endDate: format(props.endDate, 'yyyy-MM-dd'),
     };
     const fetchSessions = async () => {
       const { errors, data } = await hasuraGetSessions(sessionParams);
@@ -41,6 +42,9 @@ const DailySessions = (props) => {
         };
         chartValues.push(lineDataPoint);
       });
+
+      chartValues.sort((d) => d.name);
+
       setChartData(chartValues);
     };
     fetchSessions();
@@ -63,8 +67,8 @@ const DailySessions = (props) => {
         </SubDek>
       </SubHeaderContainer>
       <p tw="p-2">
-        {props.startDate.format('dddd, MMMM Do YYYY')} -{' '}
-        {props.endDate.format('dddd, MMMM Do YYYY')}
+        {format(props.startDate, 'EEEE, MMMM do yyyy')} -{' '}
+        {format(props.endDate, 'EEEE, MMMM do yyyy')}
       </p>
 
       <LineChart width={740} height={400} data={chartData}>
