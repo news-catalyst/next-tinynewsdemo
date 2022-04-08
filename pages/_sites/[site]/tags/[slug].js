@@ -33,13 +33,11 @@ export default function TagPage({
     return <div>Loading...</div>;
   }
 
- 
-
   let tagTitle = tag.tag_translations[0].title;
-  
-  console.log(tag)
-  console.log(articles)
-  console.log(siteMetadata)
+
+  console.log(tag);
+  console.log(articles);
+  console.log(siteMetadata);
   // set page title
   siteMetadata['homepageTitle'] = tagTitle + ' | ' + siteMetadata['shortName'];
 
@@ -61,29 +59,25 @@ export default function TagPage({
         monkeypodLink={monkeypodLink}
       />
 
-<NextSeo
-    title={tagTitle || siteMetadata.searchTitle}
-    description={siteMetadata.facebookDescription || siteMetadata.searchDescription}
-    canonical= {`${siteMetadata.siteUrl}/tags/${tag.slug}`}
-
-    openGraph={{
-    title: tagTitle || siteMetadata.searchTitle,
-    description: siteMetadata.facebookDescription,
-    url: `${siteMetadata.siteUrl}/tags/${tag.slug}`,
-    images: [
-      {
-        url: siteMetadata.defaultSocialImage,
-        width: siteMetadata.defaultSocialImageWidth, 
-        height: siteMetadata.defaultSocialImageHeight,
-      },
-    ],
-  }}
-/>
-
-
-
-
-
+      <NextSeo
+        title={tagTitle || siteMetadata.searchTitle}
+        description={
+          siteMetadata.facebookDescription || siteMetadata.searchDescription
+        }
+        canonical={`${siteMetadata.siteUrl}/tags/${tag.slug}`}
+        openGraph={{
+          title: tagTitle || siteMetadata.searchTitle,
+          description: siteMetadata.facebookDescription,
+          url: `${siteMetadata.siteUrl}/tags/${tag.slug}`,
+          images: [
+            {
+              url: siteMetadata.defaultSocialImage,
+              width: siteMetadata.defaultSocialImageWidth,
+              height: siteMetadata.defaultSocialImageHeight,
+            },
+          ],
+        }}
+      />
     </Layout>
   );
 }

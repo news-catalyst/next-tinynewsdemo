@@ -46,7 +46,7 @@ export default function ArticlesArchivePage({
     });
   }
 
-console.log(articles)
+  console.log(articles);
 
   pageNumbers.forEach((pageNumber) => {
     let pageLink = {
@@ -110,22 +110,23 @@ console.log(articles)
         {paginationStyles}
       </style>
 
-         <NextSeo
-  title={`Article Archive page ${currentPageNumber} | ${siteMetadata.searchTitle}`}
-  description={siteMetadata.searchDescription}
-  canonical={`${siteMetadata.siteUrl}/articles/archive/${currentPageNumber}`}
-  openGraph={{
-    title: `Article Archive page ${currentPageNumber} | ${siteMetadata.searchTitle}`,
-    description: siteMetadata.facebookDescription || siteMetadata.searchDescription,
-    url: `${siteMetadata.siteUrl}/articles/archive/${currentPageNumber}`,
-    images: [
-      {
-        url: siteMetadata.defaultSocialImage,
-        width: siteMetadata.defaultSocialImageWidth, 
-        height: siteMetadata.defaultSocialImageHeight,
-      },
-    ],
-  }}
+      <NextSeo
+        title={`Article Archive page ${currentPageNumber} | ${siteMetadata.searchTitle}`}
+        description={siteMetadata.searchDescription}
+        canonical={`${siteMetadata.siteUrl}/articles/archive/${currentPageNumber}`}
+        openGraph={{
+          title: `Article Archive page ${currentPageNumber} | ${siteMetadata.searchTitle}`,
+          description:
+            siteMetadata.facebookDescription || siteMetadata.searchDescription,
+          url: `${siteMetadata.siteUrl}/articles/archive/${currentPageNumber}`,
+          images: [
+            {
+              url: siteMetadata.defaultSocialImage,
+              width: siteMetadata.defaultSocialImageWidth,
+              height: siteMetadata.defaultSocialImageHeight,
+            },
+          ],
+        }}
       />
     </Layout>
   );

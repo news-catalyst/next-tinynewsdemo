@@ -16,7 +16,7 @@ import {
   PostTextContainer,
   PostText,
 } from '../../../components/common/CommonStyles.js';
-import {NextSeo} from 'next-seo';
+import { NextSeo } from 'next-seo';
 
 const SectionContainer = tw.div`flex flex-col flex-nowrap items-center px-5 mx-auto max-w-7xl w-full`;
 const WideContainer = styled.div(() => ({
@@ -46,11 +46,11 @@ export default function Donate({
   }
 
   const localisedPage = page.page_translations[0];
-  console.log(localisedPage)
-  console.log(siteMetadata)
+  console.log(localisedPage);
+  console.log(siteMetadata);
   // there will only be one translation returned for a given page
   const headline = localisedPage.headline;
-  
+
   const body = renderBody(
     'en-US',
     page.page_translations,
@@ -108,32 +108,29 @@ export default function Donate({
           wrap={true}
         />
       </WideContainer>
-      
+
       <NextSeo
-    title={localisedPage.headline}
-    description={localisedPage.facebook_description || localisedPage.search_description}
-    canonical= {`${siteMetadata.siteUrl}/${page.slug}`}
-
-    openGraph={{
-    title: localisedPage.headline,
-    description: localisedPage.facebook_description,
-    url:`${siteMetadata.siteUrl}/${page.slug}`,
-    images: [
-      {
-        url: siteMetadata.defaultSocialImage,
-        width: siteMetadata.defaultSocialImageWidth, 
-        height: siteMetadata.defaultSocialImageHeight,
-      },
-    ],
-  }}
-/>
-
+        title={localisedPage.headline}
+        description={
+          localisedPage.facebook_description || localisedPage.search_description
+        }
+        canonical={`${siteMetadata.siteUrl}/${page.slug}`}
+        openGraph={{
+          title: localisedPage.headline,
+          description: localisedPage.facebook_description,
+          url: `${siteMetadata.siteUrl}/${page.slug}`,
+          images: [
+            {
+              url: siteMetadata.defaultSocialImage,
+              width: siteMetadata.defaultSocialImageWidth,
+              height: siteMetadata.defaultSocialImageHeight,
+            },
+          ],
+        }}
+      />
     </Layout>
   );
 }
-
-
-
 
 export async function getStaticPaths() {
   const apiUrl = process.env.HASURA_API_URL;

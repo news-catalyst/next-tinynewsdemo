@@ -126,8 +126,6 @@ export default function Layout({
       pageTitle += ' | ' + metaValues.siteName;
     }
 
-  
-
     metaValues.twitterTitle = translations[0]['twitter_title'];
     if (!metaValues.twitterTitle) {
       metaValues.twitterTitle = metaValues.searchTitle;
@@ -136,7 +134,6 @@ export default function Layout({
     if (!metaValues.twitterDescription) {
       metaValues.twitterDescription = metaValues.searchDescription;
     }
-    
   }
 
   if (article && article.firstPublishedOn) {
@@ -171,7 +168,6 @@ export default function Layout({
   return (
     <>
       <Head>
-      
         {/* Twitter Card data */}
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={metaValues.twitterTitle} />
@@ -187,7 +183,6 @@ export default function Layout({
         )}
         <meta name="twitter:image" content={metaValues.coverImage} />
 
-
         {metaValues.firstPublishedOn && (
           <meta
             property="article:published_time"
@@ -200,7 +195,7 @@ export default function Layout({
             content={metaValues.lastPublishedOn}
           />
         )}
-       
+
         {article !== undefined &&
           article.tags !== undefined &&
           article.tags.map((tag) => (
