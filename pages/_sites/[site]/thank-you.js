@@ -13,7 +13,6 @@ import {
 } from '../../../components/common/CommonStyles.js';
 import { NextSeo } from 'next-seo';
 
-
 const SectionContainer = tw.div`flex flex-col flex-nowrap items-center px-5 mx-auto max-w-7xl w-full`;
 
 export default function ThankYou({
@@ -49,7 +48,7 @@ export default function ThankYou({
       });
     }, 100);
   }
-console.log(page)
+  console.log(page);
   // there will only be one translation returned for a given page + locale
   const localisedPage = page.page_translations[0];
   const body = renderBody(
@@ -76,12 +75,10 @@ console.log(page)
         siteMetadata['coverImageWidth'] = mainImage.width;
         siteMetadata['coverImageHeight'] = mainImage.height;
       }
-    
     } catch (err) {
       console.error('error finding main image: ', err);
     }
   }
- 
 
   return (
     <Layout
@@ -107,22 +104,24 @@ console.log(page)
       </SectionContainer>
 
       <NextSeo
-  title= {localisedPage.search_title}
-  description={localisedPage.facebook_description || localisedPage.search_description}
-  canonical={`${siteMetadata.siteUrl}/${page.slug}`}
-  openGraph={{
-    title: localisedPage.facebook_title,
-    description: localisedPage.facebook_description,
-    url: `${siteMetadata.siteUrl}/${page.slug}`,
-    images: [
-      {
-        url: siteMetadata.defaultSocialImageWidth,
-        width: siteMetadata.defaultSocialImageWidth, 
-        height: siteMetadata.defaultSocialImageHeight,
-      },
-    ],
-  }}
-/>
+        title={localisedPage.search_title}
+        description={
+          localisedPage.facebook_description || localisedPage.search_description
+        }
+        canonical={`${siteMetadata.siteUrl}/${page.slug}`}
+        openGraph={{
+          title: localisedPage.facebook_title,
+          description: localisedPage.facebook_description,
+          url: `${siteMetadata.siteUrl}/${page.slug}`,
+          images: [
+            {
+              url: siteMetadata.defaultSocialImageWidth,
+              width: siteMetadata.defaultSocialImageWidth,
+              height: siteMetadata.defaultSocialImageHeight,
+            },
+          ],
+        }}
+      />
     </Layout>
   );
 }
@@ -152,7 +151,6 @@ export async function getServerSideProps(context) {
     site: site,
     slug: 'thank-you',
     localeCode: 'en-US',
-
   });
 
   if (errors || !data) {
@@ -167,7 +165,6 @@ export async function getServerSideProps(context) {
       };
     }
     page = data.page_slug_versions[0].page;
-    
 
     sections = data.categories;
     siteMetadata = data.site_metadatas[0].site_metadata_translations[0].data;

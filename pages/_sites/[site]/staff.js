@@ -1,53 +1,43 @@
-<<<<<<< Updated upstream
 import {
   generateAllDomainPaths,
   getOrgSettings,
   findSetting,
 } from '../../../lib/settings';
-=======
-
-import { generateAllDomainPaths } from '../../../lib/settings';
->>>>>>> Stashed changes
 import { hasuraGetPage } from '../../../lib/pages.js';
 import StaffPage from '../../../components/StaffPage';
 import { NextSeo } from 'next-seo';
 
-
 export default function Staff(props) {
-  
-
   const isAmp = false;
 
-  console.log(props)
-  
-  return ( 
+  console.log(props);
+
+  return (
     <>
-  
-  <StaffPage {...props} isAmp={isAmp} /> 
-  <NextSeo
-  title= "Staff"
-  description={props.siteMetadata.facebookDescription || props.metaValues.searchDescription}
-  canonical={`${props.siteMetadata.siteUrl}/staff`}
-  openGraph={{
-    title: `Staff`,
-    description: props.siteMetadata.facebookDescription,
-    url: `${props.siteMetadata.siteUrl}/staff`,
-    images: [
-      {
-        url: props.siteMetadata.defaultSocialImage,
-        width: props.siteMetadata.defaultSocialImageWidth, 
-        height: props.siteMetadata.defaultSocialImageHeight,
-      },
-    ],
-  }}
-/>
-</>
-
-
-  
-  ) 
+      <StaffPage {...props} isAmp={isAmp} />
+      <NextSeo
+        title="Staff"
+        description={
+          props.siteMetadata.facebookDescription ||
+          props.metaValues.searchDescription
+        }
+        canonical={`${props.siteMetadata.siteUrl}/staff`}
+        openGraph={{
+          title: `Staff`,
+          description: props.siteMetadata.facebookDescription,
+          url: `${props.siteMetadata.siteUrl}/staff`,
+          images: [
+            {
+              url: props.siteMetadata.defaultSocialImage,
+              width: props.siteMetadata.defaultSocialImageWidth,
+              height: props.siteMetadata.defaultSocialImageHeight,
+            },
+          ],
+        }}
+      />
+    </>
+  );
 }
-
 
 export async function getStaticPaths() {
   const apiUrl = process.env.HASURA_API_URL;
@@ -118,10 +108,7 @@ export async function getStaticProps({ params }) {
       monkeypodLink,
       site,
     },
-    
+
     revalidate: 1,
   };
-
-  
 }
-

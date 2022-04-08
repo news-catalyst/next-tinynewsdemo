@@ -31,7 +31,6 @@ export default function CategoryPage(props) {
     }
   }, [props.categoryExists, router]);
 
-
   // If the page is not yet generated, this will be displayed
   // initially until getStaticProps() finishes running
   if (router.isFallback) {
@@ -43,9 +42,7 @@ export default function CategoryPage(props) {
   siteMetadata['homepageTitle'] =
     props.title + ' | ' + siteMetadata['shortName'];
 
-   console.log(props.slug)
-   
-
+  console.log(props.slug);
 
   return (
     <Layout
@@ -67,27 +64,27 @@ export default function CategoryPage(props) {
         monkeypodLink={props.monkeypodLink}
       />
 
-<NextSeo
-  title={props.title || siteMetadata.searchTitle}
-  description={siteMetadata.searchDescription}
-  canonical={`${siteMetadata.siteUrl}/categories/${props.slug}`} 
-  openGraph={{
-    title: props.title || siteMetadata.searchTitle,
-    description: siteMetadata.facebookDescription || siteMetadata.searchDescription,
-    url: `${siteMetadata.siteUrl}/categories/${props.slug}`, 
-    images: [
-      {
-        url: siteMetadata.defaultSocialImage,
-        width: siteMetadata.defaultSocialImageWidth, 
-        height: siteMetadata.defaultSocialImageHeight,
-      },
-    ],
-  }}
-/>
+      <NextSeo
+        title={props.title || siteMetadata.searchTitle}
+        description={siteMetadata.searchDescription}
+        canonical={`${siteMetadata.siteUrl}/categories/${props.slug}`}
+        openGraph={{
+          title: props.title || siteMetadata.searchTitle,
+          description:
+            siteMetadata.facebookDescription || siteMetadata.searchDescription,
+          url: `${siteMetadata.siteUrl}/categories/${props.slug}`,
+          images: [
+            {
+              url: siteMetadata.defaultSocialImage,
+              width: siteMetadata.defaultSocialImageWidth,
+              height: siteMetadata.defaultSocialImageHeight,
+            },
+          ],
+        }}
+      />
     </Layout>
   );
 }
-
 
 export async function getStaticPaths() {
   const apiUrl = process.env.HASURA_API_URL;
@@ -128,7 +125,6 @@ export async function getStaticProps({ params }) {
   let title;
   let categoryExists = false;
   let slug;
-  
 
   const { errors, data } = await hasuraCategoryPage({
     url: apiUrl,
@@ -136,7 +132,6 @@ export async function getStaticProps({ params }) {
     categorySlug: params.category,
     localeCode: 'en-US',
   });
- 
 
   if (errors || !data) {
     console.error('error listing articles:', errors);
@@ -146,7 +141,6 @@ export async function getStaticProps({ params }) {
   } else {
     articles = data.articles;
     sections = data.categories;
-    
 
     for (var i = 0; i < sections.length; i++) {
       sections[i].title = sections[i].category_translations[0].title;
@@ -188,8 +182,6 @@ export async function getStaticProps({ params }) {
   }
 
   let renderFooter = booleanSetting(settings, 'RENDER_FOOTER', true);
-
-
 
   return {
     props: {
