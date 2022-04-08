@@ -18,6 +18,7 @@ import Article from '../../../../../components/Article.js';
 export default function ArticlePage(props) {
   const router = useRouter();
 
+
   // If the page is not yet generated, this will be displayed
   // initially until getStaticProps() finishes running
   // See: https://nextjs.org/docs/basic-features/data-fetching#the-fallback-key-required
@@ -33,7 +34,12 @@ export default function ArticlePage(props) {
       </>
     );
   }
-  return <Article {...props} />;
+  return (
+  <>
+  <Article {...props} />;
+
+  </>
+  )
 }
 
 export async function getStaticPaths() {
