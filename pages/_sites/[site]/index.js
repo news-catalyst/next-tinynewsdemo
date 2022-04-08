@@ -12,24 +12,53 @@ import { getArticleAds } from '../../../lib/ads.js';
 import Homepage from '../../../components/Homepage';
 import LandingPage from '../../../components/LandingPage';
 import CurriculumHomepage from '../../../components/curriculum/CurriculumHomepage';
+import { NextSeo } from 'next-seo';
 
 export default function Home(props) {
   if (
     props.siteMetadata &&
     props.siteMetadata.shortName === 'Tiny News Collective Curriculum'
   ) {
+
+    console.log(props)
     return <CurriculumHomepage {...props} />;
   }
 
-  // console.log('streamArticles:', props.streamArticles);
+  //console.log('streamArticles:', props.streamArticles);
   const component =
     (props.siteMetadata && props.siteMetadata.landingPage === 'on') ||
     !props.selectedLayout ? (
       <LandingPage {...props} />
     ) : (
+     
+     <>
       <Homepage {...props} />
+
+      <NextSeo
+  title= {props.siteMetadata.searchTitle}
+  description={props.siteMetadata.facebookDescription || props.siteMetadata.searchDescription}
+  canonical={props.siteMetadata.siteUrl}
+  openGraph={{
+    title: props.siteMetadata.facebookTitle,
+    description: props.siteMetadata.facebookDescription,
+    url: props.siteMetadata.siteUrl,
+    images: [
+      {
+        url: props.siteMetadata.defaultSocialImage,
+        width: props.siteMetadata.defaultSocialImageWidth, 
+        height: props.siteMetadata.defaultSocialImageHeight,
+      },
+    ],
+  }}
+/>
+
+     
+     </>
+     
+     
     );
 
+    console.log(props.siteMetadata)
   return component;
 }
 
@@ -64,6 +93,7 @@ export async function getStaticProps(context) {
     url: apiUrl,
     site: site,
   });
+
 
   if (settingsResult.errors) {
     console.error('Idx Settings error:', settingsResult.errors);

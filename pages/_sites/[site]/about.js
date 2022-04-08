@@ -6,10 +6,13 @@ import {
 } from '../../../lib/settings';
 import { hasuraGetPage } from '../../../lib/pages.js';
 import AboutPage from '../../../components/AboutPage';
+import { NextSeo } from 'next-seo';
 
 export default function About(props) {
   const isAmp = false;
   const router = useRouter();
+
+
 
   // If the page is not yet generated, this will be displayed
   // initially until getStaticProps() finishes running
@@ -17,12 +20,36 @@ export default function About(props) {
   if (router.isFallback) {
     return <div>Loading...</div>;
   }
-  return <AboutPage {...props} isAmp={isAmp} />;
+console.log(props)
+  return (
+    <>
+  <AboutPage {...props} isAmp={isAmp} />;
+  <NextSeo
+  title= {props.siteMetadata.searchTitle}
+  description={props.siteMetadata.facebookDescription || props.siteMetadata.searchDescription}
+  canonical={`${props.siteMetadata.siteUrl}/${props.page.slug}`}
+  openGraph={{
+    title: props.siteMetadata.facebookTitle,
+    description: props.siteMetadata.facebookDescription,
+    url: `${props.siteMetadata.siteUrl}/${props.page.slug}`,
+    images: [
+      {
+        url: props.siteMetadata.defaultSocialImage,
+        width: props.siteMetadata.defaultSocialImageWidth, 
+        height: props.siteMetadata.defaultSocialImageHeight,
+      },
+    ],
+  }}
+/>
+</>
+  )
 }
 
 export async function getStaticPaths() {
   const apiUrl = process.env.HASURA_API_URL;
   const adminSecret = process.env.HASURA_ADMIN_SECRET;
+
+  
 
   const mappedPaths = await generateAllDomainPaths({
     url: apiUrl,
@@ -76,6 +103,8 @@ export async function getStaticProps({ params }) {
     page = data.page_slug_versions[0].page;
 
     siteMetadata = data.site_metadatas[0].site_metadata_translations[0].data;
+  
+
 
     sections = data.categories;
     for (var i = 0; i < sections.length; i++) {
@@ -91,6 +120,10 @@ export async function getStaticProps({ params }) {
       monkeypodLink,
       site,
     },
+  
+    
     revalidate: 1,
   };
 }
+
+
