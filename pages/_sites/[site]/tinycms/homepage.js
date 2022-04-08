@@ -96,20 +96,15 @@ export default function HomePageEditor({
       setNotificationType('error');
       setShowNotification(true);
     } else {
-      const result = await revalidate({
-        path: '/',
+      await revalidate({
+        paths: ['/'],
         site: site,
-        secret: apiSecret,
       });
-      if (result && result.revalidated) {
-        setNotificationMessage(
-          'Successfully re-published homepage with these changes!'
-        );
-      } else {
-        setNotificationMessage(
-          'Successfully saved these homepage settings. It will take a few minutes to see them live.'
-        );
-      }
+
+      setNotificationMessage(
+        'Successfully re-published homepage with these changes!'
+      );
+
       setNotificationType('success');
       setShowNotification(true);
     }

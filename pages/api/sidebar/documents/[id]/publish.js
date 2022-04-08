@@ -29,8 +29,6 @@ export default async function Handler(req, res) {
   const apiToken = findSetting(settings, 'API_TOKEN');
   const siteUrl = findSetting(settings, 'NEXT_PUBLIC_SITE_URL');
 
-  const apiBaseURL = `http://${req.headers.host}`;
-
   // Check the API token
   if (req.query.token !== apiToken || !req.query.id) {
     return res.status(401).json({ message: 'Invalid API token' });
@@ -167,15 +165,11 @@ export default async function Handler(req, res) {
           revalidatePaths.push(`/tags/${slugify(tag)}`);
         }
       }
-
-      for await (const revalidatePath of revalidatePaths) {
-        await revalidate({
-          baseURL: apiBaseURL,
-          path: revalidatePath,
-          site: site,
-          secret: apiToken,
-        });
-      }
+      await revalidate({
+        baseURL: apiBaseURL,
+        paths: revalidatePaths,
+        site: site,
+      });
 
       publishUrl = new URL(path, siteUrl).toString();
       // console.log(publishUrl);
@@ -230,20 +224,16 @@ export default async function Handler(req, res) {
       } else {
         path += '/' + slug;
       }
+
       await revalidate({
-        baseURL: apiBaseURL,
-        path: path,
+        paths: [path],
         site: site,
-        secret: apiToken,
       });
 
       publishUrl = new URL(path, siteUrl).toString();
-
-      // console.log(publishUrl);
     }
 
     res.status(200).json({
-      // s3Url: s3Url,
       status: 'success',
       documentType: documentType,
       googleToken: googleToken,
