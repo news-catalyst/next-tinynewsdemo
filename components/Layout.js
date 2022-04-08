@@ -50,8 +50,6 @@ export default function Layout({
     siteName: meta['shortName'],
     searchTitle: meta['searchTitle'],
     searchDescription: meta['searchDescription'],
-    facebookTitle: meta['facebookTitle'],
-    facebookDescription: meta['facebookDescription'],
     twitterTitle: meta['twitterTitle'],
     twitterDescription: meta['twitterDescription'],
     coverImage: meta['coverImage'] || meta['defaultSocialImage'],
@@ -128,11 +126,7 @@ export default function Layout({
       pageTitle += ' | ' + metaValues.siteName;
     }
 
-    if (article && article.category) {
-      metaValues.section = article.category.category_translations[0].title;
-    }
-    metaValues.searchTitle = translations[0]['search_title'];
-    metaValues.searchDescription = translations[0]['search_description'];
+  
 
     metaValues.twitterTitle = translations[0]['twitter_title'];
     if (!metaValues.twitterTitle) {
@@ -142,14 +136,7 @@ export default function Layout({
     if (!metaValues.twitterDescription) {
       metaValues.twitterDescription = metaValues.searchDescription;
     }
-    metaValues.facebookTitle = translations[0]['facebook_title'];
-    if (!metaValues.facebookTitle) {
-      metaValues.facebookTitle = metaValues.searchTitle;
-    }
-    metaValues.facebookDescription = translations[0]['facebook_description'];
-    if (!metaValues.facebookDescription) {
-      metaValues.facebookDescription = metaValues.searchDescription;
-    }
+    
   }
 
   if (article && article.firstPublishedOn) {
@@ -184,11 +171,7 @@ export default function Layout({
   return (
     <>
       <Head>
-        <title>{pageTitle}</title>
-        {metaValues.favicon && <link rel="icon" href={metaValues.favicon} />}
-        <meta name="description" content={metaValues.searchDescription} />
-        {tagList}
-        <link rel="canonical" href={metaValues.canonical} />
+      
         {/* Twitter Card data */}
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={metaValues.twitterTitle} />
@@ -204,21 +187,6 @@ export default function Layout({
         )}
         <meta name="twitter:image" content={metaValues.coverImage} />
 
-        {/* Facebook data */}
-        <meta property="og:title" content={metaValues.facebookTitle} />
-        <meta property="og:type" content={metaValues.documentType} />
-        <meta property="og:url" content={metaValues.canonical} />
-        <meta property="og:image" content={metaValues.coverImage} />
-        <meta property="og:image:width" content={metaValues.coverImageWidth} />
-        <meta
-          property="og:image:height"
-          content={metaValues.coverImageHeight}
-        />
-        <meta
-          property="og:description"
-          content={metaValues.facebookDescription}
-        />
-        <meta property="og:site_name" content={metaValues.siteName} />
 
         {metaValues.firstPublishedOn && (
           <meta
@@ -232,9 +200,7 @@ export default function Layout({
             content={metaValues.lastPublishedOn}
           />
         )}
-        {metaValues.section && (
-          <meta property="article:section" content={metaValues.section} />
-        )}
+       
         {article !== undefined &&
           article.tags !== undefined &&
           article.tags.map((tag) => (
