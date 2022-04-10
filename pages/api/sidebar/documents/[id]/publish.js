@@ -83,7 +83,7 @@ export default async function Handler(req, res) {
 
     if (documentType === 'article') {
       let tags = articleData['article_tags'];
-      console.log('tags:', tags);
+      // console.log('tags:', tags);
 
       articleData['content'] = processedData['formattedElements'];
       articleData['main_image'] = processedData['mainImage'];
@@ -166,7 +166,6 @@ export default async function Handler(req, res) {
         }
       }
       await revalidate({
-        baseURL: apiBaseURL,
         paths: revalidatePaths,
         site: site,
       });
