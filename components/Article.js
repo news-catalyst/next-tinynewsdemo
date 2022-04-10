@@ -26,8 +26,8 @@ export default function Article({
   siteMetadata['canonicalUrl'] = canonicalArticleUrl;
   const translation = article.article_translations[0];
 
-  console.log(translation);
-  console.log(article);
+  // console.log(translation);
+  // console.log(article);
 
   const displayComments = siteMetadata['commenting'] === 'on';
 
