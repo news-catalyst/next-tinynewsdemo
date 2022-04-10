@@ -19,7 +19,6 @@ export default function Home(props) {
     props.siteMetadata &&
     props.siteMetadata.shortName === 'Tiny News Collective Curriculum'
   ) {
-    console.log(props);
     return <CurriculumHomepage {...props} />;
   }
 
@@ -55,7 +54,6 @@ export default function Home(props) {
       </>
     );
 
-  console.log(props.siteMetadata);
   return component;
 }
 
