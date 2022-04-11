@@ -8,7 +8,7 @@ export default function AdminLayout({ children, host, siteUrl }) {
   const { data: session, status } = useSession();
   const loading = status === 'loading';
 
-  console.log(session);
+  // console.log(session);
 
   const cypressTesting = process.env.NEXT_PUBLIC_CYPRESS_TESTING;
 
