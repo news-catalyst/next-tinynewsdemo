@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import tw from 'twin.macro';
+import { format } from 'date-fns';
 import { hasuraGetReadingDepth } from '../../../lib/analytics';
 
 const SubHeaderContainer = tw.div`pt-10 pb-5`;
@@ -14,8 +15,8 @@ const ReadingDepthData = (props) => {
     let rdParams = {
       url: props.apiUrl,
       site: props.site,
-      startDate: props.startDate.format('YYYY-MM-DD'),
-      endDate: props.endDate.format('YYYY-MM-DD'),
+      startDate: format(props.startDate, 'yyyy-MM-dd'),
+      endDate: format(props.endDate, 'yyyy-MM-dd'),
     };
     const fetchReadingDepthData = async () => {
       const { errors, data } = await hasuraGetReadingDepth(rdParams);
@@ -80,8 +81,8 @@ const ReadingDepthData = (props) => {
         </SubDek>
       </SubHeaderContainer>
       <p tw="p-2">
-        {props.startDate.format('dddd, MMMM Do YYYY')} -{' '}
-        {props.endDate.format('dddd, MMMM Do YYYY')}
+        {format(props.startDate, 'EEEE, MMMM do yyyy')} -{' '}
+        {format(props.endDate, 'EEEE, MMMM do yyyy')}
       </p>
 
       <table tw="w-full table-auto">
