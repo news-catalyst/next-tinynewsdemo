@@ -34,6 +34,7 @@ export default function HomePageEditor({
   siteUrl,
   host,
   apiSecret,
+  lambdaURL,
 }) {
   const [notificationMessage, setNotificationMessage] = useState('');
   const [notificationType, setNotificationType] = useState('');
@@ -97,6 +98,7 @@ export default function HomePageEditor({
       setShowNotification(true);
     } else {
       await revalidate({
+        lambdaURL: lambdaURL,
         paths: ['/'],
         site: site,
       });
@@ -177,6 +179,7 @@ export default function HomePageEditor({
 
 export async function getServerSideProps(context) {
   const apiUrl = process.env.HASURA_API_URL;
+  const lambdaURL = process.env.REVALIDATE_LAMBDA_URL;
   const site = context.params.site;
   const locale = 'en-US';
 
@@ -242,6 +245,7 @@ export async function getServerSideProps(context) {
       siteUrl,
       host,
       apiSecret,
+      lambdaURL,
     },
   };
 }

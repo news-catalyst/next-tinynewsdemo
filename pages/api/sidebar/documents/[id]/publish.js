@@ -166,6 +166,7 @@ export default async function Handler(req, res) {
         }
       }
       await revalidate({
+        lambdaURL: process.env.REVALIDATE_LAMBDA_URL,
         paths: revalidatePaths,
         site: site,
       });
