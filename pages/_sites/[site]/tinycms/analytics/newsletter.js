@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import tw from 'twin.macro';
-import moment from 'moment';
 import AdminLayout from '../../../../../components/AdminLayout';
 import AdminNav from '../../../../../components/nav/AdminNav';
 import CustomDimensions from '../../../../../components/tinycms/analytics/CustomDimensions';
@@ -10,6 +9,7 @@ import datePickerStyles from '../../../../../styles/datepicker.js';
 import AnalyticsNav from '../../../../../components/tinycms/analytics/AnalyticsNav';
 import AnalyticsSidebar from '../../../../../components/tinycms/analytics/AnalyticsSidebar';
 import { findSetting, getOrgSettings } from '../../../../../lib/settings.js';
+import { sub } from 'date-fns';
 
 const Container = tw.div`flex flex-wrap -mx-2 mb-8`;
 const Sidebar = tw.div`h-full h-screen bg-gray-100 md:w-1/5 lg:w-1/5 px-2 mb-4`;
@@ -21,13 +21,13 @@ const HeaderContainer = tw.div`pt-5 pb-10`;
 const Header = tw.h1`inline-block text-3xl font-extrabold text-gray-900 tracking-tight`;
 
 export default function Newsletter(props) {
-  const [startDate, setStartDate] = useState(moment().subtract(30, 'days'));
-  const [endDate, setEndDate] = useState(moment());
+  const [startDate, setStartDate] = useState(sub(new Date(), { months: 1 }));
+  const [endDate, setEndDate] = useState(new Date());
   const [focusedInput, setFocusedInput] = useState(null);
 
   const setDates = (sd, ed) => {
-    setStartDate(sd);
-    setEndDate(ed);
+    sd && setStartDate(sd);
+    ed && setEndDate(ed);
   };
 
   return (

@@ -14,6 +14,7 @@ import {
   hasuraGetNewsletterImpressions,
   hasuraGetArticleSessions,
 } from '../../../lib/analytics';
+import { format } from 'date-fns';
 
 const SubHeaderContainer = tw.div`pt-5 pb-5`;
 const SubHeader = tw.h1`inline-block text-xl font-extrabold text-gray-900 tracking-tight`;
@@ -36,14 +37,14 @@ const NewsletterSignupFormData = (props) => {
     let params = {
       url: props.apiUrl,
       site: props.site,
-      startDate: props.startDate.format('YYYY-MM-DD'),
-      endDate: props.endDate.format('YYYY-MM-DD'),
+      startDate: format(props.startDate, 'yyyy-MM-dd'),
+      endDate: format(props.endDate, 'yyyy-MM-dd'),
     };
     let customParams = {
       url: props.apiUrl,
       site: props.site,
-      startDate: props.startDate.format('YYYY-MM-DD'),
-      endDate: props.endDate.format('YYYY-MM-DD'),
+      startDate: format(props.startDate, 'yyyy-MM-dd'),
+      endDate: format(props.endDate, 'yyyy-MM-dd'),
       dimension: props.dimension,
     };
     const fetchCustomDimension = async () => {
@@ -224,8 +225,8 @@ const NewsletterSignupFormData = (props) => {
         <SubHeader>Signups</SubHeader>
       </SubHeaderContainer>
       <p tw="p-2">
-        {props.startDate.format('dddd, MMMM Do YYYY')} -{' '}
-        {props.endDate.format('dddd, MMMM Do YYYY')}
+        {format(props.startDate, 'EEEE, MMMM do yyyy')} -{' '}
+        {format(props.endDate, 'EEEE, MMMM do yyyy')}
       </p>
 
       <table tw="w-full table-auto">
@@ -261,8 +262,8 @@ const NewsletterSignupFormData = (props) => {
         <SubHeader>Signups by Section</SubHeader>
       </SubHeaderContainer>
       <p tw="p-2">
-        {props.startDate.format('dddd, MMMM Do YYYY')} -{' '}
-        {props.endDate.format('dddd, MMMM Do YYYY')}
+        {format(props.startDate, 'EEEE, MMMM do yyyy')} -{' '}
+        {format(props.endDate, 'EEEE, MMMM do yyyy')}
       </p>
 
       <table tw="w-full table-auto">
@@ -318,8 +319,8 @@ const NewsletterSignupFormData = (props) => {
       </SubHeaderContainer>
 
       <p tw="p-2">
-        {props.startDate.format('dddd, MMMM Do YYYY')} -{' '}
-        {props.endDate.format('dddd, MMMM Do YYYY')}
+        {format(props.startDate, 'EEEE, MMMM do yyyy')} -{' '}
+        {format(props.endDate, 'EEEE, MMMM do yyyy')}
       </p>
 
       <BarChart

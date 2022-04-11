@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import tw from 'twin.macro';
+import { format } from 'date-fns';
 import {
   BarChart,
   Bar,
@@ -23,8 +24,8 @@ const SourcesBySexualOrientation = (props) => {
     let params = {
       url: props.apiUrl,
       site: props.site,
-      startDate: props.startDate.format('YYYY-MM-DD'),
-      endDate: props.endDate.format('YYYY-MM-DD'),
+      startDate: format(props.startDate, 'yyyy-MM-dd'),
+      endDate: format(props.endDate, 'yyyy-MM-dd'),
     };
     const fetchData = async () => {
       const { errors, data } = await hasuraGetSourceDistroBySexualOrientation(
@@ -77,8 +78,8 @@ const SourcesBySexualOrientation = (props) => {
         <SubHeader>Sources by Sexual Orientation</SubHeader>
       </SubHeaderContainer>
       <p tw="p-2">
-        {props.startDate.format('dddd, MMMM Do YYYY')} -{' '}
-        {props.endDate.format('dddd, MMMM Do YYYY')}
+        {format(props.startDate, 'EEEE, MMMM do yyyy')} -{' '}
+        {format(props.endDate, 'EEEE, MMMM do yyyy')}
       </p>
 
       <BarChart
