@@ -2,6 +2,17 @@ require('dotenv').config({ path: '.env.local' });
 
 // to-do: replace d32qj1gowzeibr.cloudfront.net with assets.tinynewsco.dev
 module.exports = {
+  redirects() {
+    return [
+      process.env.MAINTENANCE === '1'
+        ? {
+            source: '/((?!maintenance).*)',
+            destination: '/maintenance',
+            permanent: false,
+          }
+        : null,
+    ].filter(Boolean);
+  },
   images: {
     domains: [
       'tnc-test-upload-bucket.s3.amazonaws.com',
