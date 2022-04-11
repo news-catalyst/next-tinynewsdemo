@@ -6,7 +6,7 @@ import Recirculation from './articles/Recirculation';
 import { generateArticleUrl } from '../lib/utils.js';
 import { useAmp } from 'next/amp';
 import Layout from './Layout.js';
-import { NextSeo } from 'next-seo';
+import { NextSeo, NewsArticleJsonLd } from 'next-seo';
 
 export default function Article({
   article,
@@ -25,9 +25,6 @@ export default function Article({
   let canonicalArticleUrl = generateArticleUrl(baseUrl, article);
   siteMetadata['canonicalUrl'] = canonicalArticleUrl;
   const translation = article.article_translations[0];
-
-  // console.log(translation);
-  // console.log(article);
 
   const displayComments = siteMetadata['commenting'] === 'on';
 
@@ -55,7 +52,6 @@ export default function Article({
     }
   }
 
-  // console.log('Returning layout and children components...');
   return (
     <Layout
       meta={siteMetadata}
@@ -110,20 +106,35 @@ export default function Article({
           article: {
             publishedTime: translation.first_published_at,
             modifiedTime: translation.last_published_at,
-            authors: article.author_articles.map((a) => [
-              `${siteMetadata.siteUrl}/authors/${a.author.slug}`,
-            ]), // generate author URL for each author
+            authors: article.author_articles.map(
+              (a) => `${siteMetadata.siteUrl}/authors/${a.author.slug}`
+            ), // generate author URL for each author
             section: article.category.category_translations[0].title,
-            tags: article.tag_articles.map((t) => [t.tag.slug]),
+            tags: article.tag_articles.map(
+              (t) => t.tag.tag_translations[0].title
+            ),
           },
           images: [
             {
-              url: siteMetadata.defaultSocialImage,
-              width: siteMetadata.defaultSocialImageWidth,
-              height: siteMetadata.defaultSocialImageHeight,
+              url: mainImage?.imageUrl,
+              width: mainImage?.width,
+              height: mainImage?.height,
             },
           ],
         }}
+      />
+      <NewsArticleJsonLd
+        url={canonicalArticleUrl}
+        title={translation.searchTitle || translation.headline}
+        images={[mainImage?.imageUrl]}
+        datePublished={translation.first_published_at}
+        dateModified={translation.last_published_at}
+        authorName={article.author_articles.map(
+          (a) => `${a.author.first_names} ${a.author.last_name}`
+        )}
+        publisherName={siteMetadata.shortName}
+        publisherLogo={siteMetadata.logo}
+        description={translation.searchDescription}
       />
     </Layout>
   );
