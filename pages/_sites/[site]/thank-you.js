@@ -11,6 +11,7 @@ import {
   PostTextContainer,
   PostText,
 } from '../../../components/common/CommonStyles.js';
+import { NextSeo } from 'next-seo';
 
 const SectionContainer = tw.div`flex flex-col flex-nowrap items-center px-5 mx-auto max-w-7xl w-full`;
 
@@ -58,6 +59,8 @@ export default function ThankYou({
     siteMetadata
   );
 
+  //console.log(localisedPage)
+
   let mainImageNode;
   let mainImage = null;
   if (page) {
@@ -99,6 +102,26 @@ export default function ThankYou({
           wrap={false}
         />
       </SectionContainer>
+
+      <NextSeo
+        title={localisedPage.search_title}
+        description={
+          localisedPage.facebook_description || localisedPage.search_description
+        }
+        canonical={`${siteMetadata.siteUrl}/${page.slug}`}
+        openGraph={{
+          title: localisedPage.facebook_title,
+          description: localisedPage.facebook_description,
+          url: `${siteMetadata.siteUrl}/${page.slug}`,
+          images: [
+            {
+              url: siteMetadata.defaultSocialImageWidth,
+              width: siteMetadata.defaultSocialImageWidth,
+              height: siteMetadata.defaultSocialImageHeight,
+            },
+          ],
+        }}
+      />
     </Layout>
   );
 }
@@ -129,6 +152,7 @@ export async function getServerSideProps(context) {
     slug: 'thank-you',
     localeCode: 'en-US',
   });
+
   if (errors || !data) {
     return {
       notFound: true,

@@ -13,6 +13,7 @@ import { cachedContents } from '../../../../lib/cached';
 import { avoidRateLimit } from '../../../../lib/utils';
 import { getArticleAds } from '../../../../lib/ads.js';
 import ArticleStream from '../../../../components/homepage/ArticleStream';
+import { NextSeo } from 'next-seo';
 
 export default function TagPage({
   articles,
@@ -53,6 +54,26 @@ export default function TagPage({
         metadata={siteMetadata}
         ads={expandedAds}
         monkeypodLink={monkeypodLink}
+      />
+
+      <NextSeo
+        title={tagTitle || siteMetadata.searchTitle}
+        description={
+          siteMetadata.facebookDescription || siteMetadata.searchDescription
+        }
+        canonical={`${siteMetadata.siteUrl}/tags/${tag.slug}`}
+        openGraph={{
+          title: tagTitle || siteMetadata.searchTitle,
+          description: siteMetadata.facebookDescription,
+          url: `${siteMetadata.siteUrl}/tags/${tag.slug}`,
+          images: [
+            {
+              url: siteMetadata.defaultSocialImage,
+              width: siteMetadata.defaultSocialImageWidth,
+              height: siteMetadata.defaultSocialImageHeight,
+            },
+          ],
+        }}
       />
     </Layout>
   );
