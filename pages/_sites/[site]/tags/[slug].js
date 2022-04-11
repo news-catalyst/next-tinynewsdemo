@@ -35,9 +35,6 @@ export default function TagPage({
 
   let tagTitle = tag.tag_translations[0].title;
 
-  console.log(tag);
-  console.log(articles);
-  console.log(siteMetadata);
   // set page title
   siteMetadata['homepageTitle'] = tagTitle + ' | ' + siteMetadata['shortName'];
 

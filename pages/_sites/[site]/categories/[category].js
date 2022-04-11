@@ -42,8 +42,6 @@ export default function CategoryPage(props) {
   siteMetadata['homepageTitle'] =
     props.title + ' | ' + siteMetadata['shortName'];
 
-  console.log(props.slug);
-
   return (
     <Layout
       meta={siteMetadata}

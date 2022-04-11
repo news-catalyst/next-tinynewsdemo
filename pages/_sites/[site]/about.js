@@ -18,7 +18,6 @@ export default function About(props) {
   if (router.isFallback) {
     return <div>Loading...</div>;
   }
-  console.log(props);
   return (
     <>
       <AboutPage {...props} isAmp={isAmp} />;

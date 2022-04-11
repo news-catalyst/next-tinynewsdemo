@@ -66,7 +66,6 @@ export default function AuthorPage({
   const ProfileDiv = tw.div`w-full border-b-2 border-black pb-2`;
   const ProfileBio = tw.p`pt-2 text-lg`;
   const ProfileTwitter = tw.p`text-base pt-3`;
-  console.log(author);
   return (
     <Layout
       meta={siteMetadata}

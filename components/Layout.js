@@ -20,8 +20,6 @@ const ThemeWrapper = styled.div(({ meta }) => ({
 export default function Layout({
   children,
   meta,
-  article,
-  page,
   sections,
   monkeypodLink,
   site,
@@ -42,17 +40,10 @@ export default function Layout({
 
   // console.log('Layout locale:', locale);
 
-  const siteUrl = meta['siteUrl'];
-
   const metaValues = {
-    canonical: meta['canonicalUrl'] || meta['siteUrl'],
     favicon: meta['favicon'],
-    siteName: meta['shortName'],
-    searchTitle: meta['searchTitle'],
-    searchDescription: meta['searchDescription'],
     twitterTitle: meta['twitterTitle'],
     twitterDescription: meta['twitterDescription'],
-    coverImage: meta['coverImage'] || meta['defaultSocialImage'],
     footerTitle: meta['footerTitle'],
     footerBylineLink: meta['footerBylineLink'],
     footerBylineName: meta['footerBylineName'],
@@ -65,109 +56,15 @@ export default function Layout({
     siteTwitter: meta['siteTwitter'],
   };
 
-  // figure out what dimensions to set for facebook cover image
-  let dimensions = null;
-  if (meta.coverImage && meta.coverImageWidth && meta.coverImageHeight) {
-    dimensions = coverImageDimensions(
-      meta.coverImageWidth,
-      meta.coverImageHeight
-    );
-  } else if (
-    meta.defaultSocialImage &&
-    meta.defaultSocialImageWidth &&
-    meta.defaultSocialImageHeight
-  ) {
-    dimensions = coverImageDimensions(
-      meta.defaultSocialImageWidth,
-      meta.defaultSocialImageHeight
-    );
-  }
-  metaValues.coverImageWidth = dimensions?.width;
-  metaValues.coverImageHeight = dimensions?.height;
-
-  // override default canonical url if there's one specified on the article
-  if (article && article.canonical_url) {
-    metaValues['canonical'] = article.canonical_url;
-  }
-
-  if (page && ['about', 'donate', 'thank-you'].includes(page.slug)) {
-    metaValues['canonical'] = `${siteUrl}/${page.slug}`;
-  }
-
-  let pageTitle = meta['homepageTitle'];
-
-  let author;
-  let translations;
-  if (article) {
-    translations = article.article_translations;
-    if (
-      article.author_articles &&
-      article.author_articles[0] &&
-      article.author_articles[0].author
-    ) {
-      author = article.author_articles[0].author;
-    }
-  }
-
-  if (page) {
-    translations = page.page_translations;
-    metaValues['documentType'] = 'website';
-  }
-  if (translations && translations.length > 0) {
-    pageTitle = translations[0]['search_title'];
-    if (pageTitle === 'Untitled Document') {
-      let headline = translations[0].headline;
-      if (headline !== 'Untitled Document') {
-        pageTitle = headline + ' | ' + metaValues.siteName;
-      } else {
-        pageTitle = metaValues.siteName;
-      }
-    } else {
-      pageTitle += ' | ' + metaValues.siteName;
-    }
-
-    metaValues.twitterTitle = translations[0]['twitter_title'];
-    if (!metaValues.twitterTitle) {
-      metaValues.twitterTitle = metaValues.searchTitle;
-    }
-    metaValues.twitterDescription = translations[0]['twitter_description'];
-    if (!metaValues.twitterDescription) {
-      metaValues.twitterDescription = metaValues.searchDescription;
-    }
-  }
-
-  if (article && article.firstPublishedOn) {
-    metaValues['firstPublishedOn'] = article.firstPublishedOn;
-  }
-  if (article && article.lastPublishedOn) {
-    metaValues['lastPublishedOn'] = article.lastPublishedOn;
-  }
-
-  if (author && author.twitter) {
-    metaValues['authorTwitter'] = '@' + author.twitter;
-  }
-  let tagList = [];
-  if (article && article.tags) {
-    article.tags.map((tag) => {
-      tagList.push(
-        <meta
-          property="article:tag"
-          content={tag.tag_translations[0].title}
-          key={tag.slug}
-        />
-      );
-    });
-  }
-
   const isAmp = useAmp();
 
   const mappingSiteTrackingID = trackingIdMapping();
   const trackingId = mappingSiteTrackingID[site];
 
-  // console.log('Layout: returning page', children);
   return (
     <>
       <Head>
+        {metaValues.favicon && <link rel="icon" href={metaValues.favicon} />}
         {/* Twitter Card data */}
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={metaValues.twitterTitle} />
@@ -183,28 +80,6 @@ export default function Layout({
         )}
         <meta name="twitter:image" content={metaValues.coverImage} />
 
-        {metaValues.firstPublishedOn && (
-          <meta
-            property="article:published_time"
-            content={metaValues.firstPublishedOn}
-          />
-        )}
-        {metaValues.lastPublishedOn && (
-          <meta
-            property="article:modified_time"
-            content={metaValues.lastPublishedOn}
-          />
-        )}
-
-        {article !== undefined &&
-          article.tags !== undefined &&
-          article.tags.map((tag) => (
-            <meta
-              key={tag.tag_translations[0].title}
-              property="article:tag"
-              content={tag.tag_translations[0].title}
-            />
-          ))}
         {metaValues.facebookAppId && (
           <meta property="fb:app_id" content={metaValues.facebookAppId} />
         )}
