@@ -10,6 +10,10 @@ import {
 import { findSetting, getOrgSettings } from '../../../../../lib/settings';
 import { revalidate } from '../../../../../lib/utils';
 import { slugify } from '../../../../../lib/graphql';
+import {
+  listAuthorPagePaths,
+  listAuthorsByID,
+} from '../../../../../lib/authors';
 
 export default async function Handler(req, res) {
   const apiUrl = process.env.HASURA_API_URL;
@@ -83,6 +87,7 @@ export default async function Handler(req, res) {
 
     if (documentType === 'article') {
       let tags = articleData['article_tags'];
+      let authors = articleData['article_authors'];
       // console.log('tags:', tags);
 
       articleData['content'] = processedData['formattedElements'];
@@ -163,6 +168,18 @@ export default async function Handler(req, res) {
       if (tags) {
         for (const tag of tags) {
           revalidatePaths.push(`/tags/${slugify(tag)}`);
+        }
+      }
+      if (authors) {
+        const authorResult = listAuthorsByID({
+          url: apiUrl,
+          site: site,
+          ids: authors,
+        });
+        if (!authorResult.errors) {
+          for (const author of data.authors) {
+            revalidatePaths.push(`/authors/${author.slug}`);
+          }
         }
       }
       await revalidate({
