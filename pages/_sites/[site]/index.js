@@ -22,7 +22,6 @@ export default function Home(props) {
     return <CurriculumHomepage {...props} />;
   }
 
-  //console.log('streamArticles:', props.streamArticles);
   const component =
     (props.siteMetadata && props.siteMetadata.landingPage === 'on') ||
     !props.selectedLayout ? (
@@ -30,17 +29,16 @@ export default function Home(props) {
     ) : (
       <>
         <Homepage {...props} />
-
         <NextSeo
-          title={props.siteMetadata.searchTitle}
-          description={
-            props.siteMetadata.facebookDescription ||
-            props.siteMetadata.searchDescription
-          }
+          title={props.siteMetadata.searchTitle || props.siteMetadata.shortName}
+          description={props.siteMetadata.searchDescription}
           canonical={props.siteMetadata.siteUrl}
           openGraph={{
-            title: props.siteMetadata.facebookTitle,
-            description: props.siteMetadata.facebookDescription,
+            title:
+              props.siteMetadata.facebookTitle || props.siteMetadata.shortName,
+            description:
+              props.siteMetadata.facebookDescription ||
+              props.siteMetadata.searchDescription,
             url: props.siteMetadata.siteUrl,
             images: [
               {

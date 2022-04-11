@@ -46,8 +46,6 @@ export default function Donate({
   }
 
   const localisedPage = page.page_translations[0];
-  console.log(localisedPage);
-  console.log(siteMetadata);
   // there will only be one translation returned for a given page
   const headline = localisedPage.headline;
 

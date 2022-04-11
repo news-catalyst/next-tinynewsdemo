@@ -10,27 +10,24 @@ import { NextSeo } from 'next-seo';
 export default function Staff(props) {
   const isAmp = false;
 
-  console.log(props);
-
   return (
     <>
       <StaffPage {...props} isAmp={isAmp} />
       <NextSeo
         title="Staff"
-        description={
-          props.siteMetadata.facebookDescription ||
-          props.metaValues.searchDescription
-        }
-        canonical={`${props.siteMetadata.siteUrl}/staff`}
+        description={props.siteMetadata?.searchDescription}
+        canonical={`${props.siteMetadata?.siteUrl}/staff`}
         openGraph={{
           title: `Staff`,
-          description: props.siteMetadata.facebookDescription,
-          url: `${props.siteMetadata.siteUrl}/staff`,
+          description:
+            props.siteMetadata?.facebookDescription ||
+            props.siteMetadata?.searchDescription,
+          url: `${props.siteMetadata?.siteUrl}/staff`,
           images: [
             {
-              url: props.siteMetadata.defaultSocialImage,
-              width: props.siteMetadata.defaultSocialImageWidth,
-              height: props.siteMetadata.defaultSocialImageHeight,
+              url: props.siteMetadata?.defaultSocialImage,
+              width: props.siteMetadata?.defaultSocialImageWidth,
+              height: props.siteMetadata?.defaultSocialImageHeight,
             },
           ],
         }}

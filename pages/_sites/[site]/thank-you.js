@@ -48,7 +48,7 @@ export default function ThankYou({
       });
     }, 100);
   }
-  console.log(page);
+
   // there will only be one translation returned for a given page + locale
   const localisedPage = page.page_translations[0];
   const body = renderBody(

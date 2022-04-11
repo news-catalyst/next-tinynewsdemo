@@ -10,7 +10,7 @@ import { NextSeo } from 'next-seo';
 export default function Static({ page, sections, siteMetadata, site }) {
   const router = useRouter();
   const isAmp = false;
-  let pages = page.page_translations[0];
+  let pages = page?.page_translations[0];
 
   if (router.isFallback) {
     return <div>Loading...</div>;
@@ -19,7 +19,6 @@ export default function Static({ page, sections, siteMetadata, site }) {
   if (!page || page === undefined || page === null || page === {}) {
     router.push('/404');
   }
-  console.log(page);
 
   return (
     <>
@@ -36,7 +35,9 @@ export default function Static({ page, sections, siteMetadata, site }) {
         description={pages.searchDescription}
         canonical={`${siteMetadata.siteUrl}/static/${page.slug}`}
         openGraph={{
-          title: pages.facebookTitle || pages.headline | pages.searchTitle,
+          title: `${pages.facebookTitle || pages.headline} | ${
+            pages.searchTitle
+          }`,
           description: pages.facebookDescription || pages.searchDescription,
           url: `${siteMetadata.siteUrl}/static/${page.slug}`,
           images: [
