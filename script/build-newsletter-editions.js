@@ -165,6 +165,9 @@ async function getNewsletterEditions() {
   let groupedSettings = groupBy(settings, (setting) => setting.organization.id);
 
   for (const [organizationId, orgSettings] of groupedSettings) {
+    if (organizationId !== 109) {
+      continue;
+    }
     let site = orgSettings[0].organization.slug;
     // console.log('SITE:', site);
     let letterhead = {
@@ -179,7 +182,7 @@ async function getNewsletterEditions() {
     };
 
     if (!letterhead['url']) {
-      return;
+      continue;
     }
 
     const letterheadUrl =
@@ -206,7 +209,7 @@ async function getNewsletterEditions() {
 
 //{"ops":[{"insert":"This is my newsletter"},{"attributes":{"header":1},"insert":"\n"},{"insert":"By Tyler \nThis is a paragraph followed by a list:\nlist item 1"},{"attributes":{"list":"bullet"},"insert":"\n"},{"insert":"list item 2"},{"attributes":{"list":"bullet"},"insert":"\n"},{"insert":"list item 3"},{"attributes":{"list":"bullet"},"insert":"\n"},{"insert":"Section title"},{"attributes":{"header":2},"insert":"\n"},{"attributes":{"bold":true},"insert":"Bold text. "},{"attributes":{"italic":true,"bold":true},"insert":"Italic bold text. "},{"attributes":{"italic":true},"insert":"Just italic."},{"insert":"\n\n"}]}
 
-async function processDeltaOp(elements, element, site, slug, settings) {
+async function processDeltaOp(elements, element, site, slug, settings, index) {
   // console.log('processDeltaOp', typeof elements, elements.length);
   // console.log('processDeltaOp settings:', settings);
   // console.log('element:', element);
@@ -216,20 +219,22 @@ async function processDeltaOp(elements, element, site, slug, settings) {
   }
 
   if (typeof element.insert === 'string') {
-    let lines = element.insert.split('\n');
-    if (!element.attributes && lines.length > 1) {
-      lines.forEach((line) => {
-        if (line) {
-          elements.push({
-            insert: line,
-          });
-        }
-      });
-    } else {
-      elements.push(element);
-    }
+    // let lines = element.insert.split('\n');
+    // if (!element.attributes && lines.length > 1) {
+    //   lines.forEach((line) => {
+    //     if (line) {
+    //       elements.push({
+    //         insert: line,
+    //       });
+    //     }
+    //   });
+    // } else {
+    elements.push(element);
+    // }
+
+    console.log('element:', element);
   } else if (element.insert && element.insert.imageBlot) {
-    // console.log(`found element.insert.imageBlot`, element.insert.imageBlot);
+    console.log(`found element.insert.imageBlot`, element.insert.imageBlot);
     const imageData = await handleImageBlot(
       element.insert.imageBlot,
       site,
@@ -243,50 +248,61 @@ async function processDeltaOp(elements, element, site, slug, settings) {
       height: imageData.height,
       width: imageData.width,
     };
-    // console.log('element.insert.imageBlot childImage', childImage);
-    elements.push({
+    let imageElement = {
+      index: index,
       type: 'image',
       children: [childImage],
       link: null,
-    });
+    };
+    console.log('Image Element:', JSON.stringify(imageElement));
+    // console.log('element.insert.imageBlot childImage', childImage);
+    elements.push(imageElement);
   }
   return elements;
 }
 
-async function transformDelta(content, site, slug, settings) {
+async function transformDelta(headline, content, site, slug, settings) {
   let elements = [];
+
+  let i = 0;
   for await (let contentElement of content) {
     if (!contentElement && !contentElement.delta && !contentElement.columns) {
       // console.log(`blank content element, skipping`, contentElement);
       return;
     }
     if (contentElement.columns && contentElement.columns.length) {
-      // console.log(
-      //   ` > processing content element with ${contentElement.columns.length} columns...`
-      // );
+      let x = 0;
       for await (let column of contentElement.columns) {
         // console.log(` > ${column.delta.ops.length} delta ops found`);
+        let y = 0;
         for await (let element of column.delta.ops) {
           elements = await processDeltaOp(
             elements,
             element,
             site,
             slug,
-            settings
+            settings,
+            y
           );
+          y++;
         }
+        x++;
       }
     } else if (contentElement.delta) {
+      let y = 0;
       for await (let element of contentElement.delta.ops) {
         elements = await processDeltaOp(
           elements,
           element,
           site,
           slug,
-          settings
+          settings,
+          y
         );
+        y++;
       }
     }
+    i++;
   }
 
   // console.log('elements:', elements);
@@ -313,19 +329,24 @@ async function transformDelta(content, site, slug, settings) {
         // console.log(x, previousIndex, 'blank header element');
         return;
       }
-      // console.log(x, previousIndex, 'header:', headerElement.insert);
-      formattedElements.push({
-        link: null,
-        type: 'text',
-        style: 'HEADING_' + element.attributes.header,
-        children: [
-          {
-            index: x,
-            style: {},
-            content: shared.cleanContent(headerElement.insert),
-          },
-        ],
-      });
+
+      // don't store the newsletter title as a body element or we'll have a repeated title on the page!
+      let headingText = shared.cleanContent(headerElement.insert);
+      if (headingText !== headline) {
+        // console.log(x, previousIndex, 'header:', headerElement.insert);
+        formattedElements.push({
+          link: null,
+          type: 'text',
+          style: 'HEADING_' + element.attributes.header,
+          children: [
+            {
+              index: x,
+              style: {},
+              content: headingText,
+            },
+          ],
+        });
+      }
     } else if (element.attributes && element.attributes.list) {
       // console.log(i, "list:", elements[i-1].insert)
 
@@ -360,51 +381,11 @@ async function transformDelta(content, site, slug, settings) {
         // reset the list holder
         list = { items: [] };
       }
-    } else if (
-      element.attributes &&
-      (element.attributes.bold || element.attributes.italic)
-    ) {
-      // console.log(i, "formatted text:", element.insert);
-      let style = {};
-      if (element.attributes.bold) {
-        style['bold'] = true;
-      }
-      if (element.attributes.italic) {
-        style['italic'] = true;
-      }
-
-      paragraph.children.push({
-        index: x,
-        style: style,
-        content: element.insert,
-      });
-
-      // if this is the last element of the newsletter, or
-      // if the next element is blank string, or
-      // if the next element is a list/header item, close the paragraph
-      if (
-        !elements[x + 1] ||
-        (elements[x + 1] &&
-          elements[x + 1].insert &&
-          !elements[x + 1].insert.replace(/[\\n]|\n/g, '')) ||
-        (elements[x + 1] &&
-          elements[x + 1].attributes &&
-          (elements[x + 1].attributes.list ||
-            elements[x + 1].attributes.header))
-      ) {
-        formattedElements.push({
-          link: null,
-          type: 'text',
-          style: 'NORMAL_TEXT',
-          children: paragraph.children,
-        });
-        paragraph = { children: [] };
-        // otherwise, continue on
-      }
     } else if (element.attributes && element.attributes.link) {
       // console.log(i, "link:", element.attributes.link);
 
-      formattedElements.push({
+      let normalLinkedTextElement = {
+        index: x,
         link: null,
         type: 'text',
         style: 'NORMAL_TEXT',
@@ -418,14 +399,17 @@ async function transformDelta(content, site, slug, settings) {
             content: element.insert,
           },
         ],
-      });
+      };
+      console.log('normal linked text:', normalLinkedTextElement);
+
+      formattedElements.push(normalLinkedTextElement);
     } else if (element.attributes && element.attributes.align) {
       if (shared.cleanContent(element.insert)) {
-        // console.log('aligned element:', JSON.stringify(element));
-        formattedElements.push({
+        let alignedElement = {
           link: null,
           type: 'text',
           style: 'NORMAL_TEXT',
+          index: x,
           children: [
             {
               link: null,
@@ -436,7 +420,61 @@ async function transformDelta(content, site, slug, settings) {
               content: shared.cleanContent(element.insert),
             },
           ],
-        });
+        };
+
+        console.log('aligned element:', JSON.stringify(alignedElement));
+        formattedElements.push(alignedElement);
+      }
+    } else if (element.type && element.type === 'image') {
+      // just add these to the formattedElements, images were dealt with already
+      formattedElements.push(element);
+    } else if (
+      typeof element.insert === 'string' ||
+      (element.attributes &&
+        (element.attributes.bold || element.attributes.italic))
+    ) {
+      // let children = [];
+
+      // console.log(i, "formatted text:", element.insert);
+      let style = {};
+      if (element.attributes && element.attributes.bold) {
+        style['bold'] = true;
+      }
+      if (element.attributes && element.attributes.italic) {
+        style['italic'] = true;
+      }
+
+      paragraph.children.push({
+        index: x,
+        style: style,
+        content: element.insert,
+      });
+
+      // if this is the last element of the newsletter, or
+      // if the next element is blank string, or
+      // if the next element is a list/header/image item, close the paragraph
+      if (
+        !elements[x + 1] ||
+        (elements[x + 1] &&
+          elements[x + 1].insert &&
+          !elements[x + 1].insert.replace(/[\\n]|\n/g, '')) ||
+        (elements[x + 1] &&
+          elements[x + 1].attributes &&
+          (elements[x + 1].attributes.list ||
+            elements[x + 1].attributes.header ||
+            (elements[x + 1].insert && elements[x + 1].insert.imageBlot)))
+      ) {
+        let normalTextElement = {
+          index: x,
+          link: null,
+          type: 'text',
+          style: 'NORMAL_TEXT',
+          children: paragraph.children,
+        };
+        console.log('normal text:', normalTextElement);
+        formattedElements.push(normalTextElement);
+        paragraph = { children: [] };
+        // otherwise, continue on
       }
     } else if (element.attributes) {
       console.log('unhandled element.attributes:', element.attributes);
@@ -454,9 +492,8 @@ async function transformDelta(content, site, slug, settings) {
       ) {
         // console.log(i, 'skip, list is handled next:', element.insert);
       } else {
-        // console.log(i, 'plain text:', element.insert);
-
-        paragraph.children.push({
+        let plainTextElement = {
+          index: x,
           link: null,
           type: 'text',
           style: 'NORMAL_TEXT',
@@ -467,7 +504,10 @@ async function transformDelta(content, site, slug, settings) {
               content: element.insert,
             },
           ],
-        });
+        };
+        console.log(i, 'plain text:', element.insert);
+        formattedElements.push(plainTextElement);
+        // paragraph.children.push(plainTextElement);
 
         // if this is the last element of the newsletter, or
         // if the next element is blank string, or
@@ -482,12 +522,13 @@ async function transformDelta(content, site, slug, settings) {
             (elements[x + 1].attributes.list ||
               elements[x + 1].attributes.header))
         ) {
-          formattedElements.push({
-            link: null,
-            type: 'text',
-            style: 'NORMAL_TEXT',
-            children: paragraph.children,
-          });
+          // formattedElements.push({
+          //   index: x,
+          //   link: null,
+          //   type: 'text',
+          //   style: 'NORMAL_TEXT',
+          //   children: paragraph.children,
+          // });
           paragraph = { children: [] };
         }
       }
@@ -513,6 +554,8 @@ async function saveNewsletterEditions(
   );
 
   for await (let newsletter of letterheadData) {
+    let headline = shared.cleanContent(newsletter.title);
+
     if (!newsletter.publicationDate) {
       console.log(
         '> Org#' +
@@ -520,21 +563,22 @@ async function saveNewsletterEditions(
           ' Newsletter ID#' +
           newsletter.id +
           " '" +
-          newsletter.title +
+          headline +
           "' is not published, skipping."
       );
       continue;
     }
 
-    // console.log(Object.keys(newsletter).sort());
+    console.log(Object.keys(newsletter).sort());
+    console.log(newsletter.emailTemplate);
     console.log(
       organizationId,
       newsletter.id,
       newsletter.publicationDate,
-      newsletter.title
+      headline
     );
 
-    let slug = slugify(shared.cleanContent(newsletter.title));
+    let slug = slugify(headline);
     if (!slug) {
       console.error('> no slug, skipping');
       continue;
@@ -554,8 +598,15 @@ async function saveNewsletterEditions(
     }
 
     let unprocessedContentJSON = JSON.parse(unprocessedContent);
-    // console.log('UNPROCESSED CONTENT:', unprocessedContentJSON);
+    if (
+      headline ===
+      'Black West Virginians Are At A Unique Disadvantage When It Comes To Mental Health'
+    ) {
+      console.log('UNPROCESSED CONTENT:', unprocessedContent);
+    }
+
     let content = await transformDelta(
+      headline,
       unprocessedContentJSON,
       site,
       slug,
@@ -565,7 +616,7 @@ async function saveNewsletterEditions(
 
     let editionData = {
       slug: slug,
-      headline: newsletter.title,
+      headline: headline,
       letterhead_id: newsletter.id,
       letterhead_unique_id: newsletter.uniqueId,
       content: content,
