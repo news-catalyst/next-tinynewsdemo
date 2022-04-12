@@ -1,6 +1,8 @@
 import Head from 'next/head';
 
 export default function TwitterMeta({ siteMetadata, override }) {
+  if (!siteMetadata) return null;
+
   return (
     <Head>
       <meta

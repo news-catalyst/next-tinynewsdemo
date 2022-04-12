@@ -33,11 +33,11 @@ export default function Static({ page, sections, siteMetadata, site }) {
 
       <NextSeo
         title={pages.headline}
-        description={pages.searchDescription}
+        description={pages.search_description}
         canonical={`${siteMetadata.siteUrl}/static/${page.slug}`}
         openGraph={{
-          title: `${pages.facebookTitle || pages.headline}`,
-          description: pages.facebookDescription || pages.searchDescription,
+          title: `${pages.facebook_title || pages.headline}`,
+          description: pages.facebook_description || pages.search_description,
           url: `${siteMetadata.siteUrl}/static/${page.slug}`,
           images: [
             {
@@ -51,7 +51,7 @@ export default function Static({ page, sections, siteMetadata, site }) {
       <TwitterMeta
         override={{
           title: pages.headline,
-          description: pages.searchDescription,
+          description: pages.search_description,
         }}
         siteMetadata={siteMetadata}
       />
