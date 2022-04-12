@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import tw from 'twin.macro';
-import moment from 'moment';
+import { sub } from 'date-fns';
 import AdminLayout from '../../../../../components/AdminLayout';
 import AdminNav from '../../../../../components/nav/AdminNav';
 import CustomDimensions from '../../../../../components/tinycms/analytics/CustomDimensions';
@@ -21,13 +21,14 @@ const HeaderContainer = tw.div`pt-5 pb-10`;
 const Header = tw.h1`inline-block text-3xl font-extrabold text-gray-900 tracking-tight`;
 
 export default function Donations(props) {
-  const [startDate, setStartDate] = useState(moment().subtract(30, 'days'));
-  const [endDate, setEndDate] = useState(moment());
+  const [startDate, setStartDate] = useState(sub(new Date(), { months: 1 }));
+  const [endDate, setEndDate] = useState(new Date());
+
   const [focusedInput, setFocusedInput] = useState(null);
 
   const setDates = (sd, ed) => {
-    setStartDate(sd);
-    setEndDate(ed);
+    sd && setStartDate(sd);
+    ed && setEndDate(ed);
   };
 
   return (

@@ -16,6 +16,7 @@ import {
   PostTextContainer,
   PostText,
 } from '../../../components/common/CommonStyles.js';
+import { NextSeo } from 'next-seo';
 
 const SectionContainer = tw.div`flex flex-col flex-nowrap items-center px-5 mx-auto max-w-7xl w-full`;
 const WideContainer = styled.div(() => ({
@@ -105,6 +106,26 @@ export default function Donate({
           wrap={true}
         />
       </WideContainer>
+
+      <NextSeo
+        title={localisedPage.headline}
+        description={
+          localisedPage.facebook_description || localisedPage.search_description
+        }
+        canonical={`${siteMetadata.siteUrl}/${page.slug}`}
+        openGraph={{
+          title: localisedPage.headline,
+          description: localisedPage.facebook_description,
+          url: `${siteMetadata.siteUrl}/${page.slug}`,
+          images: [
+            {
+              url: siteMetadata.defaultSocialImage,
+              width: siteMetadata.defaultSocialImageWidth,
+              height: siteMetadata.defaultSocialImageHeight,
+            },
+          ],
+        }}
+      />
     </Layout>
   );
 }
