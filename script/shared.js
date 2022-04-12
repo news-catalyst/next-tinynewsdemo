@@ -23,7 +23,7 @@ function hasuraInsertSettings(params) {
 }
 
 const LIST_SETTINGS = `query FrontendAllLetterheadSettings {
-  settings(where: {name: {_in: ["LETTERHEAD_API_URL", "LETTERHEAD_CHANNEL_SLUG", "LETTERHEAD_API_KEY"]}}) {
+  settings(where: {name: {_in: ["TNC_AWS_ACCESS_ID", "TNC_AWS_ACCESS_KEY", "TNC_AWS_BUCKET_NAME", "LETTERHEAD_API_URL", "LETTERHEAD_CHANNEL_SLUG", "LETTERHEAD_API_KEY"]}}) {
     name
     value
     organization {
@@ -1575,7 +1575,15 @@ function sanitizePath(path) {
   return path;
 }
 
+function cleanContent(content) {
+  if (content === null || typeof content === 'undefined') {
+    return '';
+  }
+  return content.trim();
+}
+
 module.exports = {
+  cleanContent,
   hasuraGetAllLetterheadSettings,
   hasuraInsertSettings,
   hasuraGetSiteData,
