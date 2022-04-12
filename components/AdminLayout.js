@@ -16,6 +16,7 @@ export default function AdminLayout({
   let isAllowedToAccess = false;
 
   if (session && session.user && session.user.email) {
+    console.log('session.user.email:', session.user.email);
     let authorizedDomains = authorizedEmailDomains.split(',');
     authorizedDomains.forEach((authorizedDomain) => {
       if (session.user.email.split('@')[1] === authorizedDomain) {
@@ -28,6 +29,9 @@ export default function AdminLayout({
   let unauthorizedAccess;
 
   if (!isAllowedToAccess && session && session.user) {
+    console.log(
+      "You are logged in, but unfortunately you're not authorized for this tinycms"
+    );
     unauthorizedAccess = (
       <span>
         Sorry, {session.user.email}, you're not authorized to access this
@@ -37,6 +41,7 @@ export default function AdminLayout({
       </span>
     );
   } else {
+    console.log('You are not logged in so you are not authorized.');
     unauthorizedAccess = <span>You must be signed in to use these tools.</span>;
   }
 
@@ -45,9 +50,14 @@ export default function AdminLayout({
   // when testing on localhost instead of repurposing the cypressTesting var
   let skipAuth = false;
   if (host.includes('localhost')) {
+    console.log('Skipping auth on localhost');
     skipAuth = true;
   }
   const callbackUrl = new URL('/tinycms', siteUrl).toString();
+
+  console.log(
+    `debug: session=${session} cypressTesting=${cypressTesting} skipAuth=${skipAuth} isAllowedToAccess=${isAllowedToAccess} callbackUrl=${callbackUrl}`
+  );
   return (
     <>
       <Head>
