@@ -101,6 +101,7 @@ export default function TextNode({ node, metadata }) {
     return text;
   };
 
+  console.log('node has', node.children.length, 'children');
   const children = node.children
     .filter(function (child) {
       if (
@@ -108,11 +109,13 @@ export default function TextNode({ node, metadata }) {
         child.content === 'FORMAT START' ||
         child.content === 'FORMAT END'
       ) {
+        console.log('child has no content:', child);
         return false; // skip
       }
       return true;
     })
     .map((child, i) => {
+      console.log(i, 'processing', child);
       return processChild(child, node.children[i + 1]);
     });
 
