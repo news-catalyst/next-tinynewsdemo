@@ -193,6 +193,7 @@ export async function getStaticProps({ params }) {
       renderFooter,
       monkeypodLink,
       site,
+      slug: params.category,
     },
   };
 }
