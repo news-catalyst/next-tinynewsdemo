@@ -3,11 +3,104 @@
 require('dotenv').config({ path: '.env.local' });
 
 const fetch = require('node-fetch');
-
 const shared = require('./shared');
+const AWS = require('aws-sdk');
+const { v4: uuidv4 } = require('uuid');
+const sizeOf = require('image-size');
+const imageType = require('image-type');
 
 const apiUrl = process.env.HASURA_API_URL;
 const adminSecret = process.env.HASURA_ADMIN_SECRET;
+
+async function upload(imageID, contentUri, slug, site, settings) {
+  // console.log('upload settings:', settings);
+  const AWS_ACCESS_KEY_ID = settings.find(
+    (setting) => setting.name === 'TNC_AWS_ACCESS_ID'
+  )?.value;
+  const AWS_SECRET_KEY = settings.find(
+    (setting) => setting.name === 'TNC_AWS_ACCESS_KEY'
+  )?.value;
+  const AWS_BUCKET = settings.find(
+    (setting) => setting.name === 'TNC_AWS_BUCKET_NAME'
+  )?.value;
+
+  if (!AWS_SECRET_KEY || !AWS_ACCESS_KEY_ID || !AWS_BUCKET) {
+    console.error(settings);
+    return;
+  }
+
+  const assetsDomain = process.env.NEXT_PUBLIC_ASSETS_DOMAIN;
+  // console.log('TINYS3 Assets Domain:', assetsDomain, AWS_BUCKET);
+
+  const s3 = new AWS.S3({
+    accessKeyId: AWS_ACCESS_KEY_ID,
+    secretAccessKey: AWS_SECRET_KEY,
+  });
+
+  var objectName = 'image' + imageID;
+
+  // get the image data from google first
+  let imageData;
+  let imageDimensions;
+  let imageExtension;
+  let buffer;
+  const response = await fetch(contentUri, {
+    method: 'GET',
+  });
+
+  let params = {
+    Bucket: AWS_BUCKET,
+  };
+  if (response.ok) {
+    imageData = await response.blob();
+
+    if (imageData) {
+      try {
+        buffer = await imageData.arrayBuffer();
+        buffer = Buffer.from(buffer);
+        params.Body = buffer;
+        imageDimensions = sizeOf(buffer);
+        imageExtension = imageType(buffer);
+        // console.log('imageDims:', imageDimensions);
+      } catch (e) {
+        console.error(
+          'error getting size of imageData buffer:',
+          typeof buffer,
+          e
+        );
+      }
+    }
+  } else {
+    console.error('Failed to fetch image data for uri: ', contentUri);
+    return null;
+  }
+
+  const destinationPath = `${site}/newsletters/${slug}/${objectName}.${imageExtension.ext}`;
+  params.Key = destinationPath;
+  params.ContentType = imageExtension.mime;
+  params.ACL = 'public-read';
+
+  // console.log('uploading image:', params, imageDimensions);
+
+  const imageS3Url = `https://${assetsDomain}/${destinationPath}`;
+
+  try {
+    // console.log('token:', oauthToken);
+    const data = await s3.upload(params).promise();
+    // console.log('uploadImage const data:', data);
+    let imageData = {
+      s3Url: imageS3Url,
+      height: imageDimensions.height,
+      width: imageDimensions.width,
+      imageID: imageID,
+    };
+    // console.log('uploaded data:', imageData);
+    return imageData;
+  } catch (err) {
+    console.error('Error uploading to S3:', err);
+    return null;
+  }
+}
 
 // https://stackoverflow.com/a/38327540
 function groupBy(list, keyGetter) {
@@ -22,6 +115,38 @@ function groupBy(list, keyGetter) {
     }
   });
   return map;
+}
+
+async function uploadToS3(params) {
+  // console.log('uploadToS3 settings:', params['settings']);
+  const data = await upload(
+    params['imageID'],
+    params['url'],
+    params['slug'],
+    params['site'],
+    params['settings']
+  );
+  return data;
+}
+
+async function handleImageBlot(blot, site, slug, settings) {
+  if (!blot.src) {
+    return;
+  }
+  let imageID = blot.id;
+  if (!imageID) {
+    imageID = uuidv4();
+  }
+  // console.log('handleImageBlot settings');
+  let imageData = await uploadToS3({
+    imageID: imageID,
+    site: site,
+    slug: slug,
+    url: blot.src,
+    settings: settings,
+  });
+  // console.log('Uploaded image to s3:', imageData);
+  return imageData;
 }
 
 async function getNewsletterEditions() {
@@ -40,9 +165,8 @@ async function getNewsletterEditions() {
   let groupedSettings = groupBy(settings, (setting) => setting.organization.id);
 
   for (const [organizationId, orgSettings] of groupedSettings) {
-    if (organizationId !== 109) {
-      continue;
-    }
+    let site = orgSettings[0].organization.slug;
+    // console.log('SITE:', site);
     let letterhead = {
       url: orgSettings.find((setting) => setting.name === 'LETTERHEAD_API_URL')
         ?.value,
@@ -60,7 +184,7 @@ async function getNewsletterEditions() {
 
     const letterheadUrl =
       letterhead['url'] + 'channels/' + letterhead['channelSlug'] + '/letters';
-    console.log('Letterhead API URL:', letterheadUrl);
+    // console.log('Letterhead API URL:', letterheadUrl);
 
     const opts = {
       headers: {
@@ -70,26 +194,28 @@ async function getNewsletterEditions() {
     };
     let res = await fetch(letterheadUrl, opts);
     let data = await res.json();
-    let saveResult = await saveNewsletterEditions(organizationId, data);
+    let saveResult = await saveNewsletterEditions(
+      organizationId,
+      site,
+      data,
+      orgSettings
+    );
     // console.log('save newsletter result:', saveResult);
   }
 }
 
 //{"ops":[{"insert":"This is my newsletter"},{"attributes":{"header":1},"insert":"\n"},{"insert":"By Tyler \nThis is a paragraph followed by a list:\nlist item 1"},{"attributes":{"list":"bullet"},"insert":"\n"},{"insert":"list item 2"},{"attributes":{"list":"bullet"},"insert":"\n"},{"insert":"list item 3"},{"attributes":{"list":"bullet"},"insert":"\n"},{"insert":"Section title"},{"attributes":{"header":2},"insert":"\n"},{"attributes":{"bold":true},"insert":"Bold text. "},{"attributes":{"italic":true,"bold":true},"insert":"Italic bold text. "},{"attributes":{"italic":true},"insert":"Just italic."},{"insert":"\n\n"}]}
 
-function transformDelta(delta) {
-  // console.log(delta);
+async function processDeltaOp(elements, element, site, slug, settings) {
+  // console.log('processDeltaOp', typeof elements, elements.length);
+  // console.log('processDeltaOp settings:', settings);
+  // console.log('element:', element);
+  if (!element.insert) {
+    // console.log('no element to insert:', JSON.stringify(element));
+    return elements;
+  }
 
-  let elements = [];
-
-  delta.ops.forEach((element, i) => {
-    if (!element.insert) {
-      return;
-    }
-    if (typeof element.insert !== 'string') {
-      return;
-    }
-
+  if (typeof element.insert === 'string') {
     let lines = element.insert.split('\n');
     if (!element.attributes && lines.length > 1) {
       lines.forEach((line) => {
@@ -102,26 +228,101 @@ function transformDelta(delta) {
     } else {
       elements.push(element);
     }
-  });
+  } else if (element.insert && element.insert.imageBlot) {
+    // console.log(`found element.insert.imageBlot`, element.insert.imageBlot);
+    const imageData = await handleImageBlot(
+      element.insert.imageBlot,
+      site,
+      slug,
+      settings
+    );
+    let childImage = {
+      imageId: imageData.id,
+      imageAlt: element.insert.imageBlot.caption,
+      imageUrl: imageData.s3Url,
+      height: imageData.height,
+      width: imageData.width,
+    };
+    // console.log('element.insert.imageBlot childImage', childImage);
+    elements.push({
+      type: 'image',
+      children: [childImage],
+      link: null,
+    });
+  }
+  return elements;
+}
 
-  // console.log(elements);
+async function transformDelta(content, site, slug, settings) {
+  let elements = [];
+  for await (let contentElement of content) {
+    if (!contentElement && !contentElement.delta && !contentElement.columns) {
+      // console.log(`blank content element, skipping`, contentElement);
+      return;
+    }
+    if (contentElement.columns && contentElement.columns.length) {
+      // console.log(
+      //   ` > processing content element with ${contentElement.columns.length} columns...`
+      // );
+      for await (let column of contentElement.columns) {
+        // console.log(` > ${column.delta.ops.length} delta ops found`);
+        for await (let element of column.delta.ops) {
+          elements = await processDeltaOp(
+            elements,
+            element,
+            site,
+            slug,
+            settings
+          );
+        }
+      }
+    } else if (contentElement.delta) {
+      for await (let element of contentElement.delta.ops) {
+        elements = await processDeltaOp(
+          elements,
+          element,
+          site,
+          slug,
+          settings
+        );
+      }
+    }
+  }
+
+  // console.log('elements:', elements);
 
   let list = { items: [] };
   let paragraph = { children: [] };
 
   let formattedElements = [];
-  elements.forEach((element, i) => {
+  // console.log(`${elements.length} elements found`);
+  elements.forEach((element, x) => {
+    let previousIndex = x - 1;
+
     if (element.attributes && element.attributes.header) {
-      // console.log(i, "header:", elements[i-1].insert)
+      let headerElement = elements[previousIndex];
+      if (!headerElement) {
+        console.error(
+          'No header element; current element is:',
+          x,
+          JSON.stringify(element)
+        );
+        return;
+      }
+      if (!headerElement.insert) {
+        // console.log(x, previousIndex, 'blank header element');
+        return;
+      }
+      // console.log(x, previousIndex, 'header:', headerElement.insert);
       formattedElements.push({
         link: null,
         type: 'text',
         style: 'HEADING_' + element.attributes.header,
         children: [
           {
-            index: i,
+            index: x,
             style: {},
-            content: elements[i - 1].insert,
+            content: shared.cleanContent(headerElement.insert),
           },
         ],
       });
@@ -129,11 +330,11 @@ function transformDelta(delta) {
       // console.log(i, "list:", elements[i-1].insert)
 
       list.items.push({
-        index: i,
+        index: x,
         children: [
           {
             style: {},
-            content: elements[i - 1].insert,
+            content: shared.cleanContent(elements[previousIndex].insert),
           },
         ],
         nestingLevel: 0,
@@ -145,9 +346,9 @@ function transformDelta(delta) {
       // we do this in case there are more lists in the email
       // if there is a second next element and it has a list attr, this list has more items
       if (
-        (elements[i + 2] &&
-          (!elements[i + 2].attributes || !elements[i + 2].attributes.list)) ||
-        !elements[i + 2]
+        (elements[x + 2] &&
+          (!elements[x + 2].attributes || !elements[x + 2].attributes.list)) ||
+        !elements[x + 2]
       ) {
         // hardcode as "bullet" for now
         formattedElements.push({
@@ -173,7 +374,7 @@ function transformDelta(delta) {
       }
 
       paragraph.children.push({
-        index: i,
+        index: x,
         style: style,
         content: element.insert,
       });
@@ -182,14 +383,14 @@ function transformDelta(delta) {
       // if the next element is blank string, or
       // if the next element is a list/header item, close the paragraph
       if (
-        !elements[i + 1] ||
-        (elements[i + 1] &&
-          elements[i + 1].insert &&
-          !elements[i + 1].insert.replace(/[\\n]|\n/g, '')) ||
-        (elements[i + 1] &&
-          elements[i + 1].attributes &&
-          (elements[i + 1].attributes.list ||
-            elements[i + 1].attributes.header))
+        !elements[x + 1] ||
+        (elements[x + 1] &&
+          elements[x + 1].insert &&
+          !elements[x + 1].insert.replace(/[\\n]|\n/g, '')) ||
+        (elements[x + 1] &&
+          elements[x + 1].attributes &&
+          (elements[x + 1].attributes.list ||
+            elements[x + 1].attributes.header))
       ) {
         formattedElements.push({
           link: null,
@@ -210,7 +411,7 @@ function transformDelta(delta) {
         children: [
           {
             link: element.attributes.link,
-            index: i,
+            index: x,
             style: {
               underline: true,
             },
@@ -218,19 +419,38 @@ function transformDelta(delta) {
           },
         ],
       });
+    } else if (element.attributes && element.attributes.align) {
+      if (shared.cleanContent(element.insert)) {
+        // console.log('aligned element:', JSON.stringify(element));
+        formattedElements.push({
+          link: null,
+          type: 'text',
+          style: 'NORMAL_TEXT',
+          children: [
+            {
+              link: null,
+              index: x,
+              style: {
+                align: element.attributes.align,
+              },
+              content: shared.cleanContent(element.insert),
+            },
+          ],
+        });
+      }
     } else if (element.attributes) {
-      // console.log(i, "unknown attrs:", element.attributes);
+      console.log('unhandled element.attributes:', element.attributes);
     } else {
       if (
-        elements[i + 1] &&
-        elements[i + 1].attributes &&
-        elements[i + 1].attributes.header
+        elements[x + 1] &&
+        elements[x + 1].attributes &&
+        elements[x + 1].attributes.header
       ) {
         // console.log(i, 'skip, header is handled next:', element.insert);
       } else if (
-        elements[i + 1] &&
-        elements[i + 1].attributes &&
-        elements[i + 1].attributes.list
+        elements[x + 1] &&
+        elements[x + 1].attributes &&
+        elements[x + 1].attributes.list
       ) {
         // console.log(i, 'skip, list is handled next:', element.insert);
       } else {
@@ -242,7 +462,7 @@ function transformDelta(delta) {
           style: 'NORMAL_TEXT',
           children: [
             {
-              index: i,
+              index: x,
               style: {},
               content: element.insert,
             },
@@ -253,14 +473,14 @@ function transformDelta(delta) {
         // if the next element is blank string, or
         // if the next element is a list/header item, close the paragraph
         if (
-          !elements[i + 1] ||
-          (elements[i + 1] &&
-            elements[i + 1].insert &&
-            !elements[i + 1].insert.replace(/[\\n]|\n/g, '')) ||
-          (elements[i + 1] &&
-            elements[i + 1].attributes &&
-            (elements[i + 1].attributes.list ||
-              elements[i + 1].attributes.header))
+          !elements[x + 1] ||
+          (elements[x + 1] &&
+            elements[x + 1].insert &&
+            !elements[x + 1].insert.replace(/[\\n]|\n/g, '')) ||
+          (elements[x + 1] &&
+            elements[x + 1].attributes &&
+            (elements[x + 1].attributes.list ||
+              elements[x + 1].attributes.header))
         ) {
           formattedElements.push({
             link: null,
@@ -274,20 +494,25 @@ function transformDelta(delta) {
     }
   });
 
-  // console.log(formattedElements);
+  // console.log(formattedElements.length, 'formattedElements');
 
   return formattedElements;
 }
 
-async function saveNewsletterEditions(organizationId, letterheadData) {
+async function saveNewsletterEditions(
+  organizationId,
+  site,
+  letterheadData,
+  settings
+) {
   console.log(
     organizationId,
     'Letterhead returned',
     letterheadData.length,
     'newsletter editions in total:'
   );
+
   for await (let newsletter of letterheadData) {
-    console.log(organizationId, newsletter.publicationDate, newsletter.title);
     if (!newsletter.publicationDate) {
       console.log(
         '> Org#' +
@@ -301,36 +526,42 @@ async function saveNewsletterEditions(organizationId, letterheadData) {
       continue;
     }
 
-    let slug = slugify(newsletter.title);
+    // console.log(Object.keys(newsletter).sort());
+    console.log(
+      organizationId,
+      newsletter.id,
+      newsletter.publicationDate,
+      newsletter.title
+    );
+
+    let slug = slugify(shared.cleanContent(newsletter.title));
     if (!slug) {
       console.error('> no slug, skipping');
       continue;
     }
 
-    console.log(Object.keys(newsletter).sort());
+    let unprocessedContent;
 
-    if (!newsletter.delta) {
-      console.log('> no delta, skipping');
-      // continue;
+    if (newsletter.sections) {
+      unprocessedContent = newsletter.sections;
+    } else if (newsletter.delta) {
+      unprocessedContent = newsletter.delta;
     } else {
-      console.log();
-      console.log('DELTA', newsletter.delta);
-      console.log();
-    }
-    if (!newsletter.emailTemplate) {
-      console.log('> no emailTemplate, skipping');
-    } else {
-      console.log();
-      console.log('emailTemplate:', newsletter.emailTemplate);
-      console.log();
-    }
-    // console.log('DELTA:', newsletter.delta);
-
-    if (!newsletter.delta) {
+      console.log(
+        '> no content found in newsletter.sections or newsletter.delta, skipping this edition'
+      );
       continue;
     }
-    let parsedDeltaJson = JSON.parse(newsletter.delta);
-    let content = transformDelta(parsedDeltaJson);
+
+    let unprocessedContentJSON = JSON.parse(unprocessedContent);
+    // console.log('UNPROCESSED CONTENT:', unprocessedContentJSON);
+    let content = await transformDelta(
+      unprocessedContentJSON,
+      site,
+      slug,
+      settings
+    );
+    // console.log('CONTENT:', content);
 
     let editionData = {
       slug: slug,
@@ -348,37 +579,40 @@ async function saveNewsletterEditions(organizationId, letterheadData) {
       editionData['subheadline'] = newsletter.subtitle;
     }
 
-    console.log(JSON.stringify(editionData));
+    if (editionData.content && editionData.content.length) {
+      const result = await shared.hasuraInsertNewsletterEdition(
+        organizationId,
+        {
+          url: apiUrl,
+          adminSecret: adminSecret,
+          data: editionData,
+        }
+      );
 
-    // const result = await shared.hasuraInsertNewsletterEdition(organizationId, {
-    //   url: apiUrl,
-    //   adminSecret: adminSecret,
-    //   data: editionData,
-    // });
-
-    // if (result.errors) {
-    //   console.error(
-    //     '! Newsletter ID#' +
-    //       newsletter.id +
-    //       " '" +
-    //       newsletter.title +
-    //       "' had an error saving:",
-    //     result.errors
-    //   );
-    // } else {
-    //   console.log(
-    //     '. OrgID#' +
-    //       organizationId +
-    //       ' Newsletter ID#' +
-    //       newsletter.id +
-    //       " '" +
-    //       newsletter.title +
-    //       "' was published at " +
-    //       newsletter.publicationDate +
-    //       ', saved in Hasura with slug: ' +
-    //       result.data.insert_newsletter_editions_one.slug
-    //   );
-    // }
+      if (result.errors) {
+        console.error(
+          '! Newsletter ID#' +
+            newsletter.id +
+            " '" +
+            newsletter.title +
+            "' had an error saving:",
+          result.errors
+        );
+      } else {
+        console.log(
+          '. OrgID#' +
+            organizationId +
+            ' Newsletter ID#' +
+            newsletter.id +
+            " '" +
+            newsletter.title +
+            "' was published at " +
+            newsletter.publicationDate +
+            ', saved in Hasura with slug: ' +
+            result.data.insert_newsletter_editions_one.slug
+        );
+      }
+    }
   }
 }
 
