@@ -6,6 +6,7 @@ import {
 } from '../../../lib/settings';
 import { hasuraGetPage } from '../../../lib/pages.js';
 import AboutPage from '../../../components/AboutPage';
+import { NextSeo } from 'next-seo';
 
 export default function About(props) {
   const isAmp = false;
@@ -17,7 +18,31 @@ export default function About(props) {
   if (router.isFallback) {
     return <div>Loading...</div>;
   }
-  return <AboutPage {...props} isAmp={isAmp} />;
+  return (
+    <>
+      <AboutPage {...props} isAmp={isAmp} />;
+      <NextSeo
+        title={props.siteMetadata.searchTitle}
+        description={
+          props.siteMetadata.facebookDescription ||
+          props.siteMetadata.searchDescription
+        }
+        canonical={`${props.siteMetadata.siteUrl}/${props.page.slug}`}
+        openGraph={{
+          title: props.siteMetadata.facebookTitle,
+          description: props.siteMetadata.facebookDescription,
+          url: `${props.siteMetadata.siteUrl}/${props.page.slug}`,
+          images: [
+            {
+              url: props.siteMetadata.defaultSocialImage,
+              width: props.siteMetadata.defaultSocialImageWidth,
+              height: props.siteMetadata.defaultSocialImageHeight,
+            },
+          ],
+        }}
+      />
+    </>
+  );
 }
 
 export async function getStaticPaths() {
@@ -91,6 +116,7 @@ export async function getStaticProps({ params }) {
       monkeypodLink,
       site,
     },
+
     revalidate: 1,
   };
 }

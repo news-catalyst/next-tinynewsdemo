@@ -7,8 +7,7 @@ import AnalyticsSidebar from '../../../../../components/tinycms/analytics/Analyt
 import YesterdaysTopTen from '../../../../../components/tinycms/analytics/YesterdaysTopTen';
 import { hasuraGetYesterday } from '../../../../../lib/analytics';
 import { findSetting, getOrgSettings } from '../../../../../lib/settings.js';
-
-import moment from 'moment';
+import { sub } from 'date-fns';
 
 const Container = tw.div`flex flex-wrap -mx-2 mb-8`;
 const Sidebar = tw.div`h-full h-screen bg-gray-100 md:w-1/5 lg:w-1/5 px-2 mb-4`;
@@ -127,8 +126,8 @@ export async function getServerSideProps(context) {
   const apiUrl = process.env.HASURA_API_URL;
   const site = context.params.site;
 
-  const startDate = moment().subtract(1, 'days');
-  const endDate = moment();
+  const startDate = sub(new Date(), { months: 1 });
+  const endDate = new Date();
 
   let sessionCount = 0;
   let sessionParams = {
