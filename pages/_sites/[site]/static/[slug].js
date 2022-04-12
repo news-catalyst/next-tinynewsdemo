@@ -6,6 +6,7 @@ import {
 } from '../../../../lib/pages.js';
 import StaticPage from '../../../../components/StaticPage';
 import { NextSeo } from 'next-seo';
+import TwitterMeta from '../../../../components/TwitterMeta';
 
 export default function Static({ page, sections, siteMetadata, site }) {
   const router = useRouter();
@@ -31,13 +32,11 @@ export default function Static({ page, sections, siteMetadata, site }) {
       />
 
       <NextSeo
-        title={`${pages.headline} | ${siteMetadata.searchTitle}`}
+        title={pages.headline}
         description={pages.searchDescription}
         canonical={`${siteMetadata.siteUrl}/static/${page.slug}`}
         openGraph={{
-          title: `${pages.facebookTitle || pages.headline} | ${
-            pages.searchTitle
-          }`,
+          title: `${pages.facebookTitle || pages.headline}`,
           description: pages.facebookDescription || pages.searchDescription,
           url: `${siteMetadata.siteUrl}/static/${page.slug}`,
           images: [
@@ -48,6 +47,13 @@ export default function Static({ page, sections, siteMetadata, site }) {
             },
           ],
         }}
+      />
+      <TwitterMeta
+        override={{
+          title: pages.headline,
+          description: pages.searchDescription,
+        }}
+        siteMetadata={siteMetadata}
       />
     </>
   );
