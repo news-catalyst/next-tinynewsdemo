@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import tw from 'twin.macro';
-import moment from 'moment';
 
 const SubHeaderContainer = tw.div`pt-10 pb-5`;
 const SubHeader = tw.h1`inline-block text-xl font-extrabold text-gray-900 tracking-tight`;
 
 const YesterdaysTopTen = (props) => {
   const [updateKey, setUpdateKey] = useState(Math.random());
-  const [startDate, setStartDate] = useState(moment().subtract(32, 'days'));
-  const [endDate, setEndDate] = useState(moment().subtract(1, 'days'));
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
 
   const [sortedTableRows, setSortedTableRows] = useState([]);
   const [totalPageViews, setTotalPageViews] = useState({});

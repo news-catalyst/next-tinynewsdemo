@@ -16,6 +16,7 @@ import { cachedContents } from '../../../../../lib/cached';
 import { getArticleAds } from '../../../../../lib/ads.js';
 import ArticleStream from '../../../../../components/homepage/ArticleStream';
 import paginationStyles from '../../../../../styles/pagination.js';
+import { NextSeo } from 'next-seo';
 
 const PaginationSection = tw.section`flex mb-8`;
 const PaginationContainer = styled.div(({ meta }) => ({
@@ -44,6 +45,8 @@ export default function ArticlesArchivePage({
       class: 'previous',
     });
   }
+
+  console.log(articles);
 
   pageNumbers.forEach((pageNumber) => {
     let pageLink = {
@@ -106,6 +109,25 @@ export default function ArticlesArchivePage({
       <style jsx global>
         {paginationStyles}
       </style>
+
+      <NextSeo
+        title={`Article Archive page ${currentPageNumber} | ${siteMetadata.searchTitle}`}
+        description={siteMetadata.searchDescription}
+        canonical={`${siteMetadata.siteUrl}/articles/archive/${currentPageNumber}`}
+        openGraph={{
+          title: `Article Archive page ${currentPageNumber} | ${siteMetadata.searchTitle}`,
+          description:
+            siteMetadata.facebookDescription || siteMetadata.searchDescription,
+          url: `${siteMetadata.siteUrl}/articles/archive/${currentPageNumber}`,
+          images: [
+            {
+              url: siteMetadata.defaultSocialImage,
+              width: siteMetadata.defaultSocialImageWidth,
+              height: siteMetadata.defaultSocialImageHeight,
+            },
+          ],
+        }}
+      />
     </Layout>
   );
 }
