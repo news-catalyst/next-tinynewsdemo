@@ -6,12 +6,7 @@ import AdminLayout from '../../../../../components/AdminLayout.js';
 import AdminNav from '../../../../../components/nav/AdminNav';
 import { findSetting, getOrgSettings } from '../../../../../lib/settings.js';
 
-export default function HomepageLayouts({
-  homepageLayouts,
-  siteUrl,
-  host,
-  authorizedEmailDomains,
-}) {
+export default function HomepageLayouts({ homepageLayouts, siteUrl, host }) {
   const [message, setMessage] = useState(null);
 
   const router = useRouter();
@@ -40,11 +35,7 @@ export default function HomepageLayouts({
   });
 
   return (
-    <AdminLayout
-      host={host}
-      siteUrl={siteUrl}
-      authorizedEmailDomains={authorizedEmailDomains}
-    >
+    <AdminLayout host={host} siteUrl={siteUrl}>
       <AdminNav homePageEditor={false} showConfigOptions={true} />
       <div id="page">
         <h1 className="title">Homepage Layouts</h1>
@@ -79,10 +70,6 @@ export async function getServerSideProps(context) {
   }
   let settings = settingsResult.data.settings;
   const siteUrl = findSetting(settings, 'NEXT_PUBLIC_SITE_URL');
-  const authorizedEmailDomains = findSetting(
-    settings,
-    'AUTHORIZED_EMAIL_DOMAINS'
-  );
   const host = context.req.headers.host;
 
   const { errors, data } = await hasuraListHomepageLayoutSchemas({
@@ -102,7 +89,6 @@ export async function getServerSideProps(context) {
       homepageLayouts: homepageLayouts,
       siteUrl: siteUrl,
       host: host,
-      authorizedEmailDomains: authorizedEmailDomains,
     },
   };
 }

@@ -35,7 +35,6 @@ export default function EditAuthor({
   awsConfig,
   siteUrl,
   host,
-  authorizedEmailDomains,
 }) {
   const [notificationMessage, setNotificationMessage] = useState('');
   const [notificationType, setNotificationType] = useState('');
@@ -171,11 +170,7 @@ export default function EditAuthor({
   }
 
   return (
-    <AdminLayout
-      host={host}
-      siteUrl={siteUrl}
-      authorizedEmailDomains={authorizedEmailDomains}
-    >
+    <AdminLayout host={host} siteUrl={siteUrl}>
       <AdminNav homePageEditor={false} showConfigOptions={true} />
 
       {showNotification && (
@@ -297,10 +292,6 @@ export async function getServerSideProps(context) {
   let secretKey = findSetting(settings, 'TNC_AWS_ACCESS_KEY');
   let tinyApiKey = findSetting(settings, 'TINYMCE_API_KEY');
   const siteUrl = findSetting(settings, 'NEXT_PUBLIC_SITE_URL');
-  const authorizedEmailDomains = findSetting(
-    settings,
-    'AUTHORIZED_EMAIL_DOMAINS'
-  );
   const host = context.req.headers.host;
 
   const awsConfig = {
@@ -333,7 +324,6 @@ export async function getServerSideProps(context) {
       awsConfig: awsConfig,
       siteUrl: siteUrl,
       host: host,
-      authorizedEmailDomains: authorizedEmailDomains,
     },
   };
 }

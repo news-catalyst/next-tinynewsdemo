@@ -49,11 +49,7 @@ export default function AnalyticsDashboard(props) {
   }, [props.site, props.apiUrl]);
 
   return (
-    <AdminLayout
-      host={props.host}
-      siteUrl={props.siteUrl}
-      authorizedEmailDomains={props.authorizedEmailDomains}
-    >
+    <AdminLayout host={props.host} siteUrl={props.siteUrl}>
       <AdminNav switchLocales={false} homePageEditor={false} />
       <Container>
         <Sidebar>
@@ -130,10 +126,7 @@ export async function getServerSideProps(context) {
   }
   const settings = settingsResult.data.settings;
   const siteUrl = findSetting(settings, 'NEXT_PUBLIC_SITE_URL');
-  const authorizedEmailDomains = findSetting(
-    settings,
-    'AUTHORIZED_EMAIL_DOMAINS'
-  );
+
   const host = context.req.headers.host; // will give you localhost:3000
 
   return {
@@ -142,7 +135,6 @@ export async function getServerSideProps(context) {
       site: site,
       siteUrl: siteUrl,
       host: host,
-      authorizedEmailDomains: authorizedEmailDomains,
     },
   };
 }

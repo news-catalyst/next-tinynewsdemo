@@ -4,41 +4,13 @@ import { signIn, useSession } from 'next-auth/react';
 
 const SignInButton = tw.a`hidden md:flex w-full md:w-auto px-4 py-2 text-right bg-blue-900 hover:bg-blue-500 text-white md:rounded`;
 
-export default function AdminLayout({
-  children,
-  host,
-  siteUrl,
-  authorizedEmailDomains,
-}) {
+export default function AdminLayout({ children, host, siteUrl }) {
   const { data: session, status } = useSession();
   const loading = status === 'loading';
 
-  let isAllowedToAccess = false;
+  // console.log(session);
 
-  if (session && session.user && session.user.email) {
-    let authorizedDomains = authorizedEmailDomains.split(',');
-    authorizedDomains.forEach((authorizedDomain) => {
-      if (session.user.email.split('@')[1] === authorizedDomain) {
-        isAllowedToAccess = true;
-      }
-    });
-  }
   const cypressTesting = process.env.NEXT_PUBLIC_CYPRESS_TESTING;
-
-  let unauthorizedAccess;
-
-  if (!isAllowedToAccess && session && session.user) {
-    unauthorizedAccess = (
-      <span>
-        Sorry, {session.user.email}, you're not authorized to access this
-        organization's TinyCMS. Check the URL you're using to make sure it's the
-        right one for your organization. Have we made a mistake? Let us know in
-        Slack!
-      </span>
-    );
-  } else {
-    unauthorizedAccess = <span>You must be signed in to use these tools.</span>;
-  }
 
   // this is another flag to turn off Authentication similar to the cypress setting
   // I thought it would be clearer to intentionally skip authentication with a separate variable
@@ -80,41 +52,38 @@ export default function AdminLayout({
         <script async src="https://apis.google.com/js/client:platform.js" />
       </Head>
       <main className="container">
-        {(!session && !cypressTesting && !skipAuth) ||
-          (!isAllowedToAccess && (
-            <section tw="bg-gray-200 text-gray-900 relative">
-              <div tw="min-h-screen bg-right-top bg-cover flex">
-                <div tw="relative container mx-auto p-4 flex items-center z-10">
-                  <div>
-                    <div tw="content float-left py-4 px-5 my-5">
-                      <div tw="mb-3 text-2xl md:text-4xl">TinyCMS</div>
-                      <div tw="leading-normal hidden sm:block">
-                        {unauthorizedAccess}
-                      </div>
+        {!session && !cypressTesting && !skipAuth && (
+          <section tw="bg-gray-200 text-gray-900 relative">
+            <div tw="min-h-screen bg-right-top bg-cover flex">
+              <div tw="relative container mx-auto p-4 flex items-center z-10">
+                <div>
+                  <div tw="content float-left py-4 px-5 my-5">
+                    <div tw="mb-3 text-2xl md:text-4xl">TinyCMS</div>
+                    <div tw="leading-normal hidden sm:block">
+                      You must be signed in to use these tools.
                     </div>
-                    <div tw="clear-left px-5">
-                      <div tw="flex justify-center items-center block sm:inline-block no-underline">
-                        <SignInButton
-                          tw="cursor-pointer"
-                          id="tinycms-signin-button"
-                          onClick={() =>
-                            signIn('google', {
-                              callbackUrl: `${callbackUrl}`,
-                            })
-                          }
-                        >
-                          Sign in
-                        </SignInButton>
-                      </div>
+                  </div>
+                  <div tw="clear-left px-5">
+                    <div tw="flex justify-center items-center block sm:inline-block no-underline">
+                      <SignInButton
+                        tw="cursor-pointer"
+                        id="tinycms-signin-button"
+                        onClick={() =>
+                          signIn('google', {
+                            callbackUrl: `${callbackUrl}`,
+                          })
+                        }
+                      >
+                        Sign in
+                      </SignInButton>
                     </div>
                   </div>
                 </div>
               </div>
-            </section>
-          ))}
-        {(session || cypressTesting || skipAuth || isAllowedToAccess) && (
-          <>{children}</>
+            </div>
+          </section>
         )}
+        {(session || cypressTesting || skipAuth) && <>{children}</>}
       </main>
     </>
   );

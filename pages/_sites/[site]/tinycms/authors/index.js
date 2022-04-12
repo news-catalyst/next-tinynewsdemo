@@ -23,14 +23,7 @@ const TableRow = tw.tr``;
 const TableHeader = tw.th`px-4 py-2`;
 const TableCell = tw.td`border px-4 py-2`;
 
-export default function Authors({
-  apiUrl,
-  site,
-  authors,
-  siteUrl,
-  host,
-  authorizedEmailDomains,
-}) {
+export default function Authors({ apiUrl, site, authors, siteUrl, host }) {
   const [notificationMessage, setNotificationMessage] = useState('');
   const [notificationType, setNotificationType] = useState('');
   const [showNotification, setShowNotification] = useState(false);
@@ -134,11 +127,7 @@ export default function Authors({
   });
 
   return (
-    <AdminLayout
-      host={host}
-      siteUrl={siteUrl}
-      authorizedEmailDomains={authorizedEmailDomains}
-    >
+    <AdminLayout host={host} siteUrl={siteUrl}>
       <AdminNav homePageEditor={false} showConfigOptions={true} />
       {showNotification && (
         <Notification
@@ -192,10 +181,6 @@ export async function getServerSideProps(context) {
   }
   let settings = settingsResult.data.settings;
   const siteUrl = findSetting(settings, 'NEXT_PUBLIC_SITE_URL');
-  const authorizedEmailDomains = findSetting(
-    settings,
-    'AUTHORIZED_EMAIL_DOMAINS'
-  );
   const host = context.req.headers.host;
   const { errors, data } = await hasuraListAllAuthors({
     url: apiUrl,
@@ -215,7 +200,6 @@ export async function getServerSideProps(context) {
       authors: authors,
       siteUrl: siteUrl,
       host: host,
-      authorizedEmailDomains: authorizedEmailDomains,
     },
   };
 }

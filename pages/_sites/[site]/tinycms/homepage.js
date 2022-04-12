@@ -30,7 +30,6 @@ export default function HomePageEditor({
   site,
   siteUrl,
   host,
-  authorizedEmailDomains,
 }) {
   const [notificationMessage, setNotificationMessage] = useState('');
   const [notificationType, setNotificationType] = useState('');
@@ -101,11 +100,7 @@ export default function HomePageEditor({
   }
 
   return (
-    <AdminLayout
-      host={host}
-      siteUrl={siteUrl}
-      authorizedEmailDomains={authorizedEmailDomains}
-    >
+    <AdminLayout host={host} siteUrl={siteUrl}>
       <AdminNav
         homePageEditor={true}
         layoutSchemas={layoutSchemas}
@@ -221,10 +216,7 @@ export async function getServerSideProps(context) {
   }
   const host = context.req.headers.host; // will give you localhost:3000
   const siteUrl = findSetting(settings, 'NEXT_PUBLIC_SITE_URL');
-  const authorizedEmailDomains = findSetting(
-    settings,
-    'AUTHORIZED_EMAIL_DOMAINS'
-  );
+
   return {
     props: {
       layoutSchemas,
@@ -237,7 +229,6 @@ export async function getServerSideProps(context) {
       site,
       siteUrl,
       host,
-      authorizedEmailDomains,
     },
   };
 }

@@ -30,7 +30,6 @@ export default function EditSection({
   vercelHook,
   siteUrl,
   host,
-  authorizedEmailDomains,
 }) {
   const [notificationMessage, setNotificationMessage] = useState('');
   const [notificationType, setNotificationType] = useState('');
@@ -161,11 +160,7 @@ export default function EditSection({
   }
 
   return (
-    <AdminLayout
-      host={host}
-      siteUrl={siteUrl}
-      authorizedEmailDomains={authorizedEmailDomains}
-    >
+    <AdminLayout host={host} siteUrl={siteUrl}>
       <AdminNav
         homePageEditor={false}
         showConfigOptions={true}
@@ -259,10 +254,6 @@ export async function getServerSideProps(context) {
   let settings = settingsResult.data.settings;
   let vercelHook = findSetting(settings, 'VERCEL_DEPLOY_HOOK');
   const siteUrl = findSetting(settings, 'NEXT_PUBLIC_SITE_URL');
-  const authorizedEmailDomains = findSetting(
-    settings,
-    'AUTHORIZED_EMAIL_DOMAINS'
-  );
   const host = context.req.headers.host;
 
   let section = {};
@@ -286,7 +277,6 @@ export async function getServerSideProps(context) {
       vercelHook: vercelHook,
       siteUrl: siteUrl,
       host: host,
-      authorizedEmailDomains: authorizedEmailDomains,
     },
   };
 }

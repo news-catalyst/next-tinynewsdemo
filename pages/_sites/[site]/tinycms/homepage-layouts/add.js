@@ -5,13 +5,7 @@ import Notification from '../../../../../components/tinycms/Notification';
 import { hasuraUpsertHomepageLayout } from '../../../../../lib/homepage';
 import { findSetting, getOrgSettings } from '../../../../../lib/settings.js';
 
-export default function AddHomepageLayout({
-  apiUrl,
-  apiToken,
-  siteUrl,
-  host,
-  authorizedEmailDomains,
-}) {
+export default function AddHomepageLayout({ apiUrl, apiToken, siteUrl, host }) {
   const [notificationMessage, setNotificationMessage] = useState('');
   const [notificationType, setNotificationType] = useState('');
   const [showNotification, setShowNotification] = useState(false);
@@ -46,11 +40,7 @@ export default function AddHomepageLayout({
   }
 
   return (
-    <AdminLayout
-      host={host}
-      siteUrl={siteUrl}
-      authorizedEmailDomains={authorizedEmailDomains}
-    >
+    <AdminLayout host={host} siteUrl={siteUrl}>
       <AdminNav homePageEditor={false} showConfigOptions={true} />
 
       {showNotification && (
@@ -123,10 +113,6 @@ export async function getServerSideProps(context) {
   }
   let settings = settingsResult.data.settings;
   const siteUrl = findSetting(settings, 'NEXT_PUBLIC_SITE_URL');
-  const authorizedEmailDomains = findSetting(
-    settings,
-    'AUTHORIZED_EMAIL_DOMAINS'
-  );
   const host = context.req.headers.host;
 
   return {
@@ -135,7 +121,6 @@ export async function getServerSideProps(context) {
       site: site,
       siteUrl: siteUrl,
       host: host,
-      authorizedEmailDomains: authorizedEmailDomains,
     },
   };
 }

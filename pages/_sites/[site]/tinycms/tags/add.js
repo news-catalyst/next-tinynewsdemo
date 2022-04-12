@@ -22,7 +22,6 @@ export default function AddTag({
   locales,
   siteUrl,
   host,
-  authorizedEmailDomains,
 }) {
   const [notificationMessage, setNotificationMessage] = useState('');
   const [notificationType, setNotificationType] = useState('');
@@ -66,11 +65,7 @@ export default function AddTag({
   }
 
   return (
-    <AdminLayout
-      host={host}
-      siteUrl={siteUrl}
-      authorizedEmailDomains={authorizedEmailDomains}
-    >
+    <AdminLayout host={host} siteUrl={siteUrl}>
       <AdminNav
         currentLocale={currentLocale}
         switchLocales={true}
@@ -126,10 +121,6 @@ export async function getServerSideProps(context) {
   }
   const settings = settingsResult.data.settings;
   const siteUrl = findSetting(settings, 'NEXT_PUBLIC_SITE_URL');
-  const authorizedEmailDomains = findSetting(
-    settings,
-    'AUTHORIZED_EMAIL_DOMAINS'
-  );
   const host = context.req.headers.host;
   let locales = settingsResult.data.organization_locales;
 
@@ -141,7 +132,6 @@ export async function getServerSideProps(context) {
       locales: locales,
       siteUrl: siteUrl,
       host: host,
-      authorizedEmailDomains: authorizedEmailDomains,
     },
   };
 }

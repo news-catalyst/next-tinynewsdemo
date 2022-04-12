@@ -18,14 +18,7 @@ import { findSetting, getOrgSettings } from '../../../../../lib/settings.js';
 
 const ViewOnSiteLink = tw.a`font-bold cursor-pointer hover:underline`;
 
-export default function EditTag({
-  apiUrl,
-  site,
-  tag,
-  siteUrl,
-  host,
-  authorizedEmailDomains,
-}) {
+export default function EditTag({ apiUrl, site, tag, siteUrl, host }) {
   const [notificationMessage, setNotificationMessage] = useState('');
   const [notificationType, setNotificationType] = useState('');
   const [showNotification, setShowNotification] = useState(false);
@@ -77,11 +70,7 @@ export default function EditTag({
   }
 
   return (
-    <AdminLayout
-      host={host}
-      siteUrl={siteUrl}
-      authorizedEmailDomains={authorizedEmailDomains}
-    >
+    <AdminLayout host={host} siteUrl={siteUrl}>
       <AdminNav homePageEditor={false} showConfigOptions={true} />
 
       {showNotification && (
@@ -141,10 +130,6 @@ export async function getServerSideProps(context) {
   }
   const settings = settingsResult.data.settings;
   const siteUrl = findSetting(settings, 'NEXT_PUBLIC_SITE_URL');
-  const authorizedEmailDomains = findSetting(
-    settings,
-    'AUTHORIZED_EMAIL_DOMAINS'
-  );
   const host = context.req.headers.host;
 
   let tag = {};
@@ -166,7 +151,6 @@ export async function getServerSideProps(context) {
       tag: tag,
       siteUrl: siteUrl,
       host: host,
-      authorizedEmailDomains: authorizedEmailDomains,
     },
   };
 }

@@ -16,12 +16,7 @@ const TableRow = tw.tr``;
 const TableHeader = tw.th`px-4 py-2`;
 const TableCell = tw.td`border px-4 py-2`;
 
-export default function Sections({
-  sections,
-  siteUrl,
-  host,
-  authorizedEmailDomains,
-}) {
+export default function Sections({ sections, siteUrl, host }) {
   const [message, setMessage] = useState(null);
 
   const router = useRouter();
@@ -60,11 +55,7 @@ export default function Sections({
   });
 
   return (
-    <AdminLayout
-      host={host}
-      siteUrl={siteUrl}
-      authorizedEmailDomains={authorizedEmailDomains}
-    >
+    <AdminLayout host={host} siteUrl={siteUrl}>
       <AdminNav homePageEditor={false} showConfigOptions={true} />
       <div tw="container mx-auto">
         <div tw="px-10 pt-5">
@@ -118,10 +109,6 @@ export async function getServerSideProps(context) {
   }
   const settings = settingsResult.data.settings;
   const siteUrl = findSetting(settings, 'NEXT_PUBLIC_SITE_URL');
-  const authorizedEmailDomains = findSetting(
-    settings,
-    'AUTHORIZED_EMAIL_DOMAINS'
-  );
   const host = context.req.headers.host;
 
   const { errors, data } = await hasuraListAllSectionsByLocale({
@@ -142,7 +129,6 @@ export async function getServerSideProps(context) {
       sections: sections,
       siteUrl: siteUrl,
       host: host,
-      authorizedEmailDomains: authorizedEmailDomains,
     },
   };
 }

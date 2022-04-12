@@ -52,7 +52,6 @@ export default function Settings({
   vercelHook,
   siteUrl,
   host,
-  authorizedEmailDomains,
 }) {
   const siteInfoRef = useRef();
   const designRef = useRef();
@@ -298,11 +297,7 @@ export default function Settings({
     }
   }
   return (
-    <AdminLayout
-      host={host}
-      siteUrl={siteUrl}
-      authorizedEmailDomains={authorizedEmailDomains}
-    >
+    <AdminLayout host={host} siteUrl={siteUrl}>
       <AdminNav homePageEditor={false} showConfigOptions={true} />
 
       <Container>
@@ -433,10 +428,7 @@ export async function getServerSideProps(context) {
   let vercelHook = findSetting(settings, 'VERCEL_DEPLOY_HOOK');
   let tinyApiKey = findSetting(settings, 'TINYMCE_API_KEY');
   const siteUrl = findSetting(settings, 'NEXT_PUBLIC_SITE_URL');
-  const authorizedEmailDomains = findSetting(
-    settings,
-    'AUTHORIZED_EMAIL_DOMAINS'
-  );
+
   const awsConfig = {
     bucketName: bucketName,
     dirName: dir,
@@ -474,7 +466,6 @@ export async function getServerSideProps(context) {
       vercelHook: vercelHook,
       siteUrl: siteUrl,
       host: host,
-      authorizedEmailDomains: authorizedEmailDomains,
     },
   };
 }
