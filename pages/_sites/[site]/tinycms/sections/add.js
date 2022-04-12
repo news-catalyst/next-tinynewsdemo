@@ -22,6 +22,7 @@ export default function AddSection({
   locales,
   siteUrl,
   host,
+  authorizedEmailDomains,
 }) {
   const [notificationMessage, setNotificationMessage] = useState([]);
   const [notificationType, setNotificationType] = useState('');
@@ -93,7 +94,11 @@ export default function AddSection({
   }
 
   return (
-    <AdminLayout host={host} siteUrl={siteUrl}>
+    <AdminLayout
+      host={host}
+      siteUrl={siteUrl}
+      authorizedEmailDomains={authorizedEmailDomains}
+    >
       <AdminNav
         switchLocales={true}
         currentLocale={currentLocale}
@@ -158,6 +163,10 @@ export async function getServerSideProps(context) {
   let settings = settingsResult.data.settings;
 
   const siteUrl = findSetting(settings, 'NEXT_PUBLIC_SITE_URL');
+  const authorizedEmailDomains = findSetting(
+    settings,
+    'AUTHORIZED_EMAIL_DOMAINS'
+  );
   const host = context.req.headers.host;
 
   let locales = settingsResult.data.organization_locales;
@@ -170,6 +179,7 @@ export async function getServerSideProps(context) {
       locales: locales,
       siteUrl: siteUrl,
       host: host,
+      authorizedEmailDomains: authorizedEmailDomains,
     },
   };
 }
