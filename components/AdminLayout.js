@@ -58,6 +58,16 @@ export default function AdminLayout({
   console.log(
     `debug: session=${session} cypressTesting=${cypressTesting} skipAuth=${skipAuth} isAllowedToAccess=${isAllowedToAccess} callbackUrl=${callbackUrl}`
   );
+
+  if ((!session && !cypressTesting && !skipAuth) || !isAllowedToAccess) {
+    console.log('debug: should show the sign in screen');
+  } else {
+    console.log('debug: sign in screen check is failing :-/ ');
+  }
+
+  if (session || cypressTesting || skipAuth || isAllowedToAccess) {
+    console.log('debug: should allow access');
+  }
   return (
     <>
       <Head>
