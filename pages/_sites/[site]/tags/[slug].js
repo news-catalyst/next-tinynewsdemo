@@ -14,6 +14,7 @@ import { avoidRateLimit } from '../../../../lib/utils';
 import { getArticleAds } from '../../../../lib/ads.js';
 import ArticleStream from '../../../../components/homepage/ArticleStream';
 import { NextSeo } from 'next-seo';
+import TwitterMeta from '../../../../components/TwitterMeta';
 
 export default function TagPage({
   articles,
@@ -58,13 +59,12 @@ export default function TagPage({
 
       <NextSeo
         title={tagTitle || siteMetadata.searchTitle}
-        description={
-          siteMetadata.facebookDescription || siteMetadata.searchDescription
-        }
+        description={siteMetadata.searchDescription}
         canonical={`${siteMetadata.siteUrl}/tags/${tag.slug}`}
         openGraph={{
           title: tagTitle || siteMetadata.searchTitle,
-          description: siteMetadata.facebookDescription,
+          description:
+            siteMetadata.facebookDescription || siteMetadata.searchDescription,
           url: `${siteMetadata.siteUrl}/tags/${tag.slug}`,
           images: [
             {
@@ -74,6 +74,12 @@ export default function TagPage({
             },
           ],
         }}
+      />
+      <TwitterMeta
+        override={{
+          title: tagTitle,
+        }}
+        siteMetadata={siteMetadata}
       />
     </Layout>
   );

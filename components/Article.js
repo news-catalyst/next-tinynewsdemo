@@ -3,6 +3,7 @@ import ArticleBody from './articles/ArticleBody';
 import Comments from './articles/Comments';
 import ArticleFooter from './articles/ArticleFooter';
 import Recirculation from './articles/Recirculation';
+import TwitterMeta from './TwitterMeta';
 import { generateArticleUrl } from '../lib/utils.js';
 import { useAmp } from 'next/amp';
 import Layout from './Layout.js';
@@ -94,13 +95,13 @@ export default function Article({
       </div>
 
       <NextSeo
-        title={translation.searchTitle || translation.headline} // get the search title if defined, if not fall back to headline
-        description={translation.searchDescription} // search description (labeled as just description in the sidebar) is required, so we can rely on it being there
+        title={translation.search_title || translation.headline} // get the search title if defined, if not fall back to headline
+        description={translation.search_description} // search description (labeled as just description in the sidebar) is required, so we can rely on it being there
         canonical={canonicalArticleUrl} // defined on line 24 of the component
         openGraph={{
-          title: translation.facebookTitle || translation.headline, // get facebook title if defined, if not fall back to headline
+          title: translation.facebook_title || translation.headline, // get facebook title if defined, if not fall back to headline
           description:
-            translation.facebookDescription || translation.searchDescription, // get FB description if defined, if not fall back to search description
+            translation.facebook_description || translation.search_description, // get FB description if defined, if not fall back to search description
           url: canonicalArticleUrl,
           type: 'article',
           article: {
@@ -125,7 +126,7 @@ export default function Article({
       />
       <NewsArticleJsonLd
         url={canonicalArticleUrl}
-        title={translation.searchTitle || translation.headline}
+        title={translation.search_title || translation.headline}
         images={[mainImage?.imageUrl]}
         datePublished={translation.first_published_at}
         dateModified={translation.last_published_at}
@@ -134,7 +135,17 @@ export default function Article({
         )}
         publisherName={siteMetadata.shortName}
         publisherLogo={siteMetadata.logo}
-        description={translation.searchDescription}
+        description={translation.search_description}
+      />
+      <TwitterMeta
+        override={{
+          title: translation.twitter_title || translation.headline,
+          description:
+            translation.twitter_description || translation.search_description,
+          image: mainImage?.imageUrl,
+          author: article.author_articles[0]?.author?.twitter,
+        }}
+        siteMetadata={siteMetadata}
       />
     </Layout>
   );
