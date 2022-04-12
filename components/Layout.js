@@ -42,18 +42,14 @@ export default function Layout({
 
   const metaValues = {
     favicon: meta['favicon'],
-    twitterTitle: meta['twitterTitle'],
-    twitterDescription: meta['twitterDescription'],
     footerTitle: meta['footerTitle'],
     footerBylineLink: meta['footerBylineLink'],
     footerBylineName: meta['footerBylineName'],
     founderTwitter: meta['founderTwitter'],
     founderInstagram: meta['founderInstagram'],
     founderFacebook: meta['founderFacebook'],
-    documentType: 'article',
     facebookAdmins: meta['facebookAdmins'],
     facebookAppId: meta['facebookAppId'],
-    siteTwitter: meta['siteTwitter'],
   };
 
   const isAmp = useAmp();
@@ -65,20 +61,6 @@ export default function Layout({
     <>
       <Head>
         {metaValues.favicon && <link rel="icon" href={metaValues.favicon} />}
-        {/* Twitter Card data */}
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={metaValues.twitterTitle} />
-        <meta
-          name="twitter:description"
-          content={metaValues.twitterDescription}
-        />
-        {metaValues.siteTwitter && (
-          <meta name="twitter:site" content={'@' + metaValues.siteTwitter} />
-        )}
-        {metaValues.authorTwitter && (
-          <meta name="twitter:creator" content={metaValues.authorTwitter} />
-        )}
-        <meta name="twitter:image" content={metaValues.coverImage} />
 
         {metaValues.facebookAppId && (
           <meta property="fb:app_id" content={metaValues.facebookAppId} />
