@@ -1,5 +1,6 @@
 import Head from 'next/head';
 import tw from 'twin.macro';
+import yn from 'yn';
 import { signIn, useSession } from 'next-auth/react';
 
 const SignInButton = tw.a`hidden md:flex w-full md:w-auto px-4 py-2 text-right bg-blue-900 hover:bg-blue-500 text-white md:rounded`;
@@ -24,7 +25,7 @@ export default function AdminLayout({
       }
     });
   }
-  const cypressTesting = process.env.NEXT_PUBLIC_CYPRESS_TESTING;
+  const cypressTesting = yn(process.env.NEXT_PUBLIC_CYPRESS_TESTING);
 
   let unauthorizedAccess;
 
@@ -56,8 +57,9 @@ export default function AdminLayout({
   const callbackUrl = new URL('/tinycms', siteUrl).toString();
 
   console.log(
-    `debug: session=${typeof session} ${session} cypressTesting=${typeof cypressTesting} ${cypressTesting} skipAuth=${typeof skipAuth} ${skipAuth} isAllowedToAccess=${typeof isAllowedToAccess} ${isAllowedToAccess} callbackUrl=${callbackUrl}`
+    `debug: session=${typeof session} cypressTesting=${typeof cypressTesting} ${cypressTesting} skipAuth=${typeof skipAuth} ${skipAuth} isAllowedToAccess=${typeof isAllowedToAccess} ${isAllowedToAccess} callbackUrl=${callbackUrl}`
   );
+  console.log(session);
 
   const signInScreen = (
     <section tw="bg-gray-200 text-gray-900 relative">
