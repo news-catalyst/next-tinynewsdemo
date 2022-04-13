@@ -18,12 +18,12 @@ export default function AdminLayout({
 
   if (session && session.user && session.user.email) {
     let authorizedDomains = authorizedEmailDomains.split(',');
-    console.log(
-      'authorizing session.user.email:',
-      session.user.email,
-      'against authorized domains:',
-      authorizedDomains
-    );
+    // console.log(
+    //   'authorizing session.user.email:',
+    //   session.user.email,
+    //   'against authorized domains:',
+    //   authorizedDomains
+    // );
     authorizedDomains.forEach((authorizedDomain) => {
       if (session.user.email.split('@')[1] === authorizedDomain) {
         isAllowedToAccess = true;
@@ -35,9 +35,9 @@ export default function AdminLayout({
   let unauthorizedAccess;
 
   if (!isAllowedToAccess && session && session.user) {
-    console.log(
-      "debug: You are logged in, but unfortunately you're not authorized for this tinycms"
-    );
+    // console.log(
+    //   "debug: You are logged in, but unfortunately you're not authorized for this tinycms"
+    // );
     unauthorizedAccess = (
       <span>
         Sorry, {session.user.email}, you're not authorized to access this
@@ -47,7 +47,7 @@ export default function AdminLayout({
       </span>
     );
   } else {
-    console.log('debug: You are not logged in.');
+    // console.log('debug: You are not logged in.');
     unauthorizedAccess = <span>You must be signed in to use these tools.</span>;
   }
 
@@ -56,15 +56,15 @@ export default function AdminLayout({
   // when testing on localhost instead of repurposing the cypressTesting var
   let skipAuth = false;
   if (host.includes('localhost')) {
-    console.log('debug: skipping auth on localhost');
+    // console.log('debug: skipping auth on localhost');
     skipAuth = true;
   }
   const callbackUrl = new URL('/tinycms', siteUrl).toString();
 
-  console.log(
-    `debug: session=${typeof session} cypressTesting=${typeof cypressTesting} ${cypressTesting} skipAuth=${typeof skipAuth} ${skipAuth} isAllowedToAccess=${typeof isAllowedToAccess} ${isAllowedToAccess} callbackUrl=${callbackUrl}`
-  );
-  console.log('session:', session);
+  // console.log(
+  //   `debug: session=${typeof session} cypressTesting=${typeof cypressTesting} ${cypressTesting} skipAuth=${typeof skipAuth} ${skipAuth} isAllowedToAccess=${typeof isAllowedToAccess} ${isAllowedToAccess} callbackUrl=${callbackUrl}`
+  // );
+  // console.log('session:', session);
 
   const signInScreen = (
     <section tw="bg-gray-200 text-gray-900 relative">
@@ -113,11 +113,11 @@ export default function AdminLayout({
     showSigninScreen = false;
   }
 
-  if (showSigninScreen) {
-    console.log('debug: should show the sign in screen');
-  } else {
-    console.log('debug: should not show sign in screen ');
-  }
+  // if (showSigninScreen) {
+  //   console.log('debug: should show the sign in screen');
+  // } else {
+  //   console.log('debug: should not show sign in screen ');
+  // }
 
   return (
     <>
