@@ -17,8 +17,13 @@ export default function AdminLayout({
   let isAllowedToAccess = false;
 
   if (session && session.user && session.user.email) {
-    console.log('session.user.email:', session.user.email);
     let authorizedDomains = authorizedEmailDomains.split(',');
+    console.log(
+      'authorizing session.user.email:',
+      session.user.email,
+      'against authorized domains:',
+      authorizedDomains
+    );
     authorizedDomains.forEach((authorizedDomain) => {
       if (session.user.email.split('@')[1] === authorizedDomain) {
         isAllowedToAccess = true;
@@ -31,7 +36,7 @@ export default function AdminLayout({
 
   if (!isAllowedToAccess && session && session.user) {
     console.log(
-      "You are logged in, but unfortunately you're not authorized for this tinycms"
+      "debug: You are logged in, but unfortunately you're not authorized for this tinycms"
     );
     unauthorizedAccess = (
       <span>
@@ -42,7 +47,7 @@ export default function AdminLayout({
       </span>
     );
   } else {
-    console.log('You are not logged in so you are not authorized.');
+    console.log('debug: You are not logged in.');
     unauthorizedAccess = <span>You must be signed in to use these tools.</span>;
   }
 
@@ -59,7 +64,7 @@ export default function AdminLayout({
   console.log(
     `debug: session=${typeof session} cypressTesting=${typeof cypressTesting} ${cypressTesting} skipAuth=${typeof skipAuth} ${skipAuth} isAllowedToAccess=${typeof isAllowedToAccess} ${isAllowedToAccess} callbackUrl=${callbackUrl}`
   );
-  console.log(session);
+  console.log('session:', session);
 
   const signInScreen = (
     <section tw="bg-gray-200 text-gray-900 relative">

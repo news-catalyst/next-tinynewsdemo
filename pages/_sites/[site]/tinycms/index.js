@@ -121,7 +121,6 @@ export async function getServerSideProps(context) {
     settings,
     'AUTHORIZED_EMAIL_DOMAINS'
   );
-  console.log('tinycms authorizedEmailDomains:', authorizedEmailDomains);
   const host = context.req.headers.host; // will give you localhost:3000
 
   return {
