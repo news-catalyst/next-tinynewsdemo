@@ -111,7 +111,8 @@
         "swr": "^0.5.6",
         "tweetsodium": "^0.0.5",
         "uuid": "^8.3.2",
-        "wxr-generator": "^0.2.0"
+        "wxr-generator": "^0.2.0",
+        "yn": "^5.0.0"
     },
     "devDependencies": {
         "@testing-library/dom": "^7.31.2",
