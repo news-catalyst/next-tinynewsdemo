@@ -1,5 +1,6 @@
 import Head from 'next/head';
 import tw from 'twin.macro';
+import yn from 'yn';
 import { signIn, useSession } from 'next-auth/react';
 
 const SignInButton = tw.a`hidden md:flex w-full md:w-auto px-4 py-2 text-right bg-blue-900 hover:bg-blue-500 text-white md:rounded`;
@@ -17,17 +18,26 @@ export default function AdminLayout({
 
   if (session && session.user && session.user.email) {
     let authorizedDomains = authorizedEmailDomains.split(',');
+    // console.log(
+    //   'authorizing session.user.email:',
+    //   session.user.email,
+    //   'against authorized domains:',
+    //   authorizedDomains
+    // );
     authorizedDomains.forEach((authorizedDomain) => {
       if (session.user.email.split('@')[1] === authorizedDomain) {
         isAllowedToAccess = true;
       }
     });
   }
-  const cypressTesting = process.env.NEXT_PUBLIC_CYPRESS_TESTING;
+  const cypressTesting = yn(process.env.NEXT_PUBLIC_CYPRESS_TESTING);
 
   let unauthorizedAccess;
 
   if (!isAllowedToAccess && session && session.user) {
+    // console.log(
+    //   "debug: You are logged in, but unfortunately you're not authorized for this tinycms"
+    // );
     unauthorizedAccess = (
       <span>
         Sorry, {session.user.email}, you're not authorized to access this
@@ -37,6 +47,7 @@ export default function AdminLayout({
       </span>
     );
   } else {
+    // console.log('debug: You are not logged in.');
     unauthorizedAccess = <span>You must be signed in to use these tools.</span>;
   }
 
@@ -45,9 +56,69 @@ export default function AdminLayout({
   // when testing on localhost instead of repurposing the cypressTesting var
   let skipAuth = false;
   if (host.includes('localhost')) {
+    // console.log('debug: skipping auth on localhost');
     skipAuth = true;
   }
   const callbackUrl = new URL('/tinycms', siteUrl).toString();
+
+  // console.log(
+  //   `debug: session=${typeof session} cypressTesting=${typeof cypressTesting} ${cypressTesting} skipAuth=${typeof skipAuth} ${skipAuth} isAllowedToAccess=${typeof isAllowedToAccess} ${isAllowedToAccess} callbackUrl=${callbackUrl}`
+  // );
+  // console.log('session:', session);
+
+  const signInScreen = (
+    <section tw="bg-gray-200 text-gray-900 relative">
+      <div tw="min-h-screen bg-right-top bg-cover flex">
+        <div tw="relative container mx-auto p-4 flex items-center z-10">
+          <div>
+            <div tw="content float-left py-4 px-5 my-5">
+              <div tw="mb-3 text-2xl md:text-4xl">TinyCMS</div>
+              <div tw="leading-normal hidden sm:block">
+                {unauthorizedAccess}
+              </div>
+            </div>
+            <div tw="clear-left px-5">
+              <div tw="flex justify-center items-center block sm:inline-block no-underline">
+                <SignInButton
+                  tw="cursor-pointer"
+                  id="tinycms-signin-button"
+                  onClick={() =>
+                    signIn('google', {
+                      callbackUrl: `${callbackUrl}`,
+                    })
+                  }
+                >
+                  Sign in
+                </SignInButton>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+
+  let showSigninScreen = true;
+
+  // used to skip auth on localhost - I couldn't get it to work on `${subdomain}.localhost:3000`
+  if (skipAuth) {
+    showSigninScreen = false;
+  }
+  // used to skip auth in automated testing
+  if (cypressTesting) {
+    showSigninScreen = false;
+  }
+  // already signed in and authorized, don't display sign in screen
+  if (isAllowedToAccess) {
+    showSigninScreen = false;
+  }
+
+  // if (showSigninScreen) {
+  //   console.log('debug: should show the sign in screen');
+  // } else {
+  //   console.log('debug: should not show sign in screen ');
+  // }
+
   return (
     <>
       <Head>
@@ -80,41 +151,7 @@ export default function AdminLayout({
         <script async src="https://apis.google.com/js/client:platform.js" />
       </Head>
       <main className="container">
-        {(!session && !cypressTesting && !skipAuth) ||
-          (!isAllowedToAccess && (
-            <section tw="bg-gray-200 text-gray-900 relative">
-              <div tw="min-h-screen bg-right-top bg-cover flex">
-                <div tw="relative container mx-auto p-4 flex items-center z-10">
-                  <div>
-                    <div tw="content float-left py-4 px-5 my-5">
-                      <div tw="mb-3 text-2xl md:text-4xl">TinyCMS</div>
-                      <div tw="leading-normal hidden sm:block">
-                        {unauthorizedAccess}
-                      </div>
-                    </div>
-                    <div tw="clear-left px-5">
-                      <div tw="flex justify-center items-center block sm:inline-block no-underline">
-                        <SignInButton
-                          tw="cursor-pointer"
-                          id="tinycms-signin-button"
-                          onClick={() =>
-                            signIn('google', {
-                              callbackUrl: `${callbackUrl}`,
-                            })
-                          }
-                        >
-                          Sign in
-                        </SignInButton>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </section>
-          ))}
-        {(session || cypressTesting || skipAuth || isAllowedToAccess) && (
-          <>{children}</>
-        )}
+        {showSigninScreen ? <>{signInScreen}</> : <>{children}</>}
       </main>
     </>
   );
