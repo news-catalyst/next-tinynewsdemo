@@ -59,15 +59,51 @@ export default function AdminLayout({
     `debug: session=${session} cypressTesting=${cypressTesting} skipAuth=${skipAuth} isAllowedToAccess=${isAllowedToAccess} callbackUrl=${callbackUrl}`
   );
 
-  if ((!session && !cypressTesting && !skipAuth) || !isAllowedToAccess) {
+  if (
+    (!session && !cypressTesting && !skipAuth) ||
+    (!isAllowedToAccess && !skipAuth && !cypressTesting)
+  ) {
     console.log('debug: should show the sign in screen');
   } else {
-    console.log('debug: sign in screen check is failing :-/ ');
+    console.log('debug: should not show sign in screen :-/ ');
   }
 
-  if (session || cypressTesting || skipAuth || isAllowedToAccess) {
+  if ((session && isAllowedToAccess) || cypressTesting || skipAuth) {
     console.log('debug: should allow access');
   }
+
+  const signInScreen = (
+    <section tw="bg-gray-200 text-gray-900 relative">
+      <div tw="min-h-screen bg-right-top bg-cover flex">
+        <div tw="relative container mx-auto p-4 flex items-center z-10">
+          <div>
+            <div tw="content float-left py-4 px-5 my-5">
+              <div tw="mb-3 text-2xl md:text-4xl">TinyCMS</div>
+              <div tw="leading-normal hidden sm:block">
+                {unauthorizedAccess}
+              </div>
+            </div>
+            <div tw="clear-left px-5">
+              <div tw="flex justify-center items-center block sm:inline-block no-underline">
+                <SignInButton
+                  tw="cursor-pointer"
+                  id="tinycms-signin-button"
+                  onClick={() =>
+                    signIn('google', {
+                      callbackUrl: `${callbackUrl}`,
+                    })
+                  }
+                >
+                  Sign in
+                </SignInButton>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+
   return (
     <>
       <Head>
@@ -100,40 +136,10 @@ export default function AdminLayout({
         <script async src="https://apis.google.com/js/client:platform.js" />
       </Head>
       <main className="container">
-        {(!session && !cypressTesting && !skipAuth) ||
-          (!isAllowedToAccess && (
-            <section tw="bg-gray-200 text-gray-900 relative">
-              <div tw="min-h-screen bg-right-top bg-cover flex">
-                <div tw="relative container mx-auto p-4 flex items-center z-10">
-                  <div>
-                    <div tw="content float-left py-4 px-5 my-5">
-                      <div tw="mb-3 text-2xl md:text-4xl">TinyCMS</div>
-                      <div tw="leading-normal hidden sm:block">
-                        {unauthorizedAccess}
-                      </div>
-                    </div>
-                    <div tw="clear-left px-5">
-                      <div tw="flex justify-center items-center block sm:inline-block no-underline">
-                        <SignInButton
-                          tw="cursor-pointer"
-                          id="tinycms-signin-button"
-                          onClick={() =>
-                            signIn('google', {
-                              callbackUrl: `${callbackUrl}`,
-                            })
-                          }
-                        >
-                          Sign in
-                        </SignInButton>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </section>
-          ))}
-        {(session || cypressTesting || skipAuth || isAllowedToAccess) && (
+        {(session && isAllowedToAccess) || cypressTesting || skipAuth ? (
           <>{children}</>
+        ) : (
+          <>{signInScreen}</>
         )}
       </main>
     </>
