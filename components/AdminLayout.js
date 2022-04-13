@@ -50,27 +50,14 @@ export default function AdminLayout({
   // when testing on localhost instead of repurposing the cypressTesting var
   let skipAuth = false;
   if (host.includes('localhost')) {
-    console.log('Skipping auth on localhost');
+    console.log('debug: skipping auth on localhost');
     skipAuth = true;
   }
   const callbackUrl = new URL('/tinycms', siteUrl).toString();
 
   console.log(
-    `debug: session=${session} cypressTesting=${cypressTesting} skipAuth=${skipAuth} isAllowedToAccess=${isAllowedToAccess} callbackUrl=${callbackUrl}`
+    `debug: session=${typeof session} ${session} cypressTesting=${typeof cypressTesting} ${cypressTesting} skipAuth=${typeof skipAuth} ${skipAuth} isAllowedToAccess=${typeof isAllowedToAccess} ${isAllowedToAccess} callbackUrl=${callbackUrl}`
   );
-
-  if (
-    (!session && !cypressTesting && !skipAuth) ||
-    (!isAllowedToAccess && !skipAuth && !cypressTesting)
-  ) {
-    console.log('debug: should show the sign in screen');
-  } else {
-    console.log('debug: should not show sign in screen :-/ ');
-  }
-
-  if ((session && isAllowedToAccess) || cypressTesting || skipAuth) {
-    console.log('debug: should allow access');
-  }
 
   const signInScreen = (
     <section tw="bg-gray-200 text-gray-900 relative">
@@ -104,6 +91,27 @@ export default function AdminLayout({
     </section>
   );
 
+  let showSigninScreen = true;
+
+  // used to skip auth on localhost - I couldn't get it to work on `${subdomain}.localhost:3000`
+  if (skipAuth) {
+    showSigninScreen = false;
+  }
+  // used to skip auth in automated testing
+  if (cypressTesting) {
+    showSigninScreen = false;
+  }
+  // already signed in and authorized, don't display sign in screen
+  if (isAllowedToAccess) {
+    showSigninScreen = false;
+  }
+
+  if (showSigninScreen) {
+    console.log('debug: should show the sign in screen');
+  } else {
+    console.log('debug: should not show sign in screen ');
+  }
+
   return (
     <>
       <Head>
@@ -136,11 +144,7 @@ export default function AdminLayout({
         <script async src="https://apis.google.com/js/client:platform.js" />
       </Head>
       <main className="container">
-        {(session && isAllowedToAccess) || cypressTesting || skipAuth ? (
-          <>{children}</>
-        ) : (
-          <>{signInScreen}</>
-        )}
+        {showSigninScreen ? <>{signInScreen}</> : <>{children}</>}
       </main>
     </>
   );
