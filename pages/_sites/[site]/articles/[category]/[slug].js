@@ -33,7 +33,11 @@ export default function ArticlePage(props) {
       </>
     );
   }
-  return <Article {...props} />;
+  return (
+    <>
+      <Article {...props} />;
+    </>
+  );
 }
 
 export async function getStaticPaths() {

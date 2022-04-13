@@ -31,6 +31,7 @@ export default function NavBuilder({
   site,
   siteUrl,
   host,
+  authorizedEmailDomains,
 }) {
   const [message, setMessage] = useState(null);
   const [metadata, setMetadata] = useState(null);
@@ -271,7 +272,11 @@ export default function NavBuilder({
     }
   }
   return (
-    <AdminLayout host={host} siteUrl={siteUrl}>
+    <AdminLayout
+      host={host}
+      siteUrl={siteUrl}
+      authorizedEmailDomains={authorizedEmailDomains}
+    >
       <AdminNav homePageEditor={false} showConfigOptions={true} />
 
       <Container>
@@ -442,6 +447,10 @@ export async function getServerSideProps(context) {
   let settings = settingsResult.data.settings;
   let vercelHook = findSetting(settings, 'VERCEL_DEPLOY_HOOK');
   const siteUrl = findSetting(settings, 'NEXT_PUBLIC_SITE_URL');
+  const authorizedEmailDomains = findSetting(
+    settings,
+    'AUTHORIZED_EMAIL_DOMAINS'
+  );
   const host = context.req.headers.host;
   let linkOptions = [];
 
@@ -505,6 +514,7 @@ export async function getServerSideProps(context) {
       vercelHook: vercelHook,
       siteUrl: siteUrl,
       host: host,
+      authorizedEmailDomains: authorizedEmailDomains,
     },
   };
 }
