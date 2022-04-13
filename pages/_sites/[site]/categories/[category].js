@@ -19,6 +19,7 @@ import {
   SectionLayout,
   Block,
 } from '../../../../components/common/CommonStyles';
+import { NextSeo } from 'next-seo';
 
 export default function CategoryPage(props) {
   const isAmp = false;
@@ -58,6 +59,26 @@ export default function CategoryPage(props) {
         metadata={props.siteMetadata}
         ads={props.expandedAds}
         site={props.site}
+        monkeypodLink={props.monkeypodLink}
+      />
+
+      <NextSeo
+        title={props.title || siteMetadata.searchTitle}
+        description={siteMetadata.searchDescription}
+        canonical={`${siteMetadata.siteUrl}/categories/${props.slug}`}
+        openGraph={{
+          title: props.title || siteMetadata.searchTitle,
+          description:
+            siteMetadata.facebookDescription || siteMetadata.searchDescription,
+          url: `${siteMetadata.siteUrl}/categories/${props.slug}`,
+          images: [
+            {
+              url: siteMetadata.defaultSocialImage,
+              width: siteMetadata.defaultSocialImageWidth,
+              height: siteMetadata.defaultSocialImageHeight,
+            },
+          ],
+        }}
       />
     </Layout>
   );
@@ -101,6 +122,7 @@ export async function getStaticProps({ params }) {
   let siteMetadata;
   let title;
   let categoryExists = false;
+  let slug;
 
   const { errors, data } = await hasuraCategoryPage({
     url: apiUrl,
@@ -123,6 +145,7 @@ export async function getStaticProps({ params }) {
       if (sections[i].slug == params.category) {
         categoryExists = true;
         title = sections[i].category_translations[0].title;
+        slug = title.toLowerCase();
       }
     }
 

@@ -7,8 +7,7 @@ import AnalyticsSidebar from '../../../../../components/tinycms/analytics/Analyt
 import YesterdaysTopTen from '../../../../../components/tinycms/analytics/YesterdaysTopTen';
 import { hasuraGetYesterday } from '../../../../../lib/analytics';
 import { findSetting, getOrgSettings } from '../../../../../lib/settings.js';
-
-import moment from 'moment';
+import { sub } from 'date-fns';
 
 const Container = tw.div`flex flex-wrap -mx-2 mb-8`;
 const Sidebar = tw.div`h-full h-screen bg-gray-100 md:w-1/5 lg:w-1/5 px-2 mb-4`;
@@ -21,7 +20,11 @@ const Header = tw.h1`inline-block text-3xl font-extrabold text-gray-900 tracking
 
 export default function AnalyticsIndex(props) {
   return (
-    <AdminLayout host={props.host} siteUrl={props.siteUrl}>
+    <AdminLayout
+      host={props.host}
+      siteUrl={props.siteUrl}
+      authorizedEmailDomains={props.authorizedEmailDomains}
+    >
       <AdminNav switchLocales={false} homePageEditor={false} />
       <Container>
         <Sidebar>
@@ -92,12 +95,10 @@ export default function AnalyticsIndex(props) {
 
               <ul tw="p-2">
                 <li>
-                  <b>Tracking ID:</b>{' '}
-                  <code>{process.env.NEXT_PUBLIC_GA_TRACKING_ID}</code>
+                  <b>Tracking ID:</b> <code>{props.trackingId}</code>
                 </li>
                 <li>
-                  <b>View ID:</b>{' '}
-                  <code>{process.env.NEXT_PUBLIC_ANALYTICS_VIEW_ID}</code>
+                  <b>View ID:</b> <code>{props.viewId}</code>
                 </li>
               </ul>
 
@@ -125,8 +126,8 @@ export async function getServerSideProps(context) {
   const apiUrl = process.env.HASURA_API_URL;
   const site = context.params.site;
 
-  const startDate = moment().subtract(1, 'days');
-  const endDate = moment();
+  const startDate = sub(new Date(), { months: 1 });
+  const endDate = new Date();
 
   let sessionCount = 0;
   let sessionParams = {
@@ -172,7 +173,12 @@ export async function getServerSideProps(context) {
   }
   const settings = settingsResult.data.settings;
   const siteUrl = findSetting(settings, 'NEXT_PUBLIC_SITE_URL');
-
+  const trackingId = findSetting(settings, 'NEXT_PUBLIC_GA_TRACKING_ID');
+  const viewId = findSetting(settings, 'NEXT_PUBLIC_ANALYTICS_VIEW_ID');
+  const authorizedEmailDomains = findSetting(
+    settings,
+    'AUTHORIZED_EMAIL_DOMAINS'
+  );
   const host = context.req.headers.host; // will give you localhost:3000
 
   return {
@@ -186,6 +192,9 @@ export async function getServerSideProps(context) {
       subscriberSessionCount: subscriberSessionCount,
       siteUrl: siteUrl,
       host: host,
+      trackingId: trackingId,
+      viewId: viewId,
+      authorizedEmailDomains: authorizedEmailDomains,
     },
   };
 }

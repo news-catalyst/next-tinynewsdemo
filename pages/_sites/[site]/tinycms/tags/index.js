@@ -23,7 +23,14 @@ const TableHeader = tw.th`px-4 py-2`;
 const TableCell = tw.td`border px-4 py-2`;
 const AddTagButton = tw.a`hidden md:flex w-full md:w-auto px-4 py-2 text-right bg-blue-900 hover:bg-blue-500 text-white md:rounded`;
 
-export default function Tags({ apiUrl, site, tags, siteUrl, host }) {
+export default function Tags({
+  apiUrl,
+  site,
+  tags,
+  siteUrl,
+  host,
+  authorizedEmailDomains,
+}) {
   const [notificationMessage, setNotificationMessage] = useState('');
   const [notificationType, setNotificationType] = useState('');
   const [showNotification, setShowNotification] = useState(false);
@@ -103,7 +110,11 @@ export default function Tags({ apiUrl, site, tags, siteUrl, host }) {
   });
 
   return (
-    <AdminLayout host={host} siteUrl={siteUrl}>
+    <AdminLayout
+      host={host}
+      siteUrl={siteUrl}
+      authorizedEmailDomains={authorizedEmailDomains}
+    >
       <AdminNav homePageEditor={false} showConfigOptions={true} />
       {showNotification && (
         <Notification
@@ -163,6 +174,10 @@ export async function getServerSideProps(context) {
 
   const settings = settingsResult.data.settings;
   const siteUrl = findSetting(settings, 'NEXT_PUBLIC_SITE_URL');
+  const authorizedEmailDomains = findSetting(
+    settings,
+    'AUTHORIZED_EMAIL_DOMAINS'
+  );
   const host = context.req.headers.host;
 
   let tags;
@@ -188,6 +203,7 @@ export async function getServerSideProps(context) {
       tags: tags,
       siteUrl: siteUrl,
       host: host,
+      authorizedEmailDomains: authorizedEmailDomains,
     },
   };
 }
