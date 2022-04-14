@@ -13,6 +13,7 @@ import Homepage from '../../../components/Homepage';
 import LandingPage from '../../../components/LandingPage';
 import CurriculumHomepage from '../../../components/curriculum/CurriculumHomepage';
 import { NextSeo } from 'next-seo';
+import TwitterMeta from '../../../components/TwitterMeta';
 
 export default function Home(props) {
   if (
@@ -49,6 +50,7 @@ export default function Home(props) {
             ],
           }}
         />
+        <TwitterMeta override={{}} siteMetadata={props.siteMetadata} />
       </>
     );
 
