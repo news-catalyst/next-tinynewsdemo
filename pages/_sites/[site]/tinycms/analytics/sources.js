@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import tw from 'twin.macro';
 import AdminLayout from '../../../../../components/AdminLayout';
 import AdminNav from '../../../../../components/nav/AdminNav';
-import moment from 'moment';
+import { sub } from 'date-fns';
 import DateRangePickerWrapper from '../../../../../components/tinycms/analytics/DateRangePickerWrapper';
 import datePickerStyles from '../../../../../styles/datepicker.js';
 import SourcesByAge from '../../../../../components/tinycms/analytics/SourcesByAge';
@@ -25,17 +25,21 @@ const HeaderContainer = tw.div`pt-5 pb-10`;
 const Header = tw.h1`inline-block text-3xl font-extrabold text-gray-900 tracking-tight`;
 
 export default function SourcesOverview(props) {
-  const [startDate, setStartDate] = useState(moment().subtract(30, 'days'));
-  const [endDate, setEndDate] = useState(moment());
+  const [startDate, setStartDate] = useState(sub(new Date(), { months: 1 }));
+  const [endDate, setEndDate] = useState(new Date());
   const [focusedInput, setFocusedInput] = useState(null);
 
   const setDates = (sd, ed) => {
-    setStartDate(sd);
-    setEndDate(ed);
+    sd && setStartDate(sd);
+    ed && setEndDate(ed);
   };
 
   return (
-    <AdminLayout host={props.host} siteUrl={props.siteUrl}>
+    <AdminLayout
+      host={props.host}
+      siteUrl={props.siteUrl}
+      authorizedEmailDomains={props.authorizedEmailDomains}
+    >
       <AdminNav switchLocales={false} homePageEditor={false} />
       <Container>
         <Sidebar>
@@ -131,7 +135,10 @@ export async function getServerSideProps(context) {
   }
   const settings = settingsResult.data.settings;
   const siteUrl = findSetting(settings, 'NEXT_PUBLIC_SITE_URL');
-
+  const authorizedEmailDomains = findSetting(
+    settings,
+    'AUTHORIZED_EMAIL_DOMAINS'
+  );
   const host = context.req.headers.host; // will give you localhost:3000
 
   return {
@@ -140,6 +147,7 @@ export async function getServerSideProps(context) {
       site,
       siteUrl,
       host,
+      authorizedEmailDomains,
     },
   };
 }

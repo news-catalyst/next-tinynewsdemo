@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import tw from 'twin.macro';
+import { format } from 'date-fns';
 // import { parsePageViews } from '../../../lib/utils';
 import { hasuraGetSourceZipCodes } from '../../../lib/analytics';
 
@@ -15,8 +16,8 @@ const SourceTopZips = (props) => {
     let params = {
       url: props.apiUrl,
       site: props.site,
-      startDate: props.startDate.format('YYYY-MM-DD'),
-      endDate: props.endDate.format('YYYY-MM-DD'),
+      startDate: format(props.startDate, 'yyyy-MM-dd'),
+      endDate: format(props.endDate, 'yyyy-MM-dd'),
     };
 
     const fetchData = async () => {
@@ -64,8 +65,8 @@ const SourceTopZips = (props) => {
         <SubHeader>Source Top Zip Codes</SubHeader>
       </SubHeaderContainer>
       <p tw="p-2">
-        {props.startDate.format('dddd, MMMM Do YYYY')} -{' '}
-        {props.endDate.format('dddd, MMMM Do YYYY')}
+        {format(props.startDate, 'EEEE, MMMM do yyyy')} -{' '}
+        {format(props.endDate, 'EEEE, MMMM do yyyy')}
       </p>
 
       <table tw="w-full table-auto">
