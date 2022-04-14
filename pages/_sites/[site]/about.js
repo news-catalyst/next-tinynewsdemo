@@ -17,7 +17,11 @@ export default function About(props) {
   if (router.isFallback) {
     return <div>Loading...</div>;
   }
-  return <AboutPage {...props} isAmp={isAmp} />;
+  return (
+    <>
+      <AboutPage {...props} isAmp={isAmp} />;
+    </>
+  );
 }
 
 export async function getStaticPaths() {
@@ -91,6 +95,7 @@ export async function getStaticProps({ params }) {
       monkeypodLink,
       site,
     },
+
     revalidate: 1,
   };
 }
