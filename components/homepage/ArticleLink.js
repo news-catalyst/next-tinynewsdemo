@@ -44,6 +44,7 @@ export default function ArticleLink({
     mainImageContent = article.article_translations[0].main_image;
   } else if (article.newsletter_published_at) {
     headline = article.headline;
+    dek = article.subheadline;
   }
 
   let categoryTitle;
