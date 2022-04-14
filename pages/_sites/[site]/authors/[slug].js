@@ -16,6 +16,7 @@ import ArticleStream from '../../../../components/homepage/ArticleStream';
 import tw from 'twin.macro';
 import { Anchor } from '../../../../components/common/CommonStyles.js';
 import { NextSeo } from 'next-seo';
+import TwitterMeta from '../../../../components/TwitterMeta';
 
 export default function AuthorPage({
   sections,
@@ -120,6 +121,13 @@ export default function AuthorPage({
             },
           ],
         }}
+      />
+      <TwitterMeta
+        override={{
+          title: authorName || siteMetadata.searchTitle,
+          author: authorTwitter,
+        }}
+        siteMetadata={siteMetadata}
       />
     </Layout>
   );

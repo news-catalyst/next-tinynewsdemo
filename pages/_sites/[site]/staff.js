@@ -6,6 +6,7 @@ import {
 import { hasuraGetPage } from '../../../lib/pages.js';
 import StaffPage from '../../../components/StaffPage';
 import { NextSeo } from 'next-seo';
+import TwitterMeta from '../../../components/TwitterMeta';
 
 export default function Staff(props) {
   const isAmp = false;
@@ -31,6 +32,12 @@ export default function Staff(props) {
             },
           ],
         }}
+      />
+      <TwitterMeta
+        override={{
+          title: 'Staff',
+        }}
+        siteMetadata={props.siteMetadata}
       />
     </>
   );
