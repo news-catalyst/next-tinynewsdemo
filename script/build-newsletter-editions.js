@@ -334,7 +334,6 @@ const publishNewsletters = process.env.PUBLISH_NEWSLETTERS;
 
 if (!publishNewsletters || publishNewsletters === 'false') {
   console.log('Not publishing newsletters for ' + apiToken);
-  return;
 } else {
   getNewsletterEditions();
 }
