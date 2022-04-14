@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import tw, { styled } from 'twin.macro';
+import { format } from 'date-fns';
 // import { parsePageViews } from '../../../lib/utils';
 import {
   hasuraGetPageViews,
@@ -49,8 +50,8 @@ const PageViews = (props) => {
     let pvParams = {
       url: props.apiUrl,
       site: props.site,
-      startDate: props.startDate.format('YYYY-MM-DD'),
-      endDate: props.endDate.format('YYYY-MM-DD'),
+      startDate: format(props.startDate, 'yyyy-MM-dd'),
+      endDate: format(props.endDate, 'yyyy-MM-dd'),
     };
     const fetchPageViews = async () => {
       const { errors, data } = await hasuraGetPageViews(pvParams);
@@ -267,8 +268,8 @@ const PageViews = (props) => {
                     </SubDek>
                   </SubHeaderContainer>
                   <p tw="p-2">
-                    {props.startDate.format('dddd, MMMM Do YYYY')} -{' '}
-                    {props.endDate.format('dddd, MMMM Do YYYY')}
+                    {format(props.startDate, 'EEEE, MMMM do yyyy')} -{' '}
+                    {format(props.endDate, 'EEEE, MMMM do yyyy')}
                   </p>
                   <table tw="w-full table-auto">
                     <thead>
@@ -306,8 +307,8 @@ const PageViews = (props) => {
                     </SubDek>
                   </SubHeaderContainer>
                   <p tw="p-2">
-                    {props.startDate.format('dddd, MMMM Do YYYY')} -{' '}
-                    {props.endDate.format('dddd, MMMM Do YYYY')}
+                    {format(props.startDate, 'EEEE, MMMM do yyyy')} -{' '}
+                    {format(props.endDate, 'EEEE, MMMM do yyyy')}
                   </p>
                   <table tw="w-full table-auto">
                     <thead>
@@ -342,8 +343,8 @@ const PageViews = (props) => {
                     </SubDek>
                   </SubHeaderContainer>
                   <p tw="p-2">
-                    {props.startDate.format('dddd, MMMM Do YYYY')} -{' '}
-                    {props.endDate.format('dddd, MMMM Do YYYY')}
+                    {format(props.startDate, 'EEEE, MMMM do yyyy')} -{' '}
+                    {format(props.endDate, 'EEEE, MMMM do yyyy')}
                   </p>
 
                   <table tw="w-full table-auto">
@@ -377,8 +378,8 @@ const PageViews = (props) => {
                   </SubDek>
                 </SubHeaderContainer>
                 <p tw="p-2">
-                  {props.startDate.format('dddd, MMMM Do YYYY')} -{' '}
-                  {props.endDate.format('dddd, MMMM Do YYYY')}
+                  {format(props.startDate, 'EEEE, MMMM do yyyy')} -{' '}
+                  {format(props.endDate, 'EEEE, MMMM do yyyy')}
                 </p>
 
                 <table tw="w-full table-auto">
