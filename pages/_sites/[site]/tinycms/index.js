@@ -72,7 +72,11 @@ const cardContent = [
 
 export default function TinyCmsHome(props) {
   return (
-    <AdminLayout host={props.host} siteUrl={props.siteUrl}>
+    <AdminLayout
+      host={props.host}
+      siteUrl={props.siteUrl}
+      authorizedEmailDomains={props.authorizedEmailDomains}
+    >
       <AdminNav homePageEditor={false} showConfigOptions={true} />
       <div id="page">
         <Content>
@@ -113,13 +117,17 @@ export async function getServerSideProps(context) {
   }
   const settings = settingsResult.data.settings;
   const siteUrl = findSetting(settings, 'NEXT_PUBLIC_SITE_URL');
-
+  const authorizedEmailDomains = findSetting(
+    settings,
+    'AUTHORIZED_EMAIL_DOMAINS'
+  );
   const host = context.req.headers.host; // will give you localhost:3000
 
   return {
     props: {
       host,
       siteUrl,
+      authorizedEmailDomains,
     },
   };
 }
