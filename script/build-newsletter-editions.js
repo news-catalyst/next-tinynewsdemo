@@ -65,16 +65,20 @@ async function getNewsletterEditions() {
       letterhead['url'] + 'channels/' + letterhead['channelSlug'] + '/letters';
     // console.log('Letterhead API URL:', letterheadUrl);
 
-    const opts = {
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${letterhead['apiKey']}`,
-      },
-    };
-    let res = await fetch(letterheadUrl, opts);
-    let data = await res.json();
-    let saveResult = await saveNewsletterEditions(organizationId, data);
-    console.log('save newsletter result:', saveResult);
+    try {
+      const opts = {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${letterhead['apiKey']}`,
+        },
+      };
+      let res = await fetch(letterheadUrl, opts);
+      let data = await res.json();
+      let saveResult = await saveNewsletterEditions(organizationId, data);
+      console.log('save newsletter result:', saveResult);
+    } catch (e) {
+      console.error(e);
+    }
   }
 }
 
