@@ -63,7 +63,7 @@ function hasuraInsertLocale(params) {
   });
 }
 
-const INSERT_NEWSLETTER_EDITION = `mutation FrontendInsertNewsletterEdition($slug: String, $byline: String, $content: jsonb, $headline: String, $letterhead_id: Int, $letterhead_unique_id: String, $newsletter_created_at: timestamptz, $newsletter_published_at: timestamptz, $subheadline: String, $organization_id: Int) {
+const INSERT_NEWSLETTER_EDITION = `mutation FrontendInsertNewsletterEdition($slug: String, $byline: String, $content: String, $headline: String, $letterhead_id: Int, $letterhead_unique_id: String, $newsletter_created_at: timestamptz, $newsletter_published_at: timestamptz, $subheadline: String, $organization_id: Int) {
   insert_newsletter_editions_one(object: {slug: $slug, byline: $byline, content: $content, headline: $headline, letterhead_id: $letterhead_id, letterhead_unique_id: $letterhead_unique_id, newsletter_created_at: $newsletter_created_at, newsletter_published_at: $newsletter_published_at, subheadline: $subheadline, organization_id: $organization_id}, on_conflict: {constraint: newsletter_editions_organization_id_letterhead_unique_id_key, update_columns: headline}) {
     id
     headline
