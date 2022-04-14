@@ -18,7 +18,7 @@ import {
 } from '../../../../components/common/CommonStyles.js';
 import ArticleFooter from '../../../../components/articles/ArticleFooter';
 import NewsletterBlock from '../../../../components/plugins/NewsletterBlock';
-import { renderNewsletterContent } from '../../../../lib/utils.js';
+import LetterheadNewsletter from '../../../../components/nodes/embeds/LetterheadNewsletter';
 
 const SectionContainer = tw.div`flex flex-col flex-nowrap items-center px-5 mx-auto max-w-7xl w-full`;
 const BlockWrapper = tw.div`w-full`;
@@ -34,16 +34,16 @@ export default function NewsletterEditionPage(props) {
     return <div>Loading...</div>;
   }
 
-  let body;
+  // let body;
 
-  if (props.newsletter) {
-    body = renderNewsletterContent(
-      props.newsletter.content,
-      [],
-      isAmp,
-      props.siteMetadata
-    );
-  }
+  // if (props.newsletter) {
+  //   body = renderNewsletterContent(
+  //     props.newsletter.content,
+  //     [],
+  //     isAmp,
+  //     props.siteMetadata
+  //   );
+  // }
 
   return (
     <Layout
@@ -53,11 +53,11 @@ export default function NewsletterEditionPage(props) {
       site={props.site}
     >
       <SectionContainer>
-        <ArticleTitle meta={props.siteMetadata} tw="text-center">
+        {/* <ArticleTitle meta={props.siteMetadata} tw="text-center">
           {props.newsletter.headline}
-        </ArticleTitle>
+        </ArticleTitle> */}
         <PostText>
-          <PostTextContainer>{body}</PostTextContainer>
+          <LetterheadNewsletter content={props.newsletter.content} />
           <ArticleFooter
             article={props.newsletter}
             isAmp={isAmp}
