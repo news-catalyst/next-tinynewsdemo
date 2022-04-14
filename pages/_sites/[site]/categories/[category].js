@@ -20,6 +20,7 @@ import {
   Block,
 } from '../../../../components/common/CommonStyles';
 import { NextSeo } from 'next-seo';
+import TwitterMeta from '../../../../components/TwitterMeta';
 
 export default function CategoryPage(props) {
   const isAmp = false;
@@ -79,6 +80,12 @@ export default function CategoryPage(props) {
             },
           ],
         }}
+      />
+      <TwitterMeta
+        override={{
+          title: props.title || siteMetadata.searchTitle,
+        }}
+        siteMetadata={siteMetadata}
       />
     </Layout>
   );
@@ -193,6 +200,7 @@ export async function getStaticProps({ params }) {
       renderFooter,
       monkeypodLink,
       site,
+      slug: params.category,
     },
   };
 }
