@@ -94,6 +94,9 @@ export default function ArticleLink({
   ) {
     firstPublishedAt = article.article_translations[0].first_published_at;
   }
+  if (article.newsletter_published_at) {
+    firstPublishedAt = article.newsletter_published_at;
+  }
 
   return (
     <Asset>

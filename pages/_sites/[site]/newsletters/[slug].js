@@ -11,11 +11,8 @@ import {
   getOrgSettings,
 } from '../../../../lib/settings.js';
 import { getArticleAds } from '../../../../lib/ads.js';
-import {
-  ArticleTitle,
-  PostTextContainer,
-  PostText,
-} from '../../../../components/common/CommonStyles.js';
+import PublishDate from '../../../../components/articles/PublishDate.js';
+import { NewsletterPostText } from '../../../../components/common/CommonStyles.js';
 import ArticleFooter from '../../../../components/articles/ArticleFooter';
 import NewsletterBlock from '../../../../components/plugins/NewsletterBlock';
 import LetterheadNewsletter from '../../../../components/nodes/embeds/LetterheadNewsletter';
@@ -34,17 +31,6 @@ export default function NewsletterEditionPage(props) {
     return <div>Loading...</div>;
   }
 
-  // let body;
-
-  // if (props.newsletter) {
-  //   body = renderNewsletterContent(
-  //     props.newsletter.content,
-  //     [],
-  //     isAmp,
-  //     props.siteMetadata
-  //   );
-  // }
-
   return (
     <Layout
       meta={props.siteMetadata}
@@ -53,17 +39,15 @@ export default function NewsletterEditionPage(props) {
       site={props.site}
     >
       <SectionContainer>
-        {/* <ArticleTitle meta={props.siteMetadata} tw="text-center">
-          {props.newsletter.headline}
-        </ArticleTitle> */}
-        <PostText>
+        <PublishDate article={props.newsletter} meta={props.siteMetadata} />
+        <NewsletterPostText>
           <LetterheadNewsletter content={props.newsletter.content} />
           <ArticleFooter
             article={props.newsletter}
             isAmp={isAmp}
             metadata={props.siteMetadata}
           />
-        </PostText>
+        </NewsletterPostText>
         <NewsletterBlock metadata={props.siteMetadata} />
       </SectionContainer>
     </Layout>

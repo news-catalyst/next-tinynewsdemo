@@ -61,6 +61,12 @@ export default function PublishDate({ article, meta }) {
       siteTimeZone
     );
   }
+  if (article.newsletter_published_at) {
+    firstPublishedOn = renderDate(
+      article.newsletter_published_at,
+      siteTimeZone
+    );
+  }
   return (
     <>
       <ArticlePublishDate meta={meta}>
