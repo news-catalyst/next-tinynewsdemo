@@ -108,11 +108,15 @@ export async function getStaticProps({ params }) {
     tags = data.tags;
 
     for (var i = 0; i < sections.length; i++) {
-      sections[i].title = sections[i].category_translations[0].title;
+      sections[i].title = sections[i]?.category_translations[0]?.title;
     }
 
     for (var j = 0; j < tags.length; j++) {
-      tags[j].title = tags[j].tag_translations[0].title;
+      if (tags[j]?.tag_translations[0]?.title) {
+        tags[j].title = tags[j]?.tag_translations[0]?.title;
+      } else {
+        tags.splice(j, 1);
+      }
     }
 
     let metadatas = data.site_metadatas;
