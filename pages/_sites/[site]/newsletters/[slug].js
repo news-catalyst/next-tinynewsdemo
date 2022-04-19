@@ -16,9 +16,11 @@ import {
   PostTextContainer,
   PostText,
 } from '../../../../components/common/CommonStyles.js';
+import PublishDate from '../../../../components/articles/PublishDate.js';
+import { NewsletterPostText } from '../../../../components/common/CommonStyles.js';
 import ArticleFooter from '../../../../components/articles/ArticleFooter';
 import NewsletterBlock from '../../../../components/plugins/NewsletterBlock';
-import { renderNewsletterContent } from '../../../../lib/utils.js';
+import LetterheadNewsletter from '../../../../components/nodes/embeds/LetterheadNewsletter';
 
 const SectionContainer = tw.div`flex flex-col flex-nowrap items-center px-5 mx-auto max-w-7xl w-full`;
 const BlockWrapper = tw.div`w-full`;
@@ -34,16 +36,16 @@ export default function NewsletterEditionPage(props) {
     return <div>Loading...</div>;
   }
 
-  let body;
+  // let body;
 
-  if (props.newsletter) {
-    body = renderNewsletterContent(
-      props.newsletter.content,
-      [],
-      isAmp,
-      props.siteMetadata
-    );
-  }
+  // if (props.newsletter) {
+  //   body = renderNewsletterContent(
+  //     props.newsletter.content,
+  //     [],
+  //     isAmp,
+  //     props.siteMetadata
+  //   );
+  // }
 
   return (
     <Layout
@@ -53,17 +55,15 @@ export default function NewsletterEditionPage(props) {
       site={props.site}
     >
       <SectionContainer>
-        <ArticleTitle meta={props.siteMetadata} tw="text-center">
-          {props.newsletter.headline}
-        </ArticleTitle>
-        <PostText>
-          <PostTextContainer>{body}</PostTextContainer>
+        <PublishDate article={props.newsletter} meta={props.siteMetadata} />
+        <NewsletterPostText>
+          <LetterheadNewsletter content={props.newsletter.content} />
           <ArticleFooter
             article={props.newsletter}
             isAmp={isAmp}
             metadata={props.siteMetadata}
           />
-        </PostText>
+        </NewsletterPostText>
         <NewsletterBlock metadata={props.siteMetadata} />
       </SectionContainer>
     </Layout>
@@ -124,11 +124,15 @@ export async function getStaticProps({ params }) {
     tags = data.tags;
 
     for (var i = 0; i < sections.length; i++) {
-      sections[i].title = sections[i].category_translations[0].title;
+      sections[i].title = sections[i]?.category_translations[0]?.title;
     }
 
     for (var j = 0; j < tags.length; j++) {
-      tags[j].title = tags[j].tag_translations[0].title;
+      if (tags[j]?.tag_translations[0]?.title) {
+        tags[j].title = tags[j]?.tag_translations[0]?.title;
+      } else {
+        tags.splice(j, 1);
+      }
     }
 
     let metadatas = data.site_metadatas;

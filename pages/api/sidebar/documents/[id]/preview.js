@@ -110,6 +110,9 @@ export default async function Handler(req, res) {
     articleData['content'] = processedData['formattedElements'];
     articleData['main_image'] = processedData['mainImage'];
 
+    delete articleData.first_published_at;
+
+    // console.log(JSON.stringify(articleData));
     let storeDataResult = await saveArticle({
       data: articleData,
       url: apiUrl,
@@ -117,6 +120,7 @@ export default async function Handler(req, res) {
     });
 
     if (storeDataResult.status === 'error') {
+      console.error(JSON.stringify(storeDataResult.message));
       return res.status(500).json({
         status: 'error',
         message: 'Error: ' + JSON.stringify(storeDataResult.message),
@@ -125,6 +129,8 @@ export default async function Handler(req, res) {
     }
 
     resultData = storeDataResult.data[0];
+    // console.log(JSON.stringify(resultData));
+
     slug = resultData.slug;
     articleID = resultData.id;
     categorySlug = resultData.category.slug;

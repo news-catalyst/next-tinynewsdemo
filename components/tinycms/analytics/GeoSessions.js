@@ -22,7 +22,6 @@ const GeoSessions = (props) => {
     };
 
     const fetchGeoSessions = async () => {
-      console.log('this is firing');
       const { errors, data } = await hasuraGetGeoSessions(sessionParams);
 
       if (errors && !data) {
