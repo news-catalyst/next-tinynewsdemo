@@ -84,7 +84,6 @@ export async function getStaticProps({ params }) {
     };
   } else {
     newsletters = data.newsletter_editions;
-    console.log('newsletters:', newsletters);
     sections = data.categories;
     tags = data.tags;
 
