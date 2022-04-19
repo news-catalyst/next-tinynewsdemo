@@ -33,6 +33,7 @@ const NewsletterSubscribe = ({ articleTitle, metadata, tinycms, site }) => {
     setTrackedNewsletterImpression,
   ] = useState(false);
   const [redirectURL, setRedirectURL] = useState(metadata.newsletterRedirect);
+  const [thanksMessage, setThanksMessage] = useState(metadata.newsletterThanks);
 
   useEffect(() => {
     if (inView && !trackedNewsletterImpression) {
@@ -92,7 +93,12 @@ const NewsletterSubscribe = ({ articleTitle, metadata, tinycms, site }) => {
         setMessage(data.message);
       } else {
         setStatus('success');
-        setMessage('Thank you for signing up for our newsletter.');
+        if (thanksMessage) {
+          setMessage(thanksMessage);
+        } else {
+          setMessage('Thank you for signing up for our newsletter.');
+        }
+
         trackEvent({
           action: 'newsletter signup',
           category: 'NTG newsletter',
