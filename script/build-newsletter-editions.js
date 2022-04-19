@@ -3,286 +3,150 @@
 require('dotenv').config({ path: '.env.local' });
 
 const fetch = require('node-fetch');
-
 const shared = require('./shared');
 
 const apiUrl = process.env.HASURA_API_URL;
-const apiToken = process.env.ORG_SLUG;
+const adminSecret = process.env.HASURA_ADMIN_SECRET;
 
-function getNewsletterEditions() {
-  const letterheadUrl =
-    process.env.LETTERHEAD_API_URL +
-    'channels/' +
-    process.env.LETTERHEAD_CHANNEL_SLUG +
-    '/letters';
-  console.log('Letterhead API URL:', letterheadUrl);
+// https://stackoverflow.com/a/38327540
+function groupBy(list, keyGetter) {
+  const map = new Map();
+  list.forEach((item) => {
+    const key = keyGetter(item);
+    const collection = map.get(key);
+    if (!collection) {
+      map.set(key, [item]);
+    } else {
+      collection.push(item);
+    }
+  });
+  return map;
+}
 
-  if (!process.env.LETTERHEAD_API_URL) {
+async function getNewsletterEditions() {
+  const settingsResult = await shared.hasuraGetAllLetterheadSettings({
+    url: apiUrl,
+    adminSecret: adminSecret,
+  });
+
+  if (settingsResult.errors) {
+    console.error(settingsResult.errors);
     return;
   }
 
-  const opts = {
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${process.env.LETTERHEAD_API_KEY}`,
-    },
-  };
-  fetch(letterheadUrl, opts)
-    .then((res) => res.json())
-    .then((data) => {
-      saveNewsletterEditions(data);
-    })
-    .catch(console.error);
+  // group all settings by organization, then loop over each to get the newsletter editions
+  const settings = settingsResult.data.settings;
+  let groupedSettings = groupBy(settings, (setting) => setting.organization.id);
+
+  for (const [organizationId, orgSettings] of groupedSettings) {
+    // Only process BBG newsletters - used while testing this script
+    // if (organizationId !== 109) {
+    //   continue;
+    // }
+    // let site = orgSettings[0].organization.slug;
+    // console.log('SITE:', site);
+
+    let letterhead = {
+      url: orgSettings.find((setting) => setting.name === 'LETTERHEAD_API_URL')
+        ?.value,
+      apiKey: orgSettings.find(
+        (setting) => setting.name === 'LETTERHEAD_API_KEY'
+      )?.value,
+      channelSlug: orgSettings.find(
+        (setting) => setting.name === 'LETTERHEAD_CHANNEL_SLUG'
+      )?.value,
+    };
+
+    if (!letterhead['url']) {
+      continue;
+    }
+
+    const letterheadUrl =
+      letterhead['url'] + 'channels/' + letterhead['channelSlug'] + '/letters';
+    // console.log('Letterhead API URL:', letterheadUrl);
+
+    try {
+      const opts = {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${letterhead['apiKey']}`,
+        },
+      };
+      let res = await fetch(letterheadUrl, opts);
+      let data = await res.json();
+      let saveResult = await saveNewsletterEditions(organizationId, data);
+      console.log('save newsletter result:', saveResult);
+    } catch (e) {
+      console.error(e);
+    }
+  }
 }
 
-//{"ops":[{"insert":"This is my newsletter"},{"attributes":{"header":1},"insert":"\n"},{"insert":"By Tyler \nThis is a paragraph followed by a list:\nlist item 1"},{"attributes":{"list":"bullet"},"insert":"\n"},{"insert":"list item 2"},{"attributes":{"list":"bullet"},"insert":"\n"},{"insert":"list item 3"},{"attributes":{"list":"bullet"},"insert":"\n"},{"insert":"Section title"},{"attributes":{"header":2},"insert":"\n"},{"attributes":{"bold":true},"insert":"Bold text. "},{"attributes":{"italic":true,"bold":true},"insert":"Italic bold text. "},{"attributes":{"italic":true},"insert":"Just italic."},{"insert":"\n\n"}]}
-
-function transformDelta(delta) {
-  // console.log(delta);
-
-  let elements = [];
-
-  delta.ops.forEach((element, i) => {
-    if (!element.insert) {
-      return;
-    }
-    if (typeof element.insert !== 'string') {
-      return;
-    }
-
-    let lines = element.insert.split('\n');
-    if (!element.attributes && lines.length > 1) {
-      lines.forEach((line) => {
-        if (line) {
-          elements.push({
-            insert: line,
-          });
-        }
-      });
-    } else {
-      elements.push(element);
-    }
-  });
-
-  // console.log(elements);
-
-  let list = { items: [] };
-  let paragraph = { children: [] };
-
-  let formattedElements = [];
-  elements.forEach((element, i) => {
-    if (element.attributes && element.attributes.header) {
-      // console.log(i, "header:", elements[i-1].insert)
-      formattedElements.push({
-        link: null,
-        type: 'text',
-        style: 'HEADING_' + element.attributes.header,
-        children: [
-          {
-            index: i,
-            style: {},
-            content: elements[i - 1].insert,
-          },
-        ],
-      });
-    } else if (element.attributes && element.attributes.list) {
-      // console.log(i, "list:", elements[i-1].insert)
-
-      list.items.push({
-        index: i,
-        children: [
-          {
-            style: {},
-            content: elements[i - 1].insert,
-          },
-        ],
-        nestingLevel: 0,
-      });
-
-      // if there is a second next element and it's not a list, this is the last item in the list;
-      // if there is no second next element, this is also the last item in the list; finish it
-      // by pushing it onto the formattedElements, then set it to an empty object again
-      // we do this in case there are more lists in the email
-      // if there is a second next element and it has a list attr, this list has more items
-      if (
-        (elements[i + 2] &&
-          (!elements[i + 2].attributes || !elements[i + 2].attributes.list)) ||
-        !elements[i + 2]
-      ) {
-        // hardcode as "bullet" for now
-        formattedElements.push({
-          type: 'list',
-          listType: 'BULLET',
-          items: list.items,
-          link: null,
-        });
-        // reset the list holder
-        list = { items: [] };
-      }
-    } else if (
-      element.attributes &&
-      (element.attributes.bold || element.attributes.italic)
-    ) {
-      // console.log(i, "formatted text:", element.insert);
-      let style = {};
-      if (element.attributes.bold) {
-        style['bold'] = true;
-      }
-      if (element.attributes.italic) {
-        style['italic'] = true;
-      }
-
-      paragraph.children.push({
-        index: i,
-        style: style,
-        content: element.insert,
-      });
-
-      // if this is the last element of the newsletter, or
-      // if the next element is blank string, or
-      // if the next element is a list/header item, close the paragraph
-      if (
-        !elements[i + 1] ||
-        (elements[i + 1] &&
-          elements[i + 1].insert &&
-          !elements[i + 1].insert.replace(/[\\n]|\n/g, '')) ||
-        (elements[i + 1] &&
-          elements[i + 1].attributes &&
-          (elements[i + 1].attributes.list ||
-            elements[i + 1].attributes.header))
-      ) {
-        formattedElements.push({
-          link: null,
-          type: 'text',
-          style: 'NORMAL_TEXT',
-          children: paragraph.children,
-        });
-        paragraph = { children: [] };
-        // otherwise, continue on
-      }
-    } else if (element.attributes && element.attributes.link) {
-      // console.log(i, "link:", element.attributes.link);
-
-      formattedElements.push({
-        link: null,
-        type: 'text',
-        style: 'NORMAL_TEXT',
-        children: [
-          {
-            link: element.attributes.link,
-            index: i,
-            style: {
-              underline: true,
-            },
-            content: element.insert,
-          },
-        ],
-      });
-    } else if (element.attributes) {
-      // console.log(i, "unknown attrs:", element.attributes);
-    } else {
-      if (
-        elements[i + 1] &&
-        elements[i + 1].attributes &&
-        elements[i + 1].attributes.header
-      ) {
-        console.log(i, 'skip, header is handled next:', element.insert);
-      } else if (
-        elements[i + 1] &&
-        elements[i + 1].attributes &&
-        elements[i + 1].attributes.list
-      ) {
-        console.log(i, 'skip, list is handled next:', element.insert);
-      } else {
-        console.log(i, 'plain text:', element.insert);
-
-        paragraph.children.push({
-          link: null,
-          type: 'text',
-          style: 'NORMAL_TEXT',
-          children: [
-            {
-              index: i,
-              style: {},
-              content: element.insert,
-            },
-          ],
-        });
-
-        // if this is the last element of the newsletter, or
-        // if the next element is blank string, or
-        // if the next element is a list/header item, close the paragraph
-        if (
-          !elements[i + 1] ||
-          (elements[i + 1] &&
-            elements[i + 1].insert &&
-            !elements[i + 1].insert.replace(/[\\n]|\n/g, '')) ||
-          (elements[i + 1] &&
-            elements[i + 1].attributes &&
-            (elements[i + 1].attributes.list ||
-              elements[i + 1].attributes.header))
-        ) {
-          formattedElements.push({
-            link: null,
-            type: 'text',
-            style: 'NORMAL_TEXT',
-            children: paragraph.children,
-          });
-          paragraph = { children: [] };
-        }
-      }
-    }
-  });
-
-  // console.log(formattedElements);
-
-  return formattedElements;
-}
-
-async function saveNewsletterEditions(letterheadData) {
+async function saveNewsletterEditions(organizationId, letterheadData) {
   console.log(
+    organizationId,
     'Letterhead returned',
     letterheadData.length,
     'newsletter editions in total:'
   );
+
   for await (let newsletter of letterheadData) {
+    let headline = shared.cleanContent(newsletter.title);
+
     if (!newsletter.publicationDate) {
       console.log(
-        '> Newsletter ID#' +
+        '> Org#' +
+          organizationId +
+          ' Newsletter ID#' +
           newsletter.id +
           " '" +
-          newsletter.title +
+          headline +
           "' is not published, skipping."
       );
       continue;
     }
 
-    let slug = slugify(newsletter.title);
+    let slug = slugify(headline);
     if (!slug) {
+      console.error('> no slug, skipping');
       continue;
     }
 
-    let content = transformDelta(JSON.parse(newsletter.delta));
+    if (!newsletter.emailTemplate) {
+      console.error('> no content found, skipping this edition');
+      continue;
+    }
+
+    let content = shared.cleanContent(newsletter.emailTemplate);
+    let cleanedUpContent = content
+      .replace(/<a\shref.*?>View\s+in\s+browser<\/a>/gim, '')
+      .replace('Unsubscribe from this list', '')
+      .replace(
+        '<div style="background-color:#FFFFFF;">',
+        '<div style="background-color:#FFFFFF; width: 100%;">'
+      );
 
     let editionData = {
       slug: slug,
-      headline: newsletter.title,
+      headline: headline,
       letterhead_id: newsletter.id,
       letterhead_unique_id: newsletter.uniqueId,
-      content: content,
+      content: cleanedUpContent,
       newsletter_created_at: newsletter.createdAt,
       newsletter_published_at: newsletter.publicationDate,
     };
+
     if (newsletter.customizedByline) {
       editionData['byline'] = newsletter.customizedByline;
     }
-    if (newsletter.customizedByline) {
+
+    if (newsletter.subtitle) {
       editionData['subheadline'] = newsletter.subtitle;
     }
 
-    const result = await shared.hasuraInsertNewsletterEdition({
+    const result = await shared.hasuraInsertNewsletterEdition(organizationId, {
       url: apiUrl,
-      orgSlug: apiToken,
+      adminSecret: adminSecret,
       data: editionData,
     });
 
@@ -297,7 +161,9 @@ async function saveNewsletterEditions(letterheadData) {
       );
     } else {
       console.log(
-        '. Newsletter ID#' +
+        '. OrgID#' +
+          organizationId +
+          ' Newsletter ID#' +
           newsletter.id +
           " '" +
           newsletter.title +
@@ -333,7 +199,7 @@ const slugify = (value) => {
 const publishNewsletters = process.env.PUBLISH_NEWSLETTERS;
 
 if (!publishNewsletters || publishNewsletters === 'false') {
-  console.log('Not publishing newsletters for ' + apiToken);
+  console.log('Not publishing newsletters');
 } else {
   getNewsletterEditions();
 }
