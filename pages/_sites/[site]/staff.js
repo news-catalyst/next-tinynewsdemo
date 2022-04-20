@@ -5,11 +5,42 @@ import {
 } from '../../../lib/settings';
 import { hasuraGetPage } from '../../../lib/pages.js';
 import StaffPage from '../../../components/StaffPage';
+import { NextSeo } from 'next-seo';
+import TwitterMeta from '../../../components/TwitterMeta';
 
 export default function Staff(props) {
   const isAmp = false;
 
-  return <StaffPage {...props} isAmp={isAmp} />;
+  return (
+    <>
+      <StaffPage {...props} isAmp={isAmp} />
+      <NextSeo
+        title="Staff"
+        description={props.siteMetadata?.searchDescription}
+        canonical={`${props.siteMetadata?.siteUrl}/staff`}
+        openGraph={{
+          title: `Staff`,
+          description:
+            props.siteMetadata?.facebookDescription ||
+            props.siteMetadata?.searchDescription,
+          url: `${props.siteMetadata?.siteUrl}/staff`,
+          images: [
+            {
+              url: props.siteMetadata?.defaultSocialImage,
+              width: props.siteMetadata?.defaultSocialImageWidth,
+              height: props.siteMetadata?.defaultSocialImageHeight,
+            },
+          ],
+        }}
+      />
+      <TwitterMeta
+        override={{
+          title: 'Staff',
+        }}
+        siteMetadata={props.siteMetadata}
+      />
+    </>
+  );
 }
 
 export async function getStaticPaths() {
@@ -56,6 +87,7 @@ export async function getStaticProps({ params }) {
     slug: 'staff',
     localeCode: 'en-US',
   });
+
   if (errors || !data) {
     console.error('getPage errors:', errors);
     return {
@@ -80,6 +112,7 @@ export async function getStaticProps({ params }) {
       monkeypodLink,
       site,
     },
+
     revalidate: 1,
   };
 }

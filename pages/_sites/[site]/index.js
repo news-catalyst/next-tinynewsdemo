@@ -12,6 +12,8 @@ import { getArticleAds } from '../../../lib/ads.js';
 import Homepage from '../../../components/Homepage';
 import LandingPage from '../../../components/LandingPage';
 import CurriculumHomepage from '../../../components/curriculum/CurriculumHomepage';
+import { NextSeo } from 'next-seo';
+import TwitterMeta from '../../../components/TwitterMeta';
 
 export default function Home(props) {
   if (
@@ -21,13 +23,35 @@ export default function Home(props) {
     return <CurriculumHomepage {...props} />;
   }
 
-  // console.log('streamArticles:', props.streamArticles);
   const component =
     (props.siteMetadata && props.siteMetadata.landingPage === 'on') ||
     !props.selectedLayout ? (
       <LandingPage {...props} />
     ) : (
-      <Homepage {...props} />
+      <>
+        <Homepage {...props} />
+        <NextSeo
+          title={props.siteMetadata.searchTitle || props.siteMetadata.shortName}
+          description={props.siteMetadata.searchDescription}
+          canonical={props.siteMetadata.siteUrl}
+          openGraph={{
+            title:
+              props.siteMetadata.facebookTitle || props.siteMetadata.shortName,
+            description:
+              props.siteMetadata.facebookDescription ||
+              props.siteMetadata.searchDescription,
+            url: props.siteMetadata.siteUrl,
+            images: [
+              {
+                url: props.siteMetadata.defaultSocialImage,
+                width: props.siteMetadata.defaultSocialImageWidth,
+                height: props.siteMetadata.defaultSocialImageHeight,
+              },
+            ],
+          }}
+        />
+        <TwitterMeta override={{}} siteMetadata={props.siteMetadata} />
+      </>
     );
 
   return component;

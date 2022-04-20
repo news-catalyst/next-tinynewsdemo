@@ -3,9 +3,11 @@ import ArticleBody from './articles/ArticleBody';
 import Comments from './articles/Comments';
 import ArticleFooter from './articles/ArticleFooter';
 import Recirculation from './articles/Recirculation';
+import TwitterMeta from './TwitterMeta';
 import { generateArticleUrl } from '../lib/utils.js';
 import { useAmp } from 'next/amp';
 import Layout from './Layout.js';
+import { NextSeo, NewsArticleJsonLd } from 'next-seo';
 
 export default function Article({
   article,
@@ -23,6 +25,7 @@ export default function Article({
   // this is used for the canonical link tag in the Layout component
   let canonicalArticleUrl = generateArticleUrl(baseUrl, article);
   siteMetadata['canonicalUrl'] = canonicalArticleUrl;
+  const translation = article.article_translations[0];
 
   const displayComments = siteMetadata['commenting'] === 'on';
 
@@ -50,7 +53,6 @@ export default function Article({
     }
   }
 
-  // console.log('Returning layout and children components...');
   return (
     <Layout
       meta={siteMetadata}
@@ -91,6 +93,60 @@ export default function Article({
           section={article.category}
         />
       </div>
+
+      <NextSeo
+        title={translation.search_title || translation.headline} // get the search title if defined, if not fall back to headline
+        description={translation.search_description} // search description (labeled as just description in the sidebar) is required, so we can rely on it being there
+        canonical={canonicalArticleUrl} // defined on line 24 of the component
+        openGraph={{
+          title: translation.facebook_title || translation.headline, // get facebook title if defined, if not fall back to headline
+          description:
+            translation.facebook_description || translation.search_description, // get FB description if defined, if not fall back to search description
+          url: canonicalArticleUrl,
+          type: 'article',
+          article: {
+            publishedTime: translation.first_published_at,
+            modifiedTime: translation.last_published_at,
+            authors: article.author_articles.map(
+              (a) => `${siteMetadata.siteUrl}/authors/${a.author.slug}`
+            ), // generate author URL for each author
+            section: article.category.category_translations[0].title,
+            tags: article.tag_articles.map(
+              (t) => t.tag.tag_translations[0].title
+            ),
+          },
+          images: [
+            {
+              url: mainImage?.imageUrl,
+              width: mainImage?.width,
+              height: mainImage?.height,
+            },
+          ],
+        }}
+      />
+      <NewsArticleJsonLd
+        url={canonicalArticleUrl}
+        title={translation.search_title || translation.headline}
+        images={[mainImage?.imageUrl]}
+        datePublished={translation.first_published_at}
+        dateModified={translation.last_published_at}
+        authorName={article.author_articles.map(
+          (a) => `${a.author.first_names} ${a.author.last_name}`
+        )}
+        publisherName={siteMetadata.shortName}
+        publisherLogo={siteMetadata.logo}
+        description={translation.search_description}
+      />
+      <TwitterMeta
+        override={{
+          title: translation.twitter_title || translation.headline,
+          description:
+            translation.twitter_description || translation.search_description,
+          image: mainImage?.imageUrl,
+          author: article.author_articles[0]?.author?.twitter,
+        }}
+        siteMetadata={siteMetadata}
+      />
     </Layout>
   );
 }

@@ -93,6 +93,14 @@ export default async function Handler(req, res) {
       articleData['content'] = processedData['formattedElements'];
       articleData['main_image'] = processedData['mainImage'];
 
+      delete articleData.first_published_at;
+      delete articleData.last_published_at;
+      delete articleData.article_tags;
+      delete articleData.article_authors;
+
+      articleData['category_id'] = parseInt(articleData['category_id']);
+      // console.log(JSON.stringify(articleData));
+
       let storeDataResult = await saveArticle({
         data: articleData,
         url: apiUrl,
@@ -110,6 +118,7 @@ export default async function Handler(req, res) {
       }
 
       resultData = storeDataResult.data[0];
+      // console.log(JSON.stringify(resultData));
       slug = resultData.slug;
       categorySlug = resultData.category.slug;
       articleID = resultData.id;

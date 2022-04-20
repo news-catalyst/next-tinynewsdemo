@@ -16,6 +16,8 @@ import {
   PostTextContainer,
   PostText,
 } from '../../../components/common/CommonStyles.js';
+import { NextSeo } from 'next-seo';
+import TwitterMeta from '../../../components/TwitterMeta';
 
 const SectionContainer = tw.div`flex flex-col flex-nowrap items-center px-5 mx-auto max-w-7xl w-full`;
 const WideContainer = styled.div(() => ({
@@ -105,6 +107,37 @@ export default function Donate({
           wrap={true}
         />
       </WideContainer>
+
+      <NextSeo
+        title={localisedPage.headline}
+        description={localisedPage.search_description}
+        canonical={`${siteMetadata.siteUrl}/donate`}
+        openGraph={{
+          title: localisedPage.facebook_title || localisedPage.headline,
+          description:
+            localisedPage.facebook_description ||
+            localisedPage.search_description,
+          url: `${siteMetadata.siteUrl}/donate`,
+          images: [
+            {
+              url: mainImage?.imageUrl || siteMetadata.defaultSocialImage,
+              width: mainImage?.width || siteMetadata.defaultSocialImageWidth,
+              height:
+                mainImage?.height || siteMetadata.defaultSocialImageHeight,
+            },
+          ],
+        }}
+      />
+      <TwitterMeta
+        override={{
+          title: localisedPage.twitter_title || localisedPage.headline,
+          description:
+            localisedPage.twitter_description ||
+            localisedPage.search_description,
+          image: mainImage?.imageUrl || siteMetadata.defaultSocialImage,
+        }}
+        siteMetadata={siteMetadata}
+      />
     </Layout>
   );
 }

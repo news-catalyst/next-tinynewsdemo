@@ -22,6 +22,28 @@ function hasuraInsertSettings(params) {
   });
 }
 
+const LIST_SETTINGS = `query FrontendAllLetterheadSettings {
+  settings(where: {name: {_in: ["TNC_AWS_ACCESS_ID", "TNC_AWS_ACCESS_KEY", "TNC_AWS_BUCKET_NAME", "LETTERHEAD_API_URL", "LETTERHEAD_CHANNEL_SLUG", "LETTERHEAD_API_KEY"]}}) {
+    name
+    value
+    organization {
+      id
+      name
+      slug
+    }
+  }
+}
+`;
+
+async function hasuraGetAllLetterheadSettings(params) {
+  return fetchGraphQL({
+    url: params['url'],
+    adminSecret: params['adminSecret'],
+    query: LIST_SETTINGS,
+    name: 'FrontendAllLetterheadSettings',
+  });
+}
+
 const INSERT_LOCALE = `mutation FrontendInsertLocale($code: String!, $name: String!) {
   insert_locales_one(object: {code: $code, name: $name}, on_conflict: {constraint: locales_code_key, update_columns: code}) {
     id
@@ -41,22 +63,23 @@ function hasuraInsertLocale(params) {
   });
 }
 
-const INSERT_NEWSLETTER_EDITION = `mutation FrontendInsertNewsletterEdition($slug: String, $byline: String, $content: jsonb, $headline: String, $letterhead_id: Int, $letterhead_unique_id: String, $newsletter_created_at: timestamptz, $newsletter_published_at: timestamptz, $subheadline: String) {
-  insert_newsletter_editions_one(object: {slug: $slug, byline: $byline, content: $content, headline: $headline, letterhead_id: $letterhead_id, letterhead_unique_id: $letterhead_unique_id, newsletter_created_at: $newsletter_created_at, newsletter_published_at: $newsletter_published_at, subheadline: $subheadline}, on_conflict: {constraint: newsletter_editions_organization_id_letterhead_unique_id_key, update_columns: headline}) {
+const INSERT_NEWSLETTER_EDITION = `mutation FrontendInsertNewsletterEdition($slug: String, $byline: String, $content: String, $headline: String, $letterhead_id: Int, $letterhead_unique_id: String, $newsletter_created_at: timestamptz, $newsletter_published_at: timestamptz, $subheadline: String, $organization_id: Int) {
+  insert_newsletter_editions_one(object: {slug: $slug, byline: $byline, content: $content, headline: $headline, letterhead_id: $letterhead_id, letterhead_unique_id: $letterhead_unique_id, newsletter_created_at: $newsletter_created_at, newsletter_published_at: $newsletter_published_at, subheadline: $subheadline, organization_id: $organization_id}, on_conflict: {constraint: newsletter_editions_organization_id_letterhead_unique_id_key, update_columns: headline}) {
     id
     headline
     slug
   }
 }`;
 
-function hasuraInsertNewsletterEdition(params) {
-  console.log(params);
+function hasuraInsertNewsletterEdition(organizationId, params) {
+  // console.log(params);
   return fetchGraphQL({
     url: params['url'],
-    site: params['site'],
+    adminSecret: params['adminSecret'],
     query: INSERT_NEWSLETTER_EDITION,
     name: 'FrontendInsertNewsletterEdition',
     variables: {
+      organization_id: organizationId,
       byline: params['data']['byline'],
       slug: params['data']['slug'],
       content: params['data']['content'],
@@ -1552,7 +1575,16 @@ function sanitizePath(path) {
   return path;
 }
 
+function cleanContent(content) {
+  if (content === null || typeof content === 'undefined') {
+    return '';
+  }
+  return content.trim();
+}
+
 module.exports = {
+  cleanContent,
+  hasuraGetAllLetterheadSettings,
   hasuraInsertSettings,
   hasuraGetSiteData,
   hasuraInsertLocale,

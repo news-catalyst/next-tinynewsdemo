@@ -35,6 +35,7 @@ export default function HomePageEditor({
   host,
   apiSecret,
   lambdaURL,
+  authorizedEmailDomains,
 }) {
   const [notificationMessage, setNotificationMessage] = useState('');
   const [notificationType, setNotificationType] = useState('');
@@ -113,7 +114,11 @@ export default function HomePageEditor({
   }
 
   return (
-    <AdminLayout host={host} siteUrl={siteUrl}>
+    <AdminLayout
+      host={host}
+      siteUrl={siteUrl}
+      authorizedEmailDomains={authorizedEmailDomains}
+    >
       <AdminNav
         homePageEditor={true}
         layoutSchemas={layoutSchemas}
@@ -232,6 +237,10 @@ export async function getServerSideProps(context) {
   const siteUrl = findSetting(settings, 'NEXT_PUBLIC_SITE_URL');
   const apiSecret = findSetting(settings, 'API_TOKEN');
 
+  const authorizedEmailDomains = findSetting(
+    settings,
+    'AUTHORIZED_EMAIL_DOMAINS'
+  );
   return {
     props: {
       layoutSchemas,
@@ -246,6 +255,7 @@ export async function getServerSideProps(context) {
       host,
       apiSecret,
       lambdaURL,
+      authorizedEmailDomains,
     },
   };
 }

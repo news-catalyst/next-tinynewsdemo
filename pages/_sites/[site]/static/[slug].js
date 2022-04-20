@@ -5,10 +5,13 @@ import {
   hasuraGetPage,
 } from '../../../../lib/pages.js';
 import StaticPage from '../../../../components/StaticPage';
+import { NextSeo } from 'next-seo';
+import TwitterMeta from '../../../../components/TwitterMeta';
 
 export default function Static({ page, sections, siteMetadata, site }) {
   const router = useRouter();
   const isAmp = false;
+  let pages = page?.page_translations[0];
 
   if (router.isFallback) {
     return <div>Loading...</div>;
@@ -26,6 +29,31 @@ export default function Static({ page, sections, siteMetadata, site }) {
         sections={sections}
         siteMetadata={siteMetadata}
         site={site}
+      />
+
+      <NextSeo
+        title={pages.headline}
+        description={pages.search_description}
+        canonical={`${siteMetadata.siteUrl}/static/${page.slug}`}
+        openGraph={{
+          title: `${pages.facebook_title || pages.headline}`,
+          description: pages.facebook_description || pages.search_description,
+          url: `${siteMetadata.siteUrl}/static/${page.slug}`,
+          images: [
+            {
+              url: siteMetadata.defaultSocialImageWidth,
+              width: siteMetadata.defaultSocialImageWidth,
+              height: siteMetadata.defaultSocialImageHeight,
+            },
+          ],
+        }}
+      />
+      <TwitterMeta
+        override={{
+          title: pages.headline,
+          description: pages.search_description,
+        }}
+        siteMetadata={siteMetadata}
       />
     </>
   );

@@ -246,7 +246,9 @@ export default function SiteInfoSettings(props) {
   const [newsletterDek, setNewsletterDek] = useState(
     props.parsedData['newsletterDek']
   );
-
+  const [newsletterThanks, setNewsletterThanks] = useState(
+    props.parsedData['newsletterThanks']
+  );
   const [newsletterRedirect, setNewsletterRedirect] = useState(
     props.parsedData['newsletterRedirect']
   );
@@ -319,6 +321,10 @@ export default function SiteInfoSettings(props) {
   const updateNewsletterHed = (value) => {
     setNewsletterHed(value);
     updateKeyValue('newsletterHed', value);
+  };
+  const updateNewsletterThanks = (value) => {
+    setNewsletterThanks(value);
+    updateKeyValue('newsletterThanks', value);
   };
   const updateMembershipHed = (value) => {
     setMembershipHed(value);
@@ -441,6 +447,7 @@ export default function SiteInfoSettings(props) {
     }
     setNewsletterHed(props.parsedData['newsletterHed']);
     setNewsletterRedirect(props.parsedData['newsletterRedirect']);
+    setNewsletterThanks(props.parsedData['newsletterThanks']);
     setFounderTwitter(props.parsedData['founderTwitter']);
     setFounderInstagram(props.parsedData['founderInstagram']);
     setFounderFacebook(props.parsedData['founderFacebook']);
@@ -859,6 +866,12 @@ export default function SiteInfoSettings(props) {
               onChange={props.handleChange}
             />
           </label>
+          <TinyInputField
+            name="newsletterThanks"
+            value={newsletterThanks}
+            onChange={(ev) => updateNewsletterThanks(ev.target.value)}
+            label="Thank You/Success Message"
+          />
         </div>
         <div tw="col-span-1">
           <span tw="mt-1 font-bold">Preview</span>

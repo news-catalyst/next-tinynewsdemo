@@ -15,6 +15,8 @@ import { getArticleAds } from '../../../../lib/ads.js';
 import ArticleStream from '../../../../components/homepage/ArticleStream';
 import tw from 'twin.macro';
 import { Anchor } from '../../../../components/common/CommonStyles.js';
+import { NextSeo } from 'next-seo';
+import TwitterMeta from '../../../../components/TwitterMeta';
 
 export default function AuthorPage({
   sections,
@@ -65,7 +67,6 @@ export default function AuthorPage({
   const ProfileDiv = tw.div`w-full border-b-2 border-black pb-2`;
   const ProfileBio = tw.p`pt-2 text-lg`;
   const ProfileTwitter = tw.p`text-base pt-3`;
-
   return (
     <Layout
       meta={siteMetadata}
@@ -101,6 +102,32 @@ export default function AuthorPage({
         metadata={siteMetadata}
         ads={expandedAds}
         monkeypodLink={monkeypodLink}
+      />
+
+      <NextSeo
+        title={authorName || siteMetadata.searchTitle}
+        description={siteMetadata.searchDescription}
+        canonical={`${siteMetadata.siteUrl}/authors/${author.slug}`}
+        openGraph={{
+          title: authorName || siteMetadata.searchTitle,
+          description:
+            siteMetadata.facebookDescription || siteMetadata.searchDescription,
+          url: `${siteMetadata.siteUrl}/authors/${author.slug}`,
+          images: [
+            {
+              url: siteMetadata.defaultSocialImage,
+              width: siteMetadata.defaultSocialImageWidth,
+              height: siteMetadata.defaultSocialImageHeight,
+            },
+          ],
+        }}
+      />
+      <TwitterMeta
+        override={{
+          title: authorName || siteMetadata.searchTitle,
+          author: authorTwitter,
+        }}
+        siteMetadata={siteMetadata}
       />
     </Layout>
   );
