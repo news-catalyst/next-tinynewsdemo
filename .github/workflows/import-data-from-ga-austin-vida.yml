@@ -19,7 +19,7 @@ jobs:
       - run: echo "🔎 Running GA data importer"
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
-      - run: npm install
+      - run: npm install --no-optional
       - run: echo "🖥️ repo and node are setup"
       - name: article-sessions
         run: node script/ga.js -d article-sessions
