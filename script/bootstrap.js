@@ -26,7 +26,6 @@ const { request } = require('@octokit/request'); // for creating GH env
 const sodium = require('tweetsodium'); // for encrypting GH env secrets
 
 const shared = require('./shared');
-const vercel = require('./vercel');
 
 require('dotenv').config({ path: '.env.local' });
 
@@ -62,7 +61,7 @@ function generateEnvName(slug) {
 }
 
 // create the environment on github and supply it with the required env vars for doing GA data import action runs
-async function createGitHubEnv(slug) {
+async function createGitHubEnv(slug, viewID, siteUrl) {
   const environmentName = generateEnvName(slug);
   console.log('🏞  Creating GitHub environment called', environmentName);
 
@@ -151,13 +150,9 @@ async function createGitHubEnv(slug) {
       'GOOGLE_CREDENTIALS_PRIVATE_KEY',
       'HASURA_API_URL',
       'NEXT_PUBLIC_ANALYTICS_VIEW_ID',
-      'ORG_SLUG',
+      'SITE',
       'NEXT_PUBLIC_SITE_URL',
-      'LETTERHEAD_API_URL',
-      'LETTERHEAD_API_KEY',
-      'LETTERHEAD_CHANNEL_SLUG',
       'AUTHORIZED_EMAIL_DOMAINS',
-      'VERCEL_DEPLOY_HOOK',
     ];
 
     const pubKeyResult = await octokit.rest.actions.getRepoPublicKey({
@@ -170,10 +165,19 @@ async function createGitHubEnv(slug) {
     for await (let secretName of secrets) {
       let plainValue = currentEnv.parsed[secretName];
 
-      let encryptedValue = encryptSecret(pubKey, plainValue);
+      if (secretName === 'NEXT_PUBLIC_ANALYTICS_VIEW_ID') {
+        plainValue = viewID;
+      }
+      if (secretName === 'NEXT_PUBLIC_SITE_URL') {
+        plainValue = siteUrl;
+      }
+      if (secretName === 'SITE') {
+        plainValue = slug;
+      }
       console.log(
-        `\t* setting secret ${secretName} - plain value = '${plainValue}' encrypted as '${encryptedValue}'`
+        `\t* encrypting secret ${secretName} - plain value = '${plainValue}'`
       );
+      let encryptedValue = encryptSecret(pubKey, plainValue);
 
       const secretResult = await octokit.rest.actions.createOrUpdateEnvironmentSecret(
         {
@@ -203,7 +207,7 @@ async function createGitHubEnv(slug) {
   }
 }
 
-async function setupGitHubAction(slug) {
+async function setupGitHubAction(slug, viewID, siteUrl) {
   let source = '.github/workflows/import-data-from-ga.yml';
   let destination = `.github/workflows/import-data-from-ga-${slug}.yml`;
 
@@ -213,6 +217,14 @@ async function setupGitHubAction(slug) {
 
     const environmentName = generateEnvName(slug);
     sourceData['jobs']['GA-Data-Importer']['environment'] = environmentName;
+    sourceData['jobs']['GA-Data-Importer']['env']['SITE'] = slug;
+    sourceData['jobs']['GA-Data-Importer']['env'][
+      'NEXT_PUBLIC_SITE_URL'
+    ] = siteUrl;
+    sourceData['jobs']['GA-Data-Importer']['env'][
+      'NEXT_PUBLIC_ANALYTICS_VIEW_ID'
+    ] = viewID;
+    sourceData['name'] = 'GA Data Importer ' + slug;
 
     let yamlStr = yaml.dump(sourceData);
     fs.writeFileSync(destination, yamlStr, 'utf8');
@@ -352,73 +364,24 @@ async function setupGoogleAnalytics(name, url) {
   };
 }
 
-// sets up org-specific ENV values
-async function configureNext(name, slug, locales, url, gaTrackingId, gaViewId) {
-  const currentEnv = require('dotenv').config({ path: '.env.local' });
-
-  if (currentEnv.error) {
-    throw currentEnv.error;
-  }
-
-  const parsedUrl = new URL(url);
-  let hostName = parsedUrl.hostname;
-  let domain;
-  if (hostName.match(/^www/)) {
-    // should we try matching any other subdomain here?
-    domain = hostName.replace(/^[^.]+\./g, '');
-  } else {
-    domain = hostName;
-  }
-  currentEnv.parsed['AUTHORIZED_EMAIL_DOMAINS'] = domain;
-  currentEnv.parsed['NEXT_PUBLIC_SITE_URL'] = url;
-  // set these to the new organization values
-  currentEnv.parsed['ORG_NAME'] = name;
-  currentEnv.parsed['ORG_SLUG'] = slug;
-  currentEnv.parsed['TNC_AWS_DIR_NAME'] = slug;
-  currentEnv.parsed['NEXT_PUBLIC_GA_TRACKING_ID'] = gaTrackingId;
-  currentEnv.parsed['NEXT_PUBLIC_ANALYTICS_VIEW_ID'] = gaViewId;
-  currentEnv.parsed['LOCALES'] = arrayUnique(locales).join(',');
-
-  console.log('Creating new environment file using the following settings:');
-  console.log(currentEnv.parsed);
-
-  let orgEnvFilename = `.env.local-${slug}`;
-  let tempEnvFilename = '.new.env.local';
-
-  var tempFile = fs.createWriteStream(tempEnvFilename, { flags: 'a' });
-
-  tempFile.on('open', function (fd) {
-    Object.keys(currentEnv.parsed).map((key) => {
-      tempFile.write(`${key}=${currentEnv.parsed[key]}` + '\n');
-    });
-    tempFile.end();
-    if (fs.existsSync(tempEnvFilename)) {
-      fs.renameSync(tempEnvFilename, orgEnvFilename);
-      console.log('Created new environment file: ', orgEnvFilename);
-    } else {
-      console.error('Temporary env file does not exist:', tempEnvFilename);
-    }
-  });
-}
-
 async function createOrganization(opts) {
   let name = opts.name;
   let slug = opts.slug;
-  let locales = opts.locales[0].split(',');
+  let locales = ['en-US'];
   let url = opts.url;
-
-  // console.log('locales:', typeof locales, locales);
+  let subdomain = opts.subdomain;
+  let customDomain = opts.customDomain;
 
   let { trackingID, viewID } = await setupGoogleAnalytics(name, url);
   console.log(`GA TrackingID=${trackingID} and ViewID=${viewID}`);
-
-  await configureNext(name, slug, locales, url, trackingID, viewID);
 
   const { errors, data } = await shared.hasuraInsertOrganization({
     url: apiUrl,
     adminSecret: adminSecret,
     name: name,
+    subdomain: subdomain,
     slug: slug,
+    customDomain: customDomain,
   });
 
   if (errors) {
@@ -447,6 +410,10 @@ async function createOrganization(opts) {
             // console.log(`${aLocale.code} skip`);
             return;
           }
+          // we're only supporting single-locale, english language sites now
+          if (foundLocale.code !== 'en-US') {
+            return;
+          }
 
           orgLocaleObjects.push({
             locale_id: aLocale.id,
@@ -467,40 +434,6 @@ async function createOrganization(opts) {
                     data: {
                       locale_code: aLocale.code,
                       title: 'News',
-                    },
-                    on_conflict: {
-                      constraint:
-                        'category_translations_locale_code_category_id_key',
-                      update_columns: 'title',
-                    },
-                  },
-                },
-                {
-                  organization_id: organizationID,
-                  title: 'Politics',
-                  slug: 'politics',
-                  published: false,
-                  category_translations: {
-                    data: {
-                      locale_code: aLocale.code,
-                      title: 'Politics',
-                    },
-                    on_conflict: {
-                      constraint:
-                        'category_translations_locale_code_category_id_key',
-                      update_columns: 'title',
-                    },
-                  },
-                },
-                {
-                  organization_id: organizationID,
-                  title: 'COVID-19',
-                  slug: 'covid-19',
-                  published: false,
-                  category_translations: {
-                    data: {
-                      locale_code: aLocale.code,
-                      title: 'COVID-19',
                     },
                     on_conflict: {
                       constraint:
@@ -600,6 +533,7 @@ async function createOrganization(opts) {
               advertisingCTA: 'Buy an advertisement',
             };
 
+            // note: this is hardcoded above to ['en-US']
             locales.map((locale) => {
               shared
                 .hasuraUpsertMetadata({
@@ -618,13 +552,39 @@ async function createOrganization(opts) {
                     console.error(res.errors);
                   } else {
                     console.log(`[${locale}] created site metadata`);
+
+                    shared
+                      .hasuraInsertSettings({
+                        url: apiUrl,
+                        site: subdomain,
+                        settings: [
+                          {
+                            name: 'AUTHORIZED_EMAIL_DOMAINS',
+                            value: `newscatalyst.org,tinynewsco.org,${customDomain}`,
+                          },
+                          {
+                            name: 'NEXT_PUBLIC_SITE_URL',
+                            value: url,
+                          },
+                        ],
+                      })
+                      .then((res) => {
+                        if (res.errors) {
+                          console.error(
+                            `[${locale}] ! Failed creating basic settings`
+                          );
+                          console.error(res.errors);
+                        } else {
+                          console.log(`[${locale}] created basic settings`);
+                        }
+                      });
                     // console.log(JSON.stringify(res));
                   }
                 });
             });
 
-            setupGitHubAction(slug);
-            createGitHubEnv(slug);
+            setupGitHubAction(slug, viewID, url);
+            createGitHubEnv(slug, viewID, url);
 
             console.log(
               'Make sure to review settings in the tinycms once this is done!'
@@ -652,18 +612,23 @@ program
     '-s, --slug <slug>',
     'a short (A-Za-z0-9_) slug for the organization'
   )
-  .requiredOption('-l, --locales [locales...]', 'specify supported locales')
+  .requiredOption(
+    '-b, --subdomain <subdomain>',
+    'subdomain for the organization that prefixes .tinynewsco.dev for its staging site, example "neworg"'
+  )
+  .requiredOption(
+    '-c, --customDomain <customDomain>',
+    'customDomain for the organization site in production, example neworgname.org'
+  )
   .requiredOption(
     '-u, --url <url>',
-    'specify the url on vercel, used for GA property setup'
+    'specify the site url on vercel, at first this is probably the staging url, example https://neworg.tinynewsco.dev'
   )
-  .description('sets up a new organization in Hasura and Google Drive')
+  .description('sets up a new tiny news organization')
   .action((opts) => {
     (async () => {
       console.log('Creating organization in the database and env... ');
       await createOrganization(opts);
-      console.log('Done. Setting up project in Vercel... ');
-      await vercel.createProject(opts.name, opts.slug);
       console.log('All done!');
     })();
   });
