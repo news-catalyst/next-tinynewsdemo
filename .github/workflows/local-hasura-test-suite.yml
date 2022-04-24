@@ -76,6 +76,11 @@ jobs:
           hasura migrate apply --skip-update-check --endpoint http://localhost:8080 --admin-secret testsecretkey
           hasura metadata apply --skip-update-check --endpoint http://localhost:8080 --admin-secret testsecretkey
           psql -h localhost -f fixtures/test-data.sql
+        env:
+          PGPASSWORD: postgres
+          PGUSER: postgres
+          PGDATABASE: postgres
+          PGPORT: 5432
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
