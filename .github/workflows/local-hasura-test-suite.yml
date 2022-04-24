@@ -54,6 +54,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           submodules: true
+          token: ${{ secrets.GITHUB_TOKEN }}
       - name: git submodule Update
         run: |
           git pull --recurse-submodules
