@@ -6,6 +6,7 @@ on:
   push:
     branches:
       - main
+      - feature/github-actions-hasura
 jobs:
   build:
     runs-on: ubuntu-latest
