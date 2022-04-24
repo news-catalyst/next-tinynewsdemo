@@ -71,19 +71,19 @@ jobs:
       - name: Start up the Docker containers and migrate to the latest version of the database
         run: |
           cd hasura
-          ls -la
           docker ps
-          hasura migrate status --skip-update-check --endpoint http://localhost:8080 --admin-secret testsecretkey
-          hasura migrate apply --skip-update-check --endpoint http://localhost:8080 --admin-secret testsecretkey
+          # hasura migrate status --skip-update-check --endpoint http://localhost:8080 --admin-secret testsecretkey
+          # hasura migrate apply --skip-update-check --endpoint http://localhost:8080 --admin-secret testsecretkey
+          psql -h localhost -f fixtures/test-data.sql
           hasura metadata apply --skip-update-check --endpoint http://localhost:8080 --admin-secret testsecretkey
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - name: npm ci and seed
+      - name: npm ci
         run: |
           npm ci
-          npm run seed
+          # npm run seed
         env:
           CI: true
       - name: npm build and cypress install
