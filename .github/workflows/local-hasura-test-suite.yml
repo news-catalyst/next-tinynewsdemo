@@ -46,6 +46,9 @@ jobs:
         image: hasura/graphql-engine:latest
         env:
           HASURA_GRAPHQL_DATABASE_URL: postgres://postgres:@postgres:5432/postgres
+          HASURA_GRAPHQL_ADMIN_SECRET: testsecretkey
+          HASURA_GRAPHQL_ENABLE_CONSOLE: 'true'
+          HASURA_GRAPHQL_UNAUTHORIZED_ROLE: anonymous
         ports:
           - 8080:8080
     strategy:
@@ -68,7 +71,7 @@ jobs:
           cd hasura
           ls -la
           docker ps
-          hasura migrate status --skip-update-check --endpoint http://localhost:8080
+          hasura migrate status --skip-update-check --endpoint http://localhost:8080 --admin-secret testsecretkey
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
