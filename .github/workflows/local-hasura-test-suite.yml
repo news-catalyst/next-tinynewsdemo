@@ -72,10 +72,10 @@ jobs:
         run: |
           cd hasura
           docker ps
-          # hasura migrate status --skip-update-check --endpoint http://localhost:8080 --admin-secret testsecretkey
-          # hasura migrate apply --skip-update-check --endpoint http://localhost:8080 --admin-secret testsecretkey
-          psql -h localhost -f fixtures/test-data.sql
+          hasura migrate status --skip-update-check --endpoint http://localhost:8080 --admin-secret testsecretkey
+          hasura migrate apply --skip-update-check --endpoint http://localhost:8080 --admin-secret testsecretkey
           hasura metadata apply --skip-update-check --endpoint http://localhost:8080 --admin-secret testsecretkey
+          psql -h localhost -f fixtures/test-data.sql
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
