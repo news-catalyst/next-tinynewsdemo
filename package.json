@@ -6,7 +6,7 @@
         "dev": "next dev",
         "dev:test": "ORG_SLUG=oaklyn-test NEXT_PUBLIC_CYPRESS_TESTING=true CYPRESS_API_TOKEN=$API_TOKEN HASURA_API_URL=https://tinynews-testing.hasura.app/v1/graphql next dev",
         "seed": "ORG_SLUG=oaklyn-test SITE=next-tinynewsdemo NEXT_PUBLIC_CYPRESS_TESTING=true CYPRESS_API_TOKEN=$API_TOKEN HASURA_API_URL=https://tinynews-testing.hasura.app/v1/graphql node script/seed.js",
-        "build:test": "ORG_SLUG=oaklyn-test SITE=next-tinynewsdemo NEXT_PUBLIC_CYPRESS_TESTING=true CYPRESS_API_TOKEN=$API_TOKEN HASURA_API_URL=https://tinynews-testing.hasura.app/v1/graphql next build",
+        "build:test": "HASURA_API_URL=http://localhost:8080 ORG_SLUG=oaklyn-test SITE=next-tinynewsdemo NEXT_PUBLIC_CYPRESS_TESTING=true CYPRESS_API_TOKEN=$API_TOKEN next build",
         "clear": "node script/clear.js",
         "populate": "node script/populate.js",
         "wordpress": "node script/wordpress.js",
