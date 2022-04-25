@@ -51,6 +51,8 @@ jobs:
           HASURA_GRAPHQL_ENABLE_CONSOLE: 'true'
           HASURA_GRAPHQL_UNAUTHORIZED_ROLE: organization
           HASURA_SKIP_UPDATE_CHECK: true
+          HASURA_GRAPHQL_AUTH_HOOK: ${{ secrets.HASURA_WEBHOOK_URL }}
+          HASURA_GRAPHQL_AUTH_HOOK_MODE: GET
         ports:
           - 8080:8080
     strategy:
@@ -106,6 +108,8 @@ jobs:
           SITE: next-tinynewsdemo
           HASURA_API_URL: http://localhost:8080
           HASURA_ADMIN_SECRET: testsecretkey
+          HASURA_GRAPHQL_AUTH_HOOK: ${{ secrets.HASURA_WEBHOOK_URL }}
+          HASURA_GRAPHQL_AUTH_HOOK_MODE: GET
         with:
           install: false
           start: npm run start
