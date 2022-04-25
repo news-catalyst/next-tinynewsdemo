@@ -52,6 +52,8 @@ jobs:
           HASURA_GRAPHQL_ENABLE_CONSOLE: 'true'
           HASURA_GRAPHQL_UNAUTHORIZED_ROLE: organization
           HASURA_SKIP_UPDATE_CHECK: true
+          HASURA_GRAPHQL_DEV_MODE: 'true'
+          HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
         ports:
           - 8080:8080
     strategy:
@@ -94,6 +96,8 @@ jobs:
           CI: true
       - name: npm build and cypress install
         uses: cypress-io/github-action@v2
+        env:
+          BUILD_MODE: test
         with:
           # Disable running of tests within install job
           runTests: false
@@ -107,7 +111,7 @@ jobs:
           SITE: next-tinynewsdemo
           HASURA_API_URL: http://localhost:8080
           HASURA_ADMIN_SECRET: testsecretkey
-          NODE_ENV: test
+          BUILD_MODE: test
         with:
           install: false
           start: npm run start:test
