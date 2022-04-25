@@ -97,7 +97,7 @@ jobs:
         with:
           # Disable running of tests within install job
           runTests: false
-          build: NODE_ENV=test npm run build:test
+          build: npm run build:test
       - name: npm start and cypress run
         uses: cypress-io/github-action@v2
         env:
@@ -110,7 +110,7 @@ jobs:
           NODE_ENV: test
         with:
           install: false
-          start: NODE_ENV=test npm run start
+          start: npm run start:test
           wait-on: 'http://next-tinynewsdemo.localhost:3000'
           wait-on-timeout: 120
           browser: firefox
