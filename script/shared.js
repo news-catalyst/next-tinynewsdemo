@@ -1223,6 +1223,10 @@ async function seedData(params) {
         name: 'NEXT_PUBLIC_SITE_URL',
         value: 'http://next-tinynewsdemo.localhost:3000',
       },
+      {
+        name: 'AUTHORIZED_EMAIL_DOMAINS',
+        value: 'newscatalyst.org,tinynewsco.org',
+      },
     ],
   });
   if (settingsResult.errors) {
