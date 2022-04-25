@@ -1,7 +1,7 @@
 export default function Airtable({ node, amp }) {
   //this is to add the 'embed' before the id since that's how airtable set it up
-  const partial_src = node.slice(0, 21);
-  const id = node.slice(21);
+  const partial_src = node.link.slice(0, 21);
+  const id = node.link.split('/').slice(3);
 
   const el = amp ? (
     <div />
