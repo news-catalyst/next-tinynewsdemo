@@ -99,6 +99,13 @@ jobs:
           build: npm run build:test
       - name: npm start and cypress run
         uses: cypress-io/github-action@v2
+        env:
+          NEXT_PUBLIC_SITE_URL: ${{ secrets.NEXT_PUBLIC_SITE_URL }}
+          API_TOKEN: ${{ secrets.API_TOKEN }}
+          CYPRESS_API_TOKEN: ${{ secrets.API_TOKEN }}
+          SITE: next-tinynewsdemo
+          HASURA_API_URL: http://localhost:8080
+          HASURA_ADMIN_SECRET: testsecretkey
         with:
           install: false
           start: npm run start
