@@ -31,6 +31,7 @@ jobs:
       LETTERHEAD_API_URL: ${{ secrets.LETTERHEAD_API_URL }}
       LETTERHEAD_CHANNEL_SLUG: ${{ secrets.LETTERHEAD_CHANNEL_SLUG }}
       TINYMCE_API_KEY: ${{ secrets.TINYMCE_API_KEY }}
+      NODE_ENV: test
     services:
       postgres:
         image: postgres:12.1
@@ -110,6 +111,7 @@ jobs:
           HASURA_ADMIN_SECRET: testsecretkey
           HASURA_GRAPHQL_AUTH_HOOK: ${{ secrets.HASURA_WEBHOOK_URL }}
           HASURA_GRAPHQL_AUTH_HOOK_MODE: GET
+          NODE_ENV: test
         with:
           install: false
           start: npm run start
