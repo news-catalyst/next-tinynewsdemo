@@ -75,9 +75,10 @@ jobs:
         run: |
           cd hasura
           docker ps
-          hasura migrate status --skip-update-check --endpoint http://localhost:8080 --admin-secret testsecretkey
           hasura migrate apply --skip-update-check --endpoint http://localhost:8080 --admin-secret testsecretkey
+          hasura migrate status --skip-update-check --endpoint http://localhost:8080 --admin-secret testsecretkey
           hasura metadata apply --skip-update-check --endpoint http://localhost:8080 --admin-secret testsecretkey
+          hasura metadata ic list --endpoint http://localhost:8080 --admin-secret testsecretkey
           psql -h localhost -f fixtures/test-data.sql
         env:
           PGPASSWORD: postgres
