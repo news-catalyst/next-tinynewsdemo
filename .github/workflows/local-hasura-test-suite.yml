@@ -113,12 +113,6 @@ jobs:
           npm ci
           npm run build
           npm run start
-      - name: Front-end app install deps
-        run: |
-          npm ci
-          # npm run seed
-        env:
-          CI: true
       - name: test hasura api TNC-Site
         run: |
           curl -s --location --request POST 'http://localhost:8080/v1/graphql' \
@@ -132,6 +126,12 @@ jobs:
             --header 'X-Hasura-Role: organization' \
             --header "X-Hasura-Organization-Id: '772'" \
             --data-raw '{"query":"query FrontendGetOrgSettings {\n    settings {\n          name\n             value\n               }\n                 organization_locales {\n                        locale {\n                                  code\n                                     }\n                                       }\n                                       }","variables":{}}'
+      - name: Front-end app install deps
+        run: |
+          npm ci
+          # npm run seed
+        env:
+          CI: true
       - name: npm build and cypress install
         uses: cypress-io/github-action@v2
         env:
