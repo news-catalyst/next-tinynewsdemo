@@ -109,6 +109,21 @@ jobs:
           # npm run seed
         env:
           CI: true
+      - name: test hasura api TNC-Site
+        env:
+        run: |
+          curl --location --request POST 'https://localhost:8080/v1/graphql' \
+            --header 'Content-Type: application/json' \
+            --header 'TNC-Site: next-tinynewsdemo' \
+            --data-raw '{"query":"query FrontendGetOrgSettings {\n    settings {\n          name\n             value\n               }\n                 organization_locales {\n                        locale {\n                                  code\n                                     }\n                                       }\n                                       }","variables":{}}'
+      - name: test hasura api hasura session headers
+        env:
+        run: |
+          curl --location --request POST 'https://localhost:8080/v1/graphql' \
+            --header 'Content-Type: application/json' \
+            --header 'X-Hasura-Role: organization' \
+            --header "X-Hasura-Organization-Id: '772'" \
+            --data-raw '{"query":"query FrontendGetOrgSettings {\n    settings {\n          name\n             value\n               }\n                 organization_locales {\n                        locale {\n                                  code\n                                     }\n                                       }\n                                       }","variables":{}}'
       - name: npm build and cypress install
         uses: cypress-io/github-action@v2
         env:
