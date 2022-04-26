@@ -105,9 +105,6 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - name: webhook
-        env:
-          HASURA_API_URL: http://localhost:8080
-          HASURA_ADMIN_SECRET: testsecretkey
         run: |
           cd hasura/webhook-test
           npm install --no-optional
