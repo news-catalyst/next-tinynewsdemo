@@ -128,7 +128,7 @@ jobs:
             --data-raw '{"query":"query FrontendGetOrgSettings {\n    settings {\n          name\n             value\n               }\n                 organization_locales {\n                        locale {\n                                  code\n                                     }\n                                       }\n                                       }","variables":{}}'
       - name: Front-end app install deps
         run: |
-          npm ci
+          npm install --no-optional
           # npm run seed
         env:
           CI: true
