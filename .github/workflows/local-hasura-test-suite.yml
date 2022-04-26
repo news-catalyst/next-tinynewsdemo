@@ -110,14 +110,12 @@ jobs:
         env:
           CI: true
       - name: test hasura api TNC-Site
-        env:
         run: |
           curl --location --request POST 'https://localhost:8080/v1/graphql' \
             --header 'Content-Type: application/json' \
             --header 'TNC-Site: next-tinynewsdemo' \
             --data-raw '{"query":"query FrontendGetOrgSettings {\n    settings {\n          name\n             value\n               }\n                 organization_locales {\n                        locale {\n                                  code\n                                     }\n                                       }\n                                       }","variables":{}}'
       - name: test hasura api hasura session headers
-        env:
         run: |
           curl --location --request POST 'https://localhost:8080/v1/graphql' \
             --header 'Content-Type: application/json' \
