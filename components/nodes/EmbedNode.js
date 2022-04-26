@@ -36,7 +36,6 @@ export default function EmbedNode({ node, amp }) {
   switch (url.hostname.replace('www.', '')) {
     case 'twitter.com':
       el = <Twitter node={node} amp={amp} />;
-      console.log(el);
       break;
     case 'youtube.com':
       el = <Youtube node={node} amp={amp} url={url} />;
