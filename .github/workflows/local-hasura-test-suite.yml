@@ -55,6 +55,7 @@ jobs:
           HASURA_SKIP_UPDATE_CHECK: true
           HASURA_GRAPHQL_DEV_MODE: 'true'
           HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
+          HASURA_GRAPHQL_AUTH_HOOK: http://next-tinynewsdemo.localhost:3000/api/webhook
         ports:
           - 8080:8080
     strategy:
@@ -80,7 +81,7 @@ jobs:
           hasura migrate status --skip-update-check --endpoint http://localhost:8080 --admin-secret testsecretkey
           hasura metadata apply --skip-update-check --endpoint http://localhost:8080 --admin-secret testsecretkey
           hasura metadata ic list --endpoint http://localhost:8080 --admin-secret testsecretkey
-          psql -h localhost -f fixtures/test-data.sql
+          psql -q -h localhost -f fixtures/test-data.sql
           hasura migrate status --skip-update-check --endpoint http://localhost:8080 --admin-secret testsecretkey
           hasura metadata reload --skip-update-check --endpoint http://localhost:8080 --admin-secret testsecretkey
           hasura metadata ic list --endpoint http://localhost:8080 --admin-secret testsecretkey
