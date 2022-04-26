@@ -110,7 +110,7 @@ jobs:
           HASURA_ADMIN_SECRET: testsecretkey
         run: |
           cd hasura/webhook-test
-          npm ci
+          npm install --no-optional
           npm run build
           npm run start
       - name: test hasura api TNC-Site
@@ -128,7 +128,7 @@ jobs:
             --data-raw '{"query":"query FrontendGetOrgSettings {\n    settings {\n          name\n             value\n               }\n                 organization_locales {\n                        locale {\n                                  code\n                                     }\n                                       }\n                                       }","variables":{}}'
       - name: Front-end app install deps
         run: |
-          npm install --no-optional
+          npm ci
           # npm run seed
         env:
           CI: true
