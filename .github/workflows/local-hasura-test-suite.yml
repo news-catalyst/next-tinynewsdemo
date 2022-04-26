@@ -55,7 +55,7 @@ jobs:
           HASURA_SKIP_UPDATE_CHECK: true
           HASURA_GRAPHQL_DEV_MODE: 'true'
           HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
-          HASURA_GRAPHQL_AUTH_HOOK: http://next-tinynewsdemo.localhost:3000/api/webhook
+          HASURA_GRAPHQL_AUTH_HOOK: http://localhost:3001/api/webhook
         ports:
           - 8080:8080
     strategy:
@@ -99,18 +99,28 @@ jobs:
           HASURA_SKIP_UPDATE_CHECK: true
           HASURA_GRAPHQL_DEV_MODE: 'true'
           HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
-          HASURA_GRAPHQL_AUTH_HOOK: http://next-tinynewsdemo.localhost:3000/api/webhook
+          HASURA_GRAPHQL_AUTH_HOOK: http://localhost:3001/api/webhook
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - name: npm ci
+      - name: webhook
+        env:
+          HASURA_API_URL: http://localhost:8080
+          HASURA_ADMIN_SECRET: testsecretkey
+        run: |
+          cd hasura/webhook-test
+          npm ci
+          npm run build
+          npm run start
+      - name: Front-end app install deps
         run: |
           npm ci
           # npm run seed
         env:
           CI: true
       - name: test hasura api TNC-Site
+        needs: webhook
         run: |
           curl -s --location --request POST 'http://localhost:8080/v1/graphql' \
             --header 'Content-Type: application/json' \
