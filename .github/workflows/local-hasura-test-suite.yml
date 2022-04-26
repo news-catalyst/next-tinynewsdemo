@@ -104,10 +104,15 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - name: webhook
+      - name: webhook setup
         run: |
           cd hasura/webhook-test
-          npm install --no-optional
+          npm install --save next@^12.1.5 --include=optional
+          npm ci
+        env:
+          CI: true
+      - name: webhook build and start
+        run: |
           npm run build
           npm run start
       - name: test hasura api TNC-Site
