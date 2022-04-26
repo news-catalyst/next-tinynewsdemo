@@ -120,7 +120,6 @@ jobs:
         env:
           CI: true
       - name: test hasura api TNC-Site
-        needs: webhook
         run: |
           curl -s --location --request POST 'http://localhost:8080/v1/graphql' \
             --header 'Content-Type: application/json' \
