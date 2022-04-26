@@ -120,7 +120,7 @@ TinyYesNoField.displayName = 'TinyYesNoField';
 export const TinyTextArea = ({ name, label, value, onChange, ...props }) => {
   return (
     <label htmlFor="bio">
-      <span tw="block font-medium text-gray-700">{label}</span>
+      <span tw="block font-bold">{label}</span>
       <TextArea
         tw="mt-1 block w-full"
         rows="3"
