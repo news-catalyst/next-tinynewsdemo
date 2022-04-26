@@ -9,6 +9,7 @@ import ApplePodcasts from './embeds/ApplePodcasts';
 import Vimeo from './embeds/Vimeo';
 import Twitch from './embeds/Twitch';
 import GoogleForm from './embeds/GoogleForm';
+import Airtable from './embeds/Airtable';
 
 const EmbedWrapper = tw.div`mb-5 max-w-full w-full`;
 
@@ -74,6 +75,9 @@ export default function EmbedNode({ node, amp }) {
       if (url.pathname.match(/^\/forms/)) {
         el = <GoogleForm node={node} amp={amp} />;
       }
+      break;
+    case 'airtable.com':
+      el = <Airtable node={node} amp={amp} />;
       break;
     default:
       el = (

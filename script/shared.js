@@ -151,10 +151,12 @@ function hasuraInsertDonationClick(params) {
   });
 }
 
-const INSERT_ORGANIZATION_MUTATION = `mutation FrontendInsertOrganization($subdomain: String, $name: String) {
-  insert_organizations_one(object: {name: $name, subdomain: $subdomain}, on_conflict: {constraint: organizations_subdomain_key, update_columns: [name, subdomain]}) {
+const INSERT_ORGANIZATION_MUTATION = `mutation FrontendInsertOrganization($subdomain: String, $name: String, $customDomain: String, $slug: String) {
+  insert_organizations_one(object: {name: $name, subdomain: $subdomain, slug: $slug, customDomain: $customDomain}, on_conflict: {constraint: organizations_subdomain_key, update_columns: [name, customDomain, slug, subdomain]}) {
     id
+    customDomain
     name
+    slug
     subdomain
   }
 }`;
@@ -168,6 +170,8 @@ function hasuraInsertOrganization(params) {
     variables: {
       name: params['name'],
       subdomain: params['subdomain'],
+      slug: params['slug'],
+      customDomain: params['customDomain'],
     },
   });
 }
