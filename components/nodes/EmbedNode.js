@@ -79,7 +79,6 @@ export default function EmbedNode({ node, amp }) {
       break;
     case 'airtable.com':
       el = <Airtable node={node} amp={amp} />;
-      console.log(el);
       break;
     default:
       el = (
