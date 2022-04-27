@@ -46,7 +46,7 @@ export default function ArticlesArchivePage({
     });
   }
 
-  console.log(articles);
+  // console.log(articles);
 
   pageNumbers.forEach((pageNumber) => {
     let pageLink = {

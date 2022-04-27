@@ -32,7 +32,7 @@ export default async function Handler(req, res) {
   let bodyData = req.body;
   let resultData;
 
-  console.log('bodyData:', bodyData);
+  // console.log('bodyData:', bodyData);
   let localeCode = bodyData['locale_code'];
   let pageId = bodyData['page_id'];
   let articleId = bodyData['article_id'];
@@ -61,7 +61,7 @@ export default async function Handler(req, res) {
 
     resultData = insertDocResult.data;
   } else {
-    console.log('insert google doc for page ID', pageId);
+    // console.log('insert google doc for page ID', pageId);
     let insertDocResult = await hasuraInsertPageGoogleDoc({
       url: apiUrl,
       site: site,
@@ -71,7 +71,7 @@ export default async function Handler(req, res) {
       locale_code: localeCode,
     });
 
-    console.log('result:', insertDocResult);
+    // console.log('result:', insertDocResult);
     if (insertDocResult.status === 'error') {
       console.error(JSON.stringify(insertDocResult));
       return res.status(500).json({
