@@ -78,40 +78,9 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - name: setup https cert support
-        run: |
-          cd hasura/secure-webhook
-          sudo apt install libnss3-tools
-          curl -JLO "https://dl.filippo.io/mkcert/latest?for=linux/amd64"
-          chmod +x mkcert-v*-linux-amd64
-          sudo cp mkcert-v*-linux-amd64 /usr/local/bin/mkcert
-      - name: generate pem files for https with mkcert
-        run: |
-          cd hasura/secure-webhook
-          mkcert -key-file key.pem -cert-file cert.pem localhost
-          mkcert -install
-      - name: npm install secure-webhook
-        run: |
-          cd hasura/secure-webhook
-          npm install
-        env:
-          CI: true
-      - name: install forever (webhook)
-        run: |
-          cd hasura/secure-webhook
-          npm install -g forever
-      - name: run secure-webhook
-        run: |
-          cd hasura/secure-webhook
-          forever start server.js
-        env:
-          CI: true
-      - name: list forever jobs (webhook)
-        run: |
-          forever list
       - name: test webhook directly
         run: |
-          curl -v https://localhost:3001
+          curl -v https://huf7758ged.execute-api.us-east-1.amazonaws.com/prod/webhook --header 'TNC-Site: next-tinynewsdemo'
         env:
           CI: true
       - name: Install Hasura cli
@@ -148,48 +117,7 @@ jobs:
           HASURA_GRAPHQL_AUTH_HOOK_MODE: GET
       - name: test hasura api TNC-Site
         run: |
-          forever list
-          curl -v https://localhost:3001
           curl -v --location --request POST 'http://localhost:8080/v1/graphql' \
             --header 'Content-Type: application/json' \
             --header 'TNC-Site: next-tinynewsdemo' \
             --data-raw '{"query":"query FrontendGetOrgSettings {\n    settings {\n          name\n             value\n               }\n                 organization_locales {\n                        locale {\n                                  code\n                                     }\n                                       }\n                                       }","variables":{}}'
-      - name: test hasura api hasura session headers
-        run: |
-          curl -s --location --request POST 'http://localhost:8080/v1/graphql' \
-            --header 'Content-Type: application/json' \
-            --header 'X-Hasura-Role: organization' \
-            --header "X-Hasura-Organization-Id: '772'" \
-            --data-raw '{"query":"query FrontendGetOrgSettings {\n    settings {\n          name\n             value\n               }\n                 organization_locales {\n                        locale {\n                                  code\n                                     }\n                                       }\n                                       }","variables":{}}'
-      - name: Front-end app install deps
-        run: |
-          npm ci
-        env:
-          CI: true
-      - name: npm build and cypress install
-        uses: cypress-io/github-action@v2
-        env:
-          BUILD_MODE: test
-        with:
-          # Disable running of tests within install job
-          runTests: false
-          build: npm run build:test
-      - name: npm start and cypress run
-        uses: cypress-io/github-action@v2
-        env:
-          NEXT_PUBLIC_SITE_URL: ${{ secrets.NEXT_PUBLIC_SITE_URL }}
-          API_TOKEN: ${{ secrets.API_TOKEN }}
-          CYPRESS_API_TOKEN: ${{ secrets.API_TOKEN }}
-          SITE: next-tinynewsdemo
-          HASURA_API_URL: http://localhost:8080/v1/graphql
-          HASURA_ADMIN_SECRET: testsecretkey
-          BUILD_MODE: test
-        with:
-          install: false
-          start: npm run start:test
-          wait-on: 'http://next-tinynewsdemo.localhost:3000'
-          wait-on-timeout: 120
-          browser: firefox
-          record: true
-          parallel: true
-          group: 'UI - Firefox'
