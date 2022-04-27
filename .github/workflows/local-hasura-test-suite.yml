@@ -120,3 +120,35 @@ jobs:
             --header 'Content-Type: application/json' \
             --header 'TNC-Site: next-tinynewsdemo' \
             --data-raw '{"query":"query FrontendGetOrgSettings {\n    settings {\n          name\n             value\n               }\n                 organization_locales {\n                        locale {\n                                  code\n                                     }\n                                       }\n                                       }","variables":{}}'
+      - name: Front-end app install deps
+        run: |
+          npm ci
+        env:
+          CI: true
+      - name: npm build and cypress install
+        uses: cypress-io/github-action@v2
+        env:
+          BUILD_MODE: test
+        with:
+          # Disable running of tests within install job
+          runTests: false
+          build: npm run build:test
+      - name: npm start and cypress run
+        uses: cypress-io/github-action@v2
+        env:
+          NEXT_PUBLIC_SITE_URL: ${{ secrets.NEXT_PUBLIC_SITE_URL }}
+          API_TOKEN: ${{ secrets.API_TOKEN }}
+          CYPRESS_API_TOKEN: ${{ secrets.API_TOKEN }}
+          SITE: next-tinynewsdemo
+          HASURA_API_URL: http://localhost:8080/v1/graphql
+          HASURA_ADMIN_SECRET: testsecretkey
+          BUILD_MODE: test
+        with:
+          install: false
+          start: npm run start:test
+          wait-on: 'http://next-tinynewsdemo.localhost:3000'
+          wait-on-timeout: 120
+          browser: firefox
+          record: true
+          parallel: true
+          group: 'UI - Firefox'
