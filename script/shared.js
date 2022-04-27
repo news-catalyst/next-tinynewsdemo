@@ -1177,6 +1177,7 @@ async function hasuraInsertTestPage(params) {
 }
 
 async function seedData(params) {
+  console.log('cypress seedData adminSecret:', params['adminSecret']);
   const deleteOrgResult = await hasuraRemoveOrganization({
     url: params['url'],
     adminSecret: params['adminSecret'],
