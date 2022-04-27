@@ -87,11 +87,17 @@ jobs:
         run: |
           cd hasura/secure-webhook
           mkcert -key-file key.pem -cert-file cert.pem localhost
-      - name: npm install and run server.js
+      - name: npm install secure-webhook
         run: |
           cd hasura/secure-webhook
           npm install
           node server.js
+        env:
+          CI: true
+      - name: run secure-webhook
+        run: |
+          cd hasura/secure-webhook
+          nohup node server.js > /dev/null 2>&1 &
         env:
           CI: true
       - name: test webhook directly
