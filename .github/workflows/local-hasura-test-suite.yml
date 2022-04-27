@@ -93,12 +93,19 @@ jobs:
           npm install
         env:
           CI: true
+      - name: install forever (webhook)
+        run: |
+          cd hasura/secure-webhook
+          npm install -g forever
       - name: run secure-webhook
         run: |
           cd hasura/secure-webhook
-          npm start
+          forever start server.js
         env:
           CI: true
+      - name: list forever jobs (webhook)
+        run: |
+          forever list
       - name: test webhook directly
         run: |
           curl -s https://localhost:3001
