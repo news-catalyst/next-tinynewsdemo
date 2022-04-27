@@ -194,7 +194,7 @@ export async function getServerSideProps(context) {
   let authorizedEmailDomains;
   try {
     let settings = settingsResult.data.settings;
-    console.log('settings result:', settingsResult);
+    // console.log('settings result:', settingsResult);
     siteUrl = findSetting(settings, 'NEXT_PUBLIC_SITE_URL');
     authorizedEmailDomains = findSetting(settings, 'AUTHORIZED_EMAIL_DOMAINS');
   } catch (e) {

@@ -374,7 +374,7 @@ const HASURA_REMOVE_ORGANIZATION = `mutation FrontendRemoveOrganization($subdoma
 }`;
 
 async function hasuraRemoveOrganization(params) {
-  console.log(params);
+  // console.log(params);
   return fetchGraphQL({
     url: params['url'],
     adminSecret: params['adminSecret'],
@@ -1119,7 +1119,7 @@ function hasuraGetSiteData(params) {
 }
 
 async function hasuraInsertTestArticle(params) {
-  console.log('hasuraInsertTestArticle params:', params);
+  // console.log('hasuraInsertTestArticle params:', params);
 
   return fetchGraphQL({
     url: params['url'],
@@ -1153,7 +1153,7 @@ const HASURA_INSERT_TEST_PAGE = `mutation FrontendInsertPage($google_document_id
 }`;
 
 async function hasuraInsertTestPage(params) {
-  console.log('hasuraInsertTestPage params:', params);
+  // console.log('hasuraInsertTestPage params:', params);
 
   return fetchGraphQL({
     url: params['url'],
