@@ -146,7 +146,7 @@ jobs:
       - name: test hasura api TNC-Site
         run: |
           forever list
-          curl -s https://localhost:3001
+          curl -v https://localhost:3001
           curl -v --location --request POST 'http://localhost:8080/v1/graphql' \
             --header 'Content-Type: application/json' \
             --header 'TNC-Site: next-tinynewsdemo' \
