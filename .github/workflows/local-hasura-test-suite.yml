@@ -96,7 +96,7 @@ jobs:
       - name: run secure-webhook
         run: |
           cd hasura/secure-webhook
-          nohup node server.js > /dev/null 2>&1 &
+          npm start
         env:
           CI: true
       - name: test webhook directly
