@@ -109,7 +109,7 @@ jobs:
           forever list
       - name: test webhook directly
         run: |
-          curl -s https://localhost:3001
+          curl -v https://localhost:3001
         env:
           CI: true
       - name: Install Hasura cli
