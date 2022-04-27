@@ -4,6 +4,6 @@
   "video": false,
   "defaultCommandTimeout": 30000,
   "env": {
-    "apiUrl": "https://tinynews-testing.hasura.app/v1/graphql"
+    "apiUrl": "http://localhost:8080/v1/graphql"
   }
 }
