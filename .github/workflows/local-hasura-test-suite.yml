@@ -97,7 +97,6 @@ jobs:
           hasura migrate status --skip-update-check --endpoint http://localhost:8080 --admin-secret testsecretkey
           hasura metadata reload --skip-update-check --endpoint http://localhost:8080 --admin-secret testsecretkey
           hasura metadata ic list --endpoint http://localhost:8080 --admin-secret testsecretkey
-          forever list
         env:
           PGPASSWORD: postgres
           PGUSER: postgres
