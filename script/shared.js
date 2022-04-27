@@ -1203,6 +1203,7 @@ async function seedData(params) {
     adminSecret: params['adminSecret'],
     name: params['org']['name'],
     subdomain: params['org']['subdomain'],
+    slug: params['org']['slug'],
   });
   if (orgResult.errors) {
     console.error(

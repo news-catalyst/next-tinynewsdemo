@@ -122,10 +122,12 @@ module.exports = (on, config) => {
         org: {
           name: faker.company.companyName(),
           subdomain: site,
+          slug: site,
         },
       });
       if (errors) {
         console.error('errors seeding data:', errors);
+        return errors;
       }
       return data;
     },
