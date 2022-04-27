@@ -115,18 +115,17 @@ module.exports = (on, config) => {
       // console.log('process.env:', process.env);
       // console.log('config.env:', config.env);
 
-      console.log('cypress db:seed adminSecret:', adminSecret);
+      console.log('cypress db:seed:', apiGraphQL, adminSecret);
       const { errors, data } = await shared.seedData({
         url: apiGraphQL,
-        site: site,
+        adminSecret: adminSecret,
         org: {
           name: faker.company.companyName(),
           subdomain: site,
         },
-        adminSecret: adminSecret,
       });
       if (errors) {
-        console.error('errors:', errors);
+        console.error('errors seeding data:', errors);
       }
       return data;
     },
@@ -138,7 +137,7 @@ module.exports = (on, config) => {
         site: site,
       });
       if (errors) {
-        console.error('errors:', errors);
+        console.error('errors resetting authors:', errors);
       }
       // console.log('data:', data);
       return data;
@@ -151,7 +150,7 @@ module.exports = (on, config) => {
         site: site,
       });
       if (errors) {
-        console.error('errors:', errors);
+        console.error('errors resetting tags:', errors);
       }
       // console.log('data:', data);
       return data;

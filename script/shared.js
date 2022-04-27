@@ -1177,7 +1177,7 @@ async function hasuraInsertTestPage(params) {
 }
 
 async function seedData(params) {
-  console.log('cypress seedData adminSecret:', params['adminSecret']);
+  console.log('cypress seedData:', params['url'], params['adminSecret']);
   const deleteOrgResult = await hasuraRemoveOrganization({
     url: params['url'],
     adminSecret: params['adminSecret'],
@@ -1191,7 +1191,12 @@ async function seedData(params) {
     );
     // return orgResult.errors;
   } else {
-    console.log('deleted organization:', deleteOrgResult);
+    console.log(
+      params['url'],
+      params['adminSecret'],
+      'deleted organization:',
+      deleteOrgResult
+    );
   }
   const orgResult = await hasuraInsertOrganization({
     url: params['url'],
@@ -1201,6 +1206,7 @@ async function seedData(params) {
   });
   if (orgResult.errors) {
     console.error(
+      params['url'],
       params['adminSecret'],
       'Error creating organization: ',
       orgResult.errors
