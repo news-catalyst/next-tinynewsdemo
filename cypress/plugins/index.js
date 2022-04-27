@@ -115,6 +115,7 @@ module.exports = (on, config) => {
       // console.log('process.env:', process.env);
       // console.log('config.env:', config.env);
 
+      console.log('cypress db:seed adminSecret:', adminSecret);
       const { errors, data } = await shared.seedData({
         url: apiGraphQL,
         site: site,
