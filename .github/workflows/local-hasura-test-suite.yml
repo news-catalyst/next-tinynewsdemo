@@ -56,7 +56,7 @@ jobs:
           HASURA_GRAPHQL_DEV_MODE: true
           HASURA_GRAPHQL_LOG_LEVEL: debug
           HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
-          HASURA_GRAPHQL_AUTH_HOOK: http://localhost:3001/api/webhook
+          HASURA_GRAPHQL_AUTH_HOOK: https://localhost:3001
         ports:
           - 8080:8080
     strategy:
@@ -76,18 +76,27 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - name: npm install, build, and test
+      - name: setup https cert support
         run: |
-          cd hasura/webhook-test
-          npm install --save next@^12.1.5 --include=optional
-          npm ci
-          npm run build --if-present
-          npm start & npx wait-on http://localhost:3001
+          cd hasura/secure-webhook
+          sudo apt install libnss3-tools
+          curl -JLO "https://dl.filippo.io/mkcert/latest?for=linux/amd64"
+          chmod +x mkcert-v*-linux-amd64
+          sudo cp mkcert-v*-linux-amd64 /usr/local/bin/mkcert
+      - name: generate pem files for https with mkcert
+        run: |
+          cd hasura/secure-webhook
+          mkcert -key-file key.pem -cert-file cert.pem localhost
+      - name: npm install and run server.js
+        run: |
+          cd hasura/secure-webhook
+          npm install
+          node server.js
         env:
           CI: true
       - name: test webhook directly
         run: |
-          curl -s http://localhost:3001/api/webhook
+          curl -s https://localhost:3001
         env:
           CI: true
       - name: Install Hasura cli
@@ -119,7 +128,7 @@ jobs:
           HASURA_GRAPHQL_DEV_MODE: true
           HASURA_GRAPHQL_LOG_LEVEL: debug
           HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
-          HASURA_GRAPHQL_AUTH_HOOK: http://localhost:3001/api/webhook
+          HASURA_GRAPHQL_AUTH_HOOK: https://localhost:3001
       - name: test hasura api TNC-Site
         run: |
           curl -s --location --request POST 'http://localhost:8080/v1/graphql' \
