@@ -15,6 +15,7 @@ async function seed() {
     org: {
       name: faker.company.companyName(),
       subdomain: site,
+      slug: site,
     },
     adminSecret: adminSecret,
   });
