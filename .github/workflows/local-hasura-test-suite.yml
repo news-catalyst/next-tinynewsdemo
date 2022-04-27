@@ -19,6 +19,7 @@ jobs:
       SITE: next-tinynewsdemo
       HASURA_API_URL: http://localhost:8080/v1/graphql
       HASURA_ADMIN_SECRET: testsecretkey
+      HASURA_GRAPHQL_AUTH_HOOK_MODE: GET
       ORG_SLUG: ${{ secrets.ORG_SLUG }}
       GOOGLE_CREDENTIALS_EMAIL: ${{ secrets.GOOGLE_CREDENTIALS_EMAIL }}
       GOOGLE_CREDENTIALS_PRIVATE_KEY: ${{ secrets.GOOGLE_CREDENTIALS_PRIVATE_KEY }}
@@ -56,7 +57,8 @@ jobs:
           HASURA_GRAPHQL_DEV_MODE: true
           HASURA_GRAPHQL_LOG_LEVEL: debug
           HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
-          HASURA_GRAPHQL_AUTH_HOOK: https://localhost:3001
+          HASURA_GRAPHQL_AUTH_HOOK: https://huf7758ged.execute-api.us-east-1.amazonaws.com/prod/webhook
+          HASURA_GRAPHQL_AUTH_HOOK_MODE: GET
         ports:
           - 8080:8080
     strategy:
@@ -142,7 +144,8 @@ jobs:
           HASURA_GRAPHQL_DEV_MODE: true
           HASURA_GRAPHQL_LOG_LEVEL: debug
           HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
-          HASURA_GRAPHQL_AUTH_HOOK: https://localhost:3001
+          HASURA_GRAPHQL_AUTH_HOOK: https://huf7758ged.execute-api.us-east-1.amazonaws.com/prod/webhook
+          HASURA_GRAPHQL_AUTH_HOOK_MODE: GET
       - name: test hasura api TNC-Site
         run: |
           forever list
