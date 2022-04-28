@@ -75,7 +75,14 @@ export async function getStaticProps({ params }) {
   } else {
     sections = data.categories;
     for (var i = 0; i < sections.length; i++) {
-      sections[i]?.title = sections[i]?.category_translations[0]?.title;
+      if (
+        sections[i] &&
+        sections[i].category_translations &&
+        sections[i].category_translations[0] &&
+        sections[i].category_translations[0].title
+      ) {
+        sections[i].title = sections[i].category_translations[0].title;
+      }
     }
     try {
       siteMetadata = data.site_metadatas[0].site_metadata_translations[0].data;
