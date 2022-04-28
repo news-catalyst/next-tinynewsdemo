@@ -34,9 +34,9 @@ export default async function Handler(req, res) {
   // Check the API token
   if (req.query.token !== apiToken || !req.query.id) {
     console.error(
-      `Supplied token '${req.query.token}' doesn't match '${apiToken}'`
+      `Supplied token '${req.query.token}' doesn't match '${apiToken}'`,
+      settings
     );
-    console.error('settings:', settings);
     return res.status(401).json({ message: 'Invalid API token' });
   }
 
