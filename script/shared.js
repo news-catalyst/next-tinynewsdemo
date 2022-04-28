@@ -169,6 +169,7 @@ function hasuraInsertOrganization(params) {
     variables: {
       name: params['name'],
       subdomain: params['subdomain'],
+      slug: params['slug'],
     },
   });
 }
