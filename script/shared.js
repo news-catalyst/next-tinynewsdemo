@@ -1207,13 +1207,7 @@ async function seedData(params) {
     slug: params['org']['slug'],
   });
   if (orgResult.errors) {
-    console.error(
-      params['url'],
-      params['adminSecret'],
-      params['org']['slug'],
-      'Error creating organization: ',
-      orgResult.errors
-    );
+    console.error('Error creating organization: ', orgResult.errors, params);
     return orgResult;
   }
   console.log('created organization:', orgResult);
