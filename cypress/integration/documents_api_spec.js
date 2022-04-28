@@ -7,7 +7,7 @@ const faker = require('faker');
 describe('document API', () => {
   before(() => {
     cy.log('before tests, setting up data...');
-    cy.task('db:seed');
+    // cy.task('db:seed');
   });
 
   it('finds an article', () => {
