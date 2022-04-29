@@ -70,10 +70,6 @@ jobs:
         with:
           submodules: true
           token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
-      - name: Extract branch name
-        shell: bash
-        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
-        id: extract_branch
       - name: Get branch name (merge)
         if: github.event_name != 'pull_request'
         shell: bash
@@ -84,11 +80,9 @@ jobs:
         run: echo "BRANCH_NAME=$(echo ${GITHUB_HEAD_REF#refs/heads/})" >> $GITHUB_ENV
       - name: Debug env.BRANCH_NAME
         run: echo ${{ env.BRANCH_NAME }}
-      - name: Debug steps.extract_branch.outputs.branch
-        run: echo ${{ steps.extract_branch.outputs.branch }}
-      - name: set tracking branch to origin/${{ steps.extract_branch.outputs.branch }}
+      - name: set tracking branch to origin/${{ env.BRANCH_NAME }}
         run: |
-          git branch --set-upstream-to=origin/${{ steps.extract_branch.outputs.branch }} ${{ steps.extract_branch.outputs.branch }}
+          git branch --set-upstream-to=origin/${{ env.BRANCH_NAME }} ${{ env.BRANCH_NAME }}
       - name: git submodule Update
         run: |
           git pull --recurse-submodules
