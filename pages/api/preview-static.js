@@ -47,6 +47,6 @@ export default async function Handler(req, res) {
     redirectPath += '/preview/static/' + req.query.slug;
   }
 
-  console.log('redirectPath:', redirectPath);
+  // console.log('redirectPath:', redirectPath);
   res.redirect(redirectPath);
 }

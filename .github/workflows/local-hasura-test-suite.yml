@@ -1,0 +1,153 @@
+name: Local Hasura Cypress Tests
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    environment: cypress_tests
+    env:
+      LOCALES: ${{ secrets.LOCALES }}
+      NEXT_PUBLIC_SITE_URL: ${{ secrets.NEXT_PUBLIC_SITE_URL }}
+      API_TOKEN: ${{ secrets.API_TOKEN }}
+      CYPRESS_API_TOKEN: ${{ secrets.API_TOKEN }}
+      SITE: next-tinynewsdemo
+      HASURA_API_URL: http://localhost:8080/v1/graphql
+      HASURA_ADMIN_SECRET: testsecretkey
+      HASURA_GRAPHQL_AUTH_HOOK_MODE: GET
+      ORG_SLUG: ${{ secrets.ORG_SLUG }}
+      GOOGLE_CREDENTIALS_EMAIL: ${{ secrets.GOOGLE_CREDENTIALS_EMAIL }}
+      GOOGLE_CREDENTIALS_PRIVATE_KEY: ${{ secrets.GOOGLE_CREDENTIALS_PRIVATE_KEY }}
+      NEXT_PUBLIC_ANALYTICS_VIEW_ID: ${{ secrets.NEXT_PUBLIC_ANALYTICS_VIEW_ID }}
+      NEXT_PUBLIC_CYPRESS_TESTING: ${{ secrets.NEXT_PUBLIC_CYPRESS_TESTING }}
+      CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      CUSTOM_GITHUB_TOKEN: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
+      LETTERHEAD_API_KEY: ${{ secrets.LETTERHEAD_API_KEY }}
+      LETTERHEAD_API_URL: ${{ secrets.LETTERHEAD_API_URL }}
+      LETTERHEAD_CHANNEL_SLUG: ${{ secrets.LETTERHEAD_CHANNEL_SLUG }}
+      TINYMCE_API_KEY: ${{ secrets.TINYMCE_API_KEY }}
+      NODE_ENV: test
+    services:
+      postgres:
+        image: postgres:12.1
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_DB: postgres
+        ports:
+          # will assign a random free host port
+          - 5432:5432
+        # needed because the postgres container does not provide a healthcheck
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+      hasura:
+        image: hasura/graphql-engine:latest
+        env:
+          HASURA_GRAPHQL_DATABASE_URL: postgres://postgres:@postgres:5432/postgres
+          HASURA_GRAPHQL_METADATA_DATABASE_URL: postgres://postgres:@postgres:5432/postgres
+          HASURA_GRAPHQL_ADMIN_SECRET: testsecretkey
+          HASURA_ADMIN_SECRET: testsecretkey
+          HASURA_GRAPHQL_ENABLE_CONSOLE: 'true'
+          # HASURA_GRAPHQL_UNAUTHORIZED_ROLE: organization
+          HASURA_SKIP_UPDATE_CHECK: true
+          HASURA_GRAPHQL_DEV_MODE: true
+          HASURA_GRAPHQL_LOG_LEVEL: debug
+          HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
+          HASURA_GRAPHQL_AUTH_HOOK: https://huf7758ged.execute-api.us-east-1.amazonaws.com/prod/webhook
+          HASURA_GRAPHQL_AUTH_HOOK_MODE: GET
+        ports:
+          - 8080:8080
+    strategy:
+      matrix:
+        node-version: [16.x]
+    steps:
+      - name: git checkout - submodules for hasura files
+        uses: actions/checkout@v2
+        with:
+          submodules: true
+          token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
+      - name: git submodule update
+        run: |
+          git branch
+          git submodule update --remote --recursive
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: test webhook directly
+        run: |
+          curl -v https://huf7758ged.execute-api.us-east-1.amazonaws.com/prod/webhook --header 'TNC-Site: next-tinynewsdemo'
+        env:
+          CI: true
+      - name: Install Hasura cli
+        run: curl -L https://github.com/hasura/graphql-engine/raw/master/cli/get.sh | bash
+      - name: Start up the Docker containers and migrate to the latest version of the database
+        run: |
+          cd hasura
+          docker ps
+          hasura migrate apply --skip-update-check --endpoint http://localhost:8080 --admin-secret testsecretkey
+          hasura migrate status --skip-update-check --endpoint http://localhost:8080 --admin-secret testsecretkey
+          hasura metadata apply --skip-update-check --endpoint http://localhost:8080 --admin-secret testsecretkey
+          hasura metadata ic list --endpoint http://localhost:8080 --admin-secret testsecretkey
+          psql -q -h localhost -f fixtures/test-data.sql
+          hasura migrate status --skip-update-check --endpoint http://localhost:8080 --admin-secret testsecretkey
+          hasura metadata reload --skip-update-check --endpoint http://localhost:8080 --admin-secret testsecretkey
+          hasura metadata ic list --endpoint http://localhost:8080 --admin-secret testsecretkey
+        env:
+          PGPASSWORD: postgres
+          PGUSER: postgres
+          PGDATABASE: postgres
+          PGPORT: 5432
+          HASURA_GRAPHQL_DATABASE_URL: postgres://postgres:@postgres:5432/postgres
+          HASURA_GRAPHQL_METADATA_DATABASE_URL: postgres://postgres:@postgres:5432/postgres
+          HASURA_GRAPHQL_ADMIN_SECRET: testsecretkey
+          HASURA_ADMIN_SECRET: testsecretkey
+          HASURA_GRAPHQL_ENABLE_CONSOLE: 'true'
+          # HASURA_GRAPHQL_UNAUTHORIZED_ROLE: organization
+          HASURA_SKIP_UPDATE_CHECK: true
+          HASURA_GRAPHQL_DEV_MODE: true
+          HASURA_GRAPHQL_LOG_LEVEL: debug
+          HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
+          HASURA_GRAPHQL_AUTH_HOOK: https://huf7758ged.execute-api.us-east-1.amazonaws.com/prod/webhook
+          HASURA_GRAPHQL_AUTH_HOOK_MODE: GET
+      - name: test hasura api TNC-Site
+        run: |
+          curl -v --location --request POST 'http://localhost:8080/v1/graphql' \
+            --header 'Content-Type: application/json' \
+            --header 'TNC-Site: next-tinynewsdemo' \
+            --data-raw '{"query":"query FrontendGetOrgSettings {\n    settings {\n          name\n             value\n               }\n                 organization_locales {\n                        locale {\n                                  code\n                                     }\n                                       }\n                                       }","variables":{}}'
+      - name: Front-end app install deps
+        run: |
+          npm ci
+        env:
+          CI: true
+      - name: npm build and cypress install
+        uses: cypress-io/github-action@v2
+        env:
+          BUILD_MODE: test
+        with:
+          # Disable running of tests within install job
+          runTests: false
+          build: npm run build:test
+      - name: npm start and cypress run
+        uses: cypress-io/github-action@v2
+        env:
+          NEXT_PUBLIC_SITE_URL: ${{ secrets.NEXT_PUBLIC_SITE_URL }}
+          API_TOKEN: ${{ secrets.API_TOKEN }}
+          CYPRESS_API_TOKEN: ${{ secrets.API_TOKEN }}
+          SITE: next-tinynewsdemo
+          HASURA_API_URL: http://localhost:8080/v1/graphql
+          HASURA_ADMIN_SECRET: testsecretkey
+          BUILD_MODE: test
+        with:
+          install: false
+          start: npm run start:test
+          wait-on: 'http://next-tinynewsdemo.localhost:3000'
+          wait-on-timeout: 120
+          browser: firefox
+          record: true
+          parallel: true
+          group: 'UI - Firefox'

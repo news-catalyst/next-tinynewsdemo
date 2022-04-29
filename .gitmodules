@@ -1,0 +1,3 @@
+[submodule "hasura"]
+	path = hasura
+	url = git@github.com:news-catalyst/hasura.git
