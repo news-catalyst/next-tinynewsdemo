@@ -71,7 +71,7 @@ jobs:
           token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
       - name: git submodule update
         run: |
-          git pull --recurse-submodules
+          git branch
           git submodule update --remote --recursive
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
