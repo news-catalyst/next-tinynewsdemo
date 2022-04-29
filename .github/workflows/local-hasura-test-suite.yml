@@ -81,6 +81,7 @@ jobs:
       - name: Debug env.BRANCH_NAME
         run: echo ${{ env.BRANCH_NAME }}
       - name: set tracking branch to origin/${{ env.BRANCH_NAME }}
+        if: github.event_name != 'pull_request'
         run: |
           git branch --set-upstream-to=origin/${{ env.BRANCH_NAME }} ${{ env.BRANCH_NAME }}
       - name: git submodule Update
