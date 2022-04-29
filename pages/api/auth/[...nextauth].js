@@ -33,14 +33,14 @@ export default NextAuth({
     async signIn({ user, account, profile, email, credentials }) {
       let isAllowedToSignIn = false;
 
-      console.log(
-        '[CB] signIn (user, account,profile, email, credentials):',
-        user,
-        account,
-        profile,
-        email,
-        credentials
-      );
+      // console.log(
+      //   '[CB] signIn (user, account,profile, email, credentials):',
+      //   user,
+      //   account,
+      //   profile,
+      //   email,
+      //   credentials
+      // );
 
       let authorizedDomains = process.env.AUTHORIZED_EMAIL_DOMAINS.split(',');
       authorizedDomains.forEach((authorizedDomain) => {
@@ -48,11 +48,11 @@ export default NextAuth({
           isAllowedToSignIn = true;
         }
       });
-      console.log('[CB] signIn ********* is allowed?', isAllowedToSignIn);
+      // console.log('[CB] signIn ********* is allowed?', isAllowedToSignIn);
       return isAllowedToSignIn;
     },
     session({ session, token, user }) {
-      console.log('[CB] session() session, token, user:', session, token, user);
+      // console.log('[CB] session() session, token, user:', session, token, user);
       if (user) session.user = user;
       // Send properties to the client, like an access_token from a provider.
       if (token) session.accessToken = token.accessToken;
