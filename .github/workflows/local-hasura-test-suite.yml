@@ -70,6 +70,13 @@ jobs:
         with:
           submodules: true
           token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
+      - name: Extract branch name
+        shell: bash
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+        id: extract_branch
+      - name: set tracking branch to origin/${{ steps.extract_branch.outputs.branch }}
+        run: |
+          git branch --set-upstream-to=origin/${{ steps.extract_branch.outputs.branch }} ${{ steps.extract_branch.outputs.branch }}
       - name: git submodule Update
         run: |
           git pull --recurse-submodules
