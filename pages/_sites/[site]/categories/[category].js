@@ -148,16 +148,30 @@ export async function getStaticProps({ params }) {
     sections = data.categories;
 
     for (var i = 0; i < sections.length; i++) {
-      sections[i].title = sections[i].category_translations[0].title;
-      if (sections[i].slug == params.category) {
-        categoryExists = true;
-        title = sections[i].category_translations[0].title;
-        slug = title.toLowerCase();
+      if (
+        sections[i] &&
+        sections[i].category_translations &&
+        sections[i].category_translations[0] &&
+        sections[i].category_translations[0].title
+      ) {
+        sections[i].title = sections[i].category_translations[0].title;
+        if (sections[i].slug == params.category) {
+          categoryExists = true;
+          title = sections[i].category_translations[0].title;
+          slug = title.toLowerCase();
+        }
       }
     }
 
     for (var j = 0; j < tags.length; j++) {
-      tags[j].title = tags[j].tag_translations[0].title;
+      if (
+        tags[j] &&
+        tags[j].tag_translations &&
+        tags[j].tag_translations[0] &&
+        tags[j].tag_translations[0].title
+      ) {
+        tags[j].title = tags[j].tag_translations[0].title;
+      }
     }
 
     let metadatas = data.site_metadatas;

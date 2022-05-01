@@ -151,11 +151,14 @@ function hasuraInsertDonationClick(params) {
   });
 }
 
-const INSERT_ORGANIZATION_MUTATION = `mutation FrontendInsertOrganization($subdomain: String, $name: String) {
-  insert_organizations_one(object: {name: $name, subdomain: $subdomain}, on_conflict: {constraint: organizations_subdomain_key, update_columns: [name, subdomain]}) {
+const INSERT_ORGANIZATION_MUTATION = `mutation FrontendInsertOrganization($subdomain: String, $name: String, $customDomain: String, $slug: String) {
+  insert_organizations_one(object: {name: $name, subdomain: $subdomain, slug: $slug, customDomain: $customDomain}, on_conflict: {constraint: organizations_subdomain_key, update_columns: [name, customDomain, slug, subdomain]}) {
     id
+    customDomain
     name
+    slug
     subdomain
+    slug
   }
 }`;
 
@@ -168,6 +171,8 @@ function hasuraInsertOrganization(params) {
     variables: {
       name: params['name'],
       subdomain: params['subdomain'],
+      slug: params['slug'],
+      customDomain: params['customDomain'],
     },
   });
 }
@@ -374,7 +379,7 @@ const HASURA_REMOVE_ORGANIZATION = `mutation FrontendRemoveOrganization($subdoma
 }`;
 
 async function hasuraRemoveOrganization(params) {
-  console.log(params);
+  // console.log(params);
   return fetchGraphQL({
     url: params['url'],
     adminSecret: params['adminSecret'],
@@ -1119,7 +1124,7 @@ function hasuraGetSiteData(params) {
 }
 
 async function hasuraInsertTestArticle(params) {
-  console.log('hasuraInsertTestArticle params:', params);
+  // console.log('hasuraInsertTestArticle params:', params);
 
   return fetchGraphQL({
     url: params['url'],
@@ -1153,7 +1158,7 @@ const HASURA_INSERT_TEST_PAGE = `mutation FrontendInsertPage($google_document_id
 }`;
 
 async function hasuraInsertTestPage(params) {
-  console.log('hasuraInsertTestPage params:', params);
+  // console.log('hasuraInsertTestPage params:', params);
 
   return fetchGraphQL({
     url: params['url'],
@@ -1177,6 +1182,7 @@ async function hasuraInsertTestPage(params) {
 }
 
 async function seedData(params) {
+  console.log('cypress seedData:', params['url'], params['adminSecret']);
   const deleteOrgResult = await hasuraRemoveOrganization({
     url: params['url'],
     adminSecret: params['adminSecret'],
@@ -1190,20 +1196,22 @@ async function seedData(params) {
     );
     // return orgResult.errors;
   } else {
-    console.log('deleted organization:', deleteOrgResult);
+    console.log(
+      params['url'],
+      params['adminSecret'],
+      'deleted organization:',
+      deleteOrgResult
+    );
   }
   const orgResult = await hasuraInsertOrganization({
     url: params['url'],
     adminSecret: params['adminSecret'],
     name: params['org']['name'],
     subdomain: params['org']['subdomain'],
+    slug: params['org']['slug'],
   });
   if (orgResult.errors) {
-    console.error(
-      params['adminSecret'],
-      'Error creating organization: ',
-      orgResult.errors
-    );
+    console.error('Error creating organization: ', orgResult.errors, params);
     return orgResult;
   }
   console.log('created organization:', orgResult);
@@ -1222,6 +1230,10 @@ async function seedData(params) {
       {
         name: 'NEXT_PUBLIC_SITE_URL',
         value: 'http://next-tinynewsdemo.localhost:3000',
+      },
+      {
+        name: 'AUTHORIZED_EMAIL_DOMAINS',
+        value: 'newscatalyst.org,tinynewsco.org',
       },
     ],
   });
