@@ -89,8 +89,8 @@ export default async function Handler(req, res) {
 
       delete articleData.first_published_at;
       delete articleData.last_published_at;
-      delete articleData.article_tags;
-      delete articleData.article_authors;
+      // delete articleData.article_tags;
+      // delete articleData.article_authors;
 
       articleData['category_id'] = parseInt(articleData['category_id']);
       // console.log(JSON.stringify(articleData));
