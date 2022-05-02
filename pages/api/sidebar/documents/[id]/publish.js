@@ -53,7 +53,7 @@ export default async function Handler(req, res) {
     documentId: documentId,
   });
   if (errors || !data || !data.google_documents) {
-    console.error(errors);
+    console.error('Error looking up content by Google Doc ID:', errors, data);
     return res.status(500).json({
       status: 'error',
       message:
@@ -181,6 +181,7 @@ export default async function Handler(req, res) {
       // console.log('storeDataResult:', JSON.stringify(storeDataResult));
 
       if (storeDataResult.status === 'error') {
+        console.error('Error saving page:', JSON.stringify(storeDataResult));
         return res.status(500).json({
           status: 'error',
           message: 'Error: ' + JSON.stringify(storeDataResult.message),
@@ -201,7 +202,10 @@ export default async function Handler(req, res) {
       });
 
       if (idSlugResult.status === 'error') {
-        console.error(JSON.stringify(idSlugResult));
+        console.error(
+          'Error storing page ID and slug:',
+          JSON.stringify(idSlugResult)
+        );
         return res.status(500).json({
           status: 'error',
           message:
