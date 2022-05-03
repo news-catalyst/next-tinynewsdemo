@@ -3,7 +3,6 @@ program.version('0.0.1');
 
 const fs = require('fs');
 
-const vercel = require('./vercel');
 const shared = require('./shared');
 
 const { Octokit } = require('@octokit/rest');
@@ -32,15 +31,11 @@ const auth = new google.auth.JWT(
 const analytics = google.analytics({ version: 'v3', auth });
 const googleAnalyticsAccountID = process.env.GA_ACCOUNT_ID;
 
-async function removeOrganization(slug, name) {
+async function removeOrganization(slug, name, subdomain) {
   const octokit = new Octokit({
     auth: githubToken,
   });
   const [owner, repo] = githubRepo.split('/');
-
-  const removeResult = await vercel.deleteProject(slug);
-  console.log(removeResult);
-
   let githubEnvironment = `data_import_${slug}`;
   try {
     const githubResponse = await octokit.rest.repos.deleteAnEnvironment({
@@ -122,6 +117,7 @@ async function removeOrganization(slug, name) {
     url: apiUrl,
     adminSecret: adminSecret,
     slug: slug,
+    subdomain: subdomain,
   });
 
   if (errors) {
@@ -140,9 +136,13 @@ program
     '-n, --name <name>',
     'name of the organization as found in Google Analytics'
   )
+  .requiredOption(
+    '-b, --subdomain <subdomain>',
+    'subdomain for the organization that prefixes .tinynewsco.dev for its staging site, example "neworg"'
+  )
   .description('removes all data for the specified org')
   .action((opts) => {
-    removeOrganization(opts.slug, opts.name);
+    removeOrganization(opts.slug, opts.name, opts.subdomain);
   });
 
 program.parse(process.argv);

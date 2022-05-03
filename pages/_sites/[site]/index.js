@@ -168,12 +168,26 @@ export async function getStaticProps(context) {
 
   const tags = data.tags;
   for (var i = 0; i < tags.length; i++) {
-    tags[i].title = tags[i].tag_translations[0].title;
+    if (
+      tags[j] &&
+      tags[j].tag_translations &&
+      tags[j].tag_translations[0] &&
+      tags[j].tag_translations[0].title
+    ) {
+      tags[j].title = tags[j].tag_translations[0].title;
+    }
   }
 
   const sections = data.categories;
   for (var j = 0; j < sections.length; j++) {
-    sections[j].title = sections[j].category_translations[0].title;
+    if (
+      sections[i] &&
+      sections[i].category_translations &&
+      sections[i].category_translations[0] &&
+      sections[i].category_translations[0].title
+    ) {
+      sections[i].title = sections[i].category_translations[0].title;
+    }
   }
 
   let settings = settingsResult.data.settings;

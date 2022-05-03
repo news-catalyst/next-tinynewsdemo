@@ -40,7 +40,7 @@ export default async function Handler(req, res) {
     documentId: documentId,
   });
   if (errors || !data || !data.google_documents || !data.google_documents[0]) {
-    console.error(errors);
+    console.error('Error looking up document:', errors, data);
     return res.status(500).json({
       status: 'error',
       message:
@@ -48,7 +48,7 @@ export default async function Handler(req, res) {
       data: errors,
     });
   } else {
-    console.log('Lookup Data: ', data.google_documents);
+    // console.log('Lookup Data: ', data.google_documents);
 
     let resultData;
 
@@ -61,7 +61,7 @@ export default async function Handler(req, res) {
 
       if (!articleId) {
         console.error(
-          'NO id found in lookup data :(',
+          'NO id found in lookup data:',
           data.google_documents[0].article_google_documents[0]
         );
         return res.status(500).json({
@@ -70,7 +70,7 @@ export default async function Handler(req, res) {
           data: JSON.stringify(data),
         });
       }
-      console.log(documentType, documentId, articleId, localeCode);
+      // console.log(documentType, documentId, articleId, localeCode);
 
       let storeDataResult = await unpublishArticle({
         article_id: articleId,
@@ -79,9 +79,12 @@ export default async function Handler(req, res) {
         locale_code: localeCode,
       });
 
-      console.log(storeDataResult);
+      // console.log(storeDataResult);
       if (storeDataResult.status === 'error') {
-        console.error(JSON.stringify(storeDataResult));
+        console.error(
+          'Error unpublishing article:',
+          JSON.stringify(storeDataResult)
+        );
         return res.status(500).json({
           status: 'error',
           message:
@@ -99,7 +102,7 @@ export default async function Handler(req, res) {
           .locale_code;
       if (!pageId) {
         console.error(
-          'NO id found in lookup data :(',
+          'No id found in lookup data',
           data.google_documents[0].page_google_documents[0]
         );
         return res.status(500).json({
@@ -108,7 +111,7 @@ export default async function Handler(req, res) {
           data: JSON.stringify(data),
         });
       }
-      console.log(documentType, documentId, pageId, localeCode);
+      // console.log(documentType, documentId, pageId, localeCode);
 
       let storeDataResult = await unpublishPage({
         page_id: pageId,
@@ -117,9 +120,13 @@ export default async function Handler(req, res) {
         locale_code: localeCode,
       });
 
-      console.log(storeDataResult);
+      // console.log(storeDataResult);
 
       if (storeDataResult.status === 'error') {
+        console.error(
+          'Error unpublishing page:',
+          JSON.stringify(storeDataResult)
+        );
         return res.status(500).json({
           status: 'error',
           message:
@@ -138,7 +145,7 @@ export default async function Handler(req, res) {
       data: resultData,
     };
 
-    console.log('unpublish responding with:', responseData);
+    // console.log('unpublish responding with:', responseData);
 
     res.status(200).json(responseData);
   }

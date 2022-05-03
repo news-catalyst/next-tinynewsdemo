@@ -80,7 +80,7 @@ export default function Authors({
   const listItems = authors.map((author) => {
     let title = author.author_translations[0]?.title;
     if (!title) {
-      title = 'NEEDS TRANSLATION';
+      title = '';
     }
 
     let staff = author.staff ? (
@@ -187,15 +187,20 @@ export async function getServerSideProps(context) {
   });
 
   if (settingsResult.errors) {
-    console.log('error:', settingsResult);
+    console.error('error:', settingsResult);
     throw settingsResult.errors;
   }
-  let settings = settingsResult.data.settings;
-  const siteUrl = findSetting(settings, 'NEXT_PUBLIC_SITE_URL');
-  const authorizedEmailDomains = findSetting(
-    settings,
-    'AUTHORIZED_EMAIL_DOMAINS'
-  );
+  let siteUrl;
+  let authorizedEmailDomains;
+  try {
+    let settings = settingsResult.data.settings;
+    // console.log('settings result:', settingsResult);
+    siteUrl = findSetting(settings, 'NEXT_PUBLIC_SITE_URL');
+    authorizedEmailDomains = findSetting(settings, 'AUTHORIZED_EMAIL_DOMAINS');
+  } catch (e) {
+    console.error('Error loading settings: ', e);
+  }
+
   const host = context.req.headers.host;
   const { errors, data } = await hasuraListAllAuthors({
     url: apiUrl,
