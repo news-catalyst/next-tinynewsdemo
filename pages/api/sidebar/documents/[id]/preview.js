@@ -52,9 +52,9 @@ export default async function Handler(req, res) {
     documentId: documentId,
   });
   if (errors || !data || !data.google_documents) {
-    console.error(errors);
+    console.error('Error looking up content by Google Doc ID:', errors);
     return res.status(500).json({
-      stauts: 'error',
+      status: 'error',
       message:
         'Error looking up data by Google Doc ID: ' + JSON.stringify(errors),
       data: errors,
@@ -82,8 +82,12 @@ export default async function Handler(req, res) {
   }
 
   if (!rawBodyData) {
+    console.error(
+      'error finding raw body data for google doc:',
+      JSON.stringify(data)
+    );
     return res.status(500).json({
-      stauts: 'error',
+      status: 'error',
       message:
         'Error finding raw body data for google doc: ' + JSON.stringify(data),
       data: data,
@@ -120,7 +124,7 @@ export default async function Handler(req, res) {
     });
 
     if (storeDataResult.status === 'error') {
-      console.error(JSON.stringify(storeDataResult.message));
+      console.error('Error saving article:', JSON.stringify(storeDataResult));
       return res.status(500).json({
         status: 'error',
         message: 'Error: ' + JSON.stringify(storeDataResult.message),
@@ -145,7 +149,10 @@ export default async function Handler(req, res) {
     });
     // console.log('stored article id + slug + categorySlug: ', idSlugResult);
     if (idSlugResult.status === 'error') {
-      console.error(JSON.stringify(idSlugResult));
+      console.error(
+        'Error saving article ID and slug:',
+        JSON.stringify(idSlugResult)
+      );
       return res.status(500).json({
         status: 'error',
         message:
@@ -174,6 +181,7 @@ export default async function Handler(req, res) {
     // console.log('storeDataResult:', JSON.stringify(storeDataResult));
 
     if (storeDataResult.status === 'error') {
+      console.error('error saving page:', JSON.stringify(storeDataResult));
       return res.status(500).json({
         status: 'error',
         message: 'Error: ' + JSON.stringify(storeDataResult.message),
@@ -194,7 +202,10 @@ export default async function Handler(req, res) {
     });
 
     if (idSlugResult.status === 'error') {
-      console.error(JSON.stringify(idSlugResult));
+      console.error(
+        'error saving page ID and slug:',
+        JSON.stringify(idSlugResult)
+      );
       return res.status(500).json({
         status: 'error',
         message:

@@ -80,7 +80,7 @@ export default function Authors({
   const listItems = authors.map((author) => {
     let title = author.author_translations[0]?.title;
     if (!title) {
-      title = 'NEEDS TRANSLATION';
+      title = '';
     }
 
     let staff = author.staff ? (

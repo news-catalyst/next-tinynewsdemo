@@ -37,6 +37,25 @@ const githubToken = process.env.GITHUB_TOKEN;
 
 const googleAnalyticsAccountID = process.env.GA_ACCOUNT_ID;
 
+const airbrakeProjectId = process.env.AIRBRAKE_PROJECT_ID;
+const airbrakeProjectKey = process.env.AIRBRAKE_PROJECT_KEY;
+const apiToken = process.env.API_TOKEN;
+const previewToken = process.env.PREVIEW_TOKEN;
+
+const tncAwsAccessId = process.env.TNC_AWS_ACCESS_ID;
+const tncAwsSecret = process.env.TNC_AWS_ACCESS_KEY;
+const tncAwsRegion = process.env.TNC_AWS_REGION;
+
+const letterheadApiUrl = process.env.LETTERHEAD_API_URL;
+
+const googleCredsEmail = process.env.GOOGLE_CREDENTIALS_EMAIL;
+const googleCredsPrivateKey = process.env.GOOGLE_CREDENTIALS_PRIVATE_KEY;
+const googleClientId = process.env.GOOGLE_CLIENT_ID;
+const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET;
+
+const facebookAppId = process.env.NEXT_PUBLIC_FB_APP_ID;
+const facebookClientToken = process.env.NEXT_PUBLIC_FB_CLIENT_TOKEN;
+
 let organizationID;
 
 // encrypts a secret for GH environment variable setting
@@ -566,12 +585,81 @@ async function createOrganization(opts) {
                             name: 'NEXT_PUBLIC_SITE_URL',
                             value: url,
                           },
+                          {
+                            name: 'AIRBRAKE_PROJECT_ID',
+                            value: airbrakeProjectId,
+                          },
+                          {
+                            name: 'AIRBRAKE_PROJECT_KEY',
+                            value: airbrakeProjectKey,
+                          },
+                          {
+                            name: 'API_TOKEN',
+                            value: apiToken,
+                          },
+                          {
+                            name: 'CYPRESS_API_TOKEN',
+                            value: apiToken,
+                          },
+                          {
+                            name: 'PREVIEW_TOKEN',
+                            value: previewToken,
+                          },
+                          {
+                            name: 'TNC_AWS_ACCESS_ID',
+                            value: tncAwsAccessId,
+                          },
+                          {
+                            name: 'TNC_AWS_ACCESS_KEY',
+                            value: tncAwsSecret,
+                          },
+                          {
+                            name: 'TNC_AWS_REGION',
+                            value: tncAwsRegion,
+                          },
+                          {
+                            name: 'TNC_AWS_DIR_NAME',
+                            value: subdomain,
+                          },
+                          {
+                            name: 'ORG_NAME',
+                            value: name,
+                          },
+                          {
+                            name: 'LETTERHEAD_API_URL',
+                            value: letterheadApiUrl,
+                          },
+                          {
+                            name: 'GOOGLE_CREDENTIALS_EMAIL',
+                            value: googleCredsEmail,
+                          },
+                          {
+                            name: 'GOOGLE_CREDENTIALS_PRIVATE_KEY',
+                            value: googleCredsPrivateKey,
+                          },
+                          {
+                            name: 'GOOGLE_CLIENT_ID',
+                            value: googleClientId,
+                          },
+                          {
+                            name: 'GOOGLE_CLIENT_SECRET',
+                            value: googleClientSecret,
+                          },
+                          {
+                            name: 'NEXT_PUBLIC_FB_APP_ID',
+                            value: facebookAppId,
+                          },
+
+                          {
+                            name: 'NEXT_PUBLIC_FB_CLIENT_TOKEN',
+                            value: facebookClientToken,
+                          },
                         ],
                       })
                       .then((res) => {
                         if (res.errors) {
                           console.error(
-                            `[${locale}] ! Failed creating basic settings`
+                            `[${locale}] ! Failed creating basic settings ()`
                           );
                           console.error(res.errors);
                         } else {
