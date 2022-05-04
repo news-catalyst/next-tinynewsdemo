@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 
 export default function middleware(req) {
   const url = req.nextUrl.clone(); // clone the request url
-  const { pathname } = req.nextUrl; // get pathname of request (e.g. /blog-slug)
+  const { pathname, searchParams } = req.nextUrl; // get pathname of request (e.g. /blog-slug)
   const hostname = req.headers.get('host'); // get hostname of request (e.g. demo.vercel.pub)
 
   if (pathname.includes('/en-US')) {
@@ -10,7 +10,7 @@ export default function middleware(req) {
     return NextResponse.redirect(url);
   }
 
-  const currentHost = hostname
+  let currentHost = hostname
     .replace(`.localhost:3000`, '')
     .replace(`.tinynewsco.dev:3000`, '')
     .replace(`.tinynewsco.org:3000`, '')
@@ -18,6 +18,11 @@ export default function middleware(req) {
     .replace(`.tinynewsco.org`, '')
     .replace(`.vercel.app`, '')
     .replace(`.vercel.app:3000`, ''); // TBD if we need to change this
+
+  // use the query param 'site' if currentHost isn't usable
+  if ((currentHost === 'localhost:3000' || !currentHost) && searchParams) {
+    currentHost = searchParams.get('site');
+  }
 
   if (
     (!pathname.includes('.') || pathname.includes('.xml')) && // exclude all files in the public folder
