@@ -80,6 +80,6 @@ export async function getStaticProps(context) {
       sections,
       siteMetadata,
     },
-    revalidate: 1,
+    // revalidate: 1,
   };
 }

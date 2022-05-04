@@ -121,6 +121,6 @@ export async function getStaticProps({ params }) {
       siteMetadata,
       site,
     },
-    revalidate: 1,
+    // revalidate: 1,
   };
 }
