@@ -103,6 +103,6 @@ export async function getStaticProps({ params }) {
       site,
     },
 
-    revalidate: 1,
+    // revalidate: 1,
   };
 }
