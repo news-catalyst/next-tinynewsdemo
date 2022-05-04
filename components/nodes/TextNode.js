@@ -139,7 +139,7 @@ export default function TextNode({ node, metadata }) {
     wrapper = <Paragraph>{children}</Paragraph>;
   } else if (node.style == 'FORMATTED_TEXT') {
     // console.log('FORMATTED_TEXT node:', node);
-    wrapper = <pre>{children}</pre>;
+    wrapper = <pre tw="whitespace-pre-wrap">{children}</pre>;
   } else {
     wrapper = <>{children}</>;
   }
