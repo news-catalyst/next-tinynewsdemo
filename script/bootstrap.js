@@ -36,6 +36,8 @@ const githubRepo = process.env.GIT_REPO;
 const githubToken = process.env.GITHUB_TOKEN;
 
 const googleAnalyticsAccountID = process.env.GA_ACCOUNT_ID;
+const googleAnalyticsClientID = process.env.ANALYTICS_CLIENT_ID;
+const googleAnalyticsClientSecret = process.env.ANALYTICS_CLIENT_SECRET;
 
 const airbrakeProjectId = process.env.AIRBRAKE_PROJECT_ID;
 const airbrakeProjectKey = process.env.AIRBRAKE_PROJECT_KEY;
@@ -45,6 +47,9 @@ const previewToken = process.env.PREVIEW_TOKEN;
 const tncAwsAccessId = process.env.TNC_AWS_ACCESS_ID;
 const tncAwsSecret = process.env.TNC_AWS_ACCESS_KEY;
 const tncAwsRegion = process.env.TNC_AWS_REGION;
+const tncAwsBucketName = process.env.TNC_AWS_BUCKET_NAME;
+
+const tinymceApiKey = process.env.TINYMCE_API_KEY;
 
 const letterheadApiUrl = process.env.LETTERHEAD_API_URL;
 
@@ -578,6 +583,18 @@ async function createOrganization(opts) {
                         site: subdomain,
                         settings: [
                           {
+                            name: 'ANALYTICS_CLIENT_ID',
+                            value: googleAnalyticsClientID,
+                          },
+                          {
+                            name: 'ANALYTICS_CLIENT_SECRET',
+                            value: googleAnalyticsClientSecret,
+                          },
+                          {
+                            name: 'GA_ACCOUNT_ID',
+                            value: googleAnalyticsAccountID,
+                          },
+                          {
                             name: 'AUTHORIZED_EMAIL_DOMAINS',
                             value: `newscatalyst.org,tinynewsco.org,${customDomain}`,
                           },
@@ -622,12 +639,24 @@ async function createOrganization(opts) {
                             value: subdomain,
                           },
                           {
+                            name: 'TNC_AWS_BUCKET_NAME',
+                            value: tncAwsBucketName,
+                          },
+                          {
                             name: 'ORG_NAME',
                             value: name,
                           },
                           {
                             name: 'LETTERHEAD_API_URL',
                             value: letterheadApiUrl,
+                          },
+                          {
+                            name: 'GIT_REPO',
+                            value: githubRepo,
+                          },
+                          {
+                            name: 'GITHUB_TOKEN',
+                            value: githubToken,
                           },
                           {
                             name: 'GOOGLE_CREDENTIALS_EMAIL',
@@ -646,13 +675,20 @@ async function createOrganization(opts) {
                             value: googleClientSecret,
                           },
                           {
+                            name: 'NEXT_PUBLIC_ANALYTICS_VIEW_ID',
+                            value: viewID,
+                          },
+                          {
                             name: 'NEXT_PUBLIC_FB_APP_ID',
                             value: facebookAppId,
                           },
-
                           {
                             name: 'NEXT_PUBLIC_FB_CLIENT_TOKEN',
                             value: facebookClientToken,
+                          },
+                          {
+                            name: 'TINYMCE_API_KEY',
+                            value: tinymceApiKey,
                           },
                         ],
                       })
