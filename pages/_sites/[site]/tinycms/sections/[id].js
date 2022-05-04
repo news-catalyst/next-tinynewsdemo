@@ -17,6 +17,7 @@ import {
 } from '../../../../../lib/section';
 import { hasuraInsertArticleSlugVersions } from '../../../../../lib/articles';
 import { findSetting, getOrgSettings } from '../../../../../lib/settings.js';
+import { revalidateEverything } from '../../../../../lib/utils';
 
 import AdminNav from '../../../../../components/nav/AdminNav';
 import Notification from '../../../../../components/tinycms/Notification';
@@ -27,7 +28,6 @@ export default function EditSection({
   apiUrl,
   site,
   section,
-  vercelHook,
   siteUrl,
   host,
   authorizedEmailDomains,
@@ -124,26 +124,19 @@ export default function EditSection({
         if (response.errors) {
           console.error('error:', response.errors);
         } else {
-          const rebuildResponse = await fetch(vercelHook, {
-            method: 'POST',
-          });
-          const statusCode = rebuildResponse.status;
-
           setCurrentSlug(slug);
 
-          if (statusCode < 200 || statusCode > 299) {
-            setNotificationType('error');
-            setNotificationMessage(
-              'An error occurred republishing the site: ' + JSON.stringify(data)
-            );
-            setShowNotification(true);
-          } else {
-            setNotificationType('success');
-            setNotificationMessage(
-              'Successfully saved settings, republishing the site now!'
-            );
-            setShowNotification(true);
-          }
+          revalidateEverything({
+            lambdaURL: lambdaURL,
+            site: site,
+            url: apiUrl,
+          });
+
+          setNotificationType('success');
+          setNotificationMessage(
+            'Successfully saved section, republishing the site now!'
+          );
+          setShowNotification(true);
         }
       }
 
@@ -257,7 +250,6 @@ export async function getServerSideProps(context) {
     throw settingsResult.errors;
   }
   let settings = settingsResult.data.settings;
-  let vercelHook = findSetting(settings, 'VERCEL_DEPLOY_HOOK');
   const siteUrl = findSetting(settings, 'NEXT_PUBLIC_SITE_URL');
   const authorizedEmailDomains = findSetting(
     settings,
@@ -283,7 +275,6 @@ export async function getServerSideProps(context) {
       apiUrl: apiUrl,
       site: site,
       section: section,
-      vercelHook: vercelHook,
       siteUrl: siteUrl,
       host: host,
       authorizedEmailDomains: authorizedEmailDomains,
