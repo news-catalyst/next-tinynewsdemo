@@ -122,7 +122,7 @@ export async function getStaticProps(context) {
         pages,
         site,
       },
-      // revalidate: 1,
+      revalidate: 1,
     };
   }
 
@@ -219,6 +219,6 @@ export async function getStaticProps(context) {
       monkeypodLink,
       site,
     },
-    // revalidate: 1,
+    revalidate: 1,
   };
 }

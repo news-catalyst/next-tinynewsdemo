@@ -144,6 +144,6 @@ export async function getStaticProps(context) {
       siteMetadata,
       site,
     },
-    // revalidate: 1,
+    revalidate: 1,
   };
 }
