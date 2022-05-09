@@ -1,6 +1,7 @@
 import { findSetting, getOrgSettings } from '../../lib/settings';
 
 export default async function handler(req, res) {
+  console.log('API revalidate requested');
   const apiUrl = process.env.HASURA_API_URL;
 
   if (!req.query.site) {
@@ -10,6 +11,15 @@ export default async function handler(req, res) {
       .json({ message: 'Missing required ?site=subdomain query param' });
   }
   const site = req.query.site;
+
+  if (!req.query.path) {
+    console.error(
+      'Missing required ?path=/to/revalidate query string parameter'
+    );
+    return res
+      .status(401)
+      .json({ message: 'Missing required ?path=/to/revalidate query param' });
+  }
 
   const settingsResult = await getOrgSettings({
     url: apiUrl,
@@ -31,18 +41,12 @@ export default async function handler(req, res) {
   }
 
   const pathToRevalidate = `${req.query.path}?site=${site}`;
-  if (!pathToRevalidate) {
-    console.error(
-      'Missing required ?path=/to/revalidate query string parameter'
-    );
-    return res
-      .status(401)
-      .json({ message: 'Missing required ?path=/to/revalidate query param' });
-  }
+  console.log('revalidating:', pathToRevalidate);
 
   try {
-    console.log('revalidating:', pathToRevalidate);
     await res.unstable_revalidate(pathToRevalidate);
+    console.log('revalidation done:', pathToRevalidate);
+
     return res.json({ revalidated: true });
   } catch (err) {
     console.error('failed revalidating', pathToRevalidate, err);
