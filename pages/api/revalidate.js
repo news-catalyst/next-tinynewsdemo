@@ -4,6 +4,7 @@ export default async function handler(req, res) {
   const apiUrl = process.env.HASURA_API_URL;
 
   if (!req.query.site) {
+    console.error('Missing required ?site=subdomain query string parameter');
     return res
       .status(401)
       .json({ message: 'Missing required ?site=subdomain query param' });
@@ -25,21 +26,26 @@ export default async function handler(req, res) {
 
   // Check for secret to confirm this is a valid request
   if (req.query.secret !== apiToken) {
+    console.error('Invalid token');
     return res.status(401).json({ message: 'Invalid token' });
   }
 
   const pathToRevalidate = `${req.query.path}?site=${site}`;
   if (!pathToRevalidate) {
+    console.error(
+      'Missing required ?path=/to/revalidate query string parameter'
+    );
     return res
       .status(401)
       .json({ message: 'Missing required ?path=/to/revalidate query param' });
   }
 
   try {
+    console.log('revalidating:', pathToRevalidate);
     await res.unstable_revalidate(pathToRevalidate);
     return res.json({ revalidated: true });
   } catch (err) {
-    console.error(err);
+    console.error('failed revalidating', pathToRevalidate, err);
     // If there was an error, Next.js will continue
     // to show the last successfully generated page
     return res.status(500).send('Error revalidating');
