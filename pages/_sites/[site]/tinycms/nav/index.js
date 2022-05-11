@@ -28,6 +28,7 @@ export default function NavBuilder({
   apiUrl,
   siteMetadata,
   linkOptions,
+  vercelHook,
   site,
   siteUrl,
   host,
@@ -433,6 +434,7 @@ export async function getServerSideProps(context) {
   let siteMetadata;
 
   let settings = settingsResult.data.settings;
+  let vercelHook = findSetting(settings, 'VERCEL_DEPLOY_HOOK');
   const siteUrl = findSetting(settings, 'NEXT_PUBLIC_SITE_URL');
   const authorizedEmailDomains = findSetting(
     settings,
@@ -498,6 +500,7 @@ export async function getServerSideProps(context) {
       site: site,
       siteMetadata: siteMetadata,
       linkOptions: linkOptions,
+      vercelHook: vercelHook,
       siteUrl: siteUrl,
       host: host,
       lambdaURL: lambdaURL,
