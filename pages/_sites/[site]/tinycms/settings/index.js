@@ -50,6 +50,7 @@ export default function Settings({
   tinyApiKey,
   siteMetadata,
   awsConfig,
+  vercelHook,
   siteUrl,
   host,
   lambdaURL,
@@ -417,6 +418,7 @@ export async function getServerSideProps(context) {
   let region = findSetting(settings, 'TNC_AWS_REGION');
   let accessKey = findSetting(settings, 'TNC_AWS_ACCESS_ID');
   let secretKey = findSetting(settings, 'TNC_AWS_ACCESS_KEY');
+  let vercelHook = findSetting(settings, 'VERCEL_DEPLOY_HOOK');
   let tinyApiKey = findSetting(settings, 'TINYMCE_API_KEY');
   const siteUrl = findSetting(settings, 'NEXT_PUBLIC_SITE_URL');
   const authorizedEmailDomains = findSetting(
@@ -457,6 +459,7 @@ export async function getServerSideProps(context) {
       tinyApiKey: tinyApiKey,
       siteMetadata: siteMetadata,
       awsConfig: awsConfig,
+      vercelHook: vercelHook,
       siteUrl: siteUrl,
       host: host,
       lambdaURL: lambdaURL,

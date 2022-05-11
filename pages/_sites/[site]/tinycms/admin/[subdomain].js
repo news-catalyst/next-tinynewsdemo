@@ -68,6 +68,8 @@ export default function AdminSetup({
   const [awsDirName, setAwsDirName] = useState('');
   const [awsRegion, setAwsRegion] = useState('');
   const [awsBucketName, setAwsBucketName] = useState('');
+  const [vercelToken, setVercelToken] = useState('');
+  const [vercelDeployHook, setVercelDeployHook] = useState('');
   const [fbAppId, setFbAppId] = useState('');
   const [fbClientToken, setFbClientToken] = useState('');
   const [monkeypodUrl, setMonkeypodUrl] = useState('');
@@ -215,7 +217,12 @@ export default function AdminSetup({
       if (findSetting(settings, 'STRIPE_WEBHOOK_SECRET')) {
         setStripeWebhookSecret(findSetting(settings, 'STRIPE_WEBHOOK_SECRET'));
       }
-
+      if (findSetting(settings, 'VERCEL_DEPLOY_HOOK')) {
+        setVercelDeployHook(findSetting(settings, 'VERCEL_DEPLOY_HOOK'));
+      }
+      if (findSetting(settings, 'VERCEL_TOKEN')) {
+        setVercelToken(findSetting(settings, 'VERCEL_TOKEN'));
+      }
       if (findSetting(settings, 'NEXT_PUBLIC_SITE_URL')) {
         setDbSiteUrl(findSetting(settings, 'NEXT_PUBLIC_SITE_URL'));
       }
@@ -361,6 +368,14 @@ export default function AdminSetup({
       {
         name: 'STRIPE_WEBHOOK_SECRET',
         value: stripeWebhookSecret,
+      },
+      {
+        name: 'VERCEL_DEPLOY_HOOK',
+        value: vercelDeployHook,
+      },
+      {
+        name: 'VERCEL_TOKEN',
+        value: vercelToken,
       },
     ];
 
@@ -837,6 +852,30 @@ export default function AdminSetup({
                           value={tinymceApiKey}
                           onChange={(ev) => {
                             setTinyMceApiKey(ev.target.value);
+                          }}
+                        />
+                      </td>
+                    </tr>
+                    <tr tw="border">
+                      <th tw="text-right px-2">Vercel Deploy Hook</th>
+                      <td tw="align-middle pt-2">
+                        <TinyInputField
+                          name="vercelDeployHook"
+                          value={vercelDeployHook}
+                          onChange={(ev) => {
+                            setVercelDeployHook(ev.target.value);
+                          }}
+                        />
+                      </td>
+                    </tr>
+                    <tr tw="border">
+                      <th tw="text-right px-2">Vercel Token</th>
+                      <td tw="align-middle pt-2">
+                        <TinyInputField
+                          name="vercelToken"
+                          value={vercelToken}
+                          onChange={(ev) => {
+                            setVercelToken(ev.target.value);
                           }}
                         />
                       </td>
