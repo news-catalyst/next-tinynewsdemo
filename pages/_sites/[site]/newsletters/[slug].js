@@ -26,7 +26,6 @@ const SectionContainer = tw.div`flex flex-col flex-nowrap items-center px-5 mx-a
 const BlockWrapper = tw.div`w-full`;
 
 export default function NewsletterEditionPage(props) {
-  console.log(props.newsletter);
   // const isAmp = useAmp();
   const isAmp = false;
   const router = useRouter();
