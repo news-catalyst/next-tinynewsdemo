@@ -6,7 +6,7 @@ import { determineTextColor } from '../../lib/utils';
 import { useEffect, useState } from 'react';
 
 const NewsletterWrapper = styled.div(({ textColor, backgroundColor }) => ({
-  ...tw`bg-gray-200 mb-8 pt-7 px-4 pb-8 md:sticky md:top-10`,
+  ...tw`bg-gray-200 mb-8 pt-7 px-4 pb-8 md:sticky md:top-10 w-full`,
   backgroundColor: backgroundColor,
   color: textColor,
 }));
