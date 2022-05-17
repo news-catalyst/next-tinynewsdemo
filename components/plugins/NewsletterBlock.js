@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import tw, { styled } from 'twin.macro';
 import NewsletterSubscribe from './NewsletterSubscribe';
 import Colors from '../common/Colors';
@@ -52,6 +53,11 @@ export default function NewsletterBlock({ metadata, headline, tinycms, site }) {
         tinycms={tinycms}
         site={site}
       />
+      <p tw="mt-4 underline">
+        <Link href="/newsletters">
+          <a>Read past editions</a>
+        </Link>
+      </p>
     </NewsletterWrapper>
   );
 }
