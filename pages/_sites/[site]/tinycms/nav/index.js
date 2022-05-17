@@ -5,7 +5,7 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { SelectorIcon } from '@heroicons/react/solid';
 import { hasuraGetMetadataByLocale } from '../../../../../lib/site_metadata';
 import { findSetting, getOrgSettings } from '../../../../../lib/settings';
-import { revalidateEverything } from '../../../../../lib/utils';
+// import { revalidateEverything } from '../../../../../lib/utils';
 import AdminLayout from '../../../../../components/AdminLayout';
 import AdminNav from '../../../../../components/nav/AdminNav';
 import GlobalNav from '../../../../../components/nav/GlobalNav';
@@ -32,7 +32,6 @@ export default function NavBuilder({
   site,
   siteUrl,
   host,
-  lambdaURL,
   authorizedEmailDomains,
 }) {
   const [message, setMessage] = useState(null);
@@ -238,11 +237,11 @@ export default function NavBuilder({
       setShowNotification(true);
     } else {
       // rebuild the site
-      revalidateEverything({
-        lambdaURL: lambdaURL,
-        site: site,
-        url: apiUrl,
-      });
+      // revalidateEverything({
+      //   lambdaURL: lambdaURL,
+      //   site: site,
+      //   url: apiUrl,
+      // });
 
       setNotificationType('success');
       setNotificationMessage(
@@ -418,7 +417,7 @@ export default function NavBuilder({
 
 export async function getServerSideProps(context) {
   const apiUrl = process.env.HASURA_API_URL;
-  const lambdaURL = process.env.REVALIDATE_LAMBDA_URL;
+  // const lambdaURL = process.env.REVALIDATE_LAMBDA_URL;
   const site = context.params.site;
   const locale = 'en-US';
 
@@ -503,7 +502,6 @@ export async function getServerSideProps(context) {
       vercelHook: vercelHook,
       siteUrl: siteUrl,
       host: host,
-      lambdaURL: lambdaURL,
       authorizedEmailDomains: authorizedEmailDomains,
     },
   };

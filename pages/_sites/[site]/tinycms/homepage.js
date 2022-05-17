@@ -1,7 +1,7 @@
 import dynamic from 'next/dynamic';
 import React, { useState } from 'react';
 import tw from 'twin.macro';
-import { revalidate } from '../../../../lib/utils';
+// import { revalidate } from '../../../../lib/utils';
 
 import {
   hasuraGetHomepageEditor,
@@ -34,7 +34,6 @@ export default function HomePageEditor({
   siteUrl,
   host,
   apiSecret,
-  lambdaURL,
   authorizedEmailDomains,
 }) {
   const [notificationMessage, setNotificationMessage] = useState('');
@@ -98,11 +97,11 @@ export default function HomePageEditor({
       setNotificationType('error');
       setShowNotification(true);
     } else {
-      await revalidate({
-        lambdaURL: lambdaURL,
-        paths: ['/'],
-        site: site,
-      });
+      // await revalidate({
+      //   lambdaURL: lambdaURL,
+      //   paths: ['/'],
+      //   site: site,
+      // });
 
       setNotificationMessage(
         'Successfully re-published homepage with these changes!'
@@ -184,7 +183,7 @@ export default function HomePageEditor({
 
 export async function getServerSideProps(context) {
   const apiUrl = process.env.HASURA_API_URL;
-  const lambdaURL = process.env.REVALIDATE_LAMBDA_URL;
+  // const lambdaURL = process.env.REVALIDATE_LAMBDA_URL;
   const site = context.params.site;
   const locale = 'en-US';
 
@@ -254,7 +253,6 @@ export async function getServerSideProps(context) {
       siteUrl,
       host,
       apiSecret,
-      lambdaURL,
       authorizedEmailDomains,
     },
   };

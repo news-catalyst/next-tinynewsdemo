@@ -8,7 +8,7 @@ import {
   upsertPublishedArticle,
 } from '../../../../../lib/document';
 import { findSetting, getOrgSettings } from '../../../../../lib/settings';
-import { revalidate } from '../../../../../lib/utils';
+// import { revalidate } from '../../../../../lib/utils';
 import { slugify } from '../../../../../lib/graphql';
 import {
   listAuthorPagePaths,
@@ -173,29 +173,29 @@ export default async function Handler(req, res) {
       //construct the published article url
       var path = '/articles/' + categorySlug + '/' + slug;
       var categoryPath = '/categories/' + categorySlug;
-      var revalidatePaths = [path, categoryPath];
-      if (tags) {
-        for (const tag of tags) {
-          revalidatePaths.push(`/tags/${slugify(tag)}`);
-        }
-      }
+      // var revalidatePaths = [path, categoryPath];
+      // if (tags) {
+      //   for (const tag of tags) {
+      //     revalidatePaths.push(`/tags/${slugify(tag)}`);
+      //   }
+      // }
       if (authors) {
         const authorResult = listAuthorsByID({
           url: apiUrl,
           site: site,
           ids: authors,
         });
-        if (!authorResult.errors) {
-          for (const author of data.authors) {
-            revalidatePaths.push(`/authors/${author.slug}`);
-          }
-        }
+        // if (!authorResult.errors) {
+        //   for (const author of data.authors) {
+        //     revalidatePaths.push(`/authors/${author.slug}`);
+        //   }
+        // }
       }
-      await revalidate({
-        lambdaURL: process.env.REVALIDATE_LAMBDA_URL,
-        paths: revalidatePaths,
-        site: site,
-      });
+      // await revalidate({
+      //   lambdaURL: process.env.REVALIDATE_LAMBDA_URL,
+      //   paths: revalidatePaths,
+      //   site: site,
+      // });
 
       publishUrl = new URL(path, siteUrl).toString();
       // console.log(publishUrl);
@@ -255,10 +255,10 @@ export default async function Handler(req, res) {
         path += '/' + slug;
       }
 
-      await revalidate({
-        paths: [path],
-        site: site,
-      });
+      // await revalidate({
+      //   paths: [path],
+      //   site: site,
+      // });
 
       publishUrl = new URL(path, siteUrl).toString();
     }
