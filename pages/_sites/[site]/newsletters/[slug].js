@@ -15,9 +15,9 @@ import {
   ArticleTitle,
   PostTextContainer,
   PostText,
+  NewsletterPostText,
 } from '../../../../components/common/CommonStyles.js';
 import PublishDate from '../../../../components/articles/PublishDate.js';
-import { NewsletterPostText } from '../../../../components/common/CommonStyles.js';
 import ArticleFooter from '../../../../components/articles/ArticleFooter';
 import NewsletterBlock from '../../../../components/plugins/NewsletterBlock';
 import LetterheadNewsletter from '../../../../components/nodes/embeds/LetterheadNewsletter';
@@ -55,16 +55,19 @@ export default function NewsletterEditionPage(props) {
       site={props.site}
     >
       <SectionContainer>
-        <PublishDate article={props.newsletter} meta={props.siteMetadata} />
         <NewsletterPostText>
+          <ArticleTitle meta={props.siteMetadata}>
+            {props.newsletter.headline}
+          </ArticleTitle>
+          <PublishDate article={props.newsletter} meta={props.siteMetadata} />
           <LetterheadNewsletter content={props.newsletter.content} />
           <ArticleFooter
             article={props.newsletter}
             isAmp={isAmp}
             metadata={props.siteMetadata}
           />
+          <NewsletterBlock metadata={props.siteMetadata} />
         </NewsletterPostText>
-        <NewsletterBlock metadata={props.siteMetadata} />
       </SectionContainer>
     </Layout>
   );
