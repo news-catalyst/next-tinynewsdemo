@@ -3,7 +3,8 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import tw from 'twin.macro';
 import { hasuraGetMetadataByLocale } from '../../../../../lib/site_metadata';
-import { findSetting, getOrgSettings } from '../../../../../lib/settings.js';
+import { findSetting, getOrgSettings } from '../../../../../lib/settings';
+// import { revalidateEverything } from '../../../../../lib/utils';
 import AdminLayout from '../../../../../components/AdminLayout.js';
 import AdminNav from '../../../../../components/nav/AdminNav';
 import SiteInfoSettings from '../../../../../components/tinycms/SiteInfoSettings';
@@ -262,30 +263,15 @@ export default function Settings({
       setShowNotification(true);
     } else {
       // rebuild the site
-      if (!vercelHook) {
-        setNotificationMessage(
-          'Successfully saved, but no deploy hook defined so unable to republish the site.'
-        );
-        setNotificationType('success');
-      } else {
-        const response = await fetch(vercelHook, {
-          method: 'POST',
-        });
-        const statusCode = response.status;
-        const data = await response.json();
-        // console.log(statusCode, 'vercel data:', data);
-        if (statusCode < 200 || statusCode > 299) {
-          setNotificationType('error');
-          setNotificationMessage(
-            'An error occurred republishing the site: ' + JSON.stringify(data)
-          );
-        } else {
-          setNotificationType('success');
-          setNotificationMessage(
-            'Successfully saved settings, republishing the site now!'
-          );
-        }
-      }
+      // revalidateEverything({
+      //   lambdaURL: lambdaURL,
+      //   site: site,
+      //   url: apiUrl,
+      // });
+      setNotificationType('success');
+      setNotificationMessage(
+        'Successfully saved settings, republishing the site now!'
+      );
       setShowNotification(true);
 
       let formattedJSON;
@@ -412,6 +398,7 @@ export default function Settings({
 
 export async function getServerSideProps(context) {
   const apiUrl = process.env.HASURA_API_URL;
+  // const lambdaURL = process.env.REVALIDATE_LAMBDA_URL;
   const site = context.params.site;
 
   const settingsResult = await getOrgSettings({

@@ -122,13 +122,11 @@ export default function AdminSetup({
       }
 
       if (findSetting(settings, 'NEXT_PUBLIC_FB_APP_ID')) {
-        setAnalyticsTrackingId(findSetting(settings, 'NEXT_PUBLIC_FB_APP_ID'));
+        setFbAppId(findSetting(settings, 'NEXT_PUBLIC_FB_APP_ID'));
       }
 
       if (findSetting(settings, 'NEXT_PUBLIC_FB_CLIENT_TOKEN')) {
-        setAnalyticsTrackingId(
-          findSetting(settings, 'NEXT_PUBLIC_FB_CLIENT_TOKEN')
-        );
+        setFbClientToken(findSetting(settings, 'NEXT_PUBLIC_FB_CLIENT_TOKEN'));
       }
 
       if (findSetting(settings, 'API_TOKEN')) {

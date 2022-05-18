@@ -17,6 +17,7 @@ import {
 } from '../../../../../lib/section';
 import { hasuraInsertArticleSlugVersions } from '../../../../../lib/articles';
 import { findSetting, getOrgSettings } from '../../../../../lib/settings.js';
+// import { revalidateEverything } from '../../../../../lib/utils';
 
 import AdminNav from '../../../../../components/nav/AdminNav';
 import Notification from '../../../../../components/tinycms/Notification';
@@ -128,7 +129,6 @@ export default function EditSection({
             method: 'POST',
           });
           const statusCode = rebuildResponse.status;
-
           setCurrentSlug(slug);
 
           if (statusCode < 200 || statusCode > 299) {

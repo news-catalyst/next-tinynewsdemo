@@ -7,7 +7,13 @@ import {
   storePageIdAndSlug,
   upsertPublishedArticle,
 } from '../../../../../lib/document';
-import { findSetting, getOrgSettings } from '../../../../../lib/settings.js';
+import { findSetting, getOrgSettings } from '../../../../../lib/settings';
+// import { revalidate } from '../../../../../lib/utils';
+import { slugify } from '../../../../../lib/graphql';
+import {
+  listAuthorPagePaths,
+  listAuthorsByID,
+} from '../../../../../lib/authors';
 
 export default async function Handler(req, res) {
   const apiUrl = process.env.HASURA_API_URL;
@@ -61,8 +67,6 @@ export default async function Handler(req, res) {
       data: errors,
     });
   } else {
-    // console.log(data);
-
     let localeCode = 'en-US'; // default up front, override if existing article
 
     let processedData = await processDocumentContents(
@@ -75,8 +79,6 @@ export default async function Handler(req, res) {
       site
     );
 
-    // console.log('processedData:', Object.keys(processedData).sort());
-
     let publishUrl;
     let resultData;
     let categorySlug;
@@ -84,6 +86,10 @@ export default async function Handler(req, res) {
     let idSlugResult;
 
     if (documentType === 'article') {
+      let tags = articleData['article_tags'];
+      let authors = articleData['article_authors'];
+      // console.log('tags:', tags);
+
       articleData['content'] = processedData['formattedElements'];
       articleData['main_image'] = processedData['mainImage'];
 
@@ -166,6 +172,31 @@ export default async function Handler(req, res) {
 
       //construct the published article url
       var path = '/articles/' + categorySlug + '/' + slug;
+      var categoryPath = '/categories/' + categorySlug;
+      // var revalidatePaths = [path, categoryPath];
+      // if (tags) {
+      //   for (const tag of tags) {
+      //     revalidatePaths.push(`/tags/${slugify(tag)}`);
+      //   }
+      // }
+      if (authors) {
+        const authorResult = listAuthorsByID({
+          url: apiUrl,
+          site: site,
+          ids: authors,
+        });
+        // if (!authorResult.errors) {
+        //   for (const author of data.authors) {
+        //     revalidatePaths.push(`/authors/${author.slug}`);
+        //   }
+        // }
+      }
+      // await revalidate({
+      //   lambdaURL: process.env.REVALIDATE_LAMBDA_URL,
+      //   paths: revalidatePaths,
+      //   site: site,
+      // });
+
       publishUrl = new URL(path, siteUrl).toString();
       // console.log(publishUrl);
     } else if (documentType === 'page') {
@@ -223,13 +254,16 @@ export default async function Handler(req, res) {
       } else {
         path += '/' + slug;
       }
-      publishUrl = new URL(path, siteUrl).toString();
 
-      // console.log(publishUrl);
+      // await revalidate({
+      //   paths: [path],
+      //   site: site,
+      // });
+
+      publishUrl = new URL(path, siteUrl).toString();
     }
 
     res.status(200).json({
-      // s3Url: s3Url,
       status: 'success',
       documentType: documentType,
       googleToken: googleToken,

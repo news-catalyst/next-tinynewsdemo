@@ -216,5 +216,6 @@ export async function getStaticProps({ params }) {
       site,
       slug: params.category,
     },
+    revalidate: 1,
   };
 }

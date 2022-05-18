@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import tw, { styled } from 'twin.macro';
 import NewsletterSubscribe from './NewsletterSubscribe';
 import Colors from '../common/Colors';
@@ -6,7 +7,7 @@ import { determineTextColor } from '../../lib/utils';
 import { useEffect, useState } from 'react';
 
 const NewsletterWrapper = styled.div(({ textColor, backgroundColor }) => ({
-  ...tw`bg-gray-200 mb-8 pt-7 px-4 pb-8 md:sticky md:top-10`,
+  ...tw`bg-gray-200 mb-8 pt-7 px-4 pb-8 md:sticky md:top-10 w-full`,
   backgroundColor: backgroundColor,
   color: textColor,
 }));
@@ -52,6 +53,11 @@ export default function NewsletterBlock({ metadata, headline, tinycms, site }) {
         tinycms={tinycms}
         site={site}
       />
+      <p tw="mt-4 underline">
+        <Link href="/newsletters">
+          <a>Read past editions</a>
+        </Link>
+      </p>
     </NewsletterWrapper>
   );
 }
