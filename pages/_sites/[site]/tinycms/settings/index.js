@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import tw from 'twin.macro';
 import { hasuraGetMetadataByLocale } from '../../../../../lib/site_metadata';
 import { findSetting, getOrgSettings } from '../../../../../lib/settings';
-import { revalidateEverything } from '../../../../../lib/utils';
+// import { revalidateEverything } from '../../../../../lib/utils';
 import AdminLayout from '../../../../../components/AdminLayout.js';
 import AdminNav from '../../../../../components/nav/AdminNav';
 import SiteInfoSettings from '../../../../../components/tinycms/SiteInfoSettings';
@@ -53,7 +53,6 @@ export default function Settings({
   vercelHook,
   siteUrl,
   host,
-  lambdaURL,
   authorizedEmailDomains,
 }) {
   const siteInfoRef = useRef();
@@ -264,11 +263,11 @@ export default function Settings({
       setShowNotification(true);
     } else {
       // rebuild the site
-      revalidateEverything({
-        lambdaURL: lambdaURL,
-        site: site,
-        url: apiUrl,
-      });
+      // revalidateEverything({
+      //   lambdaURL: lambdaURL,
+      //   site: site,
+      //   url: apiUrl,
+      // });
       setNotificationType('success');
       setNotificationMessage(
         'Successfully saved settings, republishing the site now!'
@@ -399,7 +398,7 @@ export default function Settings({
 
 export async function getServerSideProps(context) {
   const apiUrl = process.env.HASURA_API_URL;
-  const lambdaURL = process.env.REVALIDATE_LAMBDA_URL;
+  // const lambdaURL = process.env.REVALIDATE_LAMBDA_URL;
   const site = context.params.site;
 
   const settingsResult = await getOrgSettings({
@@ -462,7 +461,6 @@ export async function getServerSideProps(context) {
       vercelHook: vercelHook,
       siteUrl: siteUrl,
       host: host,
-      lambdaURL: lambdaURL,
       authorizedEmailDomains: authorizedEmailDomains,
     },
   };
