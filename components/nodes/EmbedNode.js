@@ -59,7 +59,7 @@ export default function EmbedNode({ node, amp }) {
     case 'open.spotify.com':
       el = <Spotify node={node} amp={amp} />;
       break;
-    case 'embed.podcasts.apple.com':
+    case 'podcasts.apple.com':
       el = <ApplePodcasts node={node} amp={amp} />;
       break;
     case 'vimeo.com':
