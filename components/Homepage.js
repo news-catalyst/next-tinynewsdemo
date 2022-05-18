@@ -41,6 +41,7 @@ export default function Homepage({
     bottomFeatured
   );
   const [mostRecentArticles, setMostRecentArticles] = useState(streamArticles);
+  console.log(siteMetadata);
 
   return (
     <div className="homepage">

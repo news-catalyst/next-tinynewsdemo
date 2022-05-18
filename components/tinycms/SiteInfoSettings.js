@@ -17,6 +17,7 @@ const SeoContainer = tw.div``;
 const DesignContainer = tw.div`grid grid-cols-2 gap-4`;
 const MembershipContainer = tw.div`grid grid-cols-2 gap-8`;
 const AdvertisingContainer = tw.div`grid grid-cols-2 gap-8`;
+const AdvertisingOptionsContainer = tw.div`grid grid-cols-2 gap-8`;
 const NewsletterContainer = tw.div`grid grid-cols-2 gap-8`;
 const HomepagePromoContainer = tw.div`grid grid-cols-2 gap-8`;
 const DonationOptionsEditor = tw.div`grid grid-cols-3 gap-4`;
@@ -272,6 +273,16 @@ export default function SiteInfoSettings(props) {
     props.parsedData['advertisingCTA']
   );
 
+  const [imageAdID, setImageAdID] = useState(props.parsedData['imageAdID']);
+  const [bannerAdID, setBannerAdID] = useState(props.parsedData['bannerAdID']);
+  const [textAdID, setTextAdID] = useState(props.parsedData['textAdID']);
+  const [expandedTextID, setExpandedTextID] = useState(
+    props.parsedData['expandedTextID']
+  );
+  const [expandedImageID, setExpandedImageID] = useState(
+    props.parsedData['expandedImageID']
+  );
+
   const [logo, setLogo] = useState(props.parsedData['logo']);
   const [logoWidth, setLogoWidth] = useState(props.parsedData['logoWidth']);
   const [logoHeight, setLogoHeight] = useState(props.parsedData['logoHeight']);
@@ -465,6 +476,11 @@ export default function SiteInfoSettings(props) {
     setLogoHeight(props.parsedData['logoHeight']);
     setFavicon(props.parsedData['favicon']);
     setDefaultSocialImage(props.parsedData['defaultSocialImage']);
+    setImageAdID(props.parsedData['imageAdID']);
+    setBannerAdID(props.parsedData['bannerAdID']);
+    setTextAdID(props.parsedData['textAdID']);
+    setExpandedTextID(props.parsedData['expandedTextID']);
+    setExpandedImageID(props.parsedData['expandedImageID']);
   }, [props.parsedData]);
 
   return (
@@ -953,6 +969,67 @@ export default function SiteInfoSettings(props) {
           <AdPromotion metadata={props.parsedData} tinycms={true} />
         </div>
       </AdvertisingContainer>
+
+      <AdvertisingOptionsContainer>
+        <SettingsHeader tw="col-span-3 mt-5 mb-0 leading-none">
+          Advertising Options
+        </SettingsHeader>
+        <div tw="mt-2">
+          <TinyInputField
+            name="imageAdID"
+            value={imageAdID}
+            onChange={(ev) => {
+              setImageAdID(ev.target.value);
+              updateKeyValue('imageAdID', ev.target.value);
+            }}
+            label="Image ad ID"
+          />
+        </div>
+        <div tw="mt-2">
+          <TinyInputField
+            name="bannerAdID"
+            value={bannerAdID}
+            onChange={(ev) => {
+              setBannerAdID(ev.target.value);
+              updateKeyValue('bannerAdID', ev.target.value);
+            }}
+            label="Banner ad ID"
+          />
+        </div>
+        <div tw="mt-2">
+          <TinyInputField
+            name="textAdID"
+            value={textAdID}
+            onChange={(ev) => {
+              setTextAdID(ev.target.value);
+              updateKeyValue('textAdID', ev.target.value);
+            }}
+            label="Text ad ID"
+          />
+        </div>
+        <div tw="mt-2">
+          <TinyInputField
+            name="expandedTextID"
+            value={expandedTextID}
+            onChange={(ev) => {
+              setExpandedTextID(ev.target.value);
+              updateKeyValue('expandedTextID', ev.target.value);
+            }}
+            label="Expanded text ad ID"
+          />
+        </div>
+        <div tw="mt-2">
+          <TinyInputField
+            name="expandedImageID"
+            value={expandedImageID}
+            onChange={(ev) => {
+              setExpandedImageID(ev.target.value);
+              updateKeyValue('expandedImageID', ev.target.value);
+            }}
+            label="Expanded image ad ID"
+          />
+        </div>
+      </AdvertisingOptionsContainer>
 
       <DonationOptionsEditor ref={props.paymentRef} id="payment-options">
         <SettingsHeader tw="col-span-3 mt-5">Payment options</SettingsHeader>

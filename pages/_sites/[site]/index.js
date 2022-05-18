@@ -202,7 +202,9 @@ export async function getStaticProps(context) {
     };
     const allAds =
       (await cachedContents('ads', letterheadParams, getArticleAds)) || [];
-    expandedAds = allAds.filter((ad) => ad.adTypeId === 166 && ad.status === 4);
+    expandedAds = allAds.filter(
+      (ad) => ad.adTypeId === siteMetadata.expandedImageID && ad.status === 4
+    );
   }
 
   return {
