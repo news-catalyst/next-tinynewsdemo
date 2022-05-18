@@ -190,5 +190,6 @@ export async function getStaticProps({ params }) {
       monkeypodLink,
       site,
     },
+    revalidate: 1,
   };
 }
