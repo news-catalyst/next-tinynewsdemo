@@ -11,10 +11,10 @@ const SectionLayout = tw.section`flex mb-8`;
 const SectionContainer = tw.div`flex flex-row flex-wrap md:grid mb-8 w-full md:grid-cols-packageLayoutTablet lg:grid-cols-packageLayoutDesktop px-5 max-w-7xl mx-auto`;
 const LeftBlock = tw.div`w-full`;
 const RightBlock = tw.div`w-full md:h-full flex lg:pl-8`;
-const Asset = tw.div`md:items-start flex flex-col-reverse flex-nowrap md:flex-row md:content-start border-b border-gray-200 mb-4 md:mb-0 pb-4 md:pb-0 w-full md:border-b-0 pr-2`;
+const Asset = tw.div`md:items-start flex flex-col-reverse flex-nowrap md:flex-row md:content-start border-b border-gray-200 mb-4 md:mb-0 pb-4 md:pb-0 w-full md:border-b-0`;
 const AssetMetaContainer = tw.div`flex-1 relative w-full`;
 const AssetThumbnailContainer = tw.div`md:max-w-1/2`;
-const PromotionContainer = tw.div`md:border-l md:border-gray-200 md:ml-8 md:pl-8 w-full`;
+const PromotionContainer = tw.div`md:border-l md:border-gray-200 md:pl-4 w-full`;
 
 const gridStyles = {
   desktop: {
@@ -106,14 +106,16 @@ export default function PartialLargeStoryPackageNewsletter(props) {
             gridArea: 'col-2',
           }}
         >
-          <PromotionContainer>
-            <PromotionBlock
-              metadata={props.metadata}
-              site={props.site}
-              monkeypodLink={props.monkeypodLink}
-              prefer="newsletter"
-            />
-          </PromotionContainer>
+          <Asset>
+            <PromotionContainer>
+              <PromotionBlock
+                metadata={props.metadata}
+                site={props.site}
+                monkeypodLink={props.monkeypodLink}
+                prefer="newsletter"
+              />
+            </PromotionContainer>
+          </Asset>
         </RightBlock>
       </SectionContainer>
     </SectionLayout>
