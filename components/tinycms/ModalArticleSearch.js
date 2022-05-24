@@ -33,7 +33,7 @@ export default function ModalArticleSearch(props) {
     if (errors && !data) {
       console.error(errors);
     }
-    // console.log('data:', data);
+    console.log('data:', data);
     setLoading(false);
     setSearchResults(data.articles);
   }

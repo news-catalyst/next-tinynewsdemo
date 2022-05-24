@@ -9,7 +9,7 @@ const SectionContainer = tw.div`md:grid md:grid-cols-packageLayoutTablet lg:grid
 const Block = tw.div`w-full`;
 const BlockHead = tw.h3`flex items-end flex-row flex-nowrap mb-4 text-2xl mb-6 font-bold`;
 const BlockList = tw.ul`list-outside`;
-const PromotionContainer = tw.div`md:border-l md:border-gray-200 md:ml-8 md:pl-8 w-full`;
+const PromotionContainer = tw.div`md:border-l md:border-gray-200 md:ml-8 md:pl-4 w-full`;
 
 export default function ArticleStream({
   articles,
