@@ -89,6 +89,7 @@ export default function Homepage({
             isAmp={false}
             metadata={siteMetadata}
             locale={locale}
+            site={site}
           />
         )}
 
