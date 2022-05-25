@@ -1,13 +1,19 @@
 import React, { useState } from 'react';
 import AdminLayout from '../../../../../components/AdminLayout';
 import AdminNav from '../../../../../components/nav/AdminNav';
+import {
+  FormContainer,
+  FormHeader,
+  TinyInputField,
+  TinySubmitCancelButtons,
+} from '../../../../../components/tinycms/TinyFormElements';
 import Notification from '../../../../../components/tinycms/Notification';
 import { hasuraUpsertHomepageLayout } from '../../../../../lib/homepage';
 import { findSetting, getOrgSettings } from '../../../../../lib/settings.js';
 
 export default function AddHomepageLayout({
   apiUrl,
-  apiToken,
+  site,
   siteUrl,
   host,
   authorizedEmailDomains,
@@ -24,7 +30,7 @@ export default function AddHomepageLayout({
 
     const { errors, data } = await hasuraUpsertHomepageLayout({
       url: apiUrl,
-      orgSlug: apiToken,
+      site: site,
       name: name,
       data: jsonData,
     });
@@ -60,50 +66,26 @@ export default function AddHomepageLayout({
           notificationType={notificationType}
         />
       )}
-      <div id="page">
-        <h1 className="title">Add a homepage layout</h1>
+
+      <FormContainer>
+        <FormHeader title="Add Homepage Layout" />
 
         <form onSubmit={handleSubmit}>
-          <div className="field">
-            <label className="label" htmlFor="name">
-              Name
-            </label>
-            <div className="control">
-              <input
-                className="input"
-                type="text"
-                value={name}
-                name="name"
-                onChange={(ev) => setName(ev.target.value)}
-              />
-            </div>
-          </div>
-
-          <div className="field">
-            <label className="label" htmlFor="jsonData">
-              Data
-            </label>
-            <div className="control">
-              <input
-                className="input"
-                type="text"
-                value={jsonData}
-                name="jsonData"
-                onChange={(ev) => setJsonData(ev.target.value)}
-              />
-            </div>
-          </div>
-
-          <div className="field is-grouped">
-            <div className="control">
-              <input type="submit" className="button is-link" value="Submit" />
-            </div>
-            <div className="control">
-              <button className="button is-link is-light">Cancel</button>
-            </div>
-          </div>
+          <TinyInputField
+            name="name"
+            value={name}
+            onChange={(ev) => setName(ev.target.value)}
+            label="Name"
+          />
+          <TinyInputField
+            name="jsonData"
+            value={jsonData}
+            onChange={(ev) => setJsonData(ev.target.value)}
+            label="Data"
+          />
+          <TinySubmitCancelButtons destURL="/tinycms/homepage-layouts" />
         </form>
-      </div>
+      </FormContainer>
     </AdminLayout>
   );
 }
