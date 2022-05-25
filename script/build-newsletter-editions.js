@@ -65,7 +65,6 @@ async function getNewsletterEditions() {
       letterhead['url'] + 'channels/' + letterhead['channelSlug'] + '/letters/?api=true';
     // console.log('Letterhead API URL:', letterheadUrl);
 
-    console.log(letterheadUrl, letterhead['apiKey']);
     try {
       const opts = {
         headers: {
@@ -91,7 +90,7 @@ async function saveNewsletterEditions(organizationId, letterheadData) {
     'newsletter editions in total:'
   );
 
-  for await (let newsletter of letterheadData) {
+  for await (let newsletter of letterheadData.items) {
     let headline = shared.cleanContent(newsletter.title);
 
     if (!newsletter.publicationDate) {
