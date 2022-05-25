@@ -2,6 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import AdminLayout from '../../../../../components/AdminLayout';
 import {
+  FormContainer,
+  FormHeader,
+  TinyInputField,
+  TinySubmitCancelButtons,
+} from '../../../../../components/tinycms/TinyFormElements';
+import {
   hasuraGetHomepageLayout,
   hasuraUpdateHomepageLayout,
 } from '../../../../../lib/homepage';
@@ -83,59 +89,25 @@ export default function EditHomepageLayout({
       )}
 
       <div id="page">
-        <h1 className="title">Edit Homepage Layout</h1>
+        <FormContainer>
+          <FormHeader title="Edit Homepage Layout" />
 
-        <form onSubmit={handleSubmit}>
-          <div className="field">
-            <label className="label" htmlFor="name">
-              Name
-            </label>
-            <div className="control">
-              <input
-                className="input"
-                type="text"
-                value={name}
-                name="name"
-                onChange={(ev) => setName(ev.target.value)}
-              />
-            </div>
-          </div>
-
-          <div className="field">
-            <label className="label" htmlFor="data">
-              Data
-            </label>
-            <div className="control">
-              <input
-                className="input"
-                type="text"
-                value={jsonData}
-                name="jsonData"
-                onChange={(ev) => setJsonData(ev.target.value)}
-              />
-            </div>
-          </div>
-
-          <div className="field is-grouped">
-            <div className="control">
-              <input
-                className="button is-link"
-                name="submit"
-                type="submit"
-                value="Submit"
-              />
-            </div>
-            <div className="control">
-              <button
-                className="button is-link is-light"
-                name="cancel"
-                onClick={handleCancel}
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        </form>
+          <form onSubmit={handleSubmit}>
+            <TinyInputField
+              name="name"
+              value={name}
+              onChange={(ev) => setName(ev.target.value)}
+              label="Name"
+            />
+            <TinyInputField
+              name="jsonData"
+              value={jsonData}
+              onChange={(ev) => setJsonData(ev.target.value)}
+              label="Data"
+            />
+            <TinySubmitCancelButtons destURL="/tinycms/homepage-layouts" />
+          </form>
+        </FormContainer>
       </div>
     </AdminLayout>
   );
