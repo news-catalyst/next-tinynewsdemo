@@ -8,6 +8,10 @@ const BigFeaturedStory = dynamic(() => import(`./homepage/BigFeaturedStory`));
 const LargePackageStoryLead = dynamic(() =>
   import(`./homepage/LargePackageStoryLead`)
 );
+const PartialLargeStoryPackageNewsletter = dynamic(() =>
+  import(`./homepage/PartialLargeStoryPackageNewsletter`)
+);
+
 import HomepagePromoBar from './homepage/HomepagePromoBar';
 
 import Layout from './Layout';
@@ -76,6 +80,19 @@ export default function Homepage({
             metadata={siteMetadata}
           />
         )}
+
+        {selectedLayout.name === 'Partial Large Story Package Newsletter' && (
+          <PartialLargeStoryPackageNewsletter
+            featuredArticle={featuredArticle}
+            setFeaturedArticle={setFeaturedArticle}
+            sections={sections}
+            isAmp={false}
+            metadata={siteMetadata}
+            locale={locale}
+            site={site}
+          />
+        )}
+
         <HomepagePromoBar metadata={siteMetadata} site={site} />
         <ArticleStream
           articles={mostRecentArticles}

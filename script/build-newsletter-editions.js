@@ -62,7 +62,7 @@ async function getNewsletterEditions() {
     }
 
     const letterheadUrl =
-      letterhead['url'] + 'channels/' + letterhead['channelSlug'] + '/letters';
+      letterhead['url'] + 'channels/' + letterhead['channelSlug'] + '/letters/?api=true';
     // console.log('Letterhead API URL:', letterheadUrl);
 
     try {
@@ -90,18 +90,18 @@ async function saveNewsletterEditions(organizationId, letterheadData) {
     'newsletter editions in total:'
   );
 
-  for await (let newsletter of letterheadData) {
+  for await (let newsletter of letterheadData.items) {
     let headline = shared.cleanContent(newsletter.title);
 
     if (!newsletter.publicationDate) {
       console.log(
         '> Org#' +
-          organizationId +
-          ' Newsletter ID#' +
-          newsletter.id +
-          " '" +
-          headline +
-          "' is not published, skipping."
+        organizationId +
+        ' Newsletter ID#' +
+        newsletter.id +
+        " '" +
+        headline +
+        "' is not published, skipping."
       );
       continue;
     }
@@ -153,24 +153,24 @@ async function saveNewsletterEditions(organizationId, letterheadData) {
     if (result.errors) {
       console.error(
         '! Newsletter ID#' +
-          newsletter.id +
-          " '" +
-          newsletter.title +
-          "' had an error saving:",
+        newsletter.id +
+        " '" +
+        newsletter.title +
+        "' had an error saving:",
         result.errors
       );
     } else {
       console.log(
         '. OrgID#' +
-          organizationId +
-          ' Newsletter ID#' +
-          newsletter.id +
-          " '" +
-          newsletter.title +
-          "' was published at " +
-          newsletter.publicationDate +
-          ', saved in Hasura with slug: ' +
-          result.data.insert_newsletter_editions_one.slug
+        organizationId +
+        ' Newsletter ID#' +
+        newsletter.id +
+        " '" +
+        newsletter.title +
+        "' was published at " +
+        newsletter.publicationDate +
+        ', saved in Hasura with slug: ' +
+        result.data.insert_newsletter_editions_one.slug
       );
     }
   }

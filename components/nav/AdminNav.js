@@ -3,16 +3,16 @@ import tw from 'twin.macro';
 import Link from 'next/link';
 
 const NavBar = tw.header`flex h-12 items-center bg-gray-100`;
-const HomepageNavBar = tw.header`flex pt-3 px-2 h-12 w-full justify-end bg-blue-100`;
+const HomepageNavBar = tw.header`flex py-3 px-2 h-16 w-full justify-end bg-blue-100 mb-4`;
 const NavBarContainer = tw.div`w-full container-md mx-auto px-6`;
 const NavBarInnerContainer = tw.div`flex justify-between flex-col md:flex-row`;
 
 const BrandContainer = tw.div`w-full md:w-1/5 text-center md:text-left font-bold`;
 
 const NavItemsDiv = tw.div`flex justify-center items-center w-full md:w-4/5`;
-const HomepageNavItemsDiv = tw.div`flex justify-end items-center w-full md:w-3/5`;
+const HomepageNavItemsDiv = tw.div`flex justify-end items-center w-full md:w-4/5`;
 const NavItem = tw.a`mx-4 cursor-pointer`;
-const SaveButton = tw.a`hidden md:flex justify-end text-center h-8 w-full md:w-auto px-3 py-2 text-right bg-blue-900 hover:bg-blue-500 text-white md:rounded`;
+const SaveButton = tw.a`hidden md:flex justify-end text-center h-8 w-full md:w-auto px-3 py-1 text-right bg-blue-900 hover:bg-blue-500 text-white md:rounded`;
 
 export default function NewAdminNav(props) {
   const [currentLayoutName, setCurrentLayoutName] = useState('');

@@ -23,7 +23,10 @@ export default async function Handler(req, res) {
   );
 
   const subscribeApiUrl =
-    letterheadApiUrl + 'channels/' + letterheadChannelSlug + '/subscribers';
+    letterheadApiUrl +
+    'channels/' +
+    letterheadChannelSlug +
+    '/subscribers/?api=true';
 
   // values from https://github.com/news-catalyst/next-tinynewsdemo/issues/718
   const channelSubscriberStatusValues = {
