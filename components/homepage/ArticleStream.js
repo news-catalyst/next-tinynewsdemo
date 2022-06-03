@@ -36,7 +36,6 @@ export default function ArticleStream({
   };
 
   const renderAd = function (ad) {
-    console.log(ad);
     return (
       <ExpandedTextWithImageAd
         ad={{
@@ -77,8 +76,6 @@ export default function ArticleStream({
         );
       }
       if (i > 0 && i % AD_PLACEMENT_INDEX === 0 && adIndex < ads.length) {
-        console.log('should render ad');
-        console.log(i, ads.length, adIndex);
         const ad = renderAd(ads[adIndex]);
         adIndex++;
         return (

@@ -58,7 +58,6 @@ export default function Layout({
 
   const mappingSiteTrackingID = trackingIdMapping();
   const trackingId = mappingSiteTrackingID[site];
-  console.log(bannerAds);
   return (
     <>
       <Head>
