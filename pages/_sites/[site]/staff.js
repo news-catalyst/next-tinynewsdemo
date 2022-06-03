@@ -1,8 +1,11 @@
 import {
   generateAllDomainPaths,
+  booleanSetting,
   getOrgSettings,
   findSetting,
 } from '../../../lib/settings';
+import { cachedContents } from '../../../lib/cached';
+import { getArticleAds } from '../../../lib/ads.js';
 import { hasuraGetPage } from '../../../lib/pages.js';
 import StaffPage from '../../../components/StaffPage';
 import { NextSeo } from 'next-seo';
@@ -103,6 +106,25 @@ export async function getStaticProps({ params }) {
     }
   }
 
+  let bannerAds = [];
+  let letterheadSetting = booleanSetting(settings, 'LETTERHEAD_API_URL', false);
+
+  if (letterheadSetting) {
+    let letterheadParams = {
+      url: findSetting(settings, 'LETTERHEAD_API_URL'),
+      apiKey: findSetting(settings, 'LETTERHEAD_API_KEY'),
+    };
+    const allAds =
+      (await cachedContents('ads', letterheadParams, getArticleAds)) || [];
+
+    bannerAds = allAds.filter((ad) => {
+      return (
+        parseInt(ad.adTypeId) === parseInt(siteMetadata.bannerAdID) &&
+        ad.status === 4
+      );
+    });
+  }
+
   return {
     props: {
       authors,
@@ -111,6 +133,7 @@ export async function getStaticProps({ params }) {
       siteMetadata,
       monkeypodLink,
       site,
+      bannerAds,
     },
 
     revalidate: 1,

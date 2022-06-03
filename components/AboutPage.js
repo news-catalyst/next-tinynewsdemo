@@ -25,6 +25,7 @@ export default function AboutPage({
   monkeypodLink,
   site,
   isAmp,
+  bannerAds,
 }) {
   const locale = 'en-US';
 
@@ -68,6 +69,7 @@ export default function AboutPage({
       sections={sections}
       monkeypodLink={monkeypodLink}
       site={site}
+      bannerAds={bannerAds}
     >
       <article className="container">
         <SectionContainer>

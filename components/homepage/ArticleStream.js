@@ -47,8 +47,9 @@ export default function ArticleStream({
           header: ad.heading,
           body: ad.content,
           call: ad.callToAction,
-          url: ad.resolvedCallToActionURL,
+          url: ad.callToActionUrl,
           pixel: ad.pixel,
+          emoji: ad.emoji,
         }}
         isAmp={isAmp}
       />
@@ -60,33 +61,29 @@ export default function ArticleStream({
   if (articles) {
     articleStream = articles.map((article, i) => {
       const streamArticle = renderArticle(article);
-      if (!metadata.shortName === 'Tiny News Curriculum') {
-        if (
-          i > 0 &&
-          i % AD_PLACEMENT_INDEX === 0 &&
-          ads.length === 0 &&
-          adIndex === 0
-        ) {
-          adIndex = adIndex + 1;
-          return (
-            <>
-              <AdPromotion key="promotion" metadata={metadata} />
-              {streamArticle}
-            </>
-          );
-        }
-        if (i > 0 && i % AD_PLACEMENT_INDEX === 0 && adIndex < ads.length) {
-          const ad = renderAd(ads[adIndex]);
-          adIndex++;
-          return (
-            <>
-              {ad}
-              {streamArticle}
-            </>
-          );
-        } else {
-          return streamArticle;
-        }
+      if (
+        i > 0 &&
+        i % AD_PLACEMENT_INDEX === 0 &&
+        ads.length === 0 &&
+        adIndex === 0
+      ) {
+        adIndex = adIndex + 1;
+        return (
+          <>
+            <AdPromotion key="promotion" metadata={metadata} />
+            {streamArticle}
+          </>
+        );
+      }
+      if (i > 0 && i % AD_PLACEMENT_INDEX === 0 && adIndex < ads.length) {
+        const ad = renderAd(ads[adIndex]);
+        adIndex++;
+        return (
+          <>
+            {ad}
+            {streamArticle}
+          </>
+        );
       } else {
         return streamArticle;
       }

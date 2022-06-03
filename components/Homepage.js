@@ -34,6 +34,7 @@ export default function Homepage({
   locale,
   siteMetadata,
   expandedAds,
+  bannerAds,
   monkeypodLink,
   site,
 }) {
@@ -53,6 +54,7 @@ export default function Homepage({
         sections={sections}
         locale={locale}
         monkeypodLink={monkeypodLink}
+        bannerAds={bannerAds}
         site={site}
       >
         {!selectedLayout && <Placeholder />}

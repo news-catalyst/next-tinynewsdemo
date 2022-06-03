@@ -50,6 +50,7 @@ export default function CategoryPage(props) {
       renderFooter={props.renderFooter}
       monkeypodLink={props.monkeypodLink}
       site={props.site}
+      bannerAds={props.bannerAds}
     >
       <ArticleStream
         articles={props.articles}
@@ -189,6 +190,7 @@ export async function getStaticProps({ params }) {
   }
 
   let expandedAds = [];
+  let bannerAds = [];
   let letterheadSetting = booleanSetting(settings, 'LETTERHEAD_API_URL', false);
   if (letterheadSetting) {
     let letterheadParams = {
@@ -197,7 +199,18 @@ export async function getStaticProps({ params }) {
     };
     const allAds =
       (await cachedContents('ads', letterheadParams, getArticleAds)) || [];
-    expandedAds = allAds.filter((ad) => ad.adTypeId === 166 && ad.status === 4);
+    expandedAds = allAds.filter((ad) => {
+      return (
+        parseInt(ad.adTypeId) === parseInt(siteMetadata.expandedImageID) &&
+        ad.status === 4
+      );
+    });
+    bannerAds = allAds.filter((ad) => {
+      return (
+        parseInt(ad.adTypeId) === parseInt(siteMetadata.bannerAdID) &&
+        ad.status === 4
+      );
+    });
   }
 
   let renderFooter = booleanSetting(settings, 'RENDER_FOOTER', true);
@@ -215,6 +228,7 @@ export async function getStaticProps({ params }) {
       monkeypodLink,
       site,
       slug: params.category,
+      bannerAds,
     },
     revalidate: 1,
   };

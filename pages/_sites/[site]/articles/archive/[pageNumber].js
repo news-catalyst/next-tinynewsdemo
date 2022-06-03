@@ -33,6 +33,7 @@ export default function ArticlesArchivePage({
   expandedAds,
   monkeypodLink,
   site,
+  bannerAds,
 }) {
   const [pageNumbers, setPageNumbers] = useState(range(totalPageCount, 1));
 
@@ -81,6 +82,7 @@ export default function ArticlesArchivePage({
       sections={sections}
       monkeypodLink={monkeypodLink}
       site={site}
+      bannerAds={bannerAds}
     >
       <ArticleStream
         sections={sections}
@@ -219,6 +221,7 @@ export async function getStaticProps(context) {
   const monkeypodLink = findSetting(settings, 'NEXT_PUBLIC_MONKEYPOD_URL');
 
   let expandedAds = [];
+  let bannerAds = [];
   let letterheadSetting = booleanSetting(settings, 'LETTERHEAD_API_URL', false);
   if (letterheadSetting) {
     let letterheadParams = {
@@ -227,7 +230,18 @@ export async function getStaticProps(context) {
     };
     const allAds =
       (await cachedContents('ads', letterheadParams, getArticleAds)) || [];
-    expandedAds = allAds.filter((ad) => ad.adTypeId === 166 && ad.status === 4);
+    expandedAds = allAds.filter((ad) => {
+      return (
+        parseInt(ad.adTypeId) === parseInt(siteMetadata.expandedImageID) &&
+        ad.status === 4
+      );
+    });
+    bannerAds = allAds.filter((ad) => {
+      return (
+        parseInt(ad.adTypeId) === parseInt(siteMetadata.bannerAdID) &&
+        ad.status === 4
+      );
+    });
   }
 
   return {
@@ -240,6 +254,7 @@ export async function getStaticProps(context) {
       expandedAds,
       monkeypodLink,
       site,
+      bannerAds,
     },
   };
 }

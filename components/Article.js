@@ -18,6 +18,7 @@ export default function Article({
   renderFooter,
   monkeypodLink,
   site,
+  bannerAds,
 }) {
   const isAmp = useAmp();
 
@@ -61,6 +62,7 @@ export default function Article({
       renderFooter={renderFooter}
       monkeypodLink={monkeypodLink}
       site={site}
+      bannerAds={bannerAds}
     >
       <div className="post">
         <ArticleHeader

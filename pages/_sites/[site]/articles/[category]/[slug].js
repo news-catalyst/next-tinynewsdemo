@@ -127,6 +127,7 @@ export async function getStaticProps({ params }) {
   }
 
   let ads = [];
+  let bannerAds = [];
 
   let letterheadSetting = booleanSetting(settings, 'LETTERHEAD_API_URL', false);
   if (letterheadSetting) {
@@ -136,7 +137,17 @@ export async function getStaticProps({ params }) {
     };
     const allAds =
       (await cachedContents('ads', letterheadParams, getArticleAds)) || [];
-    ads = allAds.filter((ad) => ad.adTypeId === 164 && ad.status === 4);
+    ads = allAds.filter(
+      (ad) =>
+        parseInt(ad.adTypeId) === parseInt(siteMetadata.imageAdID) &&
+        ad.status === 4
+    );
+    bannerAds = allAds.filter((ad) => {
+      return (
+        parseInt(ad.adTypeId) === parseInt(siteMetadata.bannerAdID) &&
+        ad.status === 4
+      );
+    });
   }
 
   let renderFooter = booleanSetting(
@@ -155,6 +166,7 @@ export async function getStaticProps({ params }) {
       renderFooter,
       monkeypodLink,
       site,
+      bannerAds,
     },
     // Re-generate the post at most once per second
     // if a request comes in

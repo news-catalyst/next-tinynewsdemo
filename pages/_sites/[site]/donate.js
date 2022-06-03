@@ -6,6 +6,8 @@ import {
   getOrgSettings,
   generateAllDomainPaths,
 } from '../../../lib/settings';
+import { cachedContents } from '../../../lib/cached';
+import { getArticleAds } from '../../../lib/ads.js';
 import { hasuraGetPage } from '../../../lib/pages.js';
 import { avoidRateLimit, renderBody } from '../../../lib/utils';
 import Layout from '../../../components/Layout';
@@ -31,6 +33,7 @@ export default function Donate({
   siteMetadata,
   monkeypodLink,
   site,
+  bannerAds,
 }) {
   const isAmp = false;
   const router = useRouter();
@@ -84,6 +87,7 @@ export default function Donate({
       sections={sections}
       monkeypodLink={monkeypodLink}
       site={site}
+      bannerAds={bannerAds}
     >
       <SectionContainer>
         <article className="container">
@@ -217,6 +221,25 @@ export async function getStaticProps({ params }) {
     }
   }
 
+  let bannerAds = [];
+  let letterheadSetting = booleanSetting(settings, 'LETTERHEAD_API_URL', false);
+
+  if (letterheadSetting) {
+    let letterheadParams = {
+      url: findSetting(settings, 'LETTERHEAD_API_URL'),
+      apiKey: findSetting(settings, 'LETTERHEAD_API_KEY'),
+    };
+    const allAds =
+      (await cachedContents('ads', letterheadParams, getArticleAds)) || [];
+
+    bannerAds = allAds.filter((ad) => {
+      return (
+        parseInt(ad.adTypeId) === parseInt(siteMetadata.bannerAdID) &&
+        ad.status === 4
+      );
+    });
+  }
+
   return {
     props: {
       page,
@@ -224,6 +247,7 @@ export async function getStaticProps({ params }) {
       siteMetadata,
       monkeypodLink,
       site,
+      bannerAds,
     },
     revalidate: 1,
   };
