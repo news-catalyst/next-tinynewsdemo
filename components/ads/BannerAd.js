@@ -8,7 +8,6 @@ const AdBrandP = tw.p`text-sm text-gray-500 pt-1 mb-2 text-center`;
 const AdImgContainer = tw.div`w-full mb-4 lg:mb-0 mx-auto text-center`;
 
 export default function BannerAd({ ad, isAmp }) {
-  console.log(ad);
   return (
     <AdWrapper>
       <AdBrand>
