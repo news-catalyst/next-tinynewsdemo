@@ -112,7 +112,7 @@ export default function Layout({
           />
         )}
       </Head>
-      {bannerAds.length > 0 && (
+      {bannerAds?.length > 0 && (
         <BannerAd
           ad={{
             brand: bannerAds[0].promoterDisplayName,
