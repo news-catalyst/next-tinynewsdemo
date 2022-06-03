@@ -6,6 +6,7 @@ import { useAmp } from 'next/amp';
 import AmpAnalytics from './amp/AmpAnalytics.js';
 import tw, { styled } from 'twin.macro';
 import { trackingIdMapping } from '../lib/utils';
+import BannerAd from './ads/BannerAd';
 
 const Main = tw.main`pt-8 pb-24`;
 const ThemeWrapper = styled.div(({ meta }) => ({
@@ -23,6 +24,7 @@ export default function Layout({
   sections,
   monkeypodLink,
   site,
+  bannerAds,
   renderNav = true,
   renderFooter = true,
 }) {
@@ -56,7 +58,6 @@ export default function Layout({
 
   const mappingSiteTrackingID = trackingIdMapping();
   const trackingId = mappingSiteTrackingID[site];
-
   return (
     <>
       <Head>
@@ -111,6 +112,20 @@ export default function Layout({
           />
         )}
       </Head>
+      {bannerAds?.length > 0 && (
+        <BannerAd
+          ad={{
+            brand: bannerAds[0].promoterDisplayName,
+            image: {
+              url: bannerAds[0].promoterImage,
+              alt: bannerAds[0].promoterImageAlternativeText,
+            },
+            url: bannerAds[0].callToActionUrl,
+            pixel: bannerAds[0].pixel,
+          }}
+          isAmp={isAmp}
+        />
+      )}
       <ThemeWrapper meta={meta}>
         {renderNav && (
           <GlobalNav

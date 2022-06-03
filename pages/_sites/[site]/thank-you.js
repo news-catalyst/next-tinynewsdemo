@@ -5,7 +5,13 @@ import { useAnalytics } from '../../../lib/hooks/useAnalytics.js';
 import Layout from '../../../components/Layout';
 import NewsletterBlock from '../../../components/plugins/NewsletterBlock';
 import { renderBody } from '../../../lib/utils.js';
-import { getOrgSettings, findSetting } from '../../../lib/settings';
+import {
+  getOrgSettings,
+  findSetting,
+  booleanSetting,
+} from '../../../lib/settings';
+import { cachedContents } from '../../../lib/cached';
+import { getArticleAds } from '../../../lib/ads.js';
 import {
   ArticleTitle,
   PostTextContainer,
@@ -23,6 +29,7 @@ export default function ThankYou({
   siteMetadata,
   monkeypodLink,
   site,
+  bannerAds,
 }) {
   const isAmp = false;
   const router = useRouter();
@@ -88,6 +95,7 @@ export default function ThankYou({
       sections={sections}
       monkeypodLink={monkeypodLink}
       site={site}
+      bannerAds={bannerAds}
     >
       <SectionContainer>
         <ArticleTitle meta={siteMetadata} tw="text-center">
@@ -192,6 +200,25 @@ export async function getServerSideProps(context) {
     }
   }
 
+  let bannerAds = [];
+  let letterheadSetting = booleanSetting(settings, 'LETTERHEAD_API_URL', false);
+
+  if (letterheadSetting) {
+    let letterheadParams = {
+      url: findSetting(settings, 'LETTERHEAD_API_URL'),
+      apiKey: findSetting(settings, 'LETTERHEAD_API_KEY'),
+    };
+    const allAds =
+      (await cachedContents('ads', letterheadParams, getArticleAds)) || [];
+
+    bannerAds = allAds.filter((ad) => {
+      return (
+        parseInt(ad.adTypeId) === parseInt(siteMetadata.bannerAdID) &&
+        ad.status === 4
+      );
+    });
+  }
+
   return {
     props: {
       referrer: referrer || '',
@@ -200,6 +227,7 @@ export async function getServerSideProps(context) {
       siteMetadata,
       monkeypodLink,
       site,
+      bannerAds,
     },
   };
 }

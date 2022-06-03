@@ -53,6 +53,7 @@ export default function NewsletterEditionPage(props) {
       sections={props.sections}
       renderFooter={props.renderFooter}
       site={props.site}
+      bannerAds={props.bannerAds}
     >
       <SectionContainer>
         <NewsletterPostText>
@@ -96,6 +97,7 @@ export async function getStaticProps({ params }) {
 
   const settingsResult = await getOrgSettings({
     url: apiUrl,
+    site: site,
   });
 
   if (settingsResult.errors) {
@@ -153,7 +155,7 @@ export async function getStaticProps({ params }) {
     }
   }
 
-  let expandedAds = [];
+  let bannerAds = [];
   let letterheadSetting = booleanSetting(settings, 'LETTERHEAD_API_URL', false);
   if (letterheadSetting) {
     let letterheadParams = {
@@ -162,7 +164,13 @@ export async function getStaticProps({ params }) {
     };
     const allAds =
       (await cachedContents('ads', letterheadParams, getArticleAds)) || [];
-    expandedAds = allAds.filter((ad) => ad.adTypeId === 166 && ad.status === 4);
+
+    bannerAds = allAds.filter((ad) => {
+      return (
+        parseInt(ad.adTypeId) === parseInt(siteMetadata.bannerAdID) &&
+        ad.status === 4
+      );
+    });
   }
 
   let renderFooter = booleanSetting(settings, 'RENDER_FOOTER', true);
@@ -173,10 +181,10 @@ export async function getStaticProps({ params }) {
       tags,
       sections,
       siteMetadata,
-      expandedAds,
       renderFooter,
       settings,
       site,
+      bannerAds,
     },
   };
 }

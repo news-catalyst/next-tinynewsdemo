@@ -40,7 +40,9 @@ export default function ImageWithTextAd({ ad, isAmp }) {
             )}
           </AdImgContainer>
           <AdContentContainer>
-            <AdHeader>{ad.header}</AdHeader>
+            <AdHeader>
+              {ad.emoji} {ad.header}
+            </AdHeader>
             <AdParagraph>{ad.body}</AdParagraph>
             <AdCTA
               href={ad.url}

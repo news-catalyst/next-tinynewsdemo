@@ -1,4 +1,5 @@
 # Releases
+- 0.8.0: Customizable advertising IDs for working with Letterhead on expanded text with image, text with image, and banner.
 - 0.7.1: Fixes for homepage layout admin, bump next-auth for security.
 - [0.7.0](https://github.com/news-catalyst/next-tinynewsdemo/issues/1247): New homepage layout including newsletter subscription box, other assorted newsletter fixes.
 - [0.6.0](https://github.com/news-catalyst/next-tinynewsdemo/issues/1233): Newsletter rendering fixes, Apple Podcast/Spotify embeds, assorted bugfixes

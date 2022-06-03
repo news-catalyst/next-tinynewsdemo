@@ -3,7 +3,10 @@ import {
   getOrgSettings,
   findSetting,
   generateAllDomainPaths,
+  booleanSetting,
 } from '../../../lib/settings';
+import { cachedContents } from '../../../lib/cached';
+import { getArticleAds } from '../../../lib/ads.js';
 import { hasuraGetPage } from '../../../lib/pages.js';
 import AboutPage from '../../../components/AboutPage';
 
@@ -94,6 +97,25 @@ export async function getStaticProps({ params }) {
     }
   }
 
+  let bannerAds = [];
+  let letterheadSetting = booleanSetting(settings, 'LETTERHEAD_API_URL', false);
+
+  if (letterheadSetting) {
+    let letterheadParams = {
+      url: findSetting(settings, 'LETTERHEAD_API_URL'),
+      apiKey: findSetting(settings, 'LETTERHEAD_API_KEY'),
+    };
+    const allAds =
+      (await cachedContents('ads', letterheadParams, getArticleAds)) || [];
+
+    bannerAds = allAds.filter((ad) => {
+      return (
+        parseInt(ad.adTypeId) === parseInt(siteMetadata.bannerAdID) &&
+        ad.status === 4
+      );
+    });
+  }
+
   return {
     props: {
       page,
@@ -101,6 +123,7 @@ export async function getStaticProps({ params }) {
       siteMetadata,
       monkeypodLink,
       site,
+      bannerAds,
     },
 
     revalidate: 1,

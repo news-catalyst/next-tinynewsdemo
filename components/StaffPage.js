@@ -17,6 +17,7 @@ export default function StaffPage({
   monkeypodLink,
   site,
   isAmp,
+  bannerAds,
 }) {
   if (!authors) {
     return null;
@@ -30,6 +31,7 @@ export default function StaffPage({
       sections={sections}
       monkeypodLink={monkeypodLink}
       site={site}
+      bannerAds={bannerAds}
     >
       <article className="container">
         <SectionContainer>

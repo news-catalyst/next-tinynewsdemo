@@ -19,6 +19,8 @@ export default function StaticPage({
   page,
   site,
   isAmp,
+  bannerAds,
+  monkeypodLink,
 }) {
   const locale = 'en-US';
   let baseUrl = siteMetadata['siteUrl'];
@@ -51,7 +53,14 @@ export default function StaticPage({
   }
 
   return (
-    <Layout meta={siteMetadata} page={page} sections={sections} site={site}>
+    <Layout
+      meta={siteMetadata}
+      page={page}
+      sections={sections}
+      site={site}
+      bannerAds={bannerAds}
+      monkeypodLink={monkeypodLink}
+    >
       <SectionContainer>
         <ArticleTitle meta={siteMetadata} tw="text-center">
           {localisedPage.headline}

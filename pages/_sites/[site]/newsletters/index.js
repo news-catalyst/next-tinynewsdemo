@@ -21,6 +21,7 @@ export default function NewsletterIndexPage(props) {
       renderFooter={props.renderFooter}
       site={props.site}
       monkeypodLink={props.monkeypodLink}
+      bannerAds={props.bannerAds}
     >
       <ArticleStream
         sections={props.sections}
@@ -123,6 +124,7 @@ export async function getStaticProps({ params }) {
   const monkeypodLink = findSetting(settings, 'NEXT_PUBLIC_MONKEYPOD_URL');
 
   let expandedAds = [];
+  let bannerAds = [];
   let letterheadSetting = booleanSetting(settings, 'LETTERHEAD_API_URL', false);
   if (letterheadSetting) {
     let letterheadParams = {
@@ -131,7 +133,18 @@ export async function getStaticProps({ params }) {
     };
     const allAds =
       (await cachedContents('ads', letterheadParams, getArticleAds)) || [];
-    expandedAds = allAds.filter((ad) => ad.adTypeId === 166 && ad.status === 4);
+    expandedAds = allAds.filter((ad) => {
+      return (
+        parseInt(ad.adTypeId) === parseInt(siteMetadata.expandedImageID) &&
+        ad.status === 4
+      );
+    });
+    bannerAds = allAds.filter((ad) => {
+      return (
+        parseInt(ad.adTypeId) === parseInt(siteMetadata.bannerAdID) &&
+        ad.status === 4
+      );
+    });
   }
 
   return {
@@ -143,6 +156,7 @@ export async function getStaticProps({ params }) {
       expandedAds,
       site,
       monkeypodLink,
+      bannerAds,
     },
   };
 }

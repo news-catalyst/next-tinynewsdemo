@@ -192,6 +192,7 @@ export async function getStaticProps(context) {
 
   let settings = settingsResult.data.settings;
   let expandedAds = [];
+  let bannerAds = [];
   let letterheadSetting = booleanSetting(settings, 'LETTERHEAD_API_URL', false);
   const monkeypodLink = findSetting(settings, 'NEXT_PUBLIC_MONKEYPOD_URL');
 
@@ -202,7 +203,19 @@ export async function getStaticProps(context) {
     };
     const allAds =
       (await cachedContents('ads', letterheadParams, getArticleAds)) || [];
-    expandedAds = allAds.filter((ad) => ad.adTypeId === 166 && ad.status === 4);
+
+    expandedAds = allAds.filter((ad) => {
+      return (
+        parseInt(ad.adTypeId) === parseInt(siteMetadata.expandedImageID) &&
+        ad.status === 4
+      );
+    });
+    bannerAds = allAds.filter((ad) => {
+      return (
+        parseInt(ad.adTypeId) === parseInt(siteMetadata.bannerAdID) &&
+        ad.status === 4
+      );
+    });
   }
 
   return {
@@ -216,6 +229,7 @@ export async function getStaticProps(context) {
       locale,
       siteMetadata,
       expandedAds,
+      bannerAds,
       monkeypodLink,
       site,
     },
