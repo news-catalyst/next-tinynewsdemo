@@ -7,8 +7,23 @@ import {
 import StaticPage from '../../../../components/StaticPage';
 import { NextSeo } from 'next-seo';
 import TwitterMeta from '../../../../components/TwitterMeta';
+import {
+  booleanSetting,
+  findSetting,
+  getOrgSettings,
+  generateAllDomainPaths,
+} from '../../../../lib/settings';
+import { cachedContents } from '../../../../lib/cached';
+import { getArticleAds } from '../../../../lib/ads.js';
 
-export default function Static({ page, sections, siteMetadata, site }) {
+export default function Static({
+  page,
+  sections,
+  siteMetadata,
+  site,
+  bannerAds,
+  monkeypodLink,
+}) {
   const router = useRouter();
   const isAmp = false;
   let pages = page?.page_translations[0];
@@ -29,6 +44,8 @@ export default function Static({ page, sections, siteMetadata, site }) {
         sections={sections}
         siteMetadata={siteMetadata}
         site={site}
+        bannerAds={bannerAds}
+        monkeypodLink={monkeypodLink}
       />
 
       <NextSeo
@@ -80,6 +97,18 @@ export async function getStaticProps({ params }) {
   const site = params.site;
   const locale = 'en-US';
 
+  const settingsResult = await getOrgSettings({
+    url: apiUrl,
+    site: site,
+  });
+
+  if (settingsResult.errors) {
+    console.error('Settings lookup error:', settingsResult.errors);
+    throw settingsResult.errors;
+  }
+  const settings = settingsResult.data.settings;
+  const monkeypodLink = findSetting(settings, 'NEXT_PUBLIC_MONKEYPOD_URL');
+
   let page = {};
   let sections;
   let siteMetadata = {};
@@ -114,12 +143,33 @@ export async function getStaticProps({ params }) {
     }
   }
 
+  let bannerAds = [];
+  let letterheadSetting = booleanSetting(settings, 'LETTERHEAD_API_URL', false);
+
+  if (letterheadSetting) {
+    let letterheadParams = {
+      url: findSetting(settings, 'LETTERHEAD_API_URL'),
+      apiKey: findSetting(settings, 'LETTERHEAD_API_KEY'),
+    };
+    const allAds =
+      (await cachedContents('ads', letterheadParams, getArticleAds)) || [];
+
+    bannerAds = allAds.filter((ad) => {
+      return (
+        parseInt(ad.adTypeId) === parseInt(siteMetadata.bannerAdID) &&
+        ad.status === 4
+      );
+    });
+  }
+
   return {
     props: {
       page,
       sections,
       siteMetadata,
       site,
+      bannerAds,
+      monkeypodLink,
     },
     revalidate: 1,
   };

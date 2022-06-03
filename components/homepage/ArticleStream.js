@@ -36,6 +36,7 @@ export default function ArticleStream({
   };
 
   const renderAd = function (ad) {
+    console.log(ad);
     return (
       <ExpandedTextWithImageAd
         ad={{
@@ -47,8 +48,9 @@ export default function ArticleStream({
           header: ad.heading,
           body: ad.content,
           call: ad.callToAction,
-          url: ad.resolvedCallToActionURL,
+          url: ad.callToActionUrl,
           pixel: ad.pixel,
+          emoji: ad.emoji,
         }}
         isAmp={isAmp}
       />

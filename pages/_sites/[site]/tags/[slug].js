@@ -24,6 +24,7 @@ export default function TagPage({
   expandedAds,
   monkeypodLink,
   site,
+  bannerAds,
 }) {
   const router = useRouter();
   const isAmp = false;
@@ -45,6 +46,7 @@ export default function TagPage({
       sections={sections}
       monkeypodLink={monkeypodLink}
       site={site}
+      bannerAds={bannerAds}
     >
       <ArticleStream
         articles={articles}
@@ -168,7 +170,8 @@ export async function getStaticProps({ params }) {
     }
   }
 
-  let ads = [];
+  let expandedAds = [];
+  let bannerAds = [];
   let letterheadSetting = booleanSetting(settings, 'LETTERHEAD_API_URL', false);
   if (letterheadSetting) {
     let letterheadParams = {
@@ -177,7 +180,18 @@ export async function getStaticProps({ params }) {
     };
     const allAds =
       (await cachedContents('ads', letterheadParams, getArticleAds)) || [];
-    ads = allAds.filter((ad) => ad.adTypeId === 164 && ad.status === 4);
+    expandedAds = allAds.filter((ad) => {
+      return (
+        parseInt(ad.adTypeId) === parseInt(siteMetadata.expandedImageID) &&
+        ad.status === 4
+      );
+    });
+    bannerAds = allAds.filter((ad) => {
+      return (
+        parseInt(ad.adTypeId) === parseInt(siteMetadata.bannerAdID) &&
+        ad.status === 4
+      );
+    });
   }
 
   return {
@@ -186,7 +200,8 @@ export async function getStaticProps({ params }) {
       tag,
       sections,
       siteMetadata,
-      ads,
+      expandedAds,
+      bannerAds,
       monkeypodLink,
       site,
     },

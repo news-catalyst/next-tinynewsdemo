@@ -1,17 +1,25 @@
 import Image from 'next/image';
+import AdPixel from './AdPixel';
+import tw from 'twin.macro';
 
-export default function TextAd({ ad, isAmp }) {
+const AdWrapper = tw.div`block`;
+const AdBrand = tw.div``;
+const AdBrandP = tw.p`text-sm text-gray-500 pt-1 mb-2 text-center`;
+const AdImgContainer = tw.div`w-full mb-4 lg:mb-0 mx-auto text-center`;
+
+export default function BannerAd({ ad, isAmp }) {
+  console.log(ad);
   return (
-    <section className="ad-container">
-      <div className="ad-brand">
-        <p>Advertisement from {ad.brand}</p>
-      </div>
-      <div>
+    <AdWrapper>
+      <AdBrand>
+        <AdBrandP>Advertisement from {ad.brand}</AdBrandP>
+      </AdBrand>
+      <AdImgContainer>
         <a href={ad.url}>
           {isAmp ? (
             <amp-img
-              width={300}
-              height={300}
+              width={728}
+              height={90}
               src={ad.image.url}
               alt={ad.image.alt}
               layout="responsive"
@@ -21,12 +29,13 @@ export default function TextAd({ ad, isAmp }) {
               src={ad.image.url}
               className="ad-banner"
               alt={ad.image.alt}
-              width={300}
-              height={300}
+              width={728}
+              height={90}
             />
           )}
         </a>
-      </div>
-    </section>
+      </AdImgContainer>
+      <AdPixel pixel={ad.pixel} isAmp={isAmp} />
+    </AdWrapper>
   );
 }

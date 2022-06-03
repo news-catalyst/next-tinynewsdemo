@@ -26,6 +26,7 @@ export default function AuthorPage({
   expandedAds,
   monkeypodLink,
   site,
+  bannerAds,
 }) {
   const router = useRouter();
   const isAmp = false;
@@ -73,6 +74,7 @@ export default function AuthorPage({
       sections={sections}
       monkeypodLink={monkeypodLink}
       site={site}
+      bannerAds={bannerAds}
     >
       <ProfileHeaderDiv>
         {authorPhoto && <ProfileImage src={authorPhoto}></ProfileImage>}
@@ -215,6 +217,7 @@ export async function getStaticProps({ params }) {
   const monkeypodLink = findSetting(settings, 'NEXT_PUBLIC_MONKEYPOD_URL');
 
   let expandedAds = [];
+  let bannerAds = [];
   let letterheadSetting = booleanSetting(settings, 'LETTERHEAD_API_URL', false);
   if (letterheadSetting) {
     let letterheadParams = {
@@ -223,7 +226,18 @@ export async function getStaticProps({ params }) {
     };
     const allAds =
       (await cachedContents('ads', letterheadParams, getArticleAds)) || [];
-    expandedAds = allAds.filter((ad) => ad.adTypeId === 166 && ad.status === 4);
+    expandedAds = allAds.filter((ad) => {
+      return (
+        parseInt(ad.adTypeId) === parseInt(siteMetadata.expandedImageID) &&
+        ad.status === 4
+      );
+    });
+    bannerAds = allAds.filter((ad) => {
+      return (
+        parseInt(ad.adTypeId) === parseInt(siteMetadata.bannerAdID) &&
+        ad.status === 4
+      );
+    });
   }
 
   if (author === undefined) {
@@ -241,6 +255,7 @@ export async function getStaticProps({ params }) {
       expandedAds,
       monkeypodLink,
       site,
+      bannerAds,
     },
     revalidate: 1,
   };

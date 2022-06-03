@@ -4,14 +4,15 @@ import tw from 'twin.macro';
 import AdPixel from './AdPixel.js';
 
 const Asset = tw.li`border-b border-gray-200 items-start content-start flex flex-row flex-nowrap mb-6 pb-6`;
-const AdWrapper = tw.div`lg:px-8 block`;
+const AdWrapper = tw.div`lg:px-8 block w-full`;
 const AdBrand = tw.div``;
 const AdBrandP = tw.p`text-sm text-gray-500 pt-1 mb-4 text-center`;
-const MediaLeft = tw.div`flex lg:flex-row flex-col items-center flex-wrap`;
-const AdImgContainer = tw.div`lg:w-1/3 relative w-full mb-4 lg:mb-0`;
-const AdContent = tw.div`pl-6 flex-1`;
-const AdHeader = tw.h3`text-lg font-bold tracking-tight leading-5 mb-2`;
+const MediaLeft = tw.div`items-center`;
+const AdImgContainer = tw.div`relative w-full mb-4`;
+const AdContent = tw.div``;
+const AdHeader = tw.h3`text-xl font-bold tracking-tight leading-5 mb-2`;
 const AdText = tw.div`text-sm`;
+const AdCTA = tw.a`font-bold bg-black text-white inline-flex items-center rounded text-sm justify-center px-4`;
 
 export default function ExpandedTextWithImageAd({ ad, isAmp }) {
   return (
@@ -46,13 +47,36 @@ export default function ExpandedTextWithImageAd({ ad, isAmp }) {
             )}
           </AdImgContainer>
           <AdContent>
-            <AdHeader>{ad.header}</AdHeader>
-            <AdText dangerouslySetInnerHTML={{ __html: ad.body }} />
+            <AdHeader>
+              {ad.emoji} {ad.header}
+            </AdHeader>
+            <AdText
+              className="dek"
+              dangerouslySetInnerHTML={{ __html: ad.body }}
+            />
             {/* According to the whereby.us docs, the expanded body text can include multiple links, paragraphs */}
+            <AdCTA
+              href={ad.url}
+              style={{
+                minHeight: '2.375rem',
+              }}
+            >
+              {ad.call}
+            </AdCTA>
           </AdContent>
         </MediaLeft>
         <AdPixel pixel={ad.pixel} isAmp={isAmp} />
       </AdWrapper>
+      <style jsx global>{`
+        .dek p {
+          margin-bottom: 1rem;
+          font-size: 1rem;
+          line-height: 1.5;
+        }
+        .dek {
+          margin-bottom: 1.25rem;
+        }
+      `}</style>
     </Asset>
   );
 }
