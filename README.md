@@ -2,6 +2,28 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 This app runs the front-end published sites for all tiny news organizations, using a single multi-tenant "platforms" project in Vercel, with data served through a GraphQL API from Hasura, along with a dynamic TinyCMS for organization-specific site configuration.
 
+## What's in here?
+
+- __\_\_mocks\_\___: Basic boilerplate for tests
+- __\_\_tests\_\___: Hasura API unit tests
+- __cached__: A folder for keeping cached API responses. Kept intentionally empty in version control.
+- __components__: All of the reusable React components used across the next.js frontend
+- __content__: Markdown-based content used on the frontend.
+- __cypress__: Test infrastructure for Cypress, which runs integration tests.
+- __data__: Obsolete.
+- __hasura__: A git submodule controlling our Hasura instances.
+- __lib__: Code that interacts with our GraphQL API and other third-party APIs, such as Letterhead.
+- __pages__: Page-level components used to build the site structure in next.js
+- __public__: Various static files that need to get served publicly.
+- __script__: Command-line scripts used for various tasks, like bootstrapping new organizations.
+- __styles__: Extra styles that don't conform well to using Tailwind.
+
+## How this works
+
+We based the structure of this applciation on the Vercel [platforms starter kit](https://github.com/vercel/platforms). This means we build most of the site as part of the `pages/_sites/[site]` folder. We then use `pages/_middleware.js` to route incoming requests to the correct site. See the platforms starter kit linked above for more documentation on how this works.
+
+Within this project we also build the API endpoints for interacting with Google Docs. You can find this at `pages/api/sidebar`. The [Google Apps Script](https://github.com/news-catalyst/google-app-scripts/) project interacts with these API endpoints in order to preview, publish and unpublish documents.
+
 ## Getting Started
 
 **Step 0**
@@ -95,6 +117,8 @@ The [latest instructions on how to launch a new organisation are in a Google Doc
 
 ## Generate WXR
 
+__NOTE__: This code does not work since migrating to the Vercel Platforms structure.
+
 Once you have the latest code, make sure you install dependencies for the WXR generator module - do this if you run into a babel-related error:
 
 ```
@@ -149,12 +173,6 @@ To learn more about Next.js, take a look at the following resources:
 - [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/import?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
 
 ## Git Flow
 
