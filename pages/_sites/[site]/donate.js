@@ -17,9 +17,13 @@ import {
   ArticleTitle,
   PostTextContainer,
   PostText,
+  Paragraph,
+  Address,
+  Anchor
 } from '../../../components/common/CommonStyles.js';
 import { NextSeo } from 'next-seo';
 import TwitterMeta from '../../../components/TwitterMeta';
+import React from 'react';
 
 const SectionContainer = tw.div`flex flex-col flex-nowrap items-center px-5 mx-auto max-w-7xl w-full`;
 const WideContainer = styled.div(() => ({
@@ -37,6 +41,20 @@ export default function Donate({
 }) {
   const isAmp = false;
   const router = useRouter();
+  const tncDonationInfo =
+    <>
+      <Paragraph>If you would like to make a tax-deductible donation by check, please mail it to our fiscal agent:</Paragraph>
+      <Address>
+        Tiny News Collective<br />
+        1500 Chestnut Street #2113<br />
+        Philadelphia, PA 19102<br />
+      </Address>
+      <Paragraph>If you have questions about your donations please contact:</Paragraph>
+      <Paragraph>Heather Bryant, Interim Executive Director</Paragraph>
+      <Paragraph>
+        <Anchor meta={siteMetadata} href='mailto:heather@tinynewsco.org'>heather@tinynewsco.org</Anchor>
+      </Paragraph>
+    </>;
 
   // If the page is not yet generated, this will be displayed
   // initially until getStaticProps() finishes running
@@ -111,6 +129,13 @@ export default function Donate({
           wrap={true}
         />
       </WideContainer>
+      <SectionContainer>
+        <PostText>
+          <PostTextContainer>
+            {tncDonationInfo}
+          </PostTextContainer>
+        </PostText>
+      </SectionContainer>
 
       <NextSeo
         title={localisedPage.headline}
