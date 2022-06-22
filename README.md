@@ -48,6 +48,7 @@ And then initialize git-flow in your local checkout:
 
 ```bash
 cd next-tinynewsdemo
+git checkout stable
 git flow init
 ```
 
@@ -91,9 +92,13 @@ npm install
 
 Set up an environment file for global settings:
 
-We store our global environment settings in a separate private repo on GitHub. Copy [the file `.env.local`](https://github.com/news-catalyst/tnc-org-envs/blob/main/.env.local) to a file in this project's directory called `.env.local`. Any values that differ between the tiny news orgs are found in the `settings` database table in Hasura.
+We store our global environment settings in a [separate private repo](https://github.com/news-catalyst/tnc-org-envs/blob/main/.env.local) on GitHub. We use [symbolic linking]('https://linuxize.com/post/how-to-create-symbolic-links-in-linux-using-the-ln-command/') so that this repo stays up to date with that environment variable file. 
 
-For development on your laptop, you'll want to make sure you're pointing at the **staging** database, which is called heroic-snapper, because that's the random name Hasura gave us for that stack and I missed the chance to rename it.
+First, clone the [environment variables repo](https://github.com/news-catalyst/tnc-org-envs). 
+
+Switch to the next-tinynewsdemo repo. Then create a new linked file by running `ln -s ../tnc-org-envs/.env.local .env.local`. This will create a new file in next-tinynewsdemo called `.env.local`.
+
+Any values that differ between the tiny news orgs are found in the `settings` database table in Hasura. For development on your laptop, you'll want to make sure you're pointing at the **staging** database, which is called heroic-snapper, because that's the random name Hasura gave us for that stack and I missed the chance to rename it.
 
 **Step 5**
 
