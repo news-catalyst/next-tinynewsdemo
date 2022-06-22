@@ -19,7 +19,7 @@ import {
   PostText,
   Paragraph,
   Address,
-  Anchor
+  Anchor,
 } from '../../../components/common/CommonStyles.js';
 import { NextSeo } from 'next-seo';
 import TwitterMeta from '../../../components/TwitterMeta';
@@ -41,20 +41,31 @@ export default function Donate({
 }) {
   const isAmp = false;
   const router = useRouter();
-  const tncDonationInfo =
+  const tncDonationInfo = (
     <>
-      <Paragraph>If you would like to make a tax-deductible donation by check, please mail it to our fiscal agent:</Paragraph>
+      <Paragraph>
+        If you would like to make a tax-deductible donation by check, please
+        mail it to our fiscal agent:
+      </Paragraph>
       <Address>
-        Tiny News Collective<br />
-        1500 Chestnut Street #2113<br />
-        Philadelphia, PA 19102<br />
+        Tiny News Collective
+        <br />
+        1500 Chestnut Street #2113
+        <br />
+        Philadelphia, PA 19102
+        <br />
       </Address>
-      <Paragraph>If you have questions about your donations please contact:</Paragraph>
+      <Paragraph>
+        If you have questions about your donations please contact:
+      </Paragraph>
       <Paragraph>Heather Bryant, Interim Executive Director</Paragraph>
       <Paragraph>
-        <Anchor meta={siteMetadata} href='mailto:heather@tinynewsco.org'>heather@tinynewsco.org</Anchor>
+        <Anchor meta={siteMetadata} href="mailto:heather@tinynewsco.org">
+          heather@tinynewsco.org
+        </Anchor>
       </Paragraph>
-    </>;
+    </>
+  );
 
   // If the page is not yet generated, this will be displayed
   // initially until getStaticProps() finishes running
@@ -131,9 +142,7 @@ export default function Donate({
       </WideContainer>
       <SectionContainer>
         <PostText>
-          <PostTextContainer>
-            {tncDonationInfo}
-          </PostTextContainer>
+          <PostTextContainer>{tncDonationInfo}</PostTextContainer>
         </PostText>
       </SectionContainer>
 
