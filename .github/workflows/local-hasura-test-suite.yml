@@ -8,6 +8,7 @@ on:
       - main
 jobs:
   build:
+    permissions: read-all
     runs-on: ubuntu-latest
     environment: cypress_tests
     env:
@@ -69,7 +70,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           submodules: true
-          token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
       - name: git submodule update
         run: |
           git branch
