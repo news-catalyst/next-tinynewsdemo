@@ -8,7 +8,6 @@ on:
       - main
 jobs:
   build:
-    permissions: read-all
     runs-on: ubuntu-latest
     environment: cypress_tests
     env:
@@ -66,11 +65,17 @@ jobs:
       matrix:
         node-version: [16.x]
     steps:
+      - name: Get Token
+        id: get_workflow_token
+        uses: peter-murray/workflow-application-token-action@v1
+        with:
+          application_id: ${{ secrets.APPLICATION_ID }}
+          application_private_key: ${{ secrets.APPLICATION_PRIVATE_KEY }}
       - name: git checkout - submodules for hasura files
         uses: actions/checkout@v2
         with:
           submodules: true
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ steps.get_workflow_token.outputs.token }}
       - name: git submodule update
         run: |
           git branch
