@@ -6,6 +6,7 @@ This app runs the front-end published sites for all tiny news organizations, usi
 
 - __\_\_mocks\_\___: Basic boilerplate for tests
 - __\_\_tests\_\___: Hasura API unit tests
+- __.github__: Github actions for Google Analytics importing and 
 - __cached__: A folder for keeping cached API responses. Kept intentionally empty in version control.
 - __components__: All of the reusable React components used across the next.js frontend
 - __content__: Markdown-based content used on the frontend.
@@ -176,9 +177,11 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 
 ## Git Flow
 
-To start working on a new feature:
+To start working on a new feature, checkout the latest from `main` and use git flow to create the new feature branch.
 
 ```bash
+git checkout main
+git pull origin main
 git flow feature start feature_branch_name
 ```
 
@@ -192,9 +195,11 @@ git flow feature publish feature_branch_name
 
 Then open a PR as usual on GitHub.
 
-To start a release (for production):
+To start a release (for production) checkout the latest from `main` and use git flow to create the new release branch:
 
 ```bash
+git checkout main
+git pull origin main
 git flow release start 0.1.1
 ```
 
@@ -206,9 +211,11 @@ To finish the release:
 git flow release finish '0.1.1'
 ```
 
-If you have to fix something in production ASAP, and the main branch has changes that aren't ready to go live, you'll want to do a **hotfix**:
+If you have to fix something in production ASAP, and the main branch has changes that aren't ready to go live, you'll want to do a **hotfix**, checkout the latest from `stable` and use git flow to create the new feature branch:
 
 ```bash
+git checkout stable
+git pull origin stable
 git flow hotfix start hotfix_branch_name
 ```
 
