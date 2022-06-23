@@ -4,19 +4,19 @@ This app runs the front-end published sites for all tiny news organizations, usi
 
 ## What's in here?
 
-- __\_\_mocks\_\___: Basic boilerplate for tests
-- __\_\_tests\_\___: Hasura API unit tests
-- __cached__: A folder for keeping cached API responses. Kept intentionally empty in version control.
-- __components__: All of the reusable React components used across the next.js frontend
-- __content__: Markdown-based content used on the frontend.
-- __cypress__: Test infrastructure for Cypress, which runs integration tests.
-- __data__: Obsolete.
-- __hasura__: A git submodule controlling our Hasura instances.
-- __lib__: Code that interacts with our GraphQL API and other third-party APIs, such as Letterhead.
-- __pages__: Page-level components used to build the site structure in next.js
-- __public__: Various static files that need to get served publicly.
-- __script__: Command-line scripts used for various tasks, like bootstrapping new organizations.
-- __styles__: Extra styles that don't conform well to using Tailwind.
+- **\_\_mocks\_\_**: Basic boilerplate for tests
+- **\_\_tests\_\_**: Hasura API unit tests
+- **cached**: A folder for keeping cached API responses. Kept intentionally empty in version control.
+- **components**: All of the reusable React components used across the next.js frontend
+- **content**: Markdown-based content used on the frontend.
+- **cypress**: Test infrastructure for Cypress, which runs integration tests.
+- **data**: Obsolete.
+- **hasura**: A git submodule controlling our Hasura instances.
+- **lib**: Code that interacts with our GraphQL API and other third-party APIs, such as Letterhead.
+- **pages**: Page-level components used to build the site structure in next.js
+- **public**: Various static files that need to get served publicly.
+- **script**: Command-line scripts used for various tasks, like bootstrapping new organizations.
+- **styles**: Extra styles that don't conform well to using Tailwind.
 
 ## How this works
 
@@ -92,9 +92,9 @@ npm install
 
 Set up an environment file for global settings:
 
-We store our global environment settings in a [separate private repo](https://github.com/news-catalyst/tnc-org-envs/blob/main/.env.local) on GitHub. We use [symbolic linking]('https://linuxize.com/post/how-to-create-symbolic-links-in-linux-using-the-ln-command/') so that this repo stays up to date with that environment variable file. 
+We store our global environment settings in a [separate private repo](https://github.com/news-catalyst/tnc-org-envs/blob/main/.env.local) on GitHub. We use [symbolic linking]('https://linuxize.com/post/how-to-create-symbolic-links-in-linux-using-the-ln-command/') so that this repo remains up-to-date with that environment variable file.
 
-First, clone the [environment variables repo](https://github.com/news-catalyst/tnc-org-envs). 
+First, clone the [environment variables repo](https://github.com/news-catalyst/tnc-org-envs).
 
 Switch to the next-tinynewsdemo repo. Then create a new linked file by running `ln -s ../tnc-org-envs/.env.local .env.local`. This will create a new file in next-tinynewsdemo called `.env.local`.
 
@@ -122,7 +122,7 @@ The [latest instructions on how to launch a new organisation are in a Google Doc
 
 ## Generate WXR
 
-__NOTE__: This code does not work since migrating to the Vercel Platforms structure.
+**NOTE**: This code does not work since migrating to the Vercel Platforms structure.
 
 Once you have the latest code, make sure you install dependencies for the WXR generator module - do this if you run into a babel-related error:
 
