@@ -23,6 +23,17 @@ async function getData(params) {
     /\\n/gm,
     '\n'
   );
+console.log("This is checking if the variables are empty")
+
+  if (credsPrivateKey === null || credsPrivateKey ===  "" || credsPrivateKey === undefined) {
+
+    console.log("nothing is in inside the creds private key");
+  }
+
+  if (credsEmail === null || credsEmail ===  "" || credsEmail === undefined) {
+
+    console.log("nothing is in inside the creds email");
+  }
 
   const auth = new google.auth.JWT(credsEmail, null, credsPrivateKey, scopes);
   const analyticsreporting = google.analyticsreporting({ version: 'v4', auth });
