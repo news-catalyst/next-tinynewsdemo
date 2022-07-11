@@ -23,16 +23,26 @@ async function getData(params) {
     /\\n/gm,
     '\n'
   );
-console.log("This is checking if the variables are empty")
 
-  if (credsPrivateKey === null || credsPrivateKey ===  "" || credsPrivateKey === undefined) {
+  console.log('[DEBUG] This is checking if the variables are empty');
 
-    console.log("nothing is in inside the creds private key");
+  if (!googleAnalyticsViewID || googleAnalyticsViewID === '') {
+    console.log('[DEBUG] googleAnalyticsViewID is empty');
+  }
+  if (
+    credsPrivateKey === null ||
+    credsPrivateKey === '' ||
+    credsPrivateKey === undefined
+  ) {
+    console.log(
+      "[DEBUG] In 'process.env', nothing is in inside the creds private key"
+    );
   }
 
-  if (credsEmail === null || credsEmail ===  "" || credsEmail === undefined) {
-
-    console.log("nothing is in inside the creds email");
+  if (credsEmail === null || credsEmail === '' || credsEmail === undefined) {
+    console.log(
+      "[DEBUG] In 'process.env', nothing is in inside the creds email"
+    );
   }
 
   const auth = new google.auth.JWT(credsEmail, null, credsPrivateKey, scopes);
