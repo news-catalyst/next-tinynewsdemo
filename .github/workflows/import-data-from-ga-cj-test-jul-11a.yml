@@ -21,9 +21,9 @@ jobs:
       - uses: actions/setup-node@v1
       - run: npm install --no-optional
       - run: echo "🖥️ repo and node are setup"
+      - run: echo "[DEBUG] the GOOGLE_CREDENTIALS_EMAIL is ${{secrets.GOOGLE_CREDENTIALS_EMAIL}}"
+      - run: echo "[DEBUG] the GOOGLE_CREDENTIALS_PRIVATE_KEY is ${{secrets.GOOGLE_CREDENTIALS_PRIVATE_KEY}}"
       - name: article-sessions
-        run: echo "[DEBUG] the GOOGLE_CREDENTIALS_EMAIL is ${{secrets.GOOGLE_CREDENTIALS_EMAIL}}"
-        run: echo "[DEBUG] the GOOGLE_CREDENTIALS_PRIVATE_KEY is ${{secrets.GOOGLE_CREDENTIALS_PRIVATE_KEY}}"
         run: node script/ga.js -d article-sessions
       - name: donate-clicks
         run: node script/ga.js -d donate-clicks
