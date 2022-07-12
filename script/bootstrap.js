@@ -203,6 +203,12 @@ async function createGitHubEnv(slug, viewID, siteUrl) {
       );
       let encryptedValue = encryptSecret(pubKey, plainValue);
 
+      if (!encryptedValue || encryptedValue === '') {
+        console.log('[DEBUG] The encryped value is falsy or empty');
+      } else {
+        console.log('[DEBUG] The encryped value is a valid, non-empty string');
+      }
+
       const secretResult = await octokit.rest.actions.createOrUpdateEnvironmentSecret(
         {
           repository_id: repoID,
@@ -223,6 +229,24 @@ async function createGitHubEnv(slug, viewID, siteUrl) {
           `\t* error creating secret ${secretName}: ${JSON.stringify(
             secretResult
           )}`
+        );
+      }
+
+      let getEnvironmentSecretResult = await octokit.rest.actions.getEnvironmentSecret(
+        {
+          repository_id: repoID,
+          environment_name: environmentName,
+          secret_name: secretName,
+        }
+      );
+
+      if (getEnvironmentSecretResult.status != 200) {
+        console.log(
+          '[DEBUG] There was an issue retrieving the environment secret.'
+        );
+      } else {
+        console.log(
+          `[DEBUG] Environment secret was created successfully in GitHub`
         );
       }
     }
