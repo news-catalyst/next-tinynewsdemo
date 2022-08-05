@@ -72,15 +72,25 @@ export default function HomePageEditor({
     let article2 = null;
     let article3 = null;
 
-    if (selectedLayout.name !== 'Big Featured Story' && subFeaturedTopArticle) {
+    if (selectedLayout.name === 'Large Package Story Lead') {
       article2 = subFeaturedTopArticle.id;
     }
-    if (
-      selectedLayout.name !== 'Big Featured Story' &&
-      subFeaturedBottomArticle
-    ) {
+
+    if (selectedLayout.name === 'Large Package Story Lead') {
       article3 = subFeaturedBottomArticle.id;
     }
+
+    /*if (selectedLayout.name !== 'Partial Large Story Package Newsletter' &&  subFeaturedTopArticle) {
+      article2 = null;
+    }
+
+    if (
+      selectedLayout.name !== 'Partial Large Story Package Newsletter' &&
+      subFeaturedBottomArticle
+    ) {
+      article3 = null;
+    }
+   */
 
     const { errors, data } = await hasuraSaveHomepageLayout({
       url: apiUrl,
