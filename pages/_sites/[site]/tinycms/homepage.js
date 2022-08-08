@@ -74,9 +74,6 @@ export default function HomePageEditor({
 
     if (selectedLayout.name === 'Large Package Story Lead') {
       article2 = subFeaturedTopArticle.id;
-    }
-
-    if (selectedLayout.name === 'Large Package Story Lead') {
       article3 = subFeaturedBottomArticle.id;
     }
 
