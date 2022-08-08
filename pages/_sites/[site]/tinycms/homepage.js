@@ -80,18 +80,6 @@ export default function HomePageEditor({
       article3 = subFeaturedBottomArticle.id;
     }
 
-    /*if (selectedLayout.name !== 'Partial Large Story Package Newsletter' &&  subFeaturedTopArticle) {
-      article2 = null;
-    }
-
-    if (
-      selectedLayout.name !== 'Partial Large Story Package Newsletter' &&
-      subFeaturedBottomArticle
-    ) {
-      article3 = null;
-    }
-   */
-
     const { errors, data } = await hasuraSaveHomepageLayout({
       url: apiUrl,
       site: site,
