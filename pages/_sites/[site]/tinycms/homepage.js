@@ -73,13 +73,13 @@ export default function HomePageEditor({
     let article3 = null;
 
     if (
-      selectedLayout.name !== 'Large Package Story Lead' &&
+      selectedLayout.name === 'Large Package Story Lead' &&
       subFeaturedTopArticle
     ) {
       article2 = subFeaturedTopArticle.id;
     }
     if (
-      selectedLayout.name !== 'Large Package Story Lead' &&
+      selectedLayout.name === 'Large Package Story Lead' &&
       subFeaturedBottomArticle
     ) {
       article3 = subFeaturedBottomArticle.id;
