@@ -242,4 +242,4 @@ git status // check that your hotfix changes are here
 git push
 ```
 
-For help, type: `git flow` for a list of topics; `git flow feature help` for example will provide info on subcommands available around feature branches.
+For help, type: `git flow` for a list of topics; `git flow feature help` for example will provide info on subcommands available around feature branches. [This](https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow) page may also be useful for understanding GitFlow under the hood. 
