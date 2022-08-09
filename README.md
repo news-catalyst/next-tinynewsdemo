@@ -232,4 +232,14 @@ Code away, fix the bug, commit the changes, and then:
 git flow hotfix finish hotfix_branch_name
 ```
 
+You will then need to manually push your hotfix to the stable and main branches individually.
+```
+git checkout stable
+git status // check that your hotfix changes are here
+git push
+git checkout main
+git status // check that your hotfix changes are here
+git push
+```
+
 For help, type: `git flow` for a list of topics; `git flow feature help` for example will provide info on subcommands available around feature branches.
