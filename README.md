@@ -2,6 +2,29 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 This app runs the front-end published sites for all tiny news organizations, using a single multi-tenant "platforms" project in Vercel, with data served through a GraphQL API from Hasura, along with a dynamic TinyCMS for organization-specific site configuration.
 
+## What's in here?
+
+- **\_\_mocks\_\_**: Basic boilerplate for tests
+- **\_\_tests\_\_**: Hasura API unit tests
+- **.github**: Github actions for Google Analytics importing and
+- **cached**: A folder for keeping cached API responses. Kept intentionally empty in version control.
+- **components**: All of the reusable React components used across the next.js frontend
+- **content**: Markdown-based content used on the frontend.
+- **cypress**: Test infrastructure for Cypress, which runs integration tests.
+- **data**: Obsolete.
+- **hasura**: A git submodule controlling our Hasura instances.
+- **lib**: Code that interacts with our GraphQL API and other third-party APIs, such as Letterhead.
+- **pages**: Page-level components used to build the site structure in next.js
+- **public**: Various static files that need to get served publicly.
+- **script**: Command-line scripts used for various tasks, like bootstrapping new organizations.
+- **styles**: Extra styles that don't conform well to using Tailwind.
+
+## How this works
+
+We based the structure of this applciation on the Vercel [platforms starter kit](https://github.com/vercel/platforms). This means we build most of the site as part of the `pages/_sites/[site]` folder. We then use `pages/_middleware.js` to route incoming requests to the correct site. See the platforms starter kit linked above for more documentation on how this works.
+
+Within this project we also build the API endpoints for interacting with Google Docs. You can find this at `pages/api/sidebar`. The [Google Apps Script](https://github.com/news-catalyst/google-app-scripts/) project interacts with these API endpoints in order to preview, publish and unpublish documents.
+
 ## Getting Started
 
 **Step 0**
@@ -26,6 +49,7 @@ And then initialize git-flow in your local checkout:
 
 ```bash
 cd next-tinynewsdemo
+git checkout stable
 git flow init
 ```
 
@@ -69,9 +93,13 @@ npm install
 
 Set up an environment file for global settings:
 
-We store our global environment settings in a separate private repo on GitHub. Copy [the file `.env.local`](https://github.com/news-catalyst/tnc-org-envs/blob/main/.env.local) to a file in this project's directory called `.env.local`. Any values that differ between the tiny news orgs are found in the `settings` database table in Hasura.
+We store our global environment settings in a [separate private repo](https://github.com/news-catalyst/tnc-org-envs/blob/main/.env.local) on GitHub. We use [symbolic linking]('https://linuxize.com/post/how-to-create-symbolic-links-in-linux-using-the-ln-command/') so that this repo remains up-to-date with that environment variable file.
 
-For development on your laptop, you'll want to make sure you're pointing at the **staging** database, which is called heroic-snapper, because that's the random name Hasura gave us for that stack and I missed the chance to rename it.
+First, clone the [environment variables repo](https://github.com/news-catalyst/tnc-org-envs).
+
+Switch to the next-tinynewsdemo repo. Then create a new linked file by running `ln -s ../tnc-org-envs/.env.local .env.local`. This will create a new file in next-tinynewsdemo called `.env.local`.
+
+Any values that differ between the tiny news orgs are found in the `settings` database table in Hasura. For development on your laptop, you'll want to make sure you're pointing at the **staging** database, which is called heroic-snapper, because that's the random name Hasura gave us for that stack and I missed the chance to rename it.
 
 **Step 5**
 
@@ -94,6 +122,8 @@ We switch between the different organizations' websites by changing the subdomai
 The [latest instructions on how to launch a new organisation are in a Google Doc](https://docs.google.com/document/d/1sSvtRTYkk2PoixMrWPT3FSM6qO_5zseqdCXv4LmP7Rc/edit?usp=sharing) and subject to change; please reference that for info.
 
 ## Generate WXR
+
+**NOTE**: This code does not work since migrating to the Vercel Platforms structure.
 
 Once you have the latest code, make sure you install dependencies for the WXR generator module - do this if you run into a babel-related error:
 
@@ -150,17 +180,13 @@ To learn more about Next.js, take a look at the following resources:
 
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/import?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
-
 ## Git Flow
 
-To start working on a new feature:
+To start working on a new feature, checkout the latest from `main` and use git flow to create the new feature branch.
 
 ```bash
+git checkout main
+git pull origin main
 git flow feature start feature_branch_name
 ```
 
@@ -174,9 +200,11 @@ git flow feature publish feature_branch_name
 
 Then open a PR as usual on GitHub.
 
-To start a release (for production):
+To start a release (for production) checkout the latest from `main` and use git flow to create the new release branch:
 
 ```bash
+git checkout main
+git pull origin main
 git flow release start 0.1.1
 ```
 
@@ -188,9 +216,11 @@ To finish the release:
 git flow release finish '0.1.1'
 ```
 
-If you have to fix something in production ASAP, and the main branch has changes that aren't ready to go live, you'll want to do a **hotfix**:
+If you have to fix something in production ASAP, and the main branch has changes that aren't ready to go live, you'll want to do a **hotfix**, checkout the latest from `stable` and use git flow to create the new feature branch:
 
 ```bash
+git checkout stable
+git pull origin stable
 git flow hotfix start hotfix_branch_name
 ```
 
@@ -202,4 +232,14 @@ Code away, fix the bug, commit the changes, and then:
 git flow hotfix finish hotfix_branch_name
 ```
 
-For help, type: `git flow` for a list of topics; `git flow feature help` for example will provide info on subcommands available around feature branches.
+You will then need to manually push your hotfix to the stable and main branches individually.
+```
+git checkout stable
+git status // check that your hotfix changes are here
+git push
+git checkout main
+git status // check that your hotfix changes are here
+git push
+```
+
+For help, type: `git flow` for a list of topics; `git flow feature help` for example will provide info on subcommands available around feature branches. [This](https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow) page may also be useful for understanding GitFlow under the hood. 

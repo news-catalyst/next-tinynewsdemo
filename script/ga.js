@@ -24,6 +24,27 @@ async function getData(params) {
     '\n'
   );
 
+  console.log('[DEBUG] This is checking if the variables are empty');
+
+  if (!googleAnalyticsViewID || googleAnalyticsViewID === '') {
+    console.log('[DEBUG] googleAnalyticsViewID is empty');
+  }
+  if (
+    credsPrivateKey === null ||
+    credsPrivateKey === '' ||
+    credsPrivateKey === undefined
+  ) {
+    console.log(
+      "[DEBUG] In 'process.env', nothing is in inside the creds private key"
+    );
+  }
+
+  if (credsEmail === null || credsEmail === '' || credsEmail === undefined) {
+    console.log(
+      "[DEBUG] In 'process.env', nothing is in inside the creds email"
+    );
+  }
+
   const auth = new google.auth.JWT(credsEmail, null, credsPrivateKey, scopes);
   const analyticsreporting = google.analyticsreporting({ version: 'v4', auth });
   let startDate = params['startDate'];
