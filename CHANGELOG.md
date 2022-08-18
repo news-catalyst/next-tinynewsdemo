@@ -1,4 +1,5 @@
 # Releases
+- [0.10.0](https://github.com/news-catalyst/next-tinynewsdemo/pull/1282/files): Updated Four Points Press GA URL since switch to custom domain.
 - 0.9.1: Created a new release to remedy the Stable/Main differences (still same change from 0.9.0)
 - 0.9.0: (https://github.com/news-catalyst/next-tinynewsdemo/issues/1274): Fix recent stories article stream issue from the homepage layout 'Partial large layout.."
 - 0.8.0: Customizable advertising IDs for working with Letterhead on expanded text with image, text with image, and banner.
