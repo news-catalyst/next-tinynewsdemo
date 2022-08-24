@@ -1,4 +1,4 @@
-name: GA Data Importer news
+name: GA Data Importer marketing-site-news
 'on':
   schedule:
     - cron: 5 9 * * *
