@@ -1,4 +1,5 @@
 # Releases
+- [0.11.0](https://github.com/news-catalyst/next-tinynewsdemo/pull/1280): deleted old test yml files, added new marketing demo site yml file/GA ID 
 - [0.10.0](https://github.com/news-catalyst/next-tinynewsdemo/pull/1282/files): Updated Four Points Press GA URL since switch to custom domain.
 - 0.9.1: Created a new release to remedy the Stable/Main differences (still same change from 0.9.0)
 - 0.9.0: (https://github.com/news-catalyst/next-tinynewsdemo/issues/1274): Fix recent stories article stream issue from the homepage layout 'Partial large layout.."
