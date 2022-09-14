@@ -16,10 +16,7 @@ export default function GoogleForm({ node, amp }) {
     />
   );
 
-  //check that node and node.link arent falsy/undefined log error and don't return anything
-  //check node/link.split also
-
-  if (!node.link || !node || !node.link.split('/')) {
+  if (!node || !node.link || !node.link.split('/')) {
     console.log('The node.link or node is empty');
   } else {
     return el;
