@@ -93,15 +93,19 @@ async function saveNewsletterEditions(organizationId, letterheadData) {
   for await (let newsletter of letterheadData.items) {
     let headline = shared.cleanContent(newsletter.title);
 
-    if (!newsletter.publicationDate) {
+    if (newsletter.publicationStatus != 1) {
+      //from Letterhead: Publication status of results to include (1 = published; 2 = scheduled; 4 = review; 6 = all statuses)
       console.log(
         '> Org#' +
         organizationId +
         ' Newsletter ID#' +
         newsletter.id +
         " '" +
+        ' Newsletter status is ' + 
+        newsletter.publicationStatus +
+        "  " +
         headline +
-        "' is not published, skipping."
+        "' is not published, skipping." 
       );
       continue;
     }
@@ -116,6 +120,8 @@ async function saveNewsletterEditions(organizationId, letterheadData) {
       console.error('> no content found, skipping this edition');
       continue;
     }
+
+   
 
     let content = shared.cleanContent(newsletter.emailTemplate);
     let cleanedUpContent = content
@@ -170,7 +176,9 @@ async function saveNewsletterEditions(organizationId, letterheadData) {
         "' was published at " +
         newsletter.publicationDate +
         ', saved in Hasura with slug: ' +
-        result.data.insert_newsletter_editions_one.slug
+        result.data.insert_newsletter_editions_one.slug +
+        'publication status is ' + 
+        newsletter.publicationStatus
       );
     }
   }
