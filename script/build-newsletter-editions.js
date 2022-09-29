@@ -94,6 +94,7 @@ async function saveNewsletterEditions(organizationId, letterheadData) {
     let headline = shared.cleanContent(newsletter.title);
 
     if (newsletter.publicationStatus != 1) {
+      //from Letterhead: Publication status of results to include (1 = published; 2 = scheduled; 4 = review; 6 = all statuses)
       console.log(
         '> Org#' +
         organizationId +
