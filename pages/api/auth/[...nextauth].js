@@ -31,6 +31,7 @@ export default NextAuth({
 
   callbacks: {
     async signIn({ user, account, profile, email, credentials }) {
+      console.log('[nextauth.js] : using nextauth.js signIn() method');
       let isAllowedToSignIn = false;
 
       // console.log(
@@ -73,7 +74,8 @@ export default NextAuth({
       return token;
     },
     redirect({ url, baseUrl }) {
-      // console.log('[CB] redirect url/baseUrl:', url, baseUrl);
+      console.log('[nextauth.js] : calling nextauth.js redirect() method');
+      console.log('[nextauth.js] redirect url/baseUrl:', url, baseUrl);
 
       if (url.startsWith(baseUrl)) {
         // console.log('[CB] url starts with base, returning', url);
@@ -94,10 +96,11 @@ export default NextAuth({
         if (site) {
           let siteUrl = `${parsedUrl.protocol}//${site}.${parsedUrl.host}${parsedUrl.pathname}`;
           // console.log('>> [SITE]', site, siteUrl);
-
+          console.log('[nextauth.js] : returning siteUrl');
           return siteUrl;
         }
       }
+      console.log('[nextauth.js] : returning url');
       return url;
     },
   },
