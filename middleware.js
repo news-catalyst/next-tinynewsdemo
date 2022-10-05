@@ -1,10 +1,14 @@
 import { NextResponse } from 'next/server';
 
-export default function middleware(req) {
+export function middleware(req) {
   const url = req.nextUrl.clone(); // clone the request url
   const { pathname, searchParams } = req.nextUrl; // get pathname of request (e.g. /blog-slug)
   const hostname = req.headers.get('host'); // get hostname of request (e.g. demo.vercel.pub)
   //console.log('[middleware] host header:', hostname);
+
+  if (pathname.startsWith('/_next/image')) {
+    return NextResponse.next();
+  }
 
   if (pathname.includes('/en-US')) {
     console.log('[middleware] pathname includes en-US, redirecting....');
