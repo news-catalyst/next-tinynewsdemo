@@ -18,12 +18,12 @@ export default function AdminLayout({
 
   if (session && session.user && session.user.email && authorizedEmailDomains) {
     let authorizedDomains = authorizedEmailDomains.split(',');
-    console.log(
-      '[AdminLayout]: authorizing session.user.email:',
-      session.user.email,
-      'against authorized domains:',
-      authorizedDomains
-    );
+    // console.log(
+    //   '[AdminLayout]: authorizing session.user.email:',
+    //   session.user.email,
+    //   'against authorized domains:',
+    //   authorizedDomains
+    // );
     authorizedDomains.forEach((authorizedDomain) => {
       if (session.user.email.split('@')[1] === authorizedDomain) {
         isAllowedToAccess = true;

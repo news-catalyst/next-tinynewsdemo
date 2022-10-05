@@ -76,9 +76,9 @@ export default NextAuth({
     redirect({ url, baseUrl }) {
       console.log('[nextauth.js] : calling nextauth.js redirect() method');
 
-      if (url && baseUrl) {
-        console.log('[nextauth.js] redirect url/baseUrl:', url, baseUrl);
-      }
+      // if (url && baseUrl) {
+      //   console.log('[nextauth.js] redirect url/baseUrl:', url, baseUrl);
+      // }
 
       if (url.startsWith(baseUrl)) {
         // console.log('[CB] url starts with base, returning', url);
