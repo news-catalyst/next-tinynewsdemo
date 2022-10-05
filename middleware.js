@@ -57,6 +57,6 @@ export function middleware(req) {
     // console.log('[middleware] updated path:', url.pathname);
     return NextResponse.rewrite(url);
   } else if (pathname.startsWith('/api/auth/callback/google')) {
-    console.log(`[middleware] google oauth callback`, req);
+    console.log(`[middleware] google oauth callback`);
   }
 }
