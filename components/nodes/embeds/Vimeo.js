@@ -1,7 +1,7 @@
 import ReactPlayer from 'react-player/lazy';
 
 export default function Vimeo({ node, amp, url }) {
-  const videoId = node.link.split('/')[-1];
+  const videoId = node.link.split('/')[3];
   let el = <div />;
 
   if (videoId) {
