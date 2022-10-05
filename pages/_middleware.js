@@ -53,7 +53,9 @@ export default function middleware(req) {
     );
 
     url.pathname = `/_sites/${currentHost}${pathWithoutLocale}`;
-    console.log('[middleware] updated path:', url.pathname);
+    if (url && url.pathname) {
+      console.log('[middleware] updated path:', url.pathname);
+    }
     return NextResponse.rewrite(url);
   } else if (pathname.startsWith('/api/auth/callback/google')) {
     console.log(`[middleware] google oauth callback`, req);
