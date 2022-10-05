@@ -16,7 +16,7 @@ export default function AdminLayout({
 
   let isAllowedToAccess = false;
 
-  if (session && session.user && session.user.email && authorizedEmailDomains) {
+  if (session && session.user && session.user.email) {
     let authorizedDomains = authorizedEmailDomains.split(',');
     // console.log(
     //   '[AdminLayout]: authorizing session.user.email:',
@@ -82,7 +82,11 @@ export default function AdminLayout({
                 <SignInButton
                   tw="cursor-pointer"
                   id="tinycms-signin-button"
-                  onClick={() => signInWithGoogle(callbackUrl)}
+                  onClick={() =>
+                    signIn('google', {
+                      callbackUrl: `${callbackUrl}`,
+                    })
+                  }
                 >
                   Sign in
                 </SignInButton>
@@ -151,11 +155,4 @@ export default function AdminLayout({
       </main>
     </>
   );
-}
-
-function signInWithGoogle(callbackUrl) {
-  console.log('[AdminLayout]:  called signInWithGoogle()');
-  signIn('google', {
-    callbackUrl: `${callbackUrl}`,
-  });
 }
