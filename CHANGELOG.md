@@ -1,6 +1,7 @@
 # Releases
 
-- [0.14.0] Updates next-auth dependency to 4.12.2, moves nested middleware file, rolls back archive newsletter fix in 0.13.0.
+- 0.14.1 Fix Spotify and Vimeo embeds
+- 0.14.0 Updates next-auth dependency to 4.12.2, moves nested middleware file, rolls back archive newsletter fix in 0.13.0.
 - [0.13.0](https://github.com/news-catalyst/next-tinynewsdemo/pull/1286): fixed archive newsletter page from publishing non-published newsletters and saving in Hasura
 - [0.12.0](https://github.com/news-catalyst/next-tinynewsdemo/commit/006c4aa05b765ec913a7a6786e6b6798f4027ada): fixed Google Embed form
 - [0.11.0](https://github.com/news-catalyst/next-tinynewsdemo/pull/1280): deleted old test yml files, added new marketing demo site yml file/GA ID
