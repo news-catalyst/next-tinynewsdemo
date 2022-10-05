@@ -31,6 +31,7 @@ export default NextAuth({
 
   callbacks: {
     async signIn({ user, account, profile, email, credentials }) {
+      debugger;
       let isAllowedToSignIn = false;
 
       // console.log(
@@ -73,6 +74,7 @@ export default NextAuth({
       return token;
     },
     redirect({ url, baseUrl }) {
+      debugger;
       //console.log('[nextauth.js] redirect url/baseUrl:', url, baseUrl);
 
       if (url.startsWith(baseUrl)) {
@@ -81,22 +83,22 @@ export default NextAuth({
       }
 
       // localhost
-      if (
-        baseUrl == 'http://localhost:3000' ||
-        url.startsWith('http://localhost:3000') ||
-        url.startsWith('https://localhost:3000')
-      ) {
-        // console.log('[CB] url starts with localhost');
-        let parsedUrl = new URL(url);
-        let params = parsedUrl.searchParams;
-        let site = params.get('site');
+      // if (
+      //   baseUrl == 'http://localhost:3000' ||
+      //   url.startsWith('http://localhost:3000') ||
+      //   url.startsWith('https://localhost:3000')
+      // ) {
+      //   // console.log('[CB] url starts with localhost');
+      //   let parsedUrl = new URL(url);
+      //   let params = parsedUrl.searchParams;
+      //   let site = params.get('site');
 
-        if (site) {
-          let siteUrl = `${parsedUrl.protocol}//${site}.${parsedUrl.host}${parsedUrl.pathname}`;
-          // console.log('>> [SITE]', site, siteUrl);
-          return siteUrl;
-        }
-      }
+      //   if (site) {
+      //     let siteUrl = `${parsedUrl.protocol}//${site}.${parsedUrl.host}${parsedUrl.pathname}`;
+      //     // console.log('>> [SITE]', site, siteUrl);
+      //     return siteUrl;
+      //   }
+      // }
       return url;
     },
   },

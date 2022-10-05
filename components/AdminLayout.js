@@ -55,10 +55,10 @@ export default function AdminLayout({
   // I thought it would be clearer to intentionally skip authentication with a separate variable
   // when testing on localhost instead of repurposing the cypressTesting var
   let skipAuth = false;
-  if (host.includes('localhost')) {
-    // console.log('debug: skipping auth on localhost');
-    skipAuth = true;
-  }
+  // if (host.includes('localhost')) {
+  //   // console.log('debug: skipping auth on localhost');
+  //   skipAuth = true;
+  // }
   const callbackUrl = new URL('/tinycms', siteUrl).toString();
 
   // console.log(
@@ -82,11 +82,12 @@ export default function AdminLayout({
                 <SignInButton
                   tw="cursor-pointer"
                   id="tinycms-signin-button"
-                  onClick={() =>
-                    signIn('google', {
+                  onClick={() => {
+                    debugger;
+                    return signIn('google', {
                       callbackUrl: `${callbackUrl}`,
-                    })
-                  }
+                    });
+                  }}
                 >
                   Sign in
                 </SignInButton>
