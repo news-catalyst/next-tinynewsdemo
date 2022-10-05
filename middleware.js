@@ -7,7 +7,6 @@ export function middleware(req) {
   console.log('host header:', hostname);
 
   if (pathname.startsWith('/_next/image')) {
-    console.log('Pathname started with image');
     return NextResponse.next();
   }
 
