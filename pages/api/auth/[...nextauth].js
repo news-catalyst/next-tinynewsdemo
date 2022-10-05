@@ -73,7 +73,7 @@ export default NextAuth({
       return token;
     },
     redirect({ url, baseUrl }) {
-      // console.log('[CB] redirect url/baseUrl:', url, baseUrl);
+      //console.log('[nextauth.js] redirect url/baseUrl:', url, baseUrl);
 
       if (url.startsWith(baseUrl)) {
         // console.log('[CB] url starts with base, returning', url);
@@ -94,7 +94,6 @@ export default NextAuth({
         if (site) {
           let siteUrl = `${parsedUrl.protocol}//${site}.${parsedUrl.host}${parsedUrl.pathname}`;
           // console.log('>> [SITE]', site, siteUrl);
-
           return siteUrl;
         }
       }

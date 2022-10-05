@@ -4,13 +4,14 @@ export function middleware(req) {
   const url = req.nextUrl.clone(); // clone the request url
   const { pathname, searchParams } = req.nextUrl; // get pathname of request (e.g. /blog-slug)
   const hostname = req.headers.get('host'); // get hostname of request (e.g. demo.vercel.pub)
-  console.log('host header:', hostname);
+  //console.log('[middleware] host header:', hostname);
 
   if (pathname.startsWith('/_next/image')) {
     return NextResponse.next();
   }
 
   if (pathname.includes('/en-US')) {
+    console.log('[middleware] pathname includes en-US, redirecting....');
     url.pathname = pathname.replace('/en-US', '');
     return NextResponse.redirect(url);
   }
