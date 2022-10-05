@@ -16,7 +16,7 @@ export default function AdminLayout({
 
   let isAllowedToAccess = false;
 
-  if (session && session.user && session.user.email) {
+  if (session && session.user && session.user.email && authorizedEmailDomains) {
     let authorizedDomains = authorizedEmailDomains.split(',');
     console.log(
       '[AdminLayout]: authorizing session.user.email:',
