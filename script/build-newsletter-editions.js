@@ -104,7 +104,7 @@ async function saveNewsletterEditions(organizationId, letterheadData) {
           ' Newsletter ID#' +
           newsletter.id +
           " '" +
-          publicationStatus+
+          newsletter.publicationStatus+
           ' is the publication status ' +
           headline +
           "' is not published, skipping."
@@ -176,7 +176,7 @@ async function saveNewsletterEditions(organizationId, letterheadData) {
           "' was published at " +
           newsletter.publicationDate +
           " '" +
-          publicationStatus+
+          newsletter.publicationStatus+
           ' is the publication status ' +
           ', saved in Hasura with slug: ' +
           result.data.insert_newsletter_editions_one.slug
