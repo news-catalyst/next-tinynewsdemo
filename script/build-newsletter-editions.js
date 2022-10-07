@@ -103,9 +103,9 @@ async function saveNewsletterEditions(organizationId, letterheadData) {
           organizationId +
           ' Newsletter ID#' +
           newsletter.id +
+          ' Publication status is' +
+          newsletter.publicationStatus +
           " '" +
-          newsletter.publicationStatus+
-          ' is the publication status ' +
           headline +
           "' is not published, skipping."
       );
@@ -175,10 +175,10 @@ async function saveNewsletterEditions(organizationId, letterheadData) {
           newsletter.title +
           "' was published at " +
           newsletter.publicationDate +
-          " '" +
-          newsletter.publicationStatus+
-          ' is the publication status ' +
-          ', saved in Hasura with slug: ' +
+          " " +
+          ' Publication status is' +
+          newsletter.publicationStatus +
+          'saved in Hasura with slug: ' +
           result.data.insert_newsletter_editions_one.slug
       );
     }
