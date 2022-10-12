@@ -47,16 +47,19 @@ TinySubmitCancelButtons.displayName = 'TinySubmitCancelButtons';
 
 export const TinyInputField = ({ name, onChange, value, label, ...props }) => {
   return (
-    <label htmlFor={name}>
-      <span tw="block font-bold">{label}</span>
+    <div>
+      <label htmlFor={name}>
+        <span tw="block font-bold">{label}</span>
+      </label>
       <Input
+        id={name}
         type="text"
         value={value}
         name={name}
         onChange={onChange}
         {...props}
       />
-    </label>
+    </div>
   );
 };
 TinyInputField.displayName = 'TinyInputField';
