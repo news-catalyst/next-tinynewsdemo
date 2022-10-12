@@ -96,7 +96,7 @@ async function saveNewsletterEditions(organizationId, letterheadData) {
   for await (let newsletter of letterheadData.items) {
     let headline = shared.cleanContent(newsletter.title);
 
-    if (!newsletter.publicationDate) {
+    if (newsletter.publicationStatus != 1) {
       //from Letterhead: Publication status of results to include (1 = published; 2 = scheduled; 4 = review; 6 = all statuses)
       console.log(
         '> Org#' +
@@ -104,6 +104,8 @@ async function saveNewsletterEditions(organizationId, letterheadData) {
           ' Newsletter ID#' +
           newsletter.id +
           " '" +
+          newsletter.publicationStatus+
+          ' is the publication status ' +
           headline +
           "' is not published, skipping."
       );
@@ -173,6 +175,9 @@ async function saveNewsletterEditions(organizationId, letterheadData) {
           newsletter.title +
           "' was published at " +
           newsletter.publicationDate +
+          " '" +
+          newsletter.publicationStatus+
+          ' is the publication status ' +
           ', saved in Hasura with slug: ' +
           result.data.insert_newsletter_editions_one.slug
       );

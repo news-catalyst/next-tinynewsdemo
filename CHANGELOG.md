@@ -1,5 +1,5 @@
 # Releases
-
+- 0.15.0 Fix archive newsletter page from publishing non-published newsletters and saving in Hasura (re-deploying in PROD since release 0.13.0 was rolled back)
 - 0.14.1 Fix Spotify and Vimeo embeds
 - 0.14.0 Updates next-auth dependency to 4.12.2, moves nested middleware file, rolls back archive newsletter fix in 0.13.0.
 - [0.13.0](https://github.com/news-catalyst/next-tinynewsdemo/pull/1286): fixed archive newsletter page from publishing non-published newsletters and saving in Hasura
