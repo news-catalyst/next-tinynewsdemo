@@ -57,7 +57,21 @@ async function getNewsletterEditions() {
       )?.value,
     };
 
-    if (!letterhead['url']) {
+    if (!letterhead['url'] || letterhead['url'].length === 0) {
+      console.log(
+        '> Org#' +
+          organizationId +
+          ' has an invalid Letterhead url, skipping newsletter fetching.'
+      );
+      continue;
+    }
+
+    if (!letterhead['channelSlug'] || letterhead['channelSlug'].length === 0) {
+      console.log(
+        '> Org#' +
+          organizationId +
+          ' has an invalid Letterhead slug, skipping newsletter fetching.'
+      );
       continue;
     }
 
@@ -89,7 +103,7 @@ async function saveNewsletterEditions(organizationId, letterheadData) {
   console.log(
     organizationId,
     'Letterhead returned',
-    letterheadData.length,
+    letterheadData.total,
     'newsletter editions in total:'
   );
 
@@ -104,10 +118,23 @@ async function saveNewsletterEditions(organizationId, letterheadData) {
           ' Newsletter ID#' +
           newsletter.id +
           " '" +
-          newsletter.publicationStatus+
+          newsletter.publicationStatus +
           ' is the publication status ' +
           headline +
           "' is not published, skipping."
+      );
+      continue;
+    }
+
+    if (!newsletter.publicationDate) {
+      console.log(
+        '> Org#' +
+          organizationId +
+          ' Newsletter ID#' +
+          newsletter.id +
+          " '" +
+          headline +
+          "' doesn't have a publish date, skipping."
       );
       continue;
     }
@@ -176,7 +203,7 @@ async function saveNewsletterEditions(organizationId, letterheadData) {
           "' was published at " +
           newsletter.publicationDate +
           " '" +
-          newsletter.publicationStatus+
+          newsletter.publicationStatus +
           ' is the publication status ' +
           ', saved in Hasura with slug: ' +
           result.data.insert_newsletter_editions_one.slug
