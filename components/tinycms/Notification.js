@@ -15,6 +15,7 @@ export default function Notification(props) {
       <div
         tw="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded"
         onClick={hideNotification}
+        role="status"
       >
         <strong tw="font-bold">Success!</strong>{' '}
         {messages.map((msg) => (
@@ -43,6 +44,7 @@ export default function Notification(props) {
       <div
         tw="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded"
         onClick={hideNotification}
+        role="alert"
       >
         <strong tw="font-bold">Error: </strong>{' '}
         {messages.map((msg) => (

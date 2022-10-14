@@ -111,6 +111,8 @@ To build the site and serve from the static files:
 npm run build && npm run start
 ```
 
+If you want to debug server-side code, follow [these](https://nextjs.org/docs/advanced-features/debugging#server-side-code) instructions from Next.js.
+
 **Step 6**
 
 Open [http://next-tinynewsdemo.localhost:3000](http://next-tinynewsdemo.localhost:3000) with your browser.
@@ -150,7 +152,13 @@ To test using [Local WordPress](https://localwp.com/):
 
 ## Running unit tests
 
-This project uses Jest to for unit testing. To run all unit tests, run `npm run test`. If you want to run all tests in a single file, use `npm run test -- <File_Name>`. For more information, see the [Jest documentation](https://jestjs.io/docs/cli#using-with-npm-scripts).
+This project uses Jest to for unit testing. To run all unit tests, run `npm run test`.
+
+If you want to run all tests in a single file, use `npm run test -- <File_Name>`.
+
+If you'd like to run a single test, use `npm run test -- <File_Name> -t <Your-Test-Name>`.
+
+For more information, see the [Jest documentation](https://jestjs.io/docs/cli#using-with-npm-scripts).
 
 ## Running integration tests
 

@@ -106,6 +106,7 @@
     "@testing-library/dom": "^7.31.2",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^11.2.7",
+    "@testing-library/user-event": "^14.4.3",
     "autoprefixer": "^10.2.5",
     "babel-eslint": "^10.1.0",
     "babel-jest": "^25.5.1",
