@@ -148,9 +148,13 @@ To test using [Local WordPress](https://localwp.com/):
 - review Media Library
 - review All Posts
 
-## Run tests
+## Running unit tests
 
-In one terminal window, run `npm run dev:test` to start up the local front-end app in test mode. This will start the server using the appropriate hasura API url and test organization slug.
+This project uses Jest to for unit testing. To run all unit tests, run `npm run test`. If you want to run all tests in a single file, use `npm run test -- <File_Name>`. For more information, see the [Jest documentation](https://jestjs.io/docs/cli#using-with-npm-scripts).
+
+## Running integration tests
+
+This project uses Cypress for integration testing. In one terminal window, run `npm run dev:test` to start up the local front-end app in test mode. This will start the server using the appropriate hasura API url and test organization slug.
 
 In another terminal window, run `npm run cypress:open` to open the cypress test runner window, which will then let you run one or all test files.
 
@@ -233,6 +237,7 @@ git flow hotfix finish hotfix_branch_name
 ```
 
 You will then need to manually push your hotfix to the stable and main branches individually.
+
 ```
 git checkout stable
 git status // check that your hotfix changes are here
@@ -242,4 +247,4 @@ git status // check that your hotfix changes are here
 git push
 ```
 
-For help, type: `git flow` for a list of topics; `git flow feature help` for example will provide info on subcommands available around feature branches. [This](https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow) page may also be useful for understanding GitFlow under the hood. 
+For help, type: `git flow` for a list of topics; `git flow feature help` for example will provide info on subcommands available around feature branches. [This](https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow) page may also be useful for understanding GitFlow under the hood.
