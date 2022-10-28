@@ -17,7 +17,7 @@
     "bootstrap:tests": "node script/bootstrap-tests.js",
     "status": "node script/status.js",
     "remove:org": "node script/remove.js",
-    "test": "jest --runInBand",
+    "test": "jest",
     "build": "NODE_OPTIONS='--trace-warnings' next build",
     "cy:run": "cypress run",
     "cypress:open": "NEXT_PUBLIC_CYPRESS_TESTING=true cypress open",
@@ -45,20 +45,6 @@
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged"
-    }
-  },
-  "jest": {
-    "testPathIgnorePatterns": [
-      "<rootDir>/.next/",
-      "<rootDir>/node_modules/"
-    ],
-    "transform": {
-      "^.+\\.(js|jsx|ts|tsx)$": "<rootDir>/node_modules/babel-jest"
-    },
-    "testTimeout": 30000,
-    "moduleNameMapper": {
-      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/__mocks__/fileMock.js",
-      "\\.(css|less)$": "<rootDir>/__mocks__/styleMock.js"
     }
   },
   "dependencies": {
@@ -116,9 +102,11 @@
     "yn": "^5.0.0"
   },
   "devDependencies": {
+    "@babel/preset-env": "^7.19.3",
     "@testing-library/dom": "^7.31.2",
-    "@testing-library/jest-dom": "^5.13.0",
+    "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^11.2.7",
+    "@testing-library/user-event": "^14.4.3",
     "autoprefixer": "^10.2.5",
     "babel-eslint": "^10.1.0",
     "babel-jest": "^25.5.1",
@@ -137,7 +125,9 @@
     "eslint-plugin-react-hooks": "^4.0.8",
     "faker": "^5.5.3",
     "husky": "^4.2.5",
-    "jest": "^25.5.4",
+    "identity-obj-proxy": "^3.0.0",
+    "jest": "^29.1.2",
+    "jest-environment-jsdom": "^29.1.2",
     "lint-staged": "^10.2.11",
     "log-update": "^5.0.0",
     "next-sitemap": "^1.5.10",

@@ -30,7 +30,14 @@ export default function AddSection({
   const [title, setTitle] = useState('');
   const [slug, setSlug] = useState(null);
   const [published, setPublished] = useState(false);
-  const [errors, setErrors] = useState([]);
+  const ARCHIVE_TITLE = 'archive';
+  const TITLE_BLANK_ERROR_MESSAGE = 'Title is required.';
+  const TITLE_RESERVED_ERROR_MESSAGE =
+    '"Archive" is reserved for a default page. Please enter a different title.';
+  const titleNamingErrors = [
+    TITLE_BLANK_ERROR_MESSAGE,
+    TITLE_RESERVED_ERROR_MESSAGE,
+  ];
 
   function updateTitleAndSlug(value) {
     setTitle(value);
@@ -46,26 +53,24 @@ export default function AddSection({
     setPublished(value);
   }
 
+  function getTitleErrors(title) {
+    let newErrors = [];
+    if (title === null || title.trim() === '') {
+      newErrors.push(TITLE_BLANK_ERROR_MESSAGE);
+    }
+    if (title.trim().toLowerCase() === ARCHIVE_TITLE) {
+      newErrors.push(TITLE_RESERVED_ERROR_MESSAGE);
+    }
+    return newErrors.length > 0 ? newErrors : null;
+  }
+
   async function handleSubmit(ev) {
     ev.preventDefault();
+    let titleErrors = getTitleErrors(title);
 
-    let formIsValid = true;
-
-    if (title === null || title === '') {
-      if (errors.indexOf('Title is required.') < 0) {
-        errors.push('Title is required.');
-        setErrors(errors);
-      }
-      formIsValid = false;
-    } else {
-      let removeAtIndex = errors.indexOf('Title is required.');
-      errors.splice(removeAtIndex, 1);
-      setErrors(errors);
-    }
-
-    if (!formIsValid) {
-      setNotificationMessage(errors);
-      console.error(errors, notificationMessage);
+    if (titleErrors) {
+      setNotificationMessage(titleErrors);
+      console.error(titleErrors);
       setNotificationType('error');
       setShowNotification(true);
       return;

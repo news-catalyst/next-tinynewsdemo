@@ -15,7 +15,6 @@ import {
   hasuraUpdateTag,
 } from '../lib/tags';
 import {
-  hasuraCreatePage,
   hasuraSearchArticles,
   hasuraArticlePage,
   hasuraPreviewArticlePage,
