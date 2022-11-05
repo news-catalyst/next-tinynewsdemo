@@ -57,6 +57,8 @@ export async function getStaticProps({ params }) {
   const apiUrl = process.env.HASURA_API_URL;
   const site = params.site;
   const locale = 'en-US';
+  const limitPerPage = 10;
+  const offset = 0; // CHELSEA TODO: fix this later
 
   const settingsResult = await getOrgSettings({
     url: apiUrl,
@@ -69,13 +71,14 @@ export async function getStaticProps({ params }) {
 
   let newsletters = [];
   let sections = [];
-  let tags = [];
   let siteMetadata;
 
   const { errors, data } = await hasuraListNewsletters({
     url: apiUrl,
     site: site,
     localeCode: 'en-US',
+    limit: limitPerPage,
+    offset: offset,
   });
 
   if (errors || !data) {
@@ -86,7 +89,6 @@ export async function getStaticProps({ params }) {
   } else {
     newsletters = data.newsletter_editions;
     sections = data.categories;
-    tags = data.tags;
 
     sections = data.categories;
 
@@ -98,17 +100,6 @@ export async function getStaticProps({ params }) {
         sections[i].category_translations[0].title
       ) {
         sections[i].title = sections[i].category_translations[0].title;
-      }
-    }
-
-    for (var j = 0; j < tags.length; j++) {
-      if (
-        tags[j] &&
-        tags[j].tag_translations &&
-        tags[j].tag_translations[0] &&
-        tags[j].tag_translations[0].title
-      ) {
-        tags[j].title = tags[j].tag_translations[0].title;
       }
     }
 
@@ -150,7 +141,6 @@ export async function getStaticProps({ params }) {
   return {
     props: {
       newsletters,
-      tags,
       sections,
       siteMetadata,
       expandedAds,
