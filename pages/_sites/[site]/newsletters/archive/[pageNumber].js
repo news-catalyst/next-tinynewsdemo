@@ -1,18 +1,35 @@
 import React from 'react';
-import Layout from '../../../../components/Layout.js';
-import { cachedContents } from '../../../../lib/cached';
-import { hasuraListNewsletters } from '../../../../lib/newsletters.js';
-import { getArticleAds } from '../../../../lib/ads.js';
-import ArticleStream from '../../../../components/homepage/ArticleStream';
-import { generateAllDomainPaths } from '../../../../lib/settings';
+import Layout from '../../../../../components/Layout.js';
+import { cachedContents } from '../../../../../lib/cached';
+import {
+  hasuraListNewsletters,
+  generateAllNewsletterArchivePaths,
+} from '../../../../../lib/newsletters.js';
+import { getArticleAds } from '../../../../../lib/ads.js';
+import ArticleStream from '../../../../../components/homepage/ArticleStream';
+import { generateAllDomainPaths } from '../../../../../lib/settings';
 import {
   booleanSetting,
   findSetting,
   getOrgSettings,
-} from '../../../../lib/settings.js';
+} from '../../../../../lib/settings.js';
+import tw, { styled } from 'twin.macro';
+
+// CHELSEA TODO: consider refactoring this later
+const PaginationSection = tw.section`flex mb-8`;
+const PaginationContainer = styled.div(({ meta }) => ({
+  ...tw`md:grid md:grid-cols-packageLayoutTablet lg:grid-cols-packageLayoutDesktop flex flex-row flex-wrap grid-rows-1 w-full px-5 mx-auto max-w-7xl items-center justify-between`,
+  fontFamily: Typography[meta.theme || 'styleone'].ArticleMetaTop,
+}));
 
 export default function NewsletterIndexPage(props) {
   const isAmp = false;
+  let pages = Array.from({ length: props.totalPageCount }, (_, i) => i + 1);
+
+  // CHELSEA TODO: remove this console log
+  console.log(
+    `Expected number of pages: ${props.totalPageCount}, actual: ${pages.length}`
+  );
 
   return (
     <Layout
@@ -33,6 +50,20 @@ export default function NewsletterIndexPage(props) {
         ads={props.expandedAds}
         monkeypodLink={props.monkeypodLink}
       />
+      <PaginationSection>
+        <PaginationContainer meta={props.siteMetadata}>
+          <ul className="pagination">
+            {pages.map((page) => (
+              <li
+                key={`nl-link-${page}`}
+                className={page === props.currentPage ? 'active' : ''}
+              >
+                <a href={`/newsletters/archive/${page}`}>{page.toString()}</a>
+              </li>
+            ))}
+          </ul>
+        </PaginationContainer>
+      </PaginationSection>
     </Layout>
   );
 }
@@ -41,7 +72,7 @@ export async function getStaticPaths() {
   const apiUrl = process.env.HASURA_API_URL;
   const adminSecret = process.env.HASURA_ADMIN_SECRET;
 
-  const mappedPaths = await generateAllDomainPaths({
+  const mappedPaths = await generateAllNewsletterArchivePaths({
     url: apiUrl,
     adminSecret: adminSecret,
     urlParams: {},
@@ -58,7 +89,8 @@ export async function getStaticProps({ params }) {
   const site = params.site;
   const locale = 'en-US';
   const limitPerPage = 10;
-  const offset = 0; // CHELSEA TODO: fix this later
+  const currentPage = Number(params?.page) || 1;
+  const offset = currentPage * limitPerPage; // CHELSEA TODO: fix this later (offset is how many results to skip past)
 
   const settingsResult = await getOrgSettings({
     url: apiUrl,
@@ -87,6 +119,7 @@ export async function getStaticProps({ params }) {
       notFound: true,
     };
   } else {
+    totalPageCount = Math.ceil(newsletters.length / limitPerPage);
     newsletters = data.newsletter_editions;
     sections = data.categories;
 
@@ -147,6 +180,8 @@ export async function getStaticProps({ params }) {
       site,
       monkeypodLink,
       bannerAds,
+      totalPageCount,
+      currentPage,
     },
   };
 }
