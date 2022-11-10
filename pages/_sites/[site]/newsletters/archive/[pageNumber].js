@@ -4,6 +4,7 @@ import { cachedContents } from '../../../../../lib/cached';
 import {
   hasuraListNewsletters,
   generateAllNewsletterArchivePaths,
+  NEWSLETTER_ARCHIVE_PAGINATION_SIZE,
 } from '../../../../../lib/newsletters.js';
 import { getArticleAds } from '../../../../../lib/ads.js';
 import ArticleStream from '../../../../../components/homepage/ArticleStream';
@@ -75,22 +76,22 @@ export async function getStaticPaths() {
   const mappedPaths = await generateAllNewsletterArchivePaths({
     url: apiUrl,
     adminSecret: adminSecret,
-    urlParams: {},
   });
 
   return {
     paths: mappedPaths,
     fallback: true,
   };
+
+  // CHELSEA TODO LEFTOFF: Try building and running this to see if you move past the static paths issue
 }
 
 export async function getStaticProps({ params }) {
   const apiUrl = process.env.HASURA_API_URL;
   const site = params.site;
   const locale = 'en-US';
-  const limitPerPage = 10;
   const currentPage = Number(params?.page) || 1;
-  const offset = currentPage * limitPerPage; // CHELSEA TODO: fix this later (offset is how many results to skip past)
+  const offset = currentPage * NEWSLETTER_ARCHIVE_PAGINATION_SIZE; // CHELSEA TODO: fix this later (offset is how many results to skip past)
 
   const settingsResult = await getOrgSettings({
     url: apiUrl,
@@ -109,7 +110,7 @@ export async function getStaticProps({ params }) {
     url: apiUrl,
     site: site,
     localeCode: 'en-US',
-    limit: limitPerPage,
+    limit: NEWSLETTER_ARCHIVE_PAGINATION_SIZE,
     offset: offset,
   });
 
@@ -119,7 +120,9 @@ export async function getStaticProps({ params }) {
       notFound: true,
     };
   } else {
-    totalPageCount = Math.ceil(newsletters.length / limitPerPage);
+    totalPageCount = Math.ceil(
+      newsletters.length / NEWSLETTER_ARCHIVE_PAGINATION_SIZE
+    );
     newsletters = data.newsletter_editions;
     sections = data.categories;
 
