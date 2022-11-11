@@ -21,10 +21,11 @@ import Typography from '../../../../../components/common/Typography';
 const PaginationSection = tw.section`flex mb-8`;
 const PaginationContainer = styled.div(({ meta }) => ({
   ...tw`md:grid md:grid-cols-packageLayoutTablet lg:grid-cols-packageLayoutDesktop flex flex-row flex-wrap grid-rows-1 w-full px-5 mx-auto max-w-7xl items-center justify-between`,
-  fontFamily: Typography[meta.theme || 'styleone'].ArticleMetaTop,
+  fontFamily: Typography[meta?.theme || 'styleone'].ArticleMetaTop,
 }));
 
 export default function NewsletterIndexPage(props) {
+  debugger;
   const isAmp = false;
   let pages = Array.from({ length: props.totalPageCount }, (_, i) => i + 1);
 
@@ -108,6 +109,7 @@ export async function getStaticProps(context) {
   let newsletters = [];
   let sections = [];
   let siteMetadata;
+  let totalPageCount = 0;
 
   const { errors, data } = await hasuraListNewsletters({
     url: apiUrl,
