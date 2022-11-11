@@ -16,6 +16,7 @@ import {
 } from '../../../../../lib/settings.js';
 import tw, { styled } from 'twin.macro';
 import Typography from '../../../../../components/common/Typography';
+import paginationStyles from '../../../../../styles/pagination.js';
 
 // CHELSEA TODO: consider refactoring this later
 const PaginationSection = tw.section`flex mb-8`;
@@ -25,7 +26,6 @@ const PaginationContainer = styled.div(({ meta }) => ({
 }));
 
 export default function NewsletterIndexPage(props) {
-  debugger;
   const isAmp = false;
   let pages = Array.from({ length: props.totalPageCount }, (_, i) => i + 1);
 
@@ -33,6 +33,8 @@ export default function NewsletterIndexPage(props) {
   console.log(
     `Expected number of pages: ${props.totalPageCount}, actual: ${pages.length}`
   );
+
+  // CHELSEA TODO LEFTOFF: the last page isn't loading newsletters, find out why
 
   return (
     <Layout
@@ -56,6 +58,13 @@ export default function NewsletterIndexPage(props) {
       <PaginationSection>
         <PaginationContainer meta={props.siteMetadata}>
           <ul className="pagination">
+            {props.currentPage > 1 && (
+              <li>
+                <a href={`/newsletters/archive/${props.currentPage - 1}`}>
+                  previous
+                </a>
+              </li>
+            )}
             {pages.map((page) => (
               <li
                 key={`nl-link-${page}`}
@@ -64,9 +73,20 @@ export default function NewsletterIndexPage(props) {
                 <a href={`/newsletters/archive/${page}`}>{page.toString()}</a>
               </li>
             ))}
+            {props.currentPage < props.totalPageCount && (
+              <li>
+                <a href={`/newsletters/archive/${props.currentPage + 1}`}>
+                  next
+                </a>
+              </li>
+            )}
           </ul>
         </PaginationContainer>
       </PaginationSection>
+
+      <style jsx global>
+        {paginationStyles}
+      </style>
     </Layout>
   );
 }
@@ -85,16 +105,13 @@ export async function getStaticPaths() {
     paths: mappedPaths,
     fallback: true,
   };
-
-  // CHELSEA TODO LEFTOFF: Try building and running this to see if you move past the static paths issue
 }
 
 export async function getStaticProps(context) {
-  console.log('***********Called getStaticProps');
   const apiUrl = process.env.HASURA_API_URL;
   const site = context.params.site;
   const locale = 'en-US';
-  const currentPage = Number(context.params?.page) || 1;
+  const currentPage = Number(context.params?.pageNumber) || 1;
   const offset = currentPage * NEWSLETTER_ARCHIVE_PAGINATION_SIZE; // CHELSEA TODO: fix this later (offset is how many results to skip past)
 
   const settingsResult = await getOrgSettings({
@@ -127,7 +144,8 @@ export async function getStaticProps(context) {
   } else {
     newsletters = data.newsletter_editions;
     totalPageCount = Math.ceil(
-      newsletters.length / NEWSLETTER_ARCHIVE_PAGINATION_SIZE
+      data.newsletter_editions_aggregate.aggregate.count /
+        NEWSLETTER_ARCHIVE_PAGINATION_SIZE
     );
     sections = data.categories;
 
