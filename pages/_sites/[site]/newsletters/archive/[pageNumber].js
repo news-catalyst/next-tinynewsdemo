@@ -15,6 +15,7 @@ import {
   getOrgSettings,
 } from '../../../../../lib/settings.js';
 import tw, { styled } from 'twin.macro';
+import Typography from '../../../../../components/common/Typography';
 
 // CHELSEA TODO: consider refactoring this later
 const PaginationSection = tw.section`flex mb-8`;
@@ -76,6 +77,7 @@ export async function getStaticPaths() {
   const mappedPaths = await generateAllNewsletterArchivePaths({
     url: apiUrl,
     adminSecret: adminSecret,
+    urlParams: {}, // CHELSEA TODO: you can remove this later
   });
 
   return {
@@ -86,11 +88,12 @@ export async function getStaticPaths() {
   // CHELSEA TODO LEFTOFF: Try building and running this to see if you move past the static paths issue
 }
 
-export async function getStaticProps({ params }) {
+export async function getStaticProps(context) {
+  console.log('***********Called getStaticProps');
   const apiUrl = process.env.HASURA_API_URL;
-  const site = params.site;
+  const site = context.params.site;
   const locale = 'en-US';
-  const currentPage = Number(params?.page) || 1;
+  const currentPage = Number(context.params?.page) || 1;
   const offset = currentPage * NEWSLETTER_ARCHIVE_PAGINATION_SIZE; // CHELSEA TODO: fix this later (offset is how many results to skip past)
 
   const settingsResult = await getOrgSettings({
@@ -120,12 +123,10 @@ export async function getStaticProps({ params }) {
       notFound: true,
     };
   } else {
+    newsletters = data.newsletter_editions;
     totalPageCount = Math.ceil(
       newsletters.length / NEWSLETTER_ARCHIVE_PAGINATION_SIZE
     );
-    newsletters = data.newsletter_editions;
-    sections = data.categories;
-
     sections = data.categories;
 
     for (var i = 0; i < sections.length; i++) {
