@@ -168,14 +168,15 @@ In another terminal window, run `npm run cypress:open` to open the cypress test 
 
 ## Setup the test environment
 
-Run these where you have the Hasura repo checked out:
+Run the following where you have the Hasura repo checked out:
 
 ```
-hasura migrate create init --sql-from-server --admin-secret $PRODUCTION_ADMIN_SECRET
+hasura migrate create init -from-server --admin-secret $PRODUCTION_ADMIN_SECRET
 hasura migrate apply --endpoint $TESTING_HASURA_API_ENDPOINT --admin-secret $TESTING_ADMIN_SECRET --version $VERSION_GENERATED_FROM_ABOVE_COMMAND --database-name default
 hasura metadata export --admin-secret $PRODUCTION_ADMIN_SECRET
 hasura metadata apply --endpoint $TESTING_HASURA_API_ENDPOINT --admin-secret $TESTING_ADMIN_SECRET
 ```
+You can get the value of $PRODUCTION_ADMIN_SECRET by logging into hasura and copying the admin secret for the project. 
 
 If you have to repopulate the testing database with the basic data required for the webhook to work, run the following command from where you have this repo checked out:
 
