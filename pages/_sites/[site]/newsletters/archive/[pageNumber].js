@@ -29,13 +29,6 @@ export default function NewsletterIndexPage(props) {
   const isAmp = false;
   let pages = Array.from({ length: props.totalPageCount }, (_, i) => i + 1);
 
-  // CHELSEA TODO: remove this console log
-  console.log(
-    `Expected number of pages: ${props.totalPageCount}, actual: ${pages.length}`
-  );
-
-  // CHELSEA TODO LEFTOFF: the last page isn't loading newsletters, find out why
-
   return (
     <Layout
       meta={props.siteMetadata}
@@ -112,7 +105,7 @@ export async function getStaticProps(context) {
   const site = context.params.site;
   const locale = 'en-US';
   const currentPage = Number(context.params?.pageNumber) || 1;
-  const offset = currentPage * NEWSLETTER_ARCHIVE_PAGINATION_SIZE; // CHELSEA TODO: fix this later (offset is how many results to skip past)
+  const offset = (currentPage - 1) * NEWSLETTER_ARCHIVE_PAGINATION_SIZE;
 
   const settingsResult = await getOrgSettings({
     url: apiUrl,
