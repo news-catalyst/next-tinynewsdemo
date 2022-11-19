@@ -5,7 +5,7 @@ This app runs the front-end published sites for all tiny news organizations, usi
 ## What's in here?
 
 - **\_\_mocks\_\_**: Basic boilerplate for tests
-- **\_\_tests\_\_**: Hasura API unit tests
+- **\_\_tests\_\_**: All UI and Hasura API unit tests
 - **.github**: Github actions for Google Analytics importing and
 - **cached**: A folder for keeping cached API responses. Kept intentionally empty in version control.
 - **components**: All of the reusable React components used across the next.js frontend
