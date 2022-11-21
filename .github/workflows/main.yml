@@ -125,3 +125,4 @@ jobs:
           record: true
           parallel: true
           group: 'UI - Firefox'
+          config-file: cypress.config.js
