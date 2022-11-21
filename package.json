@@ -137,6 +137,6 @@
     "rxjs": "^7.5.5",
     "slice-ansi": "^5.0.0",
     "tailwindcss": "^2.1.1",
-    "twin.macro": "^2.3.2"
+    "twin.macro": "^3.0.1"
   }
 }
