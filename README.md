@@ -162,9 +162,16 @@ For more information, see the [Jest documentation](https://jestjs.io/docs/cli#us
 
 ## Running integration tests
 
-This project uses Cypress for integration testing. In one terminal window, run `npm run dev:test` to start up the local front-end app in test mode. This will start the server using the appropriate hasura API url and test organization slug.
+This project uses Cypress for integration testing. To run Cypress tests, follow these steps:
 
-In another terminal window, run `npm run cypress:open` to open the cypress test runner window, which will then let you run one or all test files.
+1. Make sure your Add the following snippet to the end of cypress.config.js file has the code snippet below. This will ensure that Cypress can connect to your local instance.
+   ```
+   hosts: {
+       '*.localhost': '127.0.0.1',
+   },
+   ```
+2. In one terminal window, run `npm run dev` to start up the local front-end app.
+3. In another terminal window, run `npm run cypress:open` to open the cypress test runner window, which will then let you run one or all test files.
 
 ## Setup the test environment
 
