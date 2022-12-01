@@ -1,10 +1,9 @@
 import { render, screen, waitFor } from '@testing-library/react';
-import AddSection from '../../pages/_sites/[site]/tinycms/sections/add.js';
-import { hasuraCreateSection } from '../../lib/section.js';
+import AddSection from '../../../../../../pages/_sites/[site]/tinycms/sections/add.js';
 import userEvent from '@testing-library/user-event';
 
 // Mocking a child component that we don't need to render for these tests
-jest.mock('../../components/AdminLayout', () => 'admin-layout');
+jest.mock('../../../../../../components/AdminLayout', () => 'admin-layout');
 
 describe.only('Add Section page', () => {
   it('renders a form input for title', () => {

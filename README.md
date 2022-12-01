@@ -5,7 +5,7 @@ This app runs the front-end published sites for all tiny news organizations, usi
 ## What's in here?
 
 - **\_\_mocks\_\_**: Basic boilerplate for tests
-- **\_\_tests\_\_**: Hasura API unit tests
+- **\_\_tests\_\_**: All UI and Hasura API unit tests
 - **.github**: Github actions for Google Analytics importing and
 - **cached**: A folder for keeping cached API responses. Kept intentionally empty in version control.
 - **components**: All of the reusable React components used across the next.js frontend
@@ -160,22 +160,33 @@ If you'd like to run a single test, use `npm run test -- <File_Name> -t <Your-Te
 
 For more information, see the [Jest documentation](https://jestjs.io/docs/cli#using-with-npm-scripts).
 
-## Running integration tests
+## Running integration and e2e tests
 
-This project uses Cypress for integration testing. In one terminal window, run `npm run dev:test` to start up the local front-end app in test mode. This will start the server using the appropriate hasura API url and test organization slug.
+This project uses Cypress for integration and e2e testing. To run Cypress tests, follow these steps:
 
-In another terminal window, run `npm run cypress:open` to open the cypress test runner window, which will then let you run one or all test files.
+1. Make sure your Add the following snippet to the end of cypress.config.js file has the code
+   snippet below. This will ensure that Cypress can connect to your local instance.
+   ```
+   hosts: {
+       '*.localhost': '127.0.0.1',
+   },
+   ```
+2. In one terminal window, run `npm run local:test` to start up the local front-end app. By default, it will use the Hasura GraphQL API for the staging Hasura environment. If you'd like to use a different environment, change the value of HASURA_API_URL for that command in package.json. Be sure to also change HASURA_ADMIN_SECRET in your .env.local file to match the environment you're using.  
+   Note: package.json contains similar scripts that start with `dev:`. These are used for running Cypress tests within GitHub Actions. `local:test` is intended for development on your local machine.
+3. In another terminal window, run `npm run cypress:open` to open the cypress test runner window, which will then let you run one or all test files.
 
 ## Setup the test environment
 
-Run these where you have the Hasura repo checked out:
+Run the following where you have the Hasura repo checked out:
 
 ```
-hasura migrate create init --sql-from-server --admin-secret $PRODUCTION_ADMIN_SECRET
+hasura migrate create init -from-server --admin-secret $PRODUCTION_ADMIN_SECRET
 hasura migrate apply --endpoint $TESTING_HASURA_API_ENDPOINT --admin-secret $TESTING_ADMIN_SECRET --version $VERSION_GENERATED_FROM_ABOVE_COMMAND --database-name default
 hasura metadata export --admin-secret $PRODUCTION_ADMIN_SECRET
 hasura metadata apply --endpoint $TESTING_HASURA_API_ENDPOINT --admin-secret $TESTING_ADMIN_SECRET
 ```
+
+You can get the value of \$PRODUCTION_ADMIN_SECRET by logging into hasura and copying the admin secret for the project.
 
 If you have to repopulate the testing database with the basic data required for the webhook to work, run the following command from where you have this repo checked out:
 
@@ -193,6 +204,8 @@ To learn more about Next.js, take a look at the following resources:
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
 
 ## Git Flow
+
+### Creating a new feature branch
 
 To start working on a new feature, checkout the latest from `main` and use git flow to create the new feature branch.
 
@@ -212,6 +225,7 @@ git flow feature publish feature_branch_name
 
 Then open a PR as usual on GitHub.
 
+### Creating a new release
 To start a release (for production) checkout the latest from `main` and use git flow to create the new release branch:
 
 ```bash
@@ -227,6 +241,9 @@ To finish the release:
 ```bash
 git flow release finish '0.1.1'
 ```
+### Creating a hotfix
+
+*** Note: We are not using hotfixes anymore. This section will be archived as we move off of GitFlow and onto a more modern trunk-based deployment model. Create a new release version for now. 
 
 If you have to fix something in production ASAP, and the main branch has changes that aren't ready to go live, you'll want to do a **hotfix**, checkout the latest from `stable` and use git flow to create the new feature branch:
 

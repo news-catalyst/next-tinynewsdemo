@@ -1,9 +1,0 @@
-{
-  "projectId": "begad4",
-  "baseUrl": "http://next-tinynewsdemo.localhost:3000",
-  "video": false,
-  "defaultCommandTimeout": 30000,
-  "env": {
-    "apiUrl": "http://localhost:8080/v1/graphql"
-  }
-}

@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "dev:test": "ORG_SLUG=oaklyn-test NEXT_PUBLIC_CYPRESS_TESTING=true CYPRESS_API_TOKEN=$API_TOKEN HASURA_API_URL=http://localhost:8080/v1/graphql next dev",
+    "local:test": "ORG_SLUG=oaklyn-test NEXT_PUBLIC_CYPRESS_TESTING=true CYPRESS_API_TOKEN=$API_TOKEN HASURA_API_URL=https://heroic-snapper-25.hasura.app/v1/graphql next dev",
     "seed": "ORG_SLUG=oaklyn-test SITE=next-tinynewsdemo NEXT_PUBLIC_CYPRESS_TESTING=true CYPRESS_API_TOKEN=$API_TOKEN HASURA_API_URL=http://localhost:8080/v1/graphql NODE_ENV=test node script/seed.js",
     "build:test": "HASURA_API_URL=http://localhost:8080/v1/graphql ORG_SLUG=oaklyn-test SITE=next-tinynewsdemo NEXT_PUBLIC_CYPRESS_TESTING=true CYPRESS_API_TOKEN=$API_TOKEN BUILD_MODE=test next build",
     "start:test": "HASURA_API_URL=http://localhost:8080/v1/graphql ORG_SLUG=oaklyn-test SITE=next-tinynewsdemo NEXT_PUBLIC_CYPRESS_TESTING=true CYPRESS_API_TOKEN=$API_TOKEN BUILD_MODE=test next start",
@@ -112,7 +113,7 @@
     "babel-jest": "^25.5.1",
     "babel-plugin-macros": "^3.0.1",
     "babel-plugin-styled-components": "^1.13.3",
-    "cypress": "^9.3.1",
+    "cypress": "^11.1.0",
     "cypress-dotenv": "^2.0.0",
     "dotenv": "^10.0.0",
     "eslint": "^7.4.0",
