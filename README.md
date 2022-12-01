@@ -160,17 +160,19 @@ If you'd like to run a single test, use `npm run test -- <File_Name> -t <Your-Te
 
 For more information, see the [Jest documentation](https://jestjs.io/docs/cli#using-with-npm-scripts).
 
-## Running integration tests
+## Running integration and e2e tests
 
-This project uses Cypress for integration testing. To run Cypress tests, follow these steps:
+This project uses Cypress for integration and e2e testing. To run Cypress tests, follow these steps:
 
-1. Make sure your Add the following snippet to the end of cypress.config.js file has the code snippet below. This will ensure that Cypress can connect to your local instance.
+1. Make sure your Add the following snippet to the end of cypress.config.js file has the code
+   snippet below. This will ensure that Cypress can connect to your local instance.
    ```
    hosts: {
        '*.localhost': '127.0.0.1',
    },
    ```
-2. In one terminal window, run `npm run dev` to start up the local front-end app.
+2. In one terminal window, run `npm run local:test` to start up the local front-end app. By default, it will use the Hasura GraphQL API for the staging Hasura environment. If you'd like to use a different environment, change the value of HASURA_API_URL for that command in package.json. Be sure to also change HASURA_ADMIN_SECRET in your .env.local file to match the environment you're using.  
+   Note: package.json contains similar scripts that start with `dev:`. These are used for running Cypress tests within GitHub Actions. `local:test` is intended for development on your local machine.
 3. In another terminal window, run `npm run cypress:open` to open the cypress test runner window, which will then let you run one or all test files.
 
 ## Setup the test environment
@@ -183,7 +185,8 @@ hasura migrate apply --endpoint $TESTING_HASURA_API_ENDPOINT --admin-secret $TES
 hasura metadata export --admin-secret $PRODUCTION_ADMIN_SECRET
 hasura metadata apply --endpoint $TESTING_HASURA_API_ENDPOINT --admin-secret $TESTING_ADMIN_SECRET
 ```
-You can get the value of $PRODUCTION_ADMIN_SECRET by logging into hasura and copying the admin secret for the project. 
+
+You can get the value of \$PRODUCTION_ADMIN_SECRET by logging into hasura and copying the admin secret for the project.
 
 If you have to repopulate the testing database with the basic data required for the webhook to work, run the following command from where you have this repo checked out:
 

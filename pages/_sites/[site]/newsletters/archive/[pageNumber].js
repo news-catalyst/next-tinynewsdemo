@@ -18,7 +18,6 @@ import tw, { styled } from 'twin.macro';
 import Typography from '../../../../../components/common/Typography';
 import paginationStyles from '../../../../../styles/pagination.js';
 
-// CHELSEA TODO: consider refactoring this later
 const PaginationSection = tw.section`flex mb-8`;
 const PaginationContainer = styled.div(({ meta }) => ({
   ...tw`md:grid md:grid-cols-packageLayoutTablet lg:grid-cols-packageLayoutDesktop flex flex-row flex-wrap grid-rows-1 w-full px-5 mx-auto max-w-7xl items-center justify-between`,
@@ -50,7 +49,7 @@ export default function NewsletterIndexPage(props) {
       />
       <PaginationSection>
         <PaginationContainer meta={props.siteMetadata}>
-          <ul className="pagination">
+          <ul className="pagination" data-testid="pages">
             {props.currentPage > 1 && (
               <li>
                 <a href={`/newsletters/archive/${props.currentPage - 1}`}>
@@ -91,7 +90,6 @@ export async function getStaticPaths() {
   const mappedPaths = await generateAllNewsletterArchivePaths({
     url: apiUrl,
     adminSecret: adminSecret,
-    urlParams: {}, // CHELSEA TODO: you can remove this later
   });
 
   return {
