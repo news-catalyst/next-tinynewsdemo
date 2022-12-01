@@ -205,6 +205,8 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 
 ## Git Flow
 
+### Creating a new feature branch
+
 To start working on a new feature, checkout the latest from `main` and use git flow to create the new feature branch.
 
 ```bash
@@ -223,6 +225,7 @@ git flow feature publish feature_branch_name
 
 Then open a PR as usual on GitHub.
 
+### Creating a new release
 To start a release (for production) checkout the latest from `main` and use git flow to create the new release branch:
 
 ```bash
@@ -238,6 +241,9 @@ To finish the release:
 ```bash
 git flow release finish '0.1.1'
 ```
+### Creating a hotfix
+
+*** Note: We are not using hotfixes anymore. This section will be archived as we move off of GitFlow and onto a more modern trunk-based deployment model. Create a new release version for now. 
 
 If you have to fix something in production ASAP, and the main branch has changes that aren't ready to go live, you'll want to do a **hotfix**, checkout the latest from `stable` and use git flow to create the new feature branch:
 
