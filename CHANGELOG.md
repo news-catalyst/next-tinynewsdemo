@@ -1,5 +1,6 @@
 # Releases
 
+- 0.15.3 Bug fix and performance improvement for newsletter pages, adding new member to GA
 - 0.15.2 Bug fix for empty and archive categories
 - 0.15.1 Adding to previous release 15: added more console logs and fix to inlcude error handling welcome letters
 - 0.15.0 Fix archive newsletter page from publishing non-published newsletters and saving in Hasura (re-deploying in PROD since release 0.13.0 was rolled back)
