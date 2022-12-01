@@ -50,7 +50,7 @@ export default function NewsletterIndexPage(props) {
       />
       <PaginationSection>
         <PaginationContainer meta={props.siteMetadata}>
-          <ul className="pagination">
+          <ul className="pagination" data-testid="pages">
             {props.currentPage > 1 && (
               <li>
                 <a href={`/newsletters/archive/${props.currentPage - 1}`}>
