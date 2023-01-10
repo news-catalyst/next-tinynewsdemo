@@ -39,3 +39,6 @@ script/credentials.json
 .env.testing
 cypress/videos
 cypress/screenshots/
+
+# IntelliJ idea config files
+.idea/

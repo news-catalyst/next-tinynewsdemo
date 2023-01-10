@@ -21,7 +21,7 @@ This app runs the front-end published sites for all tiny news organizations, usi
 
 ## How this works
 
-We based the structure of this applciation on the Vercel [platforms starter kit](https://github.com/vercel/platforms). This means we build most of the site as part of the `pages/_sites/[site]` folder. We then use `pages/_middleware.js` to route incoming requests to the correct site. See the platforms starter kit linked above for more documentation on how this works.
+We based the structure of this applciation on the Vercel [platforms starter kit](https://github.com/vercel/platforms). This means we build most of the site as part of the `pages/_sites/[site]` folder. We then use `middleware.js` to route incoming requests to the correct site. See the platforms starter kit linked above for more documentation on how this works.
 
 Within this project we also build the API endpoints for interacting with Google Docs. You can find this at `pages/api/sidebar`. The [Google Apps Script](https://github.com/news-catalyst/google-app-scripts/) project interacts with these API endpoints in order to preview, publish and unpublish documents.
 
