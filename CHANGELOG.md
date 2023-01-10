@@ -1,5 +1,6 @@
 # Releases
 
+- 0.15.4 Update README.md and remove some commented-out code
 - 0.15.3 Bug fix and performance improvement for newsletter pages, adding new member to GA
 - 0.15.2 Bug fix for empty and archive categories
 - 0.15.1 Adding to previous release 15: added more console logs and fix to inlcude error handling welcome letters
