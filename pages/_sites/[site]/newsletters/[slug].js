@@ -182,7 +182,6 @@ export async function getStaticProps({ params }) {
       sections,
       siteMetadata,
       renderFooter,
-      settings,
       site,
       bannerAds,
     },
