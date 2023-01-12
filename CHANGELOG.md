@@ -1,5 +1,6 @@
 # Releases
 
+- 0.15.5 Remove exposes settings prop from newsletter detail page
 - 0.15.4 Update README.md and remove some commented-out code
 - 0.15.3 Bug fix and performance improvement for newsletter pages, adding new member to GA
 - 0.15.2 Bug fix for empty and archive categories
