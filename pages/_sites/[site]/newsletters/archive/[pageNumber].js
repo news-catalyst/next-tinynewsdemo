@@ -46,6 +46,7 @@ export default function NewsletterIndexPage(props) {
         metadata={props.siteMetadata}
         ads={props.expandedAds}
         monkeypodLink={props.monkeypodLink}
+        site={props.site}
       />
       <PaginationSection>
         <PaginationContainer meta={props.siteMetadata}>
