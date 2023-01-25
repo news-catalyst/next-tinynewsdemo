@@ -54,7 +54,7 @@ export default function NewsletterBlock({ metadata, headline, tinycms, site }) {
         site={site}
       />
       <p tw="mt-4 underline">
-        <Link href="/newsletters">
+        <Link href="/newsletters/archive/1">
           <a>Read past editions</a>
         </Link>
       </p>

@@ -4,7 +4,7 @@ import tw from 'twin.macro';
 import Layout from '../../../../components/Layout.js';
 import { cachedContents } from '../../../../lib/cached';
 import { hasuraGetNewsletter } from '../../../../lib/newsletters.js';
-import { generateAllNewsletterPagePaths } from '../../../../lib/newsletters';
+import { generateAllNewsletterPaths } from '../../../../lib/newsletters';
 import {
   booleanSetting,
   findSetting,
@@ -78,7 +78,7 @@ export async function getStaticPaths() {
   const apiUrl = process.env.HASURA_API_URL;
   const adminSecret = process.env.HASURA_ADMIN_SECRET;
 
-  const paths = await generateAllNewsletterPagePaths({
+  const paths = await generateAllNewsletterPaths({
     url: apiUrl,
     adminSecret: adminSecret,
     urlParams: {},
@@ -182,7 +182,6 @@ export async function getStaticProps({ params }) {
       sections,
       siteMetadata,
       renderFooter,
-      settings,
       site,
       bannerAds,
     },

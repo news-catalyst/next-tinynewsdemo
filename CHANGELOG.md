@@ -1,5 +1,9 @@
 # Releases
-
+- 0.15.7 Add new GA key field for The art rebellion 
+- 0.15.6 Fix newsletter subscription bug in newsletter archive page
+- 0.15.5 Remove exposes settings prop from newsletter detail page
+- 0.15.4 Update README.md and remove some commented-out code
+- 0.15.3 Bug fix and performance improvement for newsletter pages, adding new member to GA
 - 0.15.2 Bug fix for empty and archive categories
 - 0.15.1 Adding to previous release 15: added more console logs and fix to inlcude error handling welcome letters
 - 0.15.0 Fix archive newsletter page from publishing non-published newsletters and saving in Hasura (re-deploying in PROD since release 0.13.0 was rolled back)

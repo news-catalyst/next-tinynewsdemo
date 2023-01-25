@@ -81,7 +81,7 @@ export default function ArticleStream({
       <SectionContainer>
         <Block>
           <BlockHead>{title}</BlockHead>
-          <BlockList>{articleStream}</BlockList>
+          <BlockList data-testid="articlesList">{articleStream}</BlockList>
         </Block>
         <PromotionContainer>
           <PromotionBlock
