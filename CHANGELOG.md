@@ -1,5 +1,5 @@
 # Releases
-
+- 0.15.7 Add new GA key field for The art rebellion 
 - 0.15.6 Fix newsletter subscription bug in newsletter archive page
 - 0.15.5 Remove exposes settings prop from newsletter detail page
 - 0.15.4 Update README.md and remove some commented-out code
