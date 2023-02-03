@@ -296,14 +296,21 @@ export default function SiteInfoSettings(props) {
   const [defaultSocialImageHeight, setDefaultSocialImageHeight] = useState(
     props.parsedData['defaultSocialImageHeight']
   );
-  let parsedDonationOptions;
-  try {
-    parsedDonationOptions = JSON.parse(props.parsedData['donationOptions']);
-  } catch (e) {
-    console.error('Failed to parse donation options json:', e);
-  }
+
+  const parseDonationOptions = (parsedData) => {
+    let parsedDonationOptions = null;
+    if (parsedData && parsedData['donationOptions']) {
+      try {
+        parsedDonationOptions = JSON.parse(parsedData['donationOptions']);
+      } catch (e) {
+        console.error('Failed to parse donation options json:', e);
+      }
+    }
+    return parsedDonationOptions;
+  };
+
   const [donationOptions, setDonationOptions] = useState(
-    props.parsedData['donationOptions'] ? parsedDonationOptions : null
+    parseDonationOptions(props.parsedData)
   );
 
   const updateKeyValue = (key, value) => {
@@ -462,15 +469,7 @@ export default function SiteInfoSettings(props) {
     setFounderTwitter(props.parsedData['founderTwitter']);
     setFounderInstagram(props.parsedData['founderInstagram']);
     setFounderFacebook(props.parsedData['founderFacebook']);
-    let parsedDonationOptions;
-    try {
-      parsedDonationOptions = JSON.parse(props.parsedData['donationOptions']);
-    } catch (e) {
-      console.error('Failed to parse donation options json:', e);
-    }
-    setDonationOptions(
-      props.parsedData['donationOptions'] ? parsedDonationOptions : null
-    );
+    setDonationOptions(parseDonationOptions(props.parsedData));
     setLogo(props.parsedData['logo']);
     setLogoWidth(props.parsedData['logoWidth']);
     setLogoHeight(props.parsedData['logoHeight']);

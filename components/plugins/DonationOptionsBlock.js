@@ -14,11 +14,13 @@ export default function DonationOptionsBlock({
   }
 
   let parsedOptions = [];
-  try {
-    // console.log('donationOptions metadata:', metadata.donationOptions);
-    parsedOptions = JSON.parse(metadata.donationOptions);
-  } catch (e) {
-    console.error(e);
+  if (metadata && metadata.donationOptions) {
+    try {
+      // console.log('donationOptions metadata:', metadata.donationOptions);
+      parsedOptions = JSON.parse(metadata.donationOptions);
+    } catch (e) {
+      console.error(e);
+    }
   }
 
   const block = parsedOptions
