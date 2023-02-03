@@ -17,7 +17,6 @@ export default function DonationOption(props) {
   const [desc, setDesc] = useState(props.desc);
   const [staticDesc, setStaticDesc] = useState(props.desc);
   const [paymentType, setPaymentType] = useState(props.paymentType);
-  const [monkeypodId, setMonkeypodId] = useState(props.monkeypodId);
   const [amount, setAmount] = useState(props.amount);
 
   const updateDesc = (value, editor) => {
@@ -73,18 +72,6 @@ export default function DonationOption(props) {
 
     let donationOptions = JSON.parse(props.parsedData.donationOptions);
     donationOptions[index].amount = value;
-
-    props.updateParsedData((prevState) => ({
-      ...prevState,
-      ['donationOptions']: JSON.stringify(donationOptions),
-    }));
-  };
-
-  const updateMonkeypodId = (index, value) => {
-    setMonkeypodId(value);
-
-    let donationOptions = JSON.parse(props.parsedData.donationOptions);
-    donationOptions[index].monkeypodId = value;
 
     props.updateParsedData((prevState) => ({
       ...prevState,
@@ -170,18 +157,6 @@ export default function DonationOption(props) {
           onChange={(ev) => updateCTA(index, ev.target.value)}
           label="Option CTA"
         />
-      </div>
-      <div tw="mt-2">
-        <label htmlFor={`donationOptions-${index}-monkeypodId`}>
-          <span tw="mt-1 font-bold">Option MonkeyPod ID</span>
-          <ControlledInput
-            tw="w-full rounded-md border-solid border-gray-300"
-            type="text"
-            name={`donationOptions-${index}-monkeypodId`}
-            value={monkeypodId}
-            onChange={(ev) => updateMonkeypodId(index, ev.target.value)}
-          />
-        </label>
       </div>
     </div>
   );

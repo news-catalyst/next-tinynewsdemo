@@ -1043,7 +1043,6 @@ export default function SiteInfoSettings(props) {
               desc={option.description}
               amount={option.amount}
               paymentType={option.paymentType}
-              monkeypodId={option.monkeypodId}
               parsedData={props.parsedData}
               updateParsedData={props.updateParsedData}
               tinyApiKey={props.tinyApiKey}
