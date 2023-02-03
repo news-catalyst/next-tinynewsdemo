@@ -61,12 +61,6 @@ export default function DonationCard({
     setMpUrl(monkeypodLink);
   }, [metadata]);
 
-  let monkeyPodURL = `${mpUrl}?option_id=${option.monkeypodId}`;
-
-  if (customAmount) {
-    monkeyPodURL += `&amount=${customAmount}`;
-  }
-
   return (
     <Card>
       <CardHeader>
@@ -111,7 +105,7 @@ export default function DonationCard({
         }}
       >
         <DonateFooterLink
-          href={monkeyPodURL}
+          href={mpUrl}
           meta={metadata}
           backgroundColor={backgroundColor}
           textColor={textColor}
