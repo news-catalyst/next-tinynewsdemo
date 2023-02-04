@@ -23,12 +23,13 @@ export default function DonationOptionsBlock({
     }
   }
 
+  // strips out monkeypod option ids in case users didn't delete them from their settings
   const block = parsedOptions
     .filter((option) => !!option.name)
-    .map((option, i) => (
+    .map(({ monkeypodId, ...updatedOption }, i) => (
       <DonationCard
         key={`donation-card-${i}`}
-        option={option}
+        option={updatedOption}
         metadata={metadata}
         tinycms={tinycms}
         monkeypodLink={monkeypodLink}
