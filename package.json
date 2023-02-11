@@ -70,7 +70,7 @@
     "journalize": "^2.4.0",
     "js-yaml": "^4.1.0",
     "local-storage-fallback": "^4.1.1",
-    "moment": "^2.29.2",
+    "moment": "^2.29.4",
     "next": "^12.1.5",
     "next-auth": "4.12.2",
     "next-seo": "^5.3.0",
