@@ -91,7 +91,7 @@
     "react-player": "^2.5.0",
     "react-scroll-percentage": "^4.2.0",
     "react-tweet-embed": "^2.0.0",
-    "recharts": "^2.0.9",
+    "recharts": "^2.1.14",
     "remark": "^14.0.1",
     "remark-html": "^15.0.0",
     "rss": "^1.2.2",
