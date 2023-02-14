@@ -1,5 +1,5 @@
 # Releases
-
+- 0.15.8 Added Future Tides yml file and their Google Analytics tracking ID
 - 0.15.7 Add new GA key field for The art rebellion 
 - 0.15.6 Fix newsletter subscription bug in newsletter archive page
 - 0.15.5 Remove exposes settings prop from newsletter detail page
