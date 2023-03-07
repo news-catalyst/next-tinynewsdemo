@@ -1,5 +1,6 @@
 # Releases
--0.15.9 Updated/added Future Tides, Atlantic City Focus, The Leveler News Google Analytics and added The Leveler News yml file 
+- 0.16.0 Added The Leveler News new GA value
+- 0.15.9 Updated/added Future Tides, Atlantic City Focus, The Leveler News yml file
 - 0.15.8 Added Future Tides yml file and their Google Analytics tracking ID
 - 0.15.7 Add new GA key field for The art rebellion 
 - 0.15.6 Fix newsletter subscription bug in newsletter archive page
