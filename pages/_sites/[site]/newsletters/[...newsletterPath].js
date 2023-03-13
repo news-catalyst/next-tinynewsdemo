@@ -3,8 +3,10 @@ import React from 'react';
 import tw from 'twin.macro';
 import Layout from '../../../../components/Layout.js';
 import { cachedContents } from '../../../../lib/cached';
-import { hasuraGetNewsletter } from '../../../../lib/newsletters.js';
-import { generateAllNewsletterPaths } from '../../../../lib/newsletters';
+import {
+  hasuraGetNewslettersForSlug,
+  listNewsletterPagePaths,
+} from '../../../../lib/newsletters.js';
 import {
   booleanSetting,
   findSetting,
@@ -74,15 +76,47 @@ export default function NewsletterEditionPage(props) {
   );
 }
 
+function extractNewsletterPathInfo(orgData) {
+  const { newsletter_editions: newsletters = [], subdomain, customDomain } =
+    orgData || {};
+  return newsletters
+    .filter((newsletter) => newsletter.slug !== undefined)
+    .map(({ slug, letterhead_id }) => {
+      const site = subdomain || customDomain;
+      const newsletterPath = [slug];
+      if (letterhead_id) {
+        newsletterPath.push(String(letterhead_id));
+      }
+      return {
+        params: {
+          site,
+          newsletterPath,
+        },
+      };
+    });
+}
+
 export async function getStaticPaths() {
   const apiUrl = process.env.HASURA_API_URL;
   const adminSecret = process.env.HASURA_ADMIN_SECRET;
-
-  const paths = await generateAllNewsletterPaths({
+  const { errors, data } = await listNewsletterPagePaths({
     url: apiUrl,
-    adminSecret: adminSecret,
-    urlParams: {},
+    adminSecret,
   });
+  if (errors) {
+    console.error('listNewsletterPagePaths errors:', errors);
+    throw errors;
+  }
+  if (!data || !Array.isArray(data.organizations)) {
+    const errorDescription =
+      'listNewsletterPagePaths error: invalid data object returned';
+    console.error(errorDescription);
+    throw new Error(errorDescription);
+  }
+
+  const paths = data.organizations
+    .map(extractNewsletterPathInfo)
+    .reduce((allPaths, orgPaths) => [...allPaths, ...orgPaths], []);
 
   return {
     paths,
@@ -94,7 +128,9 @@ export async function getStaticProps({ params }) {
   const apiUrl = process.env.HASURA_API_URL;
   const site = params.site;
   const locale = 'en-US';
-
+  let {
+    newsletterPath: [slug, letterheadId],
+  } = params;
   const settingsResult = await getOrgSettings({
     url: apiUrl,
     site: site,
@@ -111,20 +147,41 @@ export async function getStaticProps({ params }) {
   let tags = [];
   let siteMetadata;
 
-  const { errors, data } = await hasuraGetNewsletter({
+  const { errors, data } = await hasuraGetNewslettersForSlug({
     url: apiUrl,
     site: site,
-    slug: params.slug,
+    slug: slug,
     localeCode: 'en-US',
   });
 
-  if (errors || !data) {
-    console.error('error getting newsletter:', errors);
+  if (
+    errors ||
+    !data ||
+    !Array.isArray(data.newsletter_editions) ||
+    data.newsletter_editions.length < 1
+  ) {
+    console.error('error getting newsletter:', errors || 'empty result');
     return {
       notFound: true,
     };
   } else {
-    newsletter = data.newsletter_editions[0];
+    if (letterheadId) {
+      newsletter = data.newsletter_editions.find(
+        (edition) => String(edition.letterhead_id) === letterheadId
+      );
+    } else {
+      // if we do not get a letterHeadId we can return the first value found
+      newsletter = data.newsletter_editions[0];
+    }
+    // If newsletter is undefined here, we have an error.
+    if (!newsletter) {
+      console.error(
+        `error getting newsletter: valid newsletter not found within results`
+      );
+      return {
+        notFound: true,
+      };
+    }
     sections = data.categories;
     tags = data.tags;
 

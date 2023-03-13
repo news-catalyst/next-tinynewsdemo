@@ -1,4 +1,6 @@
 # Releases
+
+- 0.16.1 Add letterhead id to newsletter path routing to fix duplicate slugs causing links to point to the wrong article.
 - 0.16.0 Added The Leveler News new custom domain GA value
 - 0.15.9 Updated/added Future Tides, Atlantic City Focus, The Leveler News yml file
 - 0.15.8 Added Future Tides yml file and their Google Analytics tracking ID
