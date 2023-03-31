@@ -51,23 +51,25 @@ export async function getStaticPaths() {
 export async function getStaticProps(context) {
   let preview = context.preview;
   let params = context.params;
-
   if (!preview) {
     return {
       notFound: true,
     };
   }
+  const adminSecret = process.env.HASURA_ADMIN_SECRET;
   const apiUrl = process.env.HASURA_API_URL;
-  const apiToken = process.env.ORG_SLUG;
-
+  const orgSlug = process.env.ORG_SLUG;
+  const site = params['site'];
   let page = {};
   let sections;
   let siteMetadata = {};
 
   const { errors, data } = await hasuraGetPagePreview({
     url: apiUrl,
-    orgSlug: apiToken,
     slug: params.slug,
+    site,
+    orgSlug,
+    adminSecret,
   });
 
   if (errors || !data) {
@@ -86,7 +88,7 @@ export async function getStaticProps(context) {
 
     sections = data.categories;
     siteMetadata = data.site_metadatas[0].site_metadata_translations[0].data;
-    for (i = 0; i < sections.length; i++) {
+    for (let i = 0; i < sections.length; i++) {
       if (
         sections[i] &&
         sections[i].category_translations &&
