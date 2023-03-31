@@ -230,7 +230,6 @@ export async function getStaticProps({ params }) {
   }
 
   let renderFooter = booleanSetting(settings, 'RENDER_FOOTER', true);
-  console.log(`PROPS site: ${site}`);
   return {
     props: {
       newsletter,
