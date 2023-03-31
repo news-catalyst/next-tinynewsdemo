@@ -69,7 +69,7 @@ export default function NewsletterEditionPage(props) {
             isAmp={isAmp}
             metadata={props.siteMetadata}
           />
-          <NewsletterBlock metadata={props.siteMetadata} />
+          <NewsletterBlock metadata={props.siteMetadata} site={props.site} />
         </NewsletterPostText>
       </SectionContainer>
     </Layout>
@@ -203,7 +203,6 @@ export async function getStaticProps({ params }) {
         tags.splice(j, 1);
       }
     }
-
     let metadatas = data.site_metadatas;
     try {
       siteMetadata = metadatas[0].site_metadata_translations[0].data;
@@ -231,7 +230,7 @@ export async function getStaticProps({ params }) {
   }
 
   let renderFooter = booleanSetting(settings, 'RENDER_FOOTER', true);
-
+  console.log(`PROPS site: ${site}`);
   return {
     props: {
       newsletter,
