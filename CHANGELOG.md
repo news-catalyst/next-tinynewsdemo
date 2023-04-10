@@ -1,5 +1,6 @@
 # Releases
 
+- 0.16.2 Improve build networking and error handling - PR#1328. Fix 404 preview error - PR#1327. Fix JSON error for newsletter subscribe on detail page - PR#1326.
 - 0.16.1 Add letterhead id to newsletter path routing to fix duplicate slugs causing links to point to the wrong article.
 - 0.16.0 Added The Leveler News new custom domain GA value
 - 0.15.9 Updated/added Future Tides, Atlantic City Focus, The Leveler News yml file
