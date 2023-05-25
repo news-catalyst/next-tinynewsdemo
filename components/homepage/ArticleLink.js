@@ -51,7 +51,6 @@ export default function ArticleLink({
   let categoryHref;
   let linkHref;
   let linkAs;
-
   if (article.category && article.category.category_translations) {
     categoryTitle = article.category.category_translations[0].title;
 
@@ -59,8 +58,8 @@ export default function ArticleLink({
     linkHref = '/articles/[category]/[slug]';
     linkAs = `/articles/${article.category.slug}/${article.slug}`;
   } else if (article.newsletter_published_at) {
-    linkHref = '/newsletters/[slug]';
-    linkAs = `/newsletters/${article.slug}`;
+    linkHref = '/newsletters/[slug]/[letterhead_id]';
+    linkAs = `/newsletters/${article.slug}/${article.letterhead_id}`;
   }
 
   if (
