@@ -1,4 +1,5 @@
 # Releases
+- 0.16.4 Delete BBG's data importer yml file and GA tracking ID
 - 0.16.3 Update Project Optimist GA tracking ID with custom domain
 - 0.16.2 Improve build networking and error handling - PR#1328. Fix 404 preview error - PR#1327. Fix JSON error for newsletter subscribe on detail page - PR#1326.
 - 0.16.1 Add letterhead id to newsletter path routing to fix duplicate slugs causing links to point to the wrong article.
