@@ -1,10 +1,6 @@
 import { useEffect } from 'react';
 import Router from 'next/router';
-import {
-  useAnalytics,
-  initialize,
-  trackReadingHistoryWithPageView,
-} from '../lib/hooks/useAnalytics.js';
+import { useAnalytics, initialize } from '../lib/hooks/useAnalytics.js';
 import { SessionProvider } from 'next-auth/react';
 import { useAmp } from 'next/amp';
 import GlobalStyles from './../components/GlobalStyles';
@@ -32,14 +28,15 @@ const App = ({ Component, pageProps }) => {
     if (isAmp) {
       return true;
     }
-
+    // After initialization, page views are tracked automatically by the gtag js code
+    console.log('======== Initializing GA4 ========');
     initialize(hookObj);
 
     let pagePath = window.location.pathname + window.location.search;
     const handleRouteChange = () => {
       if (!/tinycms/.test(pagePath)) {
-        let routeChangeData = trackReadingHistoryWithPageView(hookObj);
-        hookObj.trackPageViewedWithDimensions(pagePath, routeChangeData);
+        hookObj.logReadingHistory();
+        // hookObj.trackPageViewed(pagePath);
       }
     };
     Router.events.on('routeChangeComplete', handleRouteChange);
