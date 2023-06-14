@@ -28,15 +28,13 @@ const App = ({ Component, pageProps }) => {
     if (isAmp) {
       return true;
     }
-    // After initialization, page views are tracked automatically by the gtag js code
-    console.log('======== Initializing GA4 ========');
+    // Initialize runs after every page load and sends the page view
     initialize(hookObj);
 
     let pagePath = window.location.pathname + window.location.search;
     const handleRouteChange = () => {
       if (!/tinycms/.test(pagePath)) {
         hookObj.logReadingHistory();
-        // hookObj.trackPageViewed(pagePath);
       }
     };
     Router.events.on('routeChangeComplete', handleRouteChange);
