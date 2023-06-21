@@ -26,8 +26,7 @@ const CardContent = tw.p`text-gray-500 my-1`;
 const cardContent = [
   {
     title: 'Analytics',
-    description:
-      'Learn more about your audience via data from Google Analytics and Letterhead.',
+    description: 'View your source diversity data.',
     href: '/tinycms/analytics',
     icon: <ChartBarIcon />,
   },
