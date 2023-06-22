@@ -19,7 +19,7 @@ export default function ThankYou({ referrer, page, sections, siteMetadata }) {
   const isAmp = false;
   const router = useRouter();
   // sets a cookie if request comes from monkeypod.io marking this browser as a donor
-  const { checkReferrer, trackEvent } = useAnalytics();
+  const { checkReferrerIsMonkeyPod, trackEvent } = useAnalytics();
 
   // If the page is not yet generated, this will be displayed
   // initially until getStaticProps() finishes running
@@ -30,7 +30,7 @@ export default function ThankYou({ referrer, page, sections, siteMetadata }) {
   }
 
   // this will return true if the request came from monkeypod, false otherwise
-  let isDonor = checkReferrer(referrer);
+  let isDonor = checkReferrerIsMonkeyPod(referrer);
   if (isDonor) {
     setTimeout(() => {
       trackEvent({

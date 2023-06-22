@@ -4,7 +4,6 @@ import AdminLayout from '../../../../../components/AdminLayout';
 import AdminNav from '../../../../../components/nav/AdminNav';
 import AnalyticsNav from '../../../../../components/tinycms/analytics/AnalyticsNav';
 import AnalyticsSidebar from '../../../../../components/tinycms/analytics/AnalyticsSidebar';
-import YesterdaysTopTen from '../../../../../components/tinycms/analytics/YesterdaysTopTen';
 import { hasuraGetYesterday } from '../../../../../lib/analytics';
 import { findSetting, getOrgSettings } from '../../../../../lib/settings.js';
 import { sub } from 'date-fns';
@@ -36,84 +35,18 @@ export default function AnalyticsIndex(props) {
         <MainContent>
           <SettingsContainer>
             <HeaderContainer>
-              <Header>Analytics</Header>
+              <Header>Analytics: Sources</Header>
             </HeaderContainer>
-            <AnalyticsSidebar title="Yesterday">
-              <table tw="w-full table-auto">
-                <tbody>
-                  <tr>
-                    <th tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-                      Sessions
-                    </th>
-                    <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-                      {props.sessionCount}
-                    </td>
-                  </tr>
-                  <tr>
-                    <th tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-                      Donor Sessions
-                    </th>
-                    <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-                      {props.donorSessionCount}
-                    </td>
-                  </tr>
-                  <tr>
-                    <th tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-                      Subscriber Sessions
-                    </th>
-                    <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-                      {props.subscriberSessionCount}
-                    </td>
-                  </tr>
-                  <tr>
-                    <th tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-                      New Subscribers
-                    </th>
-                    <td tw="border border-gray-500 px-4 py-2 text-gray-600 font-medium">
-                      TK from Letterhead
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-              <YesterdaysTopTen
-                pageViews={props.pageViews}
-                readingDepth={props.readingDepth}
-              />
-            </AnalyticsSidebar>
             <AnalyticsSidebar title="About this Data">
               <p tw="p-2">
-                tinycms analytics data is meant to reveal insights about how
-                your audience is - or is not - interacting with your published
-                content.
-              </p>
-              <p tw="p-2">
-                Information related to donate button clicks, page views, reading
-                behavior and sessions come from{' '}
-                <a href="https://analytics.google.com/">Google Analytics</a>.
-                This site is configured for GA as follows:
-              </p>
-
-              <ul tw="p-2">
-                <li>
-                  <b>Tracking ID:</b> <code>{props.trackingId}</code>
-                </li>
-                <li>
-                  <b>View ID:</b> <code>{props.viewId}</code>
-                </li>
-              </ul>
-
-              <p tw="p-2">
-                Information on newsletter subscriptions come from{' '}
-                <a href="https://tryletterhead.com/">Letterhead</a>.
-              </p>
-              <p tw="p-2">
-                For a deeper dive on understanding your audience and measuring
-                the impact of your reporting, News Catalyst recommends checking
-                out{' '}
-                <a href="https://source.opennews.org/articles/memberkit-upgrade-your-analytics/">
-                  MemberKit
-                </a>
-                .
+                <strong>
+                  Click a link on the sidebar to view source data.
+                </strong>
+                <br />
+                TinyCMS publishing tools in Google Docs, you can log your
+                sources and demographic information about them. Here, we
+                aggregate that information so you can keep track of the
+                diversity of your sources.
               </p>
             </AnalyticsSidebar>
           </SettingsContainer>
