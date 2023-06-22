@@ -1,4 +1,5 @@
 # Releases
+- 0.16.6 Replace universal analytics data capture with GA4, by using react-ga4. Disable and delete UA-related admin dashboards.
 - 0.16.5 Delete AV's data impoter yml file and GA tracking ID
 - 0.16.4 Delete BBG's data importer yml file and GA tracking ID
 - 0.16.3 Update Project Optimist GA tracking ID with custom domain
