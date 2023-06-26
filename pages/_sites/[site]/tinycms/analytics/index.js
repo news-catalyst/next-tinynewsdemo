@@ -4,9 +4,7 @@ import AdminLayout from '../../../../../components/AdminLayout';
 import AdminNav from '../../../../../components/nav/AdminNav';
 import AnalyticsNav from '../../../../../components/tinycms/analytics/AnalyticsNav';
 import AnalyticsSidebar from '../../../../../components/tinycms/analytics/AnalyticsSidebar';
-import { hasuraGetYesterday } from '../../../../../lib/analytics';
 import { findSetting, getOrgSettings } from '../../../../../lib/settings.js';
-import { sub } from 'date-fns';
 
 const Container = tw.div`flex flex-wrap -mx-2 mb-8`;
 const Sidebar = tw.div`h-full h-screen bg-gray-100 md:w-1/5 lg:w-1/5 px-2 mb-4`;
@@ -59,42 +57,6 @@ export async function getServerSideProps(context) {
   const apiUrl = process.env.HASURA_API_URL;
   const site = context.params.site;
 
-  const startDate = sub(new Date(), { months: 1 });
-  const endDate = new Date();
-
-  let sessionCount = 0;
-  let sessionParams = {
-    url: apiUrl,
-    site: site,
-    startDate: startDate,
-    endDate: endDate,
-  };
-  const { errors, data } = await hasuraGetYesterday(sessionParams);
-  if (errors && !data) {
-    console.error(errors);
-    throw errors;
-  }
-
-  let sessions = data.ga_sessions;
-  sessions.map((pv) => {
-    sessionCount += parseInt(pv.count);
-  });
-
-  let pageViews = data.ga_page_views;
-
-  let readingDepth = data.ga_reading_depth;
-
-  let donors = data.donorDimensions;
-  let donorSessionCount = 0;
-  donors.map((item) => {
-    donorSessionCount += parseInt(item.count);
-  });
-  let subscribers = data.subscriberDimensions;
-  let subscriberSessionCount = 0;
-  subscribers.map((item) => {
-    subscriberSessionCount += parseInt(item.count);
-  });
-
   const settingsResult = await getOrgSettings({
     url: apiUrl,
     site: site,
@@ -118,11 +80,6 @@ export async function getServerSideProps(context) {
     props: {
       apiUrl: apiUrl,
       site: site,
-      pageViews: pageViews,
-      readingDepth: readingDepth,
-      sessionCount: sessionCount,
-      donorSessionCount: donorSessionCount,
-      subscriberSessionCount: subscriberSessionCount,
       siteUrl: siteUrl,
       host: host,
       trackingId: trackingId,
