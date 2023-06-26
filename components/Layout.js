@@ -3,9 +3,7 @@ import GlobalNav from './nav/GlobalNav';
 import GlobalFooter from './nav/GlobalFooter.js';
 import CookieConsentWrapper from './nav/CookieConsentWrapper.js';
 import { useAmp } from 'next/amp';
-import AmpAnalytics from './amp/AmpAnalytics.js';
 import tw, { styled } from 'twin.macro';
-import { trackingIdMapping } from '../lib/utils';
 import BannerAd from './ads/BannerAd';
 
 const Main = tw.main`pt-8 pb-24`;
@@ -55,9 +53,6 @@ export default function Layout({
   };
 
   const isAmp = useAmp();
-
-  const mappingSiteTrackingID = trackingIdMapping();
-  const trackingId = mappingSiteTrackingID[site];
   return (
     <>
       <Head>
@@ -135,29 +130,7 @@ export default function Layout({
             monkeypodLink={monkeypodLink}
           />
         )}
-        <Main>
-          {isAmp && (
-            <AmpAnalytics
-              type="googleanalytics"
-              script={{
-                vars: {
-                  account: trackingId,
-                  gtag_id: trackingId,
-                  config: {
-                    [trackingId]: { groups: 'default' },
-                  },
-                },
-                triggers: {
-                  trackPageview: {
-                    on: 'visible',
-                    request: 'pageview',
-                  },
-                },
-              }}
-            />
-          )}
-          {children}
-        </Main>
+        <Main>{children}</Main>
         {renderFooter && <GlobalFooter metadata={metaValues} />}
         <CookieConsentWrapper meta={meta} />
       </ThemeWrapper>
